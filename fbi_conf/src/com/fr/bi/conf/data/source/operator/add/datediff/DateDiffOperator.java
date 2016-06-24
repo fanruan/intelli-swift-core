@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source.operator.add.datediff;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
@@ -105,16 +106,18 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     }
 
     private class DataValueGetter implements ValueGetter {
+        ICubeColumnDetailGetter getter;
         ICubeTableService ti;
         BIKey key;
 
         DataValueGetter(ICubeTableService ti, BIKey key) {
             this.ti = ti;
             this.key = key;
+            this.getter = ti.getColumnDetailReader(key);
         }
 
         public Long getTime(int row) {
-            return (Long) ti.getRow(key, row);
+            return (Long) getter.getValue(row);
         }
 
         public void check() {

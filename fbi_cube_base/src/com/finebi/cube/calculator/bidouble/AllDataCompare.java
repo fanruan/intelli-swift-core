@@ -1,5 +1,6 @@
 package com.finebi.cube.calculator.bidouble;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -14,13 +15,13 @@ import com.fr.bi.stable.gvi.traversal.CalculatorTraversalAction;
 public abstract class AllDataCompare implements CubeDoubleDataCalculator {
     @Override
     public double calculate(final ICubeTableService tableGetterService, final BIKey key, GroupValueIndex range) {
-
+        final ICubeColumnDetailGetter getter = tableGetterService.getColumnDetailReader(key);
         CalculatorTraversalAction ss = new CalculatorTraversalAction() {
             boolean firstValue = true;
 
             @Override
             public void actionPerformed(int row) {
-                Object v = tableGetterService.getRow(key, row);
+                Object v = getter.getValue(row);
                 if (v != null) {
                     double temp = ((Number) v).doubleValue();
                     if (firstValue) {

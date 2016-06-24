@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
@@ -77,9 +78,13 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     groupLength[k] = it.next();
                     k++;
                 }
-
+                ICubeColumnDetailGetter getter = ti.getColumnDetailReader(new IndexKey(idFieldName));
                 for (int i = 0; i < rowCount; i++) {
-                    String v = ti.getRow(new IndexKey(idFieldName), i).toString();
+                    Object ob = getter.getValue(i);
+                    if (ob == null){
+                        continue;
+                    }
+                    String v = ob.toString();
                     v = dealWithLayerValue(v, groupLength);
                     String[] res = new String[columnLength];
                     if (v != null) {

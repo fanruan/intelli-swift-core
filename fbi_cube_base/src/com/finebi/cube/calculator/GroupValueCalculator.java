@@ -1,5 +1,6 @@
 package com.finebi.cube.calculator;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -18,12 +19,13 @@ public class GroupValueCalculator {
 
     public static GroupValueCalculator INSTANCE = new GroupValueCalculator();
 
-    public Set calculate(final ICubeTableService tableGetterService, final BIKey key, GroupValueIndex range) {
+    public Set calculate(final ICubeTableService tableGetterService, BIKey key, GroupValueIndex range) {
         final Set<Object> result = new HashSet<Object>();
+        final ICubeColumnDetailGetter getter = tableGetterService.getColumnDetailReader(key);
         SingleRowTraversalAction ss = new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                Object v = tableGetterService.getRow(key, row);
+                Object v = getter.getValue(row);
                 //D:null值不做统计
                 if (v != null) {
                     result.add(v);

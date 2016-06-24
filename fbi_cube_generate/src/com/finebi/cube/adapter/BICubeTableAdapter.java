@@ -1,5 +1,6 @@
 package com.finebi.cube.adapter;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.calculator.bidouble.MaxCalculator;
@@ -41,6 +42,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     private CubeTableEntityGetterService primaryTable;
     private Map<BIKey, ICubeFieldSource> columnSet = null;
     private Map<BIKey, CubeColumnReaderService> columnReaderServiceMap = new ConcurrentHashMap<BIKey, CubeColumnReaderService>();
+    private Map<BIKey, ICubeColumnDetailGetter> columnDetailReaderServiceMap = new ConcurrentHashMap<BIKey, ICubeColumnDetailGetter>();
 
     public BICubeTableAdapter(Cube cube, CubeTableSource tableSource) {
         this.cube = cube;
@@ -60,26 +62,14 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     @Override
-    public Object getRow(BIKey columnIndex, int row) {
-        try {
-            return getColumnReader(columnIndex).getOriginalValueByRow(row);
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
+    public ICubeColumnDetailGetter getColumnDetailReader(BIKey key) {
+        if (columnDetailReaderServiceMap.containsKey(key)) {
+            return columnDetailReaderServiceMap.get(key);
+        } else {
+            ICubeColumnDetailGetter columnDetailGetter = new BICubeColumnDetailGetter(getColumnReader(key));
+            columnDetailReaderServiceMap.put(key, columnDetailGetter);
+            return columnDetailGetter;
         }
-    }
-
-    @Override
-    public Object getRowValue(BIKey columnIndex, int row) {
-        return getRow(columnIndex, row);
-    }
-
-    @Override
-    public Object[] getRow(BIKey columnIndex, int[] rows) {
-        Object[] objects = new Object[rows.length];
-        for (int i = 0; i < rows.length; i++) {
-            objects[i] = getRow(columnIndex, rows[i]);
-        }
-        return objects;
     }
 
     @Override
@@ -273,7 +263,7 @@ public class BICubeTableAdapter implements ICubeTableService {
         return columnReaderService;
     }
 
-    private CubeColumnReaderService getColumnReader(BIKey biKey) {
+    public CubeColumnReaderService getColumnReader(BIKey biKey) {
         if (columnReaderServiceMap.containsKey(biKey)) {
             return columnReaderServiceMap.get(biKey);
         } else {

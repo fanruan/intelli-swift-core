@@ -127,15 +127,15 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
                     public void actionPerformed(int rowIndices) {
                         if (!firstLineWrited) {
                             for (int i = 1; i < startIndex; i++) {
-                                values[i] = ti.getRow(new IndexKey(otherColumnNames.get(i - 1)), rowIndices);
+                                values[i] = ti.getColumnDetailReader(new IndexKey(otherColumnNames.get(i - 1))).getValue(rowIndices);
                             }
                             firstLineWrited = true;
                         }
-                        Integer lcNameIndex = lcNameMap.get(ti.getRow(new IndexKey(lc_name), rowIndices));
+                        Integer lcNameIndex = lcNameMap.get(ti.getColumnDetailReader(new IndexKey(lc_name)).getValue(rowIndices));
                         if (lcNameIndex != null) {
                             for (int i = 0; i < columns.size(); i++) {
                                 int cindex = lcNameIndex + i * lcCount + startIndex;
-                                values[cindex] = ti.getRow(new IndexKey(columns.get(i).origin), rowIndices);
+                                values[cindex] = ti.getColumnDetailReader(new IndexKey(columns.get(i).origin)).getValue(rowIndices);
                             }
                         }
                     }

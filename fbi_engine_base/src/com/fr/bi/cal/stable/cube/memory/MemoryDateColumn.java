@@ -1,17 +1,16 @@
 package com.fr.bi.cal.stable.cube.memory;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDateDetailGetter;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.engine.index.getter.DetailGetter;
+import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDetailGetter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.finebi.cube.relation.BITableSourceRelation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +24,8 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
     private Map<Integer, ICubeColumnIndexReader> getters = new ConcurrentHashMap<Integer, ICubeColumnIndexReader>();
     private Map<Integer, Object> locks = new ConcurrentHashMap<Integer, Object>();
 
-    public DetailGetter createDetailGetter(SingleUserNIOReadManager manager) {
-        return new MemoryDateDetailGetter(detail);
+    public ICubeColumnDetailGetter createDetailGetter(SingleUserNIOReadManager manager) {
+        return new MemoryDetailGetter(detail);
     }
 
 

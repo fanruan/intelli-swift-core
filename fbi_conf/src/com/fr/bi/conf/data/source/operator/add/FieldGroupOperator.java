@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source.operator.add;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
@@ -84,8 +85,9 @@ public class FieldGroupOperator extends AbstractAddColumnOperator {
         }
 
         int rowCount = ti.getRowCount();
+        ICubeColumnDetailGetter getter = ti.getColumnDetailReader(new IndexKey(targetFieldName));
         for (int row = 0; row < rowCount; row++) {
-            Object v = ti.getRowValue(new IndexKey(targetFieldName),  row);
+            Object v = getter.getValue(row);
             Object value = resMap.get(v);
             if (value == null ){
                 value =  group.ungroup2Other() ? group.getUngroup2OtherName() : v;
