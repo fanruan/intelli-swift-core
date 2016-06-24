@@ -74,7 +74,7 @@ public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Numb
         NumberIndexCreater creater = new NumberIndexCreater(ti, t, key, getter);
         FilterIndexCalculator dealer = new FilterIndexCalculator(creater);
         ResultDealer dimensionDealer = BIServerUtils.createDimensonDealer(this.dimension, dealer);
-        dimensionDealer.dealWith(ti, gvi, 0);
+        dimensionDealer.dealWith(ti, gvi);
         return dealer.getResult();
     }
 

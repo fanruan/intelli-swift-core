@@ -23,15 +23,17 @@ public class CorrespondPeriodResultDealer implements ResultDealer {
 	private BIKey key;
 	private BIKey periodKey;
 	private Traversal<BIDataValue> travel;
+	private int startCol;
 	
-	CorrespondPeriodResultDealer(BIKey key, Traversal<BIDataValue> travel,  BIKey periodKey){
+	CorrespondPeriodResultDealer(BIKey key, Traversal<BIDataValue> travel,  BIKey periodKey, int startCol){
 		this.key = key;
 		this.travel = travel;
 		this.periodKey = periodKey;
+		this.startCol = startCol;
 	}
 
 	@Override
-	public void dealWith(final ICubeTableService ti, GroupValueIndex gvi, final int startCol) {
+	public void dealWith(final ICubeTableService ti, GroupValueIndex gvi) {
 		final Map<Double, Object> map = new HashMap<Double, Object>();
 		gvi.Traversal(new SingleRowTraversalAction() {
 			@Override

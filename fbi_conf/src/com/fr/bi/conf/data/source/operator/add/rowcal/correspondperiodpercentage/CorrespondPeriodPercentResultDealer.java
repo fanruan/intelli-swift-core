@@ -24,15 +24,17 @@ public class CorrespondPeriodPercentResultDealer implements ResultDealer {
 	private BIKey periodKey;
 	private Traversal<BIDataValue> travel;
 	private static final Double PERCENT_DEFAULT = 0d;
+	private int startCol;
 	
-	CorrespondPeriodPercentResultDealer(BIKey key, Traversal<BIDataValue> travel,  BIKey periodKey){
+	CorrespondPeriodPercentResultDealer(BIKey key, Traversal<BIDataValue> travel,  BIKey periodKey, int startCol){
 		this.key = key;
 		this.travel = travel;
 		this.periodKey = periodKey;
+		this.startCol = startCol;
 	}
 
 	@Override
-	public void dealWith(final ICubeTableService ti, GroupValueIndex gvi, final int startCol) {
+	public void dealWith(final ICubeTableService ti, GroupValueIndex gvi) {
 		final Map<Double, Double> map = new HashMap<Double, Double>();
 		gvi.Traversal(new SingleRowTraversalAction() {
 			@Override

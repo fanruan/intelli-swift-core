@@ -36,7 +36,7 @@ public class AllSingleDimensionGroupTest extends TestCase {
         BIKey[] key = new BIKey[12];
         Arrays.fill(key, new IndexKey(""));
         CalDealer dealer = new CalDealer();
-        AllSingleDimensionGroup.run(ti.getAllShowIndex(), ti, new IndexKey(""), BIServerUtils.createDimensonDealer(key, dealer), 0);
+        AllSingleDimensionGroup.run(ti.getAllShowIndex(), ti, new IndexKey(""), BIServerUtils.createDimensonDealer(key, dealer));
         assertEquals(dealer.resultMap, ti.resultMap);
     }
 
@@ -45,7 +45,7 @@ public class AllSingleDimensionGroupTest extends TestCase {
         private TreeMap<String, Double> resultMap = new TreeMap<String, Double>();
 
         @Override
-        public void dealWith(final ICubeTableService ti, GroupValueIndex currentIndex, int startCol) {
+        public void dealWith(final ICubeTableService ti, GroupValueIndex currentIndex) {
             final StringBuffer sb = new StringBuffer();
             currentIndex.BrokenableTraversal(new BrokenTraversalAction() {
 

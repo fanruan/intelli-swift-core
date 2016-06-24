@@ -22,7 +22,7 @@ public class GroupValueCalculator {
 
     public int calculate(final ICubeTableService tableGetterService, final BIKey key, GroupValueIndex range) {
         CountDealer dealer = new CountDealer();
-        AllSingleDimensionGroup.run(range, tableGetterService, key, dealer, 0);
+        AllSingleDimensionGroup.run(range, tableGetterService, key, dealer);
         return dealer.getCount();
     }
 
@@ -30,7 +30,7 @@ public class GroupValueCalculator {
 
         private int count = 0;
         @Override
-        public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex, int startCol) {
+        public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex) {
             count ++;
         }
 

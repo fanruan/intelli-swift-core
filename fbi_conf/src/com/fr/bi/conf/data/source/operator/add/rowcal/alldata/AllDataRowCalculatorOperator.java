@@ -83,9 +83,9 @@ public class AllDataRowCalculatorOperator extends RowCalculatorOperator{
 	}
 
 	@Override
-	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel) {
+	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
 		AllDataCalculator cal = createCalculator(summaryType);
-		return new CalResultDealer(key, cal, travel);
+		return new CalResultDealer(key, cal, travel, startCol);
 	}
 
 	@Override
