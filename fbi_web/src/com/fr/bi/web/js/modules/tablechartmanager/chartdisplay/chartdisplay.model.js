@@ -586,7 +586,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     getWidgetData: function(type, callback){
         var self = this, o = this.options;
-        var view = BI.Utils.getWidgetViewByID(o.wId);
         var options = {};
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
             if(BI.isNotNull(jsonData.error)) {
