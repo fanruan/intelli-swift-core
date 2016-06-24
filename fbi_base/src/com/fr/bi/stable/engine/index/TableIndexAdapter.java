@@ -3,6 +3,7 @@
  */
 package com.fr.bi.stable.engine.index;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
@@ -65,22 +66,12 @@ public class TableIndexAdapter implements ICubeTableService {
     }
 
     @Override
-    public Object getRowValue(BIKey columnIndex, int row) {
+    public ICubeColumnDetailGetter getColumnDetailReader(BIKey key) {
         throw NULL_EXCEPTION;
     }
 
     @Override
     public int getRowCount() {
-        throw NULL_EXCEPTION;
-    }
-
-    @Override
-    public Object[] getRow(BIKey columnIndex, int[] rows) {
-        throw NULL_EXCEPTION;
-    }
-
-    @Override
-    public Object getRow(BIKey columnIndex, int row) {
         throw NULL_EXCEPTION;
     }
 

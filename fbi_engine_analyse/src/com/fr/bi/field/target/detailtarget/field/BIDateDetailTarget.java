@@ -25,7 +25,7 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
             int r = row.intValue();
             if (r > -1) {
                 initialTableSource(loader);
-                Object ob =  cubeTableService.getRowValue(this.createKey(getStatisticElement()), r);
+                Object ob =  columnDetailGetter.getValue(r);
                 if (ob == null){
                     return ob;
                 }

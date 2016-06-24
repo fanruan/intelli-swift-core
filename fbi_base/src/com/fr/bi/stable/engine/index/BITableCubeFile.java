@@ -1,16 +1,16 @@
 package com.fr.bi.stable.engine.index;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Delete;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Date;
@@ -75,7 +75,7 @@ public interface BITableCubeFile extends Delete {
 
     ICubeTableIndexReader getGroupValueIndexArrayReader(BIKey key, SingleUserNIOReadManager manager);
 
-    DetailGetter createDetailGetter(BIKey key, SingleUserNIOReadManager manager);
+    ICubeColumnDetailGetter createDetailGetter(BIKey key, SingleUserNIOReadManager manager);
 
     ICubeColumnIndexReader createGroupByType(BIKey key, List<BITableSourceRelation> relationList, SingleUserNIOReadManager manager);
 

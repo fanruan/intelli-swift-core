@@ -3,6 +3,7 @@
  */
 package com.fr.bi.conf.data.source.operator.add.express;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
@@ -71,7 +72,9 @@ public class FilterExpression<T> implements Expression {
 
 	@Override
 	public Object get(ICubeTableService ti, int row) {
-		Object v = ti.getRow(getKey(), row);
+        ICubeColumnDetailGetter getter = ti.getColumnDetailReader(getKey());
+
+        Object v = getter.getValue(row);
 		if(filter.isMatchValue((T) v)){
 			return value;
 		}
