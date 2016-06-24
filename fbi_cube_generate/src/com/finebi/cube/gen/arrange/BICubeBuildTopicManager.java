@@ -6,6 +6,7 @@ import com.finebi.cube.exception.BITopicDuplicateException;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
 import com.finebi.cube.gen.mes.BIFragmentUtils;
 import com.finebi.cube.gen.mes.BITopicUtils;
+import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
@@ -52,11 +53,10 @@ public class BICubeBuildTopicManager {
         registerTable(tableSourceSet);
         registerTableField(tableSourceSet);
     }
-
-    public void registerRelation(Set<BITableSourceRelation> relationSet) {
-        Iterator<BITableSourceRelation> it = relationSet.iterator();
+    public void registerRelation(Set<BICubeGenerateRelation> relationSet) {
+        Iterator<BICubeGenerateRelation> it = relationSet.iterator();
         while (it.hasNext()) {
-            BITableSourceRelation relation = it.next();
+            BITableSourceRelation relation = it.next().getRelation();
             try {
                 router.registerFragment(
                         BICubeBuildTopicTag.PATH_TOPIC,
