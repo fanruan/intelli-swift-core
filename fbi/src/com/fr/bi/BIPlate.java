@@ -201,7 +201,7 @@ public class BIPlate extends AbstractFSPlate {
 
     private void initPlugin() {
         try {
-            ExtraClassManager.getInstance().addDialectCreator(new DialectCreatorImpl(), PluginSimplify.create("bi", "bi.db.ads"));
+            ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "bi.db.ads"));
             ExtraClassManager.getInstance().addHackActionCMD("fs_load", "fs_signin", "com.fr.bi.web.base.services.BISignInAction");
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);

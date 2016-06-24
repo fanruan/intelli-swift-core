@@ -349,6 +349,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
+        var self = this;
         var sDepart = this.depart.getValue(), sRole = this.role.getValue(), sUser = this.name.getValue(), sStatus = this.status.getValue();
         var sRoleType = sRole.type || BI.Selection.Multi,
             sUserType = sUser.type || BI.Selection.Multi,
@@ -358,16 +359,50 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
             sStatusValue = sStatus.value || [];
         var selectedUser = sUserValue, selectedRole = sRoleValue, selectedStatus = sStatusValue;
 
+        function getAllChildIds(nodes) {
+            var ids = [];
+            BI.each(nodes, function(i, node){
+                if(BI.isNotNull(node.ChildNodes)) {
+                    ids = ids.concat(getAllChildIds(node.ChildNodes));
+                }
+                ids.push(node.id.toString());
+            });
+            return ids;
+        }
+
+        function getChildNodes(id, nodes) {
+            var childNodes = [];
+            BI.some(nodes, function(i, node){
+                if(node.id.toString() === id) {
+                    childNodes = node.ChildNodes || [];
+                    return true;
+                }
+                if(BI.isNotNull(node.ChildNodes)) {
+                    childNodes = getChildNodes(id, node.ChildNodes);
+                }
+            });
+            return childNodes;
+        }
+
         function getTreeIds(ob) {
             var ids = [];
             BI.each(ob, function (id, v) {
-                ids.push(id);
+                if(BI.isEmptyObject(v)) {
+                    ids.push(id);
+                    return;
+                }
                 ids = ids.concat(getTreeIds(v));
             });
             return ids;
         }
 
-        var selectedDepart = getTreeIds(sDepart);
+        var pIds = getTreeIds(sDepart);
+        var selectedDepart = [];
+        BI.each(pIds, function(i, pId){
+            selectedDepart.push(pId);
+            selectedDepart = selectedDepart.concat(getAllChildIds(getChildNodes(pId, self.departs)));
+        });
+
         if (sRoleValue.length !== 0 && sRoleType === BI.Selection.All) {
             selectedRole = [];
             BI.each(this.roles, function (i, role) {

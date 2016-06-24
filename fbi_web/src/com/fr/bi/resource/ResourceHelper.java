@@ -789,10 +789,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/base/combos/group/widget.groupdate.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/group/widget.groupstring.combo.js",
 
-                "com/fr/bi/web/js/fragments/cube/widget.updatetimesetting.js",
-                "com/fr/bi/web/js/fragments/cube/widget.accordion.js",
-                "com/fr/bi/web/js/fragments/cube/widget.cubepath.js",
-
                 //数值区间自定义分组forDezi
                 "com/fr/bi/web/js/modules/numberintervalcustomgroup/widget.customgroup.number.combo.js",
                 "com/fr/bi/web/js/modules/numberintervalcustomgroup/widget.customgroup.number.group.js",
@@ -1315,6 +1311,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalink/schema/widget.datalink.schema.add.model.js",
 
                 "com/fr/bi/web/js/modules/cubepath/widget.cubepath.js",
+                "com/fr/bi/web/js/modules/cubepath/widget.cubepath.confirm.js",
 
                 //指标样式设置
                 "com/fr/bi/web/js/modules/targetstyle/widget.targetstylesetting.js",

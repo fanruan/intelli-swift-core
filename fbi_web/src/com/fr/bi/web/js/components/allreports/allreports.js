@@ -215,7 +215,9 @@ BI.AllReports = BI.inherit(BI.Widget, {
         var departs = [];
         BI.each(this.roles, function (i, role) {
             if (role.users.contains(userId)) {
-                departs.push(role.departmentid);
+                if(BI.isNotNull(role.departmentid)){
+                    departs.push(role.departmentid.toString());
+                }
             }
         });
         return departs;
