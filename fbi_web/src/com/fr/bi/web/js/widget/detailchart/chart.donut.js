@@ -5,6 +5,20 @@
  */
 BI.DonutChart = BI.inherit(BI.Widget, {
 
+    constants: {
+        LEFT_AXIS: 0,
+        RIGHT_AXIS: 1,
+        RIGHT_AXIS_SECOND: 2,
+        X_AXIS: 3,
+        ROTATION: -90,
+        NORMAL: 1,
+        LEGEND_BOTTOM: 4,
+        ZERO2POINT: 2,
+        ONE2POINT: 3,
+        TWO2POINT: 4,
+        STYLE_NORMAL: 21
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.DonutChart.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-donut-chart"
@@ -14,21 +28,84 @@ BI.DonutChart = BI.inherit(BI.Widget, {
     _init: function () {
         BI.DonutChart.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.DonutChart = BI.createWidget({
-            type: "bi.chart",
+        this.combineChart = BI.createWidget({
+            type: "bi.combine_chart",
+            formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
-        this.DonutChart.on(BI.Chart.EVENT_CHANGE, function (obj) {
+        this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.DonutChart.EVENT_CHANGE, obj);
         });
     },
 
-    populate: function (items) {
-        this.DonutChart.populate([BI.DonutChart.formatItems(items)]);
+    _formatConfig: function(config, items){
+        var self = this, o = this.options;
+
+        config.colors = this.config.chart_color;
+        config.style = formatChartStyle();
+
+        switch (this.config.chart_legend){
+            case BICst.CHART_LEGENDS.BOTTOM:
+                config.legend.enabled = true;
+                config.legend.position = "bottom";
+                break;
+            case BICst.CHART_LEGENDS.RIGHT:
+                config.legend.enabled = true;
+                config.legend.position = "right";
+                break;
+            case BICst.CHART_LEGENDS.NOT_SHOW:
+            default:
+                config.legend.enabled = false;
+                break;
+        }
+
+        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+
+        config.plotOptions.innerRadius = "50.0%";
+        config.chartType = "pie";
+        config.plotOptions.dataLabels.align = "outside";
+        config.plotOptions.dataLabels.connectorWidth = "outside";
+        config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+        delete config.xAxis;
+        delete config.yAxis;
+        return [items, config];
+
+        function formatChartStyle(){
+            switch (self.config.chart_style) {
+                case BICst.CHART_STYLE.STYLE_GRADUAL:
+                    return "gradual";
+                case BICst.CHART_STYLE.STYLE_NORMAL:
+                default:
+                    return "normal";
+            }
+        }
+
+    },
+
+    populate: function (items, options) {
+        var self = this, c = this.constants;
+        this.config = {
+            chart_color: options.chart_color || [],
+            chart_style: options.chart_style || c.NORMAL,
+            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
+            show_data_label: options.show_data_label || false
+        };
+        this.options.items = items;
+
+        var types = [];
+        BI.each(items, function(idx, axisItems){
+            var type = [];
+            BI.each(axisItems, function(id, item){
+                type.push(BICst.WIDGET.DONUT);
+            });
+            types.push(type);
+        });
+
+        this.combineChart.populate(items, types);
     },
 
     resize: function () {
-        this.DonutChart.resize();
+        this.combineChart.resize();
     }
 });
 BI.extend(BI.DonutChart, {
@@ -39,93 +116,6 @@ BI.extend(BI.DonutChart, {
             "name": name,
             stack: false
         }
-    },
-    formatConfig: function(){
-        return {
-            "plotOptions": {
-                "dataLabels": {
-                    "formatter": {
-                        "identifier": "${CATEGORY}${SERIES}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
-                    },
-                    "connectorWidth": 1,
-                    "align": "outside",
-                    "enabled": true
-                },
-                "rotatable": false,
-                "borderColor": "rgb(255,255,255)",
-                "startAngle": 0,
-                "borderRadius": 0,
-                "tooltip": {
-                    "formatter": {
-                        "identifier": "${SERIES}${VALUE}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
-                    },
-                    "shared": false,
-                    "padding": 5,
-                    "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
-                    "borderColor": "rgb(0,0,0)",
-                    "shadow": false,
-                    "borderRadius": 2,
-                    "borderWidth": 0,
-                    "follow": false,
-                    "enabled": true,
-                    "animation": true
-                },
-                "endAngle": 360,
-                "animation": true,
-                innerRadius: "50.0%",
-                borderWidth: 10
-            },
-            "borderColor": "rgb(0,0,255)",
-            "shadow": false,
-            "legend": {
-                "borderColor": "rgb(204,204,204)",
-                "borderRadius": 0,
-                "shadow": false,
-                "borderWidth": 0,
-                "style": {
-                    "fontFamily": "Dialog",
-                    "color": "rgba(102,102,102,1.0)",
-                    "fontSize": "11pt",
-                    "fontWeight": ""
-                },
-                "position": "right",
-                "enabled": true
-            },
-            "plotBorderColor": "rgb(238,238,238)",
-            "tools": {
-                "hidden": true,
-                "toImage": {
-                    "enabled": true
-                },
-                "sort": {
-                    "enabled": true
-                },
-                "enabled": true,
-                "fullScreen": {
-                    "enabled": true
-                }
-            },
-            "plotBorderWidth": 0,
-            "colors": [
-                "rgb(99,178,238)",
-                "rgb(118,218,145)",
-                "rgb(248,203,127)",
-                "rgb(248,149,136)",
-                "rgb(124,214,207)"
-            ],
-            "chartType": "pie",
-            "style": "gradual",
-            "plotShadow": false,
-            "plotBorderRadius": 0
-        };
     }
 });
 BI.DonutChart.EVENT_CHANGE = "EVENT_CHANGE";

@@ -5,6 +5,20 @@
  */
 BI.PieChart = BI.inherit(BI.Widget, {
 
+    constants: {
+        LEFT_AXIS: 0,
+        RIGHT_AXIS: 1,
+        RIGHT_AXIS_SECOND: 2,
+        X_AXIS: 3,
+        ROTATION: -90,
+        NORMAL: 1,
+        LEGEND_BOTTOM: 4,
+        ZERO2POINT: 2,
+        ONE2POINT: 3,
+        TWO2POINT: 4,
+        STYLE_NORMAL: 21
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.PieChart.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-pie-chart"
@@ -14,21 +28,104 @@ BI.PieChart = BI.inherit(BI.Widget, {
     _init: function () {
         BI.PieChart.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.PieChart = BI.createWidget({
-            type: "bi.chart",
+        this.combineChart = BI.createWidget({
+            type: "bi.combine_chart",
+            formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
-        this.PieChart.on(BI.Chart.EVENT_CHANGE, function (obj) {
+        this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.PieChart.EVENT_CHANGE, obj);
         });
     },
 
-    populate: function (items) {
-        this.PieChart.populate([BI.PieChart.formatItems(items)]);
+    _formatConfig: function(config, items){
+        var self = this, o = this.options;
+
+        config.colors = this.config.chart_color;
+        config.style = formatChartStyle();
+        formatChartPieStyle();
+
+        switch (this.config.chart_legend){
+            case BICst.CHART_LEGENDS.BOTTOM:
+                config.legend.enabled = true;
+                config.legend.position = "bottom";
+                break;
+            case BICst.CHART_LEGENDS.RIGHT:
+                config.legend.enabled = true;
+                config.legend.position = "right";
+                break;
+            case BICst.CHART_LEGENDS.NOT_SHOW:
+            default:
+                config.legend.enabled = false;
+                break;
+        }
+
+        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+
+        config.chartType = "pie";
+        delete config.xAxis;
+        delete config.yAxis;
+        config.plotOptions.dataLabels.align = "outside";
+        config.plotOptions.dataLabels.connectorWidth = "outside";
+        config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+        return [items, config];
+
+        function formatChartStyle(){
+            switch (self.config.chart_style) {
+                case BICst.CHART_STYLE.STYLE_GRADUAL:
+                    return "gradual";
+                case BICst.CHART_STYLE.STYLE_NORMAL:
+                default:
+                    return "normal";
+            }
+        }
+
+        function formatChartPieStyle(){
+            switch (self.config.chart_pie_type){
+                case BICst.CHART_STYLE.EQUAL_ARC_ROSE:
+                    config.plotOptions.roseType = "sameArc";
+                    break;
+                case BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE:
+                    config.plotOptions.roseType = "differentArc";
+                    break;
+                case BICst.CHART_STYLE.NORMAL:
+                default:
+                    delete config.plotOptions.roseType;
+                    break;
+            }
+            config.plotOptions.innerRadius = self.config.chart_inner_radius;
+            config.plotOptions.endAngle = self.config.chart_total_angle;
+        }
+
+    },
+
+    populate: function (items, options) {
+        var self = this, c = this.constants;
+        this.config = {
+            chart_color: options.chart_color || [],
+            chart_style: options.chart_style || c.NORMAL,
+            chart_pie_type: options.chart_pie_type || c.NORMAL,
+            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
+            show_data_label: options.show_data_label || false,
+            chart_inner_radius: options.chart_inner_radius || 0,
+            chart_total_angle: options.chart_total_angle || BICst.PIE_ANGLES.TOTAL
+        };
+        this.options.items = items;
+
+        var types = [];
+        BI.each(items, function(idx, axisItems){
+            var type = [];
+            BI.each(axisItems, function(id, item){
+                type.push(BICst.WIDGET.PIE);
+            });
+            types.push(type);
+        });
+
+        this.combineChart.populate(items, types);
     },
 
     resize: function () {
-        this.PieChart.resize();
+        this.combineChart.resize();
     }
 });
 BI.extend(BI.PieChart, {
@@ -39,93 +136,6 @@ BI.extend(BI.PieChart, {
             "name": name,
             stack: false
         }
-    },
-    formatConfig: function(){
-        return {
-            "plotOptions": {
-                innerRadius: '0.0%',
-                "dataLabels": {
-                    "formatter": {
-                        "identifier": "${CATEGORY}${SERIES}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
-                    },
-                    "connectorWidth": 1,
-                    "align": "outside",
-                    "enabled": true
-                },
-                "rotatable": false,
-                "borderColor": "rgb(255,255,255)",
-                "startAngle": 0,
-                "borderRadius": 0,
-                "borderWidth": 1,
-                "tooltip": {
-                    "formatter": {
-                        "identifier": "${SERIES}${VALUE}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
-                    },
-                    "shared": false,
-                    "padding": 5,
-                    "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
-                    "borderColor": "rgb(0,0,0)",
-                    "shadow": false,
-                    "borderRadius": 2,
-                    "borderWidth": 0,
-                    "follow": false,
-                    "enabled": true,
-                    "animation": true
-                },
-                "endAngle": 360,
-                "animation": true
-            },
-            "borderColor": "rgb(0,0,255)",
-            "shadow": false,
-            "legend": {
-                "borderColor": "rgb(204,204,204)",
-                "borderRadius": 0,
-                "shadow": false,
-                "borderWidth": 0,
-                "style": {
-                    "fontFamily": "Dialog",
-                    "color": "rgba(102,102,102,1.0)",
-                    "fontSize": "11pt",
-                    "fontWeight": ""
-                },
-                "position": "right",
-                "enabled": true
-            },
-            "plotBorderColor": "rgb(238,238,238)",
-            "tools": {
-                "hidden": true,
-                "toImage": {
-                    "enabled": true
-                },
-                "sort": {
-                    "enabled": true
-                },
-                "enabled": true,
-                "fullScreen": {
-                    "enabled": true
-                }
-            },
-            "plotBorderWidth": 0,
-            "colors": [
-                "rgb(99,178,238)",
-                "rgb(118,218,145)",
-                "rgb(248,203,127)",
-                "rgb(248,149,136)",
-                "rgb(124,214,207)"
-            ],
-            "chartType": "pie",
-            "style": "gradual",
-            "plotShadow": false,
-            "plotBorderRadius": 0
-        };
     }
 });
 BI.PieChart.EVENT_CHANGE = "EVENT_CHANGE";

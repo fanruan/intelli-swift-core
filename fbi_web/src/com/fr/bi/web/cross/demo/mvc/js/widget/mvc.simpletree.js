@@ -60,7 +60,7 @@ SimpleTreeView = BI.inherit(BI.View, {
             pId: 3,
             text: "子项3",
             value: "33"
-        }], "z")
+        }], "z");
         BI.createWidget({
             type: "bi.vtape",
             element: vessel,
@@ -73,7 +73,7 @@ SimpleTreeView = BI.inherit(BI.View, {
                     height: 30,
                     text: "setValue([12])",
                     handler: function () {
-                        tree.setValue([12]);
+                        tree.setValue(['31', '32', '33']);
                     }
                 }
             }, {
