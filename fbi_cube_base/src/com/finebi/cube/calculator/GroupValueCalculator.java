@@ -2,6 +2,8 @@ package com.finebi.cube.calculator;
 
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.engine.cal.AllSingleDimensionGroup;
+import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 
@@ -18,20 +20,23 @@ public class GroupValueCalculator {
 
     public static GroupValueCalculator INSTANCE = new GroupValueCalculator();
 
-    public Set calculate(final ICubeTableService tableGetterService, final BIKey key, GroupValueIndex range) {
-        final Set<Object> result = new HashSet<Object>();
-        SingleRowTraversalAction ss = new SingleRowTraversalAction() {
-            @Override
-            public void actionPerformed(int row) {
-                Object v = tableGetterService.getRow(key, row);
-                //D:null值不做统计
-                if (v != null) {
-                    result.add(v);
-                }
-            }
-        };
-        range.Traversal(ss);
-        return result;
+    public int calculate(final ICubeTableService tableGetterService, final BIKey key, GroupValueIndex range) {
+        CountDealer dealer = new CountDealer();
+        AllSingleDimensionGroup.run(range, tableGetterService, key, dealer, 0);
+        return dealer.getCount();
+    }
+
+    private class  CountDealer implements ResultDealer {
+
+        private int count = 0;
+        @Override
+        public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex, int startCol) {
+            count ++;
+        }
+
+        public int getCount() {
+            return count;
+        }
     }
 
 }

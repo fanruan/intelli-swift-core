@@ -17,7 +17,7 @@ public class GroupSizeCalculator implements CubeIntegerDataCalculator {
 
     @Override
     public int calculate(ICubeTableService tableGetterService, BIKey key, GroupValueIndex range) {
-        return GroupValueCalculator.INSTANCE.calculate(tableGetterService, key, range).size();
+        return GroupValueCalculator.INSTANCE.calculate(tableGetterService, key, range);
     }
 
 }
