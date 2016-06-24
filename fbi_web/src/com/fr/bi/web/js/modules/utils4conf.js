@@ -306,6 +306,12 @@ BI.extend(BI.Utils, {
         });
     },
     
+    saveCubePath: function(path, callback) {
+        Data.Req.reqSaveCubePath(path, function(res){
+            callback(res);
+        })  
+    },
+    
     saveLoginField: function(data, callback){
         Data.Req.reqSaveLoginField(data, function(res){
             callback(res);

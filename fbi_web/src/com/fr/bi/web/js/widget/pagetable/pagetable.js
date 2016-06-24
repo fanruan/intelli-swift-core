@@ -368,7 +368,9 @@ BI.PageTable = BI.inherit(BI.Widget, {
     },
 
     resize: function () {
+        this._assertPager();
         this.table.resize();
+        this._dealWithPager();
     },
 
     setColumnSize: function (size) {

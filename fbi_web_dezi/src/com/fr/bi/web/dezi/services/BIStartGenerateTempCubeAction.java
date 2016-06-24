@@ -43,7 +43,6 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
         long userId = session.getUserId();
         final String fileName = TempPathGenerator.createTempPath();
         final CubeTableSource source = BIModuleUtils.getSourceByID(new BITableID(tableId), new BIUser(userId));
-//        final String cubePath = BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()) + File.separator + fileName;
         BICubeLocation cubeLocation = new BICubeLocation(BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()),File.separator + fileName);
         final String cubePath = cubeLocation.getAbsolutePath();
         final TempCubeTask task = new TempCubeTask(source.getSourceID(), tableId, userId);
