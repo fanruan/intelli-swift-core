@@ -1,9 +1,9 @@
 /**
  * 图表控件
- * @class BI.ForceBubbleChart
+ * @class BI.GISMapChart
  * @extends BI.Widget
  */
-BI.ForceBubbleChart = BI.inherit(BI.Widget, {
+BI.GISMapChart = BI.inherit(BI.Widget, {
 
     constants: {
         LEFT_AXIS: 0,
@@ -20,13 +20,13 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.ForceBubbleChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-force-chart"
+        return BI.extend(BI.GISMapChart.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-map-chart"
         })
     },
 
     _init: function () {
-        BI.ForceBubbleChart.superclass._init.apply(this, arguments);
+        BI.GISMapChart.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
@@ -34,13 +34,14 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
-            self.fireEvent(BI.ForceBubbleChart.EVENT_CHANGE, obj);
+            self.fireEvent(BI.GISMapChart.EVENT_CHANGE, obj);
         });
     },
 
     _formatConfig: function(config, items){
         var self = this, o = this.options;
-        config.colors = this.config.chart_color;
+        delete config.dataSheet;
+        delete config.zoom;
         switch (this.config.chart_legend){
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
@@ -56,18 +57,20 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
                 break;
         }
 
-        config.plotOptions.force = true;
-        config.chartType = "bubble";
+        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+
+        config.chartType = "areaMap";
         delete config.xAxis;
         delete config.yAxis;
         return [items, config];
+
     },
 
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
-            chart_color: options.chart_color || [],
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM
+            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
+            show_data_label: options.show_data_label || false
         };
         this.options.items = items;
 
@@ -75,7 +78,7 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
         BI.each(items, function(idx, axisItems){
             var type = [];
             BI.each(axisItems, function(id, item){
-                type.push(BICst.WIDGET.FORCE_BUBBLE);
+                type.push(BICst.WIDGET.MAP);
             });
             types.push(type);
         });
@@ -87,8 +90,5 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
         this.combineChart.resize();
     }
 });
-BI.extend(BI.ForceBubbleChart, {
-
-});
-BI.ForceBubbleChart.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut('bi.force_bubble_chart', BI.ForceBubbleChart);
+BI.GISMapChart.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut('bi.gis_map_chart', BI.GISMapChart);
