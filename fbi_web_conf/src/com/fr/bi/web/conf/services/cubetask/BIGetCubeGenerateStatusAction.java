@@ -6,7 +6,6 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.fr.bi.stable.constant.Status;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -32,8 +31,7 @@ public class BIGetCubeGenerateStatusAction extends AbstractBIConfigureAction {
         long useId = ServiceUtils.getCurrentUserID(req);
         BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
         JSONObject jo = new JSONObject();
-        Status status = cubeManager.getStatus(useId);
-        jo.put("loaded", status==Status.LOADED);
+        jo.put("isGenerating", cubeManager.hasTask(useId));
         WebUtils.printAsJSON(res, jo);
     }
 
