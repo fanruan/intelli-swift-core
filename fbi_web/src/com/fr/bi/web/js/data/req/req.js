@@ -215,6 +215,12 @@ Data.Req = BIReq = {
             callback(res.cubePath);
         })
     },
+    
+    reqSaveCubePath: function(path, callback) {
+        BI.requestAsync("fr_bi_configure", "set_cube_path", {fileName: path}, function(res) {
+            callback(res);
+        })  
+    },
 
     reqSaveLoginField: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "save_login_field", data, function (res) {

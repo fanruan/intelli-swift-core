@@ -2,33 +2,38 @@
  * Created by Young's on 2016/3/19.
  */
 BI.CubePathConfirm = BI.inherit(BI.BarPopoverSection, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.CubePathConfirm.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-cube-path-confirm"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.CubePathConfirm.superclass._init.apply(this, arguments);
     },
 
-    rebuildNorth: function(north){
+    rebuildNorth: function (north) {
         BI.createWidget({
             type: "bi.label",
             element: north,
             text: BI.i18nText("BI-Cube_Path_Modi_Hint"),
-            height: 50
+            height: 50,
+            textAlign: "left"
         })
     },
 
-    rebuildCenter: function(center){
+    rebuildCenter: function (center) {
         BI.createWidget({
             type: "bi.htape",
             element: center,
+            cls: "bi-cube-path-confirm",
             items: [{
                 el: {
-                    type: "bi.icon",
+                    type: "bi.center_adapt",
                     cls: "cube-path-confirm-icon cube-path-confirm-font",
+                    items: [{
+                        type: "bi.icon"
+                    }],
                     width: 80,
                     height: 80
                 },
@@ -40,28 +45,29 @@ BI.CubePathConfirm = BI.inherit(BI.BarPopoverSection, {
                         type: "bi.label",
                         text: BI.i18nText("BI-Cube_Path_Completed"),
                         cls: "cube-path-warning-tip",
-                        height: 30
+                        height: 30,
+                        textAlign: "left"
                     }, {
-                        type: "bi.left",
-                        items: [{
-                            type: "bi.label",
-                            text: BI.i18nText("BI-Cube_Path_Cancel_Tip"),
-                            height: 30,
-                            cls: "cube-path-normal-tip"
-                        }, {
-                            type: "bi.label",
-                            text: BI.i18nText("BI-Cube_Path_OK_Tip"),
-                            height: 30,
-                            cls: "cube-path-normal-tip"
-                        }]
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Cube_Path_Cancel_Tip"),
+                        height: 30,
+                        cls: "cube-path-normal-tip",
+                        textAlign: "left"
+                    }, {
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Cube_Path_OK_Tip"),
+                        height: 30,
+                        cls: "cube-path-normal-tip",
+                        textAlign: "left"
                     }]
                 },
                 width: "fill"
-            }]
+            }],
+            vgap: 20
         })
     },
 
-    end: function(){
+    end: function () {
         BI.CubePathConfirm.superclass.end.apply(this, arguments);
         this.fireEvent(BI.CubePathConfirm.EVENT_SAVE);
     }
