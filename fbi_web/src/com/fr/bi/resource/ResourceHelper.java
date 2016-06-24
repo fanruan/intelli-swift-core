@@ -762,7 +762,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/fragments/base/items/widget.realdatacheckbox.js",
                 "com/fr/bi/web/js/modules/base/buttons/button.databasetable.js",
                 "com/fr/bi/web/js/modules/base/combos/widget.combo.js",
-                "com/fr/bi/web/js/modules/selectdatacombo/widget.selectdatacombo.js",
                 "com/fr/bi/web/js/modules/base/combos/dimension/abstract.dimensiontarget.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/dimension/dimension/abstract.dimension.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/widget.controldimension.combo.js",
@@ -904,6 +903,14 @@ public class ResourceHelper {
                 //日期控件选字段
                 "com/fr/bi/web/js/modules/selectdate/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectdate/pane.selectdate.js",
+
+
+                //文本控件
+                "com/fr/bi/web/js/modules/selectdatacombo/widget.selectdatacombo.js",
+
+                //树控件
+                "com/fr/bi/web/js/modules/selecttreedatacombo/selecttreedatacombo.js",
+
 
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.js",
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.model.js",
