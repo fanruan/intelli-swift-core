@@ -314,14 +314,14 @@ public class BICubeOperationManager {
             while (it.hasNext()) {
                 BICubeGenerateRelation relation = it.next();
                 try {
-                    String sourceID = new BITableSourceRelationPath(relation.getDependRelations()).getSourceID();
+                    String sourceID = new BITableSourceRelationPath(relation.getRelation()).getSourceID();
                     BIOperation<Object> operation = new BIOperation<Object>(
                             sourceID,
-                            getRelationBuilder(cube, relation.getDependRelations()));
+                            getRelationBuilder(cube, relation.getRelation()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    if (null != relation.getCubeTableSourceSet()) {
-                        for (CubeTableSource cubeTableSource : relation.getCubeTableSourceSet()) {
+                    if (null != relation.getDependTableSourceSet()) {
+                        for (CubeTableSource cubeTableSource : relation.getDependTableSourceSet()) {
                             operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, cubeTableSource.getSourceID()));
                         }
                     }

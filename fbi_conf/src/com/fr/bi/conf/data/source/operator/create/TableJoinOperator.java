@@ -153,7 +153,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             GroupValueIndex gvi = null;
             Object[] rvalues = new Object[rlen];
             for (int j = 0; j < rlen; j++) {
-                rvalues[j] = rti.getRow(new IndexKey(columns.get(j < right.size() ? j : lleftCount + j).getColumnName()), i);
+                rvalues[j] = rti.getColumnDetailReader(new IndexKey(columns.get(j < right.size() ? j : lleftCount + j).getColumnName())).getValue(i);
             }
             for (int j = 0; j < right.size(); j++) {
                 Object[] key = getter.get(j).createKey(1);
@@ -202,7 +202,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                     travel.actionPerformed(new BIDataValue(index, j < right.size() ? j : lleftCount + j, rvalues[j]));
                 }
                 for (int j = right.size(); j < lti.getColumns().size(); j++) {
-                    travel.actionPerformed(new BIDataValue(index, j, lti.getRow(new IndexKey(columns.get(j).getColumnName()), rRows.get(k))));
+                    travel.actionPerformed(new BIDataValue(index, j, lti.getColumnDetailReader(new IndexKey(columns.get(j).getColumnName())).getValue(rRows.get(k))));
                 }
                 index++;
             }
@@ -224,7 +224,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             GroupValueIndex gvi = null;
             Object[] lvalues = new Object[llen];
             for (int j = 0; j < llen; j++) {
-                lvalues[j] = lti.getRow(new IndexKey(columns.get(j).getColumnName()), i);
+                lvalues[j] = lti.getColumnDetailReader(new IndexKey(columns.get(j).getColumnName())).getValue(i);
             }
             for (int j = 0; j < left.size(); j++) {
                 Object[] key = getter.get(j).createKey(1);
@@ -276,7 +276,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                     travel.actionPerformed(new BIDataValue(index, j, lvalues[j]));
                 }
                 for (int j = llen; j < columns.size(); j++) {
-                    travel.actionPerformed(new BIDataValue(index, j, rti.getRow(new IndexKey(columns.get(j).getColumnName()), rRows.get(k))));
+                    travel.actionPerformed(new BIDataValue(index, j, rti.getColumnDetailReader(new IndexKey(columns.get(j).getColumnName())).getValue(rRows.get(k))));
                 }
                 index++;
             }
@@ -298,7 +298,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                 travel.actionPerformed(new BIDataValue(index, j, null));
             }
             for (int j = llen; j < columns.size(); j++) {
-                travel.actionPerformed(new BIDataValue(index, j, rti.getRow(new IndexKey(columns.get(j).getColumnName()), rLeftRows.get(k))));
+                travel.actionPerformed(new BIDataValue(index, j, rti.getColumnDetailReader(new IndexKey(columns.get(j).getColumnName())).getValue(rLeftRows.get(k))));
             }
             index++;
         }

@@ -1,6 +1,7 @@
 package com.fr.bi.conf.data.source.operator.add.date;
 
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
@@ -78,8 +79,9 @@ public class GetValueFromDateOperator extends AbstractAddColumnOperator {
         DateGetter dg = getDateGetter(type);
         BIKey key = new IndexKey(field);
         BIDateUtils.checkDateFieldType(ti.getColumns(), key);
+        ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
         for (int row = 0; row < rowCount; row++) {
-            long value = dg.get((Long)ti.getRow(key, row));
+            long value = dg.get((Long)getter.getValue(row));
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {

@@ -3,6 +3,7 @@
  */
 package com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -34,16 +35,18 @@ public class CorrespondPeriodPercentResultDealer implements ResultDealer {
 	@Override
 	public void dealWith(final ICubeTableService ti, GroupValueIndex gvi, final int startCol) {
 		final Map<Double, Double> map = new HashMap<Double, Double>();
-		gvi.Traversal(new SingleRowTraversalAction() {
+        final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(periodKey);
+        final ICubeColumnDetailGetter keyGetter = ti.getColumnDetailReader(CorrespondPeriodPercentResultDealer.this.key);
+        gvi.Traversal(new SingleRowTraversalAction() {
 			@Override
 			public void actionPerformed(int row) {
-				Number v = (Number) ti.getRow(periodKey, row);
+				Number v = (Number)getter.getValue(row);
 				if(v == null){
 					return;
 				}
 				double key = v.doubleValue();
 				if(!map.containsKey(key)){
-					Number value = (Number)ti.getRow(CorrespondPeriodPercentResultDealer.this.key, row);
+					Number value = (Number)keyGetter.getValue(row);
 					if(value == null){
 						value = PERCENT_DEFAULT;
 					}
@@ -54,13 +57,13 @@ public class CorrespondPeriodPercentResultDealer implements ResultDealer {
 		gvi.Traversal(new SingleRowTraversalAction() {
 			@Override
 			public void actionPerformed(int row) {
-				Number v = (Number) ti.getRow(periodKey, row);
+				Number v = (Number) getter.getValue(row);
 				Number value = null;
 				if(v != null){
 					double key = v.doubleValue() - 1;
 					value = map.get(key);
 				}
-				Number currentValue = (Number) ti.getRow(CorrespondPeriodPercentResultDealer.this.key, row);
+				Number currentValue = (Number)keyGetter.getValue(row);
 				if(value == null){
 					value = PERCENT_DEFAULT;
 				}
