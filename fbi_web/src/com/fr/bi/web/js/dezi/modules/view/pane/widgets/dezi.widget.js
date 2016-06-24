@@ -55,6 +55,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             status: BICst.WIDGET_STATUS.EDIT
         });
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
+        this.tableChartResize = BI.debounce(BI.bind(this.tableChart.resize, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
@@ -287,6 +288,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             this.widget.attr("items")[2].top = 50;
         }
         this.widget.resize();
+        this.tableChartResize();
     },
 
     _refreshTitlePosition: function () {
@@ -316,7 +318,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             return;
         }
         if (BI.has(changed, "bounds")) {
-            this.tableChart.resize();
+            this.tableChartResize();
             this.chartDrill.populate();
         }
         if (BI.has(changed, "dimensions") ||
@@ -326,9 +328,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
-        }
-        if (BI.has(changed, "type")) {
-            this.tableChart.resize();
         }
     },
 
