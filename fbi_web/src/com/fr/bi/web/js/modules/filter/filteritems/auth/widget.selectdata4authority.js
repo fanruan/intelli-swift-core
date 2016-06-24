@@ -13,16 +13,10 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
     _init: function () {
         BI.AuthoritySelectData.superclass._init.apply(this, arguments);
         var self = this, packageStructure = BI.Utils.getAllGroupedPackagesTree();
-        var mask = BI.createWidget({
-            type: "bi.loading_mask",
-            masker: this.element,
-            text: BI.i18nText("BI-Loading")
-        });
         BI.Utils.getAllPackages(function(packs){
             self.packs = packs;
             var ids = BI.Utils.getAllPackageIDs4Conf();
             self.searcher.setPackage(ids[0]);
-            mask.destroy();
         });
         this.searcher = BI.createWidget({
             type: "bi.select_data_searcher",
