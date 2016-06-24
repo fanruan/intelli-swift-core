@@ -57,7 +57,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
             type: "bi.combo",
             el: {
                 type: "bi.icon_button",
-                cls: "rename-font normal-mark",
+                cls: "report-detail-info-font normal-mark",
                 iconWidth: 16,
                 iconHeight: 16,
                 width: 40,
@@ -209,7 +209,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
 
     _refreshMarkIcon: function () {
         if (this.status === BICst.REPORT_STATUS.APPLYING) {
-            this.markIcon.setIcon("report-apply-hangout-ing-font");
+            this.markIcon.setIcon("report-hangout-ing-mark-font");
             this.markIcon.setTitle(BI.i18nText("BI-Report_Hangout_Applying"));
             return;
         }

@@ -61,12 +61,12 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
         var oldValue = [];
         this.allUsersTree.on(BI.SimpleTreeView.EVENT_CHANGE, function () {
             var vs = this.getValue();
-            if(vs.length < oldValue.length) {
-                BI.each(vs, function(i, v) {
+            if (vs.length < oldValue.length) {
+                BI.each(vs, function (i, v) {
                     oldValue.splice(oldValue.indexOf(v), 1);
                 });
                 vs = BI.uniq(vs);
-                vs.splice(vs.indexOf(oldValue[0]), 1);
+                vs.indexOf(oldValue[0]) > -1 && vs.splice(vs.indexOf(oldValue[0]), 1);
             }
             this.setValue(vs);
             oldValue = this.getValue();
@@ -173,7 +173,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                     value: user.user_id.toString(),
                     pId: department
                 });
-                if(!departPosts.contains(department)) {
+                if (!departPosts.contains(department)) {
                     treeItems.push({
                         id: department,
                         text: department,
@@ -215,6 +215,27 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                     });
                 })
             }
+
+            //无角色 无职位的用户 放到其他
+            if ((BI.isNull(department) || department === "") &&
+                (BI.isNull(user.roles) || user.roles.length === 0)) {
+                treeItems.push({
+                    id: user.user_id.toString(),
+                    pId: BI.ShareReportPane.USER_NO_ROLE,
+                    text: user.user_name,
+                    value: user.user_id.toString()
+                });
+                if (BI.isNull(self.roleUserMap[BI.ShareReportPane.USER_NO_ROLE])) {
+                    treeItems.push({
+                        id: BI.ShareReportPane.USER_NO_ROLE,
+                        text: BI.i18nText("BI-User_Without_Role"),
+                        value: BI.ShareReportPane.USER_NO_ROLE
+                    });
+                    self.roleUserMap[BI.ShareReportPane.USER_NO_ROLE] = [user];
+                } else {
+                    self.roleUserMap[BI.ShareReportPane.USER_NO_ROLE].push(user);
+                }
+            }
         });
         treeItems = BI.sortBy(treeItems, function (index, item) {
             return item.text;
@@ -249,7 +270,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                             }
                             selectedRolesMap[department].push(item);
                         }
-                        if (BI.isNull(item.roles) && (BI.isNull(department) || department === "")) {
+                        if ((BI.isNull(item.roles) || item.roles.length === 0) && (BI.isNull(department) || department === "")) {
                             noRoleUsers.push(item);
                         }
                     }
@@ -273,7 +294,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
 BI.extend(BI.ShareReportPane, {
     USER_EMPTY: 1,
     USER_EXIST: 2,
-    USER_NO_ROLE: -1
+    USER_NO_ROLE: "__no_role_user__"
 });
 BI.ShareReportPane.EVENT_SHARE = "EVENT_SHARE";
 $.shortcut("bi.share_report_pane", BI.ShareReportPane);
