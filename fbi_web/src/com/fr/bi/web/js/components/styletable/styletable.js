@@ -256,6 +256,11 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 });
                 break;
         }
+        //行表头
+        $table.find(".layer-tree-table-title").css({
+            fontWeight: "bold",
+            fontSize: "14px"
+        });
     },
 
     setStyle: function (style) {
