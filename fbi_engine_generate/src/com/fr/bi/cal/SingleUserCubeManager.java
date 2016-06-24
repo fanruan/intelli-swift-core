@@ -151,5 +151,4 @@ public class SingleUserCubeManager {
         timerRunner.envChanged();
     }
 
-
 }
