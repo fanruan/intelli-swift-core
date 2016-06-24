@@ -249,7 +249,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
                 self.schemaCombo.setValue(self.model.getSchema());
             });
         } else {
-            this._toggleSchemaStatus(true);
+            this._toggleSchemaStatus(false);
         }
         var schemaWrapper = this._createItemsWrapper(BI.i18nText("BI-Third_Step"), BI.i18nText("BI-Mode"), this.schemaCombo);
 

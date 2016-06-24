@@ -1,5 +1,6 @@
 package com.fr.bi.cal.report.report;
 
+import com.fr.base.DynamicUnitList;
 import com.fr.main.workbook.ResultWorkBook;
 import com.fr.page.PageSetProvider;
 import com.fr.page.PaperSettingProvider;
@@ -10,6 +11,7 @@ import com.fr.report.report.Report;
 import com.fr.report.report.ResultReport;
 import com.fr.stable.xml.XMLPrintWriter;
 
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -37,6 +39,21 @@ public class BIAnalyReport extends AbstractPolyReport implements ResultReport {
     //b:TODO special 4 bi workbook；
     public int getColumnCount() {
         return ((ElementCase) this.getBlock(0)).getColumnCount();
+    }
+
+    @Override
+    public DynamicUnitList getRowHeightList_DEC() {
+        return null;
+    }
+
+    @Override
+    public DynamicUnitList getColumnWidthList_DEC() {
+        return null;
+    }
+
+    @Override
+    public Iterator cellIterator() {
+        return null;
     }
 
     public int getRowCount() {
