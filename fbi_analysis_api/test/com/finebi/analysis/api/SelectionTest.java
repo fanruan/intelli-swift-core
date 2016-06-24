@@ -99,9 +99,6 @@ public class SelectionTest extends TestCase {
 
     private CriteriaBuilder generateCB() {
         CriteriaBuilder cb = EasyMock.createMock(CriteriaBuilder.class);
-//        cb.createQuery(PlainTable.class);
-//        CriteriaQuery<PlainTable> query=EasyMock.createMock(CriteriaQuery.class);
-//        query.from()
         return cb;
     }
 }
