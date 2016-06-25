@@ -56,6 +56,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 self._send2AllChildLinkWidget(link.to, link.from, clicked);
             }
         });
+        this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, obj);
     },
 
     _send2AllChildLinkWidget: function (wid, dId, clicked) {
