@@ -5,6 +5,8 @@ package com.finebi.cube.calculator.biint;
 
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.engine.cal.AllSingleDimensionGroup;
+import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
 /**
