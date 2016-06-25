@@ -54,6 +54,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             status: BICst.WIDGET_STATUS.EDIT
         });
         this.tablePopulate = BI.debounce(BI.bind(this.table.populate, this.table), 0);
+        this.tableResize = BI.debounce(BI.bind(this.table.resize, this.table), 0);
         this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
             self.model.set(ob);
         });
@@ -235,6 +236,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             this.widget.attr("items")[2].top = 50;
         }
         this.widget.resize();
+        this.tableResize();
     },
 
     _refreshTitlePosition: function () {
@@ -265,7 +267,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             return;
         }
         if (BI.has(changed, "bounds")) {
-            this.table.resize();
+            this.tableResize();
         }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
