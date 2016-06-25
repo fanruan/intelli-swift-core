@@ -45,11 +45,11 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var items = this.defaultItems();
         items[0] = [{
             text: BI.i18nText("BI-Lng_First"),
-            value: BICst.GIS_POSITION_TYPE.LNG_FIRST,
+            value: this.typeConfig().POSITION_BY_LNG,
             cls: "dot-e-font"
         },{
             text: BI.i18nText("BI-Lat_First"),
-            value: BICst.GIS_POSITION_TYPE.LAT_FIRST,
+            value: this.typeConfig().POSITION_BY_LAT,
             cls: "dot-e-font"
         }];
         var o = this.options;

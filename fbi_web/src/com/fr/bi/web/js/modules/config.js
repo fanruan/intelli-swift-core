@@ -1051,11 +1051,11 @@ BICst.PIE_CHART_STYLE_GROUP = [{
 
 //雷达图类性
 BICst.RADAR_CHART_STYLE_GROUP = [{
-    cls: "radar-chart-style-circle-icon",
-    value: BICst.CHART_STYLE.CIRCLE
-}, {
     cls: "radar-chart-style-polygon-icon",
     value: BICst.CHART_STYLE.POLYGON
+}, {
+    cls: "radar-chart-style-circle-icon",
+    value: BICst.CHART_STYLE.CIRCLE
 }];
 
 //仪表盘类型
@@ -1110,7 +1110,7 @@ BICst.DEFAULT_CHART_SETTING = {
     chart_style: BICst.CHART_STYLE.STYLE_NORMAL,
     chart_line_type: BICst.CHART_STYLE.NORMAL,
     chart_pie_type: BICst.CHART_STYLE.NORMAL,
-    chart_radar_type: BICst.CHART_STYLE.CIRCLE,
+    chart_radar_type: BICst.CHART_STYLE.POLYGON,
     chart_dashboard_type: BICst.CHART_STYLE.NORMAL,
     chart_inner_radius: 0,
     chart_total_angle: BICst.PIE_ANGLES.TOTAL,

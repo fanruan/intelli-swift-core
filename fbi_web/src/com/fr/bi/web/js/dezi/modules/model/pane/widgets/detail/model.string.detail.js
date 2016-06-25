@@ -24,7 +24,9 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
                 var result = BI.find(changed.dimensions, function (did, dimension) {
                     return !BI.has(prev.dimensions, did);
                 });
-                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+                if(BI.isNotNull(result)){
+                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+                }
             }
             if (BI.size(changed.dimensions) < BI.size(prev.dimensions)) {
                 var res = BI.find(prev.dimensions, function (did, dimension) {
