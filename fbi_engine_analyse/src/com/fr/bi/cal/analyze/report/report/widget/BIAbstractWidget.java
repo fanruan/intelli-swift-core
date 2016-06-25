@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
@@ -8,6 +9,8 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
+import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -16,6 +19,7 @@ import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;
 import com.fr.report.poly.TemplateBlock;
@@ -24,6 +28,8 @@ import com.fr.stable.Constants;
 import com.fr.stable.unit.UnitRectangle;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -142,13 +148,34 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
         GroupValueIndex gvi = loader.getTableIndex(targetKey.getTableSource()).getAllShowIndex();
+        //非管理员用户需要考虑到对于权限的过滤条件
+        if(this.userId != UserControl.getInstance().getSuperManagerID()) {
+            List<TargetFilter> filters = getAuthFilter();
+            for(int i = 0; i < filters.size(); i++) {
+                gvi = GVIUtils.AND(gvi, filters.get(i).createFilterIndex(row[i], targetKey, loader, userId));
+            }
+        }
         if (filter != null) {
             for (int i = 0; i < row.length; i++) {
                 gvi = GVIUtils.AND(gvi, filter.createFilterIndex(row[i], targetKey, loader, userId));
             }
         }
         return gvi;
+    }
 
+    private List<TargetFilter> getAuthFilter(){
+        List<TargetFilter> filters = new ArrayList<TargetFilter>();
+        List<BIPackageID> authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(this.userId);
+        for(int i = 0 ; i < authPacks.size(); i ++) {
+            List<BIPackageAuthority> packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), this.userId);
+            for(int j = 0; j < packAuths.size(); j++) {
+                BIPackageAuthority auth = packAuths.get(j);
+                if(auth.getFilter() != null) {
+                    filters.add(auth.getFilter());
+                }
+            }
+        }
+        return filters;
     }
 
     @Override

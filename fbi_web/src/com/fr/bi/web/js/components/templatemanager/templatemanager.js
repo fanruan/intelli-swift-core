@@ -241,6 +241,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
     _onRename: function (id, name, type) {
         this.model.renameNode(id, name);
         this._refreshNavTreeData();
+        this._refreshNavAndList();
         this.fireEvent(BI.TemplateManager.EVENT_FOLDER_RENAME, id, name, this.model.getCurrentNodeId(), type);
     },
 
