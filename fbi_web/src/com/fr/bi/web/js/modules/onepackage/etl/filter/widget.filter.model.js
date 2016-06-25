@@ -139,7 +139,7 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
 
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
             filterValue.values = parseComplexDate(filterValue);
-            filterValue.type = filterValue.type || BICst.GROUP.YMD
+            filterValue.type = filterValue.type || BICst.MULTI_DATE_CALENDAR
         }
         return filter;
 

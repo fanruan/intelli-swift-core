@@ -58,7 +58,7 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
-        config.plotOptions.tooltip.formatter = this.config.toolTip;
+        config.plotOptions.tooltip.formatter = this.config.tooltip;
         formatCordon();
         switch (this.config.chart_legend){
             case BICst.CHART_LEGENDS.BOTTOM:
@@ -281,7 +281,8 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
-            cordon: options.cordon || []
+            cordon: options.cordon || [],
+            tooltip: options.tooltip || ""
         };
         this.options.items = items;
         var types = [];

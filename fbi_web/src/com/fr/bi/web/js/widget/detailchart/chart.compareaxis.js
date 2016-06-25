@@ -80,33 +80,28 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
         this.config.show_zoom === true && delete config.dataSheet;
         config.yAxis = this.yAxis;
 
-        if(this.yAxis.length > 0){
-            config.yAxis[0].reversed = this.config.left_y_axis_reversed;
-            config.yAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.LEFT_AXIS);
-            formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
-            config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
-            config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
-            config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
-            config.yAxis[0].title.rotation = this.constants.ROTATION;
-        }
-        if(this.yAxis.length > 1){
-            config.yAxis[1].reversed = this.config.left_y_axis_reversed ?  !config.yAxis[1].reversed : config.yAxis[1].reversed;
-            config.yAxis[1].formatter = formatTickInXYaxis(this.config.right_y_axis_style, this.constants.RIGHT_AXIS);
-            formatNumberLevelInYaxis(this.config.right_y_axis_number_level, this.constants.RIGHT_AXIS);
-            config.yAxis[1].title.text = getXYAxisUnit(this.config.right_y_axis_number_level, this.constants.RIGHT_AXIS);
-            config.yAxis[1].title.text = this.config.show_right_y_axis_title === true ? this.config.right_y_axis_title + config.yAxis[1].title.text : config.yAxis[1].title.text;
-            config.yAxis[1].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
-            config.yAxis[1].title.rotation = this.constants.ROTATION;
-        }
-        if(this.yAxis.length > 2){
-            config.yAxis[2].reversed = this.config.right_y_axis_second_reversed;
-            config.yAxis[2].formatter = formatTickInXYaxis(this.config.right_y_axis_second_style, this.constants.RIGHT_AXIS_SECOND);
-            formatNumberLevelInYaxis(this.config.right_y_axis_second_number_level, this.constants.RIGHT_AXIS_SECOND);
-            config.yAxis[2].title.text = getXYAxisUnit(this.config.right_y_axis_second_number_level, this.constants.RIGHT_AXIS_SECOND);
-            config.yAxis[2].title.text = this.config.show_right_y_axis_second_title === true ? this.config.right_y_axis_second_title + config.yAxis[2].title.text : config.yAxis[2].title.text;
-            config.yAxis[2].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
-            config.yAxis[2].title.rotation = this.constants.ROTATION;
-        }
+        BI.each(config.yAxis, function(idx, axis){
+            switch (axis.axisIndex){
+                case self.constants.LEFT_AXIS:
+                    axis.reversed = self.config.left_y_axis_reversed;
+                    axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
+                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
+                    axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
+                    axis.title.rotation = self.constants.ROTATION;
+                    break;
+                case self.constants.RIGHT_AXIS:
+                    axis.reversed = self.config.right_y_axis_reversed;
+                    axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
+                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
+                    axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
+                    axis.title.rotation = self.constants.ROTATION;
+                    break;
+            }
+        });
 
         config.xAxis[0].title.text = this.config.x_axis_title;
         config.xAxis[0].labelRotation = this.config.text_direction;
@@ -297,27 +292,21 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",
             right_y_axis_title: options.right_y_axis_title || "",
-            right_y_axis_second_title: options.right_y_axis_second_title || "",
             chart_color: options.chart_color || [],
             chart_style: options.chart_style || c.NORMAL,
             chart_line_type: options.chart_line_type || c.NORMAL,
             left_y_axis_style: options.left_y_axis_style || c.NORMAL,
             right_y_axis_style: options.right_y_axis_style || c.NORMAL,
-            right_y_axis_second_style: options.right_y_axis_second_style || c.NORMAL,
             show_x_axis_title: options.show_x_axis_title || false,
             show_left_y_axis_title: options.show_left_y_axis_title || false,
             show_right_y_axis_title: options.show_right_y_axis_title || false,
-            show_right_y_axis_second_title: options.show_right_y_axis_second_title || false,
             left_y_axis_reversed: options.left_y_axis_reversed || false,
             right_y_axis_reversed: options.right_y_axis_reversed || false,
-            right_y_axis_second_reversed: options.right_y_axis_second_reversed || false,
             left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
             right_y_axis_number_level:  options.right_y_axis_number_level || c.NORMAL,
-            right_y_axis_second_number_level: options.right_y_axis_second_number_level || c.NORMAL,
             x_axis_unit: options.x_axis_unit || "",
             left_y_axis_unit: options.left_y_axis_unit || "",
             right_y_axis_unit: options.right_y_axis_unit || "",
-            right_y_axis_second_unit: options.right_y_axis_second_unit || "",
             x_axis_title: options.x_axis_title || "",
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
@@ -351,6 +340,7 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
                 },
                 position: idx > 0 ? "right" : "left",
                 lineWidth: 1,
+                axisIndex: idx,
                 gridLineWidth: 0
             };
             if(BI.isNotEmptyArray(items)){
