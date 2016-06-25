@@ -57,14 +57,6 @@ BI.GISMapSetting = BI.inherit(BI.Widget, {
                 type: "bi.left",
                 cls: "detail-style",
                 items: BI.createItems([{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Legend_Normal"),
-                    lgap: this.constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.legend]
-                }, {
                     type: "bi.center_adapt",
                     items: [this.showDataLabel]
                 }], {

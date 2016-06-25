@@ -74,24 +74,29 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
         this.config.show_zoom === true && delete config.dataSheet;
 
         config.yAxis = this.yAxis;
-        if(this.yAxis.length > 0){
-            config.yAxis[0].reversed = this.config.left_y_axis_reversed;
-            config.yAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.LEFT_AXIS);
-            formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
-            config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
-            config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
-            config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
-            config.yAxis[0].title.rotation = this.constants.ROTATION;
-        }
-        if(this.yAxis.length > 1){
-            config.yAxis[1].reversed = this.config.right_y_axis_reversed;
-            config.yAxis[1].formatter = formatTickInXYaxis(this.config.right_y_axis_style, this.constants.RIGHT_AXIS);
-            formatNumberLevelInYaxis(this.config.right_y_axis_number_level, this.constants.RIGHT_AXIS);
-            config.yAxis[1].title.text = getXYAxisUnit(this.config.right_y_axis_number_level, this.constants.RIGHT_AXIS);
-            config.yAxis[1].title.text = this.config.show_right_y_axis_title === true ? this.config.right_y_axis_title + config.yAxis[1].title.text : config.yAxis[1].title.text;
-            config.yAxis[1].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
-            config.yAxis[1].title.rotation = this.constants.ROTATION;
-        }
+
+        BI.each(config.yAxis, function(idx, axis){
+            switch (axis.axisIndex){
+                case self.constants.LEFT_AXIS:
+                    axis.reversed = self.config.left_y_axis_reversed;
+                    axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
+                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
+                    axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
+                    axis.title.rotation = self.constants.ROTATION;
+                    break;
+                case self.constants.RIGHT_AXIS:
+                    axis.reversed = self.config.right_y_axis_reversed;
+                    axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
+                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
+                    axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
+                    axis.title.rotation = self.constants.ROTATION;
+                    break;
+            }
+        });
 
         config.xAxis[0].title.text = this.config.x_axis_title;
         config.xAxis[0].labelRotation = this.config.text_direction;
@@ -326,6 +331,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
                 },
                 position: idx > 0 ? "right" : "left",
                 lineWidth: 1,
+                axisIndex: idx,
                 gridLineWidth: 0
             };
             self.yAxis.push(newYAxis);
