@@ -37,10 +37,10 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             text: BI.i18nText("BI-Immediate_Update_DataBase"),
             height: 28,
             handler: function () {
-                self.model.set("immediateUpdate", true);
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
                 self.cubeLog.refreshLog(true);
+                self.model.set("immediateUpdate", true);
             }
         });
 
@@ -56,9 +56,8 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         this.update({
             noset: true,
             success: function (data) {
-                var finished = data.loaded;
-                console.log(data.loaded);
-                if (finished === true) {
+                var isGenerating = data.isGenerating;
+                if (isGenerating === false) {
                     self.immediateButton.setEnable(true);
                     self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
                 } else {

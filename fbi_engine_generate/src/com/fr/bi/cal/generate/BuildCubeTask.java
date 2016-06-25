@@ -108,7 +108,7 @@ public class BuildCubeTask implements CubeTask {
         operationManager.initialWatcher();
         operationManager.subscribeStartMessage();
         manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
-        manager.registerRelation(cubeBuildStuff.getCubeGenerateRelationSet());
+        manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getBiTableSourceRelationPathSet());
         manager.registerTableRelationPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
