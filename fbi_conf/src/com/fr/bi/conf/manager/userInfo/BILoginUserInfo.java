@@ -77,7 +77,7 @@ public class BILoginUserInfo implements XMLable, JSONTransform, BICoreService {
                     });
                     if (o.value != -1) {
                         ICubeTableService cti = loader.getTableIndex(ck.getTableBelongTo().getTableSource());
-                        return cti.getRow(cti.getColumnIndex(ck.getFieldName()), o.value);
+                        return cti.getColumnDetailReader(cti.getColumnIndex(ck.getFieldName())).getValue(o.value);
                     }
                 }
             }

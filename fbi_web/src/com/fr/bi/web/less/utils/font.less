@@ -253,8 +253,8 @@
 .font-hover(data-config-font, @font-database, @color-bi-text, @color-bi-text);
 
 //切换文件夹视图
-.font-hover-active(folder-list-view, @font-classify, @color-bi-text, @color-bi-text, @color-bi-font-native);
-.font-hover-active(folder-card-view, @font-tile-view, @color-bi-text, @color-bi-text, @color-bi-font-native);
+.font-hover-active(folder-list-view, @font-classify, @color-bi-font-native, @color-bi-font-native, @color-bi-text);
+.font-hover-active(folder-card-view, @font-tile-view, @color-bi-font-native, @color-bi-font-native, @color-bi-text);
 
 .font-hover-active(item-check-font, @font-check-mark, @color-bi-text, @color-bi-background-gray, @color-bi-font-active);
 
@@ -334,9 +334,13 @@
 .font(report-apply-hangout-ing-font, @font-apply-hangout, @color-bi-text-highlight);
 .font(report-hangout-font, @font-hangout, @color-bi-background-success);
 .font(report-cancel-hangout-font, @font-hangout, @color-bi-text-gray);
+.font(report-hangout-ing-mark-font, @font-hangout, @color-bi-background-highlight);
 
 //业务包管理
 .font(delete-font-package, @font-delete, @color-bi-text-warning);
 .font(delete-h-font-package,@font-delete,@color-bi-text-warning);
 .font(rename-font-package, @font-rename,@color-bi-text-highlight);
+
+.font(report-detail-info-font, @font-info, @color-bi-text-redmark);
+.font(report-rename-font, @font-rename-edit, @color-bi-background-success);
 

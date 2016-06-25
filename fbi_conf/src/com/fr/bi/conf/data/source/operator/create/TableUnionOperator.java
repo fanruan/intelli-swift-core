@@ -134,7 +134,7 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
                     if (cIndex[k] == null) {
                         travel.actionPerformed(new BIDataValue(index, k, null));
                     } else {
-                        Object ob = ti.getRow(new IndexKey(cIndex[k].getFieldName()), j);
+                        Object ob = ti.getColumnDetailReader(new IndexKey(cIndex[k].getFieldName())).getValue(j);
                         travel.actionPerformed(new BIDataValue(index, k, (cIndex[k].getFieldType() == DBConstant.COLUMN.NUMBER && ob != null) ? ((Number) ob).doubleValue() : ob));
                     }
                 }

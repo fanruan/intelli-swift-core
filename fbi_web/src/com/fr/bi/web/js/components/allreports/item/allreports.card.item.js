@@ -58,7 +58,7 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
             type: "bi.combo",
             el: {
                 type: "bi.icon_button",
-                cls: "rename-font normal-mark",
+                cls: "report-detail-info-font normal-mark",
                 iconWidth: 16,
                 iconHeight: 16,
                 width: 20,
@@ -170,8 +170,8 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
                 top: 5
             }, {
                 el: this.markIcon || BI.createWidget(),
-                top: 20,
-                left: 40
+                top: 18,
+                left: 36
             }]
         });
 
@@ -186,7 +186,7 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
 
     _refreshMarkIcon: function(){
         if(this.status === BICst.REPORT_STATUS.APPLYING) {
-            this.markIcon.setIcon("report-apply-hangout-ing-font");
+            this.markIcon.setIcon("report-hangout-ing-mark-font");
             this.markIcon.setTitle(BI.i18nText("BI-Report_Hangout_Applying"));
             return;
         }

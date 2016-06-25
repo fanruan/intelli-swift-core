@@ -1,13 +1,13 @@
 package com.finebi.cube.api;
 
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.TableIndexAdapter;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Date;
@@ -21,32 +21,7 @@ public interface ICubeTableService extends Release {
 
     ICubeTableService NULL_TABLE_INDEX = new TableIndexAdapter();
 
-    /**
-     * 获取某列某行的值
-     *
-     * @param columnIndex 列
-     * @param row         行
-     * @return
-     */
-    Object getRow(BIKey columnIndex, int row);
-
-    /**
-     * 获取某列某行的值
-     *
-     * @param columnIndex
-     * @param row
-     * @return
-     */
-    Object getRowValue(BIKey columnIndex, int row);
-
-    /**
-     * 获取某列指定行的值
-     *
-     * @param columnIndex
-     * @param rows
-     * @return
-     */
-    Object[] getRow(BIKey columnIndex, int[] rows);
+    ICubeColumnDetailGetter getColumnDetailReader(BIKey key);
 
     /**
      * 求最大值

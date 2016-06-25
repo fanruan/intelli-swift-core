@@ -2656,43 +2656,43 @@
 }
 .folder-list-view .b-font:before {
   content: "\e694";
-  color: #ffffff;
+  color: #808080;
 }
 .folder-list-view:hover .b-font:before,
 .folder-list-view:focus .b-font:before,
 .folder-list-view.hover .b-font:before {
   content: "\e694";
-  color: #ffffff;
+  color: #808080;
 }
 .folder-list-view:active .b-font:before,
 .folder-list-view.active .b-font:before {
   content: "\e694";
-  color: #808080;
+  color: #ffffff;
 }
 .folder-list-view.native .b-font:before,
 .folder-list-view.disabled .b-font:before {
   content: "\e694";
-  color: #ffffff;
+  color: #808080;
 }
 .folder-card-view .b-font:before {
   content: "\e685";
-  color: #ffffff;
+  color: #808080;
 }
 .folder-card-view:hover .b-font:before,
 .folder-card-view:focus .b-font:before,
 .folder-card-view.hover .b-font:before {
   content: "\e685";
-  color: #ffffff;
+  color: #808080;
 }
 .folder-card-view:active .b-font:before,
 .folder-card-view.active .b-font:before {
   content: "\e685";
-  color: #808080;
+  color: #ffffff;
 }
 .folder-card-view.native .b-font:before,
 .folder-card-view.disabled .b-font:before {
   content: "\e685";
-  color: #ffffff;
+  color: #808080;
 }
 .item-check-font .b-font:before {
   content: "\e611";
@@ -3303,6 +3303,15 @@
   content: "\e64b";
   color: #808080;
 }
+.report-hangout-ing-mark-font .b-font:before {
+  content: "\e64b";
+  color: #009de3;
+}
+.report-hangout-ing-mark-font.native .b-font:before,
+.report-hangout-ing-mark-font.disabled .b-font:before {
+  content: "\e64b";
+  color: #009de3;
+}
 .delete-font-package .b-font:before {
   content: "\e605";
   color: #e85050;
@@ -3329,4 +3338,22 @@
 .rename-font-package.disabled .b-font:before {
   content: "\e687";
   color: #009de3;
+}
+.report-detail-info-font .b-font:before {
+  content: "\e66e";
+  color: #f07d0a;
+}
+.report-detail-info-font.native .b-font:before,
+.report-detail-info-font.disabled .b-font:before {
+  content: "\e66e";
+  color: #f07d0a;
+}
+.report-rename-font .b-font:before {
+  content: "\e670";
+  color: #58cc7d;
+}
+.report-rename-font.native .b-font:before,
+.report-rename-font.disabled .b-font:before {
+  content: "\e670";
+  color: #58cc7d;
 }

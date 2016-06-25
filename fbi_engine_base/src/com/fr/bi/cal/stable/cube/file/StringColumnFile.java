@@ -1,12 +1,12 @@
 package com.fr.bi.cal.stable.cube.file;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.index.GroupIndexCreator;
 import com.fr.bi.cal.stable.index.file.VersionFile;
 import com.fr.bi.cal.stable.index.file.field.CubeIntegerFile;
 import com.fr.bi.cal.stable.index.file.field.CubeStringFile;
 import com.fr.bi.cal.stable.tableindex.detailgetter.NormalDetailGetter;
-import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.io.read.StringIndexReadMappedList;
@@ -104,9 +104,9 @@ public class StringColumnFile extends AbstractSingleColumnFile<String> {
     }
 
     @Override
-    public DetailGetter<String> createDetailGetter(SingleUserNIOReadManager manager) {
+    public ICubeColumnDetailGetter createDetailGetter(SingleUserNIOReadManager manager) {
 
-        return new NormalDetailGetter<String>(createDetailReader(manager));
+        return new NormalDetailGetter(createDetailReader(manager));
     }
 
     @Override

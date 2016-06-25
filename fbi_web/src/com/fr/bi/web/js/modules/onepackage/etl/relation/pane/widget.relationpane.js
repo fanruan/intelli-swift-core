@@ -73,14 +73,15 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         })
     },
 
-    _createSelectDataMask: function(){
+    _createSelectDataMask: function(fieldId){
         var self = this, maskId = BI.UUID();
         var mask = BI.Maskers.make(maskId, BICst.BODY_ELEMENT);
         BI.Maskers.show(maskId);
         var selectDataMask = BI.createWidget({
             type: "bi.select_data_with_mask",
             element: mask,
-            model: this.model
+            model: this.model,
+            field_id: fieldId
         });
         selectDataMask.on(BI.SelectDataWithMask.EVENT_VALUE_CANCEL, function(){
             BI.Maskers.remove(maskId);
@@ -90,9 +91,14 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             BI.Maskers.remove(maskId);
             var treeValue = self.relationTree.getValue();
             BI.isEmptyString(treeValue[0]) && (treeValue = []);
+            if(BI.isNotNull(fieldId)) {
+                BI.remove(treeValue, function(index, item){
+                    return item.fieldId === fieldId;
+                });
+            }
             treeValue.push({
                 fieldId: v.field_id,
-                relationType: self.model.getRelationType(v.field_id),
+                relationType: self.model.getRelationType(fieldId),
                 translations: self.model.getTranslations()
             });
             self._refreshTree(treeValue);
@@ -115,12 +121,12 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             items: this._createBranchItems(relationChildren)
         });
         this._drawSVGLine();
-        this.relationTree.on(BI.Controller.EVENT_CHANGE, function(type, clickType){
+        this.relationTree.on(BI.Controller.EVENT_CHANGE, function(type, clickType, fieldId){
             switch (clickType){
                 case BI.RelationSettingTable.CLICK_GROUP:
                     break;
                 case BI.RelationSettingTable.CLICK_TABLE:
-                    self._createSelectDataMask();
+                    self._createSelectDataMask(fieldId);
                     break;
                 case BI.RelationSettingTable.CLICK_REMOVE:
                     var treeValue = self.relationTree.getValue();
@@ -138,7 +144,8 @@ BI.RelationPane = BI.inherit(BI.Widget, {
                 items: [{
                     type: "bi.relation_table_field_button",
                     table_name: this.model.getTableNameByFieldId(this.model.getFieldId()),
-                    field_name: this.model.getFieldNameByFieldId(this.model.getFieldId())
+                    field_name: this.model.getFieldNameByFieldId(this.model.getFieldId()),
+                    field_id: this.model.getFieldId()
                 }],
                 width: 180
             },

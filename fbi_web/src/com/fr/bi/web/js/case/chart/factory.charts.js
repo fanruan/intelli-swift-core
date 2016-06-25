@@ -63,7 +63,7 @@ BI.ChartCombineFormatItemFactory = {
     },
 
 
-    combineConfig: function(type){
+    combineConfig: function(){
         return {
             chartType: "column",
             "plotOptions": {
