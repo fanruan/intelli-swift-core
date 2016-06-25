@@ -56,8 +56,8 @@ public class RankRowCalculatorOperator extends RowCalculatorOperator {
 	}
 
 	@Override
-	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel) {
-		return new RankDealer(key, type, travel);
+	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
+		return new RankDealer(key, type, travel, startCol);
 	}
 
 	@Override

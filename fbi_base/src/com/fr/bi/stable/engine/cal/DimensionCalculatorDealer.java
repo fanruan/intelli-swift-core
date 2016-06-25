@@ -22,8 +22,8 @@ public class DimensionCalculatorDealer implements ResultDealer {
 	}
 
 	@Override
-	public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex, final int startCol) {
-		AllSingleDimensionGroup.run(currentIndex, ti, this.key, next, startCol);
+	public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex) {
+		AllSingleDimensionGroup.run(currentIndex, ti, this.key, next);
 	}
 	
 	public void setNext(ResultDealer next){

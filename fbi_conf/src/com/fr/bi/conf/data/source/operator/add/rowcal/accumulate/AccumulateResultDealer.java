@@ -20,14 +20,16 @@ public class AccumulateResultDealer implements ResultDealer {
 	
 	private BIKey key;
 	private Traversal<BIDataValue> travel;
+	private int startCol;
 	
-	AccumulateResultDealer(BIKey key, Traversal<BIDataValue> travel){
+	AccumulateResultDealer(BIKey key, Traversal<BIDataValue> travel, int startCol){
 		this.key = key;
 		this.travel = travel;
+		this.startCol = startCol;
 	}
 
 	@Override
-	public void dealWith(final ICubeTableService ti, GroupValueIndex gvi, final int startCol) {
+	public void dealWith(final ICubeTableService ti, GroupValueIndex gvi) {
         final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
 		gvi.Traversal(new SingleRowTraversalAction() {
 			private double v = 0;
