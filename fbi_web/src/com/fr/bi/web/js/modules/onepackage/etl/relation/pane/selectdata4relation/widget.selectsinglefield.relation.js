@@ -14,6 +14,7 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
     _init: function () {
         BI.SelectSingleRelationTableField.superclass._init.apply(this, arguments);
         this.model = this.options.model;
+        this.fieldId = this.options.field_id;
         this._initAllRelationTables();
         var self = this, packageStructure = BI.Utils.getAllGroupedPackagesTreeJSON4Conf();
         var mask = BI.createWidget({
@@ -120,6 +121,10 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
         var tableId = this.model.getTableIdByFieldId(fieldId);
         BI.each(connectionSet, function (i, pf) {
             var primaryKey = pf.primaryKey, foreignKey = pf.foreignKey;
+            //修改的就不用灰化了
+            if(self.fieldId === primaryKey.field_id || self.fieldId === foreignKey.field_id) {
+                return;
+            }
             if (tableId === self.model.getTableIdByFieldId(primaryKey.field_id)) {
                 self.allRelationTables.push(self.model.getTableIdByFieldId(foreignKey.field_id));
             } else if (tableId === self.model.getTableIdByFieldId(foreignKey.field_id)) {

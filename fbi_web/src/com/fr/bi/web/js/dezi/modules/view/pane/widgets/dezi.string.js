@@ -189,6 +189,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         }
         if(BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
+            this.combo.setValue(this.model.get("value"));
         }
         if(BI.has(changed, "detail")) {
             BI.Utils.broadcastAllWidgets2Refresh();

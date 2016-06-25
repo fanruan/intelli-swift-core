@@ -1,9 +1,9 @@
 package com.fr.bi.cal.stable.cube;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
-import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -44,7 +44,7 @@ public abstract class AbstractCubeFile implements BITableCubeFile{
 
 
     @Override
-    public DetailGetter createDetailGetter(BIKey key, SingleUserNIOReadManager manager) {
+    public ICubeColumnDetailGetter createDetailGetter(BIKey key, SingleUserNIOReadManager manager) {
         return getColumnFile(key).createDetailGetter(manager);
     }
 

@@ -3,15 +3,11 @@
  */
 package com.fr.bi.test.stable.engine.cal;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
+import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.engine.cal.AllSingleDimensionGroup;
 import com.fr.bi.stable.engine.cal.ResultDealer;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.TableIndexAdapter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -22,9 +18,13 @@ import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.stable.core.UUID;
-
 import edu.emory.mathcs.backport.java.util.Arrays;
 import junit.framework.TestCase;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * @author Daniel
@@ -47,11 +47,12 @@ public class AllSingleDimensionGroupTest extends TestCase {
         @Override
         public void dealWith(final ICubeTableService ti, GroupValueIndex currentIndex) {
             final StringBuffer sb = new StringBuffer();
+            final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(new IndexKey(""));
             currentIndex.BrokenableTraversal(new BrokenTraversalAction() {
 
                 @Override
                 public boolean actionPerformed(int row) {
-                    sb.append((String) ti.getRow(new IndexKey(""), row));
+                    sb.append((String) getter.getValue(row));
                     return true;
                 }
             });
@@ -106,12 +107,6 @@ public class AllSingleDimensionGroupTest extends TestCase {
                 assertEquals(result, getSUMValue(gvi, new IndexKey("")));
             }
         }
-
-        @Override
-        public Object getRow(BIKey key, int row) {
-            return values[row];
-        }
-
         @Override
         public int getRowCount() {
             return rowCount;
@@ -132,6 +127,16 @@ public class AllSingleDimensionGroupTest extends TestCase {
             SUM s = new SUM();
             gvi.Traversal(s);
             return s.get();
+        }
+
+        @Override
+        public ICubeColumnDetailGetter getColumnDetailReader(BIKey key) {
+            return new ICubeColumnDetailGetter() {
+                @Override
+                public Object getValue(int row) {
+                    return values[row];
+                }
+            };
         }
 
         private class SUM implements SingleRowTraversalAction {

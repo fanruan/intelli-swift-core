@@ -256,11 +256,12 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 });
                 break;
         }
-        //行表头
-        $table.find(".layer-tree-table-title").css({
+
+        //表头
+        $table.find(".scroll-top-left .table,.scroll-top-right .table").css({
             fontWeight: "bold",
             fontSize: "14px"
-        });
+        }).css("color", "white");
     },
 
     setStyle: function (style) {

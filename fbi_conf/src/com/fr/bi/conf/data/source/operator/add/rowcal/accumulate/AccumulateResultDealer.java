@@ -3,6 +3,7 @@
  */
 package com.fr.bi.conf.data.source.operator.add.rowcal.accumulate;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -29,12 +30,12 @@ public class AccumulateResultDealer implements ResultDealer {
 
 	@Override
 	public void dealWith(final ICubeTableService ti, GroupValueIndex gvi) {
-		
+        final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
 		gvi.Traversal(new SingleRowTraversalAction() {
 			private double v = 0;
 			@Override
 			public void actionPerformed(int row) {
-				Number d =  (Number) ti.getRow(key, row);
+				Number d =  (Number)getter.getValue(row);
 				if(d != null){
 					v += d.doubleValue();
 				}

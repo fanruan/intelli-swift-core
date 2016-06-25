@@ -3,6 +3,7 @@
  */
 package com.fr.bi.test.etloperatordealer;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
@@ -76,10 +77,14 @@ public class testRankDeal extends TestCase {
         ICubeTableService ti = control.createMock(ICubeTableService.class);
         ti.getRowCount();
         EasyMock.expectLastCall().andReturn(rowCount).anyTimes();
-        for (int i = 0; i < rowCount; i++) {
-            ti.getRow(null, i);
-            EasyMock.expectLastCall().andReturn(values[i]).anyTimes();
-        }
+        ti.getColumnDetailReader(null);
+        EasyMock.expectLastCall().andReturn(new ICubeColumnDetailGetter(){
+
+            @Override
+            public Object getValue(int row) {
+                return values[row];
+            }
+        }).anyTimes();
         control.replay();
 
         Traversal<BIDataValue> t = new Traversal<BIDataValue>() {

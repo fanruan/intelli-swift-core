@@ -190,17 +190,10 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
     _createCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.multi_tree_combo",
-            itemsCreator: function (op, callback) {
-                var data = BI.extend({
-                    floors: BI.size(self.model.get("dimensions"))
-                }, op);
-                BI.Utils.getWidgetDataByID(self.model.get("id"), function (jsonData) {
-                    callback(jsonData);
-                }, {tree_options: data})
-            },
+            type: "bi.select_tree_data_combo",
+            wId: this.model.get("id")
         });
-        this.combo.on(BI.MultiTreeCombo.EVENT_CONFIRM, function () {
+        this.combo.on(BI.SelectTreeDataCombo.EVENT_CONFIRM, function () {
             self.model.set("value", self.combo.getValue());
         });
         return this.combo;

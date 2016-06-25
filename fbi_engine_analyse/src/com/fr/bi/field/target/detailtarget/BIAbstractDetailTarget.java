@@ -1,5 +1,6 @@
 package com.fr.bi.field.target.detailtarget;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -32,7 +33,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     @BICoreField
     protected TargetFilter filter;
     @BIIgnoreField
-    protected ICubeTableService cubeTableService;
+    protected ICubeColumnDetailGetter columnDetailGetter;
     protected ISort sort = new NoSort();
     @BICoreField
     protected IGroup group = new NoGroup();
@@ -59,7 +60,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
             int r = row.intValue();
             if (r > -1) {
                 initialTableSource(loader);
-                Object name = cubeTableService.getRow(this.createKey(getStatisticElement()), r);
+                Object name = columnDetailGetter.getValue(r);
                 if (name == null) {
                     return null;
                 }
@@ -72,8 +73,8 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     }
 
     protected void initialTableSource(ICubeDataLoader loader) {
-        if (cubeTableService == null) {
-            cubeTableService = loader.getTableIndex(this.createTableKey().getTableSource());
+        if (columnDetailGetter == null) {
+            columnDetailGetter = loader.getTableIndex(this.createTableKey().getTableSource()).getColumnDetailReader(this.createKey(getStatisticElement()));
         }
     }
 
@@ -141,9 +142,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
 
     @Override
     public void clear() {
-        if (cubeTableService != null) {
-            cubeTableService.clear();
-        }
+
     }
 
     @Override

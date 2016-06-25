@@ -19,8 +19,8 @@
   border-radius: 4px;
 }
 .bi-template-manager .folder-report-view .folder-view {
-  background: #d4dadd;
+  background: #ffffff;
 }
 .bi-template-manager .folder-report-view .folder-view.active {
-  background: #ffffff;
+  background: #009de3;
 }

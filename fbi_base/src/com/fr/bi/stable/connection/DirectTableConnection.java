@@ -68,9 +68,9 @@ public class DirectTableConnection {
         this.last = last;
     }
 
-    public GroupValueIndex[] getConnectionIndices(int[] rows) {
-        Object[] obs = getStartTI().getRow(sIndex, rows);
-        return getEndTI().getIndexes(eIndex, obs);
+    public GroupValueIndex[] getConnectionIndices(int row) {
+        Object ob = getStartTI().getColumnDetailReader(sIndex).getValue(row);
+        return getEndTI().getIndexes(eIndex, new Object[]{ob});
     }
 
     /**
@@ -78,7 +78,7 @@ public class DirectTableConnection {
      * @return
      */
     public int getParentTableValue(int row) {
-        GroupValueIndex gvi = getConnectionIndices(new int[]{row})[0];
+        GroupValueIndex gvi = getConnectionIndices(row)[0];
         if (gvi == null) {
             return -1;
         }

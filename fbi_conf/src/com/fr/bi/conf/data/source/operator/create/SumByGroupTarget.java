@@ -1,12 +1,12 @@
 package com.fr.bi.conf.data.source.operator.create;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
-import com.fr.bi.stable.utils.BIIDUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -73,6 +73,7 @@ public class SumByGroupTarget implements JSONTransform {
 
     private String getAppendString(final ICubeTableService ti, GroupValueIndex gvi) {
         final StringBuffer sb = new StringBuffer();
+        final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(new IndexKey(name));
         gvi.Traversal(new TraversalAction() {
             @Override
             public void actionPerformed(int[] rowIndices) {
@@ -80,7 +81,7 @@ public class SumByGroupTarget implements JSONTransform {
                     if (i != 0) {
                         sb.append("/");
                     }
-                    sb.append(ti.getRow(new IndexKey(name), rowIndices[i]));
+                    sb.append(getter.getValue(rowIndices[i]));
                 }
             }
         });

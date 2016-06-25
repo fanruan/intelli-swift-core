@@ -27,7 +27,7 @@ public class BIFormularUtils {
             String columnName = entry.getKey();
             BIKey columnIndex = entry.getValue();
             if (columnIndex != null) {
-                Object value = ti.getRowValue(columnIndex, row);
+                Object value = ti.getColumnDetailReader(columnIndex).getValue(row);
                 if (value != null) {
                     c.set(columnName, value);
                 } else {

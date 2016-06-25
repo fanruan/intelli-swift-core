@@ -1,5 +1,6 @@
 package com.fr.bi.cal.stable.tableindex.index;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
