@@ -15,7 +15,8 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.selectDataPane = BI.createWidget({
             type: "bi.select_single_relation_table_field",
-            model: o.model
+            model: o.model,
+            field_id: o.field_id
         });
         this.selectDataPane.on(BI.SelectSingleRelationTableField.EVENT_CLICK_ITEM, function(){
             self.fireEvent(BI.SelectDataWithMask.EVENT_CHANGE, arguments);

@@ -18,7 +18,7 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
         this.status = o.status;
         var renameButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "rename-report-font tool-rename-icon",
+            cls: "report-rename-font tool-rename-icon",
             title: BI.i18nText("BI-Table_Rename"),
             iconWidth: 20,
             iconHeight: 20,
@@ -134,20 +134,20 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
                 top: 0,
                 left: 0
             }, {
+                el: this.hangout || BI.createWidget(),
+                right: 0,
+                top: 50
+            }, {
                 el: deleteButton,
                 right: 0,
                 top: 0
             }, {
-                el: renameButton,
-                right: 0,
-                top: 25
-            }, {
                 el: this.markButton || BI.createWidget(),
-                right: 40,
-                bottom: 35
+                top: 16,
+                left: 36
             }, {
-                el: this.hangout || BI.createWidget(),
-                top: 50,
+                el: renameButton,
+                top: 25,
                 right: 0
             }]
         });
@@ -194,10 +194,18 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
         if (this.status === BICst.REPORT_STATUS.NORMAL) {
             this.hangout.setIcon("report-apply-hangout-normal-font");
             this.markButton && this.markButton.setVisible(false);
-            return;
         }
-        this.hangout.setIcon("report-apply-hangout-ing-font");
-        this.markButton && this.markButton.setVisible(true);
+        if(this.status === BICst.REPORT_STATUS.APPLYING) {
+            this.hangout.setIcon("report-apply-hangout-ing-font");
+            if(BI.isNotNull(this.markButton)) {
+                this.markButton.setIcon("report-hangout-ing-mark-font");
+                this.markButton.setVisible(true);
+            }
+        }
+        if(this.status === BICst.REPORT_STATUS.HANGOUT) {
+            this.hangout.setIcon("report-apply-hangout-normal-font");
+            this.markButton && this.markButton.setVisible(true);
+        }
     },
 
     isSelected: function () {

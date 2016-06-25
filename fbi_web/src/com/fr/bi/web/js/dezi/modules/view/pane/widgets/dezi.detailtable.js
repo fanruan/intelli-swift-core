@@ -37,7 +37,10 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
-        })
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
+            self.model.set("clicked", {});
+        });
     },
 
 
