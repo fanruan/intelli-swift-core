@@ -237,15 +237,15 @@
 .check-half-select-icon:hover .x-icon,
 .check-half-select-icon:active .x-icon {
   display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected_new.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected_new.png');
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected.png');
   _background: none;
 }
 .check-half-select-icon.native .x-icon,
 .check-half-select-icon.disabled .x-icon {
   display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected_new.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected_new.png');
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/half_selected.png');
   _background: none;
 }
 .loading-bar-icon .x-icon,
