@@ -80,7 +80,6 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
-//        BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }
 
     @Override
@@ -109,7 +108,7 @@ public class BuildCubeTask implements CubeTask {
         operationManager.initialWatcher();
         operationManager.subscribeStartMessage();
         manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
-        manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
+        manager.registerRelation(cubeBuildStuff.getCubeGenerateRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getBiTableSourceRelationPathSet());
         manager.registerTableRelationPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));

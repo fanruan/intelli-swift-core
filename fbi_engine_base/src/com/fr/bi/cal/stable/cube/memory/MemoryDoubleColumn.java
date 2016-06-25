@@ -1,8 +1,7 @@
 package com.fr.bi.cal.stable.cube.memory;
 
-import com.fr.bi.base.key.BIKey;
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.cal.stable.tableindex.detailgetter.MemoryDetailGetter;
-import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 
 /**
@@ -10,8 +9,8 @@ import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
  */
 public class MemoryDoubleColumn extends AbstractSingleMemoryColumn<Double> {
     @Override
-    public DetailGetter<Double> createDetailGetter(SingleUserNIOReadManager manager) {
-        return new MemoryDetailGetter<Double>(detail);
+    public ICubeColumnDetailGetter createDetailGetter(SingleUserNIOReadManager manager) {
+        return new MemoryDetailGetter(detail);
     }
 
     @Override

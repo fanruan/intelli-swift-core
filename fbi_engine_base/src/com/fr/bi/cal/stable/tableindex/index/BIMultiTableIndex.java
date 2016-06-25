@@ -1,6 +1,7 @@
 package com.fr.bi.cal.stable.tableindex.index;
 
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
@@ -43,41 +44,12 @@ public class BIMultiTableIndex implements ICubeTableService {
         }
     }
 
-    /**
-     * 获取某列某行的值
-     *
-     * @param columnIndex 列
-     * @param row         行
-     * @return
-     */
+
     @Override
-    public Object getRow(BIKey columnIndex, int row) {
-        return childs.get(columnIndex).getRow(columnIndex, row);
+    public ICubeColumnDetailGetter getColumnDetailReader(BIKey key) {
+        return childs.get(key).getColumnDetailReader(key);
     }
 
-    /**
-     * 获取某列某行的值
-     *
-     * @param columnIndex
-     * @param row
-     * @return
-     */
-    @Override
-    public Object getRowValue(BIKey columnIndex, int row) {
-        return childs.get(columnIndex).getRowValue(columnIndex, row);
-    }
-
-    /**
-     * 获取某列指定行的值
-     *
-     * @param columnIndex
-     * @param rows
-     * @return
-     */
-    @Override
-    public Object[] getRow(BIKey columnIndex, int[] rows) {
-        return childs.get(columnIndex).getRow(columnIndex, rows);
-    }
 
     /**
      * 求最大值

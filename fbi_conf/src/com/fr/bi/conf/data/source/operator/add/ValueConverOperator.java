@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source.operator.add;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
@@ -18,7 +19,6 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import java.sql.Types;
 import java.util.Date;
 
 /**
@@ -77,8 +77,9 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         int rowCount = ti.getRowCount();
         BIKey key = new IndexKey(field);
         int fieldType = ti.getColumns().get(key).getFieldType();
+        ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
         for (int row = 0; row < rowCount; row++) {
-            Object value = checkValueType(ti.getRow(key, row), fieldType);
+            Object value = checkValueType(getter.getValue(row), fieldType);
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {

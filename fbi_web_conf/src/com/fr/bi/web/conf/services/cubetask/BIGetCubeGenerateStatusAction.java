@@ -6,7 +6,7 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.conf.utils.BIPackUtils;
+import com.fr.bi.stable.constant.Status;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -31,31 +31,10 @@ public class BIGetCubeGenerateStatusAction extends AbstractBIConfigureAction {
 
         long useId = ServiceUtils.getCurrentUserID(req);
         BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-        boolean hasCheck = false;
-        boolean isChecking = false;
-        boolean isAlling = false;
-        boolean isSingleing = false;
-        if (cubeManager.hasTask(useId)) {
-            if (cubeManager.hasCheckTask(useId)) {
-                isChecking = true;
-            } else if (cubeManager.hasAllTask(useId)) {
-                isAlling = true;
-            } else {
-                isSingleing = true;
-            }
-            if (!cubeManager.hasWaitingCheckTask(useId)) {
-                hasCheck = BIPackUtils.getGeneratingChangeCounts(useId) > 0;
-            }
-        } else {
-            hasCheck = BIPackUtils.getPackageChangeCounts(useId) > 0;
-        }
         JSONObject jo = new JSONObject();
-        jo.put("hasCheck", hasCheck);
-        jo.put("isChecking", isChecking);
-        jo.put("isAlling", isAlling);
-        jo.put("isSingleing", isSingleing);
+        Status status = cubeManager.getStatus(useId);
+        jo.put("loaded", status==Status.LOADED);
         WebUtils.printAsJSON(res, jo);
-
     }
 
 }

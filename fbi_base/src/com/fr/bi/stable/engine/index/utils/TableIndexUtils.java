@@ -1,5 +1,6 @@
 package com.fr.bi.stable.engine.index.utils;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
@@ -39,13 +40,14 @@ public class TableIndexUtils {
      */
     public static Object[] getValueFromGvi(final ICubeTableService ti, final BIKey index, final GroupValueIndex[] gvi) {
         final Set<Object> values = new HashSet<Object>();
+        final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(index);
         for (int i = 0; i < gvi.length; i++) {
             if (gvi[i] != null) {
                 gvi[i].Traversal(new SingleRowTraversalAction() {
 
                     @Override
                     public void actionPerformed(int rowIndices) {
-                        Object v = ti.getRowValue(index, rowIndices);
+                        Object v = getter.getValue(rowIndices);
                         if (v != null && (!values.contains(v))) {
                             values.add(v);
                         }
