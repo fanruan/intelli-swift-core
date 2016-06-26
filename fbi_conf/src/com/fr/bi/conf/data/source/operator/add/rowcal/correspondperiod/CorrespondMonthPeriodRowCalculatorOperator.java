@@ -53,8 +53,8 @@ public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCal
 
 
     @Override
-    protected ResultDealer createResultDealer(Traversal<BIDataValue> travel) {
-        return new CorrespondPeriodResultDealer(key, travel, periodKey);
+    protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
+        return new CorrespondPeriodResultDealer(key, travel, periodKey, startCol);
     }
 
     @Override

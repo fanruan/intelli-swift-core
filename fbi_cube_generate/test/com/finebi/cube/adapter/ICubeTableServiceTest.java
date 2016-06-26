@@ -42,12 +42,14 @@ public class ICubeTableServiceTest extends BICubeTestBase {
     }
 
     public void testTableOriginalData() {
-        assertEquals(tableService.getRow(new IndexKey("name"), 0), "Parker");
-        assertEquals(tableService.getRow(new IndexKey("name"), 1), "Jam");
-        assertEquals(tableService.getRow(new IndexKey("name"), 2), "Blue");
-        assertEquals(tableService.getRow(new IndexKey("name"), 3), "Sam");
-        assertEquals(tableService.getRow(new IndexKey("name"), 4), "Eliza");
-        assertEquals(tableService.getRow(new IndexKey("name"), 5), "");
+        ICubeTableIndexReader reader = tableService.ensureBasicIndex(BITableSourceRelationPathTestTool.getABCList());
+
+        assertEquals(reader.get(0), "Parker");
+        assertEquals(reader.get(1), "Jam");
+        assertEquals(reader.get(2), "Blue");
+        assertEquals(reader.get(3), "Sam");
+        assertEquals(reader.get(4), "Eliza");
+        assertEquals(reader.get(5), "");
     }
 
     public void testTableRelation() {

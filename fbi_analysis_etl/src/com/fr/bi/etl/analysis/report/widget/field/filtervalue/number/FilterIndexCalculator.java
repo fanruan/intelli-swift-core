@@ -15,7 +15,7 @@ public class FilterIndexCalculator implements ResultDealer {
 		this.creater = creater;
 	}
 	@Override
-	public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex, final int startCol) {
+	public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex) {
 		res = res.or(creater.createFilterGvi(currentIndex));
 	}
 	

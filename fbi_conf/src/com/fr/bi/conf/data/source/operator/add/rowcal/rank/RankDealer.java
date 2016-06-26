@@ -31,18 +31,20 @@ public class RankDealer implements ResultDealer {
 	private int type;
 	
 	private Traversal<BIDataValue> travel;
+	private int startCol;
 	
-	RankDealer(BIKey key, int type, Traversal<BIDataValue> travel){
+	RankDealer(BIKey key, int type, Traversal<BIDataValue> travel, int startCol){
 		this.key = key;
 		this.type = type;
 		this.travel = travel;
+		this.startCol = startCol;
 	}
 
 	@Override
-	public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex, final int startCol) {
+	public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex) {
 		TreeMap<Number, FinalInt> tree = createSortedTree(ti, currentIndex);
 		HashMap<Number, Integer> map = buildrankMap(tree); 
-		writeValue(ti, currentIndex, map, startCol);
+		writeValue(ti, currentIndex, map);
 	}
 
 	
@@ -51,7 +53,7 @@ public class RankDealer implements ResultDealer {
 	 * @param currentIndex
 	 * @param map
 	 */
-	private void writeValue(final ICubeTableService ti, GroupValueIndex currentIndex, final HashMap<Number, Integer> map, final int startCol) {
+	private void writeValue(final ICubeTableService ti, GroupValueIndex currentIndex, final HashMap<Number, Integer> map) {
         final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
 		currentIndex.Traversal(new SingleRowTraversalAction() {
 			@Override
