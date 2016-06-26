@@ -71,9 +71,9 @@ public abstract class RowCalculatorOperator extends AbstractAddColumnOperator {
 	@Override
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
 		 int rowCount = ti.getRowCount();
-		 ResultDealer dealer = createResultDealer(travel);
+		 ResultDealer dealer = createResultDealer(travel, startCol);
 		 ResultDealer dimensionDealer = BIServerUtils.createDimensonDealer(this.dimension, dealer);
-		 dimensionDealer.dealWith(ti, ti.getAllShowIndex(), startCol);
+		 dimensionDealer.dealWith(ti, ti.getAllShowIndex());
 		 return rowCount;
 	}
 
@@ -81,7 +81,7 @@ public abstract class RowCalculatorOperator extends AbstractAddColumnOperator {
 	/**
 	 * @return
 	 */
-	protected abstract ResultDealer createResultDealer(Traversal<BIDataValue> travel);
+	protected abstract ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol);
 
 	protected abstract String getAddColumnType();
 }

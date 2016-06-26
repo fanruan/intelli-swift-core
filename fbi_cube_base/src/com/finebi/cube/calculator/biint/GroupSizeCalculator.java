@@ -4,7 +4,6 @@
 package com.finebi.cube.calculator.biint;
 
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.calculator.GroupValueCalculator;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
@@ -17,7 +16,7 @@ public class GroupSizeCalculator implements CubeIntegerDataCalculator {
 
     @Override
     public int calculate(ICubeTableService tableGetterService, BIKey key, GroupValueIndex range) {
-        return GroupValueCalculator.INSTANCE.calculate(tableGetterService, key, range).size();
+        return GroupValueCalculator.INSTANCE.calculate(tableGetterService, key, range);
     }
 
 }

@@ -23,8 +23,8 @@ public class PeriodPercentRowCalculatorOperator extends PeriodRowCalculatorOpera
 	private static final String XML_TAG="PeriodPercentRowCalculatorOperator";
 
 	@Override
-	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel) {
-		return new CorrespondPeriodPercentResultDealer(key, travel, periodKey);
+	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
+		return new CorrespondPeriodPercentResultDealer(key, travel, periodKey, startCol);
 	}
 
 
