@@ -41,6 +41,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
                 window.setTimeout(function () {
                     self.cubeLog.refreshLog(true);
+                    self.model.set("immediateUpdate", true);
                 },0);
             }
         });
