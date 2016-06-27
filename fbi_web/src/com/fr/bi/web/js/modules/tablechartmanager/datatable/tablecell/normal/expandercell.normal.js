@@ -53,7 +53,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 cls: cls,
-                height: regionType === BICst.REGION.DIMENSION2 ? 36 : 30,
+                height: 25,
                 whiteSpace: "nowrap",
                 textAlign: "left",
                 lgap: 5
