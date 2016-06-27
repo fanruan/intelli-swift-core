@@ -85,7 +85,7 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
 
         var renameIcon = BI.createWidget({
             type: "bi.icon_button",
-            cls: 'rename-font template-item-icon',
+            cls: 'report-rename-font template-item-icon',
             title: BI.i18nText("BI-Rename"),
             invisible: true,
             stopPropagation: true
@@ -96,7 +96,7 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
 
         var deleteIcon = BI.createWidget({
             type: "bi.icon_button",
-            cls: 'delete-template-font template-item-icon',
+            cls: 'remove-report-font template-item-icon',
             title: BI.i18nText("BI-Remove"),
             invisible: true,
             stopPropagation: true
@@ -200,10 +200,18 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
         if (this.status === BICst.REPORT_STATUS.NORMAL) {
             this.hangout.setIcon("report-apply-hangout-normal-font");
             this.markButton && this.markButton.setVisible(false);
-            return;
         }
-        this.hangout.setIcon("report-apply-hangout-ing-font");
-        this.markButton && this.markButton.setVisible(true);
+        if(this.status === BICst.REPORT_STATUS.APPLYING) {
+            this.hangout.setIcon("report-apply-hangout-ing-font");
+            if(BI.isNotNull(this.markButton)) {
+                this.markButton.setIcon("report-hangout-ing-mark-font");
+                this.markButton.setVisible(true);
+            }
+        }
+        if(this.status === BICst.REPORT_STATUS.HANGOUT) {
+            this.hangout.setIcon("report-apply-hangout-normal-font");
+            this.markButton && this.markButton.setVisible(true);
+        }
     },
 
     isSelected: function () {

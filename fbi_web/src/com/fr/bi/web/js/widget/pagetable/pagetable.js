@@ -8,7 +8,8 @@
 BI.PageTable = BI.inherit(BI.Widget, {
 
     _const: {
-        scrollWidth: 18
+        scrollWidth: 18,
+        minScrollWidth: 150
     },
 
     _defaultConfig: function () {
@@ -337,7 +338,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         var sWidth = o.isNeedFreeze === true ? regionSize[1] : regionSize[0];
 
         this._assertPager();
-        if (sWidth <= 200) {
+        if (sWidth <= this._const.minScrollWidth) {
             this.tipPager.setValue(this.getVPage());
             this.pager.setVisible(false);
             this.tipPager.setVisible(true);

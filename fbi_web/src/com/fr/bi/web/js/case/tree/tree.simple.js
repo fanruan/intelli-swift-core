@@ -59,7 +59,7 @@ BI.SimpleTreeView = BI.inherit(BI.Widget, {
             var node = self.structure.search(val, "value");
             if (node) {
                 var p = node;
-                var p = p.getParent();
+                p = p.getParent();
                 if (p) {
                     if (!map[p.value]) {
                         map[p.value] = 0;
