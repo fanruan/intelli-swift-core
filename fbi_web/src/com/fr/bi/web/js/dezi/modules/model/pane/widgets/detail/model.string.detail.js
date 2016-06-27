@@ -4,7 +4,6 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.StringDetailModel.superclass._defaultConfig.apply(this, arguments), {
             dimensions: {},
             view: {},
-            name: "",
             type: BICst.WIDGET.STRING,
             value: {}
         });

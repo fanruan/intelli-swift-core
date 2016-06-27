@@ -62,11 +62,7 @@ public class BuildCubeTask implements CubeTask {
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         uuid="BUILD_CUBE"+ UUID.randomUUID();
     }
-
-    public BuildCubeTask(String uuid) {
-        this.uuid = uuid;
-    }
-
+    
     @Override
     public String getUUID() {
         return uuid;

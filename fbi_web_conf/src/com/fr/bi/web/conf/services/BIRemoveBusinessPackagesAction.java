@@ -8,6 +8,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.base.FRContext;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -41,6 +42,7 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
         removePackageByName(packageId, userId);
         try {
             BICubeConfigureCenter.getPackageManager().persistData(userId);
+            BIConfigureManagerCenter.getAuthorityManager().persistData(userId);
         } catch (Exception e) {
             FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
         }
@@ -79,6 +81,8 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
                     BICubeConfigureCenter.getAliasManager().getTransManager(userId).removeTransName(it.next().getFieldID().getIdentityValue());
                 }
 
+                //删除权限配置
+                BIConfigureManagerCenter.getAuthorityManager().removeAuthPackage(new BIPackageID(packageId));
             }
             for (int i = 0; i < removeList.size(); i++) {
                 BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, removeList.get(i));

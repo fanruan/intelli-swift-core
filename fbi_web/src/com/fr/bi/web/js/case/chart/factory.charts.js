@@ -62,7 +62,6 @@ BI.ChartCombineFormatItemFactory = {
         return item;
     },
 
-
     combineConfig: function(){
         return {
             chartType: "column",
@@ -82,7 +81,10 @@ BI.ChartCombineFormatItemFactory = {
                         "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                         "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                     },
                     "align": "inside",
                     "enabled": false
