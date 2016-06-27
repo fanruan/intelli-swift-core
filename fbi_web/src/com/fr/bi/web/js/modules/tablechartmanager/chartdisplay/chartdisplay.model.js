@@ -220,11 +220,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var targetIds = this._getShowTarget();
         var drillcataDimId = BI.Utils.getDrillByID(o.wId)[self.cataDid];
         var drillseriDimId = BI.Utils.getDrillByID(o.wId)[self.seriesDid];
+        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+        var seriesGroup = BI.Utils.getDimensionGroupByID(self.seriesDid);
         if(BI.isNotEmptyArray(drillcataDimId)){
-            var cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
+            cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
         }
         if(BI.isNotEmptyArray(drillseriDimId)){
-            var seriesGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
+            seriesGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
         }
         if (BI.has(data, "t")) {
             var top = data.t, left = data.l;
@@ -306,9 +308,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForDashBoard: function (data) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
+        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
         var drillcataDimId = BI.Utils.getDrillByID(o.wId)[self.cataDid];
         if(BI.isNotEmptyArray(drillcataDimId)){
-            var cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
+            cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
         }
         if (BI.has(data, "c")) {
             var adjustData = BI.map(data.c, function (id, item) {
