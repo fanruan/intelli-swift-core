@@ -240,6 +240,19 @@ BI.BarChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(items){
+        BI.each(items, function(idx, item){
+            BI.each(item, function(id, it){
+                BI.each(it.data, function(i, t){
+                    var tmp = t.x;
+                    t.x = t.y;
+                    t.y = tmp;
+                })
+            });
+        });
+        return items;
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
@@ -273,26 +286,11 @@ BI.BarChart = BI.inherit(BI.Widget, {
             });
             types.push(type);
         });
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.BarChart, {
-    formatItems: function (items) {
-        var name = BI.keys(items)[0];
-        return {
-            "data": BI.map(items[name], function(idx, item){
-                return BI.extend({options: item.options}, {
-                    y: item.x,
-                    x: item.y
-                });
-            }),
-            "name": name,
-            stack: false
-        }
     }
 });
 BI.BarChart.EVENT_CHANGE = "EVENT_CHANGE";
