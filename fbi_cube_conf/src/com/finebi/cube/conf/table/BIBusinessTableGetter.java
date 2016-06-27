@@ -79,8 +79,8 @@ public class BIBusinessTableGetter implements BusinessTable {
     }
 
     @Override
-    public JSONObject createJSONWithFieldsInfo(ICubeDataLoader loader) throws Exception {
-        return getInnerTableSource().createJSONWithFieldsInfo(loader);
+    public JSONObject createJSONWithFieldsInfo() throws Exception {
+        return getInnerTableSource().createJSONWithFieldsInfo();
     }
 
     @Override

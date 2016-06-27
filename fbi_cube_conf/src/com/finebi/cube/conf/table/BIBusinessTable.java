@@ -1,7 +1,6 @@
 package com.finebi.cube.conf.table;
 
 
-import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.common.factory.IFactoryService;
@@ -131,7 +130,7 @@ public class BIBusinessTable implements BusinessTable {
     }
 
     @Override
-    public JSONObject createJSONWithFieldsInfo(ICubeDataLoader loader) throws Exception {
+    public JSONObject createJSONWithFieldsInfo() throws Exception {
         JSONObject jo = createJSON();
         JSONArray ja = new JSONArray();
         jo.put("fields", ja);
@@ -145,9 +144,6 @@ public class BIBusinessTable implements BusinessTable {
         Iterator<BusinessField> it = getFields().iterator();
         while (it.hasNext()) {
             BusinessField field = it.next();
-            /**
-             * Connery:错用createJson，传递了一个Loader进去
-             */
             JSONObject filedJson = field.createJSON();
             fields.put(field.getFieldID().getIdentityValue(), filedJson);
             stringList.add(filedJson);
