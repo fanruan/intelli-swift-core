@@ -56,7 +56,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     }
 
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
         set.add(this);
         return set;
     }

@@ -341,9 +341,13 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
 
      */
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
+        if(helper.contains(this)){
+            return set;
+        }
+        helper.add(this);
         for (CubeTableSource source : getParents()){
-            source.getSourceUsedBaseSource(set);
+            source.getSourceUsedBaseSource(set, helper);
         }
         return set;
     }
