@@ -66,6 +66,18 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
 
     },
 
+    _formatItems: function(items){
+        BI.each(items, function(idx, item){
+            BI.each(item, function(id, it){
+                BI.each(it.data, function(i, da){
+                    da.lnglat = da.x;
+                    da.value = da.y;
+                    da.name = da.z || "";
+                })
+            })
+        });
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
@@ -83,7 +95,7 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
             types.push(type);
         });
 
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
