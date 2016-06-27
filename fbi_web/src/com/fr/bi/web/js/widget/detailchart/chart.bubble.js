@@ -251,8 +251,8 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
-            if(position === self.constants.RIGHT_AXIS){
-                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+            if(position === self.constants.X_AXIS){
+                if(self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                     if(type === self.constants.NORMAL){
                         formatter = '#0%'
                     }else{
