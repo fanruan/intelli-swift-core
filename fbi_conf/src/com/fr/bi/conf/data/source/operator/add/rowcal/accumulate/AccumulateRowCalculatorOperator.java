@@ -45,8 +45,8 @@ public class AccumulateRowCalculatorOperator extends RowCalculatorOperator {
     }
 
 	@Override
-	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel) {
-		return new AccumulateResultDealer(key, travel);
+	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
+		return new AccumulateResultDealer(key, travel, startCol);
 	}
 
 	@Override

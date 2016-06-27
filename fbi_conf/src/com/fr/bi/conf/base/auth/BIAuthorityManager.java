@@ -27,22 +27,26 @@ public class BIAuthorityManager {
         return packagesAuth;
     }
 
-    public List<BIPackageAuthority> getPackageAuthByID(BIPackageID packageID, long userId) {
-        return this.packagesAuth.get(packageID);
+    public List<BIPackageAuthority> getPackageAuthByID(BIPackageID packageID, long userId) throws Exception {
+        List<BIPackageAuthority> packAuths = this.packagesAuth.get(packageID);
+        List<BIPackageAuthority> result = new ArrayList<BIPackageAuthority>();
+        for(int i = 0; i < packAuths.size(); i++) {
+            BIPackageAuthority auth = packAuths.get(i);
+            long roleId = auth.getRoleId();
+            List<Long> comRoleIds = getCompanyRolesByUserId(userId);
+            List<Long> cusRoleIds = getCustomRolesByUserId(userId);
+            if ((comRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.COMPANY) ||
+                    (cusRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.CUSTOM)) {
+                result.add(auth);
+            }
+        }
+        return result;
     }
 
     public List<BIPackageID> getAuthPackagesByUser(long userId) throws Exception {
         List<BIPackageID> packageIDs = new ArrayList<BIPackageID>();
-        Set<CompanyRole> comRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(userId);
-        Set<CustomRole> cusRoles = CustomRoleControl.getInstance().getCustomRoleSet(userId);
-        List<Long> comRoleIds = new ArrayList<Long>();
-        List<Long> cusRoleIds = new ArrayList<Long>();
-        for (CustomRole role : cusRoles) {
-            cusRoleIds.add(role.getId());
-        }
-        for (CompanyRole role : comRoles) {
-            comRoleIds.add(role.getId());
-        }
+        List<Long> comRoleIds = getCompanyRolesByUserId(userId);
+        List<Long> cusRoleIds = getCustomRolesByUserId(userId);
         Iterator<Map.Entry<BIPackageID, List<BIPackageAuthority>>> iterator = this.packagesAuth.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<BIPackageID, List<BIPackageAuthority>> packAuth = iterator.next();
@@ -51,7 +55,6 @@ public class BIAuthorityManager {
             for (int i = 0; i < authorities.size(); i++) {
                 BIPackageAuthority auth = authorities.get(i);
                 long roleId = auth.getRoleId();
-                //TODO 过滤
                 if ((comRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.COMPANY) ||
                         (cusRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.CUSTOM)) {
                     packageIDs.add(pId);
@@ -59,6 +62,24 @@ public class BIAuthorityManager {
             }
         }
         return packageIDs;
+    }
+
+    private List<Long> getCustomRolesByUserId(long userId) throws Exception{
+        Set<CustomRole> cusRoles = CustomRoleControl.getInstance().getCustomRoleSet(userId);
+        List<Long> cusRoleIds = new ArrayList<Long>();
+        for (CustomRole role : cusRoles) {
+            cusRoleIds.add(role.getId());
+        }
+        return  cusRoleIds;
+    }
+
+    private List<Long> getCompanyRolesByUserId(long userId) throws Exception {
+        Set<CompanyRole> comRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(userId);
+        List<Long> comRoleIds = new ArrayList<Long>();
+        for (CompanyRole role : comRoles) {
+            comRoleIds.add(role.getId());
+        }
+        return comRoleIds;
     }
 
     public JSONObject createJSON(long userId) throws Exception {
@@ -80,5 +101,9 @@ public class BIAuthorityManager {
         synchronized (this.packagesAuth) {
             this.packagesAuth.clear();
         }
+    }
+
+    public void removeAuthPackage(BIPackageID packageID) {
+        this.packagesAuth.remove(packageID);
     }
 }

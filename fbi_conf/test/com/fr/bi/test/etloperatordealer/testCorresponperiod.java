@@ -115,7 +115,7 @@ public class testCorresponperiod extends TestCase {
             con = CorrespondPeriodResultDealer.class.getDeclaredConstructor(BIKey.class, Traversal.class, BIKey.class);
             con.setAccessible(true);
             dealer = con.newInstance(key1, t, key2);
-            dealer.dealWith(ti, gvi, 0);
+            dealer.dealWith(ti, gvi);
         } catch (Exception ignore) {
 
         }

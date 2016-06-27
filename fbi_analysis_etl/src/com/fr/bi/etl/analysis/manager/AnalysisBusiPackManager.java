@@ -204,10 +204,12 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     private void setEdit(JSONObject jo) throws Exception {
-        JSONObject pack = jo.getJSONObject(Constants.PACK_ID);
-        JSONArray tables = pack.getJSONArray("tables");
-        for (int i = 0; i < tables.length(); i++){
-            tables.getJSONObject(i).put("inedible", true);
+        if (jo.has(Constants.PACK_ID)){
+            JSONObject pack = jo.getJSONObject(Constants.PACK_ID);
+            JSONArray tables = pack.getJSONArray("tables");
+            for (int i = 0; i < tables.length(); i++){
+                tables.getJSONObject(i).put("inedible", true);
+            }
         }
     }
 

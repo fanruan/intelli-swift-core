@@ -83,8 +83,51 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return result;
     },
 
-    _formatDataForGISMap: function(){
-
+    _formatDataForGISMap: function(data){
+        var self = this, o = this.options;
+        var targetIds = this._getShowTarget();
+        if (BI.has(data, "t")) {
+            var top = data.t, left = data.l;
+            return BI.map(top.c, function (id, tObj) {
+                var data = [];
+                BI.each(left.c, function (idx, obj) {
+                    var x = obj.n;
+                    var value = obj.s.c[id].s[0];
+                    if(BI.isNotNull(value) || value !== ""){
+                        data.push({
+                            "lnglat": x.split(","),
+                            "name": tObj.n,
+                            "value": obj.s.c[id].s[0],
+                            targetIds: [targetIds[0]]
+                        });
+                    }
+                });
+                //var name = tObj.n;
+                var obj = {};
+                obj.data = data;
+                //obj.name = name;
+                return obj;
+            });
+        }
+        if (BI.has(data, "c")) {
+            var obj = (data.c)[0];
+            var columnSizeArray = BI.makeArray(BI.isNull(obj) ? 0 : BI.size(obj.s), 0);
+            return BI.map(columnSizeArray, function (idx, value) {
+                var adjustData = BI.map(data.c, function (id, item) {
+                    var x = item.n;
+                    return {
+                        lnglat: x.split(","),
+                        value: item.s[idx],
+                        targetIds: [targetIds[idx]]
+                    };
+                });
+                var obj = {};
+                obj.data = adjustData;
+                obj.name = BI.Utils.getDimensionNameByID(targetIds[idx]);
+                return obj;
+            });
+        }
+        return [];
     },
 
     _formatDataForAxis: function (da) {
@@ -175,8 +218,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForCommon: function (data) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
-        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
-        var seriesGroup = BI.Utils.getDimensionGroupByID(self.seriesDid);
+        var drillcataDimId = BI.Utils.getDrillByID(o.wId)[self.cataDid];
+        var drillseriDimId = BI.Utils.getDrillByID(o.wId)[self.seriesDid];
+        if(BI.isNotEmptyArray(drillcataDimId)){
+            var cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
+        }
+        if(BI.isNotEmptyArray(drillseriDimId)){
+            var seriesGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
+        }
         if (BI.has(data, "t")) {
             var top = data.t, left = data.l;
             return BI.map(top.c, function (id, tObj) {
@@ -257,7 +306,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForDashBoard: function (data) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
-        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+        var drillcataDimId = BI.Utils.getDrillByID(o.wId)[self.cataDid];
+        if(BI.isNotEmptyArray(drillcataDimId)){
+            var cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
+        }
         if (BI.has(data, "c")) {
             var adjustData = BI.map(data.c, function (id, item) {
                 var seriesName = item.n;
@@ -683,6 +735,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         value: [obj.seriesName]
                     })
                 }
+                break;
+            case BICst.WIDGET.DASHBOARD:
+                dId = obj.targetIds;
+                clicked = [{
+                    dId: this.cataDid,
+                    value: [obj.category]
+                }];
                 break;
             default:
                 dId = obj.targetIds;

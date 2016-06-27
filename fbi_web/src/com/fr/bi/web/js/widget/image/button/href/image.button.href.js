@@ -53,7 +53,7 @@ BI.ImageButtonHref = BI.inherit(BI.Single, {
             self.fireEvent(BI.ImageButtonHref.EVENT_CHANGE , arguments)
         })
     },
-    
+
     getValue: function() {
         return this.input.getValue();
     },

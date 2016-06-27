@@ -77,7 +77,7 @@ public class testAccmulateDeal extends TestCase {
             con = AccumulateResultDealer.class.getDeclaredConstructor(BIKey.class, Traversal.class);
             con.setAccessible(true);
             dealer = con.newInstance(null, t);
-            dealer.dealWith(ti, gvi, 0);
+            dealer.dealWith(ti, gvi);
         } catch (Exception ignore) {
 
         }

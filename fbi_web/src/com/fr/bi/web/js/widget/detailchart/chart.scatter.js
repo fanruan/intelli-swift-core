@@ -77,6 +77,7 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
                 break;
         }
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
 
         config.yAxis = this.yAxis;
         config.xAxis = this.xAxis;
