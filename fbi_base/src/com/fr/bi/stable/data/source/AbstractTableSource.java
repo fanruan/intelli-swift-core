@@ -33,6 +33,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     private static final long serialVersionUID = -8657998191260725924L;
     //表的唯一标识
     protected Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
+    @BIIgnoreField
     protected PersistentTable dbTable;
     @BIIgnoreField
     private BICore core;
