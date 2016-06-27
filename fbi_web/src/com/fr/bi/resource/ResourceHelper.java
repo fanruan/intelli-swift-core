@@ -1,6 +1,5 @@
 package com.fr.bi.resource;
 
-import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -111,7 +110,7 @@ public class ResourceHelper {
                     continue;
                 }
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
-                    JSONObject jo = t.createJSONWithFieldsInfo(BICubeManager.getInstance().fetchCubeLoader(userId));
+                    JSONObject jo = t.createJSONWithFieldsInfo(userId);
                     JSONObject tableFields = jo.getJSONObject("tableFields");
                     tables.put(t.getID().getIdentityValue(), tableFields);
                     JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");

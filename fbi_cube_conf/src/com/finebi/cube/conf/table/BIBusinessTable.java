@@ -1,7 +1,6 @@
 package com.finebi.cube.conf.table;
 
 
-import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.common.factory.IFactoryService;
@@ -16,7 +15,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BICollectionUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
-import com.fr.fs.control.UserControl;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -131,7 +129,7 @@ public class BIBusinessTable implements BusinessTable {
     }
 
     @Override
-    public JSONObject createJSONWithFieldsInfo(ICubeDataLoader loader) throws Exception {
+    public JSONObject createJSONWithFieldsInfo(long userId) throws Exception {
         JSONObject jo = createJSON();
         JSONArray ja = new JSONArray();
         jo.put("fields", ja);
@@ -145,15 +143,12 @@ public class BIBusinessTable implements BusinessTable {
         Iterator<BusinessField> it = getFields().iterator();
         while (it.hasNext()) {
             BusinessField field = it.next();
-            /**
-             * Connery:错用createJson，传递了一个Loader进去
-             */
             JSONObject filedJson = field.createJSON();
             fields.put(field.getFieldID().getIdentityValue(), filedJson);
             stringList.add(filedJson);
         }
-        fields.put(getID().getIdentity() + BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID()).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"), createCountField());
-        countList.add(createCountField());
+        fields.put(getID().getIdentity() + BICubeConfigureCenter.getAliasManager().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"), createCountField(userId));
+        countList.add(createCountField(userId));
         ja.put(stringList).put(numberList).put(dateList).put(countList);
         JSONObject result = new JSONObject();
         result.put("tableFields", jo);
@@ -161,6 +156,18 @@ public class BIBusinessTable implements BusinessTable {
         jo.put(BIJSONConstant.JSON_KEYS.TABLE_TYPE, getTableType());
         return result;
     }
+
+    private JSONObject createCountField(long userId) throws Exception {
+        JSONObject jo = new JSONObject();
+        jo.put("field_type", DBConstant.COLUMN.COUNTER);
+        jo.put("field_name", BICubeConfigureCenter.getAliasManager().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
+        jo.put("table_id", getID().getIdentity());
+        jo.put("is_usable", true);
+        //记录数的id先暂时用拼接
+        jo.put("id", jo.optString("table_id") + BICubeConfigureCenter.getAliasManager().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
+        return jo;
+    }
+
 
     private Map<String, ICubeFieldSource> getSourceFields() {
         try {
@@ -170,18 +177,6 @@ public class BIBusinessTable implements BusinessTable {
             throw new RuntimeException("Please check connection");
         }
 
-    }
-
-
-    private JSONObject createCountField() throws Exception {
-        JSONObject jo = new JSONObject();
-        jo.put("field_type", DBConstant.COLUMN.COUNTER);
-        jo.put("field_name", BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID()).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
-        jo.put("table_id", getID().getIdentity());
-        jo.put("is_usable", true);
-        //记录数的id先暂时用拼接
-        jo.put("id", jo.optString("table_id") + BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID()).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
-        return jo;
     }
 
     protected int getTableType() {
