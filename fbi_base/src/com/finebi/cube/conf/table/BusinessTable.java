@@ -34,6 +34,6 @@ public interface BusinessTable extends JSONTransform, Cloneable {
 
     void setFields(List<BusinessField> fields);
 
-    JSONObject createJSONWithFieldsInfo() throws Exception;
+    JSONObject createJSONWithFieldsInfo(long userId) throws Exception;
 
 }
