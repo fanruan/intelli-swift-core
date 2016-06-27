@@ -5,8 +5,6 @@
   overflow-x: hidden;
   overflow-y: hidden;
   border: 1px solid #eaeaea;
-  font-size: 14px;
-  font-weight: bold;
 }
 .bi-sequence-table-list-number .sequence-table-number {
   border-top: 1px solid #eaeaea;

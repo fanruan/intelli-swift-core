@@ -40,7 +40,7 @@ BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
                 })
             },
             fieldsCreator: function (tableId, isRelation) {
-                var ids = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId);
+                var ids = BI.Utils.getStringFieldIDsOfTableID(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
