@@ -8,7 +8,6 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.DetailModel.superclass._defaultConfig.apply(this, arguments), {
             dimensions: {},
             view: {},
-            name: "",
             type: BICst.WIDGET.TABLE,
             settings: {},
             filter_value: {}

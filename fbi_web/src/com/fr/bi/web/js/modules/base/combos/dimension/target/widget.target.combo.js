@@ -138,9 +138,6 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             return did === o.dId;
         });
         switch (wType) {
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.COMPARE_BAR:
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -161,6 +158,20 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
+                break;
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+                item[this.constants.CordonPos][0].cls = "";
+                item[this.constants.CordonPos][0] = {
+                    el: item[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Vertical") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
+                break;
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -185,7 +196,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        return;
+                        return item;
                 }
                 item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
@@ -196,6 +207,15 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
+                break;
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                item[1][0].disabled = true;
                 break;
             default:
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
