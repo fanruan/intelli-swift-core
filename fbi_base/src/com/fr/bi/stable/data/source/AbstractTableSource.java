@@ -34,9 +34,9 @@ public abstract class AbstractTableSource implements CubeTableSource {
     //表的唯一标识
     protected Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
     @BIIgnoreField
-    protected PersistentTable dbTable;
+    protected transient PersistentTable dbTable;
     @BIIgnoreField
-    private BICore core;
+    private transient BICore core;
 
     protected AbstractTableSource() {
 
@@ -174,7 +174,11 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
+        if(helper.contains(this)){
+            return set;
+        }
+        helper.add(this);
         set.add(this);
         return set;
     }
