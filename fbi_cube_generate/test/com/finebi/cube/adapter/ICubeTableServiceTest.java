@@ -1,6 +1,7 @@
 package com.finebi.cube.adapter;
 
 import com.finebi.cube.BICubeTestBase;
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.exception.BICubeTableAbsentException;
@@ -42,14 +43,14 @@ public class ICubeTableServiceTest extends BICubeTestBase {
     }
 
     public void testTableOriginalData() {
-        ICubeTableIndexReader reader = tableService.ensureBasicIndex(BITableSourceRelationPathTestTool.getABCList());
+        ICubeColumnDetailGetter reader = tableService.getColumnDetailReader(new IndexKey("name"));
 
-        assertEquals(reader.get(0), "Parker");
-        assertEquals(reader.get(1), "Jam");
-        assertEquals(reader.get(2), "Blue");
-        assertEquals(reader.get(3), "Sam");
-        assertEquals(reader.get(4), "Eliza");
-        assertEquals(reader.get(5), "");
+        assertEquals(reader.getValue(0), "Parker");
+        assertEquals(reader.getValue(1), "Jam");
+        assertEquals(reader.getValue(2), "Blue");
+        assertEquals(reader.getValue(3), "Sam");
+        assertEquals(reader.getValue(4), "Eliza");
+        assertEquals(reader.getValue(5), "");
     }
 
     public void testTableRelation() {
