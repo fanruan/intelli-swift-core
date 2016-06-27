@@ -259,7 +259,10 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
         var self = this, date;
         var type, value;
         if (BI.isNotNull(v)) {
-            type = v.type || BICst.MULTI_DATE_CALENDAR; value = v.value || v;
+            type = v.type || BICst.MULTI_DATE_CALENDAR; value = v.value;
+            if(BI.isNull(value)){
+                value = v;
+            }
         }
         switch (type) {
             case BICst.MULTI_DATE_YEAR_PREV:
