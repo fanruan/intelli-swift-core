@@ -240,6 +240,51 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(data){
+        var o = this.options;
+        var items = [];
+        BI.each(data, function(idx, item){
+            items = BI.concat(items, item);
+        });
+        if(BI.isEmptyArray(items)){
+            return [];
+        }
+        if(items.length === 1){
+            return [items];
+        }
+        var colors = this.config.chart_color || [];
+        if(BI.isEmptyArray(colors)){
+            colors = ["#5caae4"];
+        }
+        var seriesMinus = [];
+        BI.each(items[0].data, function(idx, item){
+            var res = items[1].data[idx].y - item.y;
+            seriesMinus.push({
+                x: items[1].data[idx].x,
+                y: res,
+                targetIds: items[1].data[idx].targetIds
+            });
+        });
+        items[1] = {
+            data: seriesMinus,
+            name: items[1].name,
+            stack: "stackedArea",
+            fillColor: colors[0]
+        };
+        BI.each(items, function(idx, item){
+            if(idx === 0){
+                BI.extend(item, {
+                    name: items[0].name,
+                    fillColorOpacity: 0,
+                    stack: "stackedArea",
+                    marker: {enabled: false},
+                    fillColor: false
+                });
+            }
+        });
+        return [items];
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
@@ -263,15 +308,15 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         this.options.items = items;
 
         var types = [];
+        var type = [];
         BI.each(items, function(idx, axisItems){
-            var type = [];
-            BI.each(axisItems, function(id, item){
-                type.push(BICst.WIDGET.AREA);
-            });
-            types.push(type);
+            type.push(BICst.WIDGET.AREA);
         });
+        if(BI.isNotEmptyArray(type)){
+            types.push(type);
+        }
 
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
