@@ -107,11 +107,11 @@ BI.ETLFilterViewItemFactory = {
 
     _createNumberRange : function (value, fieldName){
         value = value || {};
-        return [BI.isNull(value.min) ? BI.i18nText('BI-Unrestricted') : value.min ,
+        return [BI.isNumeric(value.min) ? BI.i18nText('BI-Unrestricted') : value.min ,
             ( value.closemin ? this._createItemByCls('less-equal-font') : this._createItemByCls('less-font')) ,
             fieldName ,
             (value.closemax ? this._createItemByCls('less-equal-font') : this._createItemByCls('less-font')) ,
-            BI.isNull(value.max) ? BI.i18nText('BI-Unrestricted') : value.max];
+            BI.isNumeric(value.max) ? BI.i18nText('BI-Unrestricted') : value.max];
     },
 
     _createNumberGroupText : function (filterValue){
