@@ -1,6 +1,5 @@
 package com.fr.bi.web.service.action;
 
-import com.finebi.cube.api.BICubeManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.Constants;
@@ -56,7 +55,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
         JSONObject translations = new JSONObject();
         translations.put(table.getID().getIdentity(), tableName);
-        JSONObject tableJSONWithFieldsInfo = table.createJSONWithFieldsInfo(BICubeManager.getInstance().fetchCubeLoader(userId));
+        JSONObject tableJSONWithFieldsInfo = table.createJSONWithFieldsInfo(userId);
         JSONObject tableFields = tableJSONWithFieldsInfo.getJSONObject("tableFields");
         JSONObject tables = new JSONObject();
         tables.put(table.getID().getIdentity(), tableFields);
