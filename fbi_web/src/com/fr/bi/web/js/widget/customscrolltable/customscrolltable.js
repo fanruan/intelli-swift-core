@@ -8,7 +8,7 @@
 BI.CustomScrollTable = BI.inherit(BI.Widget, {
 
     _const: {
-        minScrollWidth: 200
+        minScrollWidth: 150
     },
 
     _defaultConfig: function () {
