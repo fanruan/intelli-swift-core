@@ -44,14 +44,12 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         });
         //从viewMap中删除已被删除的dimension
         BI.each(this.viewMap[newType], function (regionId, dIds) {
-            BI.each(dIds, function (idx, dId) {
+            BI.remove(dIds, function(i, dId){
                 var result = BI.find(self.viewMap[self.type], function (regionId, ds) {
                     return BI.contains(ds, dId);
                 });
-                if (BI.isNull(result)) {
-                    BI.remove(dIds, dId);
-                }
-            })
+                return BI.isNull(result);
+            });
         });
 
         // 维度used属性显示逻辑

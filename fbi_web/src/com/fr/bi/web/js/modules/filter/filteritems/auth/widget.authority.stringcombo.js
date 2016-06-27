@@ -25,7 +25,7 @@ BI.AuthoritySelectFieldDataCombo = BI.inherit(BI.Widget, {
         });
 
         this.combo.on(BI.MultiSelectCombo.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.ConfFilterValueChooserCombo.EVENT_CONFIRM);
+            self.fireEvent(BI.AuthoritySelectFieldDataCombo.EVENT_CONFIRM);
         });
     },
 
