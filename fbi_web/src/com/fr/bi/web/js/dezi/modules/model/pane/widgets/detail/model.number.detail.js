@@ -4,7 +4,6 @@ BIDezi.NumberDetailModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.NumberDetailModel.superclass._defaultConfig.apply(this, arguments), {
             dimensions: {},
             view: {},
-            name: "",
             type: BICst.WIDGET.NUMBER,
             value: {}
         });
