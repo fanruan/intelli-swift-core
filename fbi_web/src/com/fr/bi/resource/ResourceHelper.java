@@ -76,6 +76,7 @@ public class ResourceHelper {
 
     private static String getDataJs(HttpServletRequest req, String[] files) {
         long userId = ServiceUtils.getCurrentUserID(req);
+        long manageId = UserControl.getInstance().getSuperManagerID();
         JSONObject groups = new JSONObject();
         JSONObject packages = new JSONObject();
         JSONObject relations = new JSONObject();
@@ -88,9 +89,9 @@ public class ResourceHelper {
         List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             groups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
-            JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
+            JSONObject allPacks = BIModuleUtils.createPackJSON(manageId, req.getLocale());
             //管理员
-            if (UserControl.getInstance().getSuperManagerID() == userId) {
+            if (manageId == userId) {
                 packages = allPacks;
             }
             //前台能看到的业务包
@@ -105,7 +106,7 @@ public class ResourceHelper {
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
             for (IBusinessPackageGetterService p : packs) {
-                if (UserControl.getInstance().getSuperManagerID() != userId && !authPacks.contains(p.getID())) {
+                if (manageId != userId && !authPacks.contains(p.getID())) {
                     continue;
                 }
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {

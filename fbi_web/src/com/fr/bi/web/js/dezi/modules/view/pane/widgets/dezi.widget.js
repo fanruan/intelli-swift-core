@@ -95,9 +95,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
-                self.widget.attr("items")[3].top = 0;
-                self.widget.resize();
             }
+            self.widget.attr("items")[3].top = 0;
+            self.widget.resize();
         });
     },
 
@@ -342,7 +342,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
-        this.tableChartPopupulate();
+        this._refreshTableAndFilter();
         this._refreshLayout();
         this._refreshTitlePosition();
     }
