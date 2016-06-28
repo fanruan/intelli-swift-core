@@ -11,6 +11,11 @@ BI.TemplateManagerModel = BI.inherit(FR.OB, {
         this.tree = new BI.Tree();
         this.sortAndRefreshTree();
     },
+    
+    resetAllItems: function(items) {
+        this.allItems = items;
+        this.sortAndRefreshTree();
+    },
 
     searchReportByKeyword: function (keyword) {
         var reportItems = [];
@@ -109,6 +114,24 @@ BI.TemplateManagerModel = BI.inherit(FR.OB, {
                 item.status = item.status === BICst.REPORT_STATUS.NORMAL
                     ? BICst.REPORT_STATUS.APPLYING : BICst.REPORT_STATUS.NORMAL;
                 return true;
+            }
+        });
+        this.sortAndRefreshTree();
+    },
+
+    editSharedUsers: function (id, users) {
+        BI.each(this.allItems, function (i, item) {
+            if (item.id === id) {
+                var shared = item.shared;
+                if (BI.isNotNull(shared) && shared.length !== 0) {
+                    var nShared = [];
+                    BI.each(shared, function (j, user) {
+                        if(users.contains(user.user_id)) {
+                            nShared.push(user);
+                        }
+                    });
+                    item.shared = nShared;
+                }
             }
         });
         this.sortAndRefreshTree();

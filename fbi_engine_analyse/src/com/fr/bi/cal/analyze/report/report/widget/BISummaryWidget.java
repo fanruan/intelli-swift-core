@@ -20,6 +20,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -242,8 +243,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
 
     @Override
     public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
-        GroupValueIndex gvi =  super.createFilterGVI(row, targetKey, loader, userId);
-        for (DimensionCalculator r : row){
+        GroupValueIndex gvi = super.createFilterGVI(row, targetKey, loader, userId);
+        for (DimensionCalculator r : row) {
             gvi = GVIUtils.AND(gvi, r.createNoneSortNoneGroupValueMapGetter(targetKey, loader).getNULLIndex().NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
         }
         return gvi;
@@ -311,15 +312,30 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         List<BITableRelation> relationList = new ArrayList<BITableRelation>();
                         //指标的关联关系
                         JSONArray targetRelationsJa = dimensionAndTargetPathsJa.getJSONArray(targetRelationIndex);
-                        String primaryFieldId = targetRelationsJa.optJSONObject(0).optJSONObject("primaryKey").optString("field_id");
-                        String foreignFieldId = targetRelationsJa.optJSONObject(0).optJSONObject("foreignKey").optString("field_id");
-                        if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo())) {
-                            relationMap.put(targetId, relationList);
-                        } else {
-                            for (int j = 0; j < targetRelationsJa.length(); j++) {
-                                relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
+                        JSONObject primaryKeyJo = targetRelationsJa.optJSONObject(0).optJSONObject("primaryKey");
+                        JSONObject foreignKeyJo = targetRelationsJa.optJSONObject(0).optJSONObject("foreignKey");
+                        String primaryFieldId = primaryKeyJo.optString("field_id");
+                        String foreignFieldId = foreignKeyJo.optString("field_id");
+                        String primaryTableId = primaryKeyJo.getString("table_id");
+                        String foreingTableId = foreignKeyJo.getString("table_id");
+                        if (primaryTableId != null && foreingTableId != null) {
+                            if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreingTableId)))) {
+                                relationMap.put(targetId, relationList);
+                            } else {
+                                for (int j = 0; j < targetRelationsJa.length(); j++) {
+                                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
+                                }
+                                relationMap.put(targetId, relationList);
                             }
-                            relationMap.put(targetId, relationList);
+                        } else {
+                            if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo())) {
+                                relationMap.put(targetId, relationList);
+                            } else {
+                                for (int j = 0; j < targetRelationsJa.length(); j++) {
+                                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
+                                }
+                                relationMap.put(targetId, relationList);
+                            }
                         }
 
 
