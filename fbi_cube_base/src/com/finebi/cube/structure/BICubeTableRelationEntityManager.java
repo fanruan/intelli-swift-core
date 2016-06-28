@@ -29,7 +29,7 @@ public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResour
     /**
      * 当前所有的Relation归属是hostTable，但是这不代表该relation只能由HostTable使用
      * 例如A作为ETL_A表的子表，那么ETL_A应该拥有A表拥有的关系。
-     * 倘若有ETL_A-C的Relation，但是在A表中的字段A.a的索引的话，会到A表中来根据ETL_A-C来计算
+     * 倘若有ETL_A-C的Relation，但是在A.a到C的索引，会到A表中来根据ETL_A-C来计算
      * A.a-C的索引。
      */
     protected ITableKey owner;

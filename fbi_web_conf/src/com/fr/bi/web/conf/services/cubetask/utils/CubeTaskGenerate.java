@@ -12,6 +12,8 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.code.BILogger;
 
+import java.util.Set;
+
 /**
  * Created by wuk on 16/5/30.
  */
@@ -25,7 +27,7 @@ public class CubeTaskGenerate {
     }
 
     public static void CubeBuild(long userId) {
-//        Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
+        Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
 ///*若有新增表，增量更新，否则进行全量*/
 //        if (newTables.size() != 0) {
 //            CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
