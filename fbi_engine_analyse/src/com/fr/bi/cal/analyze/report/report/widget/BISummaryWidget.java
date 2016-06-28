@@ -316,10 +316,10 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         JSONObject foreignKeyJo = targetRelationsJa.optJSONObject(0).optJSONObject("foreignKey");
                         String primaryFieldId = primaryKeyJo.optString("field_id");
                         String foreignFieldId = foreignKeyJo.optString("field_id");
-                        String primaryTableId = primaryKeyJo.getString("table_id");
-                        String foreingTableId = foreignKeyJo.getString("table_id");
-                        if (primaryTableId != null && foreingTableId != null) {
-                            if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreingTableId)))) {
+                        String primaryTableId = primaryKeyJo.has("table_id") ? primaryKeyJo.getString("table_id") : null;
+                        String foreignTableId = foreignKeyJo.has("table_id") ? foreignKeyJo.getString("table_id") : null;
+                        if (primaryTableId != null && foreignTableId != null) {
+                            if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreignTableId)))) {
                                 relationMap.put(targetId, relationList);
                             } else {
                                 for (int j = 0; j < targetRelationsJa.length(); j++) {
