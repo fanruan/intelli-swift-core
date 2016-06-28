@@ -52,15 +52,15 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             case BICst.WIDGET.PIE:
                             default:
                                 res = {
-                                    name: item.n,
-                                    size: item.s[idx],
+                                    x: item.n,
+                                    y: item.s[idx],
                                     targetIds: [targetIds[idx]]
                                 };
                         }
                     }else{
                         res = {
-                            name: item.n,
-                            value: item.s[idx],
+                            x: item.n,
+                            y: item.s[idx],
                             targetIds: [targetIds[idx]]
                         };
                     }
@@ -95,17 +95,17 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     var value = obj.s.c[id].s[0];
                     if(BI.isNotNull(value) || value !== ""){
                         data.push({
-                            "lnglat": x.split(","),
-                            "name": tObj.n,
-                            "value": obj.s.c[id].s[0],
+                            "x": x.split(","),
+                            "z": tObj.n,
+                            "y": obj.s.c[id].s[0],
                             targetIds: [targetIds[0]]
                         });
                     }
                 });
-                //var name = tObj.n;
+                var name = tObj.n;
                 var obj = {};
                 obj.data = data;
-                //obj.name = name;
+                obj.name = name;
                 return obj;
             });
         }
@@ -116,8 +116,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var adjustData = BI.map(data.c, function (id, item) {
                     var x = item.n;
                     return {
-                        lnglat: x.split(","),
-                        value: item.s[idx],
+                        x: x.split(","),
+                        y: item.s[idx],
                         targetIds: [targetIds[idx]]
                     };
                 });
@@ -179,7 +179,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             obj.data = [{
                 x: item.s[1],
                 y: item.s[0],
-                size: item.s[2],
+                z: item.s[2],
                 targetIds: [targetIds[0], targetIds[1], targetIds[2]]
             }];
             obj.name = name;
@@ -220,11 +220,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var targetIds = this._getShowTarget();
         var drillcataDimId = BI.Utils.getDrillByID(o.wId)[self.cataDid];
         var drillseriDimId = BI.Utils.getDrillByID(o.wId)[self.seriesDid];
+        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+        var seriesGroup = BI.Utils.getDimensionGroupByID(self.seriesDid);
         if(BI.isNotEmptyArray(drillcataDimId)){
-            var cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
+            cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
         }
         if(BI.isNotEmptyArray(drillseriDimId)){
-            var seriesGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
+            seriesGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
         }
         if (BI.has(data, "t")) {
             var top = data.t, left = data.l;
@@ -306,9 +308,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForDashBoard: function (data) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
+        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
         var drillcataDimId = BI.Utils.getDrillByID(o.wId)[self.cataDid];
         if(BI.isNotEmptyArray(drillcataDimId)){
-            var cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
+            cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId[0].dId);
         }
         if (BI.has(data, "c")) {
             var adjustData = BI.map(data.c, function (id, item) {
@@ -342,177 +345,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             return BI.isEmptyArray(obj.data) ? [] : [[obj]];
         }
         return [];
-    },
-
-    _formatDataForAccumulateAxis: function(data){
-        var items = this._formatDataForAxis(data);
-        return BI.map(items, function(idx, item){
-            var i = BI.UUID();
-            return BI.map(item, function(id, it){
-                return BI.extend({}, it, {stack: i});
-            });
-        });
-    },
-
-    _formatDataForPercentAccumulateAxis: function(data){
-        var items = this._formatDataForAxis(data);
-        return BI.map(items, function(idx, item){
-            var i = BI.UUID();
-            return BI.map(item, function(id, it){
-                return BI.extend({}, it, {stack: i, stackByPercent: true});
-            });
-        });
-    },
-
-    _formatDataForCompareAxis: function(data){
-        var items = this._formatDataForAxis(data);
-        return BI.map(items, function(idx, item){
-            return BI.map(item, function(id, it){
-                if(idx > 0){
-                    return BI.extend({}, it, {reversed: true, xAxis: 0});
-                }else{
-                    return BI.extend({}, it, {reversed: false, xAxis: 1});
-                }
-            });
-        });
-    },
-
-    _formatDataForFallAxis: function(data){
-        var o = this.options;
-        var items = this._formatDataForCommon(data);
-        var tables = [], sum = 0;
-        var colors = BI.Utils.getWSChartColorByID(o.wId) || [];
-        if(BI.isEmptyArray(colors)){
-            colors = ["rgb(152, 118, 170)", "rgb(0, 157, 227)"];
-        }
-        BI.each(items, function(idx, item){
-            BI.each(item.data, function(i, t){
-                if(t.y < 0){
-                    tables.push([t.x, t.y, sum + t.y, t.targetIds]);
-                }else{
-                    tables.push([t.x, t.y, sum, t.targetIds]);
-                }
-                sum += t.y;
-            });
-        });
-
-        return [BI.map(BI.makeArray(2, null), function(idx, item){
-            return {
-                "data": BI.map(tables, function(id, cell){
-                    var axis = BI.extend({targetIds: cell[3]}, {
-                        x: cell[0],
-                        y: Math.abs(cell[2 - idx])
-                    });
-                    if(idx === 1){
-                        axis.color = cell[2 - idx] < 0 ? colors[1] : colors[0];
-                    }else{
-                        axis.color = "rgba(0,0,0,0)";
-                        axis.borderColor = "rgba(0,0,0,0)";
-                        axis.borderWidth = 0;
-                        axis.clickColor = "rgba(0,0,0,0)";
-                        axis.mouseOverColor = "rgba(0,0,0,0)";
-                        axis.tooltip = {
-                            enable: false
-                        }
-                    }
-                    return axis;
-                }),
-                stack: "stackedFall",
-                name: ""
-            };
-        })];
-    },
-
-    _formatDataForRangeArea: function(data){
-        var o = this.options;
-        var items = this._formatDataForCommon(data);
-        if(BI.isEmptyArray(items)){
-            return [];
-        }
-        if(items.length === 1){
-            return [items];
-        }
-        var colors = BI.Utils.getWSChartColorByID(o.wId) || [];
-        if(BI.isEmptyArray(colors)){
-            colors = ["#5caae4"];
-        }
-        var seriesMinus = [];
-        BI.each(items[0].data, function(idx, item){
-            var res = items[1].data[idx].y - item.y;
-            seriesMinus.push({
-                x: items[1].data[idx].x,
-                y: res,
-                targetIds: items[1].data[idx].targetIds
-            });
-        });
-        items[1] = {
-            data: seriesMinus,
-            name: items[1].name,
-            stack: "stackedArea",
-            fillColor: colors[0]
-        };
-        BI.each(items, function(idx, item){
-            if(idx === 0){
-                BI.extend(item, {
-                    name: items[0].name,
-                    fillColorOpacity: 0,
-                    stack: "stackedArea",
-                    marker: {enabled: false},
-                    fillColor: false
-                });
-            }
-        });
-        return [items];
-    },
-
-    _formatDataForBar: function(data){
-        var items = this._formatDataForAxis(data);
-        BI.each(items, function(idx, item){
-            BI.each(item, function(id, it){
-                BI.each(it.data, function(i, t){
-                    var tmp = t.x;
-                    t.x = t.y;
-                    t.y = tmp;
-                })
-            });
-        });
-        return items;
-    },
-
-    _formatDataForAccumulateBar: function(data){
-        var items = this._formatDataForBar(data);
-        BI.each(items, function(idx, item){
-            var id = BI.UUID();
-            BI.each(item, function(i, it){
-                it.stack = id;
-            });
-        });
-        return items;
-    },
-
-    _formatDataForCompareBar: function(data){
-        var items = this._formatDataForBar(data);
-        var result = [];
-        var i = BI.UUID();
-        BI.each(items, function (idx, item) {
-            BI.each(item, function (id, it) {
-                BI.each(it.data, function (i, t) {
-                    if (idx === 0) {
-                        t.x = -t.x;
-                    }
-                });
-                it.stack = i;
-            })
-        });
-        BI.each(items, function(idx, item){
-            result = BI.concat(result, item);
-        });
-        return [result];
-    },
-
-    _formatDataForForceBubble: function (data) {
-        var items = this._formatDataForCommon(data);
-        return BI.isEmptyArray(items) ? items : [items];
     },
 
     getToolTip: function (type) {
@@ -589,50 +421,40 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     parseChartData: function (data) {
         var self = this, o = this.options;
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
-            case BICst.WIDGET.BUBBLE:
-                return this._formatDataForBubble(data);
-            case BICst.WIDGET.SCATTER:
-                return this._formatDataForScatter(data);
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.LINE:
-            case BICst.WIDGET.AREA:
-                return this._formatDataForAxis(data);
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.ACCUMULATE_AREA:
             case BICst.WIDGET.ACCUMULATE_RADAR:
-                return this._formatDataForAccumulateAxis(data);
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-                return this._formatDataForPercentAccumulateAxis(data);
             case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
-                return this._formatDataForCompareAxis(data);
             case BICst.WIDGET.FALL_AXIS:
-                return this._formatDataForFallAxis(data);
             case BICst.WIDGET.RANGE_AREA:
-                return this._formatDataForRangeArea(data);
             case BICst.WIDGET.BAR:
-                return this._formatDataForBar(data);
             case BICst.WIDGET.ACCUMULATE_BAR:
-                return this._formatDataForAccumulateBar(data);
             case BICst.WIDGET.COMPARE_BAR:
-                return this._formatDataForCompareBar(data);
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.FORCE_BUBBLE:
                 return this._formatDataForAxis(data);
             case BICst.WIDGET.DASHBOARD:
                 return this._formatDataForDashBoard(data);
-            case BICst.WIDGET.FORCE_BUBBLE:
-                return this._formatDataForForceBubble(data);
-            case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.BUBBLE:
+                return this._formatDataForBubble(data);
+            case BICst.WIDGET.SCATTER:
+                return this._formatDataForScatter(data);
             case BICst.WIDGET.MAP:
                 var da = this._formatDataForMap(data);
                 return BI.isEmptyArray(da) ? da : [da];
             case BICst.WIDGET.GIS_MAP:
-                return this._formatDataForGISMap(data)
+                var da = this._formatDataForGISMap(data);
+                return BI.isEmptyArray(da) ? da : [da];
         }
     },
 

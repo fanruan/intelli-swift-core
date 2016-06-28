@@ -102,6 +102,13 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             columnEntityService.addGroupValue(groupPosition, groupValue);
             GroupValueIndex groupValueIndex = buildGroupValueIndex(groupRowNumbers);
             columnEntityService.addGroupIndex(groupPosition, groupValueIndex);
+//            final int position = groupPosition;
+//            groupValueIndex.Traversal(new SingleRowTraversalAction() {
+//                @Override
+//                public void actionPerformed(int row) {
+//                    columnEntityService.addPositionOfGroup(row, position);
+//                }
+//            });
             groupPosition++;
         }
         columnEntityService.addNULLIndex(0, buildGroupValueIndex(nullRowNumbers));

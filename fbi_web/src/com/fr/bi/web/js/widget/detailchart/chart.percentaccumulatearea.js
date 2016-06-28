@@ -244,6 +244,15 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(items){
+        return BI.map(items, function(idx, item){
+            var i = BI.UUID();
+            return BI.map(item, function(id, it){
+                return BI.extend({}, it, {stack: i, stackByPercent: true});
+            });
+        });
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
@@ -277,21 +286,11 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.Widget, {
             types.push(type);
         });
 
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.PercentAccumulateAreaChart, {
-    formatItems: function (items) {
-        var name = BI.keys(items)[0];
-        return {
-            "data": items[name],
-            "name": name,
-            stack: true
-        }
     }
 });
 BI.PercentAccumulateAreaChart.EVENT_CHANGE = "EVENT_CHANGE";

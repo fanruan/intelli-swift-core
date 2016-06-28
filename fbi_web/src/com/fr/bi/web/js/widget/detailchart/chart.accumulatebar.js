@@ -240,6 +240,21 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(items){
+        BI.each(items, function(idx, item){
+            var stackId = BI.UUID();
+            BI.each(item, function(id, it){
+                it.stack = stackId;
+                BI.each(it.data, function(i, t){
+                    var tmp = t.x;
+                    t.x = t.y;
+                    t.y = tmp;
+                })
+            });
+        });
+        return items;
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
@@ -273,7 +288,7 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
             });
             types.push(type);
         });
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {

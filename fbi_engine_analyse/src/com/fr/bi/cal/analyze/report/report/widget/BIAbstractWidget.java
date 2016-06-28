@@ -149,8 +149,8 @@ public abstract class BIAbstractWidget implements BIWidget {
     public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
         GroupValueIndex gvi = loader.getTableIndex(targetKey.getTableSource()).getAllShowIndex();
         //非管理员用户需要考虑到对于权限的过滤条件
-        if(this.userId != UserControl.getInstance().getSuperManagerID()) {
-            List<TargetFilter> filters = getAuthFilter();
+        if(userId != UserControl.getInstance().getSuperManagerID()) {
+            List<TargetFilter> filters = getAuthFilter(userId);
             for(int i = 0; i < filters.size(); i++) {
                 gvi = GVIUtils.AND(gvi, filters.get(i).createFilterIndex(row[i], targetKey, loader, userId));
             }
@@ -163,11 +163,11 @@ public abstract class BIAbstractWidget implements BIWidget {
         return gvi;
     }
 
-    private List<TargetFilter> getAuthFilter(){
+    private List<TargetFilter> getAuthFilter(long userId){
         List<TargetFilter> filters = new ArrayList<TargetFilter>();
-        List<BIPackageID> authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(this.userId);
+        List<BIPackageID> authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
         for(int i = 0 ; i < authPacks.size(); i ++) {
-            List<BIPackageAuthority> packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), this.userId);
+            List<BIPackageAuthority> packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), userId);
             for(int j = 0; j < packAuths.size(); j++) {
                 BIPackageAuthority auth = packAuths.get(j);
                 if(auth.getFilter() != null) {

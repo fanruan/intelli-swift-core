@@ -47,6 +47,15 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
         });
     },
 
+    _formatItems: function(items){
+        return BI.map(items, function(idx, item){
+            var i = BI.UUID();
+            return BI.map(item, function(id, it){
+                return BI.extend({}, it, {stack: i});
+            });
+        });
+    },
+
     _formatConfig: function(config, items){
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
@@ -76,6 +85,8 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
         config.radiusAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "radar";
         config.plotOptions.columnType = true;
+        delete config.xAxis;
+        delete config.yAxis;
         return [items, config];
 
         function formatChartStyle(){
@@ -224,7 +235,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
             });
             types.push(type);
         });
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {

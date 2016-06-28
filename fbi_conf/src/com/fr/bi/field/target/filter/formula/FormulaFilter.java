@@ -146,7 +146,7 @@ public class FormulaFilter extends AbstractTargetFilter {
         while (matcher.find()) {
             String matchStr = matcher.group(0);
             if(matchStr.contains(BIReportConstant.FIELD_ID.HEAD)){
-                result = expression.replaceAll(matchStr.substring(2, matchStr.length() - 1), BIModuleUtils.getBusinessFieldById(new BIFieldID(matchStr.substring(BIReportConstant.FIELD_ID.HEAD.length() + 2, matchStr.length() - 1))).getFieldName());
+                result = result.replaceAll(matchStr.substring(2, matchStr.length() - 1), BIModuleUtils.getBusinessFieldById(new BIFieldID(matchStr.substring(BIReportConstant.FIELD_ID.HEAD.length() + 2, matchStr.length() - 1))).getFieldName());
             }
         }
         return result;

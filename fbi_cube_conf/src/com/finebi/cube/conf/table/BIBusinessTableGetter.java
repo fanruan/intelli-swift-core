@@ -1,6 +1,5 @@
 package com.finebi.cube.conf.table;
 
-import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -79,8 +78,8 @@ public class BIBusinessTableGetter implements BusinessTable {
     }
 
     @Override
-    public JSONObject createJSONWithFieldsInfo(ICubeDataLoader loader) throws Exception {
-        return getInnerTableSource().createJSONWithFieldsInfo(loader);
+    public JSONObject createJSONWithFieldsInfo(long userId) throws Exception {
+        return getInnerTableSource().createJSONWithFieldsInfo(userId);
     }
 
     @Override

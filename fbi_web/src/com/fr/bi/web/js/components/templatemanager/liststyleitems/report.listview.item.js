@@ -57,20 +57,36 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
             this.hangout = BI.createWidget({
                 type: "bi.icon_change_button",
                 cls: "template-item-icon",
-                title: BI.i18nText("BI-Report_Hangout_Applying"),
+                title: function(){
+                    if(self.status === BICst.REPORT_STATUS.NORMAL) {
+                        return BI.i18nText("BI-Report_Hangout_Applying");
+                    }
+                    if(self.status === BICst.REPORT_STATUS.APPLYING) {
+                        return BI.i18nText("BI-Cancel_Apply_Hangout");
+                    }
+                    if(self.status === BICst.REPORT_STATUS.HANGOUT) {
+                        return BI.i18nText("BI-Hangouted");
+                    }
+                },
                 stopPropagation: true,
                 invisible: true
             });
             if (o.status === BICst.REPORT_STATUS.HANGOUT) {
                 markCls = "report-hangout-font";
                 this.hangout.setEnable(false);
-                this.hangout.setTitle(BI.i18nText("BI-Hangout_Report_Can_Not_Mark"));
+                this.hangout.setWarningTitle(BI.i18nText("BI-Hangout_Report_Can_Not_Mark"));
             }
             this.markButton = BI.createWidget({
                 type: "bi.icon_change_button",
                 cls: "template-item-mark-icon",
-                title: o.status === BICst.REPORT_STATUS.HANGOUT ?
-                    BI.i18nText("BI-Hangouted") : BI.i18nText("BI-Report_Hangout_Applying"),
+                title: function(){
+                    if(self.status === BICst.REPORT_STATUS.APPLYING) {
+                        return BI.i18nText("BI-Report_Hangout_Applying");
+                    }
+                    if(self.status === BICst.REPORT_STATUS.HANGOUT) {
+                        return BI.i18nText("BI-Hangouted");
+                    }
+                },
                 stopPropagation: true,
                 width: 12,
                 height: 12
@@ -103,7 +119,7 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
         });
         if (o.status === BICst.REPORT_STATUS.HANGOUT) {
             deleteIcon.setEnable(false);
-            deleteIcon.setTitle(BI.i18nText("BI-Hangout_Report_Can_Not_Delete"));
+            deleteIcon.setWarningTitle(BI.i18nText("BI-Hangout_Report_Can_Not_Delete"));
         }
         deleteIcon.on(BI.IconButton.EVENT_CHANGE, function () {
             o.onDeleteReport.apply(this, arguments);
@@ -198,11 +214,13 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
 
     _refreshHangout: function () {
         if (this.status === BICst.REPORT_STATUS.NORMAL) {
-            this.hangout.setIcon("report-apply-hangout-normal-font");
-            this.markButton && this.markButton.setVisible(false);
+            this.hangout.setIcon("report-apply-hangout-ing-font");
+            if(BI.isNotNull(this.markButton)) {
+                this.markButton.setVisible(false);
+            }
         }
         if(this.status === BICst.REPORT_STATUS.APPLYING) {
-            this.hangout.setIcon("report-apply-hangout-ing-font");
+            this.hangout.setIcon("report-hangout-ing-mark-font");
             if(BI.isNotNull(this.markButton)) {
                 this.markButton.setIcon("report-hangout-ing-mark-font");
                 this.markButton.setVisible(true);
