@@ -28,7 +28,7 @@ BIDezi.DetailDimensionModel = BI.inherit(BI.Model, {
     },
 
     local: function(){
-        if(this.has("valueChange")){
+        if(this.has("valueChange")){model.detail
             var value = this.get("valueChange");
             this.set("value", value);
             return true;

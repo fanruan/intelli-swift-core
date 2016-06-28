@@ -64,7 +64,7 @@ public class FormulaFilter extends AbstractTargetFilter {
         if (!StringUtils.isEmpty(expression)) {
             jo.put(BIJSONConstant.JSON_KEYS.FILTER_VALUE, expression);
             jo.put(BIJSONConstant.JSON_KEYS.FILTER_TYPE, BIReportConstant.FILTER_TYPE.FORMULA);
-        }else{
+        } else {
             jo.put(BIJSONConstant.JSON_KEYS.FILTER_TYPE, BIReportConstant.FILTER_TYPE.EMPTY_FORMULA);
         }
 
@@ -101,7 +101,6 @@ public class FormulaFilter extends AbstractTargetFilter {
     /**
      * 创建过滤条件的index，用于指标过滤
      *
-     *
      * @param target
      * @param loader loader对象
      * @return 分组索引
@@ -125,11 +124,11 @@ public class FormulaFilter extends AbstractTargetFilter {
         }
         Calculator cal = Calculator.createCalculator();
         long rowCount = ti.getRowCount();
-		GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
+        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
         for (int row = 0; row < rowCount; row++) {
             boolean res = calculatorFormulaFilterValue(cal, formular, columnMap, row, ti);
             if (res) {
-            	gvi.addValueByIndex(row);
+                gvi.addValueByIndex(row);
             }
         }
         return gvi;
@@ -137,6 +136,7 @@ public class FormulaFilter extends AbstractTargetFilter {
 
     /**
      * 分析那边传过来的是fieldId, 要把它变成fieldName
+     *
      * @return 转换过后的expression副本
      */
     private String replaceRelatedParaNames() {
@@ -145,7 +145,7 @@ public class FormulaFilter extends AbstractTargetFilter {
         Matcher matcher = pat.matcher(expression);
         while (matcher.find()) {
             String matchStr = matcher.group(0);
-            if(matchStr.contains(BIReportConstant.FIELD_ID.HEAD)){
+            if (matchStr.contains(BIReportConstant.FIELD_ID.HEAD)) {
                 result = result.replaceAll(matchStr.substring(2, matchStr.length() - 1), BIModuleUtils.getBusinessFieldById(new BIFieldID(matchStr.substring(BIReportConstant.FIELD_ID.HEAD.length() + 2, matchStr.length() - 1))).getFieldName());
             }
         }
