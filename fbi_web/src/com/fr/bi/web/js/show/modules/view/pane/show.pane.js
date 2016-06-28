@@ -113,7 +113,8 @@ BIShow.PaneView = BI.inherit(BI.View, {
         var dashboard = BI.createWidget({
             type: "bi.adaptive_arrangement",
             layoutType: this.model.get("layoutType"),
-            resizable: false
+            resizable: false,
+            isNeedReLayout: false
         });
         dashboard.populate(items);
         return dashboard;
