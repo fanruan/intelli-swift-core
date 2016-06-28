@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.finebi.cube.conf.singletable.BICubeTimeTaskCreator;
-import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
@@ -28,8 +28,8 @@ public class BIModifyGlobalUpdateSettingAction extends AbstractBIConfigureAction
         UpdateSettingSource source = new UpdateSettingSource();
         source.parseJSON(new JSONObject(globalUpdateSetting));
         BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(DBConstant.GLOBAL_UPDATE, source, userId);
-        BICubeTimeTaskCreatorManager biCubeTimeTaskCreatorManager= StableFactory.getMarkedObject(BICubeTimeTaskCreator.XML_TAG,BICubeTimeTaskCreatorManager.class);
-        biCubeTimeTaskCreatorManager.taskCreate(userId);
+        BICubeManager biCubeManager=StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
+        biCubeManager.resetCubeGenerationHour(userId);
         try {
             BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
         } catch (Exception e) {

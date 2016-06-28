@@ -2,7 +2,6 @@ package com.fr.bi.cal.generate.timerTask;
 
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.conf.singletable.BICubeTimeTaskCreator;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
@@ -10,7 +9,6 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.conf.manager.update.source.TimeFrequency;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.time.BIDateUtils;
@@ -21,28 +19,39 @@ import java.util.*;
  * Created by Kary on 2016/6/28.
  */
 public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreator {
-   private List<Timer> timerList = new ArrayList<Timer>();
+    public BICubeTimeTaskCreatorManager() {
+    }
 
     @Override
-    public void taskCreate(long userId) {
-        clear();
-        Map<String, UpdateSettingSource> allTimeTaskMap = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(userId);
+    public List<Timer> reGenerateTimeTasks(long userId, Map<String, UpdateSettingSource> allTimeTaskMap) {
+        List<Timer> timerList = new ArrayList<Timer>();
         for (String keys : allTimeTaskMap.keySet()) {
             if (keys.equals(DBConstant.GLOBAL_UPDATE)) {
                 for (TimeFrequency frequency : allTimeTaskMap.get(keys).getTimeList()) {
-                    GlobalTaskAdd(frequency, userId);
+                    timerList.add(addGlobalTask(frequency, userId));
                 }
             } else {
                 for (TimeFrequency frequency : allTimeTaskMap.get(keys).getTimeList()) {
                     BIBusinessTable table = new BIBusinessTable(new BITableID(keys));
-                    SingleTableTaskAdd(frequency, table, userId);
+                    timerList.add(addSingleTableTask(frequency, table, userId));
                 }
 
             }
         }
+        return timerList;
     }
 
-    private void GlobalTaskAdd(TimeFrequency frequency, final long userId) {
+    @Override
+    public void removeTimeTasks(List<Timer> timerList) {
+        if (timerList != null) {
+            for (int i = 0; i < timerList.size(); i++) {
+                timerList.get(i).cancel();
+            }
+            timerList.clear();
+        }
+    }
+
+    private Timer addGlobalTask(TimeFrequency frequency, final long userId) {
         Date startDate = BIDateUtils.createStartDate(frequency.getUpdateTime(), frequency.getUpdateFrequency());
         Timer timer = new Timer();
         long period = BIDateUtils.createScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
@@ -54,10 +63,10 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreator {
             }
 
         }, startDate, period);
-        timerList.add(timer);
+        return timer;
     }
 
-    private void SingleTableTaskAdd(TimeFrequency frequency, final BIBusinessTable table, final long userId) {
+    private Timer addSingleTableTask(TimeFrequency frequency, final BIBusinessTable table, final long userId) {
         long period = BIDateUtils.createScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
         Date startDate = BIDateUtils.createStartDate(frequency.getUpdateTime(), frequency.getUpdateFrequency());
         Timer timer = new Timer();
@@ -69,19 +78,7 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreator {
             }
 
         }, startDate, period);
-        timerList.add(timer);
+        return timer;
     }
 
-    private void clear(){
-        if (timerList != null) {
-            for (int i = 0; i < timerList.size(); i++) {
-                timerList.get(i).cancel();
-            }
-            timerList.clear();
-        }
-    }
-    @Override
-    public TimerTask createNewObject() {
-        return null;
-    }
 }

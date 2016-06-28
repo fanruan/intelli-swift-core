@@ -121,7 +121,7 @@ public class SingleUserCubeManager {
     }
 
     public void resetCubeGenerationHour() {
-        timerRunner.init();
+        timerRunner.reGenerateTimeTasks();
     }
 
     /**

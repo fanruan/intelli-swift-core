@@ -6,7 +6,7 @@ import com.finebi.cube.conf.datasource.BIDataSourceManager;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
 import com.finebi.cube.conf.relation.BISystemTableRelationManager;
-import com.finebi.cube.conf.singletable.BICubeTimeTaskCreator;
+import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreator;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManager;
