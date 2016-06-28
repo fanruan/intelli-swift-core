@@ -36,7 +36,7 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
                 whiteSpace: "nowrap",
                 textAlign: "left",
                 lgap: 5,
-                height: 36
+                height: 25
             }, {
                 type: "bi.default",
                 items: [combo],
