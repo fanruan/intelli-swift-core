@@ -12,5 +12,7 @@ import java.util.TimerTask;
  * @since 4.0
  */
 public interface BICubeTimeTaskCreator extends ValueCreator<TimerTask> {
+    String XML_TAG = "BICubeTimeTaskCreator";
 
+    void taskCreate(long userId);
 }
