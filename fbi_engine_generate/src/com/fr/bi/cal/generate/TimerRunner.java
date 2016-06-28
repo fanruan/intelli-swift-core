@@ -31,6 +31,10 @@ public class TimerRunner {
     }
 
     public void init() {
+        setTimeRunner();
+    }
+
+    private void setTimeRunner() {
         if (timerList != null) {
             for (int i = 0; i < timerList.size(); i++) {
                 timerList.get(i).cancel();
