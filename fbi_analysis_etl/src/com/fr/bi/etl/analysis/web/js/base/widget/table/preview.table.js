@@ -51,7 +51,11 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
         });
 
         this._initDrag();
-
+        this.label = BI.createWidget({
+            type:"bi.label",
+            cls: o.baseCls +"-null-label",
+            text: BI.i18nText("BI-Add_Fields_First")
+        })
         this.card = BI.createWidget({
             type:"bi.card",
             element:this.element,
@@ -60,11 +64,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
                 cardName : this._constant.nullCard,
                el : {
                    type : "bi.center_adapt",
-                   items : [{
-                       type:"bi.label",
-                       cls: o.baseCls +"-null-label",
-                       text: BI.i18nText("BI-Add_Fields_First")
-                   }]
+                   items : [self.label]
                }
             }, {
                 el :this.table,
@@ -369,10 +369,19 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
         })
     },
 
+    _getNullText: function () {
+        switch (this.options.operator) {
+            case ETLCst.ANALYSIS_ETL_PAGES.USE_PART_FIELDS:
+                return BI.i18nText("BI-ETL_Please_Select_Field");
+            default:
+                return  BI.i18nText("BI-Add_Fields_First");
+        }
+    },
     _showCard : function () {
         if(this.options.operator === ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR) {
             this.card.showCardByName(this._constant.errorCard)
         } else if(this.options.header.length === 0){
+            this.label.setText(this._getNullText())
             this.card.showCardByName(this._constant.nullCard)
         } else {
             this.card.showCardByName(this._constant.tableCard)
