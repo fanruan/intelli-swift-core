@@ -156,7 +156,7 @@ public class DimensionGroupFilter {
         if (isNormalResultFilter(filter)) {
             filterList.add(filter);
         }
-        return AddTargetFilters(filterList);
+        return AddTargetFilters(filterList, deep);
     }
 
     private boolean isNormalResultFilter(DimensionFilter filter) {
@@ -165,11 +165,11 @@ public class DimensionGroupFilter {
 
     private List<DimensionFilter> getAllResultFilters() {
         List<DimensionFilter> filterList = getAllDimensionFilter();
-        return AddTargetFilters(filterList);
+        return AddTargetFilters(filterList, rowDimension.length - 1);
     }
 
-    private List<DimensionFilter> AddTargetFilters(List<DimensionFilter> filterList) {
-        if (targetFilterMap != null) {
+    private List<DimensionFilter> AddTargetFilters(List<DimensionFilter> filterList, int deep) {
+        if (targetFilterMap != null && deep == rowDimension.length - 1) {
             filterList.addAll(targetFilterMap.values());
         }
         return removeNullFilter(filterList);
