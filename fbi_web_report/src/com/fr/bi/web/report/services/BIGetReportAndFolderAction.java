@@ -6,6 +6,7 @@ import com.fr.bi.fs.BITemplateFolderNode;
 import com.fr.bi.fs.HSQLBITemplateFolderDAO;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.algorithem.BISortUtils;
+import com.fr.fs.base.entity.User;
 import com.fr.fs.control.EntryControl;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
@@ -45,9 +46,27 @@ public class BIGetReportAndFolderAction extends ActionNoSessionCMD {
                     checkReportStatus(node.getId(), node.getUserId(), allEntry)) {
                 node.setStatus(BIReportConstant.REPORT_STATUS.NORMAL);
             }
-            ja.put(node.createJSONConfig());
+            JSONObject nodeJO = node.createJSONConfig();
+            nodeJO.put("shared", getSharedUsers(node.getId(), userId));
+            ja.put(nodeJO);
         }
         WebUtils.printAsJSON(res, ja);
+    }
+
+    private JSONArray getSharedUsers(long reportId, long createBy) throws Exception{
+        List<User> users = BIDAOUtils.getSharedUsersByReport(Long.valueOf(reportId), createBy);
+        JSONArray ja = new JSONArray();
+        if(users != null) {
+            for(int i = 0; i < users.size(); i++){
+                User user = users.get(i);
+                if(user.getId() != createBy) {
+                    JSONObject jo = user.createJSON4Share();
+                    jo.put("roles", UserControl.getInstance().getAllSRoleNames(user.getId()));
+                    ja.put(jo);
+                }
+            }
+        }
+        return ja;
     }
 
     private boolean checkReportStatus(long reportId, long createBy, JSONArray entries) throws Exception {

@@ -1,6 +1,8 @@
 package com.fr.bi.fs;
 
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.data.impl.EmbeddedTableData;
+import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.function.DATE;
@@ -101,6 +103,16 @@ public class BIDAOUtils {
             nodes.add(BIDAOUtils.findByID(sNode.getReportId(), sNode.getCreateBy()));
         }
         return nodes;
+    }
+
+    public static List<User> getSharedUsersByReport(long reportId, long createBy) {
+        List<User> users = null;
+        try {
+            users = UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).findUsersByReport(reportId, createBy);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return users;
     }
 
     public static boolean deleteBIReportById(long userId, long id) throws Exception {

@@ -176,9 +176,8 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         switch (v) {
             case BICst.SORT.ASC:
             case BICst.SORT.DESC:
-                if (!sortSequence.contains(dId)) {
-                    sortSequence.push(dId);
-                }
+                BI.remove(sortSequence, dId);
+                sortSequence.push(dId);
                 break;
             case BICst.SORT.NONE:
                 BI.remove(sortSequence, dId);
