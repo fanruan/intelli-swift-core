@@ -53,7 +53,6 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         var config = BI.ChartCombineFormatItemFactory.combineConfig();
         config.plotOptions.click = function () {
             self.fireEvent(BI.CombineChart.EVENT_CHANGE, BI.extend(this.pointOption, {
-                seriesName: this.seriesName,
                 category: this.category
             }));
         };
