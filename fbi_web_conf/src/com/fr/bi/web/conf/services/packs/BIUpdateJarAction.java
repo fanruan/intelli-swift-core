@@ -40,6 +40,24 @@ public class BIUpdateJarAction extends
 
         }
     }
+    protected  updateJarOnline(){
+        String base = BIConfigurePathUtils.getProjectLibPath();
+        String confPath = base + File.separator + "online_update";
+        String target;
+        if (new File(confPath).exists()) {
+            target = BIFileUtils.readFile(confPath);
+        } else {
+            target = getDefault();
+        }
+        JSONObject jsonObject = new JSONObject(target);
+        JSONArray array = jsonObject.getJSONArray("jars");
+        String url = jsonObject.getString("url");
+        for (int i = 0; i < array.length(); i++) {
+            String name = array.getString(i);
+            downloadJar(name, url + name, base);
+
+        }
+    }
 
     private String getDefault() {
         return "{\n" +
