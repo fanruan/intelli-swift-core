@@ -292,6 +292,10 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.PercentAccumulateAxisChart.EVENT_CHANGE = "EVENT_CHANGE";

@@ -328,6 +328,10 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.FallAxisChart.EVENT_CHANGE = "EVENT_CHANGE";

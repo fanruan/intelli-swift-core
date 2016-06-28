@@ -291,6 +291,10 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.PercentAccumulateAreaChart.EVENT_CHANGE = "EVENT_CHANGE";

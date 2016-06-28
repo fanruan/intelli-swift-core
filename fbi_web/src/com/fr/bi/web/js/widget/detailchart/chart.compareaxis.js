@@ -364,6 +364,10 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.CompareAxisChart.EVENT_CHANGE = "EVENT_CHANGE";

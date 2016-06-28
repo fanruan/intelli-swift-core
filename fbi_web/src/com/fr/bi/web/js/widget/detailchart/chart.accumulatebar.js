@@ -293,21 +293,10 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.AccumulateBarChart, {
-    formatItems: function (items) {
-        var name = BI.keys(items)[0];
-        return {
-            "data": BI.map(items[name], function(idx, item){
-                return BI.extend({options: item.options}, {
-                    y: item.x,
-                    x: item.y
-                });
-            }),
-            "name": name,
-            stack: true
-        }
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.AccumulateBarChart.EVENT_CHANGE = "EVENT_CHANGE";
