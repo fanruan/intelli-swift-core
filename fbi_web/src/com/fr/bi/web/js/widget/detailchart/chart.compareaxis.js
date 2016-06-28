@@ -83,7 +83,7 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
         BI.each(config.yAxis, function(idx, axis){
             switch (axis.axisIndex){
                 case self.constants.LEFT_AXIS:
-                    axis.reversed = self.config.left_y_axis_reversed;
+                    axis.reversed = self.config.left_y_axis_reversed ? !axis.reversed : axis.reversed;
                     axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
                     formatNumberLevelInYaxis(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
@@ -92,7 +92,7 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
                     axis.title.rotation = self.constants.ROTATION;
                     break;
                 case self.constants.RIGHT_AXIS:
-                    axis.reversed = self.config.right_y_axis_reversed;
+                    axis.reversed = self.config.right_y_axis_reversed ? !axis.reversed : axis.reversed;
                     axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
                     formatNumberLevelInYaxis(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
@@ -287,6 +287,18 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(items){
+        return BI.map(items, function(idx, item){
+            return BI.map(item, function(id, it){
+                if(idx > 0){
+                    return BI.extend({}, it, {reversed: true, xAxis: 0});
+                }else{
+                    return BI.extend({}, it, {reversed: false, xAxis: 1});
+                }
+            });
+        });
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
@@ -341,52 +353,17 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
                 position: idx > 0 ? "right" : "left",
                 lineWidth: 1,
                 axisIndex: idx,
-                gridLineWidth: 0
+                gridLineWidth: 0,
+                reversed: idx > 0
             };
-            if(BI.isNotEmptyArray(items)){
-                newYAxis.reversed = items[idx][0].reversed || false;
-            }
             self.yAxis.push(newYAxis);
         });
 
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.CompareAxisChart, {
-    formatItems: function (items) {
-        var result = [], o = this.options;
-        var re = BI.any(items, function(idx, item){
-            return BI.isEmptyArray(item);
-        });
-        if(re === true){
-            return [];
-        }
-        BI.each(items, function(i, belongAxisItems){
-            BI.each(belongAxisItems, function(j, axisItems){
-                var name = BI.keys(axisItems)[0];
-                result.push({
-                    "data": BI.map(axisItems[name], function(idx, item){
-                        if(i === 0){
-                            return BI.extend({options: item.options}, {
-                                y: item.x,
-                                x: -item.y
-                            });
-                        }else{
-                            return BI.extend({options: item.options}, {
-                                y: item.x,
-                                x: item.y
-                            });
-                        }
-                    }),
-                    "name": name
-                });
-            });
-        });
-        return result;
     }
 });
 BI.CompareAxisChart.EVENT_CHANGE = "EVENT_CHANGE";

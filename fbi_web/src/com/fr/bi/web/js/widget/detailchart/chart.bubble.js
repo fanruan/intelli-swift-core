@@ -251,8 +251,8 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
-            if(position === self.constants.RIGHT_AXIS){
-                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+            if(position === self.constants.X_AXIS){
+                if(self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                     if(type === self.constants.NORMAL){
                         formatter = '#0%'
                     }else{
@@ -262,6 +262,17 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
             }
             return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
         }
+    },
+
+    _formatItems: function(items){
+        BI.each(items, function(idx, item){
+            BI.each(item, function(id, it){
+                BI.each(it.data, function(i, da){
+                    da.size = da.z;
+                })
+            })
+        });
+        return items;
     },
 
     populate: function (items, options) {
@@ -293,28 +304,11 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
             });
             types.push(type);
         });
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.BubbleChart, {
-    formatItems: function (items) {
-        return BI.map(items, function(idx, item){
-            var name = BI.keys(item)[0];
-            return {
-                "data": BI.map(item[name], function(idx, it){
-                    return BI.extend(it, {
-                        "x": it.x,
-                        "y": it.y,
-                        "size": it.z
-                    });
-                }),
-                "name": name
-            }
-        });
     }
 });
 BI.BubbleChart.EVENT_CHANGE = "EVENT_CHANGE";

@@ -30,9 +30,9 @@ BI.StyleTable = BI.inherit(BI.Widget, {
             },
 
             columnSize: [],
-            headerRowSize: 37,
-            footerRowSize: 37,
-            rowSize: 30,
+            headerRowSize: 25,
+            footerRowSize: 25,
+            rowSize: 25,
 
             regionColumnSize: false,
 
@@ -258,9 +258,9 @@ BI.StyleTable = BI.inherit(BI.Widget, {
         }
 
         //表头
-        $table.find(".scroll-top-left .table,.scroll-top-right .table,.scroll-bottom-right .table > thead > tr").css({
+        $table.find(".scroll-top-left .table,.scroll-top-right .table,.scroll-bottom-right .table > thead > tr,.sequence-table-title").css({
             fontWeight: "bold",
-            fontSize: "14px"
+            fontSize: "12px"
         }).css("color", "white");
     },
 

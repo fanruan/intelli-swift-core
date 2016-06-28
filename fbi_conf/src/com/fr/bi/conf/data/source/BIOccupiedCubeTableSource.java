@@ -152,8 +152,8 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
     }
 
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
-        return null;
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
+        return set;
     }
 
     @Override

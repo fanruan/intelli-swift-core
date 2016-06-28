@@ -204,15 +204,19 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
      * @return
      */
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
+        if(helper.contains(this)){
+            return set;
+        }
+        helper.add(this);
         for (BITargetAndDimension dim : widget.getViewDimensions()){
             if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
-                dim.createTableKey().getTableSource().getSourceUsedBaseSource(set);
+                dim.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }
         for (BITargetAndDimension target : widget.getViewTargets()){
             if (target.createTableKey() != null && target.createTableKey().getTableSource() != null){
-                target.createTableKey().getTableSource().getSourceUsedBaseSource(set);
+                target.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }
         return set;

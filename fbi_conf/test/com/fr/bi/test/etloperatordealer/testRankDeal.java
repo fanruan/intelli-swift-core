@@ -103,7 +103,7 @@ public class testRankDeal extends TestCase {
             con = RankDealer.class.getDeclaredConstructor(BIKey.class, int.class, Traversal.class);
             con.setAccessible(true);
             dealer = con.newInstance(null, type, t);
-            dealer.dealWith(ti, gvi, 0);
+            dealer.dealWith(ti, gvi);
             assertEquals(resultMap, acceptResultMap);
         } catch (Exception e) {
             assertTrue(false);

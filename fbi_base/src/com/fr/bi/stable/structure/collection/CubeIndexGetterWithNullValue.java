@@ -130,7 +130,7 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 
 	@Override
 	public Object lastKey() {
-		return null;
+		return getter.lastKey();
 	}
 	
 	private class CIterator implements Iterator {

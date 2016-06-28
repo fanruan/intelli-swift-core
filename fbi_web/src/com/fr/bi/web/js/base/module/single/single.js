@@ -45,7 +45,8 @@ BI.Single = BI.inherit(BI.Widget, {
     _init: function () {
         BI.Single.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        if (BI.isKey(o.title) || BI.isKey(o.warningTitle)) {
+        if (BI.isKey(o.title) || BI.isKey(o.warningTitle)
+            || BI.isFunction(o.title) || BI.isFunction(o.warningTitle)) {
             this.enableHover();
         }
     },
@@ -130,11 +131,19 @@ BI.Single = BI.inherit(BI.Widget, {
     },
 
     getTitle: function () {
-        return this.options.title;
+        var title = this.options.title;
+        if(BI.isFunction(title)) {
+            return title();
+        }
+        return title;
     },
 
     getWarningTitle: function () {
-        return this.options.warningTitle;
+        var title = this.options.warningTitle;
+        if(BI.isFunction(title)) {
+            return title();
+        }
+        return title;
     },
 
     setValue: function (val) {
