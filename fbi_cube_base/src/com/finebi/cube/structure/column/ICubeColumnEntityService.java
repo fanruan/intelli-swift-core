@@ -84,4 +84,11 @@ public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> 
     void copyDetailValue(ICubeColumnEntityService columnEntityService, long rowCount);
 
     void setOwner(ITableKey owner);
+
+    /**
+     * 给每一个原始值添加在分组中的位置
+     * @param position 原始值的位置
+     * @param groupPosition 分组的位置
+     */
+   // void addPositionOfGroup(int position, int groupPosition);
 }

@@ -97,6 +97,35 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
                 self._onClickHangout();
             });
             this._refreshHangout();
+            
+            //查看已分享
+            var sharedButton = BI.createWidget({
+                type: "bi.icon_button",
+                cls: "share-font",
+                title: BI.i18nText("BI-Cancel_Shared_Users"),
+                width: 16,
+                height: 16,
+                invisible: true
+            });
+            sharedButton.on(BI.IconButton.EVENT_CHANGE, function(){
+                var id = BI.UUID();
+                var sharedUsers = BI.createWidget({
+                    type: "bi.edit_shared_pane",
+                    shared: o.shared
+                });
+                sharedUsers.on(BI.EditSharedPane.EVENT_CLOSE, function(){
+                    BI.Popovers.remove(id);
+                });
+                sharedUsers.on(BI.EditSharedPane.EVENT_SAVE, function(){
+                    o.editSharedUsers(this.getValue());
+                    BI.Popovers.remove(id);
+                });
+                BI.Popovers.create(id, sharedUsers, {width: 600, height: 500}).open(id);
+            });
+            if(BI.isNull(o.shared) || o.shared.length === 0) {
+                sharedButton.setEnable(false);
+                sharedButton.setWarningTitle(BI.i18nText("BI-The_Report_Not_Shared"));
+            }
         }
 
         var renameIcon = BI.createWidget({
@@ -135,10 +164,12 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
             renameIcon.setVisible(true);
             deleteIcon.setVisible(true);
             self.hangout && self.hangout.setVisible(true);
+            sharedButton && sharedButton.setVisible(true);
         }, function () {
             renameIcon.setVisible(false);
             deleteIcon.setVisible(false);
             self.hangout && self.hangout.setVisible(false);
+            sharedButton && sharedButton.setVisible(false);
         });
 
         this.blankSpace = BI.createWidget({
@@ -192,13 +223,13 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
                 el: {
                     type: "bi.left_right_vertical_adapt",
                     items: {
-                        left: [this.hangout || BI.createWidget(), renameIcon, deleteIcon],
+                        left: [sharedButton, this.hangout || BI.createWidget(), renameIcon, deleteIcon],
                         right: [timeText]
                     },
                     llgap: 20,
                     rrgap: 20
                 },
-                width: 280
+                width: 320
             }]
         });
     },

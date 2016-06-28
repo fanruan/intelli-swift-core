@@ -71,6 +71,9 @@ BI.TemplateManagerButtonGroup = BI.inherit(BI.Widget, {
                     },
                     onClickHangout: function(){
                         self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_HANGOUT, item.id);
+                    },
+                    editSharedUsers: function(users){
+                        self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_EDIT_SHARED, item.id, users)
                     }
                 });
             }
@@ -146,4 +149,5 @@ BI.TemplateManagerButtonGroup.EVENT_CHANGE = "TemplateManagerButtonGroup.EVENT_C
 BI.TemplateManagerButtonGroup.EVENT_FOLDER_RENAME = "TemplateManagerButtonGroup.EVENT_FOLDER_RENAME";
 BI.TemplateManagerButtonGroup.EVENT_DELETE = "TemplateManagerButtonGroup.EVENT_DELETE";
 BI.TemplateManagerButtonGroup.EVENT_HANGOUT = "EVENT_HANGOUT";
+BI.TemplateManagerButtonGroup.EVENT_EDIT_SHARED = "EVENT_EDIT_SHARED";
 $.shortcut("bi.template_manager_button_group", BI.TemplateManagerButtonGroup);
