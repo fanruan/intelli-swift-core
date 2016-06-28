@@ -28,10 +28,10 @@ public class BIFormularUtils {
             if (columnIndex != null) {
                 Object value = ti.getColumnDetailReader(columnIndex).getValue(row);
                 int fieldType = ti.getColumns().get(columnIndex).getFieldType();
-                if (fieldType == DBConstant.COLUMN.DATE) {
-                    value = new Date((Long) value);
-                }
                 if (value != null) {
+                    if (fieldType == DBConstant.COLUMN.DATE) {
+                        value = new Date((Long) value);
+                    }
                     c.set(columnName, value);
                 } else {
                     c.remove(columnName);
