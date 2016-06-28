@@ -84,43 +84,25 @@ BIShow.PaneView = BI.inherit(BI.View, {
 
     _createDashBoard: function () {
         var self = this;
-        var items = [];
-
-        BI.each(this.model.cat("widgets"), function (wid, widget) {
-            var vessel = BI.createWidget({
-                type: "bi.layout"
-            });
-            self.addSubVessel(wid, vessel);
-            var container = BI.createWidget({
-                type: "bi.absolute",
-                id: wid,
-                items: [{
-                    el: vessel,
-                    left: 5,
-                    right: 5,
-                    top: 5,
-                    bottom: 5
-                }]
-            });
-            items.push({
-                el: container,
-                left: widget.bounds.left,
-                top: widget.bounds.top,
-                width: widget.bounds.width,
-                height: widget.bounds.height
-            });
+        var map = [];
+        this.dashboard = BI.createWidget({
+            type: "bi.fit_4show",
+            widgetCreator: function (wId) {
+                if (!map[wId]) {
+                    map[wId] = BI.createWidget({
+                        type: "bi.layout"
+                    });
+                    self.addSubVessel(wId, map[wId]);
+                }
+                return map[wId];
+            }
         });
-        var dashboard = BI.createWidget({
-            type: "bi.adaptive_arrangement",
-            layoutType: this.model.get("layoutType"),
-            resizable: false
-        });
-        dashboard.populate(items);
-        return dashboard;
+        return this.dashboard;
     },
 
     refresh: function () {
         var self = this;
+        this.dashboard.populate();
         this._refreshWidgets();
     }
 });
