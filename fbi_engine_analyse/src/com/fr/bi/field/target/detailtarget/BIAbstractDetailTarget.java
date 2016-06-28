@@ -140,9 +140,15 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
         }
     }
 
+
     @Override
     public void clear() {
 
+    }
+
+
+    public IGroup getGroup() {
+        return group;
     }
 
     @Override
@@ -153,31 +159,31 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        BIAbstractDetailTarget that = (BIAbstractDetailTarget) o;
-
-        if (filter != null ? !ComparatorUtils.equals(filter, that.filter) : that.filter != null) {
+        if (!super.equals(o)) {
             return false;
         }
 
-        return true;
+        BIAbstractDetailTarget that = (BIAbstractDetailTarget) o;
+
+        if (!ComparatorUtils.equals(filter, that.filter)) {
+            return false;
+        }
+        if (!ComparatorUtils.equals(sort, that.sort)) {
+            return false;
+        }
+        if (!ComparatorUtils.equals(group, that.group)) {
+            return false;
+        }
+        return ComparatorUtils.equals(relationList, that.relationList);
     }
 
-    /**
-     * hash值
-     *
-     * @return hash值
-     */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-
-        result = prime * result + (filter != null ? filter.hashCode() : 0);
+        int result = super.hashCode();
+        result = 31 * result + (filter != null ? filter.hashCode() : 0);
+        result = 31 * result + (sort != null ? sort.hashCode() : 0);
+        result = 31 * result + (group != null ? group.hashCode() : 0);
+        result = 31 * result + (relationList != null ? relationList.hashCode() : 0);
         return result;
-    }
-
-    public IGroup getGroup() {
-        return group;
     }
 }

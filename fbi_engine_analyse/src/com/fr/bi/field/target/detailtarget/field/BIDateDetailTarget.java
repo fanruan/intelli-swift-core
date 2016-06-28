@@ -78,22 +78,4 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
         return "" + time;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof BIDateDetailTarget)) {
-            return false;
-        }
-
-        BIDateDetailTarget that = (BIDateDetailTarget) o;
-
-        if (group != that.group) {
-            return false;
-        }
-
-        return true;
-    }
-
 }
