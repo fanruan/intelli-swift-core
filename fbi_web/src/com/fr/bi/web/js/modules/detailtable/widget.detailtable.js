@@ -170,7 +170,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     _onClickHeaderSort: function (dId, v) {
         var ob = {};
         var dimensions = BI.Utils.getWidgetDimensionsByID(this.options.wId);
-        dimensions[dId].sort = {target_id: dId, type: v};
+        dimensions[dId].sort = {sort_target: dId, type: v};
         ob.dimensions = dimensions;
         var sortSequence = BI.Utils.getWidgetSortSequenceByID(this.options.wId);
         switch (v) {
