@@ -63,7 +63,16 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
 
     @Override
     public ICubeColumnIndexReader createNoneSortNoneGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader) {
-        return  loader.getTableIndex(getTableSourceFromField()).loadGroup(createKey(), relations);
+        //默认设置field本身为关联主键
+        CubeTableSource usedTableSource = field.getTableBelongTo().getTableSource();
+        BIKey usedColumnKey = dimension.createKey(field);
+        //多对多处理,这里默认relationList的第一个关联是公共主表关联
+        if (getDirectToDimensionRelationList().size() > 0) {
+            ICubeFieldSource primaryField = getDirectToDimensionRelationList().get(0).getPrimaryField();
+            usedTableSource = primaryField.getTableBelongTo();
+            usedColumnKey = new IndexKey(primaryField.getFieldName());
+        }
+        return loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, relations);
     }
 
 
@@ -190,7 +199,17 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
 
     @Override
     public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
-        ICubeColumnIndexReader getter = loader.getTableIndex(getTableSourceFromField()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
+        //默认设置field本身为关联主键
+        CubeTableSource usedTableSource = getTableSourceFromField();
+        BIKey usedColumnKey = dimension.createKey(field);
+        //多对多处理,这里默认relationList的第一个关联是公共主表关联
+        if (getDirectToDimensionRelationList().size() > 0) {
+            ICubeFieldSource primaryField = getDirectToDimensionRelationList().get(0).getPrimaryField();
+            CubeTableSource primaryTableSource = primaryField.getTableBelongTo();
+            usedTableSource = primaryTableSource;
+            usedColumnKey = new IndexKey(primaryField.getFieldName());
+        }
+        ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);
         return dimension.getSort().createGroupedMap(getter);
     }
@@ -249,7 +268,6 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
                     dimension == null ? null : dimension.getSort());
         }
     }
-
 
 
 }

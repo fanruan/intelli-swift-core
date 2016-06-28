@@ -14,10 +14,10 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
         var dId = o.dId;
         var name = o.text;
         var combo = BI.createWidget({
-            type: "bi.sort_filter_target_combo",
+            type: "bi.sort_filter_detail_combo",
             dId: dId
         });
-        combo.on(BI.SortFilterTargetCombo.EVENT_CHANGE, function (v) {
+        combo.on(BI.SortFilterDetailCombo.EVENT_CHANGE, function (v) {
             o.sortFilterChange(v);
         });
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
