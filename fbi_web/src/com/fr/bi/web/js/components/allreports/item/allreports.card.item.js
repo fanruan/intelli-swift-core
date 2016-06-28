@@ -51,8 +51,8 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
         }
         
         var userName = this.model.getUserNameByUserId(report.createBy);
-        var departName = this.model.getDepartNameByUserId(report.createBy);
-        var roleName = this.model.getRoleByUserId(report.createBy);
+        var departName = this.model.getDepartNameByUserId(report.createBy).toString();
+        var roleName = this.model.getRoleByUserId(report.createBy).toString();
         
         var infoIcon = BI.createWidget({
             type: "bi.combo",
@@ -94,7 +94,7 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
                             width: 40
                         }, {
                             type: "bi.label",
-                            text: roleName.toString(),
+                            text: roleName === "" ? BI.i18nText("BI-Wu") : roleName,
                             textAlign: "left",
                             textHeight: 30,
                             whiteSpace: "normal",
@@ -109,7 +109,7 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
                             width: 40
                         }, {
                             type: "bi.label",
-                            text: departName.toString(),
+                            text: departName === "" ? BI.i18nText("BI-Wu") : departName,
                             textAlign: "left",
                             textHeight: 30,
                             whiteSpace: "normal",

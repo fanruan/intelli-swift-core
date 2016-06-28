@@ -25,6 +25,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
 
     rebuildCenter: function (center) {
         var self = this;
+        var oldValue = [], oldSearchValue = [];
         this.searchResultPane = BI.createWidget({
             type: "bi.user_search_result_pane"
         });
@@ -34,19 +35,71 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
             onSearch: function (op, callback) {
                 var keyword = op.keyword.toLowerCase();
                 var searchResult = BI.Func.getSearchResult(self.allUsers, keyword, "user_name");
-                callback(self._formatUserRole(searchResult.matched.concat(searchResult.finded), true), keyword, self.allUsersTree.getValue());
+                var items = self._formatUserRole(searchResult.matched.concat(searchResult.finded), true);
+                var suIds = self.getValue();
+                var seaUserIds = [];
+                BI.each(self.allSearchUserIds, function(i, asu){
+                    if(suIds.contains(asu.slice(BI.UUID().length))) {
+                        seaUserIds.push(asu);
+                    }
+                });
+                oldSearchValue = seaUserIds;
+                callback(items, keyword, seaUserIds);
             },
             isAutoSearch: false,
             isAutoSync: false,
             popup: this.searchResultPane
         });
         this.searchResultPane.on(BI.UserSearchResultPane.EVENT_CHANGE, function () {
+            var isRemove = false;
+            //先同步一下自己
+            var vs = this.getValue();
+            var values = [], ids = [], oIds = [];
+            BI.each(vs, function(i, v){
+                ids.push(v.slice(BI.UUID().length));
+            });
+            BI.each(oldSearchValue, function(i, v){
+                oIds.push(v.slice(BI.UUID().length));
+            });
+            if (ids.length < oIds.length) {
+                BI.each(ids, function (i, v) {
+                    oIds.splice(oIds.indexOf(v), 1);
+                });
+                ids = BI.uniq(ids);
+                BI.each(oIds, function(i, oId){
+                    ids.indexOf(oId) > -1 && ids.splice(ids.indexOf(oId), 1);
+                });
+                isRemove = true;
+            }
+            BI.each(self.allSearchUserIds, function(i, au){
+                ids.contains(au.slice(BI.UUID().length)) && values.push(au);
+            });
+
+            this.setValue(values);
+
             //搜索结果面板的选中项变化的时候  要与原面板的选中项做对比 结果集再set回原始面板
-            var currOb = arguments[0];
-            var currId = currOb.value, isChecked = currOb.checked;
-            var oldValue = self.allUsersTree.getValue();
-            isChecked === true ? oldValue.push(currId) : BI.remove(oldValue, currId);
+            var value = self.getValue();
+            if(isRemove) {
+                BI.each(oIds, function(i, id){
+                    if(!ids.contains(id)) {
+                        BI.remove(value, id);
+                    }
+                });
+            } else {
+                BI.each(ids, function(i, id) {
+                    if(!oIds.contains(id)) {
+                        value.push(id);
+                    }
+                });
+            }
+            oldValue = [];
+            BI.each(self.allUserIds, function(i, auId){
+                if(value.contains(auId.slice(BI.UUID().length))) {
+                    oldValue.push(auId);
+                }
+            });
             self.allUsersTree.setValue(oldValue);
+            oldSearchValue = values;
             self._refreshSelectedUserList();
         });
 
@@ -58,7 +111,6 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
             self.allUsers = res;
             self.allUsersTree.populate(self._formatUserRole(res));
         });
-        var oldValue = [];
         this.allUsersTree.on(BI.SimpleTreeView.EVENT_CHANGE, function () {
             var vs = this.getValue();
             var values = [], ids = [], oIds = [];
@@ -154,12 +206,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                 });
                 this.selectedUserList.on(BI.Controller.EVENT_CHANGE, function () {
                     var userId = arguments[1];
-                    var selectedUser = self.allUsersTree.getValue();
-                    var sUserIds = [];
-                    BI.each(selectedUser, function(i, su){
-                        sUserIds.push(su.slice(BI.UUID().length));
-                    });
-                    sUserIds = BI.uniq(sUserIds);
+                    var sUserIds = self.getValue();
                     var suIds = [];
                     BI.remove(sUserIds, userId);
                     BI.each(self.allUserIds, function(i, au){
@@ -183,12 +230,12 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
         var treeItems = [];
         var departPosts = [];
         this.roleUserMap = {};
-        this.allUserIds = [];
+        isSearch ? (this.allSearchUserIds = []) : (this.allUserIds = []);
         BI.each(users, function (i, user) {
             var department = user.user_department;
             if (BI.isNotNull(department) && department !== "") {
                 var userId = BI.UUID() + user.user_id;
-                self.allUserIds.push(userId);
+                isSearch ? (self.allSearchUserIds.push(userId)) : (self.allUserIds.push(userId));
                 treeItems.push({
                     id: userId,
                     text: user.user_name,
@@ -230,7 +277,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                         self.roleUserMap[role].push(user);
                     }
                     var userId = BI.UUID() + user.user_id;
-                    self.allUserIds.push(userId);
+                    isSearch ? (self.allSearchUserIds.push(userId)) : (self.allUserIds.push(userId));
                     treeItems.push({
                         id: userId,
                         pId: role,
@@ -244,7 +291,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
             if ((BI.isNull(department) || department === "") &&
                 (BI.isNull(user.roles) || user.roles.length === 0)) {
                 var userId = BI.UUID() + user.user_id;
-                self.allUserIds.push(userId);
+                isSearch ? (self.allSearchUserIds.push(userId)) : (self.allUserIds.push(userId));
                 treeItems.push({
                     id: userId,
                     pId: BI.ShareReportPane.USER_NO_ROLE,
@@ -317,8 +364,18 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
         }
     },
 
+    getValue: function(){
+        var selectedUser = this.allUsersTree.getValue();
+        var sUserIds = [];
+        BI.each(selectedUser, function(i, su){
+            sUserIds.push(su.slice(BI.UUID().length));
+        });
+        sUserIds = BI.uniq(sUserIds);
+        return sUserIds;
+    },
+
     end: function () {
-        this.fireEvent(BI.ShareReportPane.EVENT_SHARE, this.allUsersTree.getValue());
+        this.fireEvent(BI.ShareReportPane.EVENT_SHARE, this.getValue());
     }
 });
 BI.extend(BI.ShareReportPane, {
