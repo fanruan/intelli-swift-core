@@ -466,7 +466,7 @@ public class CubeIndexLoader {
         DimensionGroupFilter dimensionGroupFilter = createDimensionGroupFilter(widget, usedTargets, sumTarget, rowDimension, session, new ArrayList<MergerInfo>(), false);
         boolean shouldOld = dimensionGroupFilter.shouldBuildTree();
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
-        NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, page, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
+        NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, -1, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
         if (usedTargets.length != 0 && isEmpty(topInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);
@@ -500,7 +500,7 @@ public class CubeIndexLoader {
         for (BISummaryTarget target : usedTargets) {
         }
         MultiThreadManagerImpl.getInstance().refreshExecutorService();
-        NodeAndPageInfo topInfo = createPageGroupNode(topWidget, usedTargets, sumTarget, colDimension, allDimension, page, useRealData, expander.getXExpander(), session, calculateTargets, new ArrayList(), createColumnOperator(page, widget), pg.getColumnGroup(), shouldOld, true);
+        NodeAndPageInfo topInfo = createPageGroupNode(topWidget, usedTargets, sumTarget, colDimension, allDimension, page, useRealData, NodeExpander.ALL_EXPANDER, session, calculateTargets, new ArrayList(), createColumnOperator(page, widget), pg.getColumnGroup(), shouldOld, true);
         MultiThreadManagerImpl.getInstance().awaitExecutor();
         return topInfo;
     }
