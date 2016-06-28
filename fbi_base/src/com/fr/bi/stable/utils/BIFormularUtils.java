@@ -5,6 +5,7 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.script.Calculator;
+import com.fr.stable.Primitive;
 import com.fr.stable.UtilEvalError;
 import com.fr.third.antlr.ANTLRException;
 
@@ -37,7 +38,8 @@ public class BIFormularUtils {
         }
 
         try {
-            return c.eval(formula);
+            Object ob = c.eval(formula);
+            return ob == Primitive.NULL ? null : ob;
         } catch (UtilEvalError e) {
             return null;
         }
@@ -124,7 +126,8 @@ public class BIFormularUtils {
             }
         }
         try {
-            return c.eval(formulaStr);
+            Object ob = c.eval(formulaStr);
+            return ob == Primitive.NULL ? null : ob;
         } catch (UtilEvalError e) {
             return null;
         }
