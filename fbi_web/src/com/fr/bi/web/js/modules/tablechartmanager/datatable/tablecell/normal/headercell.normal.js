@@ -7,7 +7,7 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
         return BI.extend(BI.NormalHeaderCell.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-normal-header-cell",
             width: "100%",
-            height: "100%"
+            height: 25
         })
     },
 
@@ -52,14 +52,14 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
                     whiteSpace: "nowrap",
                     textAlign: "left",
                     lgap: 5,
-                    height: 36
+                    height: 25
                 }
             }, {
                 el: {
                     type: "bi.center_adapt",
                     items: [combo],
                     width: 25,
-                    height: 36
+                    height: 25
                 },
                 width: 25
             }]
