@@ -12,6 +12,8 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
 
     _init: function () {
         BIConf.UpdateCubePaneView.superclass._init.apply(this, arguments);
+        /*监测cube状态走和生成cube走得是两个Action，会出现这么一个bug：在task还没add进入container的这个阶段，checkStatus返回是fasle，此时按钮会结束灰化，为了避免该bug，加入taskAdding来标识该阶段*/
+        this.taskAdding=false;
     },
 
     _render: function (vessel) {
@@ -39,10 +41,12 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             handler: function () {
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
-                window.setTimeout(function () {
-                    self.cubeLog.refreshLog(true);
-                    self.model.set("immediateUpdate", true);
-                },0);
+                self.cubeLog.refreshLog(true);
+                // self.model.set("immediateUpdate", true);
+                self.taskAdding = true;
+                BI.Utils.generateCube(function (data) {
+                    self.taskAdding = false;
+                })
             }
         });
 
@@ -59,7 +63,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             noset: true,
             success: function (data) {
                 var isGenerating = data.isGenerating;
-                if (isGenerating === false) {
+                if (isGenerating === false && self.taskAdding ==false) {
                     self.immediateButton.setEnable(true);
                     self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
                 } else {
@@ -74,7 +78,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         var self = this;
         this.interval = setInterval(function () {
             self._checkCubeStatus();
-        }, 5000)
+        }, 1000)
     },
 
     _buildTimeSetting: function () {
