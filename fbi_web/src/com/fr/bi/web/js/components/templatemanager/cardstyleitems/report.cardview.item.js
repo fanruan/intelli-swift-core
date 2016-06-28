@@ -101,6 +101,35 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
                 self._onClickHangout();
             });
             this._refreshHangout();
+
+            //查看已分享
+            var sharedButton = BI.createWidget({
+                type: "bi.icon_button",
+                cls: "share-font tool-rename-icon",
+                title: BI.i18nText("BI-Cancel_Shared_Users"),
+                width: 20,
+                height: 20,
+                invisible: true
+            });
+            sharedButton.on(BI.IconButton.EVENT_CHANGE, function(){
+                var id = BI.UUID();
+                var sharedUsers = BI.createWidget({
+                    type: "bi.edit_shared_pane",
+                    shared: o.shared
+                });
+                sharedUsers.on(BI.EditSharedPane.EVENT_CLOSE, function(){
+                    BI.Popovers.remove(id);
+                });
+                sharedUsers.on(BI.EditSharedPane.EVENT_SAVE, function(){
+                    o.editSharedUsers(this.getValue());
+                    BI.Popovers.remove(id);
+                });
+                BI.Popovers.create(id, sharedUsers, {width: 600, height: 500}).open(id);
+            });
+            if(BI.isNull(o.shared) || o.shared.length === 0) {
+                sharedButton.setEnable(false);
+                sharedButton.setWarningTitle(BI.i18nText("BI-The_Report_Not_Shared"));
+            }
         }
 
         var packageButton = BI.createWidget({
@@ -153,20 +182,17 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
                 top: 0,
                 left: 0
             }, {
-                el: this.hangout || BI.createWidget(),
-                right: 0,
-                top: 50
-            }, {
-                el: deleteButton,
-                right: 0,
-                top: 0
-            }, {
                 el: this.markButton || BI.createWidget(),
                 top: 16,
                 left: 36
             }, {
-                el: renameButton,
-                top: 25,
+                el: {
+                    type: "bi.vertical",
+                    items: [sharedButton, this.hangout || BI.createWidget(), renameButton, deleteButton],
+                    bgap: 2,
+                    width: 25
+                },
+                top: 0,
                 right: 0
             }]
         });
@@ -180,6 +206,7 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
             deleteButton.setVisible(true);
             renameButton.setVisible(true);
             self.hangout && self.hangout.setVisible(true);
+            sharedButton && sharedButton.setVisible(true);
         }, function(){
             if(!self.checkbox.isSelected()){
                 self.checkbox.setVisible(false);
@@ -187,6 +214,7 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
             deleteButton.setVisible(false);
             renameButton.setVisible(false);
             self.hangout && self.hangout.setVisible(false);
+            sharedButton && sharedButton.setVisible(false);
         });
     },
 
