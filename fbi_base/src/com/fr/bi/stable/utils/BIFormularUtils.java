@@ -1,6 +1,7 @@
 package com.fr.bi.stable.utils;
 
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
@@ -9,10 +10,7 @@ import com.fr.stable.Primitive;
 import com.fr.stable.UtilEvalError;
 import com.fr.third.antlr.ANTLRException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +27,10 @@ public class BIFormularUtils {
             BIKey columnIndex = entry.getValue();
             if (columnIndex != null) {
                 Object value = ti.getColumnDetailReader(columnIndex).getValue(row);
+                int fieldType = ti.getColumns().get(columnIndex).getFieldType();
+                if (fieldType == DBConstant.COLUMN.DATE) {
+                    value = new Date((Long) value);
+                }
                 if (value != null) {
                     c.set(columnName, value);
                 } else {
