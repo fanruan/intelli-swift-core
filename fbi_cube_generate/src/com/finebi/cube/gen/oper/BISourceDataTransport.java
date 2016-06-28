@@ -67,8 +67,8 @@ public class BISourceDataTransport extends BIProcessor {
             long count = transport();
             if (count >= 0) {
                 tableEntityService.recordRowCount(count);
-                tableEntityService.addVersion(version);
             }
+            tableEntityService.addVersion(version);
             long tableCostTime = System.currentTimeMillis() - t;
             if (null != tableSource.getPersistentTable()) {
                 System.out.println("table usage:" + tableCostTime);
