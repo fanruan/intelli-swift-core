@@ -335,7 +335,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 item.isExpanded = true;
             } else if (BI.isNotNull(child.s)) {
                 var values = [];
-                if (BI.isNotNull(child.s.c) || BI.isNotNull(child.s.s)) {
+                if (BI.isNotNull(child.s.c) || BI.isArray(child.s.s)) {
                     //交叉表，pValue来自于行列表头的结合
                     var ob = {index: 0};
                     self._createTableSumItems(child.s.c, values, pValues, ob);
@@ -352,6 +352,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     });
                 }
                 item.values = values;
+            }
+            //children 为空的时候values 也不应该有？
+            if (BI.isNotNull(item.children) && item.children.length === 0) {
+                item.values = [];
             }
             items.push(item);
         });
@@ -633,6 +637,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 item.values = item;
             }
         }
+        //children 为空的时候values 也不应该有？
+        if (BI.isNotNull(item.children) && item.children.length === 0) {
+            item.values = [];
+        }
         this.items = [item];
     },
 
@@ -702,7 +710,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             if (BI.isNotNull(left.s.c) && BI.isNotNull(left.s.s)) {
                 this._createTableSumItems(left.s.c, sums, [], ob);
             } else {
-                this._createTableSumItems(left.s, sums, [], ob);
+                BI.isArray(left.s) && this._createTableSumItems(left.s, sums, [], ob);
             }
             if (this.showColTotal === true) {
                 var outerValues = [];
@@ -735,6 +743,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             item.values = sums;
         }
 
+        //children 为空的时候values 也不应该有？
+        if (BI.isNotNull(item.children) && item.children.length === 0) {
+            item.values = [];
+        }
         this.items = [item];
     },
 
