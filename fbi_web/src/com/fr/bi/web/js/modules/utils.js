@@ -1400,13 +1400,17 @@
         },
 
         getPathsFromFieldAToFieldB: function (from, to) {
+            var self = this;
             if (BI.isNull(from) || BI.isNull(to)) {
                 return [];
             }
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
             if (tableA === tableB) {
-                return [[{primaryKey: {field_id: from}, foreignKey: {field_id: to}}]]
+                return [[{
+                    primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
+                    foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
+                }]]
             }
             return this.getPathsFromTableAToTableB(tableA, tableB);
         },
@@ -1829,26 +1833,26 @@
             var filterValues = [];
 
             //对于维度的条件，很有可能是一个什么属于分组 这边处理 （没放到构造的地方处理是因为“其他”）
-            function parseStringFilter4Group(dId, value){
+            function parseStringFilter4Group(dId, value) {
                 var group = BI.Utils.getDimensionGroupByID(dId);
                 var details = group.details;
                 var groupMap = {};
-                BI.each(details, function(i, detail){
+                BI.each(details, function (i, detail) {
                     groupMap[detail.value] = [];
-                    BI.each(detail.content, function(j, content){
+                    BI.each(detail.content, function (j, content) {
                         groupMap[detail.value].push(content.value);
                     });
                 });
                 var groupNames = BI.keys(groupMap), ungroupName = group.ungroup2OtherName;
-                if(group.ungroup2Other === 1) {
+                if (group.ungroup2Other === 1) {
                     groupNames.push(ungroupName);
                 }
                 // 对于drill和link 一般value的数组里只有一个值
                 var v = value[0];
-                if(groupNames.contains(v)) {
-                    if(v === ungroupName) {
+                if (groupNames.contains(v)) {
+                    if (v === ungroupName) {
                         var vs = [];
-                        BI.each(groupMap, function(gk, gv){
+                        BI.each(groupMap, function (gk, gv) {
                             gk !== v && (vs = vs.concat(gv));
                         });
                         return {
@@ -2055,7 +2059,7 @@
             var wWid = value.wId, se = value.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
-                if(BI.isNull(wWValue)){
+                if (BI.isNull(wWValue)) {
                     return;
                 }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
