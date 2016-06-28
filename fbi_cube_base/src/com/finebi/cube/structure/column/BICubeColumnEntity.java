@@ -73,6 +73,11 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     }
 
     @Override
+    public void addPositionOfGroup(int position, int groupPosition) {
+
+    }
+
+    @Override
     public int getPositionOfGroup(T groupValues) throws BIResourceInvalidException {
 
         return groupDataService.getPositionOfGroupValue(convert(groupValues));

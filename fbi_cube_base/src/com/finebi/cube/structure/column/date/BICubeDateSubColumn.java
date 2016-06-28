@@ -65,6 +65,11 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
+    public void addPositionOfGroup(int position, int groupPosition) {
+        selfColumnEntity.addPositionOfGroup(position, groupPosition);
+    }
+
+    @Override
     public void recordSizeOfGroup(int size) {
         selfColumnEntity.recordSizeOfGroup(size);
     }

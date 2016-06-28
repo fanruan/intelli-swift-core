@@ -66,6 +66,12 @@ public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> 
      */
     void addGroupIndex(int position, GroupValueIndex index);
 
+    /**
+     * 给每一个原始值添加在分组中的位置
+     * @param position 原始值的位置
+     * @param groupPosition 分组的位置
+     */
+    void addPositionOfGroup(int position, int groupPosition);
 
     void recordSizeOfGroup(int size);
 
@@ -85,10 +91,4 @@ public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> 
 
     void setOwner(ITableKey owner);
 
-    /**
-     * 给每一个原始值添加在分组中的位置
-     * @param position 原始值的位置
-     * @param groupPosition 分组的位置
-     */
-   // void addPositionOfGroup(int position, int groupPosition);
 }
