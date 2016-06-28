@@ -74,9 +74,7 @@ public class BIDetailWidget extends BIAbstractWidget {
             List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
             for (int i = 0; i < array.length; i++) {
                 BIDetailTarget dimension = BITravalUtils.getTargetByName(array[i], dimensions);
-//                if (dimension.isUsed()) {
                     usedDimensions.add(dimension);
-//                }
 
             }
             dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
