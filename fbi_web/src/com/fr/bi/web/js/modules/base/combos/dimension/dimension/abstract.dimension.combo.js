@@ -53,6 +53,9 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             cls: "dot-e-font"
         }];
         var o = this.options;
+        if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
+            delete items[0];
+        }
 
         if(items.length > 0 && BI.isNotNull(items[items.length - 1][0])){
             var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
