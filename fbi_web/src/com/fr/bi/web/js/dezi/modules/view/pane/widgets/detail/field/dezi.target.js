@@ -158,8 +158,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                     )
                     ;
                     break;
-                case
-                BICst.TARGET_COMBO.CHART_TYPE:
+                case BICst.TARGET_COMBO.CHART_TYPE:
                     self.model.set("style_of_chart", {type: s});
                     break;
                 case BICst.TARGET_COMBO.STYLE_SETTING:
@@ -197,6 +196,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                     }else{
                         self._buildStyleSettingPane();
                     }
+                    break;
+                case BICst.TARGET_COMBO.CHART_TYPE:
+                    self.model.set("style_of_chart", {type: s});
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET:
                     self._updateTarget();
