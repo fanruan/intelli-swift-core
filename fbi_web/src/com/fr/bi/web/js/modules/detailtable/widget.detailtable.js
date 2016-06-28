@@ -217,14 +217,17 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
     _createRowItem: function (rowValues, dId) {
         var dimensionIds = BI.Utils.getWidgetViewByID(this.options.wId)[BICst.REGION.DIMENSION1];
-
-        return BI.map(rowValues, function (i, rowValue) {
-            return {
-                text: BI.isNull(rowValue) ? "" : rowValue,
-                type: "bi.detail_table_cell",
-                dId: dimensionIds[i]
-            };
+        var rowItems = [];
+        BI.each(rowValues, function (i, rowValue) {
+            if (BI.Utils.isDimensionUsable(dimensionIds[i])) {
+                rowItems.push({
+                    text: BI.isNull(rowValue) ? "" : rowValue,
+                    type: "bi.detail_table_cell",
+                    dId: dimensionIds[i]
+                })
+            }
         });
+        return rowItems;
     },
     _getFreezeCols: function () {
         var wId = this.options.wId;
