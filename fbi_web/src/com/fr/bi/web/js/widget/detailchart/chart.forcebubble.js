@@ -57,6 +57,8 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
         }
 
         config.plotOptions.force = true;
+        config.plotOptions.dataLabels.enabled = true;
+        config.plotOptions.dataLabels.formatter.identifier = "${SERIES}${VALUE}";
         config.chartType = "bubble";
         delete config.xAxis;
         delete config.yAxis;

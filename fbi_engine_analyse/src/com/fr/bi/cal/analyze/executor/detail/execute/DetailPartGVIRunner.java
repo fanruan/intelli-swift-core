@@ -64,6 +64,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
                 }
             }
             currentIndex = -1;
+            index.next();
         }
     }
 
