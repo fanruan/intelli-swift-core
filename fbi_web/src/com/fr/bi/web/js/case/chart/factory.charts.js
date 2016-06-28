@@ -64,7 +64,6 @@ BI.ChartCombineFormatItemFactory = {
 
     combineConfig: function(){
         return {
-            chartType: "column",
             "plotOptions": {
                 "rotatable": false,
                 "startAngle": 0,
@@ -169,12 +168,12 @@ BI.ChartCombineFormatItemFactory = {
                     "enabled": true,
                     "animation": true
                 },
-                "maxSize": 70,
+                "maxSize": 120,
                 "fillColorOpacity": 0.5,
                 "marker": {"symbol": "circle", "radius": 4.5, "enabled": true},
                 "step": false,
                 "force": false,
-                "minSize": 15,
+                "minSize": 30,
                 "displayNegative": true,
                 "categoryGap": "16.0%",
                 "borderColor": "rgb(255,255,255)",
@@ -189,8 +188,8 @@ BI.ChartCombineFormatItemFactory = {
                     "shadow": true,
                     "curve": false,
                     "sizeBy": "area",
-                    "maxSize": 60,
-                    "minSize": 12,
+                    "maxSize": 120,
+                    "minSize": 30,
                     "lineWidth": 0,
                     "animation": true,
                     "fillColorOpacity": 0.699999988079071,

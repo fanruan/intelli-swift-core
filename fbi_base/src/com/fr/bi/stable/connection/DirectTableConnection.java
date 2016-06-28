@@ -70,6 +70,9 @@ public class DirectTableConnection {
 
     public GroupValueIndex[] getConnectionIndices(int row) {
         Object ob = getStartTI().getColumnDetailReader(sIndex).getValue(row);
+        if (ob == null) {
+            return new GroupValueIndex[]{getEndTI().getNullGroupValueIndex(eIndex)};
+        }
         return getEndTI().getIndexes(eIndex, new Object[]{ob});
     }
 
