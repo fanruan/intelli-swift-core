@@ -2542,6 +2542,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/templatemanager/tools/share/selecteduser.grouplist.js",
                 "com/fr/bi/web/js/components/templatemanager/tools/share/selecteduser.button.js",
                 "com/fr/bi/web/js/components/templatemanager/tools/share/usersearchresult.pane.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/editshared/pane.editshared.js",
                 "com/fr/bi/web/js/components/templatemanager/buttongroup.templatemanager.js",
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.js",
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
