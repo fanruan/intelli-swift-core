@@ -3126,6 +3126,15 @@
   content: "\e63d";
   color: #009de3;
 }
+.widget-tools-export-excel-font .b-font:before {
+  content: "\e635";
+  color: #009de3;
+}
+.widget-tools-export-excel-font.native .b-font:before,
+.widget-tools-export-excel-font.disabled .b-font:before {
+  content: "\e635";
+  color: #009de3;
+}
 .widget-combo-expand-font .b-font:before {
   content: "\e631";
   color: #808080;

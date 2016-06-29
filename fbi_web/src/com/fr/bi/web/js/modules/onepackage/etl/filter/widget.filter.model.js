@@ -120,7 +120,7 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
         var self = this;
         var filterType = filter.filter_type, filterValue = filter.filter_value;
         if (BI.isEmptyObject(filterValue)) {
-            return;
+            return filter;
         }
         if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
             BI.each(filterValue, function (i, value) {

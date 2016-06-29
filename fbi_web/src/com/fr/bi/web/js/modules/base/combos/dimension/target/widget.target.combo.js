@@ -216,6 +216,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 item[1][0].disabled = true;
+                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
                 break;
             default:
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
