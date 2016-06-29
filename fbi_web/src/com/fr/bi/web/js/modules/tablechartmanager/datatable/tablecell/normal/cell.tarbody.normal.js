@@ -157,9 +157,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         if (text === Infinity) {
             text = "N/0";
         }
-        if (text !== text) {
-            text = "0/0";
-        }
+       
         if (BI.isEmptyArray(linkedWidgets)) {
             return BI.createWidget({
                 type: "bi.label",

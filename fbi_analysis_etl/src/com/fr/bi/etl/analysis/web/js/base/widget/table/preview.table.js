@@ -413,7 +413,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
             self.table.populate(self._createCell(), self._createHeader())
             self.dragHepler.reInitDrag()
             if(BI.isNotNull(self.dropHelper.scrollLeft)){
-                $(".scroll-table", self.table.element)[0].scrollLeft = self.dropHelper.scrollLeft
+                self.table.setRightHorizontalScroll(self.dropHelper.scrollLeft);
             }
             self.dragHepler.hide()
             BI.each(self.table.headerItems[0], function(idx, item){

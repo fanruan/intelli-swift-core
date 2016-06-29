@@ -21,7 +21,6 @@ public class SingleUserCubeManager {
      *
      */
     private static final long serialVersionUID = 6187369933206388925L;
-
     private CubeRunner runner;
     protected BIUser biUser;
     private TimerRunner timerRunner;
@@ -122,7 +121,7 @@ public class SingleUserCubeManager {
     }
 
     public void resetCubeGenerationHour() {
-        timerRunner.init();
+        timerRunner.reGenerateTimeTasks();
     }
 
     /**

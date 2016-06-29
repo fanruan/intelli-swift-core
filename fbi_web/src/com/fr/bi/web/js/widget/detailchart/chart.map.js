@@ -70,8 +70,13 @@ BI.MapChart = BI.inherit(BI.Widget, {
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
-                    da.name = da.x;
-                    da.value = da.y;
+                    if(BI.has(it, "type") && it.type == "bubble"){
+                        da.name = da.x;
+                        da.size = da.y;
+                    }else{
+                        da.name = da.x;
+                        da.value = da.y;
+                    }
                 })
             })
         });
@@ -101,6 +106,10 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.MapChart.EVENT_CHANGE = "EVENT_CHANGE";

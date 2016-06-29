@@ -2070,6 +2070,24 @@
   content: "\e640";
   color: #1a1a1a;
 }
+.select-data-field-string-group-font .b-font:before {
+  content: "\e642";
+  color: #808080;
+}
+.select-data-field-string-group-font.native .b-font:before,
+.select-data-field-string-group-font.disabled .b-font:before {
+  content: "\e642";
+  color: #808080;
+}
+.select-data-field-number-group-font .b-font:before {
+  content: "\e641";
+  color: #808080;
+}
+.select-data-field-number-group-font.native .b-font:before,
+.select-data-field-number-group-font.disabled .b-font:before {
+  content: "\e641";
+  color: #808080;
+}
 .select-data-field-date-group-font .b-font:before {
   content: "\e640";
   color: #808080;
@@ -2539,6 +2557,15 @@
 .refresh-table-font.disabled .b-font:before {
   content: "\e683";
   color: #808080;
+}
+.refresh-table-font-hightlight .b-font:before {
+  content: "\e683";
+  color: #009de3;
+}
+.refresh-table-font-hightlight.native .b-font:before,
+.refresh-table-font-hightlight.disabled .b-font:before {
+  content: "\e683";
+  color: #009de3;
 }
 .tables-tile-view-font .b-font:before {
   content: "\e685";
@@ -3338,6 +3365,24 @@
 .rename-font-package.disabled .b-font:before {
   content: "\e687";
   color: #009de3;
+}
+.package-selected-font .b-font:before {
+  content: "\e6b3";
+  color: #178cdf;
+}
+.package-selected-font.native .b-font:before,
+.package-selected-font.disabled .b-font:before {
+  content: "\e6b3";
+  color: #178cdf;
+}
+.package-not-selected-font .b-font:before {
+  content: "\e6b2";
+  color: #178cdf;
+}
+.package-not-selected-font.native .b-font:before,
+.package-not-selected-font.disabled .b-font:before {
+  content: "\e6b2";
+  color: #178cdf;
 }
 .report-detail-info-font .b-font:before {
   content: "\e66e";

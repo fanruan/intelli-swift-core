@@ -125,6 +125,7 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 BI.nextTick(function () {
                     self.arrangement.resize();
+                    self.fireEvent(BI.Fit4Show.EVENT_RESIZE);
                 });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
@@ -132,4 +133,5 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
         }
     }
 });
+BI.Fit4Show.EVENT_RESIZE = "EVENT_RESIZE";
 $.shortcut('bi.fit_4show', BI.Fit4Show);
