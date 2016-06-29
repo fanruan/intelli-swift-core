@@ -546,12 +546,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: this.cataDid,
-                    value: [obj.seriesName]
+                    value: [obj.value || obj.x]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
                         dId: this.seriesDid,
-                        value: [obj.value || obj.x]
+                        value: [obj.seriesName]
                     })
                 }
                 break;
