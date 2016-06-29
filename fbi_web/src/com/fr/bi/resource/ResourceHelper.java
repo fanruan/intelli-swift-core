@@ -995,6 +995,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filter.target.js",
                 "com/fr/bi/web/js/modules/filter/filter.dimension.js",
                 "com/fr/bi/web/js/modules/filter/targetsummary/filter.target.summary.js",
+                "com/fr/bi/web/js/modules/filter/targetsummary/item/item.target.js",
                 "com/fr/bi/web/js/modules/filter/generalquery/filter.generalquery.js",
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
                 "com/fr/bi/web/js/modules/filter/auth/filter.authority.js",
