@@ -256,9 +256,20 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         getUserAnalysisBusiPackManager(userId).removeTable(tableId);
     }
 
+    /**
+     * 先到管理员那找下，再找自己的吧
+     * @param tableId
+     * @param userId
+     * @return
+     * @throws BITableAbsentException
+     */
     @Override
     public AnalysisBusiTable getTable(String tableId, long userId) throws BITableAbsentException {
-        return getUserAnalysisBusiPackManager(userId).getTable(tableId);
+        try{
+            return getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).getTable(tableId);
+        } catch (BITableAbsentException e){
+            return getUserAnalysisBusiPackManager(userId).getTable(tableId);
+        }
     }
 
     @Override
