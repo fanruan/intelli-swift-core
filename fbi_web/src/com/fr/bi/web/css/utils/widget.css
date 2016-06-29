@@ -15,7 +15,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 * {
-  font-family: "Microsoft YaHei", "Hiragino Sans GB W3";
+  font-family: "Microsoft YaHei", "Hiragino Sans GB W3", SimSun, sans-serif;
 }
 html,
 body,
@@ -41,7 +41,7 @@ body {
   padding: 0;
   top: 0;
   left: 0;
-  font-family: Microsoft YaHei, STXihei, SimSun, sans-serif;
+  font-family: "Microsoft YaHei", "Hiragino Sans GB W3", SimSun, sans-serif;
   background-repeat: repeat;
   -webkit-user-select: none;
   -khtml-user-select: none;
