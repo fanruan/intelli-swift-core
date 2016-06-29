@@ -1119,6 +1119,7 @@ BICst.DEFAULT_CHART_SETTING = {
     right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    number_of_pointer:BICst.POINTER.ONE,
     dashboard_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     x_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
@@ -1348,6 +1349,14 @@ BICst.TARGET_STYLE_LEVEL = [{
 }, {
     text: "%",
     value: BICst.TARGET_STYLE.NUM_LEVEL.PERCENT
+}];
+
+BICst.POINTERS = [{
+    text: BI.i18nText("BI-One_pointer"),
+    value: BICst.POINTER.ONE
+}, {
+    text: BI.i18nText("BI-Some_pointers"),
+    value: BICst.POINTER.SOME
 }];
 
 BICst.PIE_TOTAL_ANGLE = [{
