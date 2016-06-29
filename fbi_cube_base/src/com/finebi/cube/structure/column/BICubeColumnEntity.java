@@ -8,6 +8,7 @@ import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.group.ICubeGroupDataService;
+import com.finebi.cube.structure.property.BICubeColumnPositionOfGroupService;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -29,6 +30,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     protected ICubeIndexDataService indexDataService;
     protected ICubeGroupDataService<T> groupDataService;
     protected ICubeVersion cubeVersion;
+    protected ICubeColumnPositionOfGroupService cubeColumnPositionOfGroupService;
     protected ICubeRelationManagerService relationManagerService;
     protected ICubeResourceDiscovery discovery;
 
@@ -37,6 +39,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         this.currentLocation = currentLocation;
         indexDataService = new BICubeIndexData(discovery, currentLocation);
         cubeVersion = new BICubeVersion(currentLocation, discovery);
+        cubeColumnPositionOfGroupService = new BICubeColumnPositionOfGroupService(currentLocation, discovery);
         initial();
     }
 
@@ -74,7 +77,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
 
     @Override
     public void addPositionOfGroup(int position, int groupPosition) {
-
+        cubeColumnPositionOfGroupService.addPositionOfGroup(position, groupPosition);
     }
 
     @Override
