@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Daniel
  *         FIXME 功能代码质量严峻
+ *         亟待重构
  */
 public class BICubeManager implements BICubeManagerProvider {
 

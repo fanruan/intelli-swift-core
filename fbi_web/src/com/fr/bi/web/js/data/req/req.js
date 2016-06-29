@@ -215,11 +215,11 @@ Data.Req = BIReq = {
             callback(res.cubePath);
         })
     },
-    
-    reqSaveCubePath: function(path, callback) {
-        BI.requestAsync("fr_bi_configure", "set_cube_path", {fileName: path}, function(res) {
+
+    reqSaveCubePath: function (path, callback) {
+        BI.requestAsync("fr_bi_configure", "set_cube_path", {fileName: path}, function (res) {
             callback(res);
-        })  
+        })
     },
 
     reqSaveLoginField: function (data, callback) {
@@ -294,15 +294,15 @@ Data.Req = BIReq = {
         });
     },
 
-    updateCubeByTable: function (table, callback) {
-        BI.requestAsync("fr_bi_configure", "set_cube_generate", {
-            connectionName: table.connection_name,
-            tableName: table.table_name,
-            tableId: table.id
-        }, function (res) {
-            callback(res);
-        });
-    },
+    // updateCubeByTable: function (table, callback) {
+    //     BI.requestAsync("fr_bi_configure", "set_cube_generate", {
+    //         connectionName: table.connection_name,
+    //         tableName: table.table_name,
+    //         tableId: table.id
+    //     }, function (res) {
+    //         callback(res);
+    //     });
+    // },
     reqGenerateCubeByTable: function (table, callback) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
             connectionName: table.connection_name,
@@ -312,7 +312,12 @@ Data.Req = BIReq = {
             callback(res);
         });
     },
-
+    reqGenerateCube: function (callback) {
+        BI.requestAsync("fr_bi_configure", "set_cube_generate",{}, function (res) {
+            callback(res);
+        });
+    },
+    
     reqPrimaryTablesByTable: function (table, callback) {
         BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function (res) {
             callback(res);
