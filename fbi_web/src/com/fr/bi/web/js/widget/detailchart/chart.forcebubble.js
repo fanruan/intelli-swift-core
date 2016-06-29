@@ -87,10 +87,11 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.ForceBubbleChart, {
+    },
 
+    magnify: function(){
+        this.combineChart.magnify();
+    }
 });
 BI.ForceBubbleChart.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.force_bubble_chart', BI.ForceBubbleChart);

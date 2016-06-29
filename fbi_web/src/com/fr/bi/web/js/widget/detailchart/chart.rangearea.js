@@ -321,10 +321,11 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.RangeAreaChart, {
+    },
 
+    magnify: function(){
+        this.combineChart.magnify();
+    }
 });
 BI.RangeAreaChart.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.range_area_chart', BI.RangeAreaChart);

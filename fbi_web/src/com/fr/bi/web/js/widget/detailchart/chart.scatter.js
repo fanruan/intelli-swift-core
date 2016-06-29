@@ -302,24 +302,10 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.ScatterChart, {
-    formatItems: function (items) {
-        var self = this;
-        return BI.map(items, function(idx, item){
-            var name = BI.keys(item)[0];
-            return {
-                "data": BI.map(item[name], function(idx, it){
-                    return BI.extend(it, {
-                        "x": it.x,
-                        "y": it.y,
-                        "size": it.z
-                    });
-                }),
-                "name": name
-            }
-        });
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.ScatterChart.EVENT_CHANGE = "EVENT_CHANGE";

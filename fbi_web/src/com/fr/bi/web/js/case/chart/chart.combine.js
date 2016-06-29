@@ -79,6 +79,10 @@ BI.CombineChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.CombineChart.resize();
+    },
+
+    magnify: function(){
+        this.CombineChart.magnify();
     }
 });
 BI.CombineChart.EVENT_CHANGE = "EVENT_CHANGE";

@@ -483,6 +483,7 @@
             }
 
             function createDimensionsAndTargets(idx) {
+                var newId = BI.UUID();
                 var dimension = BI.deepClone(widget.dimensions[idx]);
                 if (BI.has(dimTarIdMap, idx)) {
                     return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
@@ -509,8 +510,12 @@
                         if (BI.has(widget.dimensions[idx], "sort")) {
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
                             if (BI.has(dimension.sort, "sort_target")) {
-                                var result = createDimensionsAndTargets(dimension.sort.sort_target);
-                                dimension.sort.sort_target = result.id;
+                                if(dimension.sort.sort_target === idx){
+                                    dimension.sort.sort_target = newId;
+                                }else{
+                                    var result = createDimensionsAndTargets(dimension.sort.sort_target);
+                                    dimension.sort.sort_target = result.id;
+                                }
                             }
                         }
                         break;
@@ -535,9 +540,8 @@
                         });
                         break;
                 }
-                var id = BI.UUID();
-                dimTarIdMap[idx] = id;
-                return {id: id, dimension: dimension};
+                dimTarIdMap[idx] = newId;
+                return {id: newId, dimension: dimension};
             }
         },
 
