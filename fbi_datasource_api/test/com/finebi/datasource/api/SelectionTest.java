@@ -1,6 +1,7 @@
-package com.finebi.analysis.api;
+package com.finebi.datasource.api;
 
-import com.finebi.analysis.api.criteria.*;
+
+import com.finebi.datasource.api.criteria.*;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
