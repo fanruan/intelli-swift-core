@@ -31,4 +31,14 @@ public class BICubeRelationEntityTest extends BICubeTestBase {
             assertTrue(false);
         }
     }
+
+    public void testReverseWriteRead() {
+        try {
+            relationEntityService.addReverseIndex(14, 12);
+            assertEquals(12, relationEntityService.getReverseIndex(14));
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 }

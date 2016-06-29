@@ -2070,6 +2070,24 @@
   content: "\e640";
   color: #1a1a1a;
 }
+.select-data-field-string-group-font .b-font:before {
+  content: "\e642";
+  color: #808080;
+}
+.select-data-field-string-group-font.native .b-font:before,
+.select-data-field-string-group-font.disabled .b-font:before {
+  content: "\e642";
+  color: #808080;
+}
+.select-data-field-number-group-font .b-font:before {
+  content: "\e641";
+  color: #808080;
+}
+.select-data-field-number-group-font.native .b-font:before,
+.select-data-field-number-group-font.disabled .b-font:before {
+  content: "\e641";
+  color: #808080;
+}
 .select-data-field-date-group-font .b-font:before {
   content: "\e640";
   color: #808080;
