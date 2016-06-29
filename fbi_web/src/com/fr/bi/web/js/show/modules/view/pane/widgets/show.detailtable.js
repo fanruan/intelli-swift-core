@@ -97,7 +97,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
                     "dashboard-title-center" : "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
                 validationChecker: function (v) {

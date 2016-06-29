@@ -9,7 +9,7 @@ BI.QuarterCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.QuarterCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-quarter-combo",
-            height: 30
+            height: 25
         });
     },
     _init: function () {

@@ -36,7 +36,7 @@
   border-bottom-left-radius: 2px;
 }
 .bi-numerical-interval .numerical-interval-big-combo .bi-icon-combo-trigger .icon-combo-trigger-icon {
-  font-size: 18px;
+  font-size: 14px;
 }
 .bi-numerical-interval .numerical-interval-small-combo .bi-icon-combo-trigger {
   border: 1px solid #d4dadd;
@@ -48,7 +48,7 @@
   border-bottom-right-radius: 2px;
 }
 .bi-numerical-interval .numerical-interval-small-combo .bi-icon-combo-trigger .icon-combo-trigger-icon {
-  font-size: 18px;
+  font-size: 14px;
 }
 .bi-numerical-interval.number-error .bi-input {
   color: #e85050;
