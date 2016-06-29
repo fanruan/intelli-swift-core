@@ -111,7 +111,7 @@ BI.FilterOperation = BI.inherit(BI.Widget, {
                         type: "bi.button",
                         forceNotSelected: true,
                         level: "ignore",
-                        height: 30
+                        height: 25
                     }),
                     chooseType: BI.ButtonGroup.CHOOSE_TYPE_DEFAULT,
                     layouts: [{

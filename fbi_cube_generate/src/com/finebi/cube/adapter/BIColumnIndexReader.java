@@ -279,10 +279,8 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         }
 
         public DIterator(T start) {
-            T[] keys = createKey(1);
-            keys[0] = start;
             try {
-                c_index = BIColumnIndexReader.this.size() - columnReaderService.getPositionOfGroup(start);
+                c_index = columnReaderService.getPositionOfGroup(start);
             } catch (BIResourceInvalidException e) {
                 e.printStackTrace();
             }
@@ -313,8 +311,6 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         }
 
         public CIterator(T start) {
-            T[] keys = createKey(1);
-            keys[0] = start;
             try {
                 c_index = columnReaderService.getPositionOfGroup(start);
             } catch (BIResourceInvalidException e) {

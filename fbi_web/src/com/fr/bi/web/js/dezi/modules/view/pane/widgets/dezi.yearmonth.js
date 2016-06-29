@@ -66,7 +66,7 @@ BIDezi.YearMonthWidgetView = BI.inherit(BI.View, {
                 cls: "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
                 validationChecker: function(v){
@@ -83,12 +83,20 @@ BIDezi.YearMonthWidgetView = BI.inherit(BI.View, {
 
     _createTools: function(){
         var self = this;
-        this.tools = BI.createWidget({
+        var expand = BI.createWidget({
+            type: "bi.icon_button",
+            width: 16,
+            height: 16,
+            cls: "widget-combo-detail-font dashboard-title-detail"
+        });
+        expand.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._expandWidget();
+        });
+        var combo = BI.createWidget({
             type: "bi.widget_combo",
-            cls: "operator-region",
             wId: this.model.get("id")
         });
-        this.tools.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
+        combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:
                     self._expandWidget();
@@ -110,6 +118,12 @@ BIDezi.YearMonthWidgetView = BI.inherit(BI.View, {
                     });
                     break;
             }
+        });
+        this.tools = BI.createWidget({
+            type: "bi.left",
+            cls: "operator-region",
+            items: [expand, combo],
+            lgap: 10
         });
         this.tools.setVisible(false);
     },

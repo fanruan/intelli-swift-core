@@ -17,6 +17,7 @@ BIDezi.QueryView = BI.inherit(BI.View, {
         var queryButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Query"),
+            height: 25,
             forceCenter: true
             //height: ""
         });
