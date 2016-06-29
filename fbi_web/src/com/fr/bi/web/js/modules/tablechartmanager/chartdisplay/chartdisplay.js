@@ -251,6 +251,10 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.tab.getSelectedTab().resize();
+    },
+
+    magnify: function () {
+        this.tab.getSelectedTab().magnify();
     }
 });
 BI.ChartDisplay.EVENT_CHANGE = "EVENT_CHANGE";

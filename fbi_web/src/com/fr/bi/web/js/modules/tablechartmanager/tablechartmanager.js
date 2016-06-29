@@ -94,6 +94,10 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         return this.tableChartTab.getValue();
     },
 
+    magnify: function(){
+        this.tableChartTab.getSelectedTab().magnify();
+    },
+
     populate: function () {
         var widgetType = BI.Utils.getWidgetTypeByID(this.options.wId);
         this.tableChartTab.setSelect(widgetType);
