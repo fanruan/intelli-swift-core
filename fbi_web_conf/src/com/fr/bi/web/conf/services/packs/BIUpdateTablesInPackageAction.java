@@ -193,9 +193,9 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             UpdateSettingSource source = new UpdateSettingSource();
             source.parseJSON(updateSettingJO.getJSONObject(sourceTableId));
             BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(sourceTableId, source, userId);
-            BICubeManager biCubeManager=StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
-            biCubeManager.resetCubeGenerationHour(userId);
         }
+        BICubeManager biCubeManager= StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
+        biCubeManager.resetCubeGenerationHour(userId);
     }
 
     private JSONObject createTablesJsonObject(JSONArray tableIdsJA, JSONObject usedFieldsJO, JSONObject tableDataJO) throws Exception {
