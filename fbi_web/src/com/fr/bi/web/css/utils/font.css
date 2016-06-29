@@ -3357,3 +3357,12 @@
   content: "\e670";
   color: #58cc7d;
 }
+.report-cancel-share-font .b-font:before {
+  content: "\e6b5";
+  color: #009de3;
+}
+.report-cancel-share-font.native .b-font:before,
+.report-cancel-share-font.disabled .b-font:before {
+  content: "\e6b5";
+  color: #009de3;
+}
