@@ -118,6 +118,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -127,10 +128,11 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
         var filterIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: "widget-tools-filter-font dashboard-title-detail",
+            title: BI.i18nText("BI-Show_Filters"),
             width: 16,
             height: 16
         });
-        filterIcon.on(BI.IconButton.EVENT_CHANGE, function(){
+        filterIcon.on(BI.IconButton.EVENT_CHANGE, function () {
             if (BI.isNull(self.filterPane)) {
                 self.filterPane = BI.createWidget({
                     type: "bi.widget_filter",
@@ -141,10 +143,10 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
                 });
                 BI.createWidget({
                     type: "bi.absolute",
-                    element: self.element,
+                    element: self.tableChart,
                     items: [{
                         el: self.filterPane,
-                        top: 32,
+                        top: 0,
                         left: 0,
                         right: 0,
                         bottom: 0
@@ -154,10 +156,23 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
             }
             self.filterPane.setVisible(!self.filterPane.isVisible());
         });
+
+        var excel = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "widget-tools-export-excel-font dashboard-title-detail",
+            title: BI.i18nText("BI-Export_As_Excel"),
+            width: 16,
+            height: 16
+        });
+        excel.on(BI.IconButton.EVENT_CHANGE, function () {
+            window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+            + window.encodeURIComponent(self.model.get("name")));
+        });
+
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [ filterIcon, expand],
+            items: [filterIcon, expand, excel],
             hgap: 3
         });
         this.tools.setVisible(false);

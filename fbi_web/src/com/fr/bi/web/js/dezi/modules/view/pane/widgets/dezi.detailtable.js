@@ -119,6 +119,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Show_Filters"),
             cls: "widget-tools-filter-font dashboard-title-detail"
         });
         filter.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -129,6 +130,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
