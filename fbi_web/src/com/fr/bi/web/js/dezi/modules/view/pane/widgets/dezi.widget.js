@@ -79,7 +79,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 el: this.tableChart,
                 left: 10,
                 right: 10,
-                top: 50,
+                top: 45,
                 bottom: 10
             }, {
                 el: this.chartDrill,
@@ -111,7 +111,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     "dashboard-title-left" : "dashboard-title-center",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
                 validationChecker: function (v) {
