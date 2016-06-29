@@ -108,7 +108,6 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     public ICubeColumnIndexReader createGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader, long userId) {
         ICubeTableService ti = loader.getTableIndex(column.getTableBelongTo().getTableSource());
         ICubeColumnIndexReader baseGroupMap = ti.loadGroup(createKey(getStatisticElement()), BIConfUtils.convert2TableSourceRelation(getRelationList(target, userId)));
-//        ICubeColumnIndexReader sortMap = sort.createGroupedMap(baseGroupMap);
         return new CubeIndexGetterWithNullValue(baseGroupMap, ti.getNullGroupValueIndex(createKey(getStatisticElement())));
     }
 

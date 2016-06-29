@@ -8,7 +8,7 @@ BI.YearQuarterCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.YearQuarterCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-year-quarter-combo",
-            height: 30
+            height: 25
         });
     },
     _init: function () {

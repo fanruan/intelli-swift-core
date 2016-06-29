@@ -64,7 +64,7 @@ BIShow.TreeWidgetView = BI.inherit(BI.View, {
                 cls: "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
                 validationChecker: function(v){

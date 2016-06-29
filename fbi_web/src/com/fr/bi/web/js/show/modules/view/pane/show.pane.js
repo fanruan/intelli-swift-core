@@ -97,6 +97,21 @@ BIShow.PaneView = BI.inherit(BI.View, {
                 return map[wId];
             }
         });
+        this.dashboard.on(BI.Fit4Show.EVENT_RESIZE, function () {
+            var regions = this.getAllRegions();
+            var widgets = self.model.cat("widgets");
+            BI.each(regions, function (i, region) {
+                if (BI.isNotNull(widgets[region.id])) {
+                    widgets[region.id].bounds = {
+                        left: region.left,
+                        top: region.top,
+                        width: region.width,
+                        height: region.height
+                    }
+                }
+            });
+            self.model.set({"widgets": widgets});
+        });
         return this.dashboard;
     },
 

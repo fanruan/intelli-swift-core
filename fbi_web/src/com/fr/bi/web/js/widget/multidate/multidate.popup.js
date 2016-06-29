@@ -12,7 +12,7 @@
             itemHeight: 30,
             triggerHeight: 24,
             buttonWidth: 90,
-            buttonHeight: 30,
+            buttonHeight: 25,
             cardHeight: 229,
             cardWidth: 270,
             popupHeight: 259,
