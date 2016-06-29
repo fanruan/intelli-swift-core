@@ -13,7 +13,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.StringWidgetView.superclass._init.apply(this, arguments);
         var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function(){
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
     },
@@ -23,7 +23,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         var self = this;
         this._buildWidgetTitle();
         this._createTools();
-        
+
         this.combo = BI.createWidget({
             type: "bi.select_data_combo",
             wId: this.model.get("id")
@@ -50,14 +50,14 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
                 right: 10
             }]
         });
-        this.widget.element.hover(function(){
+        this.widget.element.hover(function () {
             self.tools.setVisible(true);
-        }, function(){
+        }, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
         });
-        
+
     },
 
     _buildWidgetTitle: function () {
@@ -72,11 +72,11 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
                 height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
-                validationChecker: function(v){
+                validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
             });
-            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function(){
+            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
             });
         } else {
@@ -84,12 +84,13 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         }
     },
 
-    _createTools: function(){
+    _createTools: function () {
         var self = this;
         var expand = BI.createWidget({
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -137,7 +138,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         this.tools.setVisible(false);
     },
 
-    _refreshLayout: function(){
+    _refreshLayout: function () {
         var bounds = this.model.get("bounds");
         var height = bounds.height, width = bounds.width;
         var widgetName = this.model.get("name");
@@ -145,14 +146,14 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         var minNameWidth = 30;      //默认editor的最小宽度
         var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
         // width =  5 + 10 + (4 + nameWidth + 4) + 10 + comboWidth + 10 + 5
-        if(height < 100) {
+        if (height < 100) {
             // this.widget.attr("items")[0].left = 10;
             // this.widget.attr("items")[0].right = "";
             this.widget.attr("items")[2].top = 10;
-            if(width < minComboWidth + minNameWidth + 48) {
+            if (width < minComboWidth + minNameWidth + 48) {
                 this.combo.setVisible(false);
                 this.widget.attr("items")[1].right = 10;
-            } else if(width < nameWidth + minComboWidth + 48) {
+            } else if (width < nameWidth + minComboWidth + 48) {
                 this.combo.setVisible(true);
                 this.widget.attr("items")[1].right = minComboWidth + 25;
                 this.widget.attr("items")[2].left = width - 15 - minComboWidth;
@@ -181,12 +182,12 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         })
     },
 
-    _resetValue: function(){
+    _resetValue: function () {
         this.model.set("value");
         this.refresh();
     },
 
-    splice: function(){
+    splice: function () {
         BI.Utils.broadcastAllWidgets2Refresh();
     },
 
@@ -198,14 +199,14 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         if (options.notrefresh === true) {
             return;
         }
-        if(BI.has(changed, "bounds")) {
+        if (BI.has(changed, "bounds")) {
             this._refreshLayout();
         }
-        if(BI.has(changed, "value") || BI.has(changed, "dimensions")) {
+        if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
             this.combo.setValue(this.model.get("value"));
         }
-        if(BI.has(changed, "detail")) {
+        if (BI.has(changed, "detail")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
     },

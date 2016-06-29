@@ -137,9 +137,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             return [];
         }
         var view = BI.Utils.getWidgetViewByID(o.wId);
-        if(BI.has(view, BICst.REGION.DIMENSION2) && BI.isNotEmptyArray(view[BICst.REGION.DIMENSION2]) && this.targetIds.length === 1){
-            return [data];
-        }
         var array = [];
         BI.each(this.targetIds, function (idx, tId) {
             if (BI.has(view, BICst.REGION.TARGET1) && BI.contains(view[BICst.REGION.TARGET1], tId)) {
@@ -546,12 +543,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: this.cataDid,
-                    value: [obj.seriesName]
+                    value: [obj.value || obj.x]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
                         dId: this.seriesDid,
-                        value: [obj.value || obj.x]
+                        value: [obj.seriesName]
                     })
                 }
                 break;
