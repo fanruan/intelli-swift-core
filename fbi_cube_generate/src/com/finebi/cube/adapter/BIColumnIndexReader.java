@@ -280,7 +280,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
         public DIterator(T start) {
             try {
-                c_index = columnReaderService.getPositionOfGroup(start);
+                c_index = columnReaderService.getPositionOfGroup(start) + 1;
             } catch (BIResourceInvalidException e) {
                 e.printStackTrace();
             }
