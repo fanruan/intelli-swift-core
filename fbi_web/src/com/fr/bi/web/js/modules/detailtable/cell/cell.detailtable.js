@@ -142,9 +142,6 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         if (text === Infinity) {
             text = "N/0";
         }
-        if (text !== text) {
-            text = "0/0";
-        }
         item.setText(text);
 
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
