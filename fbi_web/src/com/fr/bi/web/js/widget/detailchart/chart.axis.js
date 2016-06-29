@@ -273,6 +273,15 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
+            if(position === self.constants.RIGHT_AXIS_SECOND){
+                if(self.config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    if(type === self.constants.NORMAL){
+                        formatter = '#0%'
+                    }else{
+                        formatter += '%';
+                    }
+                }
+            }
             return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
         }
     },

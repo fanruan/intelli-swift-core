@@ -91,7 +91,7 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
         config.yAxis[0].title.rotation = this.constants.ROTATION;
 
         config.xAxis[0].formatter = formatTickInXYaxis(this.config.x_axis_style, this.constants.X_AXIS);
-        formatNumberLevelInXaxis(this.config.x_axis_number_level);
+        formatNumberLevelInXaxis(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
@@ -262,8 +262,8 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
-            if(position === self.constants.RIGHT_AXIS){
-                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+            if(position === self.constants.X_AXIS){
+                if(self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                     if(type === self.constants.NORMAL){
                         formatter = '#0%'
                     }else{
