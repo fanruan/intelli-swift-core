@@ -324,7 +324,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
     },
     getValue: function () {
         var dateStr = this.editor.getValue();
-        if (BI.isNotEmptyString(dateStr) && BI.isEmptyObject(this.stored_value)) {
+        if (BI.isNotEmptyString(dateStr)) {
             var date = dateStr.split("-");
             return {
                 year: date[0] | 0,

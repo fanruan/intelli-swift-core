@@ -52,16 +52,16 @@ public class BIDateUtils {
     }
 
     /**
-     * 创建schecule时间
+     * 创建schedule时间
      *
      * @param frequency 频率
      * @return long值
      */
-    public static long createScheduleTime(int hour, int frequency) {
+    public static long createScheduleTime(int time, int frequency) {
         if (frequency == DBConstant.UPDATE_FREQUENCY.EVER_DAY) {
             return DateConstant.DATEDELTRA.DAY;
         } else if (frequency == DBConstant.UPDATE_FREQUENCY.EVER_MONTH) {
-            return createMonthPeriod(hour);
+            return createMonthPeriod(time);
         }
         return DateConstant.DATEDELTRA.WEEK;
     }
