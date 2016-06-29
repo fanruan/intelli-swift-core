@@ -13,8 +13,8 @@ import java.util.Timer;
  * @author Connery
  * @since 4.0
  */
-public interface BICubeTimeTaskCreator {
-    String XML_TAG = "BICubeTimeTaskCreator";
+public interface BICubeTimeTaskCreatorProvider {
+    String XML_TAG = "BICubeTimeTaskCreatorProvider";
 
     List<Timer> reGenerateTimeTasks(long userId, Map<String, UpdateSettingSource> allTimeTaskMap);
 

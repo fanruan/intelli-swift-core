@@ -169,6 +169,12 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
+    public Set<BITableRelationPath> getAllUnavailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
+            BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        return getUserGroupConfigManager(userId).getAllUnavailablePath(juniorTable, primaryTable);
+    }
+
+    @Override
     public Set<BITableRelationPath> getAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException {
         Set<BusinessTable> allTables = getAllTables(userId);
         Iterator<BusinessTable> superTableIt = allTables.iterator();
