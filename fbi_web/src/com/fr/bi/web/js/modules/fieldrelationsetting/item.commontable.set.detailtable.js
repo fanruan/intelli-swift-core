@@ -101,8 +101,9 @@ BI.DetailTableCommonTableSet = BI.inherit(BI.Widget, {
             selected: selected
         });
 
-        radio.on(BI.Radio.EVENT_CHANGE, function (v) {
-            self.setValue(v);
+        radio.on(BI.Radio.EVENT_CHANGE, function () {
+            var value = radio.getValue();
+            self.setValue(value);
             self.fireEvent(BI.DetailTableCommonTableSet.EVENT_CHANGE, self.getValue());
         });
         this.radios.push(radio);
