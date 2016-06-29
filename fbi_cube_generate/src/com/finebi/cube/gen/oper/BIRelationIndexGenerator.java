@@ -172,23 +172,10 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 }
                 appearPrimaryValue.or(foreignGroupValueIndex);
                 tableRelation.addRelationIndex(row, foreignGroupValueIndex);
-                final int pRow = row;
-                final BICubeRelationEntity finalTableRelation = tableRelation;
-                foreignGroupValueIndex.Traversal(new SingleRowTraversalAction() {
-                    @Override
-                    public void actionPerformed(int rowIndex) {
-                        finalTableRelation.addReverseIndex(rowIndex, pRow);
-                    }
-                });
+                buildReverseIndex(tableRelation, row, foreignGroupValueIndex);
             }
             GroupValueIndex nullIndex =  appearPrimaryValue.NOT(foreignTable.getRowCount());
-            final BICubeRelationEntity finalTableRelation = tableRelation;
-            nullIndex.Traversal(new SingleRowTraversalAction() {
-                @Override
-                public void actionPerformed(int rowIndex) {
-                    finalTableRelation.addReverseIndex(rowIndex, null);
-                }
-            });
+            buildReverseIndex(tableRelation, null,  nullIndex);
             tableRelation.addRelationNULLIndex(0, nullIndex);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -211,6 +198,15 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
         }
 
+    }
+
+    private void buildReverseIndex(final ICubeRelationEntityService tableRelation, final Integer row, GroupValueIndex gvi) {
+        gvi.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int rowIndex) {
+                tableRelation.addReverseIndex(rowIndex, row);
+            }
+        });
     }
 
 }
