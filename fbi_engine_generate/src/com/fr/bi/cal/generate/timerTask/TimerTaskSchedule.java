@@ -1,28 +1,34 @@
 package com.fr.bi.cal.generate.timerTask;
 
+import com.finebi.cube.conf.CubeBuildStuff;
+
+import java.util.UUID;
+
 /**
  * Created by Kary on 2016/6/29.
  */
 public class TimerTaskSchedule {
-    String timeSchedule;
-    String SourceId;
-    boolean cubeUpdateType;
+    private String timeSchedule;
+    private String sourceName;
+    private CubeBuildStuff cubeBuildStuff;
+    private String jobName;
 
-    public TimerTaskSchedule(String schedule, boolean cubeUpdateType,String sourceId) {
+    public TimerTaskSchedule(String schedule, CubeBuildStuff cubeBuildStuff, String sourceName) {
         this.timeSchedule = schedule;
-        SourceId = sourceId;
-        this.cubeUpdateType = cubeUpdateType;
+        this.sourceName = sourceName;
+        this.cubeBuildStuff=cubeBuildStuff;
+        this.jobName=sourceName+timeSchedule+ UUID.randomUUID();
     }
 
     public String getTimeSchedule() {
         return timeSchedule;
     }
 
-    public String getSourceId() {
-        return SourceId;
+    public CubeBuildStuff getCubeBuildStuff() {
+        return cubeBuildStuff;
     }
 
-    public boolean isCubeUpdateType() {
-        return cubeUpdateType;
-    }
+    public String getJobName(){
+        return jobName;
+    } 
 }

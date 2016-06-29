@@ -128,4 +128,19 @@ public class BIDateUtils {
     public static GroupValueIndex createFilterIndex(ICubeColumnIndexReader yearMap, ICubeColumnIndexReader monthMap, ICubeColumnIndexReader dayMap, BIDay start, BIDay end){
         return new RangeIndexGetter(yearMap, monthMap, dayMap).createRangeIndex(start, end);
     }
+
+    public static String getScheduleTime(int time, int frequency) {
+        String scheduleTime;
+        switch (frequency) {
+            case DBConstant.UPDATE_FREQUENCY.EVER_MONTH:
+                scheduleTime="0 0 0 "+time+" * ?";
+                break;
+            case DBConstant.UPDATE_FREQUENCY.EVER_DAY:
+                scheduleTime="0 0 "+time+" * * ?" ;
+                break;
+            default:
+            scheduleTime="0 0 "+time+"? *"+frequency;
+        }
+        return scheduleTime;
+    }
 }

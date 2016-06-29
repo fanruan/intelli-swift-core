@@ -1,4 +1,4 @@
-package com.fr.bi.cal.generate.timerTask;
+package com.fr.bi.cal.generate.timerTask.quartz;
 
 import com.fr.general.jsqlparser.parser.ParseException;
 import com.fr.third.org.quartz.*;
@@ -8,9 +8,13 @@ import com.fr.third.org.quartz.impl.StdSchedulerFactory;
  * Created by Kary on 2016/6/29.
  */
 public class QuartzManager {
+    public static SchedulerFactory getSf() {
+        return sf;
+    }
+
     private static SchedulerFactory sf = new StdSchedulerFactory();
-    private static String JOB_GROUP_NAME = "group1";
-    private static String TRIGGER_GROUP_NAME = "trigger1";
+    private static String JOB_GROUP_NAME = "group";
+    private static String TRIGGER_GROUP_NAME = "trigger";
 
 
     /** */
@@ -33,8 +37,10 @@ public class QuartzManager {
         trigger.setCronExpression(time);//触发器时间设定
         sched.scheduleJob(jobDetail, trigger);
         //启动
-        if (!sched.isShutdown())
+        if (!sched.isShutdown()) {
+            System.out.println("定时任务启动:"+jobName);
             sched.start();
+        }
     }
 
     /** */
@@ -142,4 +148,5 @@ public class QuartzManager {
         sched.unscheduleJob(triggerName, triggerGroupName);//移除触发器
         sched.deleteJob(jobName, jobGroupName);//删除任务
     }
+
 }
