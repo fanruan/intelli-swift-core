@@ -1,10 +1,10 @@
 package com.fr.bi.cal.generate.timerTask;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.conf.datasource.BIBusinessTableSource;
-import com.finebi.cube.conf.datasource.BusinessTableSourceService;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
 import com.fr.bi.base.BIUser;
@@ -12,7 +12,6 @@ import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.conf.manager.update.source.TimeFrequency;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 
 import java.util.*;
@@ -34,10 +33,9 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
                 }
             } else {
                 for (TimeFrequency frequency : allTimeTaskMap.get(keys).getTimeList()) {
-                    BusinessTableSourceService tableSourceService = new BIBusinessTableSource();
-                    if (tableSourceService.containBusinessTable(new BITableID(keys))) {
-                        BIBusinessTable table = new BIBusinessTable(new BITableID(keys));
-                        timerList.add(addSingleTableTask(frequency, table, userId));
+                    BusinessTable businessTable = tableCheck(userId, keys);
+                    if (businessTable!=null) {
+                        timerList.add(addSingleTableTask(frequency, (BIBusinessTable) businessTable, userId));
                     }
                 }
 
@@ -84,6 +82,15 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
 
         }, startDate, period);
         return timer;
+    }
+    private BusinessTable tableCheck(long userId, String keys){
+        Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
+        for (BusinessTable table : allTables) {
+            if(table.getTableSource().getSourceID().equals(keys)){
+                return table;
+            }
+        }
+        return null;
     }
 
 }
