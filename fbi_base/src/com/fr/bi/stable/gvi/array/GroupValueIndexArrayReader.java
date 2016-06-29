@@ -32,6 +32,11 @@ public class GroupValueIndexArrayReader implements NIOReader<GroupValueIndex>, I
     }
 
     @Override
+    public int getReverse(int row) {
+        return 0;
+    }
+
+    @Override
     public long getLastPos(long rowCount) {
         return 0;
     }

@@ -94,12 +94,12 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
 
-        if (min == Double.NEGATIVE_INFINITY) {
+        if (min != Double.NEGATIVE_INFINITY) {
             jo.put("min", this.min);
             jo.put("closemin", this.closemin);
         }
 
-        if (max == Double.POSITIVE_INFINITY) {
+        if (max != Double.POSITIVE_INFINITY) {
             jo.put("max", this.max);
             jo.put("closemax", this.closemax);
         }

@@ -2,6 +2,7 @@ package com.finebi.cube.structure;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeIndexException;
+import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.property.BICubeReverseRelationService;
 import com.finebi.cube.structure.property.BICubeVersion;
@@ -47,6 +48,11 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
         indexDataService.addNULLIndex(position, groupValueIndex);
     }
 
+    @Override
+    public void addReverseIndex(int row, Integer position) {
+        reverseRelationService.addReverseRow(row, position);
+    }
+
 
     @Override
     public GroupValueIndex getBitmapIndex(int position) throws BICubeIndexException {
@@ -62,6 +68,7 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     @Override
     public void clear() {
         indexDataService.clear();
+        reverseRelationService.clear();
         version.clear();
     }
 
@@ -87,6 +94,11 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     @Override
     public Boolean isVersionAvailable() {
         return version.isVersionAvailable();
+    }
+
+    @Override
+    public Integer getReverseIndex(int row) throws BIResourceInvalidException {
+        return reverseRelationService.getReverseRow(row);
     }
 }
 

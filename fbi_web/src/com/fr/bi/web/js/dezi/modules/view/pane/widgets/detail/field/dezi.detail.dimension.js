@@ -7,6 +7,7 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
 
     constants: {
         DIMENSION_BUTTON_HEIGHT: 25,
+        CALC_COMBO_WIDTH: 47,
         COMBO_WIDTH: 60,
         CHECKBOX_WIDTH: 25,
         CONTAINER_HEIGHT: 25,
@@ -66,23 +67,24 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
         this.iconButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self._buildFilterPane();
         });
-
+        var item = [], comboWidth = this.constants.CHECKBOX_WIDTH;
 
         switch (this.model.get("type")) {
             case BICst.TARGET_TYPE.STRING:
-                this._createStringCombo();
+                item = this._createStringCombo();
                 break;
             case BICst.TARGET_TYPE.NUMBER:
-                this._createNumberCombo();
+                item = this._createNumberCombo();
                 break;
             case BICst.TARGET_TYPE.DATE:
-                this._createDateCombo();
+                item = this._createDateCombo();
                 break;
             case BICst.TARGET_TYPE.FORMULA:
-                this._createFormulaCombo();
+                item = this._createFormulaCombo();
+                comboWidth = this.constants.CALC_COMBO_WIDTH;
                 break;
             default :
-                this._createStringCombo();
+                item = this._createStringCombo();
         }
         var filterIconWidth = BI.isEmpty(this.model.get("filter_value")) ? 0 : this.constants.ICON_BUTTON_WIDTH;
         this.htape = BI.createWidget({
@@ -98,9 +100,9 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                 {
                     el: {
                         type: "bi.center_adapt",
-                        items: [this.combo]
+                        items: item
                     },
-                    width: this.constants.CHECKBOX_WIDTH
+                    width: comboWidth
                 }]
         });
 
@@ -148,6 +150,7 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                     break;
             }
         });
+        return [this.combo]
     },
 
     _createNumberCombo: function () {
@@ -174,6 +177,7 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                     break;
             }
         });
+        return [this.combo]
     },
 
     _createDateCombo: function () {
@@ -215,6 +219,7 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                     break;
             }
         });
+        return [this.combo]
     },
 
     _createFormulaCombo: function () {
@@ -258,6 +263,8 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
         this.calculateTargetButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self._updateFormula()
         });
+
+        return [this.calculateTargetButton, this.combo]
     },
 
     _buildFilterPane: function () {

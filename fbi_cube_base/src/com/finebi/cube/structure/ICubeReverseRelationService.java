@@ -12,7 +12,7 @@ public interface ICubeReverseRelationService extends Release {
      * @param row 子表行号
      * @param groupPosition 主表行号
      */
-    void addReverseRow(int row, int groupPosition);
+    void addReverseRow(int row, Integer groupPosition);
 
     /**
      * 获取字表行号对应的主表行号
@@ -20,5 +20,5 @@ public interface ICubeReverseRelationService extends Release {
      * @return 主表行号
      * @throws BIResourceInvalidException
      */
-    int getReverseRow(int row) throws BIResourceInvalidException;
+    Integer getReverseRow(int row) throws BIResourceInvalidException;
 }

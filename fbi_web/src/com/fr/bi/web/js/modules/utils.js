@@ -731,6 +731,12 @@
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
         },
 
+        getWSNumberOfPointerByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.number_of_pointer) ? ws.number_of_pointer :
+                BICst.POINTER.ONE;
+        },
+
         getWSDashboardNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.dashboard_number_level) ? ws.dashboard_number_level :
@@ -2009,7 +2015,7 @@
 
                 //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
                 var linkDrill = self.getDrillByID(lId);
-                if(BI.isNotNull(linkDrill)) {
+                if (BI.isNotNull(linkDrill)) {
                     BI.each(linkDrill, function (drId, drArray) {
                         if (drArray.length === 0) {
                             return;

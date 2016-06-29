@@ -17,12 +17,12 @@ public class BICubeReverseRelationService extends BICubeIntegerProperty implemen
     }
 
     @Override
-    public void addReverseRow(int row, int groupPosition) {
+    public void addReverseRow(int row, Integer groupPosition) {
         getWriter().recordSpecificValue(row, groupPosition);
     }
 
     @Override
-    public int getReverseRow(int row) throws BIResourceInvalidException {
+    public Integer getReverseRow(int row) throws BIResourceInvalidException {
         return getReader().getSpecificValue(row);
     }
 

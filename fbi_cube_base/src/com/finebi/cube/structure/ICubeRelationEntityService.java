@@ -15,4 +15,11 @@ public interface ICubeRelationEntityService extends CubeRelationEntityGetterServ
 
     void addRelationNULLIndex(int position, GroupValueIndex groupValueIndex);
 
+    /**
+     * 加反向关联
+     * @param row 子表行号
+     * @param position 主表行号
+     */
+    void addReverseIndex(int row, Integer position);
+
 }
