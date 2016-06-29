@@ -9,7 +9,7 @@ BI.MonthCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.MonthCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-month-combo",
-            height: 30
+            height: 25
         });
     },
     _init: function () {

@@ -2,6 +2,7 @@ package com.fr.bi.field.target.key.sum;
 
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.general.ComparatorUtils;
 
@@ -30,7 +31,7 @@ public class AvgKey extends SummaryKey {
 
     @Override
     public int getSummaryType() {
-        return 0;
+        return BIReportConstant.SUMMARY_TYPE.AVG;
     }
 
 

@@ -483,6 +483,7 @@
             }
 
             function createDimensionsAndTargets(idx) {
+                var newId = BI.UUID();
                 var dimension = BI.deepClone(widget.dimensions[idx]);
                 if (BI.has(dimTarIdMap, idx)) {
                     return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
@@ -509,8 +510,12 @@
                         if (BI.has(widget.dimensions[idx], "sort")) {
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
                             if (BI.has(dimension.sort, "sort_target")) {
-                                var result = createDimensionsAndTargets(dimension.sort.sort_target);
-                                dimension.sort.sort_target = result.id;
+                                if(dimension.sort.sort_target === idx){
+                                    dimension.sort.sort_target = newId;
+                                }else{
+                                    var result = createDimensionsAndTargets(dimension.sort.sort_target);
+                                    dimension.sort.sort_target = result.id;
+                                }
                             }
                         }
                         break;
@@ -535,9 +540,8 @@
                         });
                         break;
                 }
-                var id = BI.UUID();
-                dimTarIdMap[idx] = id;
-                return {id: id, dimension: dimension};
+                dimTarIdMap[idx] = newId;
+                return {id: newId, dimension: dimension};
             }
         },
 
@@ -1951,10 +1955,17 @@
                         filterValues.push(filterValue);
                     }
                 });
+                var transferFilter = BI.Utils.getWSTransferFilterByID(BI.Utils.getWidgetIDByDimensionID(cId));
+                if(transferFilter === true) {
+                    var tarFilter = BI.Utils.getDimensionFilterValueByID(cId);
+                    if(BI.isNotNull(tarFilter)) {
+                        parseFilter(tarFilter);
+                        filterValues.push(tarFilter);
+                    }
+                }
             });
 
-            //联动传递指标过滤条件  找到联动链上的所有的组件，获取所有的指标的过滤条件  感觉有点浮夸的功能
-
+            //联动传递指标过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
             var allLinksWIds = [];
 
             function getLinkedIds(wid, links) {
@@ -1972,16 +1983,30 @@
 
             getLinkedIds(wid, allLinksWIds);
             BI.each(allLinksWIds, function (i, lId) {
-                if (self.getWSTransferFilterByID(lId) === true) {
-                    var tarIds = BI.Utils.getAllTargetDimensionIDs(lId);
-                    BI.each(tarIds, function (i, tarId) {
-                        var tarFilter = BI.Utils.getDimensionFilterValueByID(tarId);
-                        if (BI.isNotEmptyObject(tarFilter)) {
-                            parseFilter(tarFilter);
-                            filterValues.push(tarFilter);
+                // 并不是拿到所有的指标的过滤条件
+                // if (self.getWSTransferFilterByID(lId) === true) {
+                //     var tarIds = BI.Utils.getAllTargetDimensionIDs(lId);
+                //     BI.each(tarIds, function (i, tarId) {
+                //         var tarFilter = BI.Utils.getDimensionFilterValueByID(tarId);
+                //         if (BI.isNotEmptyObject(tarFilter)) {
+                //             parseFilter(tarFilter);
+                //             filterValues.push(tarFilter);
+                //         }
+                //     })
+                // }
+
+                var lLinkages = BI.Utils.getLinkageValuesByID(lId);
+                BI.each(lLinkages, function (cId, linkValue) {
+                    var lTransferFilter = BI.Utils.getWSTransferFilterByID(BI.Utils.getWidgetIDByDimensionID(cId));
+                    if(lTransferFilter === true) {
+                        var lTarFilter = BI.Utils.getDimensionFilterValueByID(cId);
+                        if(BI.isNotNull(lTarFilter)) {
+                            parseFilter(lTarFilter);
+                            filterValues.push(lTarFilter);
                         }
-                    })
-                }
+                    }
+                });
+
                 //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
                 var linkDrill = self.getDrillByID(lId);
                 if(BI.isNotNull(linkDrill)) {

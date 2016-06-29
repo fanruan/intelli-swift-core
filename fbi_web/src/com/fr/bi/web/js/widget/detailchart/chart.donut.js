@@ -106,16 +106,10 @@ BI.DonutChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.DonutChart, {
-    formatItems: function (items) {
-        var name = BI.keys(items)[0];
-        return {
-            "data": items[name],
-            "name": name,
-            stack: false
-        }
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.DonutChart.EVENT_CHANGE = "EVENT_CHANGE";
