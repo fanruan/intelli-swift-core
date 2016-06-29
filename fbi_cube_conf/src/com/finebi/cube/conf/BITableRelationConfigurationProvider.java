@@ -90,6 +90,9 @@ public interface BITableRelationConfigurationProvider {
     Set<BITableRelationPath> getAllAvailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException;
 
+    Set<BITableRelationPath> getAllUnavailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
+            BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException;
+
     Set<BITableRelationPath> getAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException;
 
     /**
