@@ -404,6 +404,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     newFields.push(field);
                 }
             });
+        } else {
+            newFields = fields;
         }
         BI.each(newFields, function (i, field) {
             var fid = field.id;
