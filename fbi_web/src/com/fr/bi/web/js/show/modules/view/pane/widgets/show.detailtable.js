@@ -159,7 +159,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
 
         var excel = BI.createWidget({
             type: "bi.icon_button",
-            cls: "widget-combo-export-excel-font dashboard-title-detail",
+            cls: "widget-tools-export-excel-font dashboard-title-detail",
             title: BI.i18nText("BI-Export_As_Excel"),
             width: 16,
             height: 16
