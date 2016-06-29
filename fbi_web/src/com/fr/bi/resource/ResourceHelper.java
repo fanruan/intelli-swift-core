@@ -1480,6 +1480,7 @@ public class ResourceHelper {
                 //业务包选择字段服务
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level2.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.date.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.relationtables.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.level2.date.js",
@@ -2318,7 +2319,9 @@ public class ResourceHelper {
                 //选择字段树
                 "com/fr/bi/web/js/widget/selectdata/tree/node/node.level0.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/node/node.level1.js",
+                "com/fr/bi/web/js/widget/selectdata/tree/node/node.level2.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/node/node.level1.date.js",
+                "com/fr/bi/web/js/widget/selectdata/tree/node/node.level2.date.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/treeitem/item.level0.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/treeitem/item.level1.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/loader.selectdata.js",
