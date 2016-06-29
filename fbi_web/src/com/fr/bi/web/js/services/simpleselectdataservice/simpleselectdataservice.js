@@ -247,12 +247,12 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                         pId: tableId,
                         type: "bi.select_data_expander",
                         el: BI.extend({
-                            wId: o.wId,
                             text: fieldName,
                             title: title,
+                            fieldType: BI.Utils.getFieldTypeByID(id),
                             value: id
                         }, field, {
-                            type: "bi.detail_select_data_level1_node",
+                            type: "bi.select_data_level1_date_node",
                             isParent: true,
                             open: false
                         }),

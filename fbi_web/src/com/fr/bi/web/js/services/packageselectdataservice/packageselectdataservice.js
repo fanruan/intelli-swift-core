@@ -479,9 +479,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             wId: o.wId,
                             text: fieldName,
                             title: title,
+                            fieldType: BI.Utils.getFieldTypeByID(id),
                             value: id
                         }, field, {
-                            type: isRelation ? "bi.detail_select_data_level2_node" : "bi.detail_select_data_level1_node",
+                            type: isRelation ? "bi.select_data_level2_date_node" : "bi.select_data_level1_date_node",
                             isParent: true,
                             open: false
                         }),

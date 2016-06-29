@@ -13,13 +13,29 @@ BI.SelectDataLevel1DateNode = BI.inherit(BI.NodeButton, {
             height: 25
         })
     },
+
+    _getFieldClass: function (type) {
+        switch (type) {
+            case BICst.COLUMN.STRING:
+                return "select-data-field-string-group-font";
+            case BICst.COLUMN.NUMBER:
+                return "select-data-field-number-group-font";
+            case BICst.COLUMN.DATE:
+                return "select-data-field-date-group-font";
+            case BICst.COLUMN.COUNTER:
+                return "select-data-field-number-group-font";
+            default:
+                return "select-data-field-date-group-font";
+        }
+    },
+
     _init: function () {
         BI.SelectDataLevel1DateNode.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         this.button = BI.createWidget({
             type: "bi.icon_text_item",
-            cls: "select-data-field-date-group-font",
+            cls: this._getFieldClass(o.fieldType),
             text: o.text,
             value: o.value,
             height: o.height,
@@ -31,12 +47,12 @@ BI.SelectDataLevel1DateNode = BI.inherit(BI.NodeButton, {
             type: "bi.tree_group_node_checkbox"
         });
         this.checkbox.on(BI.Controller.EVENT_CHANGE, function (type) {
-            if(type ===  BI.Events.CLICK) {
+            if (type === BI.Events.CLICK) {
                 self.setSelected(self.isSelected());
             }
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
-        this.button.on(BI.Controller.EVENT_CHANGE, function(){
+        this.button.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
         BI.createWidget({
@@ -47,7 +63,7 @@ BI.SelectDataLevel1DateNode = BI.inherit(BI.NodeButton, {
                     type: "bi.layout"
                 },
                 width: 10
-            },{
+            }, {
                 el: this.button
             }, {
                 el: this.checkbox,
