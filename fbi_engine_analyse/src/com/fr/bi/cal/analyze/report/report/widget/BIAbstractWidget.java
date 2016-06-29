@@ -152,7 +152,9 @@ public abstract class BIAbstractWidget implements BIWidget {
         if(userId != UserControl.getInstance().getSuperManagerID()) {
             List<TargetFilter> filters = getAuthFilter(userId);
             for(int i = 0; i < filters.size(); i++) {
-                gvi = GVIUtils.AND(gvi, filters.get(i).createFilterIndex(row[i], targetKey, loader, userId));
+                for (int j = 0; j < row.length; j++) {
+                    gvi = GVIUtils.AND(gvi, filters.get(i).createFilterIndex(row[j], targetKey, loader, userId));
+                }
             }
         }
         if (filter != null) {

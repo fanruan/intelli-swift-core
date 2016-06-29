@@ -123,10 +123,10 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 value: obj.x
             });
             cDrill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
-                self._onClickDrill(classification, obj.x);
+                self._onClickDrill(classification, obj.value || obj.x);
             });
             cDrill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function (drillId) {
-                self._onClickDrill(classification, obj.x, drillId);
+                self._onClickDrill(classification, obj.value || obj.x, drillId);
             });
             this.wrapper.addItem(cDrill);
         }

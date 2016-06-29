@@ -146,11 +146,22 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         return item;
     },
 
+    _assertChartType:function(val){
+        val || (val = {});
+        val.type || (val.type = BICst.WIDGET.AXIS);
+        return val;
+    },
+
     _createValue: function () {
         var o = this.options;
-        var used = BI.Utils.isDimensionUsable(o.dId);
-        var selectedValue = used ? BICst.CALCULATE_TARGET_COMBO.DISPLAY : BICst.CALCULATE_TARGET_COMBO.HIDDEN;
-        return [{value: selectedValue}];
+        var chartType = BI.Utils.getDimensionStyleOfChartByID(o.dId);
+        chartType = this._assertChartType(chartType);
+        var result = {};
+        result.chartType = {
+            value: BICst.TARGET_COMBO.CHART_TYPE,
+            childValue: chartType.type
+        };
+        return [result.chartType];
     }
 });
 $.shortcut("bi.calculate_target_combo", BI.CalculateTargetCombo);

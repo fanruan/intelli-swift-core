@@ -1426,6 +1426,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
 
+                //自适应布局
+                "com/fr/bi/web/js/modules4show/fit/fit.js",
+
                 //实时报表进度条
                 "com/fr/bi/web/js/modules4show/cubeprogressbar/cubeprogressbar.js",
                 //实时报表指示器
@@ -2542,6 +2545,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/templatemanager/tools/share/selecteduser.grouplist.js",
                 "com/fr/bi/web/js/components/templatemanager/tools/share/selecteduser.button.js",
                 "com/fr/bi/web/js/components/templatemanager/tools/share/usersearchresult.pane.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/editshared/pane.editshared.js",
                 "com/fr/bi/web/js/components/templatemanager/buttongroup.templatemanager.js",
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.js",
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
