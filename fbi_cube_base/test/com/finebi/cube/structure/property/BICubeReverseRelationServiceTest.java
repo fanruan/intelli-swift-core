@@ -48,10 +48,10 @@ public class BICubeReverseRelationServiceTest extends TestCase{
         try {
             assertFalse(cubeReverseRelationService.isReaderAvailable());
             assertFalse(cubeReverseRelationService.isWriterAvailable());
-            cubeReverseRelationService.addReverseRow(1, 1);
+            cubeReverseRelationService.addReverseRow(1, new Integer(1));
             assertTrue(cubeReverseRelationService.isWriterAvailable());
             assertFalse(cubeReverseRelationService.isReaderAvailable());
-            assertEquals(cubeReverseRelationService.getReverseRow(1), 1);
+            assertEquals(cubeReverseRelationService.getReverseRow(1), new Integer(1));
             assertTrue(cubeReverseRelationService.isWriterAvailable());
             assertTrue(cubeReverseRelationService.isReaderAvailable());
         } catch (Exception e) {

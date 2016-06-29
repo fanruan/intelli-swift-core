@@ -16,6 +16,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
@@ -171,8 +172,24 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 }
                 appearPrimaryValue.or(foreignGroupValueIndex);
                 tableRelation.addRelationIndex(row, foreignGroupValueIndex);
+                final int pRow = row;
+                final BICubeRelationEntity finalTableRelation = tableRelation;
+                foreignGroupValueIndex.Traversal(new SingleRowTraversalAction() {
+                    @Override
+                    public void actionPerformed(int rowIndex) {
+                        finalTableRelation.addReverseIndex(rowIndex, pRow);
+                    }
+                });
             }
-            tableRelation.addRelationNULLIndex(0, appearPrimaryValue.NOT(foreignTable.getRowCount()));
+            GroupValueIndex nullIndex =  appearPrimaryValue.NOT(foreignTable.getRowCount());
+            final BICubeRelationEntity finalTableRelation = tableRelation;
+            nullIndex.Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int rowIndex) {
+                    finalTableRelation.addReverseIndex(rowIndex, null);
+                }
+            });
+            tableRelation.addRelationNULLIndex(0, nullIndex);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
