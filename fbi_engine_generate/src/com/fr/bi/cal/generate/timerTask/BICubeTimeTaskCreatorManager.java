@@ -27,7 +27,7 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
     public List<Timer> reGenerateTimeTasks(long userId, Map<String, UpdateSettingSource> allTimeTaskMap) {
         List<Timer> timerList = new ArrayList<Timer>();
         for (String keys : allTimeTaskMap.keySet()) {
-            if (keys.equals(DBConstant.GLOBAL_UPDATE)) {
+            if (keys.equals(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE)) {
                 for (TimeFrequency frequency : allTimeTaskMap.get(keys).getTimeList()) {
                     timerList.add(addGlobalTask(frequency, userId));
                 }
