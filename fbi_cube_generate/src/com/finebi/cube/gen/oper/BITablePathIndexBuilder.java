@@ -75,8 +75,24 @@ public class BITablePathIndexBuilder extends BIProcessor {
                     GroupValueIndex resultGroupValueIndex = getTableLinkedOrGVI(frontGroupValueIndex, lastRelationEntity);
                     appearPrimaryValue.or(resultGroupValueIndex);
                     targetPathEntity.addRelationIndex(row, resultGroupValueIndex);
+                    final ICubeRelationEntityService finalTargetPathEntity = targetPathEntity;
+                    final int finalRow = row;
+                    resultGroupValueIndex.Traversal(new SingleRowTraversalAction() {
+                        @Override
+                        public void actionPerformed(int rowIndex) {
+                            finalTargetPathEntity.addReverseIndex(rowIndex, finalRow);
+                        }
+                    });
                 }
-                targetPathEntity.addRelationNULLIndex(0, appearPrimaryValue.NOT(getJuniorTableRowCount()));
+                GroupValueIndex nullIndex = appearPrimaryValue.NOT(getJuniorTableRowCount());
+                final ICubeRelationEntityService finalTargetPathEntity = targetPathEntity;
+                nullIndex.Traversal(new SingleRowTraversalAction() {
+                    @Override
+                    public void actionPerformed(int row) {
+                        finalTargetPathEntity.addReverseIndex(row, null);
+                    }
+                });
+                targetPathEntity.addRelationNULLIndex(0, nullIndex);
                 long costTime = System.currentTimeMillis() - t;
                 biLogManager.infoRelation(getRelationColumnKeyInfo(), costTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
