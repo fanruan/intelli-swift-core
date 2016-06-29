@@ -3,7 +3,7 @@ FS.THEME.config4MenuTree.insertNodes = [
         if (FS.config.isAdmin) {
             return {
                 text: BI.i18nText("BI-All_Reports"),
-                contentEl: $('<div>'),
+                contentEl: $('<div class="fs_design_container">'),
                 afterLoad: function ($tab, $content, entry) {
                     FS.allReports.apply(this, [$tab, $content, entry]);
                 }
@@ -12,7 +12,7 @@ FS.THEME.config4MenuTree.insertNodes = [
     },
     {
         text: BI.i18nText('FS-Generic-I_Created'),
-        contentEl: $('<div>'),
+        contentEl: $('<div class="fs_design_container">'),
         afterLoad: function ($tab, $content, entry) {
             FS.createByMe.apply(this, [$tab, $content, entry]);
         }
@@ -21,7 +21,7 @@ FS.THEME.config4MenuTree.insertNodes = [
         if (!FS.config.isAdmin) {
             return {
                 text: BI.i18nText('FS-Generic-Shared_To_Me'),
-                contentEl: $('<div>'),
+                contentEl: $('<div class="fs_design_container">'),
                 afterLoad: function ($tab, $content, entry) {
                     FS.shareToMe.apply(this, [$tab, $content, entry]);
                 }

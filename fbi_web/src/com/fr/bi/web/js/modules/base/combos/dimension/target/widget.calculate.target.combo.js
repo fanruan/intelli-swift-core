@@ -53,10 +53,6 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             //    cls: "dot-ha-font"
             //}],
             [{
-                text: BI.i18nText("BI-Modify_Cal_Target"),
-                value: BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET
-            }],
-            [{
                 text: BI.i18nText("BI-Copy"),
                 value: BICst.CALCULATE_TARGET_COMBO.COPY
             }],
@@ -144,17 +140,28 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 item[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
                 break;
             default:
-                item[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
+                item[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
                 break;
         }
         return item;
     },
 
+    _assertChartType:function(val){
+        val || (val = {});
+        val.type || (val.type = BICst.WIDGET.AXIS);
+        return val;
+    },
+
     _createValue: function () {
         var o = this.options;
-        var used = BI.Utils.isDimensionUsable(o.dId);
-        var selectedValue = used ? BICst.CALCULATE_TARGET_COMBO.DISPLAY : BICst.CALCULATE_TARGET_COMBO.HIDDEN;
-        return [{value: selectedValue}];
+        var chartType = BI.Utils.getDimensionStyleOfChartByID(o.dId);
+        chartType = this._assertChartType(chartType);
+        var result = {};
+        result.chartType = {
+            value: BICst.TARGET_COMBO.CHART_TYPE,
+            childValue: chartType.type
+        };
+        return [result.chartType];
     }
 });
 $.shortcut("bi.calculate_target_combo", BI.CalculateTargetCombo);

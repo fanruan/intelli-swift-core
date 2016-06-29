@@ -30,9 +30,9 @@ BI.Table = BI.inherit(BI.Widget, {
             },
 
             columnSize: [],
-            headerRowSize: 37,
-            footerRowSize: 37,
-            rowSize: 37,
+            headerRowSize: 25,
+            footerRowSize: 25,
+            rowSize: 25,
 
             regionColumnSize: false,
 
@@ -1422,7 +1422,42 @@ BI.Table = BI.inherit(BI.Widget, {
         var o = this.options;
         var columnSize = [];
         if (o.isNeedFreeze) {
-            if (!BI.any(this.bottomLeftBodyTds, function (i, tds) {
+            if(this.bottomLeftBodyTds.length > 0) {
+                if (!BI.any(this.bottomLeftBodyTds, function (i, tds) {
+                        if (!BI.any(tds, function (i, item) {
+                                if (item.__mergeCols.length > 1) {
+                                    return true;
+                                }
+                            })) {
+                            BI.each(tds, function (i, item) {
+                                columnSize.push(item.width() / item.__mergeCols.length);
+                            });
+                            return true;
+                        }
+                    })) {
+                    BI.each(this.bottomLeftBodyTds[0], function (i, item) {
+                        columnSize.push(item.width() / item.__mergeCols.length);
+                    });
+                }
+                if (!BI.any(this.bottomRightBodyTds, function (i, tds) {
+                        if (!BI.any(tds, function (i, item) {
+                                if (item.__mergeCols.length > 1) {
+                                    return true;
+                                }
+                            })) {
+                            BI.each(tds, function (i, item) {
+                                columnSize.push(item.width() / item.__mergeCols.length);
+                            });
+                            return true;
+                        }
+                    })) {
+                    BI.each(this.bottomRightBodyTds[0], function (i, item) {
+                        columnSize.push(item.width() / item.__mergeCols.length);
+                    });
+                }
+                return columnSize;
+            }
+            if (!BI.any(this.topLeftBodyTds, function (i, tds) {
                     if (!BI.any(tds, function (i, item) {
                             if (item.__mergeCols.length > 1) {
                                 return true;
@@ -1434,11 +1469,11 @@ BI.Table = BI.inherit(BI.Widget, {
                         return true;
                     }
                 })) {
-                BI.each(this.bottomLeftBodyTds[0], function (i, item) {
+                BI.each(this.topLeftBodyTds[this.topLeftBodyTds.length - 1], function (i, item) {
                     columnSize.push(item.width() / item.__mergeCols.length);
                 });
             }
-            if (!BI.any(this.bottomRightBodyTds, function (i, tds) {
+            if (!BI.any(this.topRightBodyTds, function (i, tds) {
                     if (!BI.any(tds, function (i, item) {
                             if (item.__mergeCols.length > 1) {
                                 return true;
@@ -1450,7 +1485,7 @@ BI.Table = BI.inherit(BI.Widget, {
                         return true;
                     }
                 })) {
-                BI.each(this.bottomRightBodyTds[0], function (i, item) {
+                BI.each(this.topRightBodyTds[this.topRightBodyTds.length - 1], function (i, item) {
                     columnSize.push(item.width() / item.__mergeCols.length);
                 });
             }

@@ -22,13 +22,6 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
     _init: function () {
         BI.AbstractDimension.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.usedCheck = BI.createWidget({
-            type: "bi.checkbox"
-        });
-        this.usedCheck.setSelected(o.model.getDimensionUsedById(o.dId));
-        this.usedCheck.on(BI.Checkbox.EVENT_CHANGE, function () {
-            o.model.setDimensionUsedById(o.dId, self.usedCheck.isSelected());
-        });
 
         this.nameEditor = BI.createWidget({
             type: "bi.sign_style_editor",
@@ -54,12 +47,6 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
                 type:"bi.htape",
                 height:25,
                 items:[{
-                    el: {
-                        type: "bi.center_adapt",
-                        items: [this.usedCheck]
-                    },
-                    width: this.constants.COMBO_WIDTH
-                }, {
                     el:this.nameEditor
                 },{
                     el:this.combo,

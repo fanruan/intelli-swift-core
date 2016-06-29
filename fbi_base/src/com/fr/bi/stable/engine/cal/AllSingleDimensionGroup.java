@@ -37,7 +37,7 @@ public class AllSingleDimensionGroup {
 	 * @param key
 	 * @param deal
 	 */
-	public static void run(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final ResultDealer deal, final int startCol){
+	public static void run(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final ResultDealer deal){
 		GroupValueIndex currentIndex = parentIndex.clone();
 		final FinalAdapter<GroupValueIndex> adapter = new FinalAdapter<GroupValueIndex>(currentIndex);
 		while(!adapter.get().isAllEmpty()){
@@ -48,7 +48,7 @@ public class AllSingleDimensionGroup {
 					GroupValueIndex gvi = ti.getIndexByRow(key, row);
 					GroupValueIndex currentIndex = adapter.get().AND(gvi);
 					if(deal != null){
-						deal.dealWith(ti, currentIndex, startCol);
+						deal.dealWith(ti, currentIndex);
 					}
 					adapter.set(adapter.get().andnot(currentIndex));
 					return true;
@@ -57,7 +57,7 @@ public class AllSingleDimensionGroup {
 		}
 	}
 	
-	public static void runWithSort(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final ResultDealer deal, final int startCol){
+	public static void runWithSort(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final ResultDealer deal){
 		GroupValueIndex currentIndex = parentIndex.clone();
 		final FinalAdapter<GroupValueIndex> adapter = new FinalAdapter<GroupValueIndex>(currentIndex);
 		while(!adapter.get().isAllEmpty()){
@@ -68,7 +68,7 @@ public class AllSingleDimensionGroup {
 					GroupValueIndex gvi = ti.getIndexByRow(key, row);
 					GroupValueIndex currentIndex = adapter.get().AND(gvi);
 					if(deal != null){
-						deal.dealWith(ti, currentIndex, startCol);
+						deal.dealWith(ti, currentIndex);
 					}
 					adapter.set(adapter.get().andnot(currentIndex));
 					return true;

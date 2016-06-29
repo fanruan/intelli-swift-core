@@ -1,12 +1,14 @@
 package com.fr.bi.cal.stable.cube.file;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.ValueConverter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.index.GroupIndexCreator;
 import com.fr.bi.cal.stable.index.file.GroupLengthFile;
 import com.fr.bi.cal.stable.index.file.field.AbstractNIOCubeFile;
 import com.fr.bi.cal.stable.io.NIOReadGroupMap;
-import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -15,9 +17,7 @@ import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.array.ArrayKey;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 
@@ -129,7 +129,7 @@ public abstract class AbstractSingleColumnFile<T> extends LinkIndexFile implemen
     }
 
     @Override
-    public DetailGetter<T> createDetailGetter(SingleUserNIOReadManager manager) {
+    public ICubeColumnDetailGetter createDetailGetter(SingleUserNIOReadManager manager) {
         return null;
     }
 

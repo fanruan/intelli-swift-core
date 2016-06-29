@@ -25,6 +25,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
 
     rebuildCenter: function (center) {
         var self = this;
+        var oldValue = [], oldSearchValue = [];
         this.searchResultPane = BI.createWidget({
             type: "bi.user_search_result_pane"
         });
@@ -34,19 +35,71 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
             onSearch: function (op, callback) {
                 var keyword = op.keyword.toLowerCase();
                 var searchResult = BI.Func.getSearchResult(self.allUsers, keyword, "user_name");
-                callback(self._formatUserRole(searchResult.matched.concat(searchResult.finded), true), keyword, self.allUsersTree.getValue());
+                var items = self._formatUserRole(searchResult.matched.concat(searchResult.finded), true);
+                var suIds = self.getValue();
+                var seaUserIds = [];
+                BI.each(self.allSearchUserIds, function (i, asu) {
+                    if (suIds.contains(asu.slice(BI.UUID().length))) {
+                        seaUserIds.push(asu);
+                    }
+                });
+                oldSearchValue = seaUserIds;
+                callback(items, keyword, seaUserIds);
             },
             isAutoSearch: false,
             isAutoSync: false,
             popup: this.searchResultPane
         });
         this.searchResultPane.on(BI.UserSearchResultPane.EVENT_CHANGE, function () {
+            var isRemove = false;
+            //先同步一下自己
+            var vs = this.getValue();
+            var values = [], ids = [], oIds = [];
+            BI.each(vs, function (i, v) {
+                ids.push(v.slice(BI.UUID().length));
+            });
+            BI.each(oldSearchValue, function (i, v) {
+                oIds.push(v.slice(BI.UUID().length));
+            });
+            if (ids.length < oIds.length) {
+                BI.each(ids, function (i, v) {
+                    oIds.splice(oIds.indexOf(v), 1);
+                });
+                ids = BI.uniq(ids);
+                BI.each(oIds, function (i, oId) {
+                    ids.indexOf(oId) > -1 && ids.splice(ids.indexOf(oId), 1);
+                });
+                isRemove = true;
+            }
+            BI.each(self.allSearchUserIds, function (i, au) {
+                ids.contains(au.slice(BI.UUID().length)) && values.push(au);
+            });
+
+            this.setValue(values);
+
             //搜索结果面板的选中项变化的时候  要与原面板的选中项做对比 结果集再set回原始面板
-            var currOb = arguments[0];
-            var currId = currOb.value, isChecked = currOb.checked;
-            var oldValue = self.allUsersTree.getValue();
-            isChecked === true ? oldValue.push(currId) : BI.remove(oldValue, currId);
+            var value = self.getValue();
+            if (isRemove) {
+                BI.each(oIds, function (i, id) {
+                    if (!ids.contains(id)) {
+                        BI.remove(value, id);
+                    }
+                });
+            } else {
+                BI.each(ids, function (i, id) {
+                    if (!oIds.contains(id)) {
+                        value.push(id);
+                    }
+                });
+            }
+            oldValue = [];
+            BI.each(self.allUserIds, function (i, auId) {
+                if (value.contains(auId.slice(BI.UUID().length))) {
+                    oldValue.push(auId);
+                }
+            });
             self.allUsersTree.setValue(oldValue);
+            oldSearchValue = values;
             self._refreshSelectedUserList();
         });
 
@@ -59,6 +112,29 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
             self.allUsersTree.populate(self._formatUserRole(res));
         });
         this.allUsersTree.on(BI.SimpleTreeView.EVENT_CHANGE, function () {
+            var vs = this.getValue();
+            var values = [], ids = [], oIds = [];
+            BI.each(vs, function (i, v) {
+                ids.push(v.slice(BI.UUID().length));
+            });
+            BI.each(oldValue, function (i, v) {
+                oIds.push(v.slice(BI.UUID().length));
+            });
+            if (ids.length < oIds.length) {
+                BI.each(ids, function (i, v) {
+                    oIds.splice(oIds.indexOf(v), 1);
+                });
+                ids = BI.uniq(ids);
+                BI.each(oIds, function (i, oId) {
+                    ids.indexOf(oId) > -1 && ids.splice(ids.indexOf(oId), 1);
+                });
+            }
+            BI.each(self.allUserIds, function (i, au) {
+                ids.contains(au.slice(BI.UUID().length)) && values.push(au);
+            });
+
+            this.setValue(values);
+            oldValue = this.getValue();
             self._refreshSelectedUserList();
         });
         searcher.setAdapter(this.allUsersTree);
@@ -130,15 +206,17 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                 });
                 this.selectedUserList.on(BI.Controller.EVENT_CHANGE, function () {
                     var userId = arguments[1];
-                    var selectedUser = self.allUsersTree.getValue();
-                    BI.some(selectedUser, function (i, id) {
-                        if (id === userId) {
-                            selectedUser.splice(i, 1);
-                            return true;
+                    var sUserIds = self.getValue();
+                    var suIds = [];
+                    BI.remove(sUserIds, userId);
+                    BI.each(self.allUserIds, function (i, au) {
+                        if (sUserIds.contains(au.slice(BI.UUID().length))) {
+                            suIds.push(au);
                         }
                     });
-                    self.allUsersTree.setValue(selectedUser);
-                    self.searchResultPane.setValue(selectedUser);
+
+                    self.allUsersTree.setValue(suIds);
+                    self.searchResultPane.setValue(suIds);
                     self._refreshSelectedUserList();
                 });
                 return this.selectedUserList;
@@ -150,18 +228,21 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
     _formatUserRole: function (users, isSearch) {
         var self = this, roles = [];
         var treeItems = [];
-        this.roleUserMap = {};
         var departPosts = [];
+        this.roleUserMap = {};
+        isSearch ? (this.allSearchUserIds = []) : (this.allUserIds = []);
         BI.each(users, function (i, user) {
             var department = user.user_department;
             if (BI.isNotNull(department) && department !== "") {
+                var userId = BI.UUID() + user.user_id;
+                isSearch ? (self.allSearchUserIds.push(userId)) : (self.allUserIds.push(userId));
                 treeItems.push({
-                    id: user.user_id.toString(),
+                    id: userId,
                     text: user.user_name,
-                    value: user.user_id.toString(),
+                    value: userId,
                     pId: department
                 });
-                if(!departPosts.contains(department)) {
+                if (!departPosts.contains(department)) {
                     treeItems.push({
                         id: department,
                         text: department,
@@ -195,13 +276,38 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                     } else {
                         self.roleUserMap[role].push(user);
                     }
+                    var userId = BI.UUID() + user.user_id;
+                    isSearch ? (self.allSearchUserIds.push(userId)) : (self.allUserIds.push(userId));
                     treeItems.push({
-                        id: user.user_id.toString(),
+                        id: userId,
                         pId: role,
                         text: user.user_name,
-                        value: user.user_id.toString()
+                        value: userId
                     });
                 })
+            }
+
+            //无角色 无职位的用户 放到其他
+            if ((BI.isNull(department) || department === "") &&
+                (BI.isNull(user.roles) || user.roles.length === 0)) {
+                var userId = BI.UUID() + user.user_id;
+                isSearch ? (self.allSearchUserIds.push(userId)) : (self.allUserIds.push(userId));
+                treeItems.push({
+                    id: userId,
+                    pId: BI.ShareReportPane.USER_NO_ROLE,
+                    text: user.user_name,
+                    value: userId
+                });
+                if (BI.isNull(self.roleUserMap[BI.ShareReportPane.USER_NO_ROLE])) {
+                    treeItems.push({
+                        id: BI.ShareReportPane.USER_NO_ROLE,
+                        text: BI.i18nText("BI-User_Without_Role"),
+                        value: BI.ShareReportPane.USER_NO_ROLE
+                    });
+                    self.roleUserMap[BI.ShareReportPane.USER_NO_ROLE] = [user];
+                } else {
+                    self.roleUserMap[BI.ShareReportPane.USER_NO_ROLE].push(user);
+                }
             }
         });
         treeItems = BI.sortBy(treeItems, function (index, item) {
@@ -213,21 +319,24 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
     _refreshSelectedUserList: function () {
         var self = this;
         var selectedUser = this.allUsersTree.getValue();
-        selectedUser = BI.uniq(selectedUser);
-        if (selectedUser.length > 0) {
+        var uniqIds = [];
+        BI.each(selectedUser, function (i, su) {
+            uniqIds.push(su.slice(BI.UUID().length));
+        });
+        uniqIds = BI.uniq(uniqIds);
+        if (uniqIds.length > 0) {
             this.tab.setSelect(BI.ShareReportPane.USER_EXIST);
             //找到所有已选的用户 和 对应的角色
             var selectedRolesMap = {}, noRoleUsers = [];
-            BI.each(selectedUser, function (i, id) {
+            BI.each(uniqIds, function (i, id) {
                 BI.each(self.allUsers, function (i, item) {
                     if (item.user_id.toString() === id) {
                         if (BI.isNotNull(item.roles) && BI.isNotEmptyArray(item.roles)) {
                             BI.each(item.roles, function (j, role) {
-                                if (BI.isNotNull(selectedRolesMap[role])) {
-                                    selectedRolesMap[role].push(item);
-                                } else {
-                                    selectedRolesMap[role] = [item];
+                                if (BI.isNull(selectedRolesMap[role])) {
+                                    selectedRolesMap[role] = [];
                                 }
+                                selectedRolesMap[role].push(item);
                             })
                         }
                         var department = item.user_department;
@@ -237,7 +346,7 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
                             }
                             selectedRolesMap[department].push(item);
                         }
-                        if (BI.isNull(item.roles) && (BI.isNull(department) || department === "")) {
+                        if ((BI.isNull(item.roles) || item.roles.length === 0) && (BI.isNull(department) || department === "")) {
                             noRoleUsers.push(item);
                         }
                     }
@@ -254,14 +363,29 @@ BI.ShareReportPane = BI.inherit(BI.BarPopoverSection, {
         }
     },
 
+    getValue: function () {
+        var selectedUser = this.allUsersTree.getValue();
+        var sUserIds = [];
+        BI.each(selectedUser, function (i, su) {
+            sUserIds.push(su.slice(BI.UUID().length));
+        });
+        sUserIds = BI.uniq(sUserIds);
+        return sUserIds;
+    },
+
     end: function () {
-        this.fireEvent(BI.ShareReportPane.EVENT_SHARE, this.allUsersTree.getValue());
+        this.fireEvent(BI.ShareReportPane.EVENT_SHARE, this.getValue());
+    },
+    
+    close: function(){
+        this.fireEvent(BI.ShareReportPane.EVENT_CLOSE);
     }
 });
 BI.extend(BI.ShareReportPane, {
     USER_EMPTY: 1,
     USER_EXIST: 2,
-    USER_NO_ROLE: -1
+    USER_NO_ROLE: "__no_role_user__"
 });
+BI.ShareReportPane.EVENT_CLOSE = "EVENT_CLOSE";
 BI.ShareReportPane.EVENT_SHARE = "EVENT_SHARE";
 $.shortcut("bi.share_report_pane", BI.ShareReportPane);

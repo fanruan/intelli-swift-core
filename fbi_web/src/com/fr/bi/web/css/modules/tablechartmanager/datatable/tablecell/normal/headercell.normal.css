@@ -4,7 +4,3 @@
 .bi-normal-header-cell > table > tbody > tr > td {
   max-width: 0;
 }
-.bi-normal-header-cell .header-cell-text {
-  font-size: 14px;
-  font-weight: bold;
-}

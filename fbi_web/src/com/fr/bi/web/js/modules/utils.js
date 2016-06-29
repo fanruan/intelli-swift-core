@@ -1400,13 +1400,17 @@
         },
 
         getPathsFromFieldAToFieldB: function (from, to) {
+            var self = this;
             if (BI.isNull(from) || BI.isNull(to)) {
                 return [];
             }
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
             if (tableA === tableB) {
-                return [[{primaryKey: {field_id: from}, foreignKey: {field_id: to}}]]
+                return [[{
+                    primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
+                    foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
+                }]]
             }
             return this.getPathsFromTableAToTableB(tableA, tableB);
         },
@@ -1828,16 +1832,54 @@
             var widget = Data.SharingPool.get("widgets", wid);
             var filterValues = [];
 
+            //对于维度的条件，很有可能是一个什么属于分组 这边处理 （没放到构造的地方处理是因为“其他”）
+            function parseStringFilter4Group(dId, value) {
+                var group = BI.Utils.getDimensionGroupByID(dId);
+                var details = group.details;
+                var groupMap = {};
+                BI.each(details, function (i, detail) {
+                    groupMap[detail.value] = [];
+                    BI.each(detail.content, function (j, content) {
+                        groupMap[detail.value].push(content.value);
+                    });
+                });
+                var groupNames = BI.keys(groupMap), ungroupName = group.ungroup2OtherName;
+                if (group.ungroup2Other === 1) {
+                    groupNames.push(ungroupName);
+                }
+                // 对于drill和link 一般value的数组里只有一个值
+                var v = value[0];
+                if (groupNames.contains(v)) {
+                    if (v === ungroupName) {
+                        var vs = [];
+                        BI.each(groupMap, function (gk, gv) {
+                            gk !== v && (vs = vs.concat(gv));
+                        });
+                        return {
+                            filter_type: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
+                            filter_value: {type: BI.Selection.Multi, value: vs},
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        }
+                    }
+                    return {
+                        filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                        filter_value: {type: BI.Selection.Multi, value: groupMap[v]},
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    }
+                }
+                return {
+                    filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                    filter_value: {type: BI.Selection.Multi, value: value},
+                    _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                }
+            }
+
             function parseSimpleFilter(v) {
                 var dId = v.dId;
                 var dType = self.getDimensionTypeByID(dId);
                 switch (dType) {
                     case BICst.TARGET_TYPE.STRING:
-                        return {
-                            filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
-                            filter_value: {type: BI.Selection.Multi, value: v.value},
-                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(v.dId)}
-                        };
+                        return parseStringFilter4Group(dId, v.value);
                     case BICst.TARGET_TYPE.NUMBER:
                         var value = v.value[0];
                         var min = BI.parseInt(value.slice(0, value.indexOf("-")));
@@ -1940,6 +1982,23 @@
                         }
                     })
                 }
+                //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
+                var linkDrill = self.getDrillByID(lId);
+                if(BI.isNotNull(linkDrill)) {
+                    BI.each(linkDrill, function (drId, drArray) {
+                        if (drArray.length === 0) {
+                            return;
+                        }
+                        BI.each(drArray, function (i, drill) {
+                            BI.each(drArray[i].values, function (i, v) {
+                                var filterValue = parseSimpleFilter(v);
+                                if (BI.isNotNull(filterValue)) {
+                                    filterValues.push(filterValue);
+                                }
+                            });
+                        });
+                    });
+                }
             });
 
 
@@ -2017,7 +2076,7 @@
             var wWid = value.wId, se = value.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
-                if(BI.isNull(wWValue)){
+                if (BI.isNull(wWValue)) {
                     return;
                 }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {

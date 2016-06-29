@@ -1,5 +1,6 @@
 package com.fr.bi.web.service.action;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.etl.analysis.Constants;
@@ -44,8 +45,9 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
         BIKey key = new IndexKey(field);
         int filedType = service.getColumns().get(key).getFieldType();
         Set set = new HashSet();
+        ICubeColumnDetailGetter getter = service.getColumnDetailReader(key);
         for (int i = 0; i < service.getRowCount() && set.size() < MAX_ROW; i ++){
-            set.add(service.getRow(key, i));
+            set.add(getter.getValue(i));
         }
         for (Object ob : set){
             ja.put(getText(ob, filedType));

@@ -2,6 +2,7 @@ package com.fr.bi.web.dezi.services;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerTableSource;
+import com.finebi.cube.location.BICubeLocation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.TempCubeManager;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
@@ -41,8 +42,9 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
         }
         long userId = session.getUserId();
         final String fileName = TempPathGenerator.createTempPath();
-        CubeTableSource source = BIModuleUtils.getSourceByID(new BITableID(tableId), new BIUser(userId));
-        final String cubePath = BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()) + File.separator + fileName;
+        final CubeTableSource source = BIModuleUtils.getSourceByID(new BITableID(tableId), new BIUser(userId));
+        BICubeLocation cubeLocation = new BICubeLocation(BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()),File.separator + fileName);
+        final String cubePath = cubeLocation.getAbsolutePath();
         final TempCubeTask task = new TempCubeTask(source.getSourceID(), tableId, userId);
         final CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(task);
 

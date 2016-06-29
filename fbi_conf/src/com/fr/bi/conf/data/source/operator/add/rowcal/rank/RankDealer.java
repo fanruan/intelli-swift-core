@@ -3,6 +3,7 @@
  */
 package com.fr.bi.conf.data.source.operator.add.rowcal.rank;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
@@ -30,18 +31,20 @@ public class RankDealer implements ResultDealer {
 	private int type;
 	
 	private Traversal<BIDataValue> travel;
+	private int startCol;
 	
-	RankDealer(BIKey key, int type, Traversal<BIDataValue> travel){
+	RankDealer(BIKey key, int type, Traversal<BIDataValue> travel, int startCol){
 		this.key = key;
 		this.type = type;
 		this.travel = travel;
+		this.startCol = startCol;
 	}
 
 	@Override
-	public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex, final int startCol) {
+	public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex) {
 		TreeMap<Number, FinalInt> tree = createSortedTree(ti, currentIndex);
 		HashMap<Number, Integer> map = buildrankMap(tree); 
-		writeValue(ti, currentIndex, map, startCol);
+		writeValue(ti, currentIndex, map);
 	}
 
 	
@@ -50,11 +53,12 @@ public class RankDealer implements ResultDealer {
 	 * @param currentIndex
 	 * @param map
 	 */
-	private void writeValue(final ICubeTableService ti, GroupValueIndex currentIndex, final HashMap<Number, Integer> map, final int startCol) {
+	private void writeValue(final ICubeTableService ti, GroupValueIndex currentIndex, final HashMap<Number, Integer> map) {
+        final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
 		currentIndex.Traversal(new SingleRowTraversalAction() {
 			@Override
 			public void actionPerformed(int row) {
-				Number v = (Number) ti.getRow(key, row);
+				Number v = (Number) getter.getValue(row);
 				int rank = map.get(v);
 				travel.actionPerformed(new BIDataValue(row, startCol, rank));
 			}	
@@ -87,10 +91,11 @@ public class RankDealer implements ResultDealer {
 			comparator = ComparatorFacotry.DOUBLE_DESC;
 		}
 		final TreeMap<Number, FinalInt> tree = new TreeMap<Number, FinalInt>(comparator);
-		currentIndex.Traversal(new SingleRowTraversalAction() {
+        final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
+        currentIndex.Traversal(new SingleRowTraversalAction() {
 			@Override
 			public void actionPerformed(int row) {
-				Number v = (Number) ti.getRow(key, row);
+				Number v = (Number) getter.getValue(row);
 				FinalInt count = tree.get(v);
 				if(count == null){
 					count = new FinalInt();

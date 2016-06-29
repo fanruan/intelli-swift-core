@@ -9,13 +9,13 @@ BI.CubePath = BI.inherit(BI.Widget, {
         BUTTON_WIDTH: 90
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.CubePath.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-cube-path"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.CubePath.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.path = "";
@@ -39,21 +39,30 @@ BI.CubePath = BI.inherit(BI.Widget, {
             height: this.constants.BUTTON_HEIGHT,
             width: this.constants.BUTTON_WIDTH
         });
-        modifyButton.on(BI.Button.EVENT_CHANGE, function(){
-            if(cancelButton.isVisible()){
-                BI.Utils.checkCubePath(pathInput.getValue(), function(res){
-                    if(BI.isEmptyString(res)){
+        modifyButton.on(BI.Button.EVENT_CHANGE, function () {
+            if (cancelButton.isVisible()) {
+                BI.Utils.checkCubePath(pathInput.getValue(), function (res) {
+                    if (BI.isEmptyString(res)) {
                         //错误的路径
-                        BI.Msg.alert();
+                        BI.Msg.confirm("", BI.i18nText("BI-Invalid_Path"), function () {
+                            pathInput.focus();
+                        });
                     } else {
                         self.path = res;
                         var id = BI.UUID();
                         var confirm = BI.createWidget({
                             type: "bi.cube_path_confirm"
                         });
-                        BI.Popovers.create(id, confirm, {width: 500, height: 300}).open(id);
-                        confirm.on(BI.CubePathConfirm.EVENT_SAVE, function(){
-
+                        BI.Popovers.create(id, confirm, {width: 430, height: 300}).open(id);
+                        confirm.on(BI.CubePathConfirm.EVENT_SAVE, function () {
+                            BI.Utils.saveCubePath(pathInput.getValue(), function () {
+                                BI.Msg.toast(BI.i18nText("BI-Modify_Success"));
+                                pathLabel.setVisible(true);
+                                pathInput.setVisible(false);
+                                modifyButton.setText(BI.i18nText("BI-Modify"));
+                                cancelButton.setVisible(false);
+                                tipLabel.setVisible(false);
+                            });
                         });
                     }
                 });
@@ -73,7 +82,7 @@ BI.CubePath = BI.inherit(BI.Widget, {
             height: this.constants.BUTTON_HEIGHT,
             width: this.constants.BUTTON_WIDTH
         });
-        cancelButton.on(BI.Button.EVENT_CHANGE, function(){
+        cancelButton.on(BI.Button.EVENT_CHANGE, function () {
             pathLabel.setVisible(true);
             pathInput.setVisible(false);
             modifyButton.setText(BI.i18nText("BI-Modify"));
@@ -99,7 +108,7 @@ BI.CubePath = BI.inherit(BI.Widget, {
             }, pathLabel, pathInput, modifyButton, cancelButton, tipLabel],
             hgap: 5
         });
-        BI.Utils.getCubePath(function(path){
+        BI.Utils.getCubePath(function (path) {
             self.path = path;
             pathLabel.setText(path);
             pathInput.setValue(path);

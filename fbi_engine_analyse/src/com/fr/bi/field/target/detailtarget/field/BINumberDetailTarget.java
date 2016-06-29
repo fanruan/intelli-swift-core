@@ -44,20 +44,6 @@ public class BINumberDetailTarget extends BIAbstractDetailTarget {
         return true;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof BINumberDetailTarget)) {
-            return false;
-        }
-
-        BINumberDetailTarget that = (BINumberDetailTarget) o;
-
-
-        return true;
-    }
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception{

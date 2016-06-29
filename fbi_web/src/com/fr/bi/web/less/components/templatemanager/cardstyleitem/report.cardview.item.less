@@ -1,18 +1,28 @@
 @import "../../../bibase";
-.bi-report-card-view-item{
-  &:hover, &.active{
+
+.bi-report-card-view-item {
+  &:hover, &.active {
     background: @color-bi-background-gray;
   }
-  & .tool-rename-icon{
-    color: @color-bi-text-highlight;
+  & .tool-rename-icon {
     font-size: @font-size-16;
     border: 1px solid @color-bi-border-normal;
     .border-radius(2px);
+    background: @color-bi-background-default;
+    &:hover{
+      background: @color-bi-background-gray;
+    }
   }
-  & .tool-delete-icon{
-    color: @color-bi-text-warning;
+  & .tool-delete-icon {
     font-size: @font-size-16;
     border: 1px solid @color-bi-border-normal;
     .border-radius(2px);
+    background: @color-bi-background-default;
+    &:hover{
+      background: @color-bi-background-gray;
+    }
+  }
+  & .template-item-mark-icon {
+    font-size: @font-size-16;
   }
 }

@@ -44,38 +44,17 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     rebuildItemsForGISMAP: function () {
         var items = this.defaultItems();
         items[0] = [{
-            text: BI.i18nText("BI-Address"),
-            value: this.typeConfig().POSITION_BY_ADDRESS,
+            text: BI.i18nText("BI-Lng_First"),
+            value: this.typeConfig().POSITION_BY_LNG,
             cls: "dot-e-font"
-        }, {
-            el: {
-                text: BI.i18nText("BI-Lng_Lat"),
-                value: this.typeConfig().POSITION_BY_LNG_LAT,
-                iconCls1: ""
-            },
-            children: [{
-                text: BI.i18nText("BI-Lng_First"),
-                value: BICst.GIS_POSITION_TYPE.LNG_FIRST,
-                cls: "dot-e-font"
-            },{
-                text: BI.i18nText("BI-Lat_First"),
-                value: BICst.GIS_POSITION_TYPE.LAT_FIRST,
-                cls: "dot-e-font"
-            }]
+        },{
+            text: BI.i18nText("BI-Lat_First"),
+            value: this.typeConfig().POSITION_BY_LAT,
+            cls: "dot-e-font"
         }];
         var o = this.options;
-        var lngLat = items[0][1];
-
-        var selectedValues = this._createValue();
-
-        switch (selectedValues[this.constants.POSITION].value) {
-            case this.typeConfig().POSITION_BY_LNG_LAT :
-                var text = BI.Utils.getDimensionPositionByID(o.dId).type === BICst.GIS_POSITION_TYPE.LNG_FIRST ? BI.i18nText("BI-Lng_First") : BI.i18nText("BI-Lat_First");
-                this._changeElText(lngLat.el,BI.i18nText("BI-Lng_Lat") + "(" + text +")");
-                break;
-            default :
-                this._changeElText(lngLat.el,BI.i18nText("BI-Lng_Lat"));
-                break;
+        if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
+            delete items[0];
         }
 
         if(items.length > 0 && BI.isNotNull(items[items.length - 1][0])){
@@ -236,16 +215,11 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         }
 
         switch(address.type){
-            case BICst.GIS_POSITION_TYPE.ADDRESS:
-                addressValue.value = this.typeConfig().POSITION_BY_ADDRESS;
-                break;
             case BICst.GIS_POSITION_TYPE.LNG_FIRST:
-                addressValue.value = this.typeConfig().POSITION_BY_LNG_LAT;
-                addressValue.childValue =  BICst.GIS_POSITION_TYPE.LNG_FIRST;
+                addressValue.value = this.typeConfig().POSITION_BY_LNG;
                 break;
             case BICst.GIS_POSITION_TYPE.LAT_FIRST:
-                addressValue.value = this.typeConfig().POSITION_BY_LNG_LAT;
-                addressValue.childValue = BICst.GIS_POSITION_TYPE.LAT_FIRST;
+                addressValue.value = this.typeConfig().POSITION_BY_LAT;
                 break;
         }
         result.sort = sortValue;

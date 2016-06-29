@@ -50,7 +50,7 @@ $(function() {
                     calcBackgroundScale();
                     var url = FR.servletURL + ((loginImgID && loginImgID != 'null') ?
                             ('?op=fr_attach&cmd=ah_image&id=' + loginImgID + '&isAdjust=false')
-                            : '?op=resource&resource=/com/fr/bi/web/images/login/login.png');
+                            : '?op=resource&resource=/com/fr/bi/web/images/login/login.jpg');
                     if ($('body').length > 0) {
                         var loginImg = $('img.fs-login-img');
                         loginImg.attr("src", url);

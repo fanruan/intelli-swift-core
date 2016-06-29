@@ -1,6 +1,7 @@
 package com.fr.bi.cal.generate.relation.firstlinkindex;
 
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.index.utils.BIVersionUtils;
 import com.fr.bi.cal.stable.relation.LinkIndexLoader;
@@ -98,12 +99,13 @@ public class LinkFirstIndexLoader implements LinkIndexLoader, java.util.concurre
         final NIOWriter<byte[]> nullWriter = indexFile.createNullWriter();
         final GroupValueIndex nullIndex = GVIFactory.createAllEmptyIndexGVI();
         final long t = System.currentTimeMillis();
+        final ICubeColumnDetailGetter getter = sti.getColumnDetailReader(si);
         sti.getAllShowIndex().Traversal(new SingleRowTraversalAction() {
             @SuppressWarnings("unchecked")
             @Override
             public void actionPerformed(int rowIndices) {
                 Object[] showKeys = targetGroupMap.createKey(1);
-                showKeys[0] = sti.getRow(si, rowIndices);
+                showKeys[0] = getter.getValue(rowIndices);
                 GroupValueIndex gvi = targetGroupMap.getGroupIndex(showKeys)[0];
                 if (gvi == null) {
                     gvi = GVIFactory.createAllEmptyIndexGVI();

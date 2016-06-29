@@ -14,10 +14,8 @@ public interface ResultDealer {
 
 	/**
 	 * @param ti
-	 * @param key 
-	 * @param row
 	 * @param currentIndex
 	 */
-	void dealWith(ICubeTableService ti, GroupValueIndex currentIndex, int startCol);
+	void dealWith(ICubeTableService ti, GroupValueIndex currentIndex);
 
 }

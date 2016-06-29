@@ -38,6 +38,9 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
             self._refreshTableAndFilter();
         });
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
+            self.model.set("clicked", {});
+        });
     },
 
     _render: function (vessel) {
@@ -86,16 +89,13 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         });
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
-            self.widget.attr("items")[3].top = 6;
             self.widget.resize();
         }, function () {
             if (!self.widget.element.parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
-                self.widget.attr("items")[3].top = 0;
                 self.widget.resize();
             }
         });
-
     },
 
     _buildWidgetTitle: function () {
@@ -345,7 +345,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
-        this.tableChartPopupulate();
+        this._refreshTableAndFilter();
         this._refreshLayout();
         this._refreshTitlePosition();
     }

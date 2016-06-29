@@ -35,7 +35,7 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
     public List<BIPackageAuthority> getPackageAuthByID(BIPackageID packageID, long userId) {
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getPackageAuthByID(packageID, userId);
-        } catch (BIKeyAbsentException e) {
+        } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
         return null;
@@ -73,6 +73,15 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
     public void clear(long userId) {
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).clear(userId);
+        } catch (BIKeyAbsentException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void removeAuthPackage(BIPackageID packageID) {
+        try {
+            getValue(UserControl.getInstance().getSuperManagerID()).removeAuthPackage(packageID);
         } catch (BIKeyAbsentException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }

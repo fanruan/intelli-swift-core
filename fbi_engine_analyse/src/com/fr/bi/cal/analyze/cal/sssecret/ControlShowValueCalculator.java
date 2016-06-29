@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -102,10 +103,11 @@ public class ControlShowValueCalculator {
         final boolean isBlank = StringUtils.isBlank(keyWord);
         final FinalLong count = new FinalLong();
         List<String> resultList = new ArrayList<String>();
+        final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(index);
         parentIndex.BrokenableTraversal(new BrokenTraversalAction() {
             @Override
             public boolean actionPerformed(int rowIndex) {
-                String rowValue = (String) ti.getRow(index, rowIndex);
+                String rowValue = (String) getter.getValue(rowIndex);
                 if (isValueValid(rowValue, isBlank, keyWord, false)) {
                     if (selectValues.contains(rowValue) || start > count.value++) {
                         return false;
@@ -188,11 +190,12 @@ public class ControlShowValueCalculator {
         DirectTableConnection c = BIConfUtils.createDirectTableConnection(relation, sessionIDInfo.getLoader());
         final ConnectionRowGetter getter = new ConnectionRowGetter(c);
         final BIKey index = currentKey.createKey();
+        final ICubeColumnDetailGetter columnDetailReader = ti.getColumnDetailReader(index);
         parentIndex.BrokenableTraversal(new BrokenTraversalAction() {
             @Override
             public boolean actionPerformed(int rowIndex) {
                 int currentRow = getter.getConnectedRow(rowIndex);
-                String rowValue = (String) ti.getRow(index, currentRow);
+                String rowValue = (String) columnDetailReader.getValue(currentRow);
                 if (rowValue != null) {
                     if (start > t.value++) {
                         return false;
@@ -230,11 +233,12 @@ public class ControlShowValueCalculator {
             DirectTableConnection c = BIConfUtils.createDirectTableConnection(currentKey.getRelationList(), sessionIDInfo.getLoader());
             final ConnectionRowGetter getter = new ConnectionRowGetter(c);
             final BIKey index = currentKey.createKey();
+            final ICubeColumnDetailGetter columnDetailReader = ti.getColumnDetailReader(index);
             parentIndex.BrokenableTraversal(new BrokenTraversalAction() {
                 @Override
                 public boolean actionPerformed(int rowIndex) {
                     int currentRow = getter.getConnectedRow(rowIndex);
-                    String rowValue = (String) ti.getRow(index, currentRow);
+                    String rowValue = (String) columnDetailReader.getValue(currentRow);
                     if (rowValue != null) {
                         set.add(rowValue);
                     }

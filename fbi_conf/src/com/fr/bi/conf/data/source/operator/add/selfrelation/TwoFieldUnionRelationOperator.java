@@ -117,10 +117,10 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                             final ICubeTableService ti,
                             final BIKey idCIndex,
                             final BIKey pidCIndex) {
-        Object id = ti.getRow(idCIndex, i);
+        Object id = ti.getColumnDetailReader(idCIndex).getValue(i);
         if (id != null && list.size() < cl) {
             list.add(id);
-            Object pid = ti.getRow(pidCIndex, i);
+            Object pid = ti.getColumnDetailReader(pidCIndex).getValue(i);
             if (pid != null) {
                 Object[] key = idMap.createKey(1);
                 key[0] = pid;

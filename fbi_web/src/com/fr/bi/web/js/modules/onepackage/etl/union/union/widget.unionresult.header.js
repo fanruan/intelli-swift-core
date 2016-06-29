@@ -4,13 +4,13 @@
  * union合并结果的输出字段名称
  */
 BI.UnionResultHeader = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.UnionResultHeader.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-merge-result-header"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.UnionResultHeader.superclass._init.apply(this, arguments);
         this.table = BI.createWidget({
             type: "bi.table_view",
@@ -20,10 +20,10 @@ BI.UnionResultHeader = BI.inherit(BI.Widget, {
         this.populate(this.options.mergeResult);
     },
 
-    _checkName: function(index, name){
+    _checkName: function (index, name) {
         var valid = true;
-        BI.some(this.mergeResult, function(i, names){
-            if(i !== index && name === names[0]){
+        BI.some(this.mergeResult, function (i, names) {
+            if (i !== index && name === names[0]) {
                 valid = false;
                 return true;
             }
@@ -31,14 +31,14 @@ BI.UnionResultHeader = BI.inherit(BI.Widget, {
         return valid;
     },
 
-    populate: function(mergeResult) {
+    populate: function (mergeResult) {
         var self = this;
         this.mergeResult = mergeResult;
         var items = [];
-        BI.each(this.mergeResult, function(i, name){
+        BI.each(this.mergeResult, function (i, name) {
             var initValue = "";
-            BI.each(name, function(k, n){
-                if(k > 0 && n !== ""){
+            BI.each(name, function (k, n) {
+                if (k > 0 && n !== "") {
                     initValue += (initValue === "") ? n : ("/" + n);
                 }
             });
@@ -49,13 +49,18 @@ BI.UnionResultHeader = BI.inherit(BI.Widget, {
                 text: initValue,
                 title: title,
                 width: 100,
-                errorText: BI.i18nText("BI-Can_Not_Have_Rename_Fields"),
-                validationChecker: function(v){
+                errorText: function (v) {
+                    if (v === "") {
+                        return BI.i18nText("Field_Name_Cannot_Be_Null");
+                    }
+                    return BI.i18nText("BI-Can_Not_Have_Rename_Fields");
+                },
+                validationChecker: function (v) {
                     return self._checkName(i, v);
                 }
             });
             nameEditor.setValue({value: name[0]});
-            nameEditor.on(BI.SignInitialEditor.EVENT_CHANGE, function(){
+            nameEditor.on(BI.SignInitialEditor.EVENT_CHANGE, function () {
                 var nameValue = nameEditor.getValue();
                 self.mergeResult[i][0] = nameValue.value;
                 nameEditor.setTitle(nameValue.value === initValue ? nameValue.value : (nameValue.value + "(" + initValue + ")"));
@@ -66,13 +71,13 @@ BI.UnionResultHeader = BI.inherit(BI.Widget, {
                 cls: "edit-set-font",
                 width: 20,
                 height: 30,
-                handler: function(){
+                handler: function () {
                     nameEditor.focus();
                 }
             });
             var tablesCount = 0, index = 0;
-            BI.each(name, function(j, n){
-                if(j > 0 && n !== ""){
+            BI.each(name, function (j, n) {
+                if (j > 0 && n !== "") {
                     tablesCount++;
                     index = j;
                 }
@@ -83,7 +88,7 @@ BI.UnionResultHeader = BI.inherit(BI.Widget, {
                     left: [nameEditor],
                     right: [editorIcon]
                 },
-                cls: tablesCount === 1 ? ("table-color" + (index - 1)%5) : "result-table",
+                cls: tablesCount === 1 ? ("table-color" + (index - 1) % 5) : "result-table",
                 height: "100%"
             });
         });

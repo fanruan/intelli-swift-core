@@ -8,7 +8,6 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.DetailModel.superclass._defaultConfig.apply(this, arguments), {
             dimensions: {},
             view: {},
-            name: "",
             type: BICst.WIDGET.TABLE,
             settings: {},
             filter_value: {}
@@ -73,24 +72,19 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 })
             });
             if (regionType >= BICst.REGION.TARGET1) {//复制的是指标
-                var fId = BI.Utils.getFieldIDByDimensionID(copy);
-                if (BI.isNotEmptyString(fId)) {
-                    var targetTableId = BI.Utils.getTableIdByFieldID(fId);
-                    BI.each(dimensions, function (idx, dimension) {
-                        if (BI.Utils.isDimensionByDimensionID(idx)) {
-                            dimension.dimension_map = dimension.dimension_map || {};
-                            var dimensionTableId = BI.Utils.getTableIDByDimensionID(idx);
-                            var path = BI.Utils.getPathsFromTableAToTableB(dimensionTableId, targetTableId);
-                            if (path.length === 1) {
-                                var target_relation = path[0];
-                                dimension.dimension_map[copy] = {
-                                    _src: dimension._src,
-                                    target_relation: [target_relation]
-                                };
-                            }
+                BI.each(dimensions, function (idx, dimension) {
+                    if (BI.Utils.isDimensionByDimensionID(idx)) {
+                        dimension.dimension_map = dimension.dimension_map || {};
+                        var path = BI.Utils.getPathsFromFieldAToFieldB(BI.Utils.getFieldIDByDimensionID(idx), BI.Utils.getFieldIDByDimensionID(copy));
+                        if (path.length === 1) {
+                            var target_relation = path[0];
+                            dimension.dimension_map[copy] = {
+                                _src: dimension._src,
+                                target_relation: [target_relation]
+                            };
                         }
-                    });
-                }
+                    }
+                });
             }
             this.set({"dimensions": dimensions, "view": views});
             //this.set("view", views);
@@ -436,26 +430,22 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     view[regionType].push(dId);
                 }
                 if (regionType >= BICst.REGION.TARGET1) {//拖的是指标
-                    if (BI.isNotEmptyString(fId)) {
-                        var targetTableId = BI.Utils.getTableIdByFieldID(fId);
-                        BI.each(dimensions, function (idx, dimension) {
-                            if (idx === dId) {
-                                return;
+                    BI.each(dimensions, function (idx, dimension) {
+                        if (idx === dId) {
+                            return;
+                        }
+                        if (BI.Utils.isDimensionByDimensionID(idx)) {
+                            dimension.dimension_map = dimension.dimension_map || {};
+                            var path = BI.Utils.getPathsFromFieldAToFieldB(BI.Utils.getFieldIDByDimensionID(idx), fId);
+                            if (path.length === 1) {
+                                var target_relation = path[0];
+                                dimension.dimension_map[dId] = {
+                                    _src: dimension._src,
+                                    target_relation: [target_relation]
+                                };
                             }
-                            if (BI.Utils.isDimensionByDimensionID(idx)) {
-                                dimension.dimension_map = dimension.dimension_map || {};
-                                var dimensionTableId = BI.Utils.getTableIDByDimensionID(idx);
-                                var path = BI.Utils.getPathsFromTableAToTableB(dimensionTableId, targetTableId);
-                                if (path.length === 1) {
-                                    var target_relation = path[0];
-                                    dimension.dimension_map[dId] = {
-                                        _src: dimension._src,
-                                        target_relation: [target_relation]
-                                    };
-                                }
-                            }
-                        });
-                    }
+                        }
+                    });
                 }
                 if (regionType < BICst.REGION.TARGET1) {//拖的是维度
                     dimensions[dId].dimension_map = {};
@@ -466,7 +456,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                 return;
                             }
                             if (!BI.Utils.isDimensionByDimensionID(idx)) {
-                                var path = BI.Utils.getPathsFromTableAToTableB(dimensionTableId, BI.Utils.getTableIDByDimensionID(idx));
+                                var path = BI.Utils.getPathsFromFieldAToFieldB(BI.Utils.getFieldIDByDimensionID(dimensionTableId), BI.Utils.getFieldIDByDimensionID(idx));
                                 if (path.length === 1) {
                                     var target_relation = path[0];
                                     dimensions[dId].dimension_map[idx] = {

@@ -51,7 +51,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
     _assertAddress: function(val){
         val || (val = {});
         if(BI.isNull(val.type)){
-            val.type = BICst.GIS_POSITION_TYPE.ADDRESS
+            val.type = BICst.GIS_POSITION_TYPE.LNG_FIRST
         }
         return val;
     },
@@ -62,9 +62,6 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
         var customSort = items[0][this.constants.customSortPos];
         group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
         switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId))) {
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.COMPARE_BAR:
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -78,6 +75,11 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                break;
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+                items[this.constants.CordonPos][0].text = BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") +")";
                 break;
             default:
                 BI.removeAt(items, this.constants.CordonPos);

@@ -112,7 +112,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
     _assertAddress: function(val){
         val || (val = {});
         if(BI.isNull(val.type)){
-            val.type = BICst.GIS_POSITION_TYPE.ADDRESS
+            val.type = BICst.GIS_POSITION_TYPE.LNG_FIRST
         }
         return val;
     }

@@ -39,16 +39,17 @@ BI.ChartTypeShow = BI.inherit(BI.Widget, {
         var wType = BI.Utils.getWidgetTypeByID(wId);
         BI.each(items, function (i, item) {
             if (BI.isNotEmptyArray(item.children)) {
-                var foundType = false;
+                var foundType = false, matchItem = {};
                 BI.each(item.children, function (i, child) {
                     child.iconClass = child.cls;
                     child.iconWidth = 20;
                     child.iconHeight = 20;
                     if (child.value === wType) {
                         foundType = true;
+                        matchItem = child;
                     }
                 });
-                if (foundType || item.value === BICst.WIDGET.TABLE) {
+                if (item.value === BICst.WIDGET.TABLE) {
                     result.push(BI.extend({
                         type: "bi.icon_combo",
                         width: 40,
@@ -58,6 +59,15 @@ BI.ChartTypeShow = BI.inherit(BI.Widget, {
                         iconHeight: 24
                     }, item, {
                         cls: "chart-type-combo"
+                    }));
+                } else if (foundType) {
+                    matchItem.iconWidth = 25;
+                    matchItem.iconHeight = 25;
+                    result.push(BI.extend({
+                        type: "bi.icon_button",
+                        width: 40
+                    }, matchItem, {
+                        cls: matchItem.cls + " chart-type-icon"
                     }));
                 }
             } else {

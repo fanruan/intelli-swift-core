@@ -41,6 +41,9 @@ BI.ETLExcel = BI.inherit(BI.ETL, {
             });
             excelUpload.on(BI.ExcelUpload.EVENT_SAVE, function(data){
                 BI.Layers.remove(self._constant.EXCEL_LAYER);
+                if(BI.isNull(data.table_name) || data.table_name === "") {
+                    data.table_name = finalTable.table_name;
+                }
                 self.model.setFields(data.fields);
                 self.model.saveTableById(finalTable.id, data);
                 self._populate();

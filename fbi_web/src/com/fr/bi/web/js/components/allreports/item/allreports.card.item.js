@@ -51,14 +51,14 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
         }
         
         var userName = this.model.getUserNameByUserId(report.createBy);
-        var departName = this.model.getDepartNameByUserId(report.createBy);
-        var roleName = this.model.getRoleByUserId(report.createBy);
+        var departName = this.model.getDepartNameByUserId(report.createBy).toString();
+        var roleName = this.model.getRoleByUserId(report.createBy).toString();
         
         var infoIcon = BI.createWidget({
             type: "bi.combo",
             el: {
                 type: "bi.icon_button",
-                cls: "rename-font normal-mark",
+                cls: "report-detail-info-font normal-mark",
                 iconWidth: 16,
                 iconHeight: 16,
                 width: 20,
@@ -68,38 +68,61 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
             direction: "right",
             popup: {
                 el: {
-                    type: "bi.vertical",
+                    type: "bi.horizontal_auto",
                     cls: "info-card",
                     items: [{
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Users") + ": " + userName,
-                        title: userName,
-                        textAlign: "left",
-                        height: 30,
-                        hgap: 5
+                        type: "bi.horizontal",
+                        items: [{
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Users") + ":",
+                            height: 30,
+                            width: 40
+                        }, {
+                            type: "bi.label",
+                            text: userName,
+                            textAlign: "left",
+                            textHeight: 30,
+                            whiteSpace: "normal",
+                            hgap: 5
+                        }]
                     }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Role") + ": " + roleName,
-                        title: roleName,
-                        textAlign: "left",
-                        height: 30,
-                        hgap: 5
+                        type: "bi.horizontal",
+                        items: [{
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Role") + ":",
+                            height: 30,
+                            width: 40
+                        }, {
+                            type: "bi.label",
+                            text: roleName === "" ? BI.i18nText("BI-Wu") : roleName,
+                            textAlign: "left",
+                            textHeight: 30,
+                            whiteSpace: "normal",
+                            hgap: 5
+                        }]
                     }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Department") + ": " + departName,
-                        title: departName,
-                        textAlign: "left",
-                        height: 30,
-                        hgap: 5
+                        type: "bi.horizontal",
+                        items: [{
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Department") + ":",
+                            height: 30,
+                            width: 40
+                        }, {
+                            type: "bi.label",
+                            text: departName === "" ? BI.i18nText("BI-Wu") : departName,
+                            textAlign: "left",
+                            textHeight: 30,
+                            whiteSpace: "normal",
+                            hgap: 5
+                        }]
                     }, {
                         type: "bi.label",
                         text: BI.i18nText("BI-Last_Modify_Date") + ": " + FR.date2Str(new Date(report.lastModify), "yyyy.MM.dd HH:mm:ss"),
-                        title: FR.date2Str(new Date(report.lastModify), "yyyy.MM.dd HH:mm:ss"),
                         textAlign: "left",
                         height: 30,
                         hgap: 5
                     }],
-                    width: 200
+                    width: 220
                 }
             }
         });
@@ -147,8 +170,8 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
                 top: 5
             }, {
                 el: this.markIcon || BI.createWidget(),
-                top: 20,
-                left: 40
+                top: 18,
+                left: 36
             }]
         });
 
@@ -163,7 +186,7 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
 
     _refreshMarkIcon: function(){
         if(this.status === BICst.REPORT_STATUS.APPLYING) {
-            this.markIcon.setIcon("report-apply-hangout-ing-font");
+            this.markIcon.setIcon("report-hangout-ing-mark-font");
             this.markIcon.setTitle(BI.i18nText("BI-Report_Hangout_Applying"));
             return;
         }

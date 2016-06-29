@@ -78,7 +78,7 @@ public abstract class AbstractSort implements ISort {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        int result = 31;
         result = 31 * result + sortType;
         result = 31 * result + (reg != null ? Arrays.hashCode(reg) : 0);
         return result;

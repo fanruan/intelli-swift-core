@@ -55,6 +55,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             status: BICst.WIDGET_STATUS.EDIT
         });
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
+        this.tableChartResize = BI.debounce(BI.bind(this.tableChart.resize, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
@@ -94,9 +95,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
-                self.widget.attr("items")[3].top = 0;
-                self.widget.resize();
             }
+            self.widget.attr("items")[3].top = 0;
+            self.widget.resize();
         });
     },
 
@@ -238,7 +239,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             type: "bi.left",
             cls: "operator-region",
             items: [filter, expand, combo],
-            hgap: 3
+            lgap: 10
         });
         this.tools.setVisible(false);
     },
@@ -287,6 +288,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             this.widget.attr("items")[2].top = 50;
         }
         this.widget.resize();
+        this.tableChartResize();
     },
 
     _refreshTitlePosition: function () {
@@ -316,7 +318,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             return;
         }
         if (BI.has(changed, "bounds")) {
-            this.tableChart.resize();
+            this.tableChartResize();
             this.chartDrill.populate();
         }
         if (BI.has(changed, "dimensions") ||
@@ -326,9 +328,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
-        }
-        if (BI.has(changed, "type")) {
-            this.tableChart.resize();
         }
     },
 
@@ -343,7 +342,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
-        this.tableChartPopupulate();
+        this._refreshTableAndFilter();
         this._refreshLayout();
         this._refreshTitlePosition();
     }

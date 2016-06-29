@@ -162,7 +162,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         this.excelViews[id] = data.excel_view;
         this.updateSettings = data.update_settings;
         //可能是新添加的
-        if(BI.isNull(this.tablesData[id])){
+        if (BI.isNull(this.tablesData[id])) {
             this.tables.push({id: id});
         }
         this.tablesData[id] = data;
@@ -189,21 +189,18 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 return true;
             }
         });
-        BI.each(this.allFields, function (id, field) {
-            if (field !== null && field.table_id === tableId) {
-                delete self.allFields[id];
-            }
-        });
 
 
         //删除相关关联
         var connectionSet = this.relations.connectionSet, primaryKeyMap = this.relations.primKeyMap, foreignKeyMap = this.relations.foreignKeyMap;
+        var resultConnectionSet = [];
         BI.each(connectionSet, function (i, keys) {
             var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
-            if (self.getTableIdByFieldId(primKey.field_id) === tableId || self.getTableIdByFieldId(foreignKey.field_id === tableId)) {
-                connectionSet.splice(i, 1);
+            if (!(self.getTableIdByFieldId(primKey.field_id) === tableId || self.getTableIdByFieldId(foreignKey.field_id) === tableId)) {
+                resultConnectionSet.push(connectionSet[i])
             }
         });
+        this.relations.connectionSet = resultConnectionSet;
         BI.each(primaryKeyMap, function (kId, maps) {
             if (self.getTableIdByFieldId(kId) === tableId) {
                 delete primaryKeyMap[kId];
@@ -212,7 +209,10 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     if (tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id)) {
                         primaryKeyMap[kId].splice(i, 1);
                     }
-                })
+                });
+                if (primaryKeyMap[kId].length === 0) {
+                    delete primaryKeyMap[kId];
+                }
             }
         });
         BI.each(foreignKeyMap, function (kId, maps) {
@@ -223,7 +223,16 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     if (tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id)) {
                         foreignKeyMap[kId].splice(i, 1);
                     }
-                })
+                });
+                if (foreignKeyMap[kId].length === 0) {
+                    delete foreignKeyMap[kId];
+                }
+            }
+        });
+
+        BI.each(this.allFields, function (id, field) {
+            if (field !== null && field.table_id === tableId) {
+                delete self.allFields[id];
             }
         });
         this._syncSharedPackages();

@@ -91,8 +91,8 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      * @throws Exception
      */
     @Override
-    public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds) throws Exception {
-        BITableDataDAOManager.getInstance().resetSharedByReportIdAndUsers(reportId, createBy, userIds);
+    public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds, boolean isReset) throws Exception {
+        BITableDataDAOManager.getInstance().resetSharedByReportIdAndUsers(reportId, createBy, userIds, isReset);
     }
 
     /**

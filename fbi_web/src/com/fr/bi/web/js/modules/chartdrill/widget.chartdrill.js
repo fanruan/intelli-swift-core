@@ -44,6 +44,11 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         var allDims = BI.Utils.getAllDimDimensionIDs(wId);
         var allUsableDims = BI.Utils.getAllUsableDimDimensionIDs(wId);
         switch (wType) {
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+                this.showDrill = false;
+                break;
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -118,10 +123,10 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 value: obj.x
             });
             cDrill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
-                self._onClickDrill(classification, obj.x);
+                self._onClickDrill(classification, obj.value || obj.x);
             });
             cDrill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function (drillId) {
-                self._onClickDrill(classification, obj.x, drillId);
+                self._onClickDrill(classification, obj.value || obj.x, drillId);
             });
             this.wrapper.addItem(cDrill);
         }

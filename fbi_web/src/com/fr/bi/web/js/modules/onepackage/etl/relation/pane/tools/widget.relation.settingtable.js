@@ -25,10 +25,12 @@ BI.RelationSettingTable = BI.inherit(BI.Widget, {
         this.tableButton = BI.createWidget({
             type: "bi.relation_table_field_button",
             table_name: model.getTableNameByFieldId(o.fieldId),
-            field_name: model.getFieldNameByFieldId(o.fieldId)
+            field_name: model.getFieldNameByFieldId(o.fieldId),
+            field_id: o.fieldId
         });
         this.tableButton.on(BI.Controller.EVENT_CHANGE, function(){
             arguments[1] = BI.RelationSettingTable.CLICK_TABLE;
+            arguments[2] = o.fieldId;
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
         var removeButton = BI.createWidget({

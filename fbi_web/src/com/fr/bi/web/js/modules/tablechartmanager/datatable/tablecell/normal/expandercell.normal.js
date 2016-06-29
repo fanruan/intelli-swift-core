@@ -53,7 +53,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 cls: cls,
-                height: 30,
+                height: 25,
                 whiteSpace: "nowrap",
                 textAlign: "left",
                 lgap: 5
@@ -142,7 +142,9 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
             var drillCombo = BI.createWidget({
                 type: "bi.down_list_combo",
                 chooseType: BI.Selection.None,
-                title: BI.i18nText("BI-Drill")
+                title: BI.i18nText("BI-Drill"),
+                cls: "drill-combo",
+                height: BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2 ? 30 : 25
             });
             drillCombo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function () {
                 var items = [[{

@@ -3,6 +3,7 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-file-manager-nav-button .file-manager-nav-button-text {
   max-width: 200px;
+  background: #ffffff;
 }
 .bi-file-manager-nav-button .file-manager-nav-button-text.active {
   background-color: #f4f4f4;

@@ -3,6 +3,7 @@
  */
 package com.fr.bi.test.etloperatordealer;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.rowcal.accumulate.AccumulateResultDealer;
@@ -52,10 +53,14 @@ public class testAccmulateDeal extends TestCase {
         ICubeTableService ti = control.createMock(ICubeTableService.class);
         ti.getRowCount();
         EasyMock.expectLastCall().andReturn(rowCount).anyTimes();
-        for (int i = 0; i < rowCount; i++) {
-            ti.getRow(null, i);
-            EasyMock.expectLastCall().andReturn(values[i]).anyTimes();
-        }
+        ti.getColumnDetailReader(null);
+        EasyMock.expectLastCall().andReturn(new ICubeColumnDetailGetter(){
+
+            @Override
+            public Object getValue(int row) {
+                return values[row];
+            }
+        }).anyTimes();
         control.replay();
         Traversal<BIDataValue> t = new Traversal<BIDataValue>() {
             int i = 0;
@@ -72,7 +77,7 @@ public class testAccmulateDeal extends TestCase {
             con = AccumulateResultDealer.class.getDeclaredConstructor(BIKey.class, Traversal.class);
             con.setAccessible(true);
             dealer = con.newInstance(null, t);
-            dealer.dealWith(ti, gvi, 0);
+            dealer.dealWith(ti, gvi);
         } catch (Exception ignore) {
 
         }
