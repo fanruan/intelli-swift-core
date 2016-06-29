@@ -606,9 +606,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 var dName = BI.Utils.getDimensionNameByID(self.targetIds[i % (self.targetIds.length)]);
                 if (BI.isNotNull(item.children)) {
                     parseHeader(item.children);
-                    if (BI.isNotNull(item.values)) {
+                    if (BI.isNotNull(item.values) && self.showColTotal === true) {
                         //合计
-                        BI.each(self.targetIds, function(j, tarId){
+                        BI.each(self.targetIds, function (j, tarId) {
                             self.header.push({
                                 type: "bi.page_table_cell",
                                 cls: "cross-table-target-header",
@@ -623,6 +623,16 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     item.text = BI.i18nText("BI-Summary_Values") + ":" + dName;
                     item.cls = "cross-table-target-header";
                     self.header.push(item);
+                } else if (BI.isNotNull(item.values)) {
+                    BI.each(item.values, function(k, v){
+                        self.header.push({
+                            type: "bi.page_table_cell",
+                            cls: "cross-table-target-header",
+                            text: BI.Utils.getDimensionNameByID(self.targetIds[k]),
+                            title: BI.Utils.getDimensionNameByID(self.targetIds[k]),
+                            tag: BI.UUID()
+                        })
+                    });
                 } else {
                     self.header.push({
                         type: "bi.page_table_cell",
@@ -657,14 +667,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         cls: "summary-cell last"
                     });
                 });
-                // item.children.push({
-                //     type: "bi.page_table_cell",
-                //     text: BI.i18nText("BI-Summary_Values"),
-                //     tag: BI.UUID(),
-                //     isSum: true,
-                //     values: outerValues,
-                //     cls: "summary-cell last"
-                // })
                 item.values = outerValues;
             } else {
                 //使用第一个值作为一个维度
@@ -914,23 +916,15 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     //     cls: "summary-cell"
                     // });
                     item.values = [];
-                    BI.each(self.targetIds, function(k, tarId) {
+                    BI.each(self.targetIds, function (k, tarId) {
                         item.values.push("");
                     });
                 });
             }
-            //最后一层（无children）
-            if (BI.isNull(item.children)) {
-                BI.each(self.targetIds, function (i, tId) {
-                    crossHeaderItems.push(item);
-                });
-                //无指标是否也应当直接push进去 bug 95334
-                if (self.targetIds.length === 0) {
-                    crossHeaderItems.push(item);
-                }
-            } else {
-                crossHeaderItems.push(item);
+            if(self.showColTotal === true || BI.isNull(item.children)) {
+                item.values = BI.makeArray(self.targetIds.length, "");
             }
+            crossHeaderItems.push(item);
         });
         return crossHeaderItems;
     },
