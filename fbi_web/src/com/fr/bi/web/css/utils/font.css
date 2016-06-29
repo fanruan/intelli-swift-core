@@ -3348,6 +3348,24 @@
   content: "\e687";
   color: #009de3;
 }
+.package-selected-font .b-font:before {
+  content: "\e6b3";
+  color: #178cdf;
+}
+.package-selected-font.native .b-font:before,
+.package-selected-font.disabled .b-font:before {
+  content: "\e6b3";
+  color: #178cdf;
+}
+.package-not-selected-font .b-font:before {
+  content: "\e6b2";
+  color: #178cdf;
+}
+.package-not-selected-font.native .b-font:before,
+.package-not-selected-font.disabled .b-font:before {
+  content: "\e6b2";
+  color: #178cdf;
+}
 .report-detail-info-font .b-font:before {
   content: "\e66e";
   color: #f07d0a;
