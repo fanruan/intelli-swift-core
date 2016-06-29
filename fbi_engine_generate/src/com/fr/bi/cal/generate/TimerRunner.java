@@ -1,9 +1,9 @@
 package com.fr.bi.cal.generate;
 
 
-import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
+import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.stable.bridge.StableFactory;
@@ -14,8 +14,7 @@ import java.util.Map;
 import java.util.Timer;
 
 /**
- * Created by GUY on 2015/3/31.
- * edit by kary on 2015/6/21
+ * Redesigned by kary on 2015/6/21
  */
 public class TimerRunner {
 

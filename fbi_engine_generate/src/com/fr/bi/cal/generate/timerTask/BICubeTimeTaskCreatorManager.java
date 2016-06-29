@@ -64,7 +64,6 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
                 CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
                 CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
             }
-
         }, startDate, period);
         return timer;
     }
