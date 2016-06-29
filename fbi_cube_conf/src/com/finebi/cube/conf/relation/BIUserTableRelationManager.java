@@ -168,7 +168,16 @@ public class BIUserTableRelationManager implements Release {
         return set;
     }
 
-
+    public Set<BITableRelationPath> getAllUnavailablePath(BusinessTable juniorTable, BusinessTable primaryTable) throws
+            BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        Set<BITableRelationPath> set = new HashSet<BITableRelationPath>();
+        for (BITableRelationPath path : getAllPath(juniorTable, primaryTable)) {
+            if (isPathDisable(path)) {
+                set.add(path);
+            }
+        }
+        return set;
+    }
     public BITableRelationPath getFirstPath(BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException {
         return null;
     }

@@ -65,6 +65,11 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
+    public void addPositionOfGroup(int position, int groupPosition) {
+        selfColumnEntity.addPositionOfGroup(position, groupPosition);
+    }
+
+    @Override
     public void recordSizeOfGroup(int size) {
         selfColumnEntity.recordSizeOfGroup(size);
     }
@@ -91,6 +96,11 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     @Override
     public int getPositionOfGroup(T groupValues) throws BIResourceInvalidException {
         return selfColumnEntity.getPositionOfGroup(groupValues);
+    }
+
+    @Override
+    public int getPositionOfGroup(int row) throws BIResourceInvalidException {
+        return selfColumnEntity.getPositionOfGroup(row);
     }
 
     @Override

@@ -483,6 +483,7 @@
             }
 
             function createDimensionsAndTargets(idx) {
+                var newId = BI.UUID();
                 var dimension = BI.deepClone(widget.dimensions[idx]);
                 if (BI.has(dimTarIdMap, idx)) {
                     return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
@@ -509,8 +510,12 @@
                         if (BI.has(widget.dimensions[idx], "sort")) {
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
                             if (BI.has(dimension.sort, "sort_target")) {
-                                var result = createDimensionsAndTargets(dimension.sort.sort_target);
-                                dimension.sort.sort_target = result.id;
+                                if(dimension.sort.sort_target === idx){
+                                    dimension.sort.sort_target = newId;
+                                }else{
+                                    var result = createDimensionsAndTargets(dimension.sort.sort_target);
+                                    dimension.sort.sort_target = result.id;
+                                }
                             }
                         }
                         break;
@@ -535,9 +540,8 @@
                         });
                         break;
                 }
-                var id = BI.UUID();
-                dimTarIdMap[idx] = id;
-                return {id: id, dimension: dimension};
+                dimTarIdMap[idx] = newId;
+                return {id: newId, dimension: dimension};
             }
         },
 
@@ -725,6 +729,12 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_number_level) ? ws.left_y_axis_number_level :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
+        },
+
+        getWSNumberOfPointerByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.number_of_pointer) ? ws.number_of_pointer :
+                BICst.POINTER.ONE;
         },
 
         getWSDashboardNumLevelByID: function (wid) {
@@ -2008,7 +2018,7 @@
 
                 //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
                 var linkDrill = self.getDrillByID(lId);
-                if(BI.isNotNull(linkDrill)) {
+                if (BI.isNotNull(linkDrill)) {
                     BI.each(linkDrill, function (drId, drArray) {
                         if (drArray.length === 0) {
                             return;

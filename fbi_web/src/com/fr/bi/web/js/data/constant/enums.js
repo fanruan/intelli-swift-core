@@ -482,6 +482,12 @@ BICst.TARGET_STYLE = {
     }
 };
 
+//单个指标、多个指标
+BICst.POINTER = {
+    ONE: 1,
+    SOME: 2
+};
+
 //钻取
 BICst.DRILL = {
     UP: 1,

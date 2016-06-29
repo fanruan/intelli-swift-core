@@ -20,6 +20,7 @@ import java.util.*;
  */
 public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
     BICore fetchObjectCore();
+
     IPersistentTable getPersistentTable();
 
     String getSourceID();

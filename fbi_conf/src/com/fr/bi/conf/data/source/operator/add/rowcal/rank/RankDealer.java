@@ -60,7 +60,7 @@ public class RankDealer implements ResultDealer {
 			public void actionPerformed(int row) {
 				Number v = (Number) getter.getValue(row);
 				int rank = map.get(v);
-				travel.actionPerformed(new BIDataValue(row, startCol, rank));
+				travel.actionPerformed(new BIDataValue(row, startCol, (long)rank));
 			}	
 		});
 	}

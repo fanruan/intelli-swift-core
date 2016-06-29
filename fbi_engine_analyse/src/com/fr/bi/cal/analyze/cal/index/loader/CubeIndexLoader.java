@@ -500,7 +500,7 @@ public class CubeIndexLoader {
         for (BISummaryTarget target : usedTargets) {
         }
         MultiThreadManagerImpl.getInstance().refreshExecutorService();
-        NodeAndPageInfo topInfo = createPageGroupNode(topWidget, usedTargets, sumTarget, colDimension, allDimension, page, useRealData, NodeExpander.ALL_EXPANDER, session, calculateTargets, new ArrayList(), createColumnOperator(page, widget), pg.getColumnGroup(), shouldOld, true);
+        NodeAndPageInfo topInfo = createPageGroupNode(topWidget, usedTargets, sumTarget, colDimension, allDimension, page, useRealData, expander.getXExpander(), session, calculateTargets, new ArrayList(), createColumnOperator(page, widget), pg.getColumnGroup(), shouldOld, true);
         MultiThreadManagerImpl.getInstance().awaitExecutor();
         return topInfo;
     }

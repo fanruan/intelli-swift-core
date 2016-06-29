@@ -75,9 +75,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.Widget, {
         }
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
-        if(config.dataSheet.enabled === true){
-            config.xAxis[0].showLabel = false;
-        }
+        config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
         this.config.show_zoom === true && delete config.dataSheet;
         config.yAxis = this.yAxis;
@@ -291,6 +289,10 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.PercentAccumulateAreaChart.EVENT_CHANGE = "EVENT_CHANGE";

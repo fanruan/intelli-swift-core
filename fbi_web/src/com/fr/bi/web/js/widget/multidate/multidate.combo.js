@@ -82,6 +82,9 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
             this.trigger.on(BI.DateTrigger.EVENT_VALID, function () {
                 self.fireEvent(BI.MultiDateCombo.EVENT_VALID);
             });
+            this.trigger.on(BI.DateTrigger.EVENT_CHANGE, function () {
+                self.fireEvent(BI.MultiDateCombo.EVENT_CHANGE);
+            });
             this.trigger.on(BI.DateTrigger.EVENT_CONFIRM, function () {
                 var dateStore = self.storeTriggerValue;
                 var dateObj = self.trigger.getKey();
@@ -95,7 +98,6 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                     };
                     self.trigger.setValue();
                 }
-                self.fireEvent(BI.MultiDateCombo.EVENT_CHANGE);
                 self.fireEvent(BI.MultiDateCombo.EVENT_CONFIRM);
             });
             this.popup = BI.createWidget({

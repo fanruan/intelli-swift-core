@@ -61,7 +61,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
 
         this.packageNameEditor = BI.createWidget({
             type: "bi.shelter_editor",
-            height:25,
+            height: 25,
             value: o.text,
             textAlign: "center",
             validationChecker: function (value) {
@@ -91,7 +91,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
 
         this.checkboxIcon = BI.createWidget({
             type: "bi.center_adapt",
-            cls: "business-package-selected-icon",
+            cls: "package-not-selected-font",
             items: [{
                 el: {
                     type: "bi.icon",
@@ -150,9 +150,11 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
     doClick: function () {
         BI.BusinessPackageButton.superclass.doClick.apply(this, arguments);
         if (this.isSelected()) {
-            this.checkboxIcon.setVisible(true);
+            this.checkboxIcon.element.removeClass("package-not-selected-font");
+            this.checkboxIcon.element.addClass("package-selected-font");
         } else {
-            this.checkboxIcon.setVisible(false);
+            this.checkboxIcon.element.removeClass("package-selected-font");
+            this.checkboxIcon.element.addClass("package-not-selected-font");
         }
     },
 
@@ -162,12 +164,16 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
 
     hover: function () {
         BI.BusinessPackageButton.superclass.hover.apply(this, arguments);
+        this.checkboxIcon.setVisible(true);
         this.deleteButton.setVisible(true);
         this.renameButton.setVisible(true);
     },
 
     dishover: function () {
         BI.BusinessPackageButton.superclass.dishover.apply(this, arguments);
+        if (!this.isSelected()) {
+            this.checkboxIcon.setVisible(false);
+        }
         this.deleteButton.setVisible(false);
         this.renameButton.setVisible(false);
     },

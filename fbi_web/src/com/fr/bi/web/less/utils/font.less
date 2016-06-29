@@ -182,6 +182,8 @@
 .font-hover-active(select-data-field-string-font, @font-field-string, @color-bi-text-black, @color-bi-text-black, @color-bi-text);
 .font-hover-active(select-data-field-number-font, @font-field-number, @color-bi-text-black, @color-bi-text-black, @color-bi-text);
 .font-hover-active(select-data-field-date-font, @font-field-date, @color-bi-text-black, @color-bi-text-black, @color-bi-text);
+.font(select-data-field-string-group-font, @font-field-string);
+.font(select-data-field-number-group-font, @font-field-number);
 .font(select-data-field-date-group-font, @font-field-date);
 .font-hover-active(select-data-preview-font, @font-preview, @color-bi-text-gray, @color-bi-text-highlight, @color-bi-text-highlight);
 
@@ -237,6 +239,7 @@
 .font-hover-active(sql-table-font, @font-sql-table, @color-bi-text-highlight, @color-bi-text-highlight, @color-bi-text);
 
 .font(refresh-table-font, @font-refresh);
+.font(refresh-table-font-hightlight, @font-refresh, @color-bi-text-highlight);
 
 .font-hover-active(tables-tile-view-font, @font-tile-view, @color-bi-font-native, @color-bi-font-hover, @color-bi-text);
 .font-hover-active(tables-relation-view-font, @font-relation-view, @color-bi-font-native, @color-bi-font-hover, @color-bi-text);
@@ -338,11 +341,12 @@
 
 //业务包管理
 .font(delete-font-package, @font-delete, @color-bi-text-warning);
-.font(delete-h-font-package,@font-delete,@color-bi-text-warning);
-.font(rename-font-package, @font-rename,@color-bi-text-highlight);
+.font(delete-h-font-package, @font-delete, @color-bi-text-warning);
+.font(rename-font-package, @font-rename, @color-bi-text-highlight);
+.font(package-selected-font, @font-check-box-selected, @color-bi-border-highlight);
+.font(package-not-selected-font, @font-check-box-not-selected, @color-bi-border-highlight);
 
 .font(report-detail-info-font, @font-info, @color-bi-text-redmark);
 .font(report-rename-font, @font-rename-edit, @color-bi-background-success);
 
 .font(report-cancel-share-font, @font-cancel-share, @color-bi-text-highlight);
-

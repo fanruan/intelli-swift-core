@@ -22,7 +22,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
             type: "bi.tree_value_chooser_combo",
             itemsCreator: BI.bind(this._departCreator, this),
             cache: false,
-            height: 30,
+            height: 24,
             width: 180
         });
         this.depart.on(BI.TreeValueChooserCombo.EVENT_CONFIRM, function () {
@@ -32,7 +32,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
             type: "bi.value_chooser_combo",
             itemsCreator: BI.bind(this._rolesCreator, this),
             cache: false,
-            height: 30,
+            height: 24,
             width: 180
         });
         this.role.on(BI.ValueChooserCombo.EVENT_CONFIRM, function () {
@@ -42,7 +42,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
             type: "bi.value_chooser_combo",
             itemsCreator: BI.bind(this._usersCreator, this),
             cache: false,
-            height: 30,
+            height: 24,
             width: 180
         });
         this.name.on(BI.ValueChooserCombo.EVENT_CONFIRM, function () {
@@ -52,7 +52,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
             type: "bi.value_chooser_combo",
             itemsCreator: BI.bind(this._statusCreator, this),
             cache: false,
-            height: 30,
+            height: 24,
             width: 180
         });
         this.status.on(BI.ValueChooserCombo.EVENT_CONFIRM, function () {
@@ -60,7 +60,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         });
         this.lastModify = BI.createWidget({
             type: "bi.time_interval",
-            height: 30,
+            height: 24,
             width: 380
         });
         this.lastModify.on(BI.TimeInterval.EVENT_CHANGE, function () {
@@ -69,7 +69,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         var reset = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Reset"),
-            height: 30,
+            height: 25,
             width: 90
         });
         reset.on(BI.Button.EVENT_CHANGE, function () {
@@ -95,7 +95,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                             type: "bi.label",
                             text: BI.i18nText("BI-Department"),
                             cls: "filter-type",
-                            height: 30,
+                            height: 24,
                             hgap: 10
                         }, this.depart]
                     }, {
@@ -104,7 +104,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                             type: "bi.label",
                             text: BI.i18nText("BI-Role"),
                             cls: "filter-type",
-                            height: 30,
+                            height: 24,
                             hgap: 10
                         }, this.role]
                     }, {
@@ -113,7 +113,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                             type: "bi.label",
                             text: BI.i18nText("BI-Users"),
                             cls: "filter-type",
-                            height: 30,
+                            height: 24,
                             hgap: 10
                         }, this.name]
                     }, {
@@ -122,7 +122,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                             type: "bi.label",
                             text: BI.i18nText("BI-Status"),
                             cls: "filter-type",
-                            height: 30,
+                            height: 24,
                             hgap: 10
                         }, this.status]
                     }, {
@@ -131,11 +131,11 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                             type: "bi.label",
                             text: BI.i18nText("BI-Last_Modify_Date"),
                             cls: "filter-type",
-                            height: 30,
+                            height: 24,
                             hgap: 10
                         }, this.lastModify]
                     }, reset],
-                    rgap: 30,
+                    rgap: 24,
                     tgap: 10
                 },
                 top: 0,
