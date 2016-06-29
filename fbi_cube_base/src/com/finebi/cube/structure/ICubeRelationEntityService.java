@@ -20,6 +20,6 @@ public interface ICubeRelationEntityService extends CubeRelationEntityGetterServ
      * @param row 子表行号
      * @param position 主表行号
      */
-    void addReverseIndex(int row, int position);
+    void addReverseIndex(int row, Integer position);
 
 }

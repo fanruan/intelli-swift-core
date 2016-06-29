@@ -49,7 +49,7 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     }
 
     @Override
-    public void addReverseIndex(int row, int position) {
+    public void addReverseIndex(int row, Integer position) {
         reverseRelationService.addReverseRow(row, position);
     }
 
@@ -97,7 +97,7 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     }
 
     @Override
-    public int getReverseIndex(int row) throws BIResourceInvalidException {
+    public Integer getReverseIndex(int row) throws BIResourceInvalidException {
         return reverseRelationService.getReverseRow(row);
     }
 }
