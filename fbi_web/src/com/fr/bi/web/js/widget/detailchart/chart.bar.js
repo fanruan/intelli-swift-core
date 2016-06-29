@@ -15,7 +15,8 @@ BI.BarChart = BI.inherit(BI.Widget, {
         LEGEND_BOTTOM: 4,
         ZERO2POINT: 2,
         ONE2POINT: 3,
-        TWO2POINT: 4
+        TWO2POINT: 4,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -158,6 +159,9 @@ BI.BarChart = BI.inherit(BI.Widget, {
                     BI.each(item.data, function(id, da){
                         da.x = da.x || 0;
                         da.x = da.x.div(magnify);
+                        if(self.constants.MINLIMIT.sub(da.x) > 0){
+                            da.x = 0;
+                        }
                     })
                 })
             }

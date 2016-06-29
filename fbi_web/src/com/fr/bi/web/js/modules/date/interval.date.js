@@ -27,8 +27,8 @@ BI.CustomTimeInterval = BI.inherit(BI.Widget, {
         var timeRange = this.timeInterval.getValue();
         var start = timeRange.start, end = timeRange.end;
         var result = {};
-        BI.isNull(start) ? result["start"] = null : result["start"] = new Date(start.year + "-" + (start.month + 1) + "-" + start.day).getTime();
-        BI.isNull(end) ? result["end"] = null : result["end"] = new Date(end.year + "-" + (end.month + 1) + "-" + end.day).getTime();
+        BI.isNull(start) ? result["start"] = null : result["start"] = Date.parseDateTime(start.year + "-" + (start.month + 1) + "-" + start.day, "%y-%x-%d").getTime();
+        BI.isNull(end) ? result["end"] = null : result["end"] = Date.parseDateTime(end.year + "-" + (end.month + 1) + "-" + end.day, "%y-%x-%d").getTime();
         return result;
     },
 

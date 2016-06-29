@@ -8585,7 +8585,9 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
 
                 self._renderDivLabels(points, transX, transY, key);
 
-                if(self.component.componentType == Constants.PIE_CHART || self.component.componentType == Constants.BUBBLE_CHART){
+                if(self.component.componentType == Constants.PIE_CHART ||
+                    self.component.componentType == Constants.BUBBLE_CHART ||
+                    self.component.componentType == Constants.MULTIPIE_CHART){
 
                     //饼图气泡图标签 加。
                     parentG.selectAll('text').filter(function(d){
@@ -9860,13 +9862,13 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                     for(var pIndex = points.length - 1; pIndex >= 0; pIndex--){
                         var point = points[pIndex];
                         var feature = geo._validAreaName[point.name];
+                        //这一步是过滤数据里多余的和json里没有对应的数据
                         if(feature){
                             if(!point.feature){
                                 point.feature = feature;
                                 BaseUtils.extend(point, feature);
                             }
-
-                            if(point.visible){
+                            if(point.visible && !validArea[point.name]){
                                 validArea[point.name] = true;
                                 BaseUtils.extend(point, point.mapStyle);
                                 areaFeatures.push(point);
@@ -13917,6 +13919,18 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 }
             }
 
+            //对于所有的type都是bubble,scatter的地图,chartType也需要构造一个map对象
+            var isMap = chartType.toLowerCase().indexOf(Constants.MAP_CHART) != -1;
+            var mapKey = Constants.MAP_CHART;
+            if(isMap){
+                var map = this.charts[mapKey], MapClass = ChartLibrary.get(mapKey);
+                if(map){
+                    map.refresh(option);
+                }else if(MapClass){
+                    this.charts[mapKey] = new MapClass(this, option, mapKey);
+                }
+            }
+
             this.bounds = BaseUtils.makeBounds(PADDING, PADDING, this.width - 3 * PADDING, this.height - 3 * PADDING);
 
             var zoom = this.components[Constants.ZOOM_COMPONENT];
@@ -17255,7 +17269,17 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
     var Options = require('../theme/options');
     var Point = require('../component/Point');
 
+    var RIGHT_TOP = 'right-top';
+    var RIGHT_BOTTOM = 'right-bottom';
+    var LEFT_TOP = 'left-top';
+    var LEFT_BOTTOM = 'left-bottom';
+
     var INNER_RADIUS_PCT = Options[Constants.MULTIPIE_CHART].innerRadiusPct;
+
+    var LINE_LABEL_GAP = 2;
+    var STEP = Math.PI / 180;
+
+    var DECREASE = [0.75,0.7,0.65,0.6,0.55];
 
     var multiPie = BaseChart.extend({
         
@@ -17263,12 +17287,20 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
         
         root: null,
 
+        ordered: null,
+
         // for convenient
         center: [],
         innerRadius: null,
         radius: null,
         startAngle: null,
         endAngle: null,
+
+        _refresh: function () {
+            // this.nodes = [];
+            // this.root = null;
+            // this.ordered = null;
+        },
 
         mergeSeriesAttributes: function (series) {
             
@@ -17312,8 +17344,8 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             var innerRadius = series.innerRadius;
             var radius = series.radius;
 
+            var plotBounds = this.vanchart.getPlotBounds();
             if (!center || center.length === 0) {
-                var plotBounds = this.vanchart.getPlotBounds();
                 center = [
                     plotBounds.width / 2 + plotBounds.x,
                     plotBounds.height / 2 + plotBounds.y
@@ -17323,6 +17355,9 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                 center[1] = this._getPercentValue(center[1], this.vanchart.chartHeight());
             }
             series.center = center;
+            series.centerX = center[0];
+            series.centerY = center[1];
+            series.bounds = {x: plotBounds.x, y: plotBounds.y, width: plotBounds.width, height: plotBounds.height};
 
             ////
             if (!radius) {
@@ -17340,29 +17375,92 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             }
 
             this.initData(series);
+
         },
 
         initData: function (series) {
-
             // making a Series object as a root node
             // has several problems in interactive events.
             // We need a 'true' Point object as a root.
             if (!this.root) {
                 this.root = new Point(series, series.seriesOption, -1);
                 this.root.children = series.points;
+                
+                this.traverseData(this.root, this.option.orderType);
+                this.nodes = this.bfsTraverseData(this.root);
+            } else {
+
+                // var stash = [];
+                // this.nodes.map(function (node) {
+                //     var depth = node.depth;
+                //     if (node.ancestor && node.ancestor.visible) {
+                //         if (!stash[depth]) {
+                //             stash[depth] = [];
+                //         }
+                //         stash[depth].push({
+                //             x1: node.x1,
+                //             dx1: node.dx1
+                //         });
+                //     }
+                // });
+
+                this.traverseData(this.root, this.option.orderType);
+                this.nodes = this.bfsTraverseData(this.root);
+
+                // function dfs(node) {
+                //     var children = node.children;
+                //
+                //     if (node.ancestor && node.ancestor.visible) {
+                //         var o = stash[node.depth].shift();
+                //         node.x1 = o.x1;
+                //         node.dx1 = o.dx1;
+                //     }
+                //
+                //     if (children && (n = children.length)) {
+                //         var i = -1, n;
+                //         while (++i < n) {
+                //             dfs(children[i]);
+                //         }
+                //     }
+                // }
+                //
+                // dfs(this.root);
             }
-
-            var orderType = this.option.orderType;
-
-            this.nodes = this.traverseData(this.root, orderType);
 
             this.calcData(this.root);
 
-            // console.log(this.root);
+            this._calculateLabelPos();
+
+            this.calcData(this.root);
+
+            console.log(this.root);
         },
 
         orderData: function () {
 
+        },
+
+        bfsTraverseData: function (root) {
+            var queue = [];
+
+            var stack = [];
+
+            queue.push(root);
+            while (node = queue.shift()) {
+                var node;
+
+                stack.push(node);
+
+                var children = node.children;
+                if (children && (n = children.length)) {
+                    var i = -1, n;
+                    while (++i < n) {
+                        queue.push(children[i]);
+                    }
+                }
+            }
+
+            return stack;
         },
 
         /**
@@ -17381,7 +17479,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             // instead, set 'size' as partition display value
             function dfsData(node, depth, parent, ancestor) {
                 var children = node.children;
-                
+
                 stack.push(node);
 
                 node.parent = parent;
@@ -17430,7 +17528,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
                     node.chSum = chSum;
                 }
-                
+
                 node.size = node.value || node.chSum || 0;
 
                 if (!node.visible) {
@@ -17494,13 +17592,23 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
                     self._setColor(node, gradual, height);
 
-                    node.dataLabels.enabled && self._calculateInsideLabelBounds(node);
+                    // if (node.depth < root.height &&
+                    //     node.dataLabels &&
+                    //     node.dataLabels.enabled) {
+                    //     self._calculateInsideLabelBounds(node);
+                    // }
 
                 } else {
                     // -1 to avoid dy=0, thus invalidate drill down scale
                     node.y = -1;
                     node.dy = ir + 1;
                 }
+
+                // // stash
+                // node.x1 = node.x1 || node.x;
+                // node.y1 = node.y1 || node.y;
+                // node.dx1 = node.dx1 || node.dx;
+                // node.dy1 = node.dy1 || node.dy;
 
                 if (children && (n = children.length)) {
                     var i = -1, n, c, d;
@@ -17549,6 +17657,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             }
         },
 
+        // --- label calculation revised from Pie
         _calculateInsideLabelBounds:function(node){
 
             var centerAngle = this.getCenterAngle(node);
@@ -17563,12 +17672,435 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             node.labelPos = {x:x, y:y};
         },
 
+        _getPossibleLabelBoundsByLocation:function(dim, location){
+            var x , y;
+            var width = dim.width;
+            var height = dim.height;
+
+            switch (location){
+                case RIGHT_TOP:
+                    x = 0;
+                    y = -height;
+                    break;
+                case RIGHT_BOTTOM:
+                    x = y = 0;
+                    break;
+                case LEFT_BOTTOM:
+                    x = -width;
+                    y = 0;
+                    break;
+                case LEFT_TOP:
+                    x = -width;
+                    y = -height;
+                    break;
+            }
+
+            return {x:x, y:y, width:width, height:height};
+        },
+
+        _ignoreMinArcLabel:function(radius, arcs){
+
+            var totalHeight = 0;
+
+            for(var i = 0, len = arcs.length; i < len; i++){
+                var labelDim = arcs[i].labelDim;
+                totalHeight += labelDim.height;
+            }
+
+            //高度不够，需要省略一些标签
+            if(radius < totalHeight){
+
+                var det = totalHeight - radius;
+
+                arcs.sort(function(a, b){
+                    return a.value - b.value;
+                });
+
+                for(var i = 0, len = arcs.length; i < len; i++){
+                    if(det < 0){
+                        break;
+                    }
+                    var labelHeight = arcs[i].labelDim.height;
+                    det -= labelHeight;
+                }
+
+                arcs = arcs.slice(i, arcs.length);
+            }
+
+            arcs.sort(function(a, b){
+                var startA = a.startAngle;
+                var startB = b.startAngle;
+
+                if(startA < startB){
+                    return -1;
+                }else if(startA > startB){
+                    return 1;
+                }else{
+                    return 0;
+                }
+            });
+
+            return arcs;
+        },
+
+        _getStartAndEndAngle:function(location){
+            switch (location){
+                case RIGHT_TOP:
+                    return {startAngle:0, endAngle:Math.PI/2};
+                case RIGHT_BOTTOM:
+                    return {startAngle:Math.PI/2, endAngle:Math.PI};
+                case LEFT_BOTTOM:
+                    return {startAngle:Math.PI, endAngle:3 * Math.PI / 2};
+                case LEFT_TOP:
+                    return {startAngle:3 * Math.PI / 2, endAngle: 2 * Math.PI};
+            }
+        },
+
+        _getLabelBounds:function(location, centerX, centerY, hWidth, labelDim){
+            var x,y;
+            if(location == RIGHT_TOP || location == RIGHT_BOTTOM){
+                x = centerX + hWidth + LINE_LABEL_GAP;
+            }else{
+                x = centerX - hWidth - LINE_LABEL_GAP - labelDim.width;
+            }
+
+            y = centerY - labelDim.height/2;
+
+            return {x:x, y:y, width:labelDim.width, height:labelDim.height};
+        },
+
+        _calculateLabelPos: function () {
+            var root = this.root;
+            var outPoints = this.nodes.filter(function (node) {
+                return (node.depth === root.height &&
+                    node.dataLabels &&
+                    node.dataLabels.enabled &&
+                    node.dataLabels.align == Constants.OUTSIDE)
+            });
+
+            this._calculateOutsideLabelBounds(outPoints, this.root.series);
+
+            this._calculateLeadLineStartPos(outPoints);
+        },
+
+        _calculateLeadLineStartPos:function(outPoints){
+
+            var self = this;
+            var radius = this.root.series.radius;
+            outPoints.forEach(function(arcPoint){
+
+                var centerAngle = self.getCenterAngle(arcPoint);
+
+                if(arcPoint.labelPos){
+                    arcPoint.labelPos.startPos = {
+                        x:(radius + 1)*Math.sin(centerAngle),
+                        y: (radius + 1) * Math.cos(centerAngle + Math.PI)
+                    }
+                }
+
+            });
+        },
+
+        _calculateOutsideLabelBounds:function(outPoints, pieConfig, isRecalculate){
+            if(!outPoints.length){
+                return ;
+            }
+
+            //清空计算结果
+            outPoints.forEach(function(arc){
+                arc.labelPos = null;
+            });
+
+            isRecalculate = isRecalculate || false;
+
+            //先划分区域
+            var rightTop = [];
+            var rightBottom = [];
+            var leftTop = [];
+            var leftBottom = [];
+
+            for(var i = 0, len = outPoints.length; i < len; i++){
+                var point = outPoints[i];
+
+                var center = this.getCenterAngle(point);
+
+                if(center < Math.PI / 2){
+                    rightTop.push(point)
+                }else if(center >= Math.PI / 2 && center < Math.PI){
+                    rightBottom.push(point);
+                }else if(center >= Math.PI && center < 3 * Math.PI /2){
+                    leftBottom.push(point);
+                }else{
+                    leftTop.push(point);
+                }
+            }
+
+            isRecalculate ? this._calculateArcR(pieConfig, rightTop, rightBottom, leftTop, leftBottom)
+                :this._initCalculateArcR(pieConfig, rightTop, rightBottom, leftTop, leftBottom);
+        },
+
+        _initCalculateArcR:function(pieConfig, rightTop, rightBottom, leftTop, leftBottom){
+            if (pieConfig.fixedState === 'fixed') {
+                var dim = {width: Number.MAX_VALUE, height: Number.MAX_VALUE};
+                this._testIfAllFit(pieConfig.radius, dim, rightTop, rightBottom, leftTop, leftBottom, true);
+            } else {
+                var originR = pieConfig.radius;
+                var usedR = originR * 0.5;
+
+                var bounds = pieConfig.bounds;
+                var dim = {width: bounds.width / 2, height: bounds.height / 2};
+
+                //半径的下界都不能放下的话
+                if (!this._testIfAllHorizontalFit(usedR, dim, rightTop, rightBottom, leftTop, leftBottom)) {
+                    pieConfig.radius = usedR;
+
+                    //计算位置
+                    this._testIfAllFit(usedR, dim, rightTop, rightBottom, leftTop, leftBottom)
+
+                    return;
+                }
+
+                for (var i = 0, len = DECREASE.length; i < len; i++) {
+                    usedR = originR * DECREASE[i];
+
+                    if (this._testIfAllFit(usedR, dim, rightTop, rightBottom, leftTop, leftBottom)) {
+                        pieConfig.radius = usedR;
+                        return;
+                    }
+                }
+
+                this._testIfAllFit(usedR, dim, rightTop, rightBottom, leftTop, leftBottom, true);
+                pieConfig.radius = usedR;
+            }
+        },
+
+        _calculateArcR:function(pieConfig, rightTop, rightBottom, leftTop, leftBottom){
+            if (pieConfig.fixedState === 'fixed') {
+                var dim = {width: Number.MAX_VALUE, height: Number.MAX_VALUE};
+                this._testIfAllFit(pieConfig.radius, dim, rightTop, rightBottom, leftTop, leftBottom, true);
+            } else {
+                var usedR = pieConfig.radius;
+                var bounds = pieConfig.bounds;
+                var dim = {width: bounds.width / 2, height: bounds.height / 2};
+
+                this._testIfAllFit(usedR, dim, rightTop, rightBottom, leftTop, leftBottom, true);
+            }
+        },
+
+        _testIfAllHorizontalFit:function(usedR, dim, rightTop, rightBottom, leftTop, leftBottom){
+            var tmpRightTop = this._ignoreMinArcLabel(usedR, rightTop);
+            var tmpRightBottom = this._ignoreMinArcLabel(usedR, rightBottom);
+            var tmpLeftTop = this._ignoreMinArcLabel(usedR, leftTop);
+            var tmpLeftBottom = this._ignoreMinArcLabel(usedR, leftBottom);
+
+            var rightTop = this._testIfHorizontalFit(rightTop, tmpRightTop, usedR, dim, RIGHT_TOP);
+            var rightBottom = this._testIfHorizontalFit(rightBottom, tmpRightBottom, usedR, dim, RIGHT_BOTTOM);
+            var leftTop = this._testIfHorizontalFit(leftTop, tmpLeftTop, usedR, dim, LEFT_TOP);
+            var leftBottom = this._testIfHorizontalFit(leftBottom, tmpLeftBottom, usedR, dim, LEFT_BOTTOM);
+
+            return rightTop && rightBottom && leftTop && leftBottom;
+        },
+
+        _testIfHorizontalFit:function(arcPoints, usedR, dim, location){
+
+            var outerR = usedR * 1.2;
+            var hWidth = usedR * 0.1;
+            var allLabelBounds = BaseUtils.makeBounds(-dim.width, dim.height, dim.width * 2, dim.height * 2);
+
+            for(var i = 0, len = arcPoints.length; i < len; i++){
+
+                var point = arcPoints[i];
+
+                var labelDim = point.labelDim;
+
+                var centerAngle = this.getCenterAngle(point);
+
+                var centerX = outerR * Math.sin(centerAngle);
+
+                var centerY = outerR * Math.cos(centerAngle + Math.PI);
+
+                var bounds = this._getLabelBounds(location, centerX, centerY, hWidth, labelDim);
+
+                if(bounds.x < allLabelBounds.x || (bounds.x + bounds.width > allLabelBounds.x + allLabelBounds.width)){
+                    return false;
+                }
+            }
+
+            return true;
+        },
+
+        _testIfAllFit:function(usedR, dim, rightTop, rightBottom, leftTop, leftBottom, forceFloat){
+
+            var tmpRightTop = this._ignoreMinArcLabel(usedR, rightTop);
+            var tmpRightBottom = this._ignoreMinArcLabel(usedR, rightBottom);
+            var tmpLeftTop = this._ignoreMinArcLabel(usedR, leftTop);
+            var tmpLeftBottom = this._ignoreMinArcLabel(usedR, leftBottom);
+
+            var rightTop = this._testIfFit(rightTop, tmpRightTop, usedR, dim, RIGHT_TOP, forceFloat);
+            var rightBottom = this._testIfFit(rightBottom, tmpRightBottom, usedR, dim, RIGHT_BOTTOM, forceFloat);
+            var leftTop = this._testIfFit(leftTop, tmpLeftTop, usedR, dim, LEFT_TOP, forceFloat);
+            var leftBottom = this._testIfFit(leftBottom, tmpLeftBottom, usedR, dim, LEFT_BOTTOM, forceFloat);
+
+            return rightTop && rightBottom && leftTop && leftBottom;
+        },
+
+        _testIfFit:function(totalPoints, arcPoints, usedR, dim, location, forceFloat){
+
+            return (totalPoints.length == arcPoints.length && !forceFloat) ? this._testFixedPositionIfFit(arcPoints, usedR, dim, location)
+                :this._testFloatPositionIfFit(arcPoints, usedR, dim, location)
+
+        },
+
+        _testFixedPositionIfFit:function(arcPoints, usedR, dim, location){
+
+            var manager = new BoundsManager();
+
+            var outerR = usedR * 1.2;
+            var hWidth = usedR * 0.1;
+            var allLabelBounds = BaseUtils.makeBounds(-dim.width, -dim.height, dim.width * 2, dim.height * 2);
+
+            for(var i = 0, len = arcPoints.length; i < len; i++){
+
+                var point = arcPoints[i];
+
+                var labelDim = point.labelDim;
+
+                var centerAngle = this.getCenterAngle(point);
+
+                var centerX = outerR * Math.sin(centerAngle);
+
+                var centerY = outerR * Math.cos(centerAngle + Math.PI);
+
+                var bounds = this._getLabelBounds(location, centerX, centerY, hWidth, labelDim);
+
+                if(manager.isOverlapped(bounds) || !BaseUtils.containsRect(allLabelBounds, bounds)){
+                    return false;
+                }else{
+                    manager.addBounds(bounds);
+
+                    var midPos = {x:centerX, y:centerY};
+                    var endPos;
+                    if(location == RIGHT_TOP || location == RIGHT_BOTTOM){
+                        endPos = {x:centerX + hWidth, y:centerY};
+                    }else{
+                        endPos = {x:centerX - hWidth, y:centerY};
+                    }
+                    point.labelPos = {
+                        x:bounds.x,
+                        y:bounds.y,
+
+                        midPos:midPos,
+                        endPos:endPos
+                    };
+                }
+            }
+
+            return true;
+        },
+
+        _testFloatPositionIfFit:function(arcPoints, usedR, dim, location){
+
+            var fromStart = this._findNiceBoundsFromStartAngle(arcPoints, usedR, dim, location);
+
+            if(!fromStart){
+
+                arcPoints.forEach(function(arc){
+                    arc.labelPos = null;
+                });
+
+                return this._findNiceBoundsFromEndAngle(arcPoints, usedR, dim, location);
+            }
+
+            return fromStart;
+        },
+
+        _findNiceBoundsFromStartAngle:function(arcPoints, usedR, dim, location){
+            return this._findNiceBounds(true, arcPoints, usedR, dim, location);
+        },
+
+        _findNiceBoundsFromEndAngle:function(arcPoints, usedR, dim, location){
+            return this._findNiceBounds(false, arcPoints, usedR, dim, location);
+        },
+
+        _findNiceBounds:function(isAngleIncrease, arcPoints, usedR, dim, location){
+
+            var outerR = usedR * 1.2;
+            var hWidth = usedR * 0.1;
+
+            var manager = new BoundsManager();
+            var angleRange = this._getStartAndEndAngle(location);
+
+            var allLabelBounds = this._getPossibleLabelBoundsByLocation(dim, location);
+
+
+            var searchEnd = isAngleIncrease ? angleRange.endAngle : angleRange.startAngle;
+            var step = isAngleIncrease ? STEP : -STEP;
+
+
+            var found = true;
+            for(var i = 0, len = arcPoints.length; i < len && found; i++){
+
+                var pointIndex = isAngleIncrease ? i : len - i - 1;
+
+                var point = arcPoints[pointIndex];
+
+                var labelDim = point.labelDim;
+
+                var centerAngle = this.getCenterAngle(point);
+
+                var centerX = outerR * Math.sin(centerAngle);
+
+                var centerY = outerR * Math.cos(centerAngle + Math.PI);
+
+                var bounds = this._getLabelBounds(location, centerX, centerY, hWidth, labelDim);
+
+                if(manager.isOverlapped(bounds) || !BaseUtils.containsRect(allLabelBounds, bounds)){
+                    found = false;
+                    for(var angle = centerAngle + step; (isAngleIncrease ? angle < searchEnd : angle > searchEnd); angle += step){
+
+                        centerX = outerR * Math.sin(angle);
+                        centerY = outerR * Math.cos(angle + Math.PI);
+
+                        bounds = this._getLabelBounds(location, centerX, centerY, hWidth, labelDim);
+
+                        if(!manager.isOverlapped(bounds) && BaseUtils.containsRect(allLabelBounds, bounds)){
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(found){
+
+                    var midPos = {x:centerX, y:centerY};
+                    var endPos;
+                    if(location == RIGHT_TOP || location == RIGHT_BOTTOM){
+                        endPos = {x:centerX + hWidth, y:centerY};
+                    }else{
+                        endPos = {x:centerX - hWidth, y:centerY};
+                    }
+
+                    manager.addBounds(bounds);
+                    point.labelPos = {
+                        x:bounds.x,
+                        y:bounds.y,
+
+                        midPos:midPos,
+                        endPos:endPos
+                    };
+                }
+            }
+
+            return found;
+        },
+
         getCenterAngle:function(node, rotate){
             rotate = rotate || 0;
             var centerAngle = rotate + node.x + node.dx / 2 ;
             return BaseUtils.makeValueInRange(0, 2*Math.PI, centerAngle);
         },
-
+        // --- label calc
+        
         getChartNodes: function () {
             return this.nodes;
         },
@@ -21006,8 +21538,7 @@ define('chart/Scatter',['require','./BaseChart','../utils/BaseUtils','../utils/C
                 fillColorOpacity: fillColorOpacity,
                 x:category,
                 y:value,
-                size: size,
-                value:size,
+                size: size
             });
 
             //放在最后原因：会用到size
@@ -21126,7 +21657,17 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var bubbleSeries = this.getVisibleChartData(Constants.BUBBLE_CHART);
             var scatterSeries = this.getVisibleChartData(Constants.SCATTER_CHART);
             var pointMap = this.getVisibleChartData(Constants.POINT_MAP);
-            this._calculateTextRelated(bubbleSeries.concat(scatterSeries, pointMap));
+            var pointSeries = bubbleSeries.concat(scatterSeries, pointMap);
+
+            //对于点地图,像气泡和散点图只有size,而没有value,而这里应该统一算成value
+            for(var i = pointSeries.length - 1; i >= 0; i--){
+                var points = pointSeries[i].points;
+                points.forEach(function(point){
+                    point.value = BaseUtils.hasDefined(point.size) ? point.size : point.value;
+                });
+            }
+
+            this._calculateTextRelated(pointSeries);
         },
 
         //重新计算标签
@@ -21200,24 +21741,33 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
                     content.push({text:text, style:style, dim:dim});
                 }
 
-                var line = [];
-                if(label.indexOf(SERIES) != -1){
-                    line.push(Formatter.format(point.seriesName, formatter.seriesFormat));
+                var line = '';
+                var hasSeries = label.indexOf(SERIES) != -1, hasValue = label.indexOf(VALUE) != -1, hasPercent = label.indexOf(PERCENT) != -1;
+                var seriesLabel = Formatter.format(point.seriesName, formatter.seriesFormat);
+                var valueLabel = Formatter.format(point.value, formatter.valueFormat);
+                var percentLabel = Formatter.format(point.percentage, formatter.percentFormat);
+                if(hasSeries){
+                    line += seriesLabel;
+                    if(hasValue || hasPercent){
+                        line += ':'
+                    }
                 }
 
-                if(label.indexOf(VALUE) != -1){
-                    line.push(Formatter.format(point.value, formatter.valueFormat));
+                if(hasValue){
+                    line += valueLabel;
+                    if(hasPercent){
+                        line += ' '
+                    }
                 }
 
-                if(label.indexOf(PERCENT) != -1){
-                    line.push(Formatter.format(point.percentage, formatter.percentFormat));
+                if(hasPercent){
+                    line += percentLabel;
                 }
 
-                if(line.length){
-                    var text = line.join(' ');
+                if(line){
                     var style = point.getValuePercentageStyle(dataLabels, labelPosition);
-                    var dim = BaseUtils.getTextDimension(text, style, useHtml);
-                    content.push({text:text, style:style, dim:dim});
+                    var dim = BaseUtils.getTextDimension(line, style, useHtml);
+                    content.push({text:line, style:style, dim:dim});
                 }
 
             }else{
@@ -21971,7 +22521,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
 
             this._drawSeries(this._bodyG);
 
-            // this._drawLabel(this._bodyG.select('.' + LABEL_G));
+            this._drawLabel(this._bodyG);
 
         },
 
@@ -21980,7 +22530,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
 
             var updatePath = multiPieG
                 .selectAll('path')
-                .data(function (d) { return d; }, function (d) { return d.className; });
+                .data(function (d) { return d; }/*, function (d) { return d.className; }*/);
 
             this._updateSeries(updatePath);
 
@@ -22032,23 +22582,27 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             // update
             updatePath
                 .attr("opacity", function(d) { return d.depth ? 1 : 0;})// hide inner ring
+                .style("stroke", function (d) { return d.borderColor; })
+                .style("stroke-width", function (d) { return d.borderWidth; })
+                .style("fill", function(d) { return d.color; })
                 .transition()
                 .ease(EASE)
                 .duration(ANIMATION_TIME)
                 .attrTween("d", function(a) {
+                    var self = this;
                     var i = d3.interpolate(
                         {
-                            x: a.x1,
-                            y: a.y1,
-                            dx: a.dx1,
-                            dy: a.dy1
+                            x: self.x1,
+                            y: self.y1,
+                            dx: self.dx1,
+                            dy: self.dy1
                         }, a);
                     return function(t) {
                         var b = i(t);
-                        a.x1 = b.x;
-                        a.y1 = b.y;
-                        a.dx1 = b.dx;
-                        a.dy1 = b.dy;
+                        self.x1 = b.x;
+                        self.y1 = b.y;
+                        self.dx1 = b.dx;
+                        self.dy1 = b.dy;
                         return arc(b);
                     };
                 });
@@ -22058,10 +22612,10 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             // stash old values
             // we use 1 because y0 is used in Point... sigh...
             function stash(d) {
-                d.x1 = d.x;
-                d.y1 = d.y;
-                d.dx1 = d.dx;
-                d.dy1 = d.dy;
+                this.x1 = d.x;
+                this.y1 = d.y;
+                this.dx1 = d.dx;
+                this.dy1 = d.dy;
             }
 
             updatePath.enter()
@@ -22076,13 +22630,14 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             this.addShapeEventHandler(updatePath);
         },
 
-        _drawLabel:function(labelG, config, delay){
+
+        _drawLabel:function(bodyG, config, delay){
+            var labelG = bodyG.select('.' + LABEL_G);
 
             delay = delay || 0;
             delay = this.component.isSupportAnimation() ? delay : 0;
 
-            //
-            var multiPieData = this.component.getChartNodes();
+            var multiPieData = bodyG.datum();
 
             var center = this.component.getCenter();
             var transX = center[0];
@@ -22167,6 +22722,15 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                             .style('fill', function(d){
                                 return d.mouseOverColor;
                             });
+
+                        // if (d.tooltip && d.tooltip.shared) {
+                        //     var handler = this.component.vanchart.handler;
+                        //     var p;
+                        //     while ((p = d.parent) && p.depth) {
+                        //         console.log(p);
+                        //         handler.fireEventByData(p, 'cover', event);
+                        //     }
+                        // }
                     }
 
                     pathNode.isChosen = true;
@@ -25421,6 +25985,13 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                 this._updateChartBodyTranslate([this._bodyG], supportAnimation, BUBBLE_UPDATE_TIME);
             }
 
+            if(this._animationTimeOut){
+                for(var timeOut in this._animationTimeOut){
+                    clearTimeout(this._animationTimeOut[timeOut]);
+                }
+            }
+            this._animationTimeOut = {};
+
             var bubbleData = this.component.getVisibleChartData();
 
             var bubbleSeriesS = this._bodyG
@@ -25618,12 +26189,16 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                 clearTimeout(self._animationTimeOut['changeData']);
                 self._animationTimeOut['changeData'] = setTimeout(function () {
                     bubbleSeries.each(function(d){
+                        d3.select(this)
+                            .selectAll('path')
+                            .remove();
+
                         var bubbles = d3.select(this)
                             .selectAll('path')
                             .data(d.points, function(d){return d.className;});
 
                         self._createBubbles(bubbles, supportAnimation);
-                        
+
                         var labels = d3.select(this)
                             .selectAll('text')
                             .data(d.points)
