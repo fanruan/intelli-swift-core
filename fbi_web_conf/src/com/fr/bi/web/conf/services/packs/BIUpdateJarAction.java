@@ -23,6 +23,9 @@ public class BIUpdateJarAction extends
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
+       updateJarOnline();
+    }
+    protected  updateJarOnline(){
         String base = BIConfigurePathUtils.getProjectLibPath();
         String confPath = base + File.separator + "online_update";
         String target;
