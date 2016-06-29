@@ -2,6 +2,8 @@ package com.fr.bi.cal.generate.timerTask;
 
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.conf.datasource.BIBusinessTableSource;
+import com.finebi.cube.conf.datasource.BusinessTableSourceService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
@@ -18,7 +20,7 @@ import java.util.*;
 /**
  * Created by Kary on 2016/6/28.
  */
-public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreator {
+public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvider {
     public BICubeTimeTaskCreatorManager() {
     }
 
@@ -32,8 +34,11 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreator {
                 }
             } else {
                 for (TimeFrequency frequency : allTimeTaskMap.get(keys).getTimeList()) {
-                    BIBusinessTable table = new BIBusinessTable(new BITableID(keys));
-                    timerList.add(addSingleTableTask(frequency, table, userId));
+                    BusinessTableSourceService tableSourceService = new BIBusinessTableSource();
+                    if (tableSourceService.containBusinessTable(new BITableID(keys))) {
+                        BIBusinessTable table = new BIBusinessTable(new BITableID(keys));
+                        timerList.add(addSingleTableTask(frequency, table, userId));
+                    }
                 }
 
             }
