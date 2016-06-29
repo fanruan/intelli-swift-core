@@ -99,6 +99,11 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
+    public int getPositionOfGroup(int row) throws BIResourceInvalidException {
+        return selfColumnEntity.getPositionOfGroup(row);
+    }
+
+    @Override
     public int sizeOfGroup() {
         return selfColumnEntity.sizeOfGroup();
     }

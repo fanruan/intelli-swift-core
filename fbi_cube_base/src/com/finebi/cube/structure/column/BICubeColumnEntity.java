@@ -86,6 +86,11 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         return groupDataService.getPositionOfGroupValue(convert(groupValues));
     }
 
+    @Override
+    public int getPositionOfGroup(int row) throws BIResourceInvalidException {
+        return cubeColumnPositionOfGroupService.getPositionOfGroup(row);
+    }
+
     private T convert(Object value) {
         if (BITypeUtils.isAssignable(Long.class, value.getClass()) &&
                 getClassType() == DBConstant.CLASS.DOUBLE) {
@@ -127,8 +132,11 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
 
     @Override
     public GroupValueIndex getIndexByRow(int rowNumber) throws BIResourceInvalidException, BICubeIndexException {
-        T value = getOriginalValueByRow(rowNumber);
-        return getIndexByGroupValue(value);
+        int position = getPositionOfGroup(rowNumber);
+        if (position >= 0) {
+            return getBitmapIndex(position);
+        }
+        return new RoaringGroupValueIndex();
     }
 
     @Override
@@ -197,6 +205,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         indexDataService.clear();
         groupDataService.clear();
         cubeVersion.clear();
+        cubeColumnPositionOfGroupService.clear();
     }
 
     @Override
