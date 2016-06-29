@@ -20,7 +20,7 @@ import java.util.*;
 /**
  * Created by Kary on 2016/6/28.
  */
-public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreator {
+public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvider {
     public BICubeTimeTaskCreatorManager() {
     }
 

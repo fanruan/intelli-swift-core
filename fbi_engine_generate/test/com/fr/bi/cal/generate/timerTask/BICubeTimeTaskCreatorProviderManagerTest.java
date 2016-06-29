@@ -5,7 +5,7 @@ import org.junit.Test;
 /**
  * Created by Kary on 2016/6/28.
  */
-public class BICubeTimeTaskCreatorManagerTest {
+public class BICubeTimeTaskCreatorProviderManagerTest {
     @Test
     public void reGenerateTimeTasks() throws Exception {
 
