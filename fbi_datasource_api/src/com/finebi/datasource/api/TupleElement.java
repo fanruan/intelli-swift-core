@@ -1,6 +1,8 @@
 
 package com.finebi.datasource.api;
 
+import com.finebi.datasource.api.metamodel.PlainTable;
+
 /**
  * The <code>TupleElement</code> interface defines an element that is returned in
  * a query result tuple.
@@ -16,7 +18,7 @@ public interface TupleElement<X> {
      * Return the Java type of the tuple element.
      * @return the Java type of the tuple element
      */
-    Class<? extends X> getJavaType();
+   PlainTable getPlainTable();
 
     /**
      * Return the alias assigned to the tuple element or null, 

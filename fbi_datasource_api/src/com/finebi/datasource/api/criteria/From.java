@@ -1,6 +1,7 @@
 
 package com.finebi.datasource.api.criteria;
 
+import com.finebi.datasource.api.metamodel.PlainTable;
 import com.finebi.datasource.api.metamodel.SingularAttribute;
 
 import java.util.Set;

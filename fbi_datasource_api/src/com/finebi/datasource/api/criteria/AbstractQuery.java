@@ -3,6 +3,7 @@ package com.finebi.datasource.api.criteria;
 
 
 import com.finebi.datasource.api.metamodel.EntityType;
+import com.finebi.datasource.api.metamodel.PlainTable;
 
 import java.util.List;
 import java.util.Set;

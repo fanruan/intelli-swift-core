@@ -1,0 +1,99 @@
+/*
+ * Hibernate, Relational Persistence for Idiomatic Java
+ *
+ * License: GNU Lesser General Public License (LGPL), version 2.1 or later.
+ * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ */
+package com.finebi.datasource.sql.criteria.internal.path;
+
+import com.finebi.datasource.api.criteria.Expression;
+import com.finebi.datasource.api.criteria.From;
+import com.finebi.datasource.api.criteria.JoinType;
+import com.finebi.datasource.api.criteria.Predicate;
+import com.finebi.datasource.api.metamodel.Attribute;
+import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.JoinImplementor;
+import com.finebi.datasource.sql.criteria.internal.PathSource;
+
+import java.io.Serializable;
+
+/**
+ * Convenience base class for various {@link com.finebi.datasource.api.criteria.Join} implementations.
+ *
+ * @author Steve Ebersole
+ */
+public abstract class AbstractJoinImpl<Z, X>
+		extends AbstractFromImpl<Z, X>
+		implements JoinImplementor<Z,X>, Serializable {
+
+	private final Attribute<? super Z, ?> joinAttribute;
+	private final JoinType joinType;
+
+	private Predicate suppliedJoinCondition;
+
+	public AbstractJoinImpl(
+			CriteriaBuilderImpl criteriaBuilder,
+			PathSource<Z> pathSource,
+			Attribute<? super Z, X> joinAttribute,
+			JoinType joinType) {
+		this( criteriaBuilder, joinAttribute.getJavaType(), pathSource, joinAttribute, joinType );
+	}
+
+	public AbstractJoinImpl(
+			CriteriaBuilderImpl criteriaBuilder,
+			Class<X> javaType,
+			PathSource<Z> pathSource,
+			Attribute<? super Z, ?> joinAttribute,
+			JoinType joinType) {
+		super( criteriaBuilder, javaType, pathSource );
+		this.joinAttribute = joinAttribute;
+		this.joinType = joinType;
+	}
+
+	@Override
+	public Attribute<? super Z, ?> getAttribute() {
+		return joinAttribute;
+	}
+
+	@Override
+	public JoinType getJoinType() {
+		return joinType;
+	}
+
+	@Override
+	@SuppressWarnings({ "unchecked" })
+	public From<?, Z> getParent() {
+		// this cast should be ok by virtue of our constructors...
+		return (From<?, Z>) getPathSource();
+	}
+
+
+
+	@Override
+	public JoinImplementor<Z, X> correlateTo(CriteriaSubqueryImpl subquery) {
+		return (JoinImplementor<Z, X>) super.correlateTo( subquery );
+	}
+
+	@Override
+	public JoinImplementor<Z, X> on(Predicate... restrictions) {
+		// no matter what, a call to this method replaces any previously set values...
+		this.suppliedJoinCondition = null;
+
+		if ( restrictions != null && restrictions.length > 0 ) {
+			this.suppliedJoinCondition = criteriaBuilder().and( restrictions );
+		}
+
+		return this;
+	}
+
+	@Override
+	public JoinImplementor<Z, X> on(Expression<Boolean> restriction) {
+		this.suppliedJoinCondition = criteriaBuilder().wrap( restriction );
+		return this;
+	}
+
+	@Override
+	public Predicate getOn() {
+		return suppliedJoinCondition;
+	}
+}

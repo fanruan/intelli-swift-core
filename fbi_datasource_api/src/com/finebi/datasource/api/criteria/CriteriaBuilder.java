@@ -3,6 +3,7 @@ package com.finebi.datasource.api.criteria;
 
 
 import com.finebi.datasource.api.Tuple;
+import com.finebi.datasource.api.metamodel.PlainTable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,16 +23,9 @@ import java.util.Set;
 public interface CriteriaBuilder {
 
 
-    /**
-     * Create a <code>CriteriaQuery</code> object with the specified result
-     * type.
-     *
-     * @param resultClass type of the query result
-     * @return criteria query object
-     */
-    <T> CriteriaQuery<T> createQuery(Class<T> resultClass);
 
-    <T> CriteriaQuery<PlainTable> createQuery();
+
+    CriteriaQuery<PlainTable> createQuery();
 
     /**
      * Create a <code>CriteriaQuery</code> object that returns a tuple of

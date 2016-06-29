@@ -2,6 +2,8 @@ package com.finebi.datasource.api;
 
 
 import com.finebi.datasource.api.criteria.*;
+import com.finebi.datasource.api.metamodel.PlainResultMate;
+import com.finebi.datasource.api.metamodel.PlainTable;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -26,11 +28,13 @@ public class SelectionTest extends TestCase {
             CriteriaBuilder cb = generateCB();
 
             CriteriaQuery<PlainTable> query = cb.createQuery();
-            //查询的结果元数据
-            query.select(resultMate);
+
 
             //查询的表，获得根
-            query.from(target);
+            Root root = query.from(target);
+
+            //查询的结果元数据
+            query.select(root);
             Object result = executeQuery(query);
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,19 +52,21 @@ public class SelectionTest extends TestCase {
         try {
             PlainTable tar = EasyMock.createMock(PlainTable.class);
             PlainTable src = EasyMock.createMock(PlainTable.class);
-            PlainResultMate resultMate = EasyMock.createMock(PlainResultMate.class);
             CriteriaBuilder cb = generateCB();
             CriteriaQuery<PlainTable> query = cb.createQuery();
 
-            //查询的结果元数据
-            query.select(resultMate);
 
             //查询的表，获得根
-            Root<PlainTable> root = query.from(src);
+            Root<PlainTable> srcRoot = query.from(src);
+            Root<PlainTable> tarRoot = query.from(tar);
+
+
+            //查询的结果元数据
+            query.select(srcRoot);
 
             //对查询根进行关联操作
-            Join join = root.join(src);
-            join.on(cb.equal(tar.getColumn("id"), src.getColumn("id")));
+            Join join = srcRoot.join(tar);
+            join.on(cb.equal(tarRoot.get("id"), srcRoot.get("id")));
             //获得结果
             Object result = executeQuery(query);
         } catch (Exception e) {
@@ -82,11 +88,13 @@ public class SelectionTest extends TestCase {
 
             CriteriaBuilder cb = generateCB();
             CriteriaQuery<PlainTable> query = cb.createQuery(PlainTable.class);
-            Root<PlainTable> root = query.from(two);
-            Join join = root.join(two);
+            //查询的表，获得根
+            Root<PlainTable> srcRoot = query.from(one);
+            Root<PlainTable> tarRoot = query.from(two);
+            Join join = srcRoot.join(two);
             //对关联进行再次关联操作
-            join.on(cb.equal(one.getColumn("id"), two.getColumn("id"))).join(three);
-            query.select(one);
+            join.on(cb.equal(tarRoot.get("id"), srcRoot.get("id"))).join(three);
+            query.select(srcRoot);
             Object result = executeQuery(query);
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,4 +110,6 @@ public class SelectionTest extends TestCase {
         CriteriaBuilder cb = EasyMock.createMock(CriteriaBuilder.class);
         return cb;
     }
+
+
 }
