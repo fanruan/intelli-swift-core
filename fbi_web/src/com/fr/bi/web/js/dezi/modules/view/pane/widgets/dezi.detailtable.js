@@ -188,7 +188,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             type: "bi.left",
             cls: "operator-region",
             items: [filter, expand, combo],
-            hgap: 3
+            lgap: 10
         });
         this.tools.setVisible(false);
     },

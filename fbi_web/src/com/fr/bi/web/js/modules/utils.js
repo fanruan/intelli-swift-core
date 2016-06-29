@@ -1982,6 +1982,23 @@
                         }
                     })
                 }
+                //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
+                var linkDrill = self.getDrillByID(lId);
+                if(BI.isNotNull(linkDrill)) {
+                    BI.each(linkDrill, function (drId, drArray) {
+                        if (drArray.length === 0) {
+                            return;
+                        }
+                        BI.each(drArray, function (i, drill) {
+                            BI.each(drArray[i].values, function (i, v) {
+                                var filterValue = parseSimpleFilter(v);
+                                if (BI.isNotNull(filterValue)) {
+                                    filterValues.push(filterValue);
+                                }
+                            });
+                        });
+                    });
+                }
             });
 
 

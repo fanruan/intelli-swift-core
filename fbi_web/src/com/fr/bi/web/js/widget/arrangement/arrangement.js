@@ -15,6 +15,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         return BI.extend(BI.Arrangement.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-arrangement",
             layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
+            isNeedReLayout: true,
             items: []
         });
     },
@@ -162,33 +163,33 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             });
         if (!finded) {
             finded = direction.contains("bottom") && BI.some(bottoms, function (i, region) {
-                    if (self._isEqual(target.top + target.height, region.top) && self._isEqual(region.left, target.left) && self._isEqual(region.width, target.width)) {
+                if (self._isEqual(target.top + target.height, region.top) && self._isEqual(region.left, target.left) && self._isEqual(region.width, target.width)) {
+                    var clone = BI.clone(region);
+                    clone.top = region.top - target.height;
+                    clone.height = region.height + target.height;
+                    result.push(clone);
+                    return true;
+                }
+            });
+            if (!finded) {
+                finded = direction.contains("left") && BI.some(lefts, function (i, region) {
+                    if (self._isEqual(region.left + region.width, target.left) && self._isEqual(region.top, target.top) && self._isEqual(region.height, target.height)) {
                         var clone = BI.clone(region);
-                        clone.top = region.top - target.height;
-                        clone.height = region.height + target.height;
+                        clone.width = region.width + target.width;
                         result.push(clone);
                         return true;
                     }
                 });
-            if (!finded) {
-                finded = direction.contains("left") && BI.some(lefts, function (i, region) {
-                        if (self._isEqual(region.left + region.width, target.left) && self._isEqual(region.top, target.top) && self._isEqual(region.height, target.height)) {
+                if (!finded) {
+                    finded = direction.contains("right") && BI.some(rights, function (i, region) {
+                        if (self._isEqual(target.left + target.width, region.left) && self._isEqual(region.top, target.top) && self._isEqual(region.height, target.height)) {
                             var clone = BI.clone(region);
+                            clone.left = region.left - target.width;
                             clone.width = region.width + target.width;
                             result.push(clone);
                             return true;
                         }
                     });
-                if (!finded) {
-                    finded = direction.contains("right") && BI.some(rights, function (i, region) {
-                            if (self._isEqual(target.left + target.width, region.left) && self._isEqual(region.top, target.top) && self._isEqual(region.height, target.height)) {
-                                var clone = BI.clone(region);
-                                clone.left = region.left - target.width;
-                                clone.width = region.width + target.width;
-                                result.push(clone);
-                                return true;
-                            }
-                        });
                     if (!finded) {
                         var findTopRegions = [], findBottomRegions = [];
                         direction.contains("top") && BI.each(tops, function (i, region) {
@@ -322,39 +323,39 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             });
         if (!finded) {
             finded = direction.contains("bottom") && BI.some(bottoms, function (i, region) {
-                    if (self._isEqual(target.top + target.height, region.top)
-                        && ((self._isMoreThanEqual(region.left, target.left) && self._isLessThan(region.left, target.left + target.width))
-                        || (self._isMoreThan(region.left + region.width, target.left) && self._isLessThanEqual(region.left + region.width, target.left + target.width))
-                        || (self._isLessThan(region.left, target.left) && self._isMoreThan(region.left + region.width, target.left + target.width)))) {
+                if (self._isEqual(target.top + target.height, region.top)
+                    && ((self._isMoreThanEqual(region.left, target.left) && self._isLessThan(region.left, target.left + target.width))
+                    || (self._isMoreThan(region.left + region.width, target.left) && self._isLessThanEqual(region.left + region.width, target.left + target.width))
+                    || (self._isLessThan(region.left, target.left) && self._isMoreThan(region.left + region.width, target.left + target.width)))) {
+                    var clone = BI.clone(region);
+                    clone.top = region.top - target.height;
+                    clone.height = region.height + target.height;
+                    result.push(clone);
+                }
+            });
+            if (!finded) {
+                finded = direction.contains("left") && BI.some(lefts, function (i, region) {
+                    if (self._isEqual(region.left + region.width, target.left)
+                        && ((self._isMoreThanEqual(region.top, target.top) && self._isLessThan(region.top, target.top + target.height))
+                        || (self._isMoreThan(region.top + region.height, target.top) && self._isLessThanEqual(region.top + region.height, target.top + target.height))
+                        || (self._isLessThan(region.top, target.top) && self._isMoreThan(region.top + region.height, target.top + target.height)))) {
                         var clone = BI.clone(region);
-                        clone.top = region.top - target.height;
-                        clone.height = region.height + target.height;
+                        clone.width = region.width + target.width;
                         result.push(clone);
                     }
                 });
-            if (!finded) {
-                finded = direction.contains("left") && BI.some(lefts, function (i, region) {
-                        if (self._isEqual(region.left + region.width, target.left)
+                if (!finded) {
+                    finded = direction.contains("right") && BI.some(rights, function (i, region) {
+                        if (self._isEqual(target.left + target.width, region.left)
                             && ((self._isMoreThanEqual(region.top, target.top) && self._isLessThan(region.top, target.top + target.height))
                             || (self._isMoreThan(region.top + region.height, target.top) && self._isLessThanEqual(region.top + region.height, target.top + target.height))
                             || (self._isLessThan(region.top, target.top) && self._isMoreThan(region.top + region.height, target.top + target.height)))) {
                             var clone = BI.clone(region);
+                            clone.left = region.left - target.width;
                             clone.width = region.width + target.width;
                             result.push(clone);
                         }
                     });
-                if (!finded) {
-                    finded = direction.contains("right") && BI.some(rights, function (i, region) {
-                            if (self._isEqual(target.left + target.width, region.left)
-                                && ((self._isMoreThanEqual(region.top, target.top) && self._isLessThan(region.top, target.top + target.height))
-                                || (self._isMoreThan(region.top + region.height, target.top) && self._isLessThanEqual(region.top + region.height, target.top + target.height))
-                                || (self._isLessThan(region.top, target.top) && self._isMoreThan(region.top + region.height, target.top + target.height)))) {
-                                var clone = BI.clone(region);
-                                clone.left = region.left - target.width;
-                                clone.width = region.width + target.width;
-                                result.push(clone);
-                            }
-                        });
                 }
             }
         }
@@ -522,20 +523,32 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         if (region1.left <= region2.left) {
             if (region1.top <= region2.top) {
                 if (region1.top + region1.height > region2.top && region1.left + region1.width > region2.left) {
+                    if (this._isEqual(region1.top + region1.height, region2.top) || this._isEqual(region1.left + region1.width, region2.left)) {
+                        return 0;
+                    }
                     return (region1.top + region1.height - region2.top) * (region1.left + region1.width - region2.left);
                 }
             } else {
                 if (region2.top + region2.height > region1.top && region1.left + region1.width > region2.left) {
+                    if (this._isEqual(region2.top + region2.height, region1.top) || this._isEqual(region1.left + region1.width, region2.left)) {
+                        return 0;
+                    }
                     return (region2.top + region2.height - region1.top) * (region1.left + region1.width - region2.left);
                 }
             }
         } else {
             if (region1.top <= region2.top) {
                 if (region1.top + region1.height > region2.top && region2.left + region2.width > region1.left) {
+                    if (this._isEqual(region1.top + region1.height, region2.top) || this._isEqual(region2.left + region2.width, region1.left)) {
+                        return 0;
+                    }
                     return (region1.top + region1.height - region2.top) * (region2.left + region2.width - region1.left);
                 }
             } else {
                 if (region2.top + region2.height > region1.top && region2.left + region2.width > region1.left) {
+                    if (this._isEqual(region2.top + region2.height, region1.top) || this._isEqual(region2.left + region2.width, region1.left)) {
+                        return 0;
+                    }
                     return (region2.top + region2.height - region1.top) * (region2.left + region2.width - region1.left);
                 }
             }
@@ -563,7 +576,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     width: reg[j].w,
                     height: reg[j].h
                 };
-                if (reg[i].isIntersects(reg[j]) && this._getCrossArea(area1, area2) > 0) {
+                if (reg[i].isIntersects(reg[j]) && this._getCrossArea(area1, area2) > 1) {
                     return true;
                 }
             }
@@ -2277,6 +2290,9 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
     relayout: function () {
         var self = this, o = this.options;
+        if (o.isNeedReLayout === false) {
+            return;
+        }
         var occupied = this._applyContainer();
         switch (o.layoutType) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:

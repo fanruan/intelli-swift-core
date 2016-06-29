@@ -46,7 +46,12 @@ BI.JoinResultHeader = BI.inherit(BI.Widget, {
                 validationChecker: function(v){
                     return self._checkName(i, v);
                 },
-                errorText: BI.i18nText("BI-Can_Not_Have_Rename_Fields")
+                errorText: function(v){
+                    if (v === "") {
+                        return BI.i18nText("Field_Name_Cannot_Be_Null");
+                    }
+                    return BI.i18nText("BI-Can_Not_Have_Rename_Fields");
+                }
             });
             nameEditor.setValue({value: name.name});
             nameEditor.on(BI.SignInitialEditor.EVENT_CHANGE, function(){
