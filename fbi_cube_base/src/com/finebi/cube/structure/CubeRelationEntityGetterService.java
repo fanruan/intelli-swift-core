@@ -14,5 +14,5 @@ public interface CubeRelationEntityGetterService extends ICubeIndexDataGetterSer
       * @param row 子表行号
      * @return 主表行号
      */
-    int getReverseIndex(int row) throws BIResourceInvalidException;
+    Integer getReverseIndex(int row) throws BIResourceInvalidException;
 }

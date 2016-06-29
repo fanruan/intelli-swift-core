@@ -731,6 +731,12 @@
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
         },
 
+        getWSNumberOfPointerByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.number_of_pointer) ? ws.number_of_pointer :
+                BICst.POINTER.ONE;
+        },
+
         getWSDashboardNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.dashboard_number_level) ? ws.dashboard_number_level :
