@@ -89,7 +89,7 @@ public class ResourceHelper {
         List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             groups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
-            JSONObject allPacks = BIModuleUtils.createPackJSON(manageId, req.getLocale());
+            JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
             //管理员
             if (manageId == userId) {
                 packages = allPacks;
