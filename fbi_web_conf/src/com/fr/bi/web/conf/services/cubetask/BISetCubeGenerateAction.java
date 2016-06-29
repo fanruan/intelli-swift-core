@@ -5,6 +5,7 @@ import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.services.cubetask.utils.CubeTaskGenerate;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
 
@@ -18,19 +19,21 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         return "set_cube_generate";
     }
 
-
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
         BIConfigureManagerCenter.getLogManager().logStart(userId);
-
+        boolean cubeBuild;
         if (StringUtils.isEmpty(tableId)){
-            CubeTaskGenerate.CubeBuild(userId);
+            cubeBuild = CubeTaskGenerate.CubeBuild(userId);
         }else{
-            CubeTaskGenerate.CubeBuild(userId, new BITableID(tableId));
+            cubeBuild = CubeTaskGenerate.CubeBuild(userId, new BITableID(tableId));
         }
+        JSONObject jsonObject = new JSONObject().put("result",cubeBuild);
+        WebUtils.printAsJSON(res, jsonObject);
+
     }
 
 }
