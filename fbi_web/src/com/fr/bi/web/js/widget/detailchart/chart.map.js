@@ -70,8 +70,13 @@ BI.MapChart = BI.inherit(BI.Widget, {
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
-                    da.name = da.x;
-                    da.value = da.y;
+                    if(BI.has(it, "type") && it.type == "bubble"){
+                        da.name = da.x;
+                        da.size = da.y;
+                    }else{
+                        da.name = da.x;
+                        da.value = da.y;
+                    }
                 })
             })
         });

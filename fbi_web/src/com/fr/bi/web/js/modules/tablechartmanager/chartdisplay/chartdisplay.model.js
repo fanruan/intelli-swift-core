@@ -378,7 +378,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         + ":'+ this.size +'</div>'}";
                 }
             case BICst.WIDGET.MAP:
-                return "function(){var tip = this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + (point.size || point.y) + '</div>');});return tip; }";
+                return "function(){console.log(this.points); var tip = this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + (point.size || point.y) + '</div>');});return tip; }";
             default:
                 return "";
         }

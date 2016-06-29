@@ -2895,7 +2895,7 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
                 seriesName = BaseUtils.isNull(seriesName) ? 'SeriesX' + this.index : seriesName; 
             }
 
-            if (series.type === Constants.GAUGE_CHART) {
+            if (series.type === Constants.GAUGE_CHART || this.index < 0) {
                 // don't occupy default color index
                 var color = '#000';
             } else {
@@ -9769,7 +9769,6 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
         if(mapData){
             key && (_loaded[key] = mapData);
             //给每个feature打个标记
-            var name;
             mapData.features.forEach(function(feature){
                 feature.properties = feature.properties || {};
                 feature.properties.id = BaseUtils.stamp(feature);
@@ -9850,14 +9849,13 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
 
             var validArea = {}, geo = this;
 
-            //计算第一个有效的系列
             for(var i = 0, len = series.length; i < len; i++){
                 var sery = series[i];
                 if(!sery.visible){
                     continue;
                 }
                 var type = sery.type;
-                if(type == Constants.AREA_MAP){
+                if(type == Constants.AREA_MAP){//面积类型的地图计算第一个有效的系列,考虑到多系列的情况
                     var points = sery.points;
                     for(var pIndex = points.length - 1; pIndex >= 0; pIndex--){
                         var point = points[pIndex];
@@ -17260,8 +17258,17 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
     var INNER_RADIUS_PCT = Options[Constants.MULTIPIE_CHART].innerRadiusPct;
 
     var multiPie = BaseChart.extend({
-
+        
         nodes: [],
+        
+        root: null,
+
+        // for convenient
+        center: [],
+        innerRadius: null,
+        radius: null,
+        startAngle: null,
+        endAngle: null,
 
         mergeSeriesAttributes: function (series) {
             
@@ -17299,11 +17306,11 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
         doLayout: function () {
 
             // only first one; multi-pie's series are special
-            var root = this.getChartData()[0];
+            var series = this.getChartData()[0];
 
-            var center = root.center;
-            var innerRadius = root.innerRadius;
-            var radius = root.radius;
+            var center = series.center;
+            var innerRadius = series.innerRadius;
+            var radius = series.radius;
 
             if (!center || center.length === 0) {
                 var plotBounds = this.vanchart.getPlotBounds();
@@ -17315,7 +17322,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                 center[0] = this._getPercentValue(center[0], this.vanchart.chartWidth());
                 center[1] = this._getPercentValue(center[1], this.vanchart.chartHeight());
             }
-            root.center = center;
+            series.center = center;
 
             ////
             if (!radius) {
@@ -17324,26 +17331,38 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                 var top = center[1] - plotBounds.y;
                 var bottom = plotBounds.y + plotBounds.height - center[1];
                 radius = Math.min(left, right, top, bottom);
-                root.radius = radius;
+                series.radius = radius;
             }
 
             if (radius && innerRadius) {
                 innerRadius = this._getPercentValue(innerRadius, radius);
-                root.innerRadius = innerRadius;
+                series.innerRadius = innerRadius;
             }
 
-            this.initData(root);
+            this.initData(series);
         },
 
-        initData: function (root) {
-            
-            root.children = root.points;
+        initData: function (series) {
 
-            this.nodes = this.traverseData(root);
+            // making a Series object as a root node
+            // has several problems in interactive events.
+            // We need a 'true' Point object as a root.
+            if (!this.root) {
+                this.root = new Point(series, series.seriesOption, -1);
+                this.root.children = series.points;
+            }
 
-            this.calcData(root);
+            var orderType = this.option.orderType;
 
-            // console.log(root);
+            this.nodes = this.traverseData(this.root, orderType);
+
+            this.calcData(this.root);
+
+            // console.log(this.root);
+        },
+
+        orderData: function () {
+
         },
 
         /**
@@ -17351,7 +17370,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
          * @param {object} root
          * @returns {Array}
          */
-        traverseData: function (root) {
+        traverseData: function (root, orderType) {
             var stack = [];
 
             var self = this;
@@ -17382,10 +17401,10 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                         // new Point data from depth 2
                         if (depth > 0 && !children[i].isPoint) {
 
-                            children[i] = new Point(root,
+                            children[i] = new Point(root.series,
                                 children[i].pointOption ? children[i].pointOption : children[i],
-                                i);
-                            // since all points' series is root,
+                                -1);
+                            // since all points' series is root's series,
                             // set child's className manually
                             children[i].className = node.className + '-' + i;
                         }
@@ -17395,6 +17414,17 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                         chSum += children[i].size;
                         node.height = Math.max(node.height, children[i].height + 1);
                     }
+
+                    children.sort(function(a, b){
+                        switch (orderType) {
+                            case Constants.ASCENDING:
+                                return a.size - b.size;
+                            case Constants.DESCENDING:
+                                return b.size - a.size;
+                            default:
+                                return a.index - b.index;
+                        }
+                    });
 
                     self._dealStackedPoints(children);
 
@@ -17420,12 +17450,12 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
             var height = root.height;
             
-            var center = root.center;
-            var innerRadius = root.innerRadius;
-            var radius = root.radius;
-            var gradual = root.gradual;
-            var startAngle = root.startAngle;
-            var endAngle = root.endAngle;
+            var center = root.series.center;
+            var innerRadius = root.series.innerRadius;
+            var radius = root.series.radius;
+            var gradual = root.series.gradual;
+            var startAngle = root.series.startAngle;
+            var endAngle = root.series.endAngle;
 
             var arc = endAngle - startAngle;
 
@@ -20769,7 +20799,6 @@ define('chart/Bubble',['require','./BaseChart','../utils/BaseUtils','../Constant
                 x:category,
                 y:value,
                 size:size,
-                value:size,
                 shadow: QueryUtils.queryList(queryList, 'shadow'),
                 displayNegative: QueryUtils.queryList(queryList, 'displayNegative'),
                 delayTime:0
@@ -20989,7 +21018,7 @@ define('chart/Scatter',['require','./BaseChart','../utils/BaseUtils','../utils/C
         },
 
         mergeSeriesAttributes:function(sery){
-            if(BaseUtils.isNullMarker(sery.marker) || BaseUtils.isImageMarker(sery.marker)){
+            if(BaseUtils.isNullMarker(sery.marker) || BaseUtils.isImageMarker(sery.marker.symbol)){
                 sery.marker.symbol = BaseUtils.getDefaultMarkerSymbol(this.selfSeryIndex);
                 this.selfSeryIndex++;
             }
@@ -21868,10 +21897,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
 
     var MULTIPIE_G = 'multipie-g';
     var LABEL_G = 'label-g';
-
-    var ANIMATION_TIME = 1000;
-
-    var EASE = 'bounce';
+    var DRILLDOWN_RING = 'drilldown-ring';
 
     var BaseRender = require('./BaseRender');
     var BaseUtils = require('../utils/BaseUtils');
@@ -21879,35 +21905,82 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
     var Constants = require('../Constants');
     var Bezier = require('../utils/BezierEasing');
 
+    var INIT_ANIMATION_TIME = 800;
+    var ANIMATION_TIME = 1000;
+    var INNER_HOVER_TIME = 300;
+
+    var INIT_EASE = 'back-out';
+    var EASE = 'bounce';
+    var INNER_HOVER_EASE = Bezier.css.swing;
+
+    var INNER_RING_RADIUS = 15;
+    var INNER_RING_STROKE_WIDTH = 5;
+
 
     var MultiPieSvgRender = BaseRender.extend({
+
+        _bodyG: null,
+
+        // record drillDown scale
+        x: null,
+        y: null,
+        arc: null,
+
         render: function () {
             
             var plotBounds = this.component.getPlotBounds();
             var svgRoot = this.component.getVanchartRender().getRenderRoot();
             var center = this.component.getCenter();
+            var multiPieData = this.component.getChartNodes();
 
             if(!this._bodyG){
-                this._bodyG = svgRoot.append('g');
-                this._bodyG.append('g').attr('class', MULTIPIE_G);
+                this._bodyG = svgRoot.append('g').datum(multiPieData);
+                var multiPieG = this._bodyG.append('g').attr('class', MULTIPIE_G);
                 this._bodyG.append('g').attr('class', LABEL_G);
+
+                // initial animation
+                multiPieG
+                    .transition()
+                    .duration(INIT_ANIMATION_TIME)
+                    .ease(INIT_EASE)
+                    .attrTween('transform', function () {
+                        var i = d3.interpolate([180, 0], [0, 1]);
+                        return function(t) {
+                            var inter = i(t);
+                            return 'rotate(' + Math.max(0, inter[0]) + ') scale(' + inter[1] + ')';
+                        };
+                    });
+
+                this._bodyG
+                    .append('path')
+                    .attr('class', DRILLDOWN_RING)
+                    .attr('d', d3.svg.arc()
+                        .startAngle(0)
+                        .endAngle(Math.PI * 2)
+                        .innerRadius(INNER_RING_RADIUS)
+                        .outerRadius(INNER_RING_RADIUS + INNER_RING_STROKE_WIDTH))
+                    .style('fill', 'rgba(0,0,0,0.1)')
+
+            } else {
+                this._bodyG.datum(multiPieData);
             }
 
             this._bodyG.attr('transform', BaseUtils.makeTranslate(center));
 
+            this._bodyG.select('.' + DRILLDOWN_RING).attr('display', 'none');
+
             this._drawSeries(this._bodyG);
 
-            this._drawLabel(this._bodyG.select('.' + LABEL_G));
+            // this._drawLabel(this._bodyG.select('.' + LABEL_G));
 
         },
 
         _drawSeries: function (bodyG) {
             var multiPieG = bodyG.select('.' + MULTIPIE_G);
-            var multiPieData = this.component.getChartNodes();
 
             var updatePath = multiPieG
                 .selectAll('path')
-                .data(multiPieData, function(d){return d.className;});
+                .data(function (d) { return d; }, function (d) { return d.className; });
 
             this._updateSeries(updatePath);
 
@@ -21920,7 +21993,6 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             var startAngle = multiPie.getStartAngle();
             var endAngle = multiPie.getEndAngle();
 
-            // scale for drilldown
             var x = d3.scale.linear()
                 .range([startAngle, endAngle]).domain([startAngle, endAngle]);
 
@@ -21932,6 +22004,10 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                 .endAngle(function(d) { return Math.max(startAngle, Math.min(endAngle, x(d.x + d.dx))); })
                 .innerRadius(function(d) { return Math.max(0, y(d.y)); })
                 .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
+
+            this.x = x;
+            this.y = y;
+            this.arc = arc;
 
             // // exit
             // updatePath.exit()
@@ -21952,9 +22028,10 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             //     })
             //     .remove();
 
+
             // update
             updatePath
-                .on("click", click)
+                .attr("opacity", function(d) { return d.depth ? 1 : 0;})// hide inner ring
                 .transition()
                 .ease(EASE)
                 .duration(ANIMATION_TIME)
@@ -21989,59 +22066,14 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
 
             updatePath.enter()
                 .append("path")
-                // .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
+                .attr("opacity", function(d) { return d.depth ? 1 : 0;})// hide inner ring
                 .attr("d", arc)
                 .style("stroke", function (d) { return d.borderColor; })
                 .style("stroke-width", function (d) { return d.borderWidth; })
                 .style("fill", function(d) { return d.color; })
-                .each(stash)
-                .on("click", click);
+                .each(stash);
 
-            /////
-            var self = this;
-            function deepest(node) {
-                var children = node.children;
-                var dc = node;
-                if (children && (n = children.length)) {
-                    var i = -1, n;
-                    while (++i < n) {
-                        var c = deepest(children[i]);
-                        if (c.depth > dc.depth) {
-                            dc = c;
-                        }
-                    }
-                }
-                return dc;
-            }
-
-            function click(d) {
-                self._bodyG.select('.' + MULTIPIE_G).transition()
-                    .duration(ANIMATION_TIME)
-                    .tween("scale", function() {
-
-                        var yDomain, yRange;
-
-                        if (d.depth) {
-
-                            // var dc = deepest(d);
-                            yDomain = [d.parent.y, d.y, d.y+d.dy, /*dc.y + dc.dy, */radius];
-                            yRange = [0, 20, radius/2, /*radius, */radius];
-
-                        } else {
-                            yDomain = [0, innerRadius, radius];
-                            yRange = [0, innerRadius, radius];
-                        }
-
-                        var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
-                            yd = d3.interpolate(y.domain(), yDomain),
-                            yr = d3.interpolate(y.range(), yRange);
-
-                        return function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); };
-                    })
-                    .selectAll("path")
-                    .attrTween("d", function(d) { return function() { return arc(d); }; });
-            }
-
+            this.addShapeEventHandler(updatePath);
         },
 
         _drawLabel:function(labelG, config, delay){
@@ -22058,6 +22090,133 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
 
             this._drawSvgDataLabels(labelG, multiPieData, transX, transY, delay);
         },
+
+        _drillDown: function (d, multiPieG, innerRadius, radius, x, y, arc) {
+
+            /////
+            function deepest(node) {
+                var children = node.children;
+                var dc = node;
+                if (children && (n = children.length)) {
+                    var i = -1, n;
+                    while (++i < n) {
+                        var c = deepest(children[i]);
+                        if (c.depth > dc.depth) {
+                            dc = c;
+                        }
+                    }
+                }
+                return dc;
+            }
+
+            multiPieG.transition()
+                .duration(ANIMATION_TIME)
+                .tween("scale", function() {
+
+                    var yDomain, yRange;
+
+                    if (d.depth) {
+
+                        // var dc = deepest(d);
+                        yDomain = [d.parent.y, d.y, d.y+d.dy, /*dc.y + dc.dy, */radius];
+                        yRange = [0, INNER_RING_RADIUS, radius/2, /*radius, */radius];
+
+                    } else {
+                        yDomain = [0, innerRadius, radius];
+                        yRange = [0, innerRadius, radius];
+                    }
+
+                    var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+                        yd = d3.interpolate(y.domain(), yDomain),
+                        yr = d3.interpolate(y.range(), yRange);
+
+                    return function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); };
+                })
+                .selectAll("path")
+                .attrTween("d", function(d) { return function() {
+                    return arc(d);
+                }})
+                .attrTween('opacity', function (d) { return function () {
+                    return (y(d.y+d.dy) > INNER_RING_RADIUS) ? 1 : 0;
+                }});
+
+            if (d.depth) {
+                this._bodyG.select('.' + DRILLDOWN_RING).attr('display', null);
+            } else {
+                this._bodyG.select('.' + DRILLDOWN_RING).attr('display', 'none');
+            }
+        },
+
+
+        mouseOver: function (event) {
+            if(event && event.target){
+
+                var pathNode = event.target.node();
+
+                if(pathNode && !pathNode.isChosen){
+                    var d = event.target.datum();
+
+                    if (d.depth && this.y(d.y+d.dy)===INNER_RING_RADIUS) {
+                        event.target
+                            .transition()
+                            .duration(INNER_HOVER_TIME)
+                            .ease(INNER_HOVER_EASE)
+                            .attr('opacity', 1)
+                    } else {
+                        event.target
+                            .style('fill', function(d){
+                                return d.mouseOverColor;
+                            });
+                    }
+
+                    pathNode.isChosen = true;
+                }
+            }
+        },
+
+        mouseOut: function (event) {
+            if(event && event.target){
+
+                var pathNode = event.target.node();
+
+                if(pathNode && pathNode.isChosen){
+                    var d = event.target.datum();
+
+                    if (d.depth && this.y(d.y+d.dy)===INNER_RING_RADIUS) {
+                        event.target
+                            .transition()
+                            .duration(INNER_HOVER_TIME)
+                            .ease(INNER_HOVER_EASE)
+                            .attr('opacity', 0);
+                    } else {
+                        event.target
+                            .style('fill', function(d){
+                                return d.color;
+                            });
+                    }
+
+                    pathNode.isChosen = false;
+                }
+            }
+        },
+
+        mouseUp: function (event) {
+
+            if(event && event.target){
+                var d = event.target.datum();
+                var x = this.x, y = this.y, arc = this.arc;
+
+                var multiPie = this.component;
+                var innerRadius = multiPie.getInnerRadius();
+                var radius = multiPie.getRadius();
+
+                // event.target.style('fill', this._getMouseOverFill(d));
+
+                var multiPieG = this._bodyG.select('.' + MULTIPIE_G);
+                this._drillDown(d, multiPieG, innerRadius, radius, x, y, arc);
+            }
+
+        }
 
     });
 
@@ -25853,7 +26012,7 @@ define('render/ScatterSvgRender',['require','./BaseRender','../utils/BaseUtils',
                                         self._createSingleDataLabel(p, labelG);
                                     })
                             });
-                    }, supportAnimation ? SCATTER_INIT_TIME * 2 : 0);
+                    }, supportAnimation ? SCATTER_INIT_TIME * 2 : SCATTER_INIT_TIME);
                 }else{
                     if(points.empty()){
                         //点击图例系列重现
@@ -25974,7 +26133,8 @@ define('render/ScatterSvgRender',['require','./BaseRender','../utils/BaseUtils',
                 .attr('d',  d.lineSvg(d.points))
                 .style('fill', 'none')
                 .style('stroke', ColorUtils.colorToHex(d.color))
-                .style('stroke-width', 0);
+                .style('stroke-width', 0)
+                .style("pointer-events", "none");
 
             parentG
                 .select('path.' + SCATTER_SERIES_LINE_CLASS)
