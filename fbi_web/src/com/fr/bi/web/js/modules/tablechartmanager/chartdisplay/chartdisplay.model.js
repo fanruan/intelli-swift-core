@@ -507,7 +507,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             }
             if(type === BICst.WIDGET.GIS_MAP){
                 options.geo = {
-                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
                 };
             }
             callback(types, data, options);
@@ -537,35 +537,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     dId: this.cataDid,
                     value: [obj.seriesName]
                 }];
-                break;
-            case BICst.WIDGET.PIE:
-            case BICst.WIDGET.DONUT:
-                dId = obj.targetIds;
-                clicked = [{
-                    dId: this.cataDid,
-                    value: [obj.value || obj.x]
-                }];
-                if (BI.isNotNull(this.seriesDid)) {
-                    clicked.push({
-                        dId: this.seriesDid,
-                        value: [obj.seriesName]
-                    })
-                }
-                break;
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.COMPARE_BAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-                dId = obj.targetIds;
-                clicked = [{
-                    dId: this.cataDid,
-                    value: [obj.value || obj.y]
-                }];
-                if (BI.isNotNull(this.seriesDid)) {
-                    clicked.push({
-                        dId: this.seriesDid,
-                        value: [obj.seriesName]
-                    })
-                }
                 break;
             case BICst.WIDGET.DASHBOARD:
                 dId = obj.targetIds;

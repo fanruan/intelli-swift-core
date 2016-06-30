@@ -2558,13 +2558,13 @@
   content: "\e683";
   color: #808080;
 }
-.refresh-table-font-hightlight .b-font:before {
-  content: "\e683";
+.recover-chart-font-hightlight .b-font:before {
+  content: "\e6b4";
   color: #009de3;
 }
-.refresh-table-font-hightlight.native .b-font:before,
-.refresh-table-font-hightlight.disabled .b-font:before {
-  content: "\e683";
+.recover-chart-font-hightlight.native .b-font:before,
+.recover-chart-font-hightlight.disabled .b-font:before {
+  content: "\e6b4";
   color: #009de3;
 }
 .tables-tile-view-font .b-font:before {

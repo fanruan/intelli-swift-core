@@ -51,6 +51,9 @@ BI.BarChart = BI.inherit(BI.Widget, {
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
+            var tmp = obj.x;
+            obj.x = obj.y;
+            obj.y = tmp;
             self.fireEvent(BI.BarChart.EVENT_CHANGE, obj);
         });
     },
