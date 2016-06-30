@@ -115,19 +115,22 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
                 var regionItem = {};
                 var tableId = BI.Utils.getTableIdByFieldID(BI.Utils.getForeignIdFromRelation(relation));
                 if (i === 0) {
-                    regionItem.region = BI.Utils.getTableNameByID(tableId);
+                    regionItem.region = BI.UUID();
+                    regionItem.regionText = BI.Utils.getTableNameByID(tableId);
                     regionItem.value = BI.Utils.getForeignIdFromRelation(relation);
                     regionItem.text = BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(relation));
                     pathItem.push(regionItem);
                     var primaryTableId = BI.Utils.getTableIdByFieldID(BI.Utils.getPrimaryIdFromRelation(relation));
                     pathItem.push({
-                        region: BI.Utils.getTableNameByID(primaryTableId),
+                        region: BI.UUID(),
+                        regionText: BI.Utils.getTableNameByID(primaryTableId),
                         value: o.dId,
                         text: BI.Utils.getDimensionNameByID(o.dId)
                     });
                     return
                 }
-                regionItem.region = BI.Utils.getTableNameByID(tableId);
+                regionItem.region = BI.UUID();
+                regionItem.regionText = BI.Utils.getTableNameByID(tableId);
                 regionItem.value = BI.Utils.getForeignIdFromRelation(relation);
                 regionItem.text = BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(relation));
                 pathItem.push(regionItem);
