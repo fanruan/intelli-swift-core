@@ -1416,8 +1416,8 @@
             }
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
-            if(this.getPathsFromFieldAToFieldB(tableA, tableB).length !== 0) {
-                return this.getPathsFromFieldAToFieldB(tableA, tableB);
+            if(this.getPathsFromTableAToTableB(tableA, tableB).length != 0){
+                return this.getPathsFromTableAToTableB(tableA, tableB);
             }
             if (tableA === tableB) {
                 return [[{
