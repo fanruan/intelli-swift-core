@@ -113,7 +113,9 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 }
                 process = generated / allFields;
             }
-            this.processBar.setValue(Math.ceil(process * 100));
+            process = Math.ceil(process * 100);
+            process = process < 10 ? 10 : process;
+            this.processBar.setValue(process);
         }
     },
 

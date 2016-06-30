@@ -24,7 +24,7 @@ BI.ETLExcel = BI.inherit(BI.ETL, {
         }
         var reUploadExcel = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Remodify_Excel"),
+            text: BI.i18nText("BI-Update_Excel"),
             width: 110,
             height: 26
         });

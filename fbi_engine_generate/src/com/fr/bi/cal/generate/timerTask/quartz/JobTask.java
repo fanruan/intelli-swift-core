@@ -30,7 +30,6 @@ public class JobTask implements Job {
         CubeBuildStuff cubeBuildStuff= (CubeBuildStuff) data.get("CubeBuildStuff");
         String message = "开始执行cube定时更新任务!当前时间为:" + new Date() + "\n 当前任务为：" + jobName + "\n当前用户ID：" + userId+"\n";
         BILogger.getLogger().info(message);
-        System.out.println(message);
         CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
     }
 }

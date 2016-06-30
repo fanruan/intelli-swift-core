@@ -547,34 +547,43 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     getLinkageInfo: function(obj){
+        var o = this.options;
         var dId = [], clicked = [];
-        //var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
-        switch (BI.Utils.getWidgetTypeByID(this.options.wId)) {
+        var drill = BI.Utils.getDrillByID(o.wId);
+        var drillId = this.cataDid;
+        if(BI.isNotNull(drill[drillId])) {
+            var drillArr = drill[drillId] || [];
+            var drillOb = drill[drillId][drillArr.length - 1];
+            if(BI.isNotNull(drillOb)) {
+                drillId = drillOb.dId;
+            }
+        }
+        switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.cataDid,
+                    dId: drillId,
                     value: [obj.seriesName]
                 }];
                 break;
             case BICst.WIDGET.DASHBOARD:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.cataDid,
+                    dId: drillId,
                     value: [obj.category]
                 }];
                 break;
             default:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.cataDid,
+                    dId: drillId,
                     value: [obj.value || obj.x]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
-                        dId: this.seriesDid,
+                        dId: drillId,
                         value: [obj.seriesName]
                     })
                 }
