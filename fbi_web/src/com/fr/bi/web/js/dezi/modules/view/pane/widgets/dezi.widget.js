@@ -151,7 +151,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             height: 16,
             cls: "recover-chart-font-hightlight dashboard-title-detail"
         });
-        this.refreshChartButton.on(BI.IconButton.EVENT_CHANGE, function(){
+        this.refreshChartButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self.tableChart.magnify();
         });
 
@@ -159,6 +159,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Show_Filters"),
             cls: "widget-tools-filter-font dashboard-title-detail"
         });
         filter.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -169,6 +170,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -228,7 +230,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
                     window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                        + window.encodeURIComponent(self.model.get("name")));
+                    + window.encodeURIComponent(self.model.get("name")));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY:
                     self.model.copy();
@@ -320,7 +322,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         })
     },
 
-    _refreshMagnifyButton: function(){
+    _refreshMagnifyButton: function () {
         switch (this.model.get("type")) {
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.ACCUMULATE_AREA:
@@ -375,7 +377,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
-        if (BI.has(changed, "type")){
+        if (BI.has(changed, "type")) {
             this._refreshMagnifyButton();
         }
     },
