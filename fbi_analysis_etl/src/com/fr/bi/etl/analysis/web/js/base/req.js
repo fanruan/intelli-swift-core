@@ -21,10 +21,27 @@ BI.ETLReq = {
 
     reqDeleteTable: function(data, callback){
         data.sessionID = Data.SharingPool.get("sessionID");
-        BI.requestAsync("fr_bi_analysis_etl", "delete_table", data, function(){
-            BI.Utils.afterDeleteTable(data.id);
-            callback();
+        var mask = BI.createWidget({
+            type: "bi.etl_loading_mask",
+            masker: 'body',
+            text: BI.i18nText("BI-Loading")
+        });
+        BI.requestAsync("fr_bi_analysis_etl", "get_used_tables", data, function(res){
+            if(mask != null) {
+                mask.destroy()
+            }
+            var text = BI.isNull(res.table) ? BI.i18nText('BI-Is_Delete_Table') : BI.i18nText('BI-ETL_Sure_Delete_Used_Table', res.table);
+            BI.Msg.confirm(BI.i18nText("BI-Warning"), text, function (v) {
+                if(v === true) {
+                    BI.requestAsync("fr_bi_analysis_etl", "delete_table", data, function(){
+                        BI.Utils.afterDeleteTable(data.id);
+                        callback();
+                    })
+                }
+            })
         })
+        
+
     },
 
     reqEditTable: function(data, callback){
