@@ -10,7 +10,7 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.DirectionPager.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-direction-pager",
-            width: 106,
+            width: 108,
             height: 25,
             horizontal: {
                 pages: false, //总页数
@@ -46,7 +46,7 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
             items: [{
                 el: this.vpager,
                 top: 0,
-                left: -20
+                left: -19
             }, {
                 el: this.vlabel,
                 top: 0,
@@ -54,7 +54,7 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
             }, {
                 el: this.hpager,
                 top: 0,
-                right: -20
+                right: -19
             }, {
                 el: this.hlabel,
                 top: 0,

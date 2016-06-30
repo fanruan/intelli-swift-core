@@ -83,7 +83,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
             type: "bi.sequence_table",
             element: this.element,
 
-            pageSpace: 106,
+            pageSpace: 108,
 
             isNeedResize: true,
             isResizeAdapt: false,
@@ -288,7 +288,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         if (!this.pager) {
             this.pager = BI.createWidget(o.pager, {
                 type: "bi.direction_pager",
-                width: 106,
+                width: 108,
                 height: this._const.scrollWidth,
                 cls: "page-table-pager"
             });
