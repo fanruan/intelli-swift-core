@@ -1,5 +1,6 @@
 package com.fr.bi.conf.provider;
 
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.json.JSONObject;
 
 /**
@@ -16,7 +17,7 @@ public interface BICubeConfManagerProvider {
 
     void saveLoginField(String loginField);
 
-    Object getLoginFieldValue(long userId);
+    Object getLoginFieldValue(BusinessField field, long userId);
 
     JSONObject createJSON(long userId) throws Exception;
 

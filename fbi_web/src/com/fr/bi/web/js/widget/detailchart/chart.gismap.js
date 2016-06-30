@@ -60,6 +60,11 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
 
         config.chartType = "areaMap";
+        config.plotOptions.marker = {
+            symbol: BICst.GIS_ICON_PATH,
+                width:26,
+                height:41
+        };
         delete config.xAxis;
         delete config.yAxis;
         return [items, config];
