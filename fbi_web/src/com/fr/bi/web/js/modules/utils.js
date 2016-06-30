@@ -1530,7 +1530,8 @@
                         _src: {
                             field_id: fid
                         },
-                        type: BICst.COLUMN.STRING
+                        type: BICst.COLUMN.STRING,
+                        used: true
                     }
                 },
                 view: {
@@ -1546,6 +1547,7 @@
             var dimension = Data.SharingPool.get("dimensions", dId);
             dimension.group = {type: BICst.GROUP.ID_GROUP};
             dimension.filter_value = {};
+            dimension.used = true;
             var dimensions = {};
             dimensions[dId] = dimension;
             var view = {};
@@ -1559,6 +1561,7 @@
         getDataByDimensionID: function (dId, callback) {
             var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
+            dimension.used = true;
             var widget = Data.SharingPool.get("widgets", wid);
             widget.page = -1;
             widget.dimensions = {};

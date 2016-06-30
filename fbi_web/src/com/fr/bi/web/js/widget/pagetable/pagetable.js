@@ -215,31 +215,31 @@ BI.PageTable = BI.inherit(BI.Widget, {
     },
 
     _loading: function () {
-        if (!this.loading) {
-            this.loading = BI.Maskers.make(this.getName(), this);
-            BI.createWidget({
-                type: "bi.absolute",
-                element: this.loading,
-                items: [{
-                    el: {
-                        type: "bi.label",
-                        cls: "page-table-loading-text",
-                        text: BI.i18nText("BI-Loading"),
-                        whiteSpace: "normal",
-                        width: this._const.scrollWidth
-                    },
-                    right: 0,
-                    top: 0,
-                    bottom: this._const.scrollWidth
-                }]
-            })
-        }
-        BI.Maskers.show(this.getName());
+        //if (!this.loading) {
+        //    this.loading = BI.Maskers.make(this.getName(), this);
+        //    BI.createWidget({
+        //        type: "bi.absolute",
+        //        element: this.loading,
+        //        items: [{
+        //            el: {
+        //                type: "bi.label",
+        //                cls: "page-table-loading-text",
+        //                text: BI.i18nText("BI-Loading"),
+        //                whiteSpace: "normal",
+        //                width: this._const.scrollWidth
+        //            },
+        //            right: 0,
+        //            top: 0,
+        //            bottom: this._const.scrollWidth
+        //        }]
+        //    })
+        //}
+        //BI.Maskers.show(this.getName());
     },
 
     _loaded: function () {
-        BI.Maskers.hide(this.getName());
-        this._hideCurrentColumn();
+        //BI.Maskers.hide(this.getName());
+        //this._hideCurrentColumn();
     },
 
     _showCurrentColumn: function () {
