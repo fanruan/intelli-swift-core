@@ -1,11 +1,7 @@
 package com.fr.bi.cal.generate.timerTask;
 
 
-import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
-
 import java.util.List;
-import java.util.Map;
-import java.util.Timer;
 
 /**
  * This class created on 2016/5/23.
@@ -16,7 +12,7 @@ import java.util.Timer;
 public interface BICubeTimeTaskCreatorProvider {
     String XML_TAG = "BICubeTimeTaskCreatorProvider";
 
-    List<Timer> reGenerateTimeTasks(long userId, Map<String, UpdateSettingSource> allTimeTaskMap);
+    void reGenerateTimeTasks(long userId, List<TimerTaskSchedule> scheduleList);
 
-    void removeTimeTasks(List<Timer> timerList);
+    void removeAllTimeTasks(long userId, List<TimerTaskSchedule> scheduleList);
 }
