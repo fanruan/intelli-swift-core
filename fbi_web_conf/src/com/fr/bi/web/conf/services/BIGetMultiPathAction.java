@@ -88,11 +88,15 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
 
 
     private Set<BITableRelationPath> getDisabledPath(long userId, BusinessTable foreignTable, BusinessTable primaryTable) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
-        Set<BITableRelationPath> allPath = getAllPath(userId, foreignTable, primaryTable);
-        Set<BITableRelationPath> allAvailablePath = getAllAvailablePath(userId, foreignTable, primaryTable);
-        allPath.removeAll(allAvailablePath);
-        return allPath;
+        return BICubeConfigureCenter.getTableRelationManager().getAllUnavailablePath(userId, foreignTable, primaryTable);
     }
+
+//    private Set<BITableRelationPath> getDisabledPath(long userId, BusinessTable foreignTable, BusinessTable primaryTable) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+//        Set<BITableRelationPath> allPath = getAllPath(userId, foreignTable, primaryTable);
+//        Set<BITableRelationPath> allAvailablePath = getAllAvailablePath(userId, foreignTable, primaryTable);
+//        allPath.removeAll(allAvailablePath);
+//        return allPath;
+//    }
 
     private JSONObject getMultiPath(long userId) throws Exception {
         JSONObject jo = new JSONObject();
