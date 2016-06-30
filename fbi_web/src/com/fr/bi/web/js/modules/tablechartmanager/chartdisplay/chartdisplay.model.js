@@ -141,18 +141,38 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         BI.each(this.targetIds, function (idx, tId) {
             if (BI.has(view, BICst.REGION.TARGET1) && BI.contains(view[BICst.REGION.TARGET1], tId)) {
                 array.length === 0 && array.push([]);
-                array[0].push(data[idx]);
+                if(checkSeriesExist()){
+                    array[0] = data;
+                }else{
+                    array[0].push(data[idx])
+                }
             }
             if(BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)) {
                 while (array.length < 2){array.push([]);}
-                array[1].push(data[idx]);
+                if(checkSeriesExist()){
+                    array[1] = data;
+                }else{
+                    array[1].push(data[idx])
+                }
             }
             if(BI.has(view, BICst.REGION.TARGET3) && BI.contains(view[BICst.REGION.TARGET3], tId)){
                 while (array.length < 3){array.push([]);}
-                array[2].push(data[idx]);
+                if(checkSeriesExist()){
+                    array[2] = data;
+                }else{
+                    array[2].push(data[idx])
+                }
             }
         });
         return array;
+
+        function checkSeriesExist(){
+            var view = BI.Utils.getWidgetViewByID(o.wId);
+            var result = BI.find(view[BICst.REGION.DIMENSION2], function (idx, dId) {
+                return BI.Utils.isDimensionUsable(dId);
+            });
+            return BI.isNotNull(result);
+        }
     },
 
     _formatDataForBubble: function (data) {
