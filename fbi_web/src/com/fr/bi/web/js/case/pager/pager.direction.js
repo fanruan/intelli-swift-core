@@ -94,6 +94,8 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
                 title: BI.i18nText("BI-Up_Page"),
                 warningTitle: BI.i18nText("BI-Current_Is_First_Page"),
                 height: o.height - 2,
+                iconWidth: o.height - 2,
+                iconHeight: o.height - 2,
                 cls: "direction-pager-prev column-pre-page-h-font"
             },
             next: {
@@ -102,6 +104,8 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
                 title: BI.i18nText("BI-Down_Page"),
                 warningTitle: BI.i18nText("BI-Current_Is_Last_Page"),
                 height: o.height - 2,
+                iconWidth: o.height - 2,
+                iconHeight: o.height - 2,
                 cls: "direction-pager-next column-next-page-h-font"
             },
 
@@ -153,6 +157,8 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
                 title: BI.i18nText("BI-Left_Page"),
                 warningTitle: BI.i18nText("BI-Current_Is_First_Page"),
                 height: o.height - 2,
+                iconWidth: o.height - 2,
+                iconHeight: o.height - 2,
                 cls: "direction-pager-prev row-pre-page-h-font"
             },
             next: {
@@ -161,6 +167,8 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
                 title: BI.i18nText("BI-Right_Page"),
                 warningTitle: BI.i18nText("BI-Current_Is_Last_Page"),
                 height: o.height - 2,
+                iconWidth: o.height - 2,
+                iconHeight: o.height - 2,
                 cls: "direction-pager-next row-next-page-h-font"
             },
 
