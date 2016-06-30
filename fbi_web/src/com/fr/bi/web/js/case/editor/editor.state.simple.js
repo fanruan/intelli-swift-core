@@ -115,6 +115,9 @@ BI.SimpleStateEditor = BI.inherit(BI.Single, {
         this.editor.on(BI.Editor.EVENT_ERROR, function () {
             self.fireEvent(BI.SimpleStateEditor.EVENT_ERROR, arguments);
         });
+        this.editor.on(BI.Editor.EVENT_ENTER, function () {
+            self.fireEvent(BI.SimpleStateEditor.EVENT_ENTER, arguments);
+        });
         this.editor.on(BI.Editor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.SimpleStateEditor.EVENT_RESTRICT, arguments);
         });
@@ -245,6 +248,7 @@ BI.SimpleStateEditor.EVENT_STOP = "EVENT_STOP";
 BI.SimpleStateEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.SimpleStateEditor.EVENT_VALID = "EVENT_VALID";
 BI.SimpleStateEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.SimpleStateEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.SimpleStateEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.SimpleStateEditor.EVENT_SPACE = "EVENT_SPACE";
 BI.SimpleStateEditor.EVENT_EMPTY = "EVENT_EMPTY";

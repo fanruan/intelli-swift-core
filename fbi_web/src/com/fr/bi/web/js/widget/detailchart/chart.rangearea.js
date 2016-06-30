@@ -33,7 +33,10 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         this.xAxis = [{
             type: "category",
             title: {
-                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12pt","fontWeight":""}
+            },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
             },
             position: "bottom",
             gridLineWidth: 0
@@ -41,7 +44,10 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         this.yAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12pt","fontWeight":""}
+            },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
             },
             position: "left",
             gridLineWidth: 0

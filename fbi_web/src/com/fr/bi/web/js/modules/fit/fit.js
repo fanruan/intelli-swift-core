@@ -44,7 +44,7 @@ BI.Fit = BI.inherit(BI.Widget, {
             type: "bi.text_value_combo",
             items: BICst.DASHBOARD_LAYOUT_ARRAY,
             width: 120,
-            height: 25,
+            height: 24,
             cls: "layout-combo"
         });
         this.layoutCombo.setValue(o.layoutType);
