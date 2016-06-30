@@ -7,7 +7,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         SQL_EDIT_NORTH_HEIGHT: 40,
         SQL_EDIT_SOUTH_HEIGHT: 60,
         SQL_EDIT_WEST_WIDTH: 580,
-        SQL_EDIT_BUTTON_HEIGHT: 28,
+        SQL_EDIT_BUTTON_HEIGHT: 30,
         SQL_EDIT_BUTTON_GAP: 20,
         SQL_EDIT_NAME_WIDTH: 50,
         SQL_EDIT_GAP: 20,

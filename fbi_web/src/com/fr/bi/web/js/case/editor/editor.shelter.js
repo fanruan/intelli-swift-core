@@ -114,6 +114,9 @@ BI.ShelterEditor = BI.inherit(BI.Single, {
             self._checkText();
             self.fireEvent(BI.ShelterEditor.EVENT_ERROR, arguments);
         });
+        this.editor.on(BI.Editor.EVENT_ENTER, function () {
+            self.fireEvent(BI.ShelterEditor.EVENT_ENTER, arguments);
+        });
         this.editor.on(BI.Editor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.ShelterEditor.EVENT_RESTRICT, arguments);
         });
@@ -235,6 +238,7 @@ BI.ShelterEditor.EVENT_STOP = "EVENT_STOP";
 BI.ShelterEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.ShelterEditor.EVENT_VALID = "EVENT_VALID";
 BI.ShelterEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.ShelterEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.ShelterEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.ShelterEditor.EVENT_SPACE = "EVENT_SPACE";
 BI.ShelterEditor.EVENT_EMPTY = "EVENT_EMPTY";

@@ -6,9 +6,9 @@
 BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
 
     constants: {
-        COMBO_HEIGHT: 25,
-        itemHeight: 25,
-        triggerHeight:25
+        COMBO_HEIGHT: 24,
+        itemHeight: 24,
+        triggerHeight:24
     },
 
     _defaultConfig: function(){
