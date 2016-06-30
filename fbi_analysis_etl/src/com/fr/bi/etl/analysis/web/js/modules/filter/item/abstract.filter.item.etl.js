@@ -1,7 +1,7 @@
 BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
     _constant: {
         GAP : 5,
-        LINE_SIZE: 30,
+        LINE_SIZE: 24,
         COMBO_WIDTH: 190,
         INPUT_WIDTH: 220
     },

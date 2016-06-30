@@ -88,7 +88,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
             this.schemaCombo = BI.createWidget({
                 type: "bi.text_value_check_combo",
                 items: comboItems,
-                height: 28,
+                height: 30,
                 width: 230
             });
             BI.createWidget({

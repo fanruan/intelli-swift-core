@@ -44,7 +44,7 @@ BI.AnalysisETLOperatorAddColumnPaneTitle = FR.extend(BI.MVCWidget, {
             cls:"add-column-type",
             items:ETLCst.ANALYSIS_ADD_COLUMN_TYPE,
             width: 200,
-            height: 30
+            height: 24
         })
         this.typeCombo.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self.controller.changeColumnType();

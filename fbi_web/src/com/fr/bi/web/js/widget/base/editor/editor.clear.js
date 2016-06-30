@@ -17,6 +17,7 @@ BI.ClearEditor = BI.inherit(BI.Widget, {
         });
     },
     _init: function () {
+        this.options.height -= 2;
         BI.ClearEditor.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.element.height(o.height - 2);
@@ -84,6 +85,9 @@ BI.ClearEditor = BI.inherit(BI.Widget, {
         });
         this.editor.on(BI.Editor.EVENT_ERROR, function () {
             self.fireEvent(BI.ClearEditor.EVENT_ERROR)
+        });
+        this.editor.on(BI.Editor.EVENT_ENTER, function () {
+            self.fireEvent(BI.ClearEditor.EVENT_ENTER);
         });
         this.editor.on(BI.Editor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.ClearEditor.EVENT_RESTRICT)
@@ -160,6 +164,7 @@ BI.ClearEditor.EVENT_STOP = "EVENT_STOP";
 BI.ClearEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.ClearEditor.EVENT_VALID = "EVENT_VALID";
 BI.ClearEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.ClearEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.ClearEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.ClearEditor.EVENT_REMOVE = "EVENT_REMOVE";
 BI.ClearEditor.EVENT_EMPTY = "EVENT_EMPTY";

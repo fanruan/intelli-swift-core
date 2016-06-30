@@ -14,6 +14,7 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         });
     },
     _init: function () {
+        this.options.height -= 2;
         BI.SearchEditor.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.element.height(o.height - 2);
@@ -94,6 +95,9 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         });
         this.editor.on(BI.Editor.EVENT_ERROR, function () {
             self.fireEvent(BI.SearchEditor.EVENT_ERROR)
+        });
+        this.editor.on(BI.Editor.EVENT_ENTER, function () {
+            self.fireEvent(BI.SearchEditor.EVENT_ENTER);
         });
         this.editor.on(BI.Editor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.SearchEditor.EVENT_RESTRICT)
@@ -185,6 +189,7 @@ BI.SearchEditor.EVENT_STOP = "EVENT_STOP";
 BI.SearchEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.SearchEditor.EVENT_VALID = "EVENT_VALID";
 BI.SearchEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.SearchEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.SearchEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.SearchEditor.EVENT_REMOVE = "EVENT_REMOVE";
 BI.SearchEditor.EVENT_EMPTY = "EVENT_EMPTY";

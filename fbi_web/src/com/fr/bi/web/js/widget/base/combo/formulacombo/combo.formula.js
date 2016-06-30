@@ -21,6 +21,7 @@ BI.FormulaCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.FormulaCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-formula-combo",
+            height: 30,
             items: []
         })
     },
@@ -30,6 +31,7 @@ BI.FormulaCombo = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.input = BI.createWidget({
             type: "bi.formula_combo_trigger",
+            height: o.height,
             items: o.items
         });
         this.formulaPopup = BI.createWidget({

@@ -25,6 +25,7 @@ BI.AdaptiveEditor = BI.inherit(BI.Single, {
     },
 
     _init: function () {
+        this.options.height -= 2;
         BI.AdaptiveEditor.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.editor = BI.createWidget({
@@ -86,6 +87,9 @@ BI.AdaptiveEditor = BI.inherit(BI.Single, {
         });
         this.editor.on(BI.SignEditor.EVENT_ERROR, function () {
             self.fireEvent(BI.AdaptiveEditor.EVENT_ERROR);
+        });
+        this.editor.on(BI.SignEditor.EVENT_ENTER, function () {
+            self.fireEvent(BI.AdaptiveEditor.EVENT_ENTER);
         });
         this.editor.on(BI.SignEditor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.AdaptiveEditor.EVENT_RESTRICT);
@@ -151,6 +155,7 @@ BI.AdaptiveEditor.EVENT_STOP = "EVENT_STOP";
 BI.AdaptiveEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.AdaptiveEditor.EVENT_VALID = "EVENT_VALID";
 BI.AdaptiveEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.AdaptiveEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.AdaptiveEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.AdaptiveEditor.EVENT_SPACE = "EVENT_SPACE";
 BI.AdaptiveEditor.EVENT_EMPTY = "EVENT_EMPTY";

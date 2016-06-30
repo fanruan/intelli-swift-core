@@ -115,6 +115,9 @@ BI.StateEditor = BI.inherit(BI.Single, {
         this.editor.on(BI.Editor.EVENT_ERROR, function () {
             self.fireEvent(BI.StateEditor.EVENT_ERROR, arguments);
         });
+        this.editor.on(BI.Editor.EVENT_ENTER, function () {
+            self.fireEvent(BI.StateEditor.EVENT_ENTER, arguments);
+        });
         this.editor.on(BI.Editor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.StateEditor.EVENT_RESTRICT, arguments);
         });
@@ -245,6 +248,7 @@ BI.StateEditor.EVENT_STOP = "EVENT_STOP";
 BI.StateEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.StateEditor.EVENT_VALID = "EVENT_VALID";
 BI.StateEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.StateEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.StateEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.StateEditor.EVENT_SPACE = "EVENT_SPACE";
 BI.StateEditor.EVENT_EMPTY = "EVENT_EMPTY";
