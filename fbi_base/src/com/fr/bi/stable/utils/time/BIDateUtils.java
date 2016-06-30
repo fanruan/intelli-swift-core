@@ -131,14 +131,14 @@ public class BIDateUtils {
         String scheduleTime;
         switch (frequency) {
             case DBConstant.UPDATE_FREQUENCY.EVER_MONTH:
-                scheduleTime = "0 9 0 " + time + " * ?";
+                scheduleTime = "0 0 0 " + time + " * ?";
                 break;
             case DBConstant.UPDATE_FREQUENCY.EVER_DAY:
-                scheduleTime = "0 9 " + time + " * * ?";
+                scheduleTime = "0 0 " + time + " * * ?";
                 break;
             //每周几
             default:
-                scheduleTime = "0 9 " + time + " ? * " + frequency;
+                scheduleTime = "0 0 " + time + " ? * " + frequency;
         }
         return scheduleTime;
     }
