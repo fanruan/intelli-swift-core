@@ -46,7 +46,8 @@ public class Service4BIReport implements Service {
 
             new BITemplateHangoutAction(),
             new BIGetAllHangoutReportsAction(),
-            new BIReportHangout2PlateAction()
+            new BIReportHangout2PlateAction(),
+            new BIGetUploadedImageAction()
 
     };
 

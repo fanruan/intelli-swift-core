@@ -269,14 +269,8 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 //业务包表
                 var tableId = table.id;
                 //转义、关联都是用sharing pool中的，相当于复制一份
-                var translations = self.getTranslations();
+                self.translations[id] = self.createDistinctTableTranName(self.translations[tableId]);
                 var relations = self.getRelations();
-                BI.each(translations, function (tranId, name) {
-                    if (tranId === tableId || self.getTableIdByFieldId(tranId)) {
-                        var nId = id.replace(tableId, id);
-                        self.translations[nId] = tranId === tranId ? self.createDistinctTableTranName(name) : name
-                    }
-                });
                 var connectionSet = relations.connectionSet, primaryKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
                 BI.each(connectionSet, function (i, keys) {
                     var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
