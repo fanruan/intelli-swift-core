@@ -7,6 +7,7 @@ import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
+import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.conf.manager.update.source.TimeFrequency;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
@@ -51,7 +52,10 @@ public class TimerScheduleAdapter {
             if (table.getTableSource().getSourceID().equals(keys)) {
                 return table;
             }
+            if (table.getTableSource() instanceof ETLTableSource){
+            }
         }
+
         return null;
     }
 }
