@@ -34,7 +34,7 @@ public interface CubeColumnReaderService<T> extends ICubeIndexDataGetterService,
      * @param row
      * @return 分组值的位置
      */
-    int getPositionOfGroup(int row) throws BIResourceInvalidException;
+    Integer getPositionOfGroup(int row) throws BIResourceInvalidException;
 
     /**
      * 分组数量
