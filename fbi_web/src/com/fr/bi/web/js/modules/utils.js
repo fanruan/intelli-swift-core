@@ -510,9 +510,9 @@
                         if (BI.has(widget.dimensions[idx], "sort")) {
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
                             if (BI.has(dimension.sort, "sort_target")) {
-                                if(dimension.sort.sort_target === idx){
+                                if (dimension.sort.sort_target === idx) {
                                     dimension.sort.sort_target = newId;
-                                }else{
+                                } else {
                                     var result = createDimensionsAndTargets(dimension.sort.sort_target);
                                     dimension.sort.sort_target = result.id;
                                 }
@@ -1416,7 +1416,7 @@
             }
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
-            if(this.getPathsFromFieldAToFieldB(tableA, tableB).length !== 0) {
+            if (this.getPathsFromFieldAToFieldB(tableA, tableB).length !== 0) {
                 return this.getPathsFromFieldAToFieldB(tableA, tableB);
             }
             if (tableA === tableB) {
@@ -1508,6 +1508,13 @@
                 result = result.concat(ids);
             });
             return result;
+        },
+
+        //保存上传的图片到文件下
+        saveUploadedImage: function (attachId, callback) {
+            Data.Req.reqSaveUploadImage(attachId, function (data) {
+                callback(data);
+            });
         },
 
         /**
@@ -1968,9 +1975,9 @@
                     }
                 });
                 var transferFilter = BI.Utils.getWSTransferFilterByID(BI.Utils.getWidgetIDByDimensionID(cId));
-                if(transferFilter === true) {
+                if (transferFilter === true) {
                     var tarFilter = BI.Utils.getDimensionFilterValueByID(cId);
-                    if(BI.isNotNull(tarFilter)) {
+                    if (BI.isNotNull(tarFilter)) {
                         parseFilter(tarFilter);
                         filterValues.push(tarFilter);
                     }
@@ -2010,9 +2017,9 @@
                 var lLinkages = BI.Utils.getLinkageValuesByID(lId);
                 BI.each(lLinkages, function (cId, linkValue) {
                     var lTransferFilter = BI.Utils.getWSTransferFilterByID(BI.Utils.getWidgetIDByDimensionID(cId));
-                    if(lTransferFilter === true) {
+                    if (lTransferFilter === true) {
                         var lTarFilter = BI.Utils.getDimensionFilterValueByID(cId);
-                        if(BI.isNotNull(lTarFilter)) {
+                        if (BI.isNotNull(lTarFilter)) {
                             parseFilter(lTarFilter);
                             filterValues.push(lTarFilter);
                         }

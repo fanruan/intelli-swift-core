@@ -48,8 +48,8 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
         this.templateName.on(BI.SignEditor.EVENT_VALID, function () {
             self.saveButton.setEnable(true);
         });
-        this.templateName.on(BI.SignEditor.EVENT_KEY_DOWN, function (v) {
-            if (v === FR.keyCode.ENTER && self.saveButton.isEnabled()) {
+        this.templateName.on(BI.SignEditor.EVENT_ENTER, function (v) {
+            if (self.saveButton.isEnabled()) {
                 self._saveReport();
             }
         });

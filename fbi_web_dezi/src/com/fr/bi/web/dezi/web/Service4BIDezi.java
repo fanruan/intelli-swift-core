@@ -7,6 +7,7 @@ import com.fr.bi.web.dezi.BIGetFieldMinMaxValueAction;
 import com.fr.bi.web.dezi.BIReportSavingAction;
 import com.fr.bi.web.dezi.BIWidgetSettingAction;
 import com.fr.bi.web.dezi.services.*;
+import com.fr.bi.web.dezi.services.image.BISaveUploadImageAction;
 import com.fr.bi.web.dezi.services.report.BIUpadateSessionAction;
 import com.fr.bi.web.report.services.BIInitDeziPaneAction;
 import com.fr.fs.FSContext;
@@ -54,7 +55,9 @@ public class Service4BIDezi implements Service {
             new BIGetPreviewTableDataAction(),
 
             new BIStartGenerateTempCubeAction(),
-            new BIGetTempCubeGeneratingStatusAction()
+            new BIGetTempCubeGeneratingStatusAction(),
+
+            new BISaveUploadImageAction()
 
     };
 
