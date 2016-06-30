@@ -76,7 +76,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
                 height: 40
             }, {
                 el: this.filterPane,
-                height: 92
+                height: 82
             }, {
                 el: BI.createWidget(),
                 height: 20

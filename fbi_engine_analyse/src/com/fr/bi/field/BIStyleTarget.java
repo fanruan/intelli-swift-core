@@ -39,7 +39,7 @@ public abstract class BIStyleTarget extends BIAbstractTargetAndDimension {
 
         BIStyleTarget that = (BIStyleTarget) o;
 
-        if (ComparatorUtils.equals(style, that.style)) {
+        if (!ComparatorUtils.equals(style, that.style)) {
             return false;
         }
 

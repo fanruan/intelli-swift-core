@@ -466,7 +466,7 @@ public class CubeIndexLoader {
         DimensionGroupFilter dimensionGroupFilter = createDimensionGroupFilter(widget, usedTargets, sumTarget, rowDimension, session, new ArrayList<MergerInfo>(), false);
         boolean shouldOld = dimensionGroupFilter.shouldBuildTree();
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
-        NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, page, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
+        NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, -1, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
         if (usedTargets.length != 0 && isEmpty(topInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);

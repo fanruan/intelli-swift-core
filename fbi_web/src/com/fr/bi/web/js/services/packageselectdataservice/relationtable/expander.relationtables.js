@@ -27,7 +27,7 @@ BI.RelationTablesExpander = BI.inherit(BI.Widget, {
             }, o.popup)
         });
         this.expander.on(BI.Controller.EVENT_CHANGE, function (type) {
-            if(self.trigger.isVisible()){
+            if (self.trigger.isVisible()) {
                 self.trigger.setVisible(false);
             }
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
@@ -46,7 +46,7 @@ BI.RelationTablesExpander = BI.inherit(BI.Widget, {
         this.expander.setValue(v);
     },
     getValue: function () {
-        return this.expander.getValue();
+        return this.expander.getValue() || [];
     },
 
     isExpanded: function () {

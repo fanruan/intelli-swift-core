@@ -15,7 +15,8 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
         LEGEND_BOTTOM: 4,
         ZERO2POINT: 2,
         ONE2POINT: 3,
-        TWO2POINT: 4
+        TWO2POINT: 4,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -26,6 +27,7 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.CompareBarChart.superclass._init.apply(this, arguments);
+        var self = this;
         this.xAxis = [{
             type: "value",
             title: {
@@ -157,6 +159,9 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
                     BI.each(item.data, function(id, da){
                         da.x = da.x || 0;
                         da.x = da.x.div(magnify);
+                        if(self.constants.MINLIMIT.sub(da.x) > 0){
+                            da.x = 0;
+                        }
                     })
                 })
             }
@@ -240,6 +245,28 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(items){
+        var result = [];
+        var i = BI.UUID();
+        BI.each(items, function (idx, item) {
+            BI.each(item, function (id, it) {
+                BI.each(it.data, function (i, t) {
+                    var tmp = t.x;
+                    t.x = t.y;
+                    t.y = tmp;
+                    if (idx === 0) {
+                        t.x = -t.x;
+                    }
+                });
+                it.stack = i;
+            })
+        });
+        BI.each(items, function(idx, item){
+            result = BI.concat(result, item);
+        });
+        return [result];
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
@@ -273,15 +300,16 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
             });
             types.push(type);
         });
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.CompareBarChart, {
+    },
 
+    magnify: function(){
+        this.combineChart.magnify();
+    }
 });
 BI.CompareBarChart.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.compare_bar_chart', BI.CompareBarChart);

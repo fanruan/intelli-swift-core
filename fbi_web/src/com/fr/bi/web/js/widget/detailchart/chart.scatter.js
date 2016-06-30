@@ -15,7 +15,8 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
         LEGEND_BOTTOM: 4,
         ZERO2POINT: 2,
         ONE2POINT: 3,
-        TWO2POINT: 4
+        TWO2POINT: 4,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -90,7 +91,7 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
         config.yAxis[0].title.rotation = this.constants.ROTATION;
 
         config.xAxis[0].formatter = formatTickInXYaxis(this.config.x_axis_style, this.constants.X_AXIS);
-        formatNumberLevelInXaxis(this.config.x_axis_number_level);
+        formatNumberLevelInXaxis(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
@@ -160,6 +161,9 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
                     BI.each(item.data, function(id, da){
                         da.x = da.x || 0;
                         da.x = da.x.div(magnify);
+                        if(self.constants.MINLIMIT.sub(da.x) > 0){
+                            da.x = 0;
+                        }
                     })
                 })
             }
@@ -173,6 +177,9 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
+                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                                da.y = 0;
+                            }
                         }
                     })
                 })
@@ -255,8 +262,8 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
-            if(position === self.constants.RIGHT_AXIS){
-                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+            if(position === self.constants.X_AXIS){
+                if(self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                     if(type === self.constants.NORMAL){
                         formatter = '#0%'
                     }else{
@@ -302,24 +309,10 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.ScatterChart, {
-    formatItems: function (items) {
-        var self = this;
-        return BI.map(items, function(idx, item){
-            var name = BI.keys(item)[0];
-            return {
-                "data": BI.map(item[name], function(idx, it){
-                    return BI.extend(it, {
-                        "x": it.x,
-                        "y": it.y,
-                        "size": it.z
-                    });
-                }),
-                "name": name
-            }
-        });
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.ScatterChart.EVENT_CHANGE = "EVENT_CHANGE";

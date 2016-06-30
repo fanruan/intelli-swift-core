@@ -27,9 +27,9 @@ BI.TableTree = BI.inherit(BI.Widget, {
             },
 
             columnSize: [],
-            headerRowSize: 37,
-            footerRowSize: 37,
-            rowSize: 37,
+            headerRowSize: 25,
+            footerRowSize: 25,
+            rowSize: 25,
 
             regionColumnSize: false,
 
@@ -273,9 +273,16 @@ BI.extend(BI.TableTree, {
                         next = next.concat(node.values);
                     }
                     if (next.length > 0) {
-                        result.push(next);
+                        if (!isCross) {
+                            result.push(next);
+                        } else {
+                            for (var k = 0, l = node.values.length; k < l; k++) {
+                                result.push(next);
+                            }
+                        }
                     }
                 }
+
                 return;
             }
             if (store != -1) {

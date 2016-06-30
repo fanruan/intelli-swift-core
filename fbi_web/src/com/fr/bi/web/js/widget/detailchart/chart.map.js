@@ -40,7 +40,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
     _formatConfig: function(config, items){
         var self = this, o = this.options;
-        config.plotOptions.tooltip.formatter = this.config.toolTip;
+        config.plotOptions.tooltip.formatter = this.config.tooltip;
         switch (this.config.chart_legend){
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
@@ -58,6 +58,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.geo = this.config.geo;
+        config.plotOptions.tooltip.shared = true;
 
         config.chartType = "areaMap";
         delete config.xAxis;
@@ -66,12 +67,30 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
     },
 
+    _formatItems: function(items){
+        BI.each(items, function(idx, item){
+            BI.each(item, function(id, it){
+                BI.each(it.data, function(i, da){
+                    if(BI.has(it, "type") && it.type == "bubble"){
+                        da.name = da.x;
+                        da.size = da.y;
+                    }else{
+                        da.name = da.x;
+                        da.value = da.y;
+                    }
+                })
+            })
+        });
+        return items;
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]}
+            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]},
+            tooltip: options.tooltip || ""
         };
         this.options.items = items;
 
@@ -84,11 +103,15 @@ BI.MapChart = BI.inherit(BI.Widget, {
             types.push(type);
         });
 
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.MapChart.EVENT_CHANGE = "EVENT_CHANGE";

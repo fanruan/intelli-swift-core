@@ -19,7 +19,8 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        STYLE_NORMAL: 21
+        STYLE_NORMAL: 21,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -71,9 +72,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         }
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
-        if(config.dataSheet.enabled === true){
-            config.xAxis[0].showLabel = false;
-        }
+        config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
         this.config.show_zoom === true && delete config.dataSheet;
         config.yAxis = this.yAxis;
@@ -180,6 +179,9 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
+                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                                da.y = 0;
+                            }
                         }
                     })
                 })
@@ -271,6 +273,15 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
+            if(position === self.constants.RIGHT_AXIS_SECOND){
+                if(self.config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    if(type === self.constants.NORMAL){
+                        formatter = '#0%'
+                    }else{
+                        formatter += '%';
+                    }
+                }
+            }
             return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
         }
     },
@@ -334,6 +345,10 @@ BI.AxisChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.AxisChart.EVENT_CHANGE = "EVENT_CHANGE";

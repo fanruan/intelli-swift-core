@@ -2,10 +2,7 @@ package com.fr.bi.common.factory.annotation;
 
 import com.fr.bi.common.factory.IModuleFactory;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * 表明当前对象准许进行托管

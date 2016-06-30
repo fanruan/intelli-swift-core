@@ -16,7 +16,8 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        STYLE_NORMAL: 21
+        STYLE_NORMAL: 21,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -57,6 +58,8 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
         }
 
         config.plotOptions.force = true;
+        config.plotOptions.dataLabels.enabled = true;
+        config.plotOptions.dataLabels.formatter.identifier = "${SERIES}${VALUE}";
         config.chartType = "bubble";
         delete config.xAxis;
         delete config.yAxis;
@@ -85,10 +88,11 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.ForceBubbleChart, {
+    },
 
+    magnify: function(){
+        this.combineChart.magnify();
+    }
 });
 BI.ForceBubbleChart.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.force_bubble_chart', BI.ForceBubbleChart);

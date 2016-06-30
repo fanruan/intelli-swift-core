@@ -15,7 +15,8 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
         LEGEND_BOTTOM: 4,
         ZERO2POINT: 2,
         ONE2POINT: 3,
-        TWO2POINT: 4
+        TWO2POINT: 4,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -67,9 +68,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
         }
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
-        if(config.dataSheet.enabled === true){
-            config.xAxis[0].showLabel = false;
-        }
+        config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
         this.config.show_zoom === true && delete config.dataSheet;
 
@@ -142,6 +141,9 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
+                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                                da.y = 0;
+                            }
                         }
                     })
                 })
@@ -281,6 +283,15 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(items){
+        return BI.map(items, function(idx, item){
+            var i = BI.UUID();
+            return BI.map(item, function(id, it){
+                return BI.extend({}, it, {stack: i});
+            });
+        });
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
@@ -336,11 +347,15 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
             };
             self.yAxis.push(newYAxis);
         });
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.AccumulateAreaChart.EVENT_CHANGE = "EVENT_CHANGE";

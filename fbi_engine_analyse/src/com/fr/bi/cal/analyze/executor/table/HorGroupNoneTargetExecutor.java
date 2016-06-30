@@ -31,6 +31,7 @@ import java.util.List;
 public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
     public HorGroupNoneTargetExecutor(TableWidget widget, Paging paging, BISession session, CrossExpander expander) {
         super(widget, paging, session, expander);
+        usedDimensions = widget.getViewTopDimensions();
     }
 
     /**

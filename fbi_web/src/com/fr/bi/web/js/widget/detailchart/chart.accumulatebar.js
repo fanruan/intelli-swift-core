@@ -15,7 +15,8 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         LEGEND_BOTTOM: 4,
         ZERO2POINT: 2,
         ONE2POINT: 3,
-        TWO2POINT: 4
+        TWO2POINT: 4,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -75,9 +76,7 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         }
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
-        if(config.dataSheet.enabled === true){
-            config.xAxis[0].showLabel = false;
-        }
+        config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
         this.config.show_zoom === true && delete config.dataSheet;
 
@@ -158,6 +157,9 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
                     BI.each(item.data, function(id, da){
                         da.x = da.x || 0;
                         da.x = da.x.div(magnify);
+                        if(self.constants.MINLIMIT.sub(da.x) > 0){
+                            da.x = 0;
+                        }
                     })
                 })
             }
@@ -240,6 +242,21 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(items){
+        BI.each(items, function(idx, item){
+            var stackId = BI.UUID();
+            BI.each(item, function(id, it){
+                it.stack = stackId;
+                BI.each(it.data, function(i, t){
+                    var tmp = t.x;
+                    t.x = t.y;
+                    t.y = tmp;
+                })
+            });
+        });
+        return items;
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
@@ -273,26 +290,15 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
             });
             types.push(type);
         });
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.AccumulateBarChart, {
-    formatItems: function (items) {
-        var name = BI.keys(items)[0];
-        return {
-            "data": BI.map(items[name], function(idx, item){
-                return BI.extend({options: item.options}, {
-                    y: item.x,
-                    x: item.y
-                });
-            }),
-            "name": name,
-            stack: true
-        }
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.AccumulateBarChart.EVENT_CHANGE = "EVENT_CHANGE";

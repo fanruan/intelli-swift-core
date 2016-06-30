@@ -98,7 +98,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     "dashboard-title-center" : "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height:25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
                 validationChecker: function (v) {
@@ -119,6 +119,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Show_Filters"),
             cls: "widget-tools-filter-font dashboard-title-detail"
         });
         filter.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -129,6 +130,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -188,7 +190,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             type: "bi.left",
             cls: "operator-region",
             items: [filter, expand, combo],
-            hgap: 3
+            lgap: 10
         });
         this.tools.setVisible(false);
     },

@@ -29,9 +29,9 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             },
 
             columnSize: [],
-            headerRowSize: 37,
-            footerRowSize: 37,
-            rowSize: 30,
+            headerRowSize: 25,
+            footerRowSize: 25,
+            rowSize: 25,
 
             regionColumnSize: false,
 

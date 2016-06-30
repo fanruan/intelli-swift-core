@@ -8,6 +8,7 @@ import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.group.ICubeGroupDataService;
+import com.finebi.cube.structure.property.BICubeColumnPositionOfGroupService;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -29,6 +30,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     protected ICubeIndexDataService indexDataService;
     protected ICubeGroupDataService<T> groupDataService;
     protected ICubeVersion cubeVersion;
+    protected ICubeColumnPositionOfGroupService cubeColumnPositionOfGroupService;
     protected ICubeRelationManagerService relationManagerService;
     protected ICubeResourceDiscovery discovery;
 
@@ -37,6 +39,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         this.currentLocation = currentLocation;
         indexDataService = new BICubeIndexData(discovery, currentLocation);
         cubeVersion = new BICubeVersion(currentLocation, discovery);
+        cubeColumnPositionOfGroupService = new BICubeColumnPositionOfGroupService(currentLocation, discovery);
         initial();
     }
 
@@ -73,9 +76,19 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     }
 
     @Override
+    public void addPositionOfGroup(int position, int groupPosition) {
+        cubeColumnPositionOfGroupService.addPositionOfGroup(position, groupPosition);
+    }
+
+    @Override
     public int getPositionOfGroup(T groupValues) throws BIResourceInvalidException {
 
         return groupDataService.getPositionOfGroupValue(convert(groupValues));
+    }
+
+    @Override
+    public int getPositionOfGroup(int row) throws BIResourceInvalidException {
+        return cubeColumnPositionOfGroupService.getPositionOfGroup(row);
     }
 
     private T convert(Object value) {
@@ -119,8 +132,11 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
 
     @Override
     public GroupValueIndex getIndexByRow(int rowNumber) throws BIResourceInvalidException, BICubeIndexException {
-        T value = getOriginalValueByRow(rowNumber);
-        return getIndexByGroupValue(value);
+        int position = getPositionOfGroup(rowNumber);
+        if (position >= 0) {
+            return getBitmapIndex(position);
+        }
+        return new RoaringGroupValueIndex();
     }
 
     @Override
@@ -189,6 +205,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         indexDataService.clear();
         groupDataService.clear();
         cubeVersion.clear();
+        cubeColumnPositionOfGroupService.clear();
     }
 
     @Override

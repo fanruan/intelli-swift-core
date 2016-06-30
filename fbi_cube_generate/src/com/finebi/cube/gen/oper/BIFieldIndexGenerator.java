@@ -13,6 +13,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -102,9 +103,19 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             columnEntityService.addGroupValue(groupPosition, groupValue);
             GroupValueIndex groupValueIndex = buildGroupValueIndex(groupRowNumbers);
             columnEntityService.addGroupIndex(groupPosition, groupValueIndex);
+            buildPositionOfGroup(groupPosition, groupValueIndex);
             groupPosition++;
         }
         columnEntityService.addNULLIndex(0, buildGroupValueIndex(nullRowNumbers));
+    }
+
+    private void buildPositionOfGroup(final int groupPosition, GroupValueIndex groupValueIndex) {
+        groupValueIndex.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                columnEntityService.addPositionOfGroup(row, groupPosition);
+            }
+        });
     }
 
     private GroupValueIndex buildGroupValueIndex(IntList groupRowNumbers) {

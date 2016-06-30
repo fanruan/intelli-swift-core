@@ -16,7 +16,8 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        STYLE_NORMAL: 21
+        STYLE_NORMAL: 21,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -60,20 +61,7 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        config.legend.enabled = false;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         if(config.dataSheet.enabled === true){
@@ -161,6 +149,9 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
+                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                                da.y = 0;
+                            }
                         }
                     })
                 })
@@ -256,11 +247,60 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(items){
+        var o = this.options;
+        if(BI.isEmptyArray(items)){
+            return [];
+        }
+        items = items[0];
+        var tables = [], sum = 0;
+        var colors = this.config.chart_color || [];
+        if(BI.isEmptyArray(colors)){
+            colors = ["rgb(152, 118, 170)", "rgb(0, 157, 227)"];
+        }
+        BI.each(items, function(idx, item){
+            BI.each(item.data, function(i, t){
+                if(t.y < 0){
+                    tables.push([t.x, t.y, sum + t.y, t.targetIds]);
+                }else{
+                    tables.push([t.x, t.y, sum, t.targetIds]);
+                }
+                sum += t.y;
+            });
+        });
+
+        return [BI.map(BI.makeArray(2, null), function(idx, item){
+            return {
+                "data": BI.map(tables, function(id, cell){
+                    var axis = BI.extend({targetIds: cell[3]}, {
+                        x: cell[0],
+                        y: Math.abs(cell[2 - idx])
+                    });
+                    if(idx === 1){
+                        axis.color = cell[2 - idx] < 0 ? colors[1] : colors[0];
+                    }else{
+                        axis.color = "rgba(0,0,0,0)";
+                        axis.borderColor = "rgba(0,0,0,0)";
+                        axis.borderWidth = 0;
+                        axis.clickColor = "rgba(0,0,0,0)";
+                        axis.mouseOverColor = "rgba(0,0,0,0)";
+                        axis.tooltip = {
+                            enable: false
+                        }
+                    }
+                    return axis;
+                }),
+                stack: "stackedFall",
+                name: ""
+            };
+        })];
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",
-            chart_color: options.chart_color || [],
+            chart_color: options.chart_color || ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
             chart_style: options.chart_style || c.NORMAL,
             left_y_axis_style: options.left_y_axis_style || c.NORMAL,
             show_x_axis_title: options.show_x_axis_title || false,
@@ -270,7 +310,6 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
             x_axis_unit: options.x_axis_unit || "",
             left_y_axis_unit: options.left_y_axis_unit || "",
             x_axis_title: options.x_axis_title || "",
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
             show_data_table: options.show_data_table || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
@@ -288,52 +327,15 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
             types.push(type);
         });
 
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.FallAxisChart, {
-    formatItems: function (item) {
-        var tables = [], sum = 0;
-        var name = BI.keys(item)[0];
-        BI.each(item[name], function(i, t){
-            if(t.y < 0){
-                tables.push([t.x, t.y, sum + t.y, t.options]);
-            }else{
-                tables.push([t.x, t.y, sum, t.options]);
-            }
-            sum += t.y;
-        });
+    },
 
-        return BI.map(BI.makeArray(2, null), function(idx, item){
-            return {
-                "data": BI.map(tables, function(id, cell){
-                    var axis = BI.extend({options: cell[3]}, {
-                        x: cell[0],
-                        y: Math.abs(cell[2 - idx])
-                    });
-                    if(idx === 1){
-                        axis.color = cell[2 - idx] < 0 ? "rgb(152, 118, 170)" : "rgb(0, 157, 227)";
-                    }else{
-                        axis.color = "rgba(0,0,0,0)";
-                        axis.borderColor = "rgba(0,0,0,0)";
-                        axis.borderWidth = 0;
-                        axis.clickColor = "rgba(0,0,0,0)";
-                        axis.mouseOverColor = "rgba(0,0,0,0)";
-                        axis.dataLabel = {
-                            enable: false
-                        };
-                        axis.tooltip = {
-                            enable: false
-                        }
-                    }
-                    return axis;
-                })
-            };
-        });
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.FallAxisChart.EVENT_CHANGE = "EVENT_CHANGE";

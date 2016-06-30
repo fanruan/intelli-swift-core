@@ -1,6 +1,5 @@
 package com.fr.bi.resource;
 
-import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -22,7 +21,10 @@ import com.fr.stable.bridge.Transmitter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 读取各种资源的帮助类
@@ -74,6 +76,7 @@ public class ResourceHelper {
 
     private static String getDataJs(HttpServletRequest req, String[] files) {
         long userId = ServiceUtils.getCurrentUserID(req);
+        long manageId = UserControl.getInstance().getSuperManagerID();
         JSONObject groups = new JSONObject();
         JSONObject packages = new JSONObject();
         JSONObject relations = new JSONObject();
@@ -88,7 +91,7 @@ public class ResourceHelper {
             groups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
             //管理员
-            if (UserControl.getInstance().getSuperManagerID() == userId) {
+            if (manageId == userId) {
                 packages = allPacks;
             }
             //前台能看到的业务包
@@ -103,11 +106,11 @@ public class ResourceHelper {
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
             for (IBusinessPackageGetterService p : packs) {
-                if (UserControl.getInstance().getSuperManagerID() != userId && !authPacks.contains(p.getID())) {
+                if (manageId != userId && !authPacks.contains(p.getID())) {
                     continue;
                 }
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
-                    JSONObject jo = t.createJSONWithFieldsInfo(BICubeManager.getInstance().fetchCubeLoader(userId));
+                    JSONObject jo = t.createJSONWithFieldsInfo(userId);
                     JSONObject tableFields = jo.getJSONObject("tableFields");
                     tables.put(t.getID().getIdentityValue(), tableFields);
                     JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
@@ -992,6 +995,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/filter.target.js",
                 "com/fr/bi/web/js/modules/filter/filter.dimension.js",
                 "com/fr/bi/web/js/modules/filter/targetsummary/filter.target.summary.js",
+                "com/fr/bi/web/js/modules/filter/targetsummary/item/item.target.js",
                 "com/fr/bi/web/js/modules/filter/generalquery/filter.generalquery.js",
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
                 "com/fr/bi/web/js/modules/filter/auth/filter.authority.js",
@@ -1053,6 +1057,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablecell/normal/expandercell.normal.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.dimension.combo.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.target.combo.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.detail.combo.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/widget.summarytable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/summarytable.model.js",
@@ -1422,6 +1427,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
 
+                //自适应布局
+                "com/fr/bi/web/js/modules4show/fit/fit.js",
+
                 //实时报表进度条
                 "com/fr/bi/web/js/modules4show/cubeprogressbar/cubeprogressbar.js",
                 //实时报表指示器
@@ -1472,6 +1480,7 @@ public class ResourceHelper {
                 //业务包选择字段服务
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level2.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.date.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.relationtables.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.level2.date.js",
@@ -2310,7 +2319,9 @@ public class ResourceHelper {
                 //选择字段树
                 "com/fr/bi/web/js/widget/selectdata/tree/node/node.level0.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/node/node.level1.js",
+                "com/fr/bi/web/js/widget/selectdata/tree/node/node.level2.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/node/node.level1.date.js",
+                "com/fr/bi/web/js/widget/selectdata/tree/node/node.level2.date.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/treeitem/item.level0.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/treeitem/item.level1.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/loader.selectdata.js",
@@ -2538,6 +2549,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/templatemanager/tools/share/selecteduser.grouplist.js",
                 "com/fr/bi/web/js/components/templatemanager/tools/share/selecteduser.button.js",
                 "com/fr/bi/web/js/components/templatemanager/tools/share/usersearchresult.pane.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/editshared/pane.editshared.js",
                 "com/fr/bi/web/js/components/templatemanager/buttongroup.templatemanager.js",
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.js",
                 "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",

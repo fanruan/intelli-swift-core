@@ -15,7 +15,8 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
         LEGEND_BOTTOM: 4,
         ZERO2POINT: 2,
         ONE2POINT: 3,
-        TWO2POINT: 4
+        TWO2POINT: 4,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -44,6 +45,15 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.AccumulateRadarChart.EVENT_CHANGE, obj);
+        });
+    },
+
+    _formatItems: function(items){
+        return BI.map(items, function(idx, item){
+            var i = BI.UUID();
+            return BI.map(item, function(id, it){
+                return BI.extend({}, it, {stack: i});
+            });
         });
     },
 
@@ -76,6 +86,8 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
         config.radiusAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "radar";
         config.plotOptions.columnType = true;
+        delete config.xAxis;
+        delete config.yAxis;
         return [items, config];
 
         function formatChartStyle(){
@@ -107,6 +119,9 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
                         if(position === item.yAxis){
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
+                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                                da.y = 0;
+                            }
                         }
                     })
                 })
@@ -224,21 +239,15 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
             });
             types.push(type);
         });
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.AccumulateRadarChart, {
-    formatItems: function (items) {
-        var name = BI.keys(items)[0];
-        return {
-            "data": items[name],
-            "name": name,
-            stack: true
-        }
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.AccumulateRadarChart.EVENT_CHANGE = "EVENT_CHANGE";

@@ -97,7 +97,7 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
     }
 
     @Override
-    public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds) {
+    public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds, boolean isReset) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(BITableMapper.BI_SHARED_REPORT_NODE.FIELD_REPORT_ID, reportId);
         map.put(BITableMapper.BI_SHARED_REPORT_NODE.FIELD_CREATE_BY, createBy);
@@ -115,7 +115,7 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
                     break;
                 }
             }
-            if (!findMatch) {
+            if (!findMatch && isReset) {
                 createSession().delete(node);
             }
         }
@@ -135,8 +135,8 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
         map.put(BITableMapper.BI_SHARED_REPORT_NODE.FIELD_CREATE_BY, createBy);
         List sReports = createSession().listByFieldValues(BISharedReportNode.class, map);
         List<User> users = new ArrayList<User>();
-        for(int i = 0; i < sReports.size(); i++){
-            BISharedReportNode node = (BISharedReportNode)sReports.get(i);
+        for (int i = 0; i < sReports.size(); i++) {
+            BISharedReportNode node = (BISharedReportNode) sReports.get(i);
             users.add(UserControl.getInstance().getUser(node.getShareTo()));
         }
         return users;
@@ -154,7 +154,7 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
         map.put(BITableMapper.BI_SHARED_REPORT_NODE.FIELD_REPORT_ID, reportId);
         map.put(BITableMapper.BI_SHARED_REPORT_NODE.FIELD_CREATE_BY, createBy);
         List sReports = createSession().listByFieldValues(BISharedReportNode.class, map);
-        for(int i = 0; i < sReports.size(); i++){
+        for (int i = 0; i < sReports.size(); i++) {
             BISharedReportNode node = (BISharedReportNode) sReports.get(i);
             DataAccessObjectSession session = null;
             try {

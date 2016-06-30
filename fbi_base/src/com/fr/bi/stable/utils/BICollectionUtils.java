@@ -2,10 +2,12 @@ package com.fr.bi.stable.utils;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.TargetCalculator;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/10/16.
@@ -16,6 +18,9 @@ public class BICollectionUtils {
         Map merge = new HashMap();
         if (key == null) {
             return value;
+        }
+        if(value == null){
+            return new HashMap();
         }
         Iterator<Map.Entry> it = key.entrySet().iterator();
         while (it.hasNext()) {

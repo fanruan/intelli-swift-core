@@ -483,6 +483,7 @@
             }
 
             function createDimensionsAndTargets(idx) {
+                var newId = BI.UUID();
                 var dimension = BI.deepClone(widget.dimensions[idx]);
                 if (BI.has(dimTarIdMap, idx)) {
                     return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
@@ -509,8 +510,12 @@
                         if (BI.has(widget.dimensions[idx], "sort")) {
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
                             if (BI.has(dimension.sort, "sort_target")) {
-                                var result = createDimensionsAndTargets(dimension.sort.sort_target);
-                                dimension.sort.sort_target = result.id;
+                                if(dimension.sort.sort_target === idx){
+                                    dimension.sort.sort_target = newId;
+                                }else{
+                                    var result = createDimensionsAndTargets(dimension.sort.sort_target);
+                                    dimension.sort.sort_target = result.id;
+                                }
                             }
                         }
                         break;
@@ -535,9 +540,8 @@
                         });
                         break;
                 }
-                var id = BI.UUID();
-                dimTarIdMap[idx] = id;
-                return {id: id, dimension: dimension};
+                dimTarIdMap[idx] = newId;
+                return {id: newId, dimension: dimension};
             }
         },
 
@@ -725,6 +729,12 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_number_level) ? ws.left_y_axis_number_level :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
+        },
+
+        getWSNumberOfPointerByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.number_of_pointer) ? ws.number_of_pointer :
+                BICst.POINTER.ONE;
         },
 
         getWSDashboardNumLevelByID: function (wid) {
@@ -1375,7 +1385,7 @@
                     primaryTables.push(tId);
                 }
             });
-            return primaryTables;
+            return BI.uniq(primaryTables);
         },
 
         getForeignRelationTablesByTableID: function (tableId) {
@@ -1385,7 +1395,7 @@
                     foreignTables.push(tId);
                 }
             });
-            return foreignTables;
+            return BI.uniq(foreignTables);
         },
 
         getPathsFromTableAToTableB: function (from, to) {
@@ -1400,13 +1410,20 @@
         },
 
         getPathsFromFieldAToFieldB: function (from, to) {
+            var self = this;
             if (BI.isNull(from) || BI.isNull(to)) {
                 return [];
             }
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
+            if(this.getPathsFromFieldAToFieldB(tableA, tableB).length !== 0) {
+                return this.getPathsFromFieldAToFieldB(tableA, tableB);
+            }
             if (tableA === tableB) {
-                return [[{primaryKey: {field_id: from}, foreignKey: {field_id: to}}]]
+                return [[{
+                    primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
+                    foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
+                }]]
             }
             return this.getPathsFromTableAToTableB(tableA, tableB);
         },
@@ -1829,26 +1846,26 @@
             var filterValues = [];
 
             //对于维度的条件，很有可能是一个什么属于分组 这边处理 （没放到构造的地方处理是因为“其他”）
-            function parseStringFilter4Group(dId, value){
+            function parseStringFilter4Group(dId, value) {
                 var group = BI.Utils.getDimensionGroupByID(dId);
                 var details = group.details;
                 var groupMap = {};
-                BI.each(details, function(i, detail){
+                BI.each(details, function (i, detail) {
                     groupMap[detail.value] = [];
-                    BI.each(detail.content, function(j, content){
+                    BI.each(detail.content, function (j, content) {
                         groupMap[detail.value].push(content.value);
                     });
                 });
                 var groupNames = BI.keys(groupMap), ungroupName = group.ungroup2OtherName;
-                if(group.ungroup2Other === 1) {
+                if (group.ungroup2Other === 1) {
                     groupNames.push(ungroupName);
                 }
                 // 对于drill和link 一般value的数组里只有一个值
                 var v = value[0];
-                if(groupNames.contains(v)) {
-                    if(v === ungroupName) {
+                if (groupNames.contains(v)) {
+                    if (v === ungroupName) {
                         var vs = [];
-                        BI.each(groupMap, function(gk, gv){
+                        BI.each(groupMap, function (gk, gv) {
                             gk !== v && (vs = vs.concat(gv));
                         });
                         return {
@@ -1947,10 +1964,17 @@
                         filterValues.push(filterValue);
                     }
                 });
+                var transferFilter = BI.Utils.getWSTransferFilterByID(BI.Utils.getWidgetIDByDimensionID(cId));
+                if(transferFilter === true) {
+                    var tarFilter = BI.Utils.getDimensionFilterValueByID(cId);
+                    if(BI.isNotNull(tarFilter)) {
+                        parseFilter(tarFilter);
+                        filterValues.push(tarFilter);
+                    }
+                }
             });
 
-            //联动传递指标过滤条件  找到联动链上的所有的组件，获取所有的指标的过滤条件  感觉有点浮夸的功能
-
+            //联动传递指标过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
             var allLinksWIds = [];
 
             function getLinkedIds(wid, links) {
@@ -1968,15 +1992,46 @@
 
             getLinkedIds(wid, allLinksWIds);
             BI.each(allLinksWIds, function (i, lId) {
-                if (self.getWSTransferFilterByID(lId) === true) {
-                    var tarIds = BI.Utils.getAllTargetDimensionIDs(lId);
-                    BI.each(tarIds, function (i, tarId) {
-                        var tarFilter = BI.Utils.getDimensionFilterValueByID(tarId);
-                        if (BI.isNotEmptyObject(tarFilter)) {
-                            parseFilter(tarFilter);
-                            filterValues.push(tarFilter);
+                // 并不是拿到所有的指标的过滤条件
+                // if (self.getWSTransferFilterByID(lId) === true) {
+                //     var tarIds = BI.Utils.getAllTargetDimensionIDs(lId);
+                //     BI.each(tarIds, function (i, tarId) {
+                //         var tarFilter = BI.Utils.getDimensionFilterValueByID(tarId);
+                //         if (BI.isNotEmptyObject(tarFilter)) {
+                //             parseFilter(tarFilter);
+                //             filterValues.push(tarFilter);
+                //         }
+                //     })
+                // }
+
+                var lLinkages = BI.Utils.getLinkageValuesByID(lId);
+                BI.each(lLinkages, function (cId, linkValue) {
+                    var lTransferFilter = BI.Utils.getWSTransferFilterByID(BI.Utils.getWidgetIDByDimensionID(cId));
+                    if(lTransferFilter === true) {
+                        var lTarFilter = BI.Utils.getDimensionFilterValueByID(cId);
+                        if(BI.isNotNull(lTarFilter)) {
+                            parseFilter(lTarFilter);
+                            filterValues.push(lTarFilter);
                         }
-                    })
+                    }
+                });
+
+                //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
+                var linkDrill = self.getDrillByID(lId);
+                if (BI.isNotNull(linkDrill)) {
+                    BI.each(linkDrill, function (drId, drArray) {
+                        if (drArray.length === 0) {
+                            return;
+                        }
+                        BI.each(drArray, function (i, drill) {
+                            BI.each(drArray[i].values, function (i, v) {
+                                var filterValue = parseSimpleFilter(v);
+                                if (BI.isNotNull(filterValue)) {
+                                    filterValues.push(filterValue);
+                                }
+                            });
+                        });
+                    });
                 }
             });
 
@@ -2055,7 +2110,7 @@
             var wWid = value.wId, se = value.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
-                if(BI.isNull(wWValue)){
+                if (BI.isNull(wWValue)) {
                     return;
                 }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {

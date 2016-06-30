@@ -19,13 +19,13 @@ BI.SummaryTargetFilter = BI.inherit(BI.Widget, {
                 type: "bi.filter_operation",
                 selections: [BICst.FILTER_OPERATION_CONDITION]
             },
-            itemCreator: function(item){
-                item.type = "bi.target_number_field_filter_item";
-                item.field_id = BI.Utils.getFieldIDByDimensionID(o.dId);
+            itemCreator: function (item) {
+                item.type = "bi.target_table_filter_item";
+                item.dId = o.dId;
                 item._src = {
                     field_id: BI.Utils.getFieldIDByDimensionID(o.dId)
                 };
-                if(item.value === BICst.FILTER_TYPE.EMPTY_CONDITION){
+                if (item.value === BICst.FILTER_TYPE.EMPTY_CONDITION) {
                     item.value = BICst.TARGET_FILTER_NUMBER.BELONG_VALUE;
                     item.filter_type = BICst.TARGET_FILTER_NUMBER.BELONG_VALUE;
                     item.filter_value = {value: []};

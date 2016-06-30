@@ -56,7 +56,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                     width: 16,
                     height: 16
                 }],
-                columnSize: ["", 30]
+                columnSize: ["", 25]
             });
         } else {
             BI.createWidget({
@@ -157,15 +157,13 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         if (text === Infinity) {
             text = "N/0";
         }
-        if (text !== text) {
-            text = "0/0";
-        }
+       
         if (BI.isEmptyArray(linkedWidgets)) {
             return BI.createWidget({
                 type: "bi.label",
                 text: text,
                 title: text,
-                height: 30,
+                height: 25,
                 textAlign: "left",
                 lgap: 5
             });
@@ -174,7 +172,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 type: "bi.text_button",
                 text: text,
                 title: text,
-                height: 30,
+                height: 25,
                 textAlign: "left",
                 cls: "target-linkage-label",
                 lgap: 5

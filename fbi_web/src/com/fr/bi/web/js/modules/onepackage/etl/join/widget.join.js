@@ -449,7 +449,7 @@ BI.Join = BI.inherit(BI.Widget, {
 
     _createTableItems: function (data, index) {
         var self = this;
-        var fields = data.fields, values = data.value;
+        var fields = data.fields, values = data.value, fieldTypes = data.type;
         var header = [], items = [];
         BI.each(fields, function (i, field) {
             header.push({
@@ -457,14 +457,6 @@ BI.Join = BI.inherit(BI.Widget, {
                 height: "100%"
             });
         });
-
-        var fieldTypes = [];
-        BI.each(this.model.getAllFields(), function (i, fs) {
-            BI.each(fs, function (j, field) {
-                fieldTypes.push(field.field_type);
-            });
-        });
-
 
         BI.each(values, function (i, value) {
             var isDate = fieldTypes[i] === BICst.COLUMN.DATE;

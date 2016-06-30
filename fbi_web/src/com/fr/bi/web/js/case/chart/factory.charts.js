@@ -64,7 +64,6 @@ BI.ChartCombineFormatItemFactory = {
 
     combineConfig: function(){
         return {
-            chartType: "column",
             "plotOptions": {
                 "rotatable": false,
                 "startAngle": 0,
@@ -86,7 +85,7 @@ BI.ChartCombineFormatItemFactory = {
                         "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                     },
-                    "align": "inside",
+                    "align": "outside",
                     "enabled": false
                 },
                 "percentageLabel": {
@@ -189,8 +188,8 @@ BI.ChartCombineFormatItemFactory = {
                     "shadow": true,
                     "curve": false,
                     "sizeBy": "area",
-                    "maxSize": 60,
-                    "minSize": 12,
+                    "maxSize": 70,
+                    "minSize": 15,
                     "lineWidth": 0,
                     "animation": true,
                     "fillColorOpacity": 0.699999988079071,

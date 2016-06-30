@@ -20,6 +20,9 @@ PageTableView = BI.inherit(BI.View, {
                     values: [{type: "bi.page_table_cell", text: 101}, {
                         type: "bi.page_table_cell",
                         text: 102
+                    }, {type: "bi.page_table_cell", text: 101}, {
+                        type: "bi.page_table_cell",
+                        text: 102
                     }, {type: "bi.page_table_cell", text: 101}]
                 }, {
                     type: "bi.page_table_cell",
@@ -27,13 +30,22 @@ PageTableView = BI.inherit(BI.View, {
                     values: [{type: "bi.page_table_cell", text: 201}, {
                         type: "bi.page_table_cell",
                         text: 202
+                    }, {type: "bi.page_table_cell", text: 201}, {
+                        type: "bi.page_table_cell",
+                        text: 202
                     }, {type: "bi.page_table_cell", text: 201}]
                 }],
                 values: [{type: "bi.page_table_cell", text: 1001}, {
                     type: "bi.page_table_cell",
                     text: 1002
+                }, {type: "bi.page_table_cell", text: 1001}, {
+                    type: "bi.page_table_cell",
+                    text: 1002
                 }, {type: "bi.page_table_cell", text: 1001}]
             }], values: [{type: "bi.page_table_cell", text: 12001}, {
+                type: "bi.page_table_cell",
+                text: 12002
+            }, {type: "bi.page_table_cell", text: 12001}, {
                 type: "bi.page_table_cell",
                 text: 12002
             }, {type: "bi.page_table_cell", text: 12001}]
@@ -57,6 +69,14 @@ PageTableView = BI.inherit(BI.View, {
             type: "bi.page_table_cell",
             text: "jine",
             tag: 3
+        }, {
+            type: "bi.page_table_cell",
+            text: "金额汇总",
+            tag: 4
+        }, {
+            type: "bi.page_table_cell",
+            text: "金额汇总2",
+            tag: 5
         }];
 
         var crossHeader = [{
@@ -72,17 +92,8 @@ PageTableView = BI.inherit(BI.View, {
                 type: "bi.page_table_cell",
                 text: "node1",
                 values: [1, 2, 3]
-                //children: [{
-                //    type: "bi.page_table_cell",
-                //    text: "childnode1"
-                //}, {
-                //    type: "bi.page_table_cell",
-                //    text: "childnode2"
-                //}, {
-                //    type: "bi.page_table_cell",
-                //    text: BI.i18nText("BI-Summary_Values")
-                //}]
-            }]
+            }],
+            values: [1, 2]
         }];
 
         var table1 = BI.createWidget({
@@ -104,9 +115,9 @@ PageTableView = BI.inherit(BI.View, {
                     populate(items, header, crossItems, crossHeader);
                 }, 1000);
             },
-            columnSize: ["", "", "", "", ""],
+            columnSize: ["", "", "", "", "", "", ""],
             isNeedMerge: true,
-            mergeCols: [0, 1,],
+            mergeCols: [0, 1],
             header: header,
             items: items,
             crossHeader: crossHeader,

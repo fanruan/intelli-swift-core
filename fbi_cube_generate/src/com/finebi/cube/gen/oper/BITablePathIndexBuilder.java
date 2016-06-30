@@ -75,8 +75,11 @@ public class BITablePathIndexBuilder extends BIProcessor {
                     GroupValueIndex resultGroupValueIndex = getTableLinkedOrGVI(frontGroupValueIndex, lastRelationEntity);
                     appearPrimaryValue.or(resultGroupValueIndex);
                     targetPathEntity.addRelationIndex(row, resultGroupValueIndex);
+                    buildReverseIndex(targetPathEntity, row, resultGroupValueIndex);
                 }
-                targetPathEntity.addRelationNULLIndex(0, appearPrimaryValue.NOT(getJuniorTableRowCount()));
+                GroupValueIndex nullIndex = appearPrimaryValue.NOT(getJuniorTableRowCount());
+                buildReverseIndex(targetPathEntity, null, nullIndex);
+                targetPathEntity.addRelationNULLIndex(0, nullIndex);
                 long costTime = System.currentTimeMillis() - t;
                 biLogManager.infoRelation(getRelationColumnKeyInfo(), costTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
@@ -95,6 +98,15 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 }
             }
         }
+    }
+
+    private void buildReverseIndex(final ICubeRelationEntityService tableRelation, final Integer row, GroupValueIndex gvi) {
+        gvi.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int rowIndex) {
+                tableRelation.addReverseIndex(rowIndex, row);
+            }
+        });
     }
 
     public static GroupValueIndex getTableLinkedOrGVI(GroupValueIndex currentIndex, final ICubeIndexDataGetterService reader) {

@@ -12,18 +12,6 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DetailTableCell.superclass._init.apply(this, arguments);
-        // this.wrapper = BI.createWidget({
-        //     type: "bi.absolute",
-        //     element: this.element
-        // });
-        //
-        // this.wrapper.addItem({
-        //     el: this._createItem(),
-        //     top: 0,
-        //     left: 0,
-        //     bottom: 0,
-        //     right: 0
-        // });
         this._createItem();
     },
 
@@ -150,6 +138,10 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         text = this._parseNumLevel(text, numLevel);
         text = this._parseFloatByDot(text, format);
+
+        if (text === Infinity) {
+            text = "N/0";
+        }
         item.setText(text);
 
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);

@@ -18,7 +18,8 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         ICON_WIDTH: 24,
         ICON_HEIGHT: 24,
         NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240
+        FORMAT_SEGMENT_WIDTH: 240,
+        POINTER_SEGMENT_WIDTH: 150
     },
 
     _defaultConfig: function(){
@@ -58,6 +59,18 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         });
         this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
+        });
+
+        //单指针，多指针
+        this.pointer = BI.createWidget({
+            type: "bi.segment",
+            width: this.constant.POINTER_SEGMENT_WIDTH,
+            height: this.constant.BUTTON_HEIGHT,
+            items: BICst.POINTERS
+        });
+
+        this.pointer.on(BI.Segment.EVENT_CHANGE, function () {
+            self.fireEvent((BI.DashboardChartSetting.EVENT_CHANGE));
         });
 
         //数量级和单位
@@ -111,6 +124,28 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 })
+            }]
+        });
+
+        var pointers = BI.createWidget({
+            type: "bi.horizontal_adapt",
+            columnSize: [78],
+            cls:　"single-line-settings",
+            items: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Number_of_pointers"),
+                    textAlign: "left",
+                    lgap: this.constant.SIMPLE_H_LGAP,
+                    cls: "line-title"
+            }, {
+                type: "bi.left",
+                items: BI.createItems([{
+                    type: "bi.center_adapt",
+                    items: [this.pointer]
+                }], {
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: this.constant.SIMPLE_H_GAP
             }]
         });
 
@@ -168,7 +203,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, otherAttr],
+            items: [tableStyle, pointers, lYAxis, otherAttr],
             hgap: 10
         })
     },
@@ -177,6 +212,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         var wId = this.options.wId;
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.chartTypeGroup.setValue(BI.Utils.getWSChartDashboardTypeByID(wId));
+        this.pointer.setValue(BI.Utils.getWSNumberOfPointerByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSDashboardNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSDashboardUnitByID(wId));
     },
@@ -185,6 +221,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_dashboard_type: this.chartTypeGroup.getValue()[0],
+            number_of_pointer: this.pointer.getValue()[0],
             dashboard_number_level: this.numberLevellY.getValue()[0],
             dashboard_unit: this.LYUnit.getValue()
         }
@@ -193,6 +230,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
     setValue: function(v){
         this.transferFilter.setSelected(v.transfer_filter);
         this.chartTypeGroup.setValue(v.chart_dashboard_type);
+        this.pointer.setValue(v.number_of_pointer);
         this.numberLevellY.setValue(v.dashboard_number_level);
         this.LYUnit.setValue(v.dashboard_unit);
     }

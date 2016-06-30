@@ -204,10 +204,12 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     private void setEdit(JSONObject jo) throws Exception {
-        JSONObject pack = jo.getJSONObject(Constants.PACK_ID);
-        JSONArray tables = pack.getJSONArray("tables");
-        for (int i = 0; i < tables.length(); i++){
-            tables.getJSONObject(i).put("inedible", true);
+        if (jo.has(Constants.PACK_ID)){
+            JSONObject pack = jo.getJSONObject(Constants.PACK_ID);
+            JSONArray tables = pack.getJSONArray("tables");
+            for (int i = 0; i < tables.length(); i++){
+                tables.getJSONObject(i).put("inedible", true);
+            }
         }
     }
 
@@ -254,9 +256,20 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         getUserAnalysisBusiPackManager(userId).removeTable(tableId);
     }
 
+    /**
+     * 先到管理员那找下，再找自己的吧
+     * @param tableId
+     * @param userId
+     * @return
+     * @throws BITableAbsentException
+     */
     @Override
     public AnalysisBusiTable getTable(String tableId, long userId) throws BITableAbsentException {
-        return getUserAnalysisBusiPackManager(userId).getTable(tableId);
+        try{
+            return getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).getTable(tableId);
+        } catch (BITableAbsentException e){
+            return getUserAnalysisBusiPackManager(userId).getTable(tableId);
+        }
     }
 
     @Override

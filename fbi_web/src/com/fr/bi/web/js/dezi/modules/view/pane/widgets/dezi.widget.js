@@ -79,7 +79,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 el: this.tableChart,
                 left: 10,
                 right: 10,
-                top: 50,
+                top: 45,
                 bottom: 10
             }, {
                 el: this.chartDrill,
@@ -95,9 +95,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
-                self.widget.attr("items")[3].top = 0;
-                self.widget.resize();
             }
+            self.widget.attr("items")[3].top = 0;
+            self.widget.resize();
         });
     },
 
@@ -111,7 +111,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     "dashboard-title-left" : "dashboard-title-center",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
                 validationChecker: function (v) {
@@ -144,10 +144,22 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     _createTools: function () {
         var self = this;
+
+        this.refreshChartButton = BI.createWidget({
+            type: "bi.icon_button",
+            width: 16,
+            height: 16,
+            cls: "refresh-table-font-hightlight dashboard-title-detail"
+        });
+        this.refreshChartButton.on(BI.IconButton.EVENT_CHANGE, function () {
+            self.tableChart.magnify();
+        });
+
         var filter = BI.createWidget({
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Show_Filters"),
             cls: "widget-tools-filter-font dashboard-title-detail"
         });
         filter.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -158,6 +170,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -217,7 +230,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
                     window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                        + window.encodeURIComponent(self.model.get("name")));
+                    + window.encodeURIComponent(self.model.get("name")));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY:
                     self.model.copy();
@@ -238,8 +251,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [filter, expand, combo],
-            hgap: 3
+            items: [this.refreshChartButton, filter, expand, combo],
+            lgap: 10
         });
         this.tools.setVisible(false);
     },
@@ -309,6 +322,41 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         })
     },
 
+    _refreshMagnifyButton: function () {
+        switch (this.model.get("type")) {
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+                this.refreshChartButton.setVisible(true);
+                break;
+            default:
+                this.refreshChartButton.setVisible(false);
+        }
+    },
+
     listenEnd: function () {
 
     },
@@ -329,6 +377,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
+        if (BI.has(changed, "type")) {
+            this._refreshMagnifyButton();
+        }
     },
 
     local: function () {
@@ -342,7 +393,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
-        this.tableChartPopupulate();
+        this._refreshMagnifyButton();
+        this._refreshTableAndFilter();
         this._refreshLayout();
         this._refreshTitlePosition();
     }

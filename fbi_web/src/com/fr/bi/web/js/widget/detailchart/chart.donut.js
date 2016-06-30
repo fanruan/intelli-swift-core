@@ -16,7 +16,8 @@ BI.DonutChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        STYLE_NORMAL: 21
+        STYLE_NORMAL: 21,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -106,16 +107,10 @@ BI.DonutChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.DonutChart, {
-    formatItems: function (items) {
-        var name = BI.keys(items)[0];
-        return {
-            "data": items[name],
-            "name": name,
-            stack: false
-        }
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.DonutChart.EVENT_CHANGE = "EVENT_CHANGE";

@@ -17,7 +17,8 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        STYLE_NORMAL: 21
+        STYLE_NORMAL: 21,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -157,6 +158,9 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
+                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                                da.y = 0;
+                            }
                         }
                     })
                 })
@@ -240,6 +244,51 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(data){
+        var o = this.options;
+        var items = [];
+        BI.each(data, function(idx, item){
+            items = BI.concat(items, item);
+        });
+        if(BI.isEmptyArray(items)){
+            return [];
+        }
+        if(items.length === 1){
+            return [items];
+        }
+        var colors = this.config.chart_color || [];
+        if(BI.isEmptyArray(colors)){
+            colors = ["#5caae4"];
+        }
+        var seriesMinus = [];
+        BI.each(items[0].data, function(idx, item){
+            var res = items[1].data[idx].y - item.y;
+            seriesMinus.push({
+                x: items[1].data[idx].x,
+                y: res,
+                targetIds: items[1].data[idx].targetIds
+            });
+        });
+        items[1] = {
+            data: seriesMinus,
+            name: items[1].name,
+            stack: "stackedArea",
+            fillColor: colors[0]
+        };
+        BI.each(items, function(idx, item){
+            if(idx === 0){
+                BI.extend(item, {
+                    name: items[0].name,
+                    fillColorOpacity: 0,
+                    stack: "stackedArea",
+                    marker: {enabled: false},
+                    fillColor: false
+                });
+            }
+        });
+        return [items];
+    },
+
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
@@ -263,23 +312,24 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         this.options.items = items;
 
         var types = [];
+        var type = [];
         BI.each(items, function(idx, axisItems){
-            var type = [];
-            BI.each(axisItems, function(id, item){
-                type.push(BICst.WIDGET.AREA);
-            });
-            types.push(type);
+            type.push(BICst.WIDGET.AREA);
         });
+        if(BI.isNotEmptyArray(type)){
+            types.push(type);
+        }
 
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.RangeAreaChart, {
+    },
 
+    magnify: function(){
+        this.combineChart.magnify();
+    }
 });
 BI.RangeAreaChart.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.range_area_chart', BI.RangeAreaChart);

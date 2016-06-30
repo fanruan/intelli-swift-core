@@ -176,6 +176,10 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
             }
             index++;
             ti = loader.getTableIndex(getSingleParentMD5(parents), index* STEP, (index + 1)* STEP);
+            getters.clear();
+            for (PersistentField c : columns){
+                getters.add(ti.getColumnDetailReader(new IndexKey(c.getFieldName())));
+            }
         }
         while (ti.getRowCount() != 0);
         return writeRow.value;

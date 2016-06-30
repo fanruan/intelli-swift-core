@@ -15,7 +15,9 @@ BI.RadarChart = BI.inherit(BI.Widget, {
         LEGEND_BOTTOM: 4,
         ZERO2POINT: 2,
         ONE2POINT: 3,
-        TWO2POINT: 4
+        TWO2POINT: 4,
+        POLYGON: 7,
+        MINLIMIT: 1e-3
     },
 
     _defaultConfig: function () {
@@ -108,6 +110,9 @@ BI.RadarChart = BI.inherit(BI.Widget, {
                         if(position === item.yAxis){
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
+                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                                da.y = 0;
+                            }
                         }
                     })
                 })
@@ -206,7 +211,7 @@ BI.RadarChart = BI.inherit(BI.Widget, {
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
-            chart_radar_type: options.chart_radar_type || c.NORMAL,
+            chart_radar_type: options.chart_radar_type || c.POLYGON,
             chart_color: options.chart_color || [],
             chart_style: options.chart_style || c.STYLE_NORMAL,
             left_y_axis_style: options.left_y_axis_style || c.NORMAL,
@@ -230,16 +235,10 @@ BI.RadarChart = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.combineChart.resize();
-    }
-});
-BI.extend(BI.RadarChart, {
-    formatItems: function (items) {
-        var name = BI.keys(items)[0];
-        return {
-            "data": items[name],
-            "name": name,
-            stack: false
-        }
+    },
+
+    magnify: function(){
+        this.combineChart.magnify();
     }
 });
 BI.RadarChart.EVENT_CHANGE = "EVENT_CHANGE";

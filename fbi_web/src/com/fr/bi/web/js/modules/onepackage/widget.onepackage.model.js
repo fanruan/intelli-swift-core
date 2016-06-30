@@ -197,7 +197,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         BI.each(connectionSet, function (i, keys) {
             var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
             if (!(self.getTableIdByFieldId(primKey.field_id) === tableId || self.getTableIdByFieldId(foreignKey.field_id) === tableId)) {
-                resultConnectionSet.put(connectionSet[i])
+                resultConnectionSet.push(connectionSet[i])
             }
         });
         this.relations.connectionSet = resultConnectionSet;
