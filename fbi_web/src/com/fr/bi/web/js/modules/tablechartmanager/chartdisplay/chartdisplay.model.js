@@ -95,7 +95,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     var value = obj.s.c[id].s[0];
                     if(BI.isNotNull(value) || value !== ""){
                         data.push({
-                            "x": x.split(","),
+                            "x": x,
                             "z": tObj.n,
                             "y": obj.s.c[id].s[0],
                             targetIds: [targetIds[0]]
@@ -116,7 +116,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var adjustData = BI.map(data.c, function (id, item) {
                     var x = item.n;
                     return {
-                        x: x.split(","),
+                        x: x,
                         y: item.s[idx],
                         targetIds: [targetIds[idx]]
                     };
@@ -548,6 +548,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     getLinkageInfo: function(obj){
         var dId = [], clicked = [];
+        //var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
         switch (BI.Utils.getWidgetTypeByID(this.options.wId)) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.FORCE_BUBBLE:

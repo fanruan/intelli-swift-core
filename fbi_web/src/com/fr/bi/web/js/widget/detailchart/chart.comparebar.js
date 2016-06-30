@@ -44,6 +44,9 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
             title: {
                 style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
             },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+            },
             gridLineWidth: 0,
             position: "left"
         }];

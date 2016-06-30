@@ -2309,9 +2309,7 @@ define('Handler',['require','./utils/BaseUtils','./Constants','./dom/DomEvent','
         _fireDOMEvent: function (e, type, targets) {
 
             if (e._stopped) { return; }
-
-            e = e.touches ?  (e.touches.length ? e.touches.item(0) : e.changedTouches[0]) : e;
-
+            
             // Find the layer the event is propagating from and its parents.
             targets = (targets || []).concat(this._findEventTargets(e, type));
 
@@ -3126,14 +3124,14 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
             };
         },
 
-        onClick:function(event){
+        onClick:function(e){
             if(this.click){
-                this.click.call(this, event);
+                this.click.call(this, e);
             }else if(this.hyperlink){
-                event = event || window.event;
+                e = e.touches ?  (e.touches.length ? e.touches.item(0) : e.changedTouches[0]) : e;
                 var hyperlink = this.hyperlink;
                 if(hyperlink && window.FR){
-                    FR.doHyperlink(event, (new Function("return " + hyperlink))(), true);
+                    FR.doHyperlink(e, (new Function("return " + hyperlink))(), true);
                 }
             }
         }
@@ -9799,9 +9797,11 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                         var feature = features[i];
                         var geometry = feature.geometry;
                         if(geometry.type == POINT){//点地图
-                            geo._validPointName[feature.properties.name] = feature;
+                            geo._validPointName[feature.properties.name] = geo._validPointName[feature.properties.name] || [];
+                            geo._validPointName[feature.properties.name].push(feature);
                         }else{//区域地图
-                            geo._validAreaName[feature.properties.name] = feature;
+                            geo._validAreaName[feature.properties.name] = geo._validAreaName[feature.properties.name] || [];
+                            geo._validAreaName[feature.properties.name].push(feature);
                         }
                     }
                 });
@@ -9811,17 +9811,25 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                 // gis层级
                 L.tileLayer(cfg.tileLayer).addTo(leaflet);
             }
-
         },
 
-        getLatLng:function(point){
-
+        //point的feature
+        getDataPointLatLng:function(point){
             var type = point.series.type;
+            if(point){
 
-            var feature = type == Constants.POINT_MAP ? this._validPointName[point.name] : this._validAreaName[point.name];
+                var lnglat;
 
-            if(feature){
-                var lnglat = type == Constants.POINT_MAP ? feature.geometry.coordinates : feature.properties.center;
+                if(point.lnglat){
+
+                    lnglat = point.lnglat;
+
+                }else if(point.feature){
+
+                    var feature = point.feature;
+                    lnglat = type == Constants.POINT_MAP ? feature.geometry.coordinates : feature.properties.center;
+
+                }
 
                 return [lnglat[1], lnglat[0]];
             }
@@ -9863,15 +9871,18 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                         var point = points[pIndex];
                         var feature = geo._validAreaName[point.name];
                         //这一步是过滤数据里多余的和json里没有对应的数据
-                        if(feature){
-                            if(!point.feature){
-                                point.feature = feature;
-                                BaseUtils.extend(point, feature);
-                            }
+                        if(feature && feature.length){
                             if(point.visible && !validArea[point.name]){
                                 validArea[point.name] = true;
-                                BaseUtils.extend(point, point.mapStyle);
-                                areaFeatures.push(point);
+                                feature.forEach(function(f, index){
+                                    var p = BaseUtils.extend({}, point);
+                                    BaseUtils.extend(p, f);
+                                    BaseUtils.extend(p, point.mapStyle);
+                                    p.feature = f;
+                                    p.className = point.className + index;
+                                    areaFeatures.push(p);
+                                });
+
                             }
                         }
                     }
@@ -9881,35 +9892,52 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                     sery.points.forEach(function(point){
                         //注意过滤掉数据不对的点
                         if(point.lnglat || geo._validPointName[point.name]){
-                            if(type == Constants.BUBBLE_CHART){
-                                bubbleFeatures.push(point);
-                            }else if(type == Constants.POINT_MAP){
-                                point.icon = defaultIcon;
-                                imageFeatures.push(point);
-                            }else{
-                                if(point.marker && BaseUtils.isImageMarker(point.marker.symbol)){
-                                    point.icon = {
-                                        iconUrl:point.marker.symbol,
-                                        iconSize:[point.marker.width, point.marker.height]
-                                    };
-                                    imageFeatures.push(point);
+
+                            var duplicated = [point];
+
+                            if(!point.lnglat){
+                                duplicated = [];
+                                var pointFeatures = geo._validPointName[point.name];
+                                pointFeatures.forEach(function(f, index){
+                                    var p = BaseUtils.extend({}, point);
+                                    p.feature = f;
+                                    p.className = point.className + index;
+                                    duplicated.push(p);
+                                });
+                            }
+
+                            for(var pIndex = duplicated.length - 1; pIndex >= 0; pIndex--){
+                                var p = duplicated[pIndex];
+                                if(type == Constants.BUBBLE_CHART){
+                                    bubbleFeatures.push(p);
+                                }else if(type == Constants.POINT_MAP){
+                                    p.icon = defaultIcon;
+                                    imageFeatures.push(p);
                                 }else{
-                                    scatterFeatures.push(point);
+                                    if(p.marker && BaseUtils.isImageMarker(p.marker.symbol)){
+                                        p.icon = {
+                                            iconUrl:point.marker.symbol,
+                                            iconSize:[point.marker.width, point.marker.height]
+                                        };
+                                        imageFeatures.push(p);
+                                    }else{
+                                        scatterFeatures.push(p);
+                                    }
                                 }
                             }
                         }
                     });
-                }
+                 }
             }
 
             var dStyle = this.getDefaultMapStyle();
             for(var name in this._validAreaName){
-                var feature = this._validAreaName[name];
-                if(feature.properties && !validArea[feature.properties.name]){
-                    feature = QueryUtils.merge({}, feature, true);
-                    QueryUtils.merge(feature, dStyle, true);
-                    areaFeatures.push(feature);
-                }
+                var features = this._validAreaName[name];
+                features.forEach(function(f){
+                    if(f.properties && !validArea[f.properties.name]){
+                        areaFeatures.push(BaseUtils.extend({}, f, dStyle));
+                    }
+                });
             }
 
             return {
@@ -16830,12 +16858,12 @@ define('chart/Pie',['require','../Constants','../utils/BaseUtils','./BaseChart',
             var tmpLeftTop = this._ignoreMinArcLabel(usedR, leftTop);
             var tmpLeftBottom = this._ignoreMinArcLabel(usedR, leftBottom);
 
-            var rightTop = this._testIfHorizontalFit(rightTop, tmpRightTop, usedR, dim, RIGHT_TOP);
-            var rightBottom = this._testIfHorizontalFit(rightBottom, tmpRightBottom, usedR, dim, RIGHT_BOTTOM);
-            var leftTop = this._testIfHorizontalFit(leftTop, tmpLeftTop, usedR, dim, LEFT_TOP);
-            var leftBottom = this._testIfHorizontalFit(leftBottom, tmpLeftBottom, usedR, dim, LEFT_BOTTOM);
+            var rightTopFit = this._testIfHorizontalFit(tmpRightTop, usedR, dim, RIGHT_TOP);
+            var rightBottomFit = this._testIfHorizontalFit(tmpRightBottom, usedR, dim, RIGHT_BOTTOM);
+            var leftTopFit = this._testIfHorizontalFit(tmpLeftTop, usedR, dim, LEFT_TOP);
+            var leftBottomFit = this._testIfHorizontalFit(tmpLeftBottom, usedR, dim, LEFT_BOTTOM);
 
-            return rightTop && rightBottom && leftTop && leftBottom;
+            return rightTopFit && rightBottomFit && leftTopFit && leftBottomFit;
         },
 
         _testIfHorizontalFit:function(arcPoints, usedR, dim, location){
@@ -21137,7 +21165,7 @@ define('chart/Bubble',['require','./BaseChart','../utils/BaseUtils','../Constant
             if(this.isUpdateWithForce()){
                 return;
             }
-
+            
             d3.layout.pack().sort(null)
                 .size(size)
                 .children(function(d) {
@@ -21149,6 +21177,11 @@ define('chart/Bubble',['require','./BaseChart','../utils/BaseUtils','../Constant
                 .nodes({values: d3.nest()
                     .key(function(d) { return d.seriesName; })
                     .entries(nodes)});
+
+            //这个layout会修改value的属性
+            nodes.forEach(function(point){
+                point.value = point.size;
+            });
 
             //模拟集聚的过程
             var start = 0.1, end = 0.005;
@@ -21935,11 +21968,11 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var type = point.series.type;
 
             if(type == Constants.AREA_MAP){
-                var latlng = geo.getLatLng(point);
+                var latlng = geo.getDataPointLatLng(point);
                 var pos = leaflet.latLngToContainerPoint(latlng);
                 return [pos.x, pos.y];
             }else{
-                var latlng = geo.getLatLng(point);
+                var latlng = geo.getDataPointLatLng(point);
                 var pos = leaflet.latLngToContainerPoint(latlng);
                 var radius = point.radius || (point.marker && point.marker.radius) || this.getDefaultMarkerRadius();
                 radius = (radius + 1)/1.414;
@@ -26834,7 +26867,7 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
             var leaflet = this.component.vanchart._leaflet;
 
             pointsText.forEach(function(point){
-                var latlng = geo.getLatLng(point);
+                var latlng = geo.getDataPointLatLng(point);
                 var pixels = leaflet.latLngToContainerPoint(latlng);
                 var labelBounds = BaseUtils.makeBounds(pixels, point.labelDim);
                 point.labelPos = labelBounds;
@@ -26843,7 +26876,7 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
 
             areaText.forEach(function(point){
                 if(point.dataLabels){
-                    var latlng = geo.getLatLng(point);
+                    var latlng = geo.getDataPointLatLng(point);
                     var pixels = leaflet.latLngToContainerPoint(latlng);
                     var labelBounds = BaseUtils.makeBounds(pixels, point.labelDim);
                     if(!manager.isOverlapped()){
@@ -26905,7 +26938,7 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
                 },
 
                 onEachLayer:function(layer){
-                    layer.on(renderer._scatterMapHandler(flayer))
+                    layer.on(renderer._scatterMapHandler(layer))
                 }
             };
             this._scatterLayer = this._scatterLayer || L.layerGroup().addTo(leaflet);
@@ -26937,7 +26970,7 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
 
             for(var i = selection.enter.length - 1; i >= 0; i--){
                 var point = selection.enter[i];
-                var layer = layerFunc(geo.getLatLng(point), options && options.style.call(null, point), point, this);
+                var layer = layerFunc(geo.getDataPointLatLng(point), options && options.style.call(null, point), point, this);
                 options && options.onEachLayer.call(null, layer);
                 layerGroup.addLayer(layer);
             }
@@ -27006,13 +27039,24 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
                 },
 
                 mouseover:function(){
-                    d3.select(layer._path).style({'stroke-width': 2, 'filter':'url(#' + renderer._getDropShadowID() + ')'});
+                    var areaLayers = renderer._areaLayer.getLayers();
+                    for(var i = 0, len = areaLayers.length; i < len; i++){
+                        if(areaLayers[i]._data.name == layer._data.name){
+                            d3.select(areaLayers[i]._path).style({'stroke-width': 2, 'filter':'url(#' + renderer._getDropShadowID() + ')'});
+                        }
+                    }
                 },
 
                 mouseout:function(){
-                    var feature = layer._data;
+
                     tooltip.hide();
-                    d3.select(layer._path).style({'stroke-width': feature.borderWidth, 'filter':''});
+                    var areaLayers = renderer._areaLayer.getLayers();
+                    for(var i = 0, len = areaLayers.length; i < len; i++){
+                        if(areaLayers[i]._data.name == layer._data.name){
+                            var feature = areaLayers[i]._data;
+                            d3.select(areaLayers[i]._path).style({'stroke-width': feature.borderWidth, 'filter':''});
+                        }
+                    }
                 },
 
                 mousemove:function(){
@@ -27023,7 +27067,7 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
         },
 
         _bubbleMapHandler:function(layer){
-            var map = this.component;
+            var map = this.component, renderer = this, feature = layer._data;;
             var tooltip = map.vanchart.getComponent(Constants.TOOLTIP_COMPONENT);
             return {
                 click:function(){
@@ -27032,27 +27076,37 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
                 },
 
                 mouseover:function(){
-                    d3.select(layer._path)
-                        .style({
-                            'stroke':feature.mouseOverColor,
-                            'stroke-width':0,
-                            'stroke-opacity':0.35,
-                            'fill':feature.mouseOverColor
-                        })
-                        .interrupt(Constants.SELECT_ANIMATION).transition(Constants.SELECT_ANIMATION)
-                        .duration(200).ease('back-out').style('stroke-width', 6)
+                    var areaLayers = renderer._bubbleLayer.getLayers();
+                    for(var i = 0, len = areaLayers.length; i < len; i++){
+                        if(areaLayers[i]._data.name == layer._data.name){
+                            d3.select(areaLayers[i]._path)
+                                .style({
+                                    'stroke':feature.mouseOverColor,
+                                    'stroke-width':0,
+                                    'stroke-opacity':0.35,
+                                    'fill':feature.mouseOverColor
+                                })
+                                .interrupt(Constants.SELECT_ANIMATION).transition(Constants.SELECT_ANIMATION)
+                                .duration(200).ease('back-out').style('stroke-width', 6)
+                        }
+                    }
                 },
 
                 mouseout:function(){
                     tooltip.hide();
 
-                    d3.select(layer._path)
-                        .style('fill', feature.color)
-                        .style('fill-opacity', feature.fillColorOpacity)
-                        .interrupt(Constants.SELECT_ANIMATION)
-                        .transition(Constants.SELECT_ANIMATION);
-                    d3.select(layer._path)
-                        .style('stroke-width', 0);
+                    var areaLayers = renderer._bubbleLayer.getLayers();
+                    for(var i = 0, len = areaLayers.length; i < len; i++){
+                        if(areaLayers[i]._data.name == layer._data.name){
+                            d3.select(areaLayers[i]._path)
+                                .style('fill', feature.color)
+                                .style('fill-opacity', feature.fillColorOpacity)
+                                .interrupt(Constants.SELECT_ANIMATION)
+                                .transition(Constants.SELECT_ANIMATION);
+                            d3.select(areaLayers[i]._path)
+                                .style('stroke-width', 0);
+                        }
+                    }
                 },
 
                 mousemove:function(){
@@ -27065,6 +27119,7 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
         _scatterMapHandler:function(layer){
             var map = this.component, renderer = this;
             var tooltip = map.vanchart.getComponent(Constants.TOOLTIP_COMPONENT);
+            var feature = layer._data;
             var markerType = feature.marker.symbol;
             var radius =  feature.marker.radius || map.getDefaultMarkerRadius();
             var markerHighlightColor = ColorUtils.getHighLightColor(feature.marker.fillColor);
@@ -27076,22 +27131,32 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
                 },
 
                 mouseover:function(){
-                    d3.select(layer._path)
-                        .style('fill', markerHighlightColor)
-                        .style('fill-opacity', feature.fillColorOpacity)
-                        .interrupt(Constants.SELECT_ANIMATION)
-                        .transition(Constants.SELECT_ANIMATION)
-                        .ease('ease-out-expo')
-                        .attr('d', renderer._getMarkerPath(markerType, radius + 2))
+                    var areaLayers = renderer._scatterLayer.getLayers();
+                    for(var i = 0, len = areaLayers.length; i < len; i++){
+                        if(areaLayers[i]._data.name == layer._data.name){
+                            d3.select(areaLayers[i]._path)
+                                .style('fill', markerHighlightColor)
+                                .style('fill-opacity', feature.fillColorOpacity)
+                                .interrupt(Constants.SELECT_ANIMATION)
+                                .transition(Constants.SELECT_ANIMATION)
+                                .ease('ease-out-expo')
+                                .attr('d', renderer._getMarkerPath(markerType, radius + 2))
+                        }
+                    }
+
                 },
 
                 mouseout:function(){
                     tooltip.hide();
-
-                    d3.select(layer._path)
-                        .attr('d', renderer._getMarkerPath(markerType, radius))
-                        .style('fill', feature.marker.fillColor)
-                        .style('fill-opacity', feature.fillColorOpacity);
+                    var areaLayers = renderer._scatterLayer.getLayers();
+                    for(var i = 0, len = areaLayers.length; i < len; i++){
+                        if(areaLayers[i]._data.name == layer._data.name){
+                            d3.select(areaLayers[i]._path)
+                                .attr('d', renderer._getMarkerPath(markerType, radius))
+                                .style('fill', feature.marker.fillColor)
+                                .style('fill-opacity', feature.fillColorOpacity);
+                        }
+                    }
                 },
 
                 mousemove:function(){

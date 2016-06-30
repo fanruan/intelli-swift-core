@@ -218,15 +218,6 @@ BI.ChartCombineFormatItemFactory = {
                 "position": "right",
                 "enabled": true
             },
-            "rangeLegend": {
-                "borderColor": "rgb(204,204,204)",
-                "borderRadius": 0,
-                "shadow": false,
-                "borderWidth": 0,
-                "style": {"fontFamily": "微软雅黑", "color": "rgba(102,102,102,1.0)", "fontSize": "11pt", "fontWeight": ""},
-                "position": "right",
-                "enabled": false
-            },
             "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
             "plotBorderColor": "rgba(255,255,255,0)",
             "tools": {

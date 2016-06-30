@@ -99,7 +99,7 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "area";
-        config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
+        config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${VALUE}";
         return [items, config];
 
         function formatChartStyle(){
