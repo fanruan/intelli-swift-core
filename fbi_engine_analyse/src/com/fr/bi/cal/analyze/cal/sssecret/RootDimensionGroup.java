@@ -11,6 +11,7 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
+import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
 import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
@@ -445,7 +446,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 }
                 Set currentSet = ((StringDimensionCalculator) ckp).createFilterValueSet((String) value, session.getLoader());
                 StringINFilterValue stf = new StringINFilterValue(currentSet);
-                GroupValueIndex pgvi = stf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
+                GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ck.getField(), new ArrayList<BITableSourceRelation>()), ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
             }
             v = v.getParent();
