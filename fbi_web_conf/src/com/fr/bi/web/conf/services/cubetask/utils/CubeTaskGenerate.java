@@ -35,7 +35,7 @@ public class CubeTaskGenerate {
         CubeBuildStuff cubeBuildStuff;
         Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
 /*若有新增表，增量更新，否则进行全量*/
-        String messages="开始cube增量更新! \n 准备更新如下业务表：\n ";
+        String messages="开始cube增量更新! \n需要更新的业务表如下：\n";
         if (newTables.size() != 0) {
             for (BIBusinessTable table : newTables) {
                 messages+=table.getTableSource().getTableName()+"\n";
