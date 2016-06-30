@@ -167,6 +167,15 @@ public class UserWidget {
         }
     }
 
+    public void clear() {
+        synchronized (lock){
+            maxRow = Integer.MAX_VALUE;
+            tempValue.clear();
+            session = new UserSession();
+        }
+
+    }
+
     private class UserSession extends BISession{
 
         public UserSession() {
