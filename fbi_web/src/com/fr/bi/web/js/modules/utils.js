@@ -1979,7 +1979,9 @@
                     var tarFilter = BI.Utils.getDimensionFilterValueByID(cId);
                     if (BI.isNotNull(tarFilter)) {
                         parseFilter(tarFilter);
-                        filterValues.push(tarFilter);
+                        if(BI.isNotNull(tarFilter) && BI.isNotEmptyObject(tarFilter)) {
+                            filterValues.push(tarFilter);
+                        }
                     }
                 }
             });
