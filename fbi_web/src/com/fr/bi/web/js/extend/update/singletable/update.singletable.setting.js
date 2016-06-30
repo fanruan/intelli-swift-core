@@ -27,7 +27,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         //最上面的更新方式下拉框
         this.updateType = BI.createWidget({
             type: "bi.text_value_check_combo",
-            height: 28,
+            height: 30,
             items: [{
                 text: BI.i18nText("BI-Always_Updates"),
                 value: BICst.SINGLE_TABLE_UPDATE_TYPE.ALL
@@ -337,7 +337,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-No_Update"),
                 value: BICst.SINGLE_TABLE_UPDATE.NEVER
             }],
-            height: 28
+            height: 30
         });
         this.globalUpdateSet.setValue(this.model.getTogetherNever());
 

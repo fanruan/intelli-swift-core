@@ -106,7 +106,9 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             buildPositionOfGroup(groupPosition, groupValueIndex);
             groupPosition++;
         }
-        columnEntityService.addNULLIndex(0, buildGroupValueIndex(nullRowNumbers));
+        GroupValueIndex nullIndex = buildGroupValueIndex(nullRowNumbers);
+        buildPositionOfGroup(-1, nullIndex);
+        columnEntityService.addNULLIndex(0, nullIndex);
     }
 
     private void buildPositionOfGroup(final int groupPosition, GroupValueIndex groupValueIndex) {

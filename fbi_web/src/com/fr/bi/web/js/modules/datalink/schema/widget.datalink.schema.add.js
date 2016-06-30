@@ -5,7 +5,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
 
     constants: {
         INPUT_WIDTH: 384,
-        INPUT_HEIGHT: 28,
+        INPUT_HEIGHT: 30,
         LINK_NAME_WIDTH: 452
     },
 

@@ -67,7 +67,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             type: "bi.editor_icon_check_combo",
             items: driverItems,
             width: 460,
-            height: 28
+            height: 30
         });
         var driver = BI.isEmptyString(self.model.getDriver()) ? driverItems[0].value : self.model.getDriver();
         driverCombo.setValue(driver);
@@ -133,7 +133,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             type: "bi.label",
             text: BI.i18nText("BI-Code_Conversion"),
             textAlign: "left",
-            height: 28,
+            height: 30,
             width: "100%",
             cls: "data-link-code"
         });
@@ -143,7 +143,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             type: "bi.text_value_check_combo",
             items: BICst.DATA_LINK_MANAGE.CODES,
             width: 460,
-            height: 28
+            height: 30
         });
         oldCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setOriginalCharsetName(this.getValue());
@@ -156,7 +156,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             type: "bi.text_value_check_combo",
             items: BICst.DATA_LINK_MANAGE.CODES,
             width: 460,
-            height: 28
+            height: 30
         });
         newCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setNewCharsetName(this.getValue());

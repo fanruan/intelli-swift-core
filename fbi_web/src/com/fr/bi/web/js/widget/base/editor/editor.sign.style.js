@@ -138,6 +138,9 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
         this.editor.on(BI.Editor.EVENT_ERROR, function () {
             self.fireEvent(BI.SignStyleEditor.EVENT_ERROR);
         });
+        this.editor.on(BI.Editor.EVENT_ENTER, function () {
+            self.fireEvent(BI.SignStyleEditor.EVENT_ENTER);
+        });
         this.editor.on(BI.Editor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.SignStyleEditor.EVENT_RESTRICT);
         });
@@ -249,6 +252,7 @@ BI.SignStyleEditor.EVENT_STOP = "EVENT_STOP";
 BI.SignStyleEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.SignStyleEditor.EVENT_VALID = "EVENT_VALID";
 BI.SignStyleEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.SignStyleEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.SignStyleEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.SignStyleEditor.EVENT_SPACE = "EVENT_SPACE";
 BI.SignStyleEditor.EVENT_EMPTY = "EVENT_EMPTY";
