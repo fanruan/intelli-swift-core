@@ -1,5 +1,6 @@
 package com.fr.bi.cal.generate.timerTask.quartz;
 
+import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
 import com.fr.general.jsqlparser.parser.ParseException;
 import com.fr.third.org.quartz.*;
 import com.fr.third.org.quartz.impl.StdSchedulerFactory;
@@ -16,29 +17,22 @@ public class QuartzManager {
     private static String JOB_GROUP_NAME = "group";
     private static String TRIGGER_GROUP_NAME = "trigger";
 
-
-    /** */
-    /**
-     * 添加一个定时任务，使用默认的任务组名，触发器名，触发器组名
-     *
-     * @param jobName 任务名
-     * @param job     任务
-     * @param time    时间设置，参考quartz说明文档
-     * @throws SchedulerException
-     * @throws ParseException
-     */
-    public static void addJob(String jobName, Job job, String time)
-            throws SchedulerException, ParseException, java.text.ParseException {
+    public static void addJob(Job jobTask, TimerTaskSchedule schedule) throws SchedulerException, ParseException, java.text.ParseException {
         Scheduler sched = sf.getScheduler();
-        JobDetail jobDetail = new JobDetail(jobName, JOB_GROUP_NAME, job.getClass());//任务名，任务组，任务执行类
+        JobDetail jobDetail = new JobDetail(schedule.getJobName(), JOB_GROUP_NAME, jobTask.getClass());//任务名，任务组，任务执行类
+        jobDetail.getJobDataMap().put("jobName", schedule.getJobName());
+        jobDetail.getJobDataMap().put("time", schedule.getTimeSchedule());
+        jobDetail.getJobDataMap().put("sourceName", schedule.getSourceName());
+        jobDetail.getJobDataMap().put("CubeBuildStuff", schedule.getCubeBuildStuff());
+        jobDetail.getJobDataMap().put("userId", schedule.getUserId());
         //触发器
         CronTrigger trigger =
-                new CronTrigger(jobName, TRIGGER_GROUP_NAME);//触发器名,触发器组
-        trigger.setCronExpression(time);//触发器时间设定
+                new CronTrigger(schedule.getJobName(), TRIGGER_GROUP_NAME);//触发器名,触发器组
+        trigger.setCronExpression(schedule.getTimeSchedule());//触发器时间设定
         sched.scheduleJob(jobDetail, trigger);
         //启动
         if (!sched.isShutdown()) {
-            System.out.println("定时任务启动:"+jobName);
+            System.out.println("已设置定时任务!\n 更新表：" + schedule.getSourceName() + "\n 时间设置：" + schedule.getTimeSchedule() + "\n");
             sched.start();
         }
     }
@@ -115,7 +109,6 @@ public class QuartzManager {
         }
     }
 
-    /** */
     /**
      * 移除一个任务(使用默认的任务组名，触发器名，触发器组名)
      *
@@ -130,6 +123,18 @@ public class QuartzManager {
         sched.deleteJob(jobName, JOB_GROUP_NAME);//删除任务
     }
 
+    /**
+     * 移除所有任务(使用默认的任务组名，触发器名，触发器组名)
+     *
+     * @throws SchedulerException
+     */
+    public static void removeAllJobs()
+            throws SchedulerException {
+        Scheduler sched = sf.getScheduler();
+        for (String jobName : sched.getJobNames(JOB_GROUP_NAME)) {
+            removeJob(jobName);
+        }
+    }
     /** */
     /**
      * 移除一个任务

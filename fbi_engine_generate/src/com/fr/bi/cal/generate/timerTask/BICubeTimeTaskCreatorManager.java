@@ -18,9 +18,9 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
     @Override
     public void reGenerateTimeTasks(long userId, List<TimerTaskSchedule> scheduleList) {
         for (TimerTaskSchedule schedule : scheduleList) {
-            JobTask jobTask = new JobTask(schedule.getCubeBuildStuff(), userId);
+            JobTask jobTask = new JobTask();
             try {
-                QuartzManager.addJob(schedule.getJobName(), jobTask, schedule.getTimeSchedule()); //每2秒钟执行一次
+                QuartzManager.addJob(jobTask,schedule);
             } catch (SchedulerException e) {
                 throw BINonValueUtils.beyondControl(e);
             } catch (ParseException e) {
@@ -31,17 +31,13 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
         }
     }
     
-
     @Override
     public void removeAllTimeTasks(long userId, List<TimerTaskSchedule> scheduleList) {
-        for (TimerTaskSchedule schedule : scheduleList) {
             try {
-                QuartzManager.removeJob(schedule.getJobName());
+                QuartzManager.removeAllJobs();
             } catch (SchedulerException e) {
                 throw BINonValueUtils.beyondControl();
             }
-        }
-
         }
 
 

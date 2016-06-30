@@ -38,17 +38,16 @@ public class TimerRunner {
 
     private void clear() {
         List<TimerTaskSchedule> scheduleList = getTimerTaskSchedules();
-        biCubeTimeTaskCreatorProvider.removeAllTimeTasks(biUser.getUserId(),scheduleList);
-    }
-
-    private List<TimerTaskSchedule> getTimerTaskSchedules() {
-        Map<String, UpdateSettingSource> allTimeTaskMap = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(biUser.getUserId());
-        return TimerScheduleAdapter.convertSchedule(this.biUser.getUserId(),allTimeTaskMap);
+        biCubeTimeTaskCreatorProvider.removeAllTimeTasks(biUser.getUserId(), scheduleList);
     }
 
     private void resetTimeTasks() {
         List<TimerTaskSchedule> scheduleList = getTimerTaskSchedules();
-        biCubeTimeTaskCreatorProvider.reGenerateTimeTasks(biUser.getUserId(),scheduleList);
+        biCubeTimeTaskCreatorProvider.reGenerateTimeTasks(biUser.getUserId(), scheduleList);
     }
 
+    private List<TimerTaskSchedule> getTimerTaskSchedules() {
+        Map<String, UpdateSettingSource> allTimeTaskMap = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(biUser.getUserId());
+        return TimerScheduleAdapter.convertSchedule(this.biUser.getUserId(), allTimeTaskMap);
+    }
 }
