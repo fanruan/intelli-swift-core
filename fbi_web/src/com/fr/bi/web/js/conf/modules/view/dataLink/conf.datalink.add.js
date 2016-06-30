@@ -51,7 +51,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
             type: "bi.text_value_check_combo",
             items: self.model.get("databaseItems"),
             width: 460,
-            height: 28
+            height: 30
         });
         this.databaseCombo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
             self._onDatabaseChange(self.databaseCombo.getValue()[0]);
@@ -63,7 +63,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
             type: "bi.text_value_check_combo",
             items: [],
             width: 460,
-            height: 28
+            height: 30
         });
         this.driverCombo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
             self._onDriverChange(self.driverCombo.getValue()[0]);
@@ -74,7 +74,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
         this.urlInput = BI.createWidget({
             type: "bi.sign_editor",
             value: this.model.get("url"),
-            height: 28,
+            height: 30,
             width: 460,
             hgap: 10,
             cls: "item-input",
@@ -86,7 +86,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
         this.userName = BI.createWidget({
             type: "bi.sign_editor",
             value: this.model.get("user"),
-            height: 28,
+            height: 30,
             width: 460,
             hgap: 10,
             cls: "item-input",
@@ -112,7 +112,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
             type: "bi.label",
             text: BI.i18nText("BI-Code_Conversion"),
             textAlign: "left",
-            height: 28,
+            height: 30,
             width: "100%",
             cls: "data-link-code"
         });
@@ -122,7 +122,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
             type: "bi.text_value_check_combo",
             items: self.model.get("codeItems"),
             width: 460,
-            height: 28
+            height: 30
         });
         var oldCode = this._createItemWrap(BI.i18nText("BI-Original_Code"), this.oldCodeCombo);
 
@@ -131,7 +131,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
             type: "bi.text_value_check_combo",
             items: self.model.get("codeItems"),
             width: 460,
-            height: 28
+            height: 30
         });
         var newCode = this._createItemWrap(BI.i18nText("BI-New_Code"), this.newCodeCombo);
         BI.createWidget({
