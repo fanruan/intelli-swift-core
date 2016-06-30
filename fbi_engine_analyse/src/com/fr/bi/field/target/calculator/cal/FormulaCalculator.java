@@ -64,7 +64,8 @@ public class FormulaCalculator extends CalCalculator {
         try {
             Object value = BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetMap, node.getSummaryValueMap()));
             //抛错就是没有值啦
-            node.setSummaryValue(createTargetGettingKey(), value);
+            //pony 这边都存double吧，汇总在汇总要写cube，类型要统一
+            node.setSummaryValue(createTargetGettingKey(), ((Number)value).doubleValue());
         } catch (Throwable e) {
         }
         for (int i = 0, len = node.getChildLength(); i < len; i++) {

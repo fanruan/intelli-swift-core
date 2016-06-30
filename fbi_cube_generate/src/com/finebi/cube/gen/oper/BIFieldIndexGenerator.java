@@ -107,11 +107,11 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             groupPosition++;
         }
         GroupValueIndex nullIndex = buildGroupValueIndex(nullRowNumbers);
-        buildPositionOfGroup(-1, nullIndex);
+        buildPositionOfGroup(null, nullIndex);
         columnEntityService.addNULLIndex(0, nullIndex);
     }
 
-    private void buildPositionOfGroup(final int groupPosition, GroupValueIndex groupValueIndex) {
+    private void buildPositionOfGroup(final Integer groupPosition, GroupValueIndex groupValueIndex) {
         groupValueIndex.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
