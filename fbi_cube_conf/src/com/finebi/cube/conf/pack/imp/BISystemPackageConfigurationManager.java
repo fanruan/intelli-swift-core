@@ -35,7 +35,7 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
 
     @Override
     public BIUserPackageConfigurationManager constructUserManagerValue(Long userId) {
-        return BIFactoryHelper.getObject(BIUserPackageConfigurationManager.class, userId);
+        return BIFactoryHelper.getObject(BIUserPackageConfigurationManager.class, UserControl.getInstance().getSuperManagerID());
     }
 
     public BIUserPackageConfigurationManager getUserGroupConfigManager(long userId) {
