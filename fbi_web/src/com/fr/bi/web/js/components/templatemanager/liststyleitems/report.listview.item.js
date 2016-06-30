@@ -101,7 +101,7 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
             //查看已分享
             var sharedButton = BI.createWidget({
                 type: "bi.icon_button",
-                cls: "share-font",
+                cls: "report-cancel-share-font template-item-icon",
                 title: BI.i18nText("BI-Cancel_Shared_Users"),
                 width: 16,
                 height: 16,

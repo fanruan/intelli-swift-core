@@ -13,13 +13,16 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var dId = o.dId;
         var name = o.text;
-        var combo = BI.createWidget({
-            type: "bi.sort_filter_detail_combo",
-            dId: dId
-        });
-        combo.on(BI.SortFilterDetailCombo.EVENT_CHANGE, function (v) {
-            o.sortFilterChange(v);
-        });
+        var combo = BI.createWidget();
+        if(BI.Utils.getDimensionTypeByID(dId) < BICst.TARGET_TYPE.FORMULA) {
+            combo = BI.createWidget({
+                type: "bi.sort_filter_detail_combo",
+                dId: dId
+            });
+            combo.on(BI.SortFilterDetailCombo.EVENT_CHANGE, function (v) {
+                o.sortFilterChange(v);
+            });
+        }
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var st = this._getNumLevelByLevel(styleSettings.num_level) + (styleSettings.unit || "");
         if (BI.isNotEmptyString(st)) {
