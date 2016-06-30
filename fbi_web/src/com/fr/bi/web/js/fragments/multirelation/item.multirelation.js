@@ -65,6 +65,7 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
                 items.push({
                     type: "bi.label",
                     value: "->",
+                    textHeight: 30,
                     textAlign: "center"
                 });
                 widgetItem.type = "bi.multi_relation_table_field_item";
@@ -80,6 +81,7 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
             items.push({
                 type: "bi.label",
                 value: "->",
+                textHeight: 30,
                 textAlign: "center"
             });
 
