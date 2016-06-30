@@ -92,8 +92,12 @@ PageTableView = BI.inherit(BI.View, {
                 type: "bi.page_table_cell",
                 text: "node1",
                 values: [1, 2, 3]
+            },{
+                type: "bi.page_table_cell",
+                text: "node3",
+                values: [1, 2]
             }],
-            values: [1, 2]
+            //values: [1, 2]
         }];
 
         var table1 = BI.createWidget({
