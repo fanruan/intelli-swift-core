@@ -4,3 +4,11 @@
 .bi-normal-header-cell > table > tbody > tr > td {
   max-width: 0;
 }
+.bi-normal-header-cell .header-cell-text {
+  -webkit-user-select: initial;
+  -khtml-user-select: initial;
+  -moz-user-select: initial;
+  -ms-user-select: initial;
+  -o-user-select: initial;
+  user-select: initial;
+}
