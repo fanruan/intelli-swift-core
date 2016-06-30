@@ -31,13 +31,14 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
             },
             items: self._createItems(o.relations),
             layouts: [{
-                type: "bi.left"
+                type: "bi.left",
             }]
         });
 
         BI.createWidget({
             type: "bi.htape",
             element: this.element,
+            rgap:5,
             items: [{
                 el: {
                     type: "bi.center_adapt",
