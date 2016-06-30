@@ -148,7 +148,11 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
     },
 
     doClick: function () {
+        var o = this.options;
         BI.BusinessPackageButton.superclass.doClick.apply(this, arguments);
+        if (o.forceNotSelected) {
+            return;
+        }
         if (this.isSelected()) {
             this.checkboxIcon.element.removeClass("package-not-selected-font");
             this.checkboxIcon.element.addClass("package-selected-font");
