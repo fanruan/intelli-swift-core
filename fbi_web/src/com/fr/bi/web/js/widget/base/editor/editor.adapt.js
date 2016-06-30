@@ -25,7 +25,6 @@ BI.AdaptiveEditor = BI.inherit(BI.Single, {
     },
 
     _init: function () {
-        this.options.height -= 2;
         BI.AdaptiveEditor.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.editor = BI.createWidget({

@@ -17,10 +17,9 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         this.options.height -= 2;
         BI.SearchEditor.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.element.height(o.height - 2);
         this.editor = BI.createWidget({
             type: "bi.editor",
-            height: o.height - 2,
+            height: o.height,
             watermark: o.watermark,
             allowBlank: true,
             errorText: o.errorText,
