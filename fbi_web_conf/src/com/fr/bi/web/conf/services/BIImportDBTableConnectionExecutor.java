@@ -59,9 +59,9 @@ public class BIImportDBTableConnectionExecutor {
                                 if (isEqual(oldEntry.getValue(), foreignField, connectionName)) {
                                     relationsSet.add(new BITableRelation(
                                             new BIBusinessField(newAddedTableMap.getKey(),
-                                                    foreignField.getFieldName(), new BIFieldID(allFieldIdMap.get(newAddedTableMap.getKey() + foreignField.getFieldName()))),
+                                                    currentTableRelation.getKey(), new BIFieldID(allFieldIdMap.get(newAddedTableMap.getKey() + currentTableRelation.getKey()))),
                                             new BIBusinessField(oldEntry.getKey(),
-                                                    currentTableRelation.getKey(), new BIFieldID(allFieldIdMap.get(oldEntry.getKey() + currentTableRelation.getKey())))));
+                                                    foreignField.getFieldName(), new BIFieldID(allFieldIdMap.get(oldEntry.getKey() + foreignField.getFieldName())))));
                                 }
                             }
                         }
