@@ -1,6 +1,14 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
+.bi-summary-table {
+  -webkit-user-select: initial;
+  -khtml-user-select: initial;
+  -moz-user-select: initial;
+  -ms-user-select: initial;
+  -o-user-select: initial;
+  user-select: initial;
+}
 .bi-summary-table .body-cell-summary {
   color: #1a1a1a;
   font-weight: bold;
