@@ -4,6 +4,7 @@
 package com.fr.bi.stable.engine.index;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
@@ -165,6 +166,11 @@ public class TableIndexAdapter implements ICubeTableService {
     @Override
     public GroupValueIndex getIndexByRow(BIKey key, int row) {
         throw NULL_EXCEPTION;
+    }
+
+    @Override
+    public CubeValueEntry getEntryByRow(BIKey key, int row) {
+        return null;
     }
 
     @Override

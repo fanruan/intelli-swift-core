@@ -1,6 +1,7 @@
 package com.fr.bi.cal.stable.tableindex.index;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
@@ -55,6 +56,11 @@ public class BITableIndex extends GroupTableIndex {
             return loadAll;
         }
 
+    }
+
+    @Override
+    public CubeValueEntry getEntryByRow(BIKey key, int row) {
+        return null;
     }
 
     @Override

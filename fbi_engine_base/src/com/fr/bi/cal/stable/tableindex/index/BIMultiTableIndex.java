@@ -2,6 +2,7 @@ package com.fr.bi.cal.stable.tableindex.index;
 
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
@@ -236,6 +237,11 @@ public class BIMultiTableIndex implements ICubeTableService {
     @Override
     public GroupValueIndex getIndexByRow(BIKey key, int row) {
         return childs.get(key).getIndexByRow(key, row);
+    }
+
+    @Override
+    public CubeValueEntry getEntryByRow(BIKey key, int row) {
+        return null;
     }
 
     @Override
