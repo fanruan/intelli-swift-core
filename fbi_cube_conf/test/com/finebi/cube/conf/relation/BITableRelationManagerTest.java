@@ -245,6 +245,51 @@ public class BITableRelationManagerTest extends TestCase {
             assertTrue(false);
         }
     }
+/*设置ABC，disable掉AB，查看AC是否可用*/
+    public void testAddDisablePathByPart() {
+        try {
+            manager.registerTableRelation(user.getUserId(), BITableRelationTestTool.getAaBa());
+            manager.registerTableRelation(user.getUserId(), BITableRelationTestTool.getBaCa());
+            Set<BITableRelationPath> relationSet = manager.getAllPath(user.getUserId()
+                    , BITableTestTool.getC()
+                    , BITableTestTool.getA()
+            );
+            assertEquals(relationSet.size(), 1);
+            BITableRelationPath A_B = new BITableRelationPath();
+            A_B.addRelationAtHead(BITableRelationTestTool.getAaBa());
+            /**
+             * 禁用路径AB
+             */
+            manager.addDisableRelations(user.getUserId(), A_B);
+            relationSet = manager.getAllAvailablePath(user.getUserId()
+                    , BITableTestTool.getB()
+                    , BITableTestTool.getA()
+            );
+            /**
+             * 可用路径不包含AB
+             */
+            assertEquals(relationSet.size(), 0);
+            /**
+             * 全部路径应该包含AC
+             */
+            relationSet = manager.getAllPath(user.getUserId()
+                    , BITableTestTool.getC()
+                    , BITableTestTool.getA()
+            );
+            assertEquals(relationSet.size(), 1);
+            relationSet = manager.getAllAvailablePath(user.getUserId()
+                    , BITableTestTool.getC()
+                    , BITableTestTool.getA()
+            );
+            /**
+             * 可用路径也不应该包含AC
+             */
+            assertEquals(relationSet.size(), 0);
+        } catch (Exception ignore) {
+            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            assertTrue(false);
+        }
+    }
 
     public void testGetAllTablesPath() {
         try {
