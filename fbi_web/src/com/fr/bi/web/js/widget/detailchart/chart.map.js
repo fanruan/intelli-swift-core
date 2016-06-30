@@ -43,16 +43,16 @@ BI.MapChart = BI.inherit(BI.Widget, {
         config.plotOptions.tooltip.formatter = this.config.tooltip;
         switch (this.config.chart_legend){
             case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
+                config.rangeLegend.enabled = true;
+                config.rangeLegend.position = "bottom";
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
+                config.rangeLegend.enabled = true;
+                config.rangeLegend.position = "right";
                 break;
             case BICst.CHART_LEGENDS.NOT_SHOW:
             default:
-                config.legend.enabled = false;
+                config.rangeLegend.enabled = false;
                 break;
         }
 

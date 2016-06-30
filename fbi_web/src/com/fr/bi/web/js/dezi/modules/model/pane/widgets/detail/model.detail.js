@@ -450,13 +450,12 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 if (regionType < BICst.REGION.TARGET1) {//拖的是维度
                     dimensions[dId].dimension_map = {};
                     if (BI.isNotEmptyString(fId)) {
-                        var dimensionTableId = BI.Utils.getTableIdByFieldID(fId);
                         BI.each(dimensions, function (idx, dimension) {
                             if (idx === dId) {
                                 return;
                             }
                             if (!BI.Utils.isDimensionByDimensionID(idx)) {
-                                var path = BI.Utils.getPathsFromFieldAToFieldB(BI.Utils.getFieldIDByDimensionID(dimensionTableId), BI.Utils.getFieldIDByDimensionID(idx));
+                                var path = BI.Utils.getPathsFromFieldAToFieldB(fId, BI.Utils.getFieldIDByDimensionID(idx));
                                 if (path.length === 1) {
                                     var target_relation = path[0];
                                     dimensions[dId].dimension_map[idx] = {
