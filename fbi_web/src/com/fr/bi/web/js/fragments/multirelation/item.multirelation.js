@@ -31,13 +31,14 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
             },
             items: self._createItems(o.relations),
             layouts: [{
-                type: "bi.left"
+                type: "bi.left",
             }]
         });
 
         BI.createWidget({
             type: "bi.htape",
             element: this.element,
+            rgap:5,
             items: [{
                 el: {
                     type: "bi.center_adapt",
@@ -65,6 +66,7 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
                 items.push({
                     type: "bi.label",
                     value: "->",
+                    textHeight: 30,
                     textAlign: "center"
                 });
                 widgetItem.type = "bi.multi_relation_table_field_item";
@@ -80,6 +82,7 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
             items.push({
                 type: "bi.label",
                 value: "->",
+                textHeight: 30,
                 textAlign: "center"
             });
 

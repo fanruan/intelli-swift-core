@@ -203,6 +203,9 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
                 data: {
                     disabledRelations: self.model.get("disabledRelations"),
                     availableRelations: self.model.get("availableRelations")
+                },
+                complete: function () {
+                    self.refresh();
                 }
             });
         }
