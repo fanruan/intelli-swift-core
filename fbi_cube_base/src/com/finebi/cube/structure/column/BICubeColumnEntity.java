@@ -136,7 +136,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         if (position >= 0) {
             return getBitmapIndex(position);
         }
-        return new RoaringGroupValueIndex();
+        return getNULLIndex(0);
     }
 
     @Override

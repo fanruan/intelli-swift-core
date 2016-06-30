@@ -2,10 +2,13 @@ package com.fr.bi.field.filtervalue.string.rangefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -65,9 +68,10 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
     }
 
     protected void addLogUserInfo() {
-        if (this.fieldId != null && BIConfigureManagerCenter.getCubeConfManager().getLoginField() != null) {
+        BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId));
+        if (field != null && BIConfigureManagerCenter.getCubeConfManager().getLoginField() != null) {
             try {
-                Object fieldValue = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(user.getUserId());
+                Object fieldValue = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(field, user.getUserId());
                 if (fieldValue != null) {
                     valueSet.getValues().add(fieldValue.toString());
                 }
