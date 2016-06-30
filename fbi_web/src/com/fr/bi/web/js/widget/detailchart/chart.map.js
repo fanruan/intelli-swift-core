@@ -40,7 +40,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
     _formatConfig: function(config, items){
         var self = this, o = this.options;
-        config.plotOptions.tooltip.formatter = this.config.toolTip;
+        config.plotOptions.tooltip.formatter = this.config.tooltip;
         switch (this.config.chart_legend){
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
@@ -58,6 +58,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.geo = this.config.geo;
+        config.plotOptions.tooltip.shared = true;
 
         config.chartType = "areaMap";
         delete config.xAxis;
@@ -88,7 +89,8 @@ BI.MapChart = BI.inherit(BI.Widget, {
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]}
+            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]},
+            tooltip: options.tooltip || ""
         };
         this.options.items = items;
 

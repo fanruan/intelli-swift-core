@@ -91,7 +91,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
 
         this.checkboxIcon = BI.createWidget({
             type: "bi.center_adapt",
-            cls: "package-not-selected-font",
+            cls: o.forceNotSelected === false ? "package-not-selected-font" : "",
             items: [{
                 el: {
                     type: "bi.icon",

@@ -731,6 +731,12 @@
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
         },
 
+        getWSNumberOfPointerByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.number_of_pointer) ? ws.number_of_pointer :
+                BICst.POINTER.ONE;
+        },
+
         getWSDashboardNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.dashboard_number_level) ? ws.dashboard_number_level :
@@ -1379,7 +1385,7 @@
                     primaryTables.push(tId);
                 }
             });
-            return primaryTables;
+            return BI.uniq(primaryTables);
         },
 
         getForeignRelationTablesByTableID: function (tableId) {
@@ -1389,7 +1395,7 @@
                     foreignTables.push(tId);
                 }
             });
-            return foreignTables;
+            return BI.uniq(foreignTables);
         },
 
         getPathsFromTableAToTableB: function (from, to) {
@@ -1410,6 +1416,9 @@
             }
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
+            if(this.getPathsFromFieldAToFieldB(tableA, tableB).length !== 0) {
+                return this.getPathsFromFieldAToFieldB(tableA, tableB);
+            }
             if (tableA === tableB) {
                 return [[{
                     primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
