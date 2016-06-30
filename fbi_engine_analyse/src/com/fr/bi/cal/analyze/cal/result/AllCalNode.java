@@ -11,8 +11,19 @@ public class AllCalNode extends Node {
         super(key, data);
     }
 
-    public int getIndexByValue(Object value) {
-        return getMinCompareValue(0, getChildLength() - 1, value);
+    public int getIndexByValue(Object value, boolean sorted) {
+        if(sorted) {
+            return getMinCompareValue(0, getChildLength() - 1, value);
+        }
+        else {
+            for (int i = 0; i < childs.size(); i++) {
+                Object c = childs.get(i);
+                if(c.equals(value)){
+                    return i;
+                }
+            }
+            return -1;
+        }
     }
 
     /**

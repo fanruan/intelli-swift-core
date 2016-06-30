@@ -22,33 +22,18 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
     protected TargetCalculator calculator;
     protected volatile AllCalNode root;
 
-//    protected DimensionCalculator column;
     protected transient DimensionCalculator[] pcolumns;
 
-//    protected transient int[] pckindex;
-
-//    protected transient Object[] data;
-
-//    protected transient int ckIndex;
-
-//    private transient boolean useRealData = true;
-//
-//    private transient int demoGroupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
-
     private ICubeTableService cubeTableService;
+    private boolean doSort;
 
-    public AllCalSingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, /*int[] pckindex, DimensionCalculator column, Object[] data, int ckIndex,*/ GroupValueIndex gvi, ICubeDataLoader loader/*, boolean useRealData, int demoGroupLimit*/) {
+    public AllCalSingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns,  GroupValueIndex gvi, ICubeDataLoader loader, boolean doSort) {
         this.tableKey = tableKey;
         this.loader = loader;
         this.cubeTableService = loader.getTableIndex(tableKey.getTableSource());
         this.pcolumns = pcolumns;
-//        this.column = column;
-//        this.pckindex = pckindex;
-//        this.ckIndex = ckIndex;
-//        this.data = data;
-//        this.useRealData = useRealData;
+        this.doSort = doSort;
         this.initRoot(gvi);
-//        this.demoGroupLimit = demoGroupLimit;
         if (isTurnOnWhenInit()) {
             turnOnExecutor();
         }
@@ -60,12 +45,18 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
 
     public void turnOnExecutor() {
         BIKey[] keys = new BIKey[pcolumns.length];
-        boolean[] sortType = new boolean[pcolumns.length];
-        for (int i = 0; i < pcolumns.length; i++) {
-            keys[i] = pcolumns[i].createKey();
-            sortType[i] = pcolumns[i].getSortType() != BIReportConstant.SORT.DESC;
+        NodeResultDealer dealer;
+        if(doSort) {
+            boolean[] sortType = new boolean[pcolumns.length];
+            for (int i = 0; i < pcolumns.length; i++) {
+                keys[i] = pcolumns[i].createKey();
+                sortType[i] = pcolumns[i].getSortType() != BIReportConstant.SORT.DESC;
+            }
+            dealer = BIServerUtils.createAllCalDimensonDealer(keys, null, sortType);
         }
-        NodeResultDealer dealer = BIServerUtils.createDimensonDealer(keys, null, sortType);
+        else{
+            dealer = BIServerUtils.createAllCalDimensonDealer(keys, null);
+        }
         CubeValueEntryNode calRootNode = new CubeValueEntryNode();
         dealer.dealWithNode(cubeTableService, root.getGroupValueIndex(), calRootNode);
         copyNode(calRootNode, root, 0);
@@ -91,7 +82,7 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
 
     @Override
     public int getChildIndexByValue(Object value) {
-        return root.getIndexByValue(value);
+        return root.getIndexByValue(value, doSort);
     }
 
     @Override
@@ -135,13 +126,6 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
 
     private void addRootChild(AllCalNode child) {
         root.addChild(child);
-        notifyMainThread();
-    }
-
-    private void notifyMainThread() {
-        synchronized (AllCalSingleDimensionGroup.this) {
-            AllCalSingleDimensionGroup.this.notifyAll();
-        }
     }
 
     private AllCalNode getChild(int row) {

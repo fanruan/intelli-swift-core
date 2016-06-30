@@ -30,6 +30,7 @@ public class CubeValueEntrySort {
             }
             entrys[e.getIndex()] = e;
         }
+        removeNullItem();
     }
 
     /**
@@ -47,6 +48,7 @@ public class CubeValueEntrySort {
             }
             entrys[e.getIndex()] = e;
         }
+        removeNullItem();
     }
 
     public static CubeValueEntrySortBuilder getBuilder(int maxIndexLength){
@@ -54,11 +56,11 @@ public class CubeValueEntrySort {
     }
 
     public Iterator<CubeValueEntry> iteratorASC(){
-        return new CubeValueEntryIterator(entrys, sortedEntryCount, true);
+        return new CubeValueEntryIterator(entrys, true);
     }
 
     public Iterator<CubeValueEntry> iteratorDESC(){
-        return new CubeValueEntryIterator(entrys, sortedEntryCount, false);
+        return new CubeValueEntryIterator(entrys, false);
     }
 
     public CubeValueEntry[] getSortedASC(){
@@ -73,17 +75,25 @@ public class CubeValueEntrySort {
         return desc;
     }
 
+    private void removeNullItem(){
+        CubeValueEntry[] entrysWithoutNull = new CubeValueEntry[sortedEntryCount];
+        int index = 0;
+        for (int i = 0; i < entrys.length; i++) {
+            if(entrys[i] != null){
+                entrysWithoutNull[index++] = entrys[i];
+            }
+        }
+        entrys = entrysWithoutNull;
+    }
+
     private static class CubeValueEntryIterator implements Iterator<CubeValueEntry>{
 
         private int currentIndex = -1;
-        private int iteratedCount = 0;
         private CubeValueEntry[] cves;
-        private int sortedEntryCount;
         private boolean asc;
 
-        public CubeValueEntryIterator(CubeValueEntry[] cves, int sortedEntryCount, boolean asc) {
+        public CubeValueEntryIterator(CubeValueEntry[] cves, boolean asc) {
             this.cves = cves;
-            this.sortedEntryCount = sortedEntryCount;
             this.asc = asc;
             if(!asc){
                 currentIndex = cves.length;
@@ -92,7 +102,12 @@ public class CubeValueEntrySort {
 
         @Override
         public boolean hasNext() {
-            return iteratedCount < sortedEntryCount;
+            if(asc){
+                return currentIndex < cves.length - 1;
+            }
+            else{
+                return currentIndex > 0;
+            }
         }
 
         @Override
@@ -101,23 +116,11 @@ public class CubeValueEntrySort {
                 throw new NoSuchElementException();
             }
             if(asc){
-                do{
-                    if(currentIndex >= cves.length - 1){
-                        throw new NoSuchElementException();
-                    }
-                }
-                while (cves[++currentIndex] == null);
+                return cves[++currentIndex];
             }
             else {
-                do{
-                    if(currentIndex <= 0){
-                        throw new NoSuchElementException();
-                    }
-                }
-                while (cves[--currentIndex] == null);
+                return cves[--currentIndex];
             }
-            iteratedCount++;
-            return cves[currentIndex];
         }
 
         @Override
@@ -144,6 +147,7 @@ public class CubeValueEntrySort {
         }
 
         public CubeValueEntrySort build(){
+            sort.removeNullItem();
             return sort;
         }
     }

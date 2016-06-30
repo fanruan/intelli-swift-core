@@ -1,5 +1,6 @@
 package com.fr.bi.stable.structure.object;
 
+import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,7 @@ import static org.junit.Assert.*;
 /**
  * Created by loy on 16/6/22.
  */
-public class CubeValueEntrySortTest {
+public class CubeValueEntrySortTest extends TestCase{
 
     CubeValueEntrySort sort;
 
@@ -29,13 +30,23 @@ public class CubeValueEntrySortTest {
     }
 
     @Test
-    public void iteratorASC() throws Exception {
+    public void testIteratorASC() throws Exception {
         Assert.assertTrue(isASC(sort.iteratorASC()));
     }
 
     @Test
-    public void iteratorDESC() throws Exception {
+    public void testIteratorDESC() throws Exception {
         Assert.assertTrue(isDESC(sort.iteratorDESC()));
+    }
+
+    @Test
+    public void testResultASC() throws Exception {
+        Assert.assertTrue(isASC(sort.getSortedASC()));
+    }
+
+    @Test
+    public void testResultDESC() throws Exception {
+        Assert.assertTrue(isDESC(sort.getSortedDESC()));
     }
 
     private boolean isASC(Iterator<CubeValueEntry> it){
@@ -47,6 +58,36 @@ public class CubeValueEntrySortTest {
                 continue;
             }
             if(e.getIndex() <= lastEntry.getIndex()){
+                return false;
+            }
+            lastEntry = e;
+        }
+        return true;
+    }
+
+    private boolean isASC(CubeValueEntry[] arr){
+        CubeValueEntry lastEntry = null;
+        for (CubeValueEntry e : arr){
+            if(lastEntry == null){
+                lastEntry = e;
+                continue;
+            }
+            if(e.getIndex() <= lastEntry.getIndex()){
+                return false;
+            }
+            lastEntry = e;
+        }
+        return true;
+    }
+
+    private boolean isDESC(CubeValueEntry[] arr){
+        CubeValueEntry lastEntry = null;
+        for (CubeValueEntry e : arr){
+            if(lastEntry == null){
+                lastEntry = e;
+                continue;
+            }
+            if(e.getIndex() >= lastEntry.getIndex()){
                 return false;
             }
             lastEntry = e;
