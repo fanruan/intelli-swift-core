@@ -12,7 +12,7 @@ public interface ICubeColumnPositionOfGroupService extends Release{
      * @param position 原始值的位置
      * @param groupPosition 分组的位置
      */
-    void addPositionOfGroup(int position, int groupPosition);
+    void addPositionOfGroup(int position, Integer groupPosition);
 
     /**
      * 获取一个原始值对应的行号在分组中的位置
@@ -20,5 +20,5 @@ public interface ICubeColumnPositionOfGroupService extends Release{
      * @return
      * @throws BIResourceInvalidException
      */
-    int getPositionOfGroup(int row) throws BIResourceInvalidException;
+    Integer getPositionOfGroup(int row) throws BIResourceInvalidException;
 }
