@@ -27,7 +27,7 @@ public class BIModifyGlobalUpdateSettingAction extends AbstractBIConfigureAction
         String globalUpdateSetting = WebUtils.getHTTPRequestParameter(req, "setting");
         UpdateSettingSource source = new UpdateSettingSource();
         source.parseJSON(new JSONObject(globalUpdateSetting));
-        BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(DBConstant.GLOBAL_UPDATE, source, userId);
+        BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE, source, userId);
         BICubeManager biCubeManager=StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
         biCubeManager.resetCubeGenerationHour(userId);
         try {
