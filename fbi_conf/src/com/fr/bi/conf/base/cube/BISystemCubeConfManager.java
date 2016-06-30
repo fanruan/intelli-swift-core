@@ -1,6 +1,7 @@
 package com.fr.bi.conf.base.cube;
 
 import com.finebi.cube.conf.BISystemDataManager;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.conf.provider.BICubeConfManagerProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -65,9 +66,9 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public Object getLoginFieldValue(long userId) {
+    public Object getLoginFieldValue(BusinessField field, long userId) {
         try {
-            return getValue(UserControl.getInstance().getSuperManagerID()).getFieldValue(userId);
+            return getValue(UserControl.getInstance().getSuperManagerID()).getFieldValue(field, userId);
         } catch (BIKeyAbsentException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
