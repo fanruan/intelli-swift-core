@@ -31,7 +31,10 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
         this.radiusAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12pt","fontWeight":""}
+            },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
             },
             formatter: "function(){if(this>0) return this; else return this*(-1); }",
             gridLineWidth: 0,

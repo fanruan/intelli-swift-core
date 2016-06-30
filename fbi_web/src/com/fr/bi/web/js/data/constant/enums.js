@@ -450,6 +450,7 @@ BICst.MAP_PATH[BICst.MAP_TYPE.WORLD] = FR.serverURL + FR.servletURL + "?op=resou
 BICst.MAP_PATH[BICst.MAP_TYPE.CHINA] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/china.json";
 BICst.MAP_PATH[BICst.MAP_TYPE.JIANGSU] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/jiangsu.json";
 BICst.MAP_PATH[BICst.MAP_TYPE.SHANDONG] = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/js/data/map/shandong.json";
+BICst.GIS_ICON_PATH = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/address_marker_big.png";
 
 BICst.MAP_NAME = {};
 BICst.MAP_NAME["世界"] = BICst.MAP_TYPE.WORLD;
