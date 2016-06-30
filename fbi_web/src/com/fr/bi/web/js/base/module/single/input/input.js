@@ -116,7 +116,7 @@ BI.Input = BI.inherit(BI.Single, {
         if (keyCode == FR.keyCode.BACKSPACE || keyCode == FR.keyCode.DELETE) {
             this.fireEvent(BI.Input.EVENT_BACKSPACE);
         }
-        this.fireEvent(BI.Input.EVENT_KEY_DOWN);
+        this.fireEvent(BI.Input.EVENT_KEY_DOWN, arguments);
 
         if (this.isValid() && BI.trim(this.getValue()) !== "") {
             if (BI.trim(this.getValue()) !== this._lastValue && (!this._start || this._lastValue == null || this._lastValue === "")

@@ -48,6 +48,11 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
         this.templateName.on(BI.SignEditor.EVENT_VALID, function () {
             self.saveButton.setEnable(true);
         });
+        this.templateName.on(BI.SignEditor.EVENT_KEY_DOWN, function (v) {
+            if (v === FR.keyCode.ENTER && self.saveButton.isEnabled()) {
+                self._saveReport();
+            }
+        });
         this.reportLocation = BI.createWidget({
             type: "bi.multilayer_select_tree_combo",
             cls: "template-location-combo",
@@ -101,7 +106,7 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
 
     rebuildSouth: function (south) {
         var self = this;
-        var checkBox = BI.createWidget({
+        this.checkBox = BI.createWidget({
             type: "bi.checkbox"
         });
         this.saveButton = BI.createWidget({
@@ -111,20 +116,14 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
             height: 28
         });
         this.saveButton.on(BI.Button.EVENT_CHANGE, function () {
-            var data = {
-                reportName: self.templateName.getValue(),
-                reportLocation: self.reportLocation.getValue()[0],
-                realTime: checkBox.isSelected()
-            };
-            self.fireEvent(BI.NewAnalysisFloatBox.EVENT_CHANGE, data);
-            self.close();
+            self._saveReport();
         });
         BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             element: south,
             cls: "bi-new-analysis-south",
             items: {
-                left: [checkBox, {
+                left: [this.checkBox, {
                     type: "bi.label",
                     cls: "real-time-report",
                     text: BI.i18nText("BI-Realtime_Report")
@@ -142,6 +141,16 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
             lhgap: 5,
             rhgap: 5
         })
+    },
+
+    _saveReport: function () {
+        var data = {
+            reportName: this.templateName.getValue(),
+            reportLocation: this.reportLocation.getValue()[0],
+            realTime: this.checkBox.isSelected()
+        };
+        this.fireEvent(BI.NewAnalysisFloatBox.EVENT_CHANGE, data);
+        this.close();
     },
 
     _formatItems: function (items) {

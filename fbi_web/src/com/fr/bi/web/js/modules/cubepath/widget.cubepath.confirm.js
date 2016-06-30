@@ -23,6 +23,15 @@ BI.CubePathConfirm = BI.inherit(BI.BarPopoverSection, {
     },
 
     rebuildCenter: function (center) {
+        var o = this.options;
+        var isWarning = o.is_warning;
+        var notEmptyFile = BI.createWidget({
+            type: "bi.label",
+            text: BI.i18nText("BI-Cube_Path_File_Not_Empty_Warning"),
+            cls: "cube-path-warning-tip",
+            height: 30,
+            textAlign: "left"
+        });
         BI.createWidget({
             type: "bi.htape",
             element: center,
@@ -44,9 +53,11 @@ BI.CubePathConfirm = BI.inherit(BI.BarPopoverSection, {
                     items: [{
                         type: "bi.label",
                         text: BI.i18nText("BI-Cube_Path_Completed"),
-                        cls: "cube-path-warning-tip",
+                        cls:  isWarning ? "cube-path-normal-tip" : "cube-path-warning-tip",
                         height: 30,
                         textAlign: "left"
+                    }, {
+                        el: isWarning ? notEmptyFile : BI.createWidget()
                     }, {
                         type: "bi.label",
                         text: BI.i18nText("BI-Cube_Path_Cancel_Tip"),
