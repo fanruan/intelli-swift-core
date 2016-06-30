@@ -645,6 +645,7 @@ public class ResourceHelper {
                 //明细表表格
                 "com/fr/bi/web/css/modules/detailtable/widget.detailtable.css",
                 "com/fr/bi/web/css/modules/detailtable/cell/header.detailtable.css",
+                "com/fr/bi/web/css/modules/detailtable/cell/cell.detailtable.css",
 
 
                 //联动
