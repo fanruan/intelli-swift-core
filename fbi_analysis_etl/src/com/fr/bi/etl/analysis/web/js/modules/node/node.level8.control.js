@@ -43,19 +43,6 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
         }, 2000);
     },
 
-    _showWarningPop : function (id) {
-        var self = this;
-        var warningPopover = BI.createWidget({
-            type: "bi.etl_table_name_warning_popover",
-            text : BI.i18nText('BI-Is_Delete_Table')
-        });
-        warningPopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function () {
-            BI.ETLReq.reqDeleteTable({id: id}, BI.emptyFn);
-        });
-        BI.Popovers.remove("etlRemove");
-        BI.Popovers.create("etlRemove", warningPopover, {width : 400, height : 320, container:self.widget.element}).open("etlRemove");
-    },
-
 
     _showRenamePop : function (id, text) {
         var self = this;
@@ -94,7 +81,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
                 self._showRenamePop(option.id, option.text);
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.DELETE :
-                self._showWarningPop(option.id);
+                BI.ETLReq.reqDeleteTable({id: option.id}, BI.emptyFn)
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.COPY :
                 BI.ETLReq.reqSaveTable({id: option.id,new_id : BI.UUID(),name : BI.Utils.createDistinctName(BI.Utils.getAllETLTableNames(), option.text)}, BI.emptyFn);

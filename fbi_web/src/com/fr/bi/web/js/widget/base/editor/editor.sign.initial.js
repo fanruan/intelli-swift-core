@@ -89,6 +89,9 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
         this.editor.on(BI.SignEditor.EVENT_ERROR, function () {
             self.fireEvent(BI.SignInitialEditor.EVENT_ERROR);
         });
+        this.editor.on(BI.SignEditor.EVENT_ENTER, function () {
+            self.fireEvent(BI.SignInitialEditor.EVENT_ENTER);
+        });
         this.editor.on(BI.SignEditor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.SignInitialEditor.EVENT_RESTRICT);
         });
@@ -152,6 +155,7 @@ BI.SignInitialEditor.EVENT_STOP = "EVENT_STOP";
 BI.SignInitialEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.SignInitialEditor.EVENT_VALID = "EVENT_VALID";
 BI.SignInitialEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.SignInitialEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.SignInitialEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.SignInitialEditor.EVENT_SPACE = "EVENT_SPACE";
 BI.SignInitialEditor.EVENT_EMPTY = "EVENT_EMPTY";

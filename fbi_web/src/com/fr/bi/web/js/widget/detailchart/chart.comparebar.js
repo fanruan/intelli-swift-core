@@ -31,7 +31,10 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
         this.xAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12pt","fontWeight":""}
+            },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
             },
             formatter: "function(){if(this>0) return this; else return this*(-1); }",
             gridLineWidth: 0
@@ -159,7 +162,7 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
                     BI.each(item.data, function(id, da){
                         da.x = da.x || 0;
                         da.x = da.x.div(magnify);
-                        if(self.constants.MINLIMIT.sub(da.x) > 0){
+                        if(self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
                             da.x = 0;
                         }
                     })

@@ -98,6 +98,9 @@ BI.TextEditor = BI.inherit(BI.Single, {
         this.editor.on(BI.Editor.EVENT_ERROR, function () {
             self.fireEvent(BI.TextEditor.EVENT_ERROR);
         });
+        this.editor.on(BI.Editor.EVENT_ENTER, function () {
+            self.fireEvent(BI.TextEditor.EVENT_ENTER);
+        });
         this.editor.on(BI.Editor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.TextEditor.EVENT_RESTRICT);
         });
@@ -159,6 +162,7 @@ BI.TextEditor.EVENT_STOP = "EVENT_STOP";
 BI.TextEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.TextEditor.EVENT_VALID = "EVENT_VALID";
 BI.TextEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.TextEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.TextEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.TextEditor.EVENT_REMOVE = "EVENT_REMOVE";
 BI.TextEditor.EVENT_EMPTY = "EVENT_EMPTY";

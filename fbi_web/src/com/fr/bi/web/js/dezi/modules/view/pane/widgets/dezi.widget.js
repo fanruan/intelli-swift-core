@@ -149,7 +149,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: 16,
             height: 16,
-            cls: "refresh-table-font-hightlight dashboard-title-detail"
+            cls: "recover-chart-font-hightlight dashboard-title-detail"
         });
         this.refreshChartButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self.tableChart.magnify();
