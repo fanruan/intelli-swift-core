@@ -71,7 +71,7 @@ public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> 
      * @param position 原始值的位置
      * @param groupPosition 分组的位置
      */
-    void addPositionOfGroup(int position, int groupPosition);
+    void addPositionOfGroup(int position, Integer groupPosition);
 
     void recordSizeOfGroup(int size);
 

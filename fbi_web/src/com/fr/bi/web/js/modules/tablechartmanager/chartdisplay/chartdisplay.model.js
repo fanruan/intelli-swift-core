@@ -53,14 +53,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             default:
                                 res = {
                                     x: item.n,
-                                    y: item.s[idx],
+                                    y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
                                     targetIds: [targetIds[idx]]
                                 };
                         }
                     }else{
                         res = {
                             x: item.n,
-                            y: item.s[idx],
+                            y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
                             targetIds: [targetIds[idx]]
                         };
                     }
@@ -141,18 +141,38 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         BI.each(this.targetIds, function (idx, tId) {
             if (BI.has(view, BICst.REGION.TARGET1) && BI.contains(view[BICst.REGION.TARGET1], tId)) {
                 array.length === 0 && array.push([]);
-                array[0].push(data[idx]);
+                if(checkSeriesExist()){
+                    array[0] = data;
+                }else{
+                    array[0].push(data[idx])
+                }
             }
             if(BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)) {
                 while (array.length < 2){array.push([]);}
-                array[1].push(data[idx]);
+                if(checkSeriesExist()){
+                    array[1] = data;
+                }else{
+                    array[1].push(data[idx])
+                }
             }
             if(BI.has(view, BICst.REGION.TARGET3) && BI.contains(view[BICst.REGION.TARGET3], tId)){
                 while (array.length < 3){array.push([]);}
-                array[2].push(data[idx]);
+                if(checkSeriesExist()){
+                    array[2] = data;
+                }else{
+                    array[2].push(data[idx])
+                }
             }
         });
         return array;
+
+        function checkSeriesExist(){
+            var view = BI.Utils.getWidgetViewByID(o.wId);
+            var result = BI.find(view[BICst.REGION.DIMENSION2], function (idx, dId) {
+                return BI.Utils.isDimensionUsable(dId);
+            });
+            return BI.isNotNull(result);
+        }
     },
 
     _formatDataForBubble: function (data) {
@@ -174,9 +194,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 name = date.print("%Y-%X-%d");
             }
             obj.data = [{
-                x: item.s[1],
-                y: item.s[0],
-                z: item.s[2],
+                x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
+                y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
+                z: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
                 seriesName: seriesName,
                 targetIds: [targetIds[0], targetIds[1], targetIds[2]]
             }];
@@ -205,8 +225,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             }
             obj.name = name;
             obj.data = [{
-                x: item.s[1],
-                y: item.s[0],
+                x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
+                y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
                 seriesName: seriesName,
                 targetIds: [targetIds[0], targetIds[1]]
             }];
@@ -250,7 +270,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     }
                     return {
                         "x": x,
-                        "y": obj.s.c[id].s[0],
+                        "y": (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
                         "value": value,
                         seriesName: seriesName,
                         targetIds: [targetIds[0]]
@@ -274,7 +294,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     }
                     return {
                         x: x,
-                        y: item.s[idx],
+                        y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
                         value: value,
                         targetIds: [targetIds[idx]]
                     };
@@ -291,7 +311,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var adjustData = BI.map(data.s, function (idx, value) {
                     return {
                         x: BI.Utils.getDimensionNameByID(targetIds[idx]),
-                        y: value,
+                        y: (BI.isFinite(value) ? value : 0),
                         targetIds: [targetIds[idx]]
                     };
                 });
@@ -304,7 +324,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         name: BI.Utils.getDimensionNameByID(targetIds[idx]),
                         data: [{
                             x: "",
-                            y: value,
+                            y: (BI.isFinite(value) ? value : 0),
                             targetIds: [targetIds[idx]]
                         }]
                     };
@@ -331,7 +351,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 }
                 var data = [{
                     x: BI.Utils.getDimensionNameByID(targetIds[0]),
-                    y: item.s[0],
+                    y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
                     targetIds: [targetIds[0]]
                 }];
                 var obj = {};
@@ -347,7 +367,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             obj.data = BI.map(data.s, function (idx, value) {
                 return {
                     x: BI.Utils.getDimensionNameByID(targetIds[idx]),
-                    y: value,
+                    y: (BI.isFinite(value) ? value : 0),
                     targetIds: [targetIds[idx]]
                 };
             });
