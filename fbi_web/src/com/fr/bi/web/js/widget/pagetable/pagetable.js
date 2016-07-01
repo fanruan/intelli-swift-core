@@ -77,12 +77,13 @@ BI.PageTable = BI.inherit(BI.Widget, {
             self.dots.clear();
         }, 300);
         this.hpage = 1;
+        this.vpage = 1;
 
         this.table = BI.createWidget(o.el, {
             type: "bi.sequence_table",
             element: this.element,
 
-            pageSpace: 95,
+            pageSpace: 108,
 
             isNeedResize: true,
             isResizeAdapt: false,
@@ -286,18 +287,24 @@ BI.PageTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         if (!this.pager) {
             this.pager = BI.createWidget(o.pager, {
-                type: "bi.number_pager",
-                width: 95,
+                type: "bi.direction_pager",
+                width: 108,
                 height: this._const.scrollWidth,
                 cls: "page-table-pager"
             });
-            this.pager.on(BI.NumberPager.EVENT_CHANGE, function () {
+            this.pager.on(BI.Pager.EVENT_CHANGE, function () {
                 self._loading();
-                var vpage = this.getCurrentPage();
+                var vpage = this.getHPage && this.getVPage();
+                if (BI.isNull(vpage)) {
+                    vpage = this.getCurrentPage();
+                }
+                var hpage = this.getHPage && this.getHPage();
                 o.itemsCreator({
-                    vpage: vpage
+                    vpage: vpage,
+                    hpage: hpage
                 }, function (items, header, crossItems, crossHeader) {
-                    self.setVPage(vpage);
+                    BI.isNotNull(vpage) && self.setVPage(vpage);
+                    BI.isNotNull(hpage) && self.setHPage(hpage);
                     self.populate.apply(self, arguments);
                     self._loaded();
                 });
@@ -350,22 +357,42 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     setHPage: function (v) {
         this.hpage = v;
+        this._assertPager();
+        this.pager.setHPage && this.pager.setHPage(v);
         this.table.setHPage && this.table.setHPage(v);
     },
 
     setVPage: function (v) {
         this._assertPager();
+        this.pager.setVPage && this.pager.setVPage(v);
         this.pager.setValue(v);
         this.table.setVPage && this.table.setVPage(v);
     },
 
     getHPage: function () {
+        this._assertPager();
+        var hpage = this.pager.getHPage && this.pager.getHPage();
+        if (BI.isNotNull(hpage)) {
+            return hpage;
+        }
+        hpage = this.pager.getCurrentPage && this.pager.getCurrentPage();
+        if (BI.isNotNull(hpage)) {
+            return hpage;
+        }
         return this.hpage;
     },
 
     getVPage: function () {
         this._assertPager();
-        return this.pager.getCurrentPage();
+        var vpage = this.pager.getVPage && this.pager.getVPage();
+        if (BI.isNotNull(vpage)) {
+            return vpage;
+        }
+        vpage = this.pager.getCurrentPage && this.pager.getCurrentPage();
+        if (BI.isNotNull(vpage)) {
+            return vpage;
+        }
+        return this.vpage;
     },
 
     resize: function () {

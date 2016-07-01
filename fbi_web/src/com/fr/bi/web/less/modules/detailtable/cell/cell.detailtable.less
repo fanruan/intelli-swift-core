@@ -1,5 +1,10 @@
 @import "../../../bibase";
 
-.bi-detail-table-cell{
-  .user-select(initial);
+.bi-detail-table-cell {
+  & .hyper-link-item {
+    text-decoration: underline;
+  }
+  & .detail-table-cell-text, & .hyper-link-item {
+    .user-select(initial);
+  }
 }
