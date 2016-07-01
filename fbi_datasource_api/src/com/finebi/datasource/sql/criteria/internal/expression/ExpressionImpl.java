@@ -1,21 +1,16 @@
-/*
- * Hibernate, Relational Persistence for Idiomatic Java
- *
- * License: GNU Lesser General Public License (LGPL), version 2.1 or later.
- * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
- */
-package com.finebi.datasource.sql.criteria.internal.expression;
 
-import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.api.criteria.Predicate;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
-import com.finebi.datasource.sql.criteria.internal.ExpressionImplementor;
-import com.finebi.datasource.sql.criteria.internal.expression.function.CastFunction;
+package com.finebi.datasource.sql.criteria.internal.expression;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import com.finebi.datasource.api.criteria.Expression;
+import com.finebi.datasource.api.criteria.Predicate;
+
+import com.finebi.datasource.sql.criteria.internal.ExpressionImplementor;
+import com.finebi.datasource.sql.criteria.internal.expression.function.CastFunction;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 
 /**
  * Models an expression in the criteria query language.

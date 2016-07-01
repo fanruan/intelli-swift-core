@@ -1,14 +1,9 @@
-/*
- * Hibernate, Relational Persistence for Idiomatic Java
- *
- * License: GNU Lesser General Public License (LGPL), version 2.1 or later.
- * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
- */
+
 package com.finebi.datasource.sql.criteria.internal;
 
 import com.finebi.datasource.api.criteria.*;
 import com.finebi.datasource.api.metamodel.EntityType;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.RootImpl;
 
 import java.io.Serializable;
@@ -131,6 +126,26 @@ public class QueryStructure<T> implements Serializable {
 		correlationRoots.add( fromImplementor );
 	}
 
+	public Set<Join<?, ?>> collectCorrelatedJoins() {
+		if ( !isSubQuery ) {
+			throw new IllegalStateException( "Query is not identified as sub-query" );
+		}
+		final Set<Join<?, ?>> correlatedJoins;
+		if ( correlationRoots != null ) {
+			correlatedJoins = new HashSet<Join<?,?>>();
+			for ( FromImplementor<?,?> correlationRoot : correlationRoots ) {
+				if (correlationRoot instanceof Join<?,?> && correlationRoot.isCorrelated()) {
+					correlatedJoins.add( (Join<?,?>) correlationRoot );
+				}
+				correlatedJoins.addAll( correlationRoot.getJoins() );
+			}
+		}
+		else {
+			correlatedJoins = Collections.emptySet();
+		}
+		return correlatedJoins;
+	}
+
 
 	// RESTRICTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -190,6 +205,41 @@ public class QueryStructure<T> implements Serializable {
 		return subquery;
 	}
 
+	@SuppressWarnings({ "unchecked" })
+	public void render(StringBuilder jpaqlQuery, RenderingContext renderingContext) {
+		jpaqlQuery.append( "select " );
+		if ( isDistinct() ) {
+			jpaqlQuery.append( "distinct " );
+		}
+		if ( getSelection() == null ) {
+			jpaqlQuery.append( locateImplicitSelection().renderProjection( renderingContext ) );
+		}
+		else {
+			jpaqlQuery.append( ( (Renderable) getSelection() ).renderProjection( renderingContext ) );
+		}
+
+		renderFromClause( jpaqlQuery, renderingContext );
+
+		if ( getRestriction() != null) {
+			jpaqlQuery.append( " where " )
+					.append( ( (Renderable) getRestriction() ).render( renderingContext ) );
+		}
+
+		if ( ! getGroupings().isEmpty() ) {
+			jpaqlQuery.append( " group by " );
+			String sep = "";
+			for ( Expression grouping : getGroupings() ) {
+				jpaqlQuery.append( sep )
+						.append( ( (Renderable) grouping ).render( renderingContext ) );
+				sep = ", ";
+			}
+
+			if ( getHaving() != null ) {
+				jpaqlQuery.append( " having " )
+						.append( ( (Renderable) getHaving() ).render( renderingContext ) );
+			}
+		}
+	}
 
 	private FromImplementor locateImplicitSelection() {
 		FromImplementor implicitSelection = null;
@@ -215,8 +265,76 @@ public class QueryStructure<T> implements Serializable {
 		return implicitSelection;
 	}
 
+	@SuppressWarnings({ "unchecked" })
+	private void renderFromClause(StringBuilder jpaqlQuery, RenderingContext renderingContext) {
+		jpaqlQuery.append( " from " );
+		String sep = "";
+		for ( Root root : getRoots() ) {
+			( (FromImplementor) root ).prepareAlias( renderingContext );
+			jpaqlQuery.append( sep );
+			jpaqlQuery.append( ( (FromImplementor) root ).renderTableExpression( renderingContext ) );
+			sep = ", ";
+		}
 
+		for ( Root root : getRoots() ) {
+			renderJoins( jpaqlQuery, renderingContext, root.getJoins() );
+		}
 
+		if ( isSubQuery ) {
+			if ( correlationRoots != null ) {
+				for ( FromImplementor<?,?> correlationRoot : correlationRoots ) {
+					final FromImplementor correlationParent = correlationRoot.getCorrelationParent();
+					correlationParent.prepareAlias( renderingContext );
+					final String correlationRootAlias = correlationParent.getAlias();
+					for ( Join<?,?> correlationJoin : correlationRoot.getJoins() ) {
+						final JoinImplementor correlationJoinImpl = (JoinImplementor) correlationJoin;
+						// IMPL NOTE: reuse the sep from above!
+						jpaqlQuery.append( sep );
+						correlationJoinImpl.prepareAlias( renderingContext );
+						jpaqlQuery.append( correlationRootAlias )
+								.append( '.' )
+								.append( correlationJoinImpl.getAttribute().getName() )
+								.append( " as " )
+								.append( correlationJoinImpl.getAlias() );
+						sep = ", ";
+						renderJoins( jpaqlQuery, renderingContext, correlationJoinImpl.getJoins() );
+					}
+				}
+			}
+		}
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	private void renderJoins(
+			StringBuilder jpaqlQuery,
+			RenderingContext renderingContext,
+			Collection<Join<?,?>> joins) {
+		if ( joins == null ) {
+			return;
+		}
+
+		for ( Join join : joins ) {
+			( (FromImplementor) join ).prepareAlias( renderingContext );
+			jpaqlQuery.append( renderJoinType( join.getJoinType() ) )
+					.append( ( (FromImplementor) join ).renderTableExpression( renderingContext ) );
+			renderJoins( jpaqlQuery, renderingContext, join.getJoins() );
+		}
+	}
+
+	private String renderJoinType(JoinType joinType) {
+		switch ( joinType ) {
+			case INNER: {
+				return " inner join ";
+			}
+			case LEFT: {
+				return " left join ";
+			}
+			case RIGHT: {
+				return " right join ";
+			}
+		}
+		throw new IllegalStateException( "Unknown join type " + joinType );
+	}
 
 
 }

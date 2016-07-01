@@ -1,5 +1,5 @@
 
-package com.finebi.datasource.sql.criteria;
+package com.finebi.datasource.sql.criteria.internal.important;
 
 import com.finebi.datasource.api.criteria.CriteriaBuilder;
 

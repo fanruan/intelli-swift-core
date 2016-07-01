@@ -1,14 +1,12 @@
-/*
- * Hibernate, Relational Persistence for Idiomatic Java
- *
- * License: GNU Lesser General Public License (LGPL), version 2.1 or later.
- * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
- */
+
 package com.finebi.datasource.sql.criteria.internal.path;
 
+import com.finebi.datasource.api.criteria.Join;
 import com.finebi.datasource.api.criteria.Root;
 import com.finebi.datasource.api.metamodel.EntityType;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
+import com.finebi.datasource.api.metamodel.PlainTable;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.CriteriaSubqueryImpl;
 import com.finebi.datasource.sql.criteria.internal.FromImplementor;
 import com.finebi.datasource.sql.criteria.internal.PathSource;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
@@ -28,7 +26,12 @@ public class RootImpl<X> extends AbstractFromImpl<X,X> implements Root<X>, Seria
 		this( criteriaBuilder, entityType, true );
 	}
 
-	public RootImpl(CriteriaBuilderImpl criteriaBuilder, EntityType<X> entityType, boolean allowJoins) {
+    @Override
+    public Join join(PlainTable attribute) {
+        return null;
+    }
+
+    public RootImpl(CriteriaBuilderImpl criteriaBuilder, EntityType<X> entityType, boolean allowJoins) {
 		super( criteriaBuilder, entityType.getJavaType() );
 		this.entityType = entityType;
 		this.allowJoins = allowJoins;
@@ -108,7 +111,12 @@ public class RootImpl<X> extends AbstractFromImpl<X,X> implements Root<X>, Seria
 			this.treatAsType = treatAsType;
 		}
 
-		@Override
+        @Override
+        public Join join(PlainTable attribute) {
+            return null;
+        }
+
+        @Override
 		public String getAlias() {
 			return original.getAlias();
 		}

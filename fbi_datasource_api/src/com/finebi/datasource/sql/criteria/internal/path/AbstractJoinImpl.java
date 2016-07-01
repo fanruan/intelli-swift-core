@@ -1,19 +1,12 @@
-/*
- * Hibernate, Relational Persistence for Idiomatic Java
- *
- * License: GNU Lesser General Public License (LGPL), version 2.1 or later.
- * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
- */
+
 package com.finebi.datasource.sql.criteria.internal.path;
 
-import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.api.criteria.From;
-import com.finebi.datasource.api.criteria.JoinType;
-import com.finebi.datasource.api.criteria.Predicate;
+import com.finebi.datasource.api.criteria.*;
 import com.finebi.datasource.api.metamodel.Attribute;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
-import com.finebi.datasource.sql.criteria.internal.JoinImplementor;
-import com.finebi.datasource.sql.criteria.internal.PathSource;
+import com.finebi.datasource.api.metamodel.PlainTable;
+import com.finebi.datasource.sql.criteria.internal.*;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.predicate.AbstractPredicateImpl;
 
 import java.io.Serializable;
 
@@ -39,7 +32,12 @@ public abstract class AbstractJoinImpl<Z, X>
 		this( criteriaBuilder, joinAttribute.getJavaType(), pathSource, joinAttribute, joinType );
 	}
 
-	public AbstractJoinImpl(
+    @Override
+    public Join join(PlainTable attribute) {
+        return null;
+    }
+
+    public AbstractJoinImpl(
 			CriteriaBuilderImpl criteriaBuilder,
 			Class<X> javaType,
 			PathSource<Z> pathSource,
@@ -67,7 +65,22 @@ public abstract class AbstractJoinImpl<Z, X>
 		return (From<?, Z>) getPathSource();
 	}
 
-
+	@Override
+	public String renderTableExpression(RenderingContext renderingContext) {
+		prepareAlias( renderingContext );
+		( (FromImplementor) getParent() ).prepareAlias( renderingContext );
+		StringBuilder tableExpression = new StringBuilder();
+		tableExpression.append( getParent().getAlias() )
+				.append( '.' )
+				.append( getAttribute().getName() )
+				.append( " as " )
+				.append( getAlias() );
+		if ( suppliedJoinCondition != null ) {
+			tableExpression.append( " with " )
+					.append( ( (AbstractPredicateImpl) suppliedJoinCondition ).render( renderingContext ) );
+		}
+		return tableExpression.toString();
+	}
 
 	@Override
 	public JoinImplementor<Z, X> correlateTo(CriteriaSubqueryImpl subquery) {
