@@ -298,7 +298,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 height: this._const.scrollWidth,
                 cls: "page-table-pager"
             });
-            this.pager.on(BI.Pager.EVENT_CHANGE, function () {
+            this.pager.on(BI.DirectionPager.EVENT_CHANGE, function () {
                 self._loading();
                 var vpage = this.getHPage && this.getVPage();
                 if (BI.isNull(vpage)) {
