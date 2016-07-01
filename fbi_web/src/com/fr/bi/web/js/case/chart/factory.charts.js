@@ -74,7 +74,7 @@ BI.ChartCombineFormatItemFactory = {
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
                 "dataLabels":{
-                    "style": "{color: #d4dadd, fontSize: 9pt}",
+                    "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
                     "formatter": {
                         "identifier": "${VALUE}",
                         "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
@@ -96,7 +96,9 @@ BI.ChartCombineFormatItemFactory = {
                         "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
                     },
-                    "style": {"fontFamily": "Verdana", "color": "rgba(51,51,51,1.0)", "fontSize": "14pt", "fontWeight": "bold"},
+                    "style": {
+                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    },
                     "align": "bottom",
                     "enabled": true
                 },
@@ -110,10 +112,7 @@ BI.ChartCombineFormatItemFactory = {
                     },
                     "backgroundColor": "rgb(255,255,0)",
                     "style": {
-                        "fontFamily": "Verdana",
-                        "color": "rgba(51,51,51,1.0)",
-                        "fontSize": "8pt",
-                        "fontWeight": ""
+                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
                     },
                     "align": "inside",
                     "enabled": true
@@ -128,10 +127,7 @@ BI.ChartCombineFormatItemFactory = {
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
                     },
                     "style": {
-                        "fontFamily": "Verdana",
-                        "color": "rgba(51,51,51,1.0)",
-                        "fontSize": "10pt",
-                        "fontWeight": ""
+                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
                     },
                     "align": "bottom",
                     "enabled": true
@@ -149,7 +145,7 @@ BI.ChartCombineFormatItemFactory = {
                 "tooltip": {
                     "formatter": {
                         "identifier": "${SERIES}${X}${Y}${SIZE}{CATEGORY}${SERIES}${VALUE}",
-                        "valueFormat": "function(){if(this > 0){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];} else {return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}}",
+                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];}",
                         "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
@@ -166,7 +162,8 @@ BI.ChartCombineFormatItemFactory = {
                     "borderWidth": 0,
                     "follow": false,
                     "enabled": true,
-                    "animation": true
+                    "animation": true,
+                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#c4c6c6","fontSize":"12px","fontWeight":""}
                 },
                 "maxSize": 70,
                 "fillColorOpacity": 0.5,
@@ -205,7 +202,9 @@ BI.ChartCombineFormatItemFactory = {
                 "borderColor": "rgb(0,0,0)",
                 "borderWidth": 1,
                 "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                style:{"fontFamily":"宋体","color":"rgba(0,0,0,1.0)","fontSize":"9pt","fontWeight":""}
+                style:{
+                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                }
             },
             "borderColor": "rgb(238,238,238)",
             "shadow": false,
@@ -214,17 +213,32 @@ BI.ChartCombineFormatItemFactory = {
                 "borderRadius": 0,
                 "shadow": false,
                 "borderWidth": 0,
-                "style": {"fontFamily": "微软雅黑", "color": "rgba(102,102,102,1.0)", "fontSize": "11pt", "fontWeight": ""},
+
+                "style": {
+                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#1a1a1a","fontSize":"12px"
+                },
                 "position": "right",
                 "enabled": true
             },
             "rangeLegend": {
-                "borderColor": "rgb(204,204,204)",
-                "borderRadius": 0,
-                "shadow": false,
-                "borderWidth": 0,
-                "style": {"fontFamily": "微软雅黑", "color": "rgba(102,102,102,1.0)", "fontSize": "11pt", "fontWeight": ""},
-                "position": "right",
+                "range": {
+                    "min": 0,
+                    "color": [
+                        [
+                            0,
+                            "rgb(182,226,255)"
+                        ],
+                        [
+                            0.5,
+                            "rgb(109,196,255)"
+                        ],
+                        [
+                            1,
+                            "rgb(36,167,255)"
+                        ]
+                    ],
+                    "max": 266393
+                },
                 "enabled": false
             },
             "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},

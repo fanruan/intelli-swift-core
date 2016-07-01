@@ -32,7 +32,7 @@ BI.RadarChart = BI.inherit(BI.Widget, {
         this.radiusAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
             },
             labelStyle: {
                 "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
