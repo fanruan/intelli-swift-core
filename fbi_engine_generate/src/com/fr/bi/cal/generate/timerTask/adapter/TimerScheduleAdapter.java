@@ -52,6 +52,7 @@ public class TimerScheduleAdapter {
                 return table;
             }
         }
+
         return null;
     }
 }

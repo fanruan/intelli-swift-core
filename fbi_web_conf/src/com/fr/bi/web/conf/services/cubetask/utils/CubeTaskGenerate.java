@@ -35,9 +35,15 @@ public class CubeTaskGenerate {
         CubeBuildStuff cubeBuildStuff;
         Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
 /*若有新增表，增量更新，否则进行全量*/
+        String messages="开始cube增量更新! \n需要更新的业务表如下：\n";
         if (newTables.size() != 0) {
+            for (BIBusinessTable table : newTables) {
+                messages+=table.getTableSource().getTableName()+"\n";
+            }
+            BILogger.getLogger().info(messages);
              cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
         } else {
+            BILogger.getLogger().info("开始cube全量更新");
             cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
         }
         if (preConditionsCheck(userId, cubeBuildStuff)) {

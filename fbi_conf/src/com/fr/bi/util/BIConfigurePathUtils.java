@@ -41,7 +41,10 @@ public class BIConfigurePathUtils {
         File file = new File(cubePath);
         if (!file.exists()) {
             try {
-                file.mkdirs();
+                boolean success = file.mkdirs();
+                if(!success) {
+                    return "";
+                }
                 return file.getAbsolutePath();
             } catch (Exception e) {
                 return "";
@@ -51,8 +54,11 @@ public class BIConfigurePathUtils {
                 }
             }
         }
-        if (!file.isDirectory() || file.list().length > 0) {
+        if (!file.isDirectory()) {
             return "";
+        }
+        if(file.list().length > 0) {
+            return "warning";
         }
         return file.getAbsolutePath();
     }

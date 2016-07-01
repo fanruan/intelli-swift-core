@@ -18,10 +18,10 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         this.positions = {};
         this.excelName = "";
         var table = o.table;
-        var relations = table.relations;
-        var translations = table.translations;
         var tableFields = table.fields;
         var tableId = table.id;
+        this.relations = table.relations;
+        this.translations = table.translations;
         this.allFields = table.all_fields;
 
         var view = o.view;
@@ -44,12 +44,17 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         this.tables.push({
             open: true,
             value: tableId,
-            tableName: translations[tableId],
+            tableName: this.translations[tableId],
             fields: fields
         });
 
-        //这里找到所有主表
-        var foreignKeyMap = relations.foreignKeyMap;
+        //这里找到所有主表 和 主表的主表
+        this._getALlPrimaryTables(tableId);
+    },
+
+    _getALlPrimaryTables: function(tableId){
+        var self = this;
+        var foreignKeyMap = this.relations.foreignKeyMap;
         BI.each(foreignKeyMap, function(fieldId, maps) {
             if(BI.isNotNull(self.allFields[fieldId]) && tableId === self.allFields[fieldId].table_id) {
                 BI.each(maps, function(i, map) {
@@ -66,9 +71,10 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
                     });
                     self.tables.push({
                         value: pTableId,
-                        tableName: translations[pTableId],
+                        tableName: self.translations[pTableId],
                         fields: pFields
-                    })
+                    });
+                    self._getALlPrimaryTables(pTableId);
                 })
             }
         });

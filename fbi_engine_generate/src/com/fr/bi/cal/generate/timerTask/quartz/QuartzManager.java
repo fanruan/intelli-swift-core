@@ -135,23 +135,5 @@ public class QuartzManager {
             removeJob(jobName);
         }
     }
-    /** */
-    /**
-     * 移除一个任务
-     *
-     * @param jobName
-     * @param jobGroupName
-     * @param triggerName
-     * @param triggerGroupName
-     * @throws SchedulerException
-     */
-    public static void removeJob(String jobName, String jobGroupName,
-                                 String triggerName, String triggerGroupName)
-            throws SchedulerException {
-        Scheduler sched = sf.getScheduler();
-        sched.pauseTrigger(triggerName, triggerGroupName);//停止触发器
-        sched.unscheduleJob(triggerName, triggerGroupName);//移除触发器
-        sched.deleteJob(jobName, jobGroupName);//删除任务
-    }
 
 }
