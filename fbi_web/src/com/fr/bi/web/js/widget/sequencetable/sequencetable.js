@@ -68,7 +68,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         this.table = BI.createWidget(o.el, {
             type: "bi.custom_scroll_table",
 
-            pageSpace: 95,
+            pageSpace: 108,
             isNeedResize: o.isNeedResize,
             isResizeAdapt: o.isResizeAdapt,
 
