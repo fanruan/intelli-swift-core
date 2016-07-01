@@ -174,7 +174,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        return;
+                        items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                        items[this.constants.CordonPos][0].disabled = true;
+                        return addDependency();
                 }
                 items[this.constants.CordonPos][0].cls = "";
                 items[this.constants.CordonPos][0] = {
@@ -200,19 +202,22 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
                 break;
         }
+        return addDependency();
 
-        BI.find(items, function(idx, item){
-            dependItem = BI.find(item, function(id, it){
-                var itE = BI.stripEL(it);
-                return itE.value === BICst.TARGET_COMBO.DEPEND_TYPE;
+        function addDependency() {
+            BI.find(items, function(idx, item){
+                dependItem = BI.find(item, function(id, it){
+                    var itE = BI.stripEL(it);
+                    return itE.value === BICst.TARGET_COMBO.DEPEND_TYPE;
+                });
+                return BI.isNotNull(dependItem);
             });
-            return BI.isNotNull(dependItem);
-        });
 
-        dependItem.el.text = BI.i18nText("BI-Count_Depend") + "(" + selectedValue +")";
-        dependItem.children = children;
+            dependItem.el.text = BI.i18nText("BI-Count_Depend") + "(" + selectedValue +")";
+            dependItem.children = children;
 
-        return items;
+            return items;
+        }
     },
 
     _assertChartType: function (val) {

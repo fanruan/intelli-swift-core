@@ -22,9 +22,11 @@ BI.LinkageFilterItem = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 type: "bi.center_adapt",
-                cls: "chart-table-font chart-type-font",
+                cls: BI.Utils.getWidgetIconClsByWidgetId(wId),
                 items: [{
-                    type: "bi.icon"
+                    type: "bi.icon",
+                    width: 20,
+                    height: 20
                 }],
                 width: 20,
                 height: 30

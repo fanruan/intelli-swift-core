@@ -9,6 +9,7 @@ import com.fr.bi.stable.engine.index.TableIndexAdapter;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
 
 import java.util.Date;
 import java.util.List;
@@ -121,6 +122,8 @@ public interface ICubeTableService extends Release {
      * @return
      */
     GroupValueIndex getIndexByRow(BIKey key, int row);
+
+    CubeValueEntry getEntryByRow(BIKey key, int row);
 
     boolean isDataAvailable();
 }
