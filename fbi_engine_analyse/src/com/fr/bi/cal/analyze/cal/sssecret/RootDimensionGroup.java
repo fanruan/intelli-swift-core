@@ -1,8 +1,10 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.adapter.GroupCache;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
@@ -19,6 +21,7 @@ import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.key.date.BIDateValue;
+import com.fr.bi.stable.exception.BITableUnreachableException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
@@ -446,7 +449,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 }
                 Set currentSet = ((StringDimensionCalculator) ckp).createFilterValueSet((String) value, session.getLoader());
                 StringINFilterValue stf = new StringINFilterValue(currentSet);
-                GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ck.getField(), new ArrayList<BITableSourceRelation>()), ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
+                BITableRelationPath firstPath = null;
+                try {
+                    firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
+                } catch (BITableUnreachableException e) {
+                    continue;
+                }
+                GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(),   BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
+                        ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
             }
             v = v.getParent();
