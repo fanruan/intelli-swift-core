@@ -30,18 +30,24 @@ public class CubeTaskGenerate {
         return taskAdd;
     }
 
+    public static boolean CubeBuild(long userId, BITableID ETLTableId, BITableID baseTableId) {
+        CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable(new BIBusinessTable(ETLTableId), userId);
+        boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
+        return taskAdd;
+    }
+
     public static boolean CubeBuild(long userId) {
         boolean taskAddResult = false;
         CubeBuildStuff cubeBuildStuff;
         Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
 /*若有新增表，增量更新，否则进行全量*/
-        String messages="开始cube增量更新! \n需要更新的业务表如下：\n";
+        String messages = "开始cube增量更新! \n需要更新的业务表如下：\n";
         if (newTables.size() != 0) {
             for (BIBusinessTable table : newTables) {
-                messages+=table.getTableSource().getTableName()+"\n";
+                messages += table.getTableSource().getTableName() + "\n";
             }
             BILogger.getLogger().info(messages);
-             cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
+            cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
         } else {
             BILogger.getLogger().info("开始cube全量更新");
             cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));

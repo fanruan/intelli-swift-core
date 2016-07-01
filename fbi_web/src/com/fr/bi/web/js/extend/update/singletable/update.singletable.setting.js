@@ -9,19 +9,19 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         PART_MODIFY: 3
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.UpdateSingleTableSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-update-single-table-setting"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.UpdateSingleTableSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.UpdateSingleTableSettingModel({
             update_setting: o.update_setting,
             table: o.table,
-            currentTable:o.currentTable
+            currentTable: o.currentTable
         });
 
         //最上面的更新方式下拉框
@@ -40,7 +40,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.updateType.setValue(this.model.getUpdateType());
-        this.updateType.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
+        this.updateType.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
             var v = this.getValue()[0];
             switch (v) {
                 case BICst.SINGLE_TABLE_UPDATE_TYPE.ALL:
@@ -71,21 +71,27 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             type: "bi.button",
             text: BI.i18nText("BI-Update_Table_Immedi"),
             height: 30,
-            
+
             //效果:保存(新增)该表所在业务包的所有操作并更新对应cube
             handler: function () {
+                console.log(self.model.currentTable.id);
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
-                //若为ETL,使用ETL的id
-                if (self.model.options.currentTable.connection_name=="__FR_BI_ETL__"){
-                    self.model.table.id=self.model.currentTable.id
+                var tableInfo = {};
+                tableInfo.baseTable = self.model.table;
+                tableInfo.isETL = false;
+                tableInfo.ETLTable;
+                if (self.model.options.currentTable.connection_name == "__FR_BI_ETL__") {
+                    tableInfo.isETL = true;
+                    tableInfo.ETLTable = self.model.currentTable;
                 }
-                    self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE,self.model.table);
+                self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, tableInfo);
+                // if (self.model.options.currentTable.connection_name=="__FR_BI_ETL__"){
+                //     tableInfo.isETL=true;
+                //     self.model.table.id=self.model.currentTable.id
+                // }
+                //     self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE,self.model.table);
                 self._createCheckInterval();
-                // BI.Utils.generateCubeByTable(self.model.table, function () {
-                //     self._createCheckInterval();
-                // });
-
             }
         });
 
@@ -119,7 +125,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         })
     },
 
-    _createPartUpdateTab: function(){
+    _createPartUpdateTab: function () {
         var self = this;
         //增量增加、增量删除、增量修改
         var buttons = BI.createWidget({
@@ -145,7 +151,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             }]
         });
         buttons.setValue(this._constants.PART_ADD);
-        buttons.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+        buttons.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.tab.setSelect(this.getValue()[0]);
         });
 
@@ -157,7 +163,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             cls: "param-button",
             height: 25
         });
-        lastUpdateParam.on(BI.TextButton.EVENT_CHANGE, function(){
+        lastUpdateParam.on(BI.TextButton.EVENT_CHANGE, function () {
             var v = self.tab.getSelect();
             switch (v) {
                 case self._constants.PART_ADD:
@@ -179,7 +185,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Preview"),
             height: 35
         });
-        previewButton.on(BI.TextButton.EVENT_CHANGE, function(){
+        previewButton.on(BI.TextButton.EVENT_CHANGE, function () {
             self._createPreviewPane();
         });
 
@@ -225,14 +231,14 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         })
     },
 
-    _createPreviewPane: function(){
+    _createPreviewPane: function () {
         var self = this;
         BI.Popovers.remove(this.model.getId() + "preview");
         var previewPane = BI.createWidget({
             type: "bi.update_preview_pane",
             table: this.model.getTable()
         });
-        previewPane.on(BI.UpdatePreviewPane.EVENT_CHANGE, function(){
+        previewPane.on(BI.UpdatePreviewPane.EVENT_CHANGE, function () {
             BI.Popovers.remove(self.model.getId() + "preview");
             self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CLOSE_PREVIEW);
         });
@@ -254,7 +260,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         this.fireEvent(BI.UpdateSingleTableSetting.EVENT_OPEN_PREVIEW);
     },
 
-    _createPartUpdateCard: function(v) {
+    _createPartUpdateCard: function (v) {
         switch (v) {
             case this._constants.PART_ADD:
                 this.partAddSql = BI.createWidget({
@@ -307,18 +313,18 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         }
     },
 
-    _createTimeSetting: function(){
+    _createTimeSetting: function () {
         var self = this;
         var addTime = BI.createWidget({
             type: "bi.button",
             height: 28,
             text: "+" + BI.i18nText("BI-Timing_Set")
         });
-        addTime.on(BI.Button.EVENT_CHANGE, function(){
+        addTime.on(BI.Button.EVENT_CHANGE, function () {
             self.timeSettingGroup.addItems([{
                 type: "bi.time_setting_item",
                 id: BI.UUID(),
-                onRemoveSetting: function(id){
+                onRemoveSetting: function (id) {
                     self._removeSettingById(id);
                 }
             }]);
@@ -346,7 +352,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             items: BI.createItems(this.model.getTimeList(), {
                 type: "bi.time_setting_item",
                 id: BI.UUID(),
-                onRemoveSetting: function(id){
+                onRemoveSetting: function (id) {
                     self._removeSettingById(id);
                 }
             }),
@@ -395,11 +401,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         })
     },
 
-    _removeSettingById: function(id){
+    _removeSettingById: function (id) {
         var allButtons = this.timeSettingGroup.getAllButtons();
         var index = 0;
-        BI.some(allButtons, function(i, button) {
-            if(button.getValue().id === id) {
+        BI.some(allButtons, function (i, button) {
+            if (button.getValue().id === id) {
                 index = i;
                 return true;
             }
@@ -407,16 +413,16 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         this.timeSettingGroup.removeItemAt(index);
     },
 
-    getValue: function(){
+    getValue: function () {
         //单个表的更新属性
         var partAddSql = "", partDeleteSql = "", partModifySql = "";
-        if(BI.isNotNull(this.partAddSql)) {
+        if (BI.isNotNull(this.partAddSql)) {
             partAddSql = this.partAddSql.getValue();
         }
-        if(BI.isNotNull(this.partDeleteSql)) {
+        if (BI.isNotNull(this.partDeleteSql)) {
             partDeleteSql = this.partDeleteSql.getValue();
         }
-        if(BI.isNotNull(this.partModifySql)) {
+        if (BI.isNotNull(this.partModifySql)) {
             partModifySql = this.partModifySql.getValue();
         }
 
@@ -431,7 +437,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
     },
     _createCheckInterval: function () {
         var self = this;
-        self.cubeInterval=setInterval(function () {
+        self.cubeInterval = setInterval(function () {
             BI.Utils.checkCubeStatusByTable(self.model.table, function (data) {
                     if (data.isGenerated == true) {
                         self.immediateButton.setEnable(true);

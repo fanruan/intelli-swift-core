@@ -448,11 +448,6 @@ BI.extend(BI.Utils, {
         })
     },
 
-    // updateCubeByTable: function (data, callback) {
-    //     Data.Req.updateCubeByTable(data, function () {
-    //         callback();
-    //     });
-    // },
     generateCubeByTable: function (data, callback) {
         Data.Req.reqGenerateCubeByTable(data, function () {
             callback();

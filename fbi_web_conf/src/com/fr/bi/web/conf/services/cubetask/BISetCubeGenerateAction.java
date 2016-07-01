@@ -23,13 +23,19 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
+        String baseTableId = WebUtils.getHTTPRequestParameter(req, "baseTableId");
+        String ELTTableId=WebUtils.getHTTPRequestParameter(req,"ETLTableId");
+        Boolean isETL=Boolean.valueOf(WebUtils.getHTTPRequestParameter(req,"isETL"));
         BIConfigureManagerCenter.getLogManager().logStart(userId);
         boolean cubeBuild;
-        if (StringUtils.isEmpty(tableId)){
+        if (StringUtils.isEmpty(baseTableId)){
             cubeBuild = CubeTaskGenerate.CubeBuild(userId);
         }else{
-            cubeBuild = CubeTaskGenerate.CubeBuild(userId, new BITableID(tableId));
+            if(isETL){
+                cubeBuild = CubeTaskGenerate.CubeBuild(userId,new BITableID(ELTTableId), new BITableID(baseTableId));
+            }else {
+                cubeBuild = CubeTaskGenerate.CubeBuild(userId, new BITableID(baseTableId));
+            }
         }
         JSONObject jsonObject = new JSONObject().put("result",cubeBuild);
         WebUtils.printAsJSON(res, jsonObject);
