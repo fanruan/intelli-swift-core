@@ -6,13 +6,13 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression;
 
+import java.io.Serializable;
 import com.finebi.datasource.api.metamodel.ListAttribute;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
+
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.PathImplementor;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-
-import java.io.Serializable;
 
 
 /**

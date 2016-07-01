@@ -6,24 +6,11 @@
  */
 package com.finebi.datasource.sql.criteria.internal.compile;
 
-import org.hibernate.engine.spi.SessionImplementor;
-import com.finebi.datasource.sql.spi.QueryImplementor;
-
 /**
  * The interpretation of a JPA criteria object.
  *
  * @author Steve Ebersole
  */
 public interface CriteriaInterpretation {
-	/**
-	 * Generate a {@link com.finebi.datasource.api.Query} instance given the interpreted criteria compiled against the
-	 * passed EntityManager.
-	 *
-	 *
-	 * @param entityManager The EntityManager against which to create the Query instance.
-	 * @param interpretedParameterMetadata parameter metadata
-	 *
-	 * @return The created Query instance.
-	 */
-	QueryImplementor buildCompiledQuery(SessionImplementor entityManager, InterpretedParameterMetadata interpretedParameterMetadata);
+
 }

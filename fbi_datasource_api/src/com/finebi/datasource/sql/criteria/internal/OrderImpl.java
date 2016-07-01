@@ -5,10 +5,9 @@
  * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
  */
 package com.finebi.datasource.sql.criteria.internal;
-
+import java.io.Serializable;
 import com.finebi.datasource.api.criteria.Expression;
 import com.finebi.datasource.api.criteria.Order;
-import java.io.Serializable;
 
 /**
  * Represents an <tt>ORDER BY</tt> fragment.

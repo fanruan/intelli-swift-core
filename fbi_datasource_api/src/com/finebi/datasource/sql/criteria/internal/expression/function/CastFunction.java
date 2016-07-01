@@ -6,11 +6,12 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression.function;
 
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
-
 import java.io.Serializable;
+
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
 
 /**
  * Models a <tt>CAST</tt> function.
@@ -44,5 +45,12 @@ public class CastFunction<T,Y>
 		Helper.possibleParameter( getCastSource(), registry );
 	}
 
-
+	@Override
+	public String render(RenderingContext renderingContext) {
+		return CAST_NAME + '(' +
+				castSource.render( renderingContext ) +
+				" as " +
+				renderingContext.getCastType( getJavaType() ) +
+				')';
+	}
 }

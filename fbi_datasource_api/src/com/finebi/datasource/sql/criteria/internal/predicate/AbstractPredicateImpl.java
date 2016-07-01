@@ -6,13 +6,13 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import com.finebi.datasource.api.criteria.Predicate;
-import com.finebi.datasource.api.criteria.Selection;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
-import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
-
 import java.io.Serializable;
 import java.util.List;
+import com.finebi.datasource.api.criteria.Predicate;
+import com.finebi.datasource.api.criteria.Selection;
+
+import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 
 /**
  * Basic template support for {@link Predicate} implementors providing

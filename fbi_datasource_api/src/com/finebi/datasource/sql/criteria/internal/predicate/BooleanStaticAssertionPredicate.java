@@ -6,10 +6,11 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-
 import java.io.Serializable;
+
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
  * Predicate used to assert a static boolean condition.

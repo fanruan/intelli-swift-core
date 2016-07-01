@@ -6,12 +6,17 @@
  */
 package com.finebi.datasource.sql.criteria.internal.path;
 
-import com.finebi.datasource.api.metamodel.*;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
+import java.io.Serializable;
+import com.finebi.datasource.api.metamodel.Attribute;
+import com.finebi.datasource.api.metamodel.Bindable;
+import com.finebi.datasource.api.metamodel.EmbeddableType;
+import com.finebi.datasource.api.metamodel.IdentifiableType;
+import com.finebi.datasource.api.metamodel.ManagedType;
+import com.finebi.datasource.api.metamodel.SingularAttribute;
+
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.PathSource;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-
-import java.io.Serializable;
 
 /**
  * Models a path for a {@link SingularAttribute} generally obtained from a

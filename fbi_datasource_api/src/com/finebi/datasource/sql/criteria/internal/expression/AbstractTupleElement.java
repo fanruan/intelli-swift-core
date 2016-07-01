@@ -6,8 +6,9 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression;
 
+import com.finebi.datasource.api.metamodel.PlainTable;
 import com.finebi.datasource.sql.criteria.internal.AbstractNode;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.TupleElementImplementor;
 import com.finebi.datasource.sql.criteria.internal.ValueHandlerFactory;
 
@@ -37,7 +38,12 @@ public abstract class AbstractTupleElement<X>
 		return javaType;
 	}
 
-	@SuppressWarnings({ "unchecked" })
+    @Override
+    public PlainTable getPlainTable() {
+        return null;
+    }
+
+    @SuppressWarnings({ "unchecked" })
 	protected void resetJavaType(Class targetType) {
 		this.javaType = targetType;
 //		this.valueHandler = javaType.equals( originalJavaType )

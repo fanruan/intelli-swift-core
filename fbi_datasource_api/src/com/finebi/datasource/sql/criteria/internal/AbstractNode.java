@@ -6,8 +6,6 @@
  */
 package com.finebi.datasource.sql.criteria.internal;
 
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
-
 import java.io.Serializable;
 
 /**

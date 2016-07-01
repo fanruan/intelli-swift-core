@@ -5,9 +5,8 @@
  * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
  */
 package com.finebi.datasource.sql.criteria.internal.expression;
-
-import com.finebi.datasource.api.criteria.Expression;
 import java.io.Serializable;
+import com.finebi.datasource.api.criteria.Expression;
 
 /**
  * Contract for operators with a single operand.

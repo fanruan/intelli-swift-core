@@ -6,13 +6,14 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
+import java.io.Serializable;
+import java.util.Collection;
+
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.expression.UnaryOperatorExpression;
 import com.finebi.datasource.sql.criteria.internal.path.PluralAttributePath;
-
-import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * Models an <tt>IS [NOT] EMPTY</tt> restriction

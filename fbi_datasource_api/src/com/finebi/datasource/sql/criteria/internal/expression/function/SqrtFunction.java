@@ -6,10 +6,10 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression.function;
 
-import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
-
 import java.io.Serializable;
+import com.finebi.datasource.api.criteria.Expression;
+
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 
 /**
  * Models the ANSI SQL <tt>SQRT</tt> function.

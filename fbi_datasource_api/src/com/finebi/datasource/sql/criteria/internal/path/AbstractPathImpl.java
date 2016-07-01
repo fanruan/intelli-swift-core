@@ -12,7 +12,7 @@ import com.finebi.datasource.api.metamodel.Attribute;
 import com.finebi.datasource.api.metamodel.MapAttribute;
 import com.finebi.datasource.api.metamodel.PluralAttribute;
 import com.finebi.datasource.api.metamodel.SingularAttribute;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.PathImplementor;
 import com.finebi.datasource.sql.criteria.internal.PathSource;

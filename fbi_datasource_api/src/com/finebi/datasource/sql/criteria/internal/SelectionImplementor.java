@@ -5,15 +5,14 @@
  * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
  */
 package com.finebi.datasource.sql.criteria.internal;
-
-import com.finebi.datasource.api.criteria.Selection;
 import java.util.List;
+import com.finebi.datasource.api.criteria.Selection;
 
 /**
  * TODO : javadoc
  *
  * @author Steve Ebersole
  */
-public interface SelectionImplementor<X> extends TupleElementImplementor<X>, Selection<X> {
+public interface SelectionImplementor<X> extends TupleElementImplementor<X>, Selection<X>  {
 	public List<ValueHandlerFactory.ValueHandler> getValueHandlers();
 }

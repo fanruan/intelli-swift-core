@@ -6,9 +6,9 @@
  */
 package com.finebi.datasource.sql.criteria.internal.compile;
 
-import com.finebi.datasource.api.criteria.ParameterExpression;
 import java.util.List;
 import java.util.Map;
+import com.finebi.datasource.api.criteria.ParameterExpression;
 
 /**
  * Represents information about parameters from a compiled criteria query.

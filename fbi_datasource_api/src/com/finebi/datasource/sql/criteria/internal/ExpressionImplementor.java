@@ -6,9 +6,9 @@
  */
 package com.finebi.datasource.sql.criteria.internal;
 
-import com.finebi.datasource.api.criteria.Expression;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import com.finebi.datasource.api.criteria.Expression;
 
 /**
  * Internal contract for implementations of the JPA {@link Expression} contract.

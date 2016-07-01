@@ -6,9 +6,6 @@
  */
 package com.finebi.datasource.sql.criteria.internal.path;
 
-import com.finebi.datasource.sql.criteria.internal.JoinImplementor;
-import com.finebi.datasource.sql.criteria.internal.PathSource;
-
 import com.finebi.datasource.api.criteria.Expression;
 import com.finebi.datasource.api.criteria.JoinType;
 import com.finebi.datasource.api.criteria.PluralJoin;
@@ -17,6 +14,10 @@ import com.finebi.datasource.api.metamodel.Attribute;
 import com.finebi.datasource.api.metamodel.ManagedType;
 import com.finebi.datasource.api.metamodel.PluralAttribute;
 import com.finebi.datasource.api.metamodel.Type;
+
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.JoinImplementor;
+import com.finebi.datasource.sql.criteria.internal.PathSource;
 
 /**
  * Support for defining joins to plural attributes (JPA requires typing based on

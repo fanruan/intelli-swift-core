@@ -6,11 +6,13 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-
-import com.finebi.datasource.api.criteria.Expression;
 import java.io.Serializable;
+import com.finebi.datasource.api.criteria.Expression;
+
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
  * Predicate to assert the explicit value of a boolean expression:<ul>

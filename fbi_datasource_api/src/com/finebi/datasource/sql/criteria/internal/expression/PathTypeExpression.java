@@ -6,12 +6,12 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression;
 
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
+import java.io.Serializable;
+
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
-
-import java.io.Serializable;
 
 /**
  * Used to construct the result of {@link com.finebi.datasource.api.criteria.Path#type()}

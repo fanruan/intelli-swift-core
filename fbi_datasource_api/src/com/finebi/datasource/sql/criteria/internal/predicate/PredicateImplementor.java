@@ -6,9 +6,11 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-
 import com.finebi.datasource.api.criteria.Predicate;
+
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
  * @author Steve Ebersole

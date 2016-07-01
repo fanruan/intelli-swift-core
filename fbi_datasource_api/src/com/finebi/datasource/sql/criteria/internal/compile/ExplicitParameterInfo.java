@@ -6,9 +6,9 @@
  */
 package com.finebi.datasource.sql.criteria.internal.compile;
 
-import com.finebi.datasource.api.Parameter;
 import java.util.Calendar;
 import java.util.Date;
+import com.finebi.datasource.api.Parameter;
 
 /**
  * @author Steve Ebersole

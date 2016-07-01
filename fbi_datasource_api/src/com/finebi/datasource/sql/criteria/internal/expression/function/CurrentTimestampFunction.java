@@ -9,6 +9,8 @@ package com.finebi.datasource.sql.criteria.internal.expression.function;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+
 /**
  * Models the ANSI SQL <tt>CURRENT_TIMESTAMP</tt> function.
  *

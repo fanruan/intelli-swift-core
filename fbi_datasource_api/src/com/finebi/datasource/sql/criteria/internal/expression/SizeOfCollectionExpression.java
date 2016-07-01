@@ -6,6 +6,7 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression;
 
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.PluralAttributePath;

@@ -6,13 +6,13 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
-import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import com.finebi.datasource.api.criteria.Expression;
+
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
  * TODO : javadoc

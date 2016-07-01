@@ -7,7 +7,6 @@
 package com.finebi.datasource.sql.criteria.internal;
 
 import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.api.criteria.Fetch;
 import com.finebi.datasource.api.criteria.Join;
 import com.finebi.datasource.api.criteria.Predicate;
 
@@ -17,7 +16,7 @@ import com.finebi.datasource.api.criteria.Predicate;
 *
 * @author Steve Ebersole
 */
-public interface JoinImplementor<Z,X> extends Join<Z,X>, Fetch<Z,X>, FromImplementor<Z,X> {
+public interface JoinImplementor<Z,X> extends Join<Z,X>, FromImplementor<Z,X> {
 	/**
 	 * Refined return type
 	 */
@@ -25,13 +24,13 @@ public interface JoinImplementor<Z,X> extends Join<Z,X>, Fetch<Z,X>, FromImpleme
 	public JoinImplementor<Z,X> correlateTo(CriteriaSubqueryImpl subquery);
 
 	/**
-	 * Coordinate return type between {@link Join#on(Expression)} and {@link Fetch#on(Expression)}
+	 * Coordinate return type between {@link Join#on(Expression)}
 	 */
 	@Override
 	public JoinImplementor<Z, X> on(Expression<Boolean> restriction);
 
 	/**
-	 * Coordinate return type between {@link Join#on(Predicate...)} and {@link Fetch#on(Predicate...)}
+	 * Coordinate return type between {@link Join#on(Predicate...)}
 	 */
 	@Override
 	public JoinImplementor<Z, X> on(Predicate... restrictions);

@@ -6,15 +6,17 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-
-import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.api.criteria.Predicate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.finebi.datasource.api.criteria.Expression;
+import com.finebi.datasource.api.criteria.Predicate;
+
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
  * A compound {@link Predicate predicate} is a grouping of other {@link Predicate predicates} in order to convert
@@ -25,7 +27,7 @@ import java.util.List;
 public class CompoundPredicate
 		extends AbstractPredicateImpl
 		implements Serializable {
-	private Predicate.BooleanOperator operator;
+	private BooleanOperator operator;
 	private final List<Expression<Boolean>> expressions = new ArrayList<Expression<Boolean>>();
 
 	/**
@@ -35,7 +37,7 @@ public class CompoundPredicate
 	 * @param operator Indicates whether this predicate will function
 	 * as a conjunction or disjunction.
 	 */
-	public CompoundPredicate(CriteriaBuilderImpl criteriaBuilder, Predicate.BooleanOperator operator) {
+	public CompoundPredicate(CriteriaBuilderImpl criteriaBuilder, BooleanOperator operator) {
 		super( criteriaBuilder );
 		this.operator = operator;
 	}
@@ -50,7 +52,7 @@ public class CompoundPredicate
 	 */
 	public CompoundPredicate(
 			CriteriaBuilderImpl criteriaBuilder,
-			Predicate.BooleanOperator operator,
+			BooleanOperator operator,
 			Expression<Boolean>... expressions) {
 		this( criteriaBuilder, operator );
 		applyExpressions( expressions );
@@ -66,7 +68,7 @@ public class CompoundPredicate
 	 */
 	public CompoundPredicate(
 			CriteriaBuilderImpl criteriaBuilder,
-			Predicate.BooleanOperator operator,
+			BooleanOperator operator,
 			List<Expression<Boolean>> expressions) {
 		this( criteriaBuilder, operator );
 		applyExpressions( expressions );
@@ -82,7 +84,7 @@ public class CompoundPredicate
 	}
 
 	@Override
-	public Predicate.BooleanOperator getOperator() {
+	public BooleanOperator getOperator() {
 		return operator;
 	}
 
@@ -136,10 +138,10 @@ public class CompoundPredicate
 		this.operator = reverseOperator( this.operator );
 	}
 
-	public static Predicate.BooleanOperator reverseOperator(Predicate.BooleanOperator operator) {
-		return operator == Predicate.BooleanOperator.AND
-				? Predicate.BooleanOperator.OR
-				: Predicate.BooleanOperator.AND;
+	public static BooleanOperator reverseOperator(BooleanOperator operator) {
+		return operator == BooleanOperator.AND
+				? BooleanOperator.OR
+				: BooleanOperator.AND;
 	}
 
 	public static String render(PredicateImplementor predicate, RenderingContext renderingContext) {
@@ -151,7 +153,7 @@ public class CompoundPredicate
 		// them as is
 
 		if ( predicate.getExpressions().isEmpty() ) {
-			boolean implicitTrue = predicate.getOperator() == Predicate.BooleanOperator.AND;
+			boolean implicitTrue = predicate.getOperator() == BooleanOperator.AND;
 			// AND is always true for empty; OR is always false
 			return implicitTrue ? "1=1" : "0=1";
 		}
@@ -173,8 +175,8 @@ public class CompoundPredicate
 		return buffer.toString();
 	}
 
-	private static String operatorTextWithSeparator(Predicate.BooleanOperator operator) {
-		return operator == Predicate.BooleanOperator.AND
+	private static String operatorTextWithSeparator(BooleanOperator operator) {
+		return operator == BooleanOperator.AND
 				? " and "
 				: " or ";
 	}

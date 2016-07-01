@@ -6,11 +6,13 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
+import java.io.Serializable;
+import com.finebi.datasource.api.criteria.Subquery;
+
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-
-import com.finebi.datasource.api.criteria.Subquery;
-import java.io.Serializable;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
 
 /**
  * Models an <tt>EXISTS(<subquery>)</tt> predicate

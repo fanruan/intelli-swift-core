@@ -6,12 +6,13 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-
 import java.io.Serializable;
+import com.finebi.datasource.api.criteria.Expression;
+
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
  * Models a <tt>BETWEEN</tt> {@link com.finebi.datasource.api.criteria.Predicate}.

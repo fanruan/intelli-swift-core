@@ -87,7 +87,7 @@ public class SelectionTest extends TestCase {
             PlainTable three = EasyMock.createMock(PlainTable.class);
 
             CriteriaBuilder cb = generateCB();
-            CriteriaQuery<PlainTable> query = cb.createQuery(PlainTable.class);
+            CriteriaQuery<PlainTable> query = cb.createQuery();
             //查询的表，获得根
             Root<PlainTable> srcRoot = query.from(one);
             Root<PlainTable> tarRoot = query.from(two);

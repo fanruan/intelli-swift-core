@@ -6,11 +6,12 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression;
 
-import com.finebi.datasource.sql.QueryParameter;
+import com.finebi.datasource.sql.criteria.internal.important.QueryParameter;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.Type;
 import com.finebi.datasource.sql.criteria.internal.compile.ExplicitParameterInfo;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-import org.hibernate.type.Type;
 
 import com.finebi.datasource.api.criteria.ParameterExpression;
 import java.io.Serializable;

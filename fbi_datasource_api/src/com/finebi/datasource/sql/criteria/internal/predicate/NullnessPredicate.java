@@ -6,12 +6,14 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
+import java.io.Serializable;
+import com.finebi.datasource.api.criteria.Expression;
+
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.expression.UnaryOperatorExpression;
-
-import com.finebi.datasource.api.criteria.Expression;
-import java.io.Serializable;
 
 /**
  * Defines a {@link com.finebi.datasource.api.criteria.Predicate} for checking the

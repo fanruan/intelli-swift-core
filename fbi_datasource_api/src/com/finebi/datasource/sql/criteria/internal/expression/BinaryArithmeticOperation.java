@@ -6,12 +6,15 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression;
 
+import java.io.Serializable;
 import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
+
+import com.finebi.datasource.sql.criteria.internal.ParameterContainer;
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.predicate.ImplicitNumericExpressionTypeDeterminer;
-
-import java.io.Serializable;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
  * Models standard arithmetc operations with two operands.
@@ -200,9 +203,20 @@ public class BinaryArithmeticOperation<N extends Number>
 
 	@Override
 	public void registerParameters(ParameterRegistry registry) {
-		Helper.possibleParameter( getRightHandOperand(), registry );
-		Helper.possibleParameter( getLeftHandOperand(), registry );
+		ParameterContainer.Helper.possibleParameter( getRightHandOperand(), registry );
+		ParameterContainer.Helper.possibleParameter( getLeftHandOperand(), registry );
 	}
 
+	@Override
+	public String render(RenderingContext renderingContext) {
+		return getOperator().apply(
+				( (Renderable) getLeftHandOperand() ).render( renderingContext ),
+				( (Renderable) getRightHandOperand() ).render( renderingContext )
+		);
+	}
 
+	@Override
+	public String renderProjection(RenderingContext renderingContext) {
+		return render( renderingContext );
+	}
 }

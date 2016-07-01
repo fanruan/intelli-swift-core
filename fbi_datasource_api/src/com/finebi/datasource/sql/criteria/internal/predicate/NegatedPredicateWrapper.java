@@ -6,17 +6,18 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import com.finebi.datasource.sql.criteria.internal.ParameterContainer;
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
-
-import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.api.criteria.Predicate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.finebi.datasource.api.criteria.Expression;
+import com.finebi.datasource.api.criteria.Predicate;
+
+import com.finebi.datasource.sql.criteria.internal.ParameterContainer;
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
 
 /**
  * @author Steve Ebersole

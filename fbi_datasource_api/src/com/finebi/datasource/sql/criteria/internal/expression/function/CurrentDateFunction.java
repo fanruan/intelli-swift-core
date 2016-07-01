@@ -9,6 +9,8 @@ package com.finebi.datasource.sql.criteria.internal.expression.function;
 import java.io.Serializable;
 import java.sql.Date;
 
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+
 /**
  * Models the ANSI SQL <tt>CURRENT_DATE</tt> function.
  *

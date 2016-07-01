@@ -6,11 +6,12 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression.function;
 
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
+import java.io.Serializable;
+
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
-
-import java.io.Serializable;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
  * Models the basic concept of a SQL function.
@@ -47,5 +48,11 @@ public class BasicFunctionExpression<X>
 		// nothing to do here...
 	}
 
+	public String render(RenderingContext renderingContext) {
+		return getFunctionName() + "()";
+	}
 
+	public String renderProjection(RenderingContext renderingContext) {
+		return render( renderingContext );
+	}
 }

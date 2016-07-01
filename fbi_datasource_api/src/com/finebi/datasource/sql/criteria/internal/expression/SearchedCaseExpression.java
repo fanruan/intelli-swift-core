@@ -7,6 +7,7 @@
 package com.finebi.datasource.sql.criteria.internal.expression;
 
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 import com.finebi.datasource.api.criteria.CriteriaBuilder.Case;
@@ -14,7 +15,6 @@ import com.finebi.datasource.api.criteria.Expression;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 
 /**
  * Models what ANSI SQL terms a <tt>searched case expression</tt>.  This is a <tt>CASE</tt> expression
@@ -113,33 +113,13 @@ public class SearchedCaseExpression<R>
 	}
 
 	public String render(RenderingContext renderingContext) {
-		return render(
-				renderingContext,
-				(Renderable expression, RenderingContext context) -> expression.render( context )
-		);
+		return null;
 	}
 
 	public String renderProjection(RenderingContext renderingContext) {
-		return render(
-				renderingContext,
-				(Renderable expression, RenderingContext context) -> expression.renderProjection( context )
-		);
+		return null;
 	}
 
-	private String render(
-			RenderingContext renderingContext,
-			BiFunction<Renderable, RenderingContext, String> formatter) {
-		StringBuilder caseStatement = new StringBuilder( "case" );
-		for ( WhenClause whenClause : getWhenClauses() ) {
-			caseStatement.append( " when " )
-					.append( formatter.apply( (Renderable) whenClause.getCondition(), renderingContext ) )
-					.append( " then " )
-					.append( formatter.apply( ((Renderable) whenClause.getResult()), renderingContext ) );
-		}
-		caseStatement.append( " else " )
-				.append( formatter.apply( (Renderable) getOtherwiseResult(), renderingContext ) )
-				.append( " end" );
-		return caseStatement.toString();
-	}
+
 
 }

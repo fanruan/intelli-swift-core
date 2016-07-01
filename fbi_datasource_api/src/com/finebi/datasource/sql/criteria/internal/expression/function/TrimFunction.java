@@ -6,13 +6,16 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression.function;
 
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-import com.finebi.datasource.sql.criteria.internal.expression.LiteralExpression;
-
+import java.io.Serializable;
 import com.finebi.datasource.api.criteria.CriteriaBuilder.Trimspec;
 import com.finebi.datasource.api.criteria.Expression;
-import java.io.Serializable;
+
+import com.finebi.datasource.sql.criteria.internal.ParameterContainer;
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.expression.LiteralExpression;
 
 /**
  * Models the ANSI SQL <tt>TRIM</tt> function.
@@ -94,8 +97,8 @@ public class TrimFunction
 
 	@Override
 	public void registerParameters(ParameterRegistry registry) {
-		Helper.possibleParameter( getTrimCharacter(), registry );
-		Helper.possibleParameter( getTrimSource(), registry );
+		ParameterContainer.Helper.possibleParameter( getTrimCharacter(), registry );
+		ParameterContainer.Helper.possibleParameter( getTrimSource(), registry );
 	}
 
 	@Override

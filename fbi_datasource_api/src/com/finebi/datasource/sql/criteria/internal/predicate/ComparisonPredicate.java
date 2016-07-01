@@ -6,14 +6,16 @@
  */
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
+import java.io.Serializable;
+import com.finebi.datasource.api.criteria.Expression;
+
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.ValueHandlerFactory;
-import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.expression.BinaryOperatorExpression;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.expression.LiteralExpression;
-
-import com.finebi.datasource.api.criteria.Expression;
-import java.io.Serializable;
 
 /**
  * Models a basic relational comparison predicate.

@@ -6,16 +6,16 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression;
 
-import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.api.criteria.Predicate;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
-import com.finebi.datasource.sql.criteria.internal.ExpressionImplementor;
-import com.finebi.datasource.sql.criteria.internal.expression.function.CastFunction;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import com.finebi.datasource.api.criteria.Expression;
+import com.finebi.datasource.api.criteria.Predicate;
+
+import com.finebi.datasource.sql.criteria.internal.ExpressionImplementor;
+import com.finebi.datasource.sql.criteria.internal.expression.function.CastFunction;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 
 /**
  * Models an expression in the criteria query language.

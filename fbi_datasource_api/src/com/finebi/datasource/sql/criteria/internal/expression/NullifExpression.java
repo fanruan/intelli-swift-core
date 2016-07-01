@@ -6,11 +6,13 @@
  */
 package com.finebi.datasource.sql.criteria.internal.expression;
 
-import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.sql.criteria.CriteriaBuilderImpl;
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-
 import java.io.Serializable;
+import com.finebi.datasource.api.criteria.Expression;
+
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
  * Models an ANSI SQL <tt>NULLIF</tt> expression.  <tt>NULLIF</tt> is a specialized <tt>CASE</tt> statement.
@@ -58,5 +60,15 @@ public class NullifExpression<T> extends ExpressionImpl<T> implements Serializab
 		Helper.possibleParameter( getSecondaryExpression(), registry );
 	}
 
+	public String render(RenderingContext renderingContext) {
+		return "nullif("
+				+ ( (Renderable) getPrimaryExpression() ).render( renderingContext )
+				+ ','
+				+ ( (Renderable) getSecondaryExpression() ).render( renderingContext )
+				+ ")";
+	}
 
+	public String renderProjection(RenderingContext renderingContext) {
+		return render( renderingContext );
+	}
 }
