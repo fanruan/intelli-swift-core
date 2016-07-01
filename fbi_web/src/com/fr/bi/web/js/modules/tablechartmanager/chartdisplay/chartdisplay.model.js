@@ -488,9 +488,45 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
     },
 
+    _refreshDimsInfo: function(){
+        var self = this, o = this.options;
+        this.dimIds = [];
+        this.crossDimIds = [];
+        var view = BI.Utils.getWidgetViewByID(o.wId);
+        var drill = BI.Utils.getDrillByID(o.wId);
+
+        BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
+            BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
+        });
+        BI.each(view[BICst.REGION.DIMENSION2], function (i, dId) {
+            BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
+        });
+        BI.each(drill, function (drId, drArray) {
+            if (drArray.length !== 0) {
+                var dIndex = self.dimIds.indexOf(drId), cIndex = self.crossDimIds.indexOf(drId);
+                BI.remove(self.dimIds, drId);
+                BI.remove(self.crossDimIds, drId);
+                BI.each(drArray, function (i, dr) {
+                    var tempDrId = dr.dId;
+                    if (i === drArray.length - 1) {
+                        if (BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
+                            self.dimIds.splice(dIndex, 0, tempDrId);
+                        } else {
+                            self.crossDimIds.splice(cIndex, 0, tempDrId);
+                        }
+                    } else {
+                        BI.remove(self.dimIds, tempDrId);
+                        BI.remove(self.crossDimIds, tempDrId);
+                    }
+                });
+            }
+        });
+    },
+
     getWidgetData: function(type, callback){
         var self = this, o = this.options;
         var options = {};
+        this._refreshDimsInfo();
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
             if(BI.isNotNull(jsonData.error)) {
                 callback(jsonData);
@@ -550,41 +586,41 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     getLinkageInfo: function(obj){
         var o = this.options;
         var dId = [], clicked = [];
-        var drill = BI.Utils.getDrillByID(o.wId);
-        var drillId = this.cataDid;
-        if(BI.isNotNull(drill[drillId])) {
-            var drillArr = drill[drillId] || [];
-            var drillOb = drill[drillId][drillArr.length - 1];
-            if(BI.isNotNull(drillOb)) {
-                drillId = drillOb.dId;
-            }
-        }
+        // var drill = BI.Utils.getDrillByID(o.wId);
+        // var drillId = this.cataDid;
+        // if(BI.isNotNull(drill[drillId])) {
+        //     var drillArr = drill[drillId] || [];
+        //     var drillOb = drill[drillId][drillArr.length - 1];
+        //     if(BI.isNotNull(drillOb)) {
+        //         drillId = drillOb.dId;
+        //     }
+        // }
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: drillId,
+                    dId: this.dimIds[0],
                     value: [obj.seriesName]
                 }];
                 break;
             case BICst.WIDGET.DASHBOARD:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: drillId,
+                    dId: this.dimIds[0],
                     value: [obj.category]
                 }];
                 break;
             default:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: drillId,
+                    dId: this.dimIds[0],
                     value: [obj.value || obj.x]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
-                        dId: drillId,
+                        dId: this.crossDimIds[0],
                         value: [obj.seriesName]
                     })
                 }
