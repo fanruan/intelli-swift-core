@@ -25,17 +25,23 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 return 1;
             },
             pager: {
-                pages: false,
-                curr: 1,
-                hasNext: function (v) {
-                    return v < 3;
+                horizontal: {
+                    pages: false, //总页数
+                    curr: 1, //初始化当前页， pages为数字时可用
+
+                    hasPrev: BI.emptyFn,
+                    hasNext: BI.emptyFn,
+                    firstPage: 1,
+                    lastPage: BI.emptyFn
                 },
-                hasPrev: function (v) {
-                    return v > 1
-                },
-                firstPage: 1,
-                lastPage: function () {
-                    return 3;
+                vertical: {
+                    pages: false, //总页数
+                    curr: 1, //初始化当前页， pages为数字时可用
+
+                    hasPrev: BI.emptyFn,
+                    hasNext: BI.emptyFn,
+                    firstPage: 1,
+                    lastPage: BI.emptyFn
                 }
             },
 
@@ -292,7 +298,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 height: this._const.scrollWidth,
                 cls: "page-table-pager"
             });
-            this.pager.on(BI.Pager.EVENT_CHANGE, function () {
+            this.pager.on(BI.DirectionPager.EVENT_CHANGE, function () {
                 self._loading();
                 var vpage = this.getHPage && this.getVPage();
                 if (BI.isNull(vpage)) {

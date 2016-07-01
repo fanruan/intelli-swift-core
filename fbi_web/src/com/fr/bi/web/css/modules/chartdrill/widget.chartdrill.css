@@ -12,4 +12,5 @@
   -webkit-box-shadow: 0 1px 1px 1px #d4dadd;
   -moz-box-shadow: 0 1px 1px 1px #d4dadd;
   box-shadow: 0 1px 1px 1px #d4dadd;
+  z-index: 100001;
 }

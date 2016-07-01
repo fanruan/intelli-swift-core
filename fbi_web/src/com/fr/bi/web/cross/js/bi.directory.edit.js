@@ -56,9 +56,10 @@
                     {
                         reportName: report.reportName,
                         reportId: report.reportId,
-                        createBy: report.createBy
+                        createBy: report.createBy,
+                        descriptions: report.description
                     }, report.id];
-                var originaldata = data;
+                var originaldata = report;
                 if ($('.fs_reportmgr_table_content_' + tName).children().length <= 0) {
                     $('.fs_reportmgr_table_' + tName).show();
                 }

@@ -18,7 +18,14 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-3
+        MINLIMIT: 1e-3,
+        ONE_POINTER: 1,
+        MULTI_POINTER: 2,
+        HALF_DASHBOARD: 9,
+        PERCENT_DASHBOARD: 10,
+        PERCENT_SCALE_SLOT: 11,
+        VERTICAL_TUBE: 12,
+        HORIZONTAL_TUBE: 13
     },
 
     _defaultConfig: function () {
@@ -147,17 +154,53 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         }
     },
 
+    _formatItems: function(items){
+        if(items.length === 0){
+            return [];
+        }
+        var c = this.constants;
+        if(this.config.chart_dashboard_type === c.NORMAL || this.config.chart_dashboard_type === c.HALF_DASHBOARD){
+            var result = [];
+            if(this.config.number_of_pointer === c.ONE_POINTER && items[0].length === 1){//单个系列
+                BI.each(items[0][0].data, function(idx, da){
+                    result.push({
+                        data: [{
+                            x: items[0][0].name,
+                            y: da.y
+                        }],
+                        name: da.x
+                    })
+                });
+                return [result];
+            }
+            if(this.config.number_of_pointer === c.MULTI_POINTER && items[0].length > 1){//多个系列
+                BI.each(items, function(idx, item){
+                    BI.each(item, function(id, it){
+                        var data = it.data[0];
+                        data.x = it.name;
+                        result.push(data);
+                    })
+                });
+                return [[{
+                    data: result,
+                    name: ""
+                }]];
+            }
+        }
+        return items;
+    },
+
     populate: function (items, options) {
-        var self = this, c = this.constants;
+        var self = this, c = this.constants, o = this.options;
         this.config = {
             dashboard_number_level: options.dashboard_number_level || c.NORMAL,
             dashboard_unit: options.dashboard_unit || "",
-            chart_dashboard_type: options.chart_dashboard_type || c.NORMAL
+            chart_dashboard_type: options.chart_dashboard_type || c.NORMAL,
+            number_of_pointer: options.number_of_pointer || c.ONE_POINTER
         };
-        this.options.items = items;
-
+        o.items = this._formatItems(items);
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(o.items, function(idx, axisItems){
             var type = [];
             BI.each(axisItems, function(id, item){
                 type.push(BICst.WIDGET.DASHBOARD);
@@ -165,7 +208,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             types.push(type);
         });
 
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(o.items, types);
     },
 
     resize: function () {
