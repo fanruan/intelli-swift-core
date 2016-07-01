@@ -32,7 +32,7 @@ public class QuartzManager {
         sched.scheduleJob(jobDetail, trigger);
         //启动
         if (!sched.isShutdown()) {
-            System.out.println("已设置定时任务!\n 更新表：" + schedule.getSourceName() + "\n 时间设置：" + schedule.getTimeSchedule() + "\n");
+            System.out.println("Time Task scheduled!\n Tables for update：" + schedule.getSourceName() + "\n Time settings：" + schedule.getTimeSchedule() + "\n");
             sched.start();
         }
     }

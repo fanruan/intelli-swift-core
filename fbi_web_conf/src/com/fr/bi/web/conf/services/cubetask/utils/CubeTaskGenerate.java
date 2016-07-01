@@ -41,7 +41,7 @@ public class CubeTaskGenerate {
         CubeBuildStuff cubeBuildStuff;
         Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
 /*若有新增表，增量更新，否则进行全量*/
-        String messages = "开始cube增量更新! \n需要更新的业务表如下：\n";
+        String messages = "Cube incremental update start! \n tables updated listed：\n";
         if (newTables.size() != 0) {
             for (BIBusinessTable table : newTables) {
                 messages += table.getTableSource().getTableName() + "\n";
@@ -49,7 +49,7 @@ public class CubeTaskGenerate {
             BILogger.getLogger().info(messages);
             cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
         } else {
-            BILogger.getLogger().info("开始cube全量更新");
+            BILogger.getLogger().info("Cube global update start");
             cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
         }
         if (preConditionsCheck(userId, cubeBuildStuff)) {
@@ -62,7 +62,7 @@ public class CubeTaskGenerate {
     private static boolean preConditionsCheck(long userId, CubeBuildStuff cubeBuildStuff) {
         boolean conditionsMeet = cubeBuildStuff.preConditionsCheck();
         if (!conditionsMeet) {
-            String errorMessage = "cube生成的前置条件无法满足，请确认硬盘空间足够且数据连接正常！";
+            String errorMessage = "preConditions check failed! Please check the available HD space and data connections";
             BILogger.getLogger().error(errorMessage);
             BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
             BIConfigureManagerCenter.getLogManager().logEnd(userId);
