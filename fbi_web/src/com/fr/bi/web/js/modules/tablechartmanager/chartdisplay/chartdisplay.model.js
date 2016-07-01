@@ -296,6 +296,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         x: x,
                         y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
                         value: value,
+                        seriesName: BI.Utils.getDimensionNameByID(targetIds[idx]),
                         targetIds: [targetIds[idx]]
                     };
                 });

@@ -41,6 +41,16 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         BI.AbstractDimensionCombo.superclass._init.apply(this, arguments);
     },
 
+    _checkDimensionValid: function(){
+        var o = this.options;
+        var dimensionMap = BI.Utils.getDimensionMapByDimensionID(o.dId);
+        var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        var res = BI.find(tIds, function(idx, tId){
+            return !BI.has(dimensionMap, tId);
+        });
+        return BI.isNull(res);
+    },
+
     rebuildItemsForGISMAP: function () {
         var items = this.defaultItems();
         items[0] = [{
@@ -124,6 +134,12 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
             }
         }
+
+        //if(this._checkDimensionValid()){
+        //    items
+        //}else{
+        //
+        //}
         return items;
     },
 
@@ -135,6 +151,26 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     _positionAscAndDesc:function(items){
         var ascend = {},descend = {};
         var findCount = 0;
+        BI.any(items,function(idx,item){
+            BI.any(item,function(idx, it){
+                var itE = BI.stripEL(it);
+                if(itE.text === BI.i18nText("BI-Ascend")){
+                    ascend = it;
+                    findCount++;
+                }
+                if(itE.text === BI.i18nText("BI-Descend")){
+                    descend = it;
+                    findCount++;
+                }
+            });
+            if(findCount === 2){
+                return true;
+            }
+        });
+        return {ascend: ascend, descend: descend};
+    },
+
+    _positionMatchingRelation:function(items){
         BI.any(items,function(idx,item){
             BI.any(item,function(idx, it){
                 var itE = BI.stripEL(it);

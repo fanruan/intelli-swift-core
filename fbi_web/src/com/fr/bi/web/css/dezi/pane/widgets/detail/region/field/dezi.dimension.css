@@ -7,3 +7,6 @@
 .bi-dimension .bi-trigger {
   font-size: 14px;
 }
+.bi-dimension .dimension-invalid {
+  color: #e85050;
+}
