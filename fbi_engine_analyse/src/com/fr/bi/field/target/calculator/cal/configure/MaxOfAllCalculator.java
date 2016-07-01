@@ -116,7 +116,7 @@ public class MaxOfAllCalculator extends SummaryOfAllCalculator {
             cursor_node = temp_node;
             if (max != null) {
                 while (isNotEnd(cursor_node, deep)) {
-                    cursor_node.setSummaryValue(createTargetKey(), max);
+                    cursor_node.setSummaryValue(createTargetGettingKey(), max);
                     cursor_node = cursor_node.getBottomSibling();
                 }
             }
