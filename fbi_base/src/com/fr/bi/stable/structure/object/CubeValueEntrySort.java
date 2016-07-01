@@ -23,8 +23,7 @@ public class CubeValueEntrySort {
     public CubeValueEntrySort(CubeValueEntry[] cves, int maxIndexLength) {
         entrys = new CubeValueEntry[maxIndexLength];
         sortedEntryCount = 0;
-        for(int i = 0, len = cves.length; i < len; i++){
-            CubeValueEntry e = cves[i];
+        for (CubeValueEntry e : cves){
             if(entrys[e.getIndex()] == null){
                 sortedEntryCount++;
             }
@@ -35,14 +34,13 @@ public class CubeValueEntrySort {
 
     /**
      *
-     * @param it
+     * @param cves
      * @param maxIndexLength CubeValueEntry里index在 0 - maxIndexLength 之间,不包括maxIndexLength
      */
-    public CubeValueEntrySort(Iterator<CubeValueEntry> it, int maxIndexLength) {
+    public CubeValueEntrySort(Iterable<CubeValueEntry> cves, int maxIndexLength) {
         entrys = new CubeValueEntry[maxIndexLength];
         sortedEntryCount = 0;
-        while(it.hasNext()){
-            CubeValueEntry e = it.next();
+        for (CubeValueEntry e : cves){
             if(entrys[e.getIndex()] == null){
                 sortedEntryCount++;
             }

@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.cal.result;
 
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.general.ComparatorUtils;
 
 /**
  * Created by loy on 16/6/29.
@@ -18,7 +19,7 @@ public class AllCalNode extends Node {
         else {
             for (int i = 0; i < childs.size(); i++) {
                 Object c = childs.get(i);
-                if(c.equals(value)){
+                if(ComparatorUtils.equals(c, value)){
                     return i;
                 }
             }

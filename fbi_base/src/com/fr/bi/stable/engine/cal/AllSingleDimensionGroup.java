@@ -62,7 +62,7 @@ public class AllSingleDimensionGroup {
 	public static void run(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final NodeResultDealer deal, final CubeValueEntryNode snParent){
 		GroupValueIndex currentIndex = parentIndex.clone();
 		final FinalAdapter<GroupValueIndex> adapter = new FinalAdapter<GroupValueIndex>(currentIndex);
-		final CubeValueEntryNode[] childList = new CubeValueEntryNode[ti.loadGroup(key).sizeOfGroup()];
+		final CubeValueEntryNode[] children = new CubeValueEntryNode[ti.loadGroup(key).sizeOfGroup()];
 		final FinalAdapter<Integer> indexadp = new FinalAdapter<Integer>(0);
 		while(!adapter.get().isAllEmpty()){
 			adapter.get().BrokenableTraversal(new BrokenTraversalAction() {
@@ -70,7 +70,7 @@ public class AllSingleDimensionGroup {
 				@Override
 				public boolean actionPerformed(int row) {
 					CubeValueEntryNode entryNote = CubeValueEntryNode.fromParent(ti.getEntryByRow(key, row));
-					childList[indexadp.get()] = entryNote;
+					children[indexadp.get()] = entryNote;
 					indexadp.set(indexadp.get() + 1);
 					GroupValueIndex currentIndex = adapter.get().AND(entryNote.getGvi());
 					if(deal != null){
@@ -81,9 +81,9 @@ public class AllSingleDimensionGroup {
 				}
 			});
 		}
-		CubeValueEntryNode[] childListWithoutNull = new CubeValueEntryNode[indexadp.get()];
-		System.arraycopy(childList, 0, childListWithoutNull, 0, childListWithoutNull.length);
-		snParent.setChildList(childListWithoutNull);
+		CubeValueEntryNode[] childrenWithoutNull = new CubeValueEntryNode[indexadp.get()];
+		System.arraycopy(children, 0, childrenWithoutNull, 0, childrenWithoutNull.length);
+		snParent.setChildren(childrenWithoutNull);
 	}
 	
 	public static void runWithSort(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final NodeResultDealer deal, final CubeValueEntryNode snParent, boolean asc){
@@ -108,10 +108,10 @@ public class AllSingleDimensionGroup {
 		}
 		CubeValueEntrySort sort = sortBuilder.build();
 		if(asc) {
-			snParent.setChildList((CubeValueEntryNode[]) sort.getSortedASC());
+			snParent.setChildren((CubeValueEntryNode[]) sort.getSortedASC());
 		}
 		else {
-			snParent.setChildList((CubeValueEntryNode[]) sort.getSortedDESC());
+			snParent.setChildren((CubeValueEntryNode[]) sort.getSortedDESC());
 		}
 	}
 

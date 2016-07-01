@@ -63,12 +63,12 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
     }
 
     private void copyNode(CubeValueEntryNode calParentNode, AllCalNode parentNode, int deep){
-        CubeValueEntryNode[] calChildNodes = calParentNode.getChildList();
+        CubeValueEntryNode[] calChildNodes = calParentNode.getChildren();
         for(CubeValueEntryNode calChildNode : calChildNodes){
             AllCalNode n = new AllCalNode(pcolumns[deep], calChildNode.getT());
             n.setGroupValueIndex(calChildNode.getGvi());
             parentNode.addChild(n);
-            if(calChildNode.getChildList() != null && calChildNode.getChildList().length > 0){
+            if(calChildNode.getChildren() != null && calChildNode.getChildren().length > 0){
                 copyNode(calChildNode, n, deep + 1);
             }
         }

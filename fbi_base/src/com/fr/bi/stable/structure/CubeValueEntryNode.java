@@ -9,7 +9,7 @@ import com.fr.bi.stable.structure.object.CubeValueEntry;
  */
 public class CubeValueEntryNode<T> extends CubeValueEntry<T> {
 
-    private CubeValueEntryNode[] childList;
+    private CubeValueEntryNode[] children;
 
     public CubeValueEntryNode(){
         super(null, null, 0);
@@ -23,11 +23,11 @@ public class CubeValueEntryNode<T> extends CubeValueEntry<T> {
         return new CubeValueEntryNode(entry.getT(), entry.getGvi(), entry.getIndex());
     }
 
-    public CubeValueEntryNode[] getChildList() {
-        return childList;
+    public CubeValueEntryNode[] getChildren() {
+        return children;
     }
 
-    public void setChildList(CubeValueEntryNode[] childList) {
-        this.childList = childList;
+    public void setChildren(CubeValueEntryNode[] children) {
+        this.children = children;
     }
 }
