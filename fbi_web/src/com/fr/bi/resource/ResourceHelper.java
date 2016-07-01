@@ -617,6 +617,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/cordon/pane/item.cordon.css",
                 "com/fr/bi/web/css/modules/cordon/pane/pane.cordon.css",
 
+                //维度下拉
+                "com/fr/bi/web/css/modules/base/combos/dimension/dimension/abstract.dimension.combo.css",
+
                 //带参数的日期控件
                 "com/fr/bi/web/css/modules/multidatecombowithparam/multidate.parampopup.css",
                 "com/fr/bi/web/css/modules/multidatecombowithparam/multidate.parampane.css",

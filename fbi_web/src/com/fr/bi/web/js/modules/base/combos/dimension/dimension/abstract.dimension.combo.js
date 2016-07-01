@@ -135,11 +135,10 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             }
         }
 
-        //if(this._checkDimensionValid()){
-        //    items
-        //}else{
-        //
-        //}
+        if(!this._checkDimensionValid()){
+            var match = this._positionMatchingRelation(items);
+            match.cls = "dimension-invalid";
+        }
         return items;
     },
 
@@ -171,23 +170,17 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     },
 
     _positionMatchingRelation:function(items){
+        var result = {};
         BI.any(items,function(idx,item){
             BI.any(item,function(idx, it){
                 var itE = BI.stripEL(it);
-                if(itE.text === BI.i18nText("BI-Ascend")){
-                    ascend = it;
-                    findCount++;
-                }
-                if(itE.text === BI.i18nText("BI-Descend")){
-                    descend = it;
-                    findCount++;
+                if(itE.text === BI.i18nText("BI-Math_Relationships")){
+                    result = it;
+                    return true;
                 }
             });
-            if(findCount === 2){
-                return true;
-            }
         });
-        return {ascend: ascend, descend: descend};
+        return result;
     },
 
     _createValue: function () {
