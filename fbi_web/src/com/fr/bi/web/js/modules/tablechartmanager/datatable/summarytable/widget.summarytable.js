@@ -36,6 +36,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     _createTable: function () {
         var self = this, o = this.options;
         this.empty();
+        this.vPage = 1, this.hPage = 1;
         var tableStyle = this.model.getTableForm();
         switch (tableStyle) {
             case BICst.TABLE_FORM.OPEN_COL:
@@ -61,9 +62,20 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         itemsCreator: function (op, populate) {
                             var vPage = op.vpage, hPage = op.hpage;
                             var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            if (BI.isNotNull(vPage)) {
-                                pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                            if(vPage > self.vPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
                             }
+                            if(vPage < self.vPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                            }
+                            if(hPage > self.hPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                            }
+                            if(hPage < self.hPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
+                            }
+                            self.hPage = hPage;
+                            self.vPage = vPage;
                             self.model.setPageOperator(pageOperator);
                             self._onPageChange(function (items, header, crossItems, crossHeader) {
                                 populate.apply(self.table, arguments);
@@ -127,17 +139,25 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         itemsCreator: function (op, populate) {
                             var vPage = op.vpage, hPage = op.hpage;
                             var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            if (BI.isNotNull(vPage)) {
-                                pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                            if(vPage > self.vPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
                             }
-                            if (BI.isNotNull(hPage)) {
-                                pageOperator = hPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT : BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
+                            if(vPage < self.vPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
                             }
+                            if(hPage > self.hPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                            }
+                            if(hPage < self.hPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
+                            }
+                            self.hPage = hPage;
+                            self.vPage = vPage;
                             self.model.setPageOperator(pageOperator);
                             self._onPageChange(function (items, header, crossItems, crossHeader) {
                                 populate.apply(self.table, arguments);
                                 self._afterTablePopulate();
-                            })
+                            });
                         },
                         pager: {
                             pages: false,

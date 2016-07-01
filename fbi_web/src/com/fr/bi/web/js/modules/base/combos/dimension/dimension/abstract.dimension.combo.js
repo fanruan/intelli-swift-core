@@ -41,6 +41,16 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         BI.AbstractDimensionCombo.superclass._init.apply(this, arguments);
     },
 
+    _checkDimensionValid: function(){
+        var o = this.options;
+        var dimensionMap = BI.Utils.getDimensionMapByDimensionID(o.dId);
+        var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        var res = BI.find(tIds, function(idx, tId){
+            return !BI.has(dimensionMap, tId);
+        });
+        return BI.isNull(res);
+    },
+
     rebuildItemsForGISMAP: function () {
         var items = this.defaultItems();
         items[0] = [{
@@ -124,6 +134,11 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
             }
         }
+
+        if(!this._checkDimensionValid()){
+            var match = this._positionMatchingRelation(items);
+            match.cls = "dimension-invalid";
+        }
         return items;
     },
 
@@ -152,6 +167,20 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             }
         });
         return {ascend: ascend, descend: descend};
+    },
+
+    _positionMatchingRelation:function(items){
+        var result = {};
+        BI.any(items,function(idx,item){
+            BI.any(item,function(idx, it){
+                var itE = BI.stripEL(it);
+                if(itE.text === BI.i18nText("BI-Math_Relationships")){
+                    result = it;
+                    return true;
+                }
+            });
+        });
+        return result;
     },
 
     _createValue: function () {

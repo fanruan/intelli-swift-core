@@ -125,6 +125,19 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         this.usedRadio.setVisible(true);
     },
 
+    _checkDimensionValid: function(){
+        var dimensionMap = this.model.get("dimension_map");
+        var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(this.model.get("id")));
+        var res = BI.find(tIds, function(idx, tId){
+            return !BI.has(dimensionMap, tId);
+        });
+        if(BI.isNull(res)){
+            this.editor.element.removeClass("dimension-invalid");
+        }else{
+            this.editor.element.addClass("dimension-invalid");
+        }
+    },
+
     _checkUsedEnable: function () {
         var isUsed = this.model.get("used");
         var wId = BI.Utils.getWidgetIDByDimensionID(this.model.get("id"));
@@ -400,6 +413,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._checkUsedEnable();
+        this._checkDimensionValid();
         this.editor.setValue(this.model.get("name"));
         this.editor.setState(this.model.get("name"));
         var filterIconWidth = BI.isEmpty(this.model.get("filter_value")) ? 0 : this.constants.ICON_BUTTON_WIDTH;
