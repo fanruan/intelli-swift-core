@@ -18,8 +18,13 @@ BI.FitWidget = BI.inherit(BI.BasicButton, {
         BI.FitWidget.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.draggable = BI.createWidget({
-            type: "bi.layout",
+            type: "bi.center_adapt",
             cls: "fit-widget-draggable",
+            items: [{
+                type: "bi.icon",
+                width: 14,
+                height: 4
+            }],
             height: 12
         });
         this.widget = o.widgetCreator();
@@ -40,9 +45,9 @@ BI.FitWidget = BI.inherit(BI.BasicButton, {
             }]
         });
         this.element.hover(function(){
-            self.draggable.element.addClass("fit-widget-drag-bar");
+            self.draggable.element.addClass("fit-widget-drag-bar drag-tip-dots-icon");
         }, function(){
-            self.draggable.element.removeClass("fit-widget-drag-bar");
+            self.draggable.element.removeClass("fit-widget-drag-bar drag-tip-dots-icon");
         });
     },
 
