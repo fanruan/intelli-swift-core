@@ -78,14 +78,62 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             crossHeader: o.crossHeader,
             crossItems: o.crossItems
         });
+
+        this._rightLine = BI.createWidget({
+            type: "bi.layout",
+            invisible: true,
+            cls: "custom-scroll-table-right-line",
+            width: 0,
+            height: 0
+        });
+
+        this._adjustVerticalScrollBar = BI.debounce(function () {
+            var clients = self.table.getCalculateRegionRowSize();
+            var scrolls = self.table.getScrollRegionRowSize();
+
+            if (BI.last(scrolls) > BI.last(clients)) {
+                self.topScrollBar.setVisible(true);
+                self._rightLine.setVisible(false);
+                var items = self.layout.attr("items");
+                var isNeedResize = items[0].right !== o.scrollWidth;
+                items[0].right = o.scrollWidth;
+                self.layout.attr("items", items);
+                self.layout.resize();
+            } else {
+                self.topScrollBar.setVisible(false);
+                self._rightLine.setHeight(BI.sum(clients));
+                self._rightLine.setVisible(true);
+                var items = self.layout.attr("items");
+                var isNeedResize = items[0].right !== 0;
+                items[0].right = 0;
+                self.layout.attr("items", items);
+                self.layout.resize();
+            }
+            if (isNeedResize) {
+                self.table.resize();
+            }
+        }, 0);
+
         this._initScroll();
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this._rightLine,
+                right: 0,
+                top: 0
+            }]
+        })
         if (o.isNeedFreeze === true) {
             BI.nextTick(function () {
                 self._resizeFreezeScroll();
+                self._adjustVerticalScrollBar();
             });
         } else if (o.isNeedFreeze === false) {
             BI.nextTick(function () {
                 self._resizeScroll();
+                self._adjustVerticalScrollBar();
             });
         }
 
@@ -101,6 +149,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
+            self._adjustVerticalScrollBar();
             self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
@@ -151,7 +200,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             this.topScrollBar.on(BI.CustomScrollTableScrollBar.EVENT_SCROLL, function () {
                 self._distributeTasks(true);
             });
-            BI.createWidget({
+            this.layout = BI.createWidget({
                 type: "bi.absolute",
                 element: this.element,
                 items: [{
@@ -215,7 +264,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             this.topScrollBar.on(BI.CustomScrollTableScrollBar.EVENT_SCROLL, function () {
                 self._distributeTasks(true);
             });
-            BI.createWidget({
+            this.layout = BI.createWidget({
                 type: "bi.absolute",
                 element: this.element,
                 items: [{
@@ -434,21 +483,28 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
         }
     },
 
-
-    resize: function () {
+    _resize: function () {
         var self = this, o = this.options;
-        this.table.resize();
         if (o.isNeedFreeze === true) {
             BI.nextTick(function () {
                 self._resizeFreezeScroll();
                 self._scrollFreezeScroll();
+                self._adjustVerticalScrollBar()
             });
         } else if (o.isNeedFreeze === false) {
             BI.nextTick(function () {
                 self._resizeScroll();
                 self._scrollScroll();
+                self._adjustVerticalScrollBar()
             });
         }
+    },
+
+
+    resize: function () {
+        var self = this, o = this.options;
+        this.table.resize();
+        this._resize();
     },
 
     setColumnSize: function (columnSize) {
@@ -541,19 +597,8 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
-        var self = this, o = this.options;
         this.table.populate.apply(this.table, arguments);
-        if (o.isNeedFreeze === true) {
-            BI.nextTick(function () {
-                self._resizeFreezeScroll();
-                self._scrollFreezeScroll();
-            });
-        } else if (o.isNeedFreeze === false) {
-            BI.nextTick(function () {
-                self._resizeScroll();
-                self._scrollScroll();
-            });
-        }
+        this._resize();
     },
 
     scrollToRight: function () {

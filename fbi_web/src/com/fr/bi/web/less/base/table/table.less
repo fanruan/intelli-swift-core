@@ -3,7 +3,7 @@
 .bi-table {
   > .center-element {
     border-top: 1px solid @color-bi-border-normal;
-    border-left: 1px solid @color-bi-border-normal;
+    //border-left: 1px solid @color-bi-border-normal;
   }
 
   > .first-col {
@@ -16,9 +16,21 @@
   & > div > div > table {
     border-bottom: 1px solid @border-color-line;
     //border-right: 1px solid @border-color-line;
+
+    & > tbody > tr > td, & > thead > tr > td {
+      &.last-col > div {
+        border-right: 1px solid @border-color-line !important;
+      }
+    }
   }
   & > div.top-right > div > div > table {
     //border-right: 1px solid @border-color-line;
+
+    & > tbody > tr > td, & > thead > tr > td {
+      &.last-col > div {
+        border-right: 1px solid @border-color-line !important;
+      }
+    }
   }
   & > div.bottom-left > div > div > table {
     border-bottom: 1px solid @border-color-line;
@@ -26,6 +38,12 @@
   & > div.bottom-right > div > div > table {
     //border-right: 1px solid @border-color-line;
     border-bottom: 1px solid @border-color-line;
+
+    & > tbody > tr > td, & > thead > tr > td {
+      &.last-col > div {
+        border-right: 1px solid @border-color-line !important;
+      }
+    }
   }
 
   & > div > div > table, & > div > div > div > table {
