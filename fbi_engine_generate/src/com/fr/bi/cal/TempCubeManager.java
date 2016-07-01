@@ -7,7 +7,9 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.common.inter.Release;
+import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.BIUserUtils;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 
 import java.util.Map;
@@ -125,8 +127,16 @@ public class TempCubeManager implements Release {
                 }
                 cubeBuildToolGenerating = generater.poll();
                 BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-                cubeManager.addTask(new BuildCubeTask(new BIUser(task.getUserId()), cubeBuildToolGenerating), task.getUserId());
+                CubeTask cubeGenerateTask = new BuildCubeTask(new BIUser(task.getUserId()), cubeBuildToolGenerating);
+                cubeManager.addTask(cubeGenerateTask, task.getUserId());
                 cubeBuildTool = cubeBuildToolGenerating;
+                while (cubeManager.hasTask(cubeGenerateTask, task.getUserId())) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        BILogger.getLogger().error(e.getMessage());
+                    }
+                }
                 if (release != null) {
                     release.clear();
                 }
