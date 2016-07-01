@@ -116,7 +116,7 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
             cursor_node = temp_node;
             Object value = new Double(sum);
             while (isNotEnd(cursor_node, deep)) {
-                cursor_node.setSummaryValue(createTargetKey(), value);
+                cursor_node.setSummaryValue(createTargetGettingKey(), value);
                 cursor_node = cursor_node.getBottomSibling();
             }
             return null;

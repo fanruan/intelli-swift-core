@@ -204,7 +204,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
                 Object value = cursor_node.getSummaryValue(key);
-                cursor_node.setSummaryValue(createTargetKey(), result.get(value));
+                cursor_node.setSummaryValue(createTargetGettingKey(), result.get(value));
                 cursor_node = cursor_node.getBottomSibling();
             }
             return null;
