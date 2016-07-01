@@ -1,6 +1,7 @@
 package com.finebi.cube.adapter;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.calculator.bidouble.MaxCalculator;
@@ -311,6 +312,11 @@ public class BICubeTableAdapter implements ICubeTableService {
         }
 
 
+    }
+
+    @Override
+    public CubeValueEntry getEntryByRow(BIKey key, int row) {
+        return null;
     }
 
     @Override
