@@ -59,7 +59,7 @@ BI.DimensionFilterSelectField = BI.inherit(BI.Widget, {
                     var allTargets = BI.Utils.getAllTargetDimensionIDs(widgetId);
                     var result = [];
                     BI.each(allTargets, function (i, tId) {
-                        if (BI.Utils.isTargetByDimensionID(tId)) {
+                        if (BI.Utils.isTargetByDimensionID(tId) || BI.Utils.isCounterTargetByDimensionID(tId)) {
                             var field_id = BI.Utils.getFieldIDByDimensionID(tId);
                             result.push({
                                 id: tId,
