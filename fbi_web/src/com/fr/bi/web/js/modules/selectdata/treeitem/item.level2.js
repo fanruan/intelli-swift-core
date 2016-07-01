@@ -24,6 +24,8 @@ BI.DetailSelectDataLevel2Item = BI.inherit(BI.Single, {
                 return "select-data-field-date-font";
             case BICst.COLUMN.COUNTER:
                 return "select-data-field-number-font";
+            default:
+                return "select-data-field-number-font";
         }
     },
 

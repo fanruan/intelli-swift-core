@@ -296,6 +296,7 @@
             if (BI.isNotNull(Pool.fields[fieldId])) {
                 return Pool.fields[fieldId].field_type;
             }
+            return BICst.COLUMN.NUMBER;
         },
 
         getFieldIsUsableByID: function (fieldId) {
