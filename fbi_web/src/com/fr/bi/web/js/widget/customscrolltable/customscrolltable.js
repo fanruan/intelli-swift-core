@@ -79,21 +79,12 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             crossItems: o.crossItems
         });
 
-        this._rightLine = BI.createWidget({
-            type: "bi.layout",
-            invisible: true,
-            cls: "custom-scroll-table-right-line",
-            width: 0,
-            height: 0
-        });
-
         this._adjustVerticalScrollBar = BI.debounce(function () {
             var clients = self.table.getCalculateRegionRowSize();
             var scrolls = self.table.getScrollRegionRowSize();
 
             if (BI.last(scrolls) > BI.last(clients)) {
                 self.topScrollBar.setVisible(true);
-                self._rightLine.setVisible(false);
                 var items = self.layout.attr("items");
                 var isNeedResize = items[0].right !== o.scrollWidth;
                 items[0].right = o.scrollWidth;
@@ -101,8 +92,6 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                 self.layout.resize();
             } else {
                 self.topScrollBar.setVisible(false);
-                self._rightLine.setHeight(BI.sum(clients));
-                self._rightLine.setVisible(true);
                 var items = self.layout.attr("items");
                 var isNeedResize = items[0].right !== 0;
                 items[0].right = 0;
@@ -116,15 +105,6 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
 
         this._initScroll();
 
-        BI.createWidget({
-            type: "bi.absolute",
-            element: this.element,
-            items: [{
-                el: this._rightLine,
-                right: 0,
-                top: 0
-            }]
-        })
         if (o.isNeedFreeze === true) {
             BI.nextTick(function () {
                 self._resizeFreezeScroll();
