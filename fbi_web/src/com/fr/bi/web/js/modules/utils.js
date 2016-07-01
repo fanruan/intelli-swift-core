@@ -296,7 +296,6 @@
             if (BI.isNotNull(Pool.fields[fieldId])) {
                 return Pool.fields[fieldId].field_type;
             }
-            return BICst.COLUMN.NUMBER;
         },
 
         getFieldIsUsableByID: function (fieldId) {
@@ -1133,9 +1132,12 @@
 
         getFieldTypeByDimensionID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return this.getFieldTypeByID(this.getFieldIDByDimensionID(did));
+                var fieldId = this.getFieldIDByDimensionID(did);
+                if (BI.isKey(fieldId)) {
+                    return this.getFieldTypeByID();
+                }
+                return BICst.COLUMN.NUMBER;
             }
-
         },
 
 
@@ -1303,7 +1305,7 @@
                 case BICst.COLUMN.DATE:
                     return BICst.TARGET_TYPE.DATE;
                 default:
-                    return BICst.TARGET_TYPE.STRING;
+                    return BICst.TARGET_TYPE.NUMBER;
             }
         },
 
@@ -2048,7 +2050,7 @@
                     var tarFilter = BI.Utils.getDimensionFilterValueByID(cId);
                     if (BI.isNotNull(tarFilter)) {
                         parseFilter(tarFilter);
-                        if(BI.isNotNull(tarFilter) && BI.isNotEmptyObject(tarFilter)) {
+                        if (BI.isNotNull(tarFilter) && BI.isNotEmptyObject(tarFilter)) {
                             filterValues.push(tarFilter);
                         }
                     }
