@@ -73,16 +73,31 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         pager: {
                             pages: false,
                             curr: 1,
-                            hasNext: function () {
-                                return self.model.getPage()[1] === 1;
+                            firstPage: 1,
+                            horizontal: {
+                                pages: false, //总页数
+                                curr: 1, //初始化当前页， pages为数字时可用
+                                hasPrev: function () {
+                                    return self.model.getPage()[0] === 1;
+                                },
+                                hasNext: function () {
+                                    return self.model.getPage()[1] === 1;
+                                },
+                                firstPage: 1,
+                                lastPage: BI.emptyFn
                             },
-                            hasPrev: function () {
-                                return self.model.getPage()[0] === 1;
-                            },
-                            firstPage: 1
-                        },
-                        hasHNext: function () {
-                            return self.model.getPage()[3] === 1;
+                            vertical: {
+                                pages: false, //总页数
+                                curr: 1, //初始化当前页， pages为数字时可用
+                                hasPrev: function () {
+                                    return self.model.getPage()[2] === 1;
+                                },
+                                hasNext: function () {
+                                    return self.model.getPage()[3] === 1;
+                                },
+                                firstPage: 1,
+                                lastPage: BI.emptyFn
+                            }
                         },
                         isNeedMerge: true,
                         regionColumnSize: this.model.getStoredRegionColumnSize()
@@ -124,16 +139,31 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         pager: {
                             pages: false,
                             curr: 1,
-                            hasNext: function () {
-                                return self.model.getPage()[1] === 1;
+                            firstPage: 1,
+                            horizontal: {
+                                pages: false, //总页数
+                                curr: 1, //初始化当前页， pages为数字时可用
+                                hasPrev: function () {
+                                    return self.model.getPage()[2] === 1;
+                                },
+                                hasNext: function () {
+                                    return self.model.getPage()[3] === 1;
+                                },
+                                firstPage: 1,
+                                lastPage: BI.emptyFn
                             },
-                            hasPrev: function () {
-                                return self.model.getPage()[0] === 1;
-                            },
-                            firstPage: 1
-                        },
-                        hasHNext: function () {
-                            return self.model.getPage()[3] === 1;
+                            vertical: {
+                                pages: false, //总页数
+                                curr: 1, //初始化当前页， pages为数字时可用
+                                hasPrev: function () {
+                                    return self.model.getPage()[0] === 1;
+                                },
+                                hasNext: function () {
+                                    return self.model.getPage()[1] === 1;
+                                },
+                                firstPage: 1,
+                                lastPage: BI.emptyFn
+                            }
                         },
                         isNeedMerge: true,
                         regionColumnSize: this.model.getStoredRegionColumnSize()

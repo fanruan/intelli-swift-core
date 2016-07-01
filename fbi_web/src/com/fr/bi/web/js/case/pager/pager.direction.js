@@ -128,7 +128,7 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
 
     _createHPager: function () {
         var self = this, o = this.options;
-        var h = o.vertical;
+        var h = o.horizontal;
         this.hlabel = BI.createWidget({
             type: "bi.label",
             width: 20,
