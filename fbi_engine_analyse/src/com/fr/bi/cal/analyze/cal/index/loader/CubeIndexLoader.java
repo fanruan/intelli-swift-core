@@ -194,34 +194,34 @@ public class CubeIndexLoader {
 
     private static Operator createColumnOperator(int type, BISummaryWidget widget) {
         //pony 横向的改成全部展示
-//        Operator operator;
-//        switch (type) {
-//            case BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE: {
-//                operator = new AllPageOperator();
-//                break;
-//            }
-//            case BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH: {
-//                operator = new NextPageOperator(widget.getMaxCol());
-//                break;
-//            }
-//            case BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT: {
-//                operator = new NextPageOperator(widget.getMaxCol());
-//                break;
-//            }
-//            case BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_PRE: {
-//                operator = new LastPageOperator(widget.getMaxCol());
-//                break;
-//            }
-//            case BIReportConstant.TABLE_PAGE_OPERATOR.EXPAND: {
-//                operator = new RefreshPageOperator(widget.getClickValue(), widget.getMaxCol());
-//                break;
-//            }
-//            default: {
-//                operator = new NextPageOperator(widget.getMaxCol());
-//                break;
-//            }
-//        }
-        return new AllPageOperator();
+        Operator operator;
+        switch (type) {
+            case BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE: {
+                operator = new AllPageOperator();
+                break;
+            }
+            case BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH: {
+                operator = new NextPageOperator(widget.getMaxCol());
+                break;
+            }
+            case BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT: {
+                operator = new NextPageOperator(widget.getMaxCol());
+                break;
+            }
+            case BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_PRE: {
+                operator = new LastPageOperator(widget.getMaxCol());
+                break;
+            }
+            case BIReportConstant.TABLE_PAGE_OPERATOR.EXPAND: {
+                operator = new RefreshPageOperator(widget.getClickValue(), widget.getMaxCol());
+                break;
+            }
+            default: {
+                operator = new NextPageOperator(widget.getMaxCol());
+                break;
+            }
+        }
+        return operator;
     }
 
     private static BISummaryTarget[] createUsedSummaryTargets(
@@ -466,7 +466,7 @@ public class CubeIndexLoader {
         DimensionGroupFilter dimensionGroupFilter = createDimensionGroupFilter(widget, usedTargets, sumTarget, rowDimension, session, new ArrayList<MergerInfo>(), false);
         boolean shouldOld = dimensionGroupFilter.shouldBuildTree();
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
-        NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, -1, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
+        NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, page, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
         if (usedTargets.length != 0 && isEmpty(topInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);

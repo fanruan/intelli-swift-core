@@ -130,6 +130,9 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                             if (BI.isNotNull(vPage)) {
                                 pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
                             }
+                            if (BI.isNotNull(hPage)) {
+                                pageOperator = hPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT : BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
+                            }
                             self.model.setPageOperator(pageOperator);
                             self._onPageChange(function (items, header, crossItems, crossHeader) {
                                 populate.apply(self.table, arguments);
@@ -505,10 +508,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     resize: function () {
         this.table.resize();
     },
-    
-    empty: function(){
+
+    empty: function () {
         BI.SummaryTable.superclass.empty.apply(this, arguments);
-        if(BI.isNotNull(this.table)) {
+        if (BI.isNotNull(this.table)) {
             this.table.empty();
         }
     }
