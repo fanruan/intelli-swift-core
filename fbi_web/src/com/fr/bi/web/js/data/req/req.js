@@ -322,5 +322,13 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function (res) {
             callback(res);
         });
+    },
+    
+    reqSaveUploadImage: function(attachId, callback){
+        BI.requestAsync("fr_bi_dezi", "save_upload_image", {
+            attach_id: attachId
+        }, function(res){
+            callback(res);
+        })
     }
 };

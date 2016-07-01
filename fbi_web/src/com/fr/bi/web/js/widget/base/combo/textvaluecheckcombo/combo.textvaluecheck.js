@@ -8,7 +8,7 @@ BI.TextValueCheckCombo = BI.inherit(BI.Widget, {
         return BI.extend(BI.TextValueCheckCombo.superclass._defaultConfig.apply(this, arguments), {
             baseClass: "bi-text-value-check-combo",
             width: 100,
-            height: 22,
+            height: 30,
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE,
             text: ""
         })
@@ -48,7 +48,7 @@ BI.TextValueCheckCombo = BI.inherit(BI.Widget, {
         });
     },
 
-    setTitle: function(title){
+    setTitle: function (title) {
         this.trigger.setTitle(title);
     },
 
@@ -61,7 +61,7 @@ BI.TextValueCheckCombo = BI.inherit(BI.Widget, {
         this.textIconCheckCombo.setEnable(v);
     },
 
-    setWarningTitle: function(title) {
+    setWarningTitle: function (title) {
         this.trigger.setWarningTitle(title);
     },
 

@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- *
  * Created by GUY on 2015/3/6.
  */
 public class BIDateUtils {
@@ -29,10 +28,9 @@ public class BIDateUtils {
      *
      * @param hour 几点钟
      * @return Date日期
-     *
      */
     public static Date createStartDate(int hour, int frequency) {
-        if(frequency==DBConstant.UPDATE_FREQUENCY.EVER_MONTH){
+        if (frequency == DBConstant.UPDATE_FREQUENCY.EVER_MONTH) {
             return createMonthStartDate(hour);
         }
         Calendar c = Calendar.getInstance();
@@ -97,7 +95,7 @@ public class BIDateUtils {
         return c.getTime();
     }
 
-    public static long toSimpleDay(long t){
+    public static long toSimpleDay(long t) {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(t);
         c.set(Calendar.HOUR_OF_DAY, 0);
@@ -116,16 +114,32 @@ public class BIDateUtils {
         return DateUtils.DATETIMEFORMAT2.format(new Date());
     }
 
-	public static void checkDateFieldType(Map<BIKey, ? extends ICubeFieldSource> map, BIKey key) {
+    public static void checkDateFieldType(Map<BIKey, ? extends ICubeFieldSource> map, BIKey key) {
         ICubeFieldSource field = map.get(key);
-		if(field == null || field.getFieldType() != DBConstant.COLUMN.DATE){
-			throw NOT_DATE_FIELD_EXCEPTION;
-		}
-	}
-	
-	public static final RuntimeException NOT_DATE_FIELD_EXCEPTION = new RuntimeException("not date field");
+        if (field == null || field.getFieldType() != DBConstant.COLUMN.DATE) {
+            throw NOT_DATE_FIELD_EXCEPTION;
+        }
+    }
 
-    public static GroupValueIndex createFilterIndex(ICubeColumnIndexReader yearMap, ICubeColumnIndexReader monthMap, ICubeColumnIndexReader dayMap, BIDay start, BIDay end){
+    public static final RuntimeException NOT_DATE_FIELD_EXCEPTION = new RuntimeException("not date field");
+
+    public static GroupValueIndex createFilterIndex(ICubeColumnIndexReader yearMap, ICubeColumnIndexReader monthMap, ICubeColumnIndexReader dayMap, BIDay start, BIDay end) {
         return new RangeIndexGetter(yearMap, monthMap, dayMap).createRangeIndex(start, end);
+    }
+
+    public static String getScheduleTime(int time, int frequency) {
+        String scheduleTime;
+        switch (frequency) {
+            case DBConstant.UPDATE_FREQUENCY.EVER_MONTH:
+                scheduleTime = "0 0 0 " + time + " * ?";
+                break;
+            case DBConstant.UPDATE_FREQUENCY.EVER_DAY:
+                scheduleTime = "0 0 " + time + " * * ?";
+                break;
+            //每周几
+            default:
+                scheduleTime = "0 0 " + time + " ? * " + frequency;
+        }
+        return scheduleTime;
     }
 }

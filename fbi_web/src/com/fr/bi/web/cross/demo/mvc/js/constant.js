@@ -150,6 +150,8 @@ var _JS = [
 
     "widget/mvc.numberpager.js",
 
+    "widget/mvc.directionpager.js",
+
     "widget/mvc.skippager.js",
 
     "widget/mvc.allpager.js",
@@ -474,6 +476,7 @@ var _Routes = {
     "/tab": "TabView",
     "/pager": "PagerView",
     "/numberpager": "NumberPagerView",
+    "/directionpager": "DirectionPagerView",
     "/skippager": "SkipPagerView",
     "/allpager": "AllPagerView",
     "/loader": "LoaderView",
@@ -896,6 +899,10 @@ _Models.widget = [{
     pId: 4,
     text: "bi.number_pager",
     value: "numberpager"
+}, {
+    pId: 4,
+    text: "bi.direction_pager",
+    value: "directionpager"
 }, {
     pId: 4,
     text: "bi.skip_pager",

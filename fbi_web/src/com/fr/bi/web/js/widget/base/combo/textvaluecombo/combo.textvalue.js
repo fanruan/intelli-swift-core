@@ -8,7 +8,7 @@ BI.TextValueCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TextValueCombo.superclass._defaultConfig.apply(this, arguments), {
             baseClass: "bi-text-value-combo",
-            height: 22,
+            height: 30,
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE,
             text: "",
             el: {}

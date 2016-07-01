@@ -16,12 +16,12 @@ public class BICubeColumnPositionOfGroupService extends BICubeIntegerProperty im
     }
 
     @Override
-    public void addPositionOfGroup(int position, int groupPosition) {
+    public void addPositionOfGroup(int position, Integer groupPosition) {
         getWriter().recordSpecificValue(position, groupPosition);
     }
 
     @Override
-    public int getPositionOfGroup(int row) throws BIResourceInvalidException {
+    public Integer getPositionOfGroup(int row) throws BIResourceInvalidException {
         return getReader().getSpecificValue(row);
     }
 

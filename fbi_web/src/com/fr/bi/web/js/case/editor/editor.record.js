@@ -92,6 +92,9 @@ BI.RecordEditor = BI.inherit(BI.Single, {
         this.editor.on(BI.Editor.EVENT_STOP, function(){
             self.fireEvent(BI.RecordEditor.EVENT_STOP, arguments);
         });
+        this.editor.on(BI.Editor.EVENT_ENTER, function () {
+            self.fireEvent(BI.RecordEditor.EVENT_ENTER, arguments);
+        });
         this.editor.on(BI.Editor.EVENT_BACKSPACE, function(){
             self._checkInputState();
         });
@@ -216,6 +219,7 @@ BI.RecordEditor.EVENT_STOP = "EVENT_STOP";
 BI.RecordEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.RecordEditor.EVENT_VALID = "EVENT_VALID";
 BI.RecordEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.RecordEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.RecordEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.RecordEditor.EVENT_SPACE = "EVENT_SPACE";
 BI.RecordEditor.EVENT_EMPTY = "EVENT_EMPTY";

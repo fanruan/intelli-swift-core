@@ -23,6 +23,9 @@ BI.CubePath = BI.inherit(BI.Widget, {
             type: "bi.label",
             cls: "cube-label",
             text: o.path,
+            title: function(){
+                return pathLabel.getText();
+            },
             height: this.constants.BUTTON_HEIGHT,
             width: this.constants.PATH_WIDTH
         });
@@ -31,6 +34,9 @@ BI.CubePath = BI.inherit(BI.Widget, {
             text: o.path,
             height: this.constants.BUTTON_HEIGHT,
             width: this.constants.PATH_WIDTH
+        });
+        pathInput.on(BI.SignEditor.EVENT_CHANGE, function(){
+            pathLabel.setText(this.getValue());
         });
         pathInput.setVisible(false);
         var modifyButton = BI.createWidget({
@@ -42,16 +48,17 @@ BI.CubePath = BI.inherit(BI.Widget, {
         modifyButton.on(BI.Button.EVENT_CHANGE, function () {
             if (cancelButton.isVisible()) {
                 BI.Utils.checkCubePath(pathInput.getValue(), function (res) {
-                    if (BI.isEmptyString(res)) {
+                    if (res === "") {
                         //错误的路径
                         BI.Msg.confirm("", BI.i18nText("BI-Invalid_Path"), function () {
                             pathInput.focus();
                         });
                     } else {
-                        self.path = res;
+                        self.path = pathInput.getValue();
                         var id = BI.UUID();
                         var confirm = BI.createWidget({
-                            type: "bi.cube_path_confirm"
+                            type: "bi.cube_path_confirm",
+                            is_warning: res === "warning"
                         });
                         BI.Popovers.create(id, confirm, {width: 430, height: 300}).open(id);
                         confirm.on(BI.CubePathConfirm.EVENT_SAVE, function () {

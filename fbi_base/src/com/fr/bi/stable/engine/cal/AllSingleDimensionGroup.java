@@ -3,10 +3,12 @@
  */
 package com.fr.bi.stable.engine.cal;
 
-import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
+import com.fr.bi.stable.structure.CubeValueEntryNode;
+import com.fr.bi.stable.structure.object.CubeValueEntrySort;
 
 /**
  * @author Daniel
@@ -56,24 +58,60 @@ public class AllSingleDimensionGroup {
 			});
 		}
 	}
-	
-	public static void runWithSort(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final ResultDealer deal){
+
+	public static void run(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final NodeResultDealer deal, final CubeValueEntryNode snParent){
 		GroupValueIndex currentIndex = parentIndex.clone();
 		final FinalAdapter<GroupValueIndex> adapter = new FinalAdapter<GroupValueIndex>(currentIndex);
+		final CubeValueEntryNode[] children = new CubeValueEntryNode[ti.loadGroup(key).sizeOfGroup()];
+		final FinalAdapter<Integer> indexadp = new FinalAdapter<Integer>(0);
 		while(!adapter.get().isAllEmpty()){
 			adapter.get().BrokenableTraversal(new BrokenTraversalAction() {
-				
+
 				@Override
 				public boolean actionPerformed(int row) {
-					GroupValueIndex gvi = ti.getIndexByRow(key, row);
-					GroupValueIndex currentIndex = adapter.get().AND(gvi);
+					CubeValueEntryNode entryNote = CubeValueEntryNode.fromParent(ti.getEntryByRow(key, row));
+					children[indexadp.get()] = entryNote;
+					indexadp.set(indexadp.get() + 1);
+					GroupValueIndex currentIndex = adapter.get().AND(entryNote.getGvi());
 					if(deal != null){
-						deal.dealWith(ti, currentIndex);
+						deal.dealWithNode(ti, currentIndex, entryNote);
 					}
 					adapter.set(adapter.get().andnot(currentIndex));
 					return true;
 				}
 			});
+		}
+		CubeValueEntryNode[] childrenWithoutNull = new CubeValueEntryNode[indexadp.get()];
+		System.arraycopy(children, 0, childrenWithoutNull, 0, childrenWithoutNull.length);
+		snParent.setChildren(childrenWithoutNull);
+	}
+	
+	public static void runWithSort(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final NodeResultDealer deal, final CubeValueEntryNode snParent, boolean asc){
+		GroupValueIndex currentIndex = parentIndex.clone();
+		final FinalAdapter<GroupValueIndex> adapter = new FinalAdapter<GroupValueIndex>(currentIndex);
+		final CubeValueEntrySort.CubeValueEntrySortBuilder sortBuilder = CubeValueEntrySort.getBuilder(ti.loadGroup(key).sizeOfGroup());
+		while(!adapter.get().isAllEmpty()){
+			adapter.get().BrokenableTraversal(new BrokenTraversalAction() {
+				
+				@Override
+				public boolean actionPerformed(int row) {
+					CubeValueEntryNode entryNote = CubeValueEntryNode.fromParent(ti.getEntryByRow(key, row));
+					sortBuilder.putSortItem(entryNote);
+					GroupValueIndex currentIndex = adapter.get().AND(entryNote.getGvi());
+					if(deal != null){
+						deal.dealWithNode(ti, currentIndex, entryNote);
+					}
+					adapter.set(adapter.get().andnot(currentIndex));
+					return true;
+				}
+			});
+		}
+		CubeValueEntrySort sort = sortBuilder.build();
+		if(asc) {
+			snParent.setChildren((CubeValueEntryNode[]) sort.getSortedASC());
+		}
+		else {
+			snParent.setChildren((CubeValueEntryNode[]) sort.getSortedDESC());
 		}
 	}
 

@@ -510,9 +510,9 @@
                         if (BI.has(widget.dimensions[idx], "sort")) {
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
                             if (BI.has(dimension.sort, "sort_target")) {
-                                if(dimension.sort.sort_target === idx){
+                                if (dimension.sort.sort_target === idx) {
                                     dimension.sort.sort_target = newId;
-                                }else{
+                                } else {
                                     var result = createDimensionsAndTargets(dimension.sort.sort_target);
                                     dimension.sort.sort_target = result.id;
                                 }
@@ -1327,6 +1327,74 @@
             });
         },
 
+        getWidgetIconClsByWidgetId: function (wId) {
+            var widgetType = BI.Utils.getWidgetTypeByID(wId);
+            switch (widgetType) {
+                case BICst.WIDGET.TABLE:
+                    return "drag-group-icon";
+                case BICst.WIDGET.CROSS_TABLE:
+                    return "drag-cross-icon";
+                case BICst.WIDGET.COMPLEX_TABLE:
+                    return "drag-complex-icon";
+                case BICst.WIDGET.DETAIL:
+                    return "drag-detail-icon";
+                case BICst.WIDGET.AXIS:
+                    return "drag-axis-icon";
+                case BICst.WIDGET.ACCUMULATE_AXIS:
+                    return "drag-axis-accu-icon";
+                case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                    return "drag-axis-percent-accu-icon";
+                case BICst.WIDGET.COMPARE_AXIS:
+                    return "drag-axis-compare-icon";
+                case BICst.WIDGET.FALL_AXIS:
+                    return "drag-axis-fall-icon";
+                case BICst.WIDGET.BAR:
+                    return "drag-bar-icon";
+                case BICst.WIDGET.ACCUMULATE_BAR:
+                    return "drag-bar-accu-icon";
+                case BICst.WIDGET.COMPARE_BAR:
+                    return "drag-bar-compare-icon";
+                case BICst.WIDGET.PIE:
+                    return "drag-pie-icon";
+                case BICst.WIDGET.MAP:
+                    return "drag-map-china-icon";
+                case BICst.WIDGET.GIS_MAP:
+                    return "drag-map-gis-icon";
+                case BICst.WIDGET.DASHBOARD:
+                    return "drag-dashboard-icon";
+                case BICst.WIDGET.DONUT:
+                    return "drag-donut-icon";
+                case BICst.WIDGET.BUBBLE:
+                    return "drag-bubble-icon";
+                case BICst.WIDGET.FORCE_BUBBLE:
+                    return "drag-bubble-force-icon";
+                case BICst.WIDGET.SCATTER:
+                    return "drag-scatter-icon";
+                case BICst.WIDGET.RADAR:
+                    return "drag-radar-icon";
+                case BICst.WIDGET.ACCUMULATE_RADAR:
+                    return "drag-radar-accu-icon";
+                case BICst.WIDGET.LINE:
+                    return "drag-line-icon";
+                case BICst.WIDGET.AREA:
+                    return "drag-area-icon";
+                case BICst.WIDGET.ACCUMULATE_AREA:
+                    return "drag-area-accu-icon";
+                case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                    return "drag-area-percent-accu-icon";
+                case BICst.WIDGET.COMPARE_AREA:
+                    return "drag-area-compare-icon";
+                case BICst.WIDGET.RANGE_AREA:
+                    return "drag-area-range-icon";
+                case BICst.WIDGET.COMBINE_CHART:
+                    return "drag-combine-icon";
+                case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                    return "drag-combine-mult-icon";
+                case BICst.WIDGET.FUNNEL:
+                    return "drag-funnel-icon";
+            }
+        },
+
 
         //获取某维度或指标是否被其他维度或指标（计算指标）使用的指标
         getDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
@@ -1416,8 +1484,8 @@
             }
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
-            if(this.getPathsFromFieldAToFieldB(tableA, tableB).length !== 0) {
-                return this.getPathsFromFieldAToFieldB(tableA, tableB);
+            if (this.getPathsFromTableAToTableB(tableA, tableB).length != 0) {
+                return this.getPathsFromTableAToTableB(tableA, tableB);
             }
             if (tableA === tableB) {
                 return [[{
@@ -1510,6 +1578,13 @@
             return result;
         },
 
+        //保存上传的图片到文件下
+        saveUploadedImage: function (attachId, callback) {
+            Data.Req.reqSaveUploadImage(attachId, function (data) {
+                callback(data);
+            });
+        },
+
         /**
          * 数据相关
          */
@@ -1530,7 +1605,8 @@
                         _src: {
                             field_id: fid
                         },
-                        type: BICst.COLUMN.STRING
+                        type: BICst.COLUMN.STRING,
+                        used: true
                     }
                 },
                 view: {
@@ -1546,6 +1622,7 @@
             var dimension = Data.SharingPool.get("dimensions", dId);
             dimension.group = {type: BICst.GROUP.ID_GROUP};
             dimension.filter_value = {};
+            dimension.used = true;
             var dimensions = {};
             dimensions[dId] = dimension;
             var view = {};
@@ -1559,6 +1636,7 @@
         getDataByDimensionID: function (dId, callback) {
             var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
+            dimension.used = true;
             var widget = Data.SharingPool.get("widgets", wid);
             widget.page = -1;
             widget.dimensions = {};
@@ -1965,11 +2043,13 @@
                     }
                 });
                 var transferFilter = BI.Utils.getWSTransferFilterByID(BI.Utils.getWidgetIDByDimensionID(cId));
-                if(transferFilter === true) {
+                if (transferFilter === true) {
                     var tarFilter = BI.Utils.getDimensionFilterValueByID(cId);
-                    if(BI.isNotNull(tarFilter)) {
+                    if (BI.isNotNull(tarFilter)) {
                         parseFilter(tarFilter);
-                        filterValues.push(tarFilter);
+                        if(BI.isNotNull(tarFilter) && BI.isNotEmptyObject(tarFilter)) {
+                            filterValues.push(tarFilter);
+                        }
                     }
                 }
             });
@@ -2007,9 +2087,9 @@
                 var lLinkages = BI.Utils.getLinkageValuesByID(lId);
                 BI.each(lLinkages, function (cId, linkValue) {
                     var lTransferFilter = BI.Utils.getWSTransferFilterByID(BI.Utils.getWidgetIDByDimensionID(cId));
-                    if(lTransferFilter === true) {
+                    if (lTransferFilter === true) {
                         var lTarFilter = BI.Utils.getDimensionFilterValueByID(cId);
-                        if(BI.isNotNull(lTarFilter)) {
+                        if (BI.isNotNull(lTarFilter)) {
                             parseFilter(lTarFilter);
                             filterValues.push(lTarFilter);
                         }

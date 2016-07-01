@@ -10,17 +10,18 @@ BI.SelectTextTrigger = BI.inherit(BI.Trigger, {
     _defaultConfig: function () {
         return BI.extend(BI.SelectTextTrigger.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-select-text-trigger",
-            height: 25
+            height: 24
         });
     },
 
     _init: function () {
+        this.options.height -= 2;
         BI.SelectTextTrigger.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.trigger = BI.createWidget({
             type: "bi.text_trigger",
             element: this.element,
-            height: o.height - 2
+            height: o.height
         });
         if (BI.isKey(o.text)) {
             this.setValue(o.text);
