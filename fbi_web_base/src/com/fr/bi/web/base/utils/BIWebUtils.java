@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -206,10 +205,7 @@ public class BIWebUtils {
         map.put("reportName", node.getReportName() != null ? node.getReportName() : "null");
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
-        Date cubeTime = BIConfigureManagerCenter.getLogManager().getConfigVersion(userId);
-        if(cubeTime != null) {
-            map.put("__version__", cubeTime.getTime() + userId);
-        }
+        map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + "" + userId);
         boolean isEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         isEdit = sessionIDInfo.setEdit(isEdit);
         if (!hasPrivilege(isEdit, userId, map) && !ComparatorUtils.equals(node.getDescription(), "fine_excel")) {

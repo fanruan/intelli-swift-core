@@ -76,6 +76,25 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
+    public void updatePackageLastModify() {
+        try {
+            getValue(UserControl.getInstance().getSuperManagerID()).setPackageLastModify(System.currentTimeMillis());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public long getPackageLastModify() {
+        try {
+            return getValue(UserControl.getInstance().getSuperManagerID()).getPackageLastModify();
+        } catch (BIKeyAbsentException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return System.currentTimeMillis();
+    }
+
+    @Override
     public JSONObject createJSON(long userId) throws Exception {
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).createJSON();
