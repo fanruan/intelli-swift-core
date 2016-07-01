@@ -8,6 +8,7 @@ import java.util.Set;
  * entities in the persistence unit. 
  *
  * @since Advanced FineBI Analysis 1.0
+ * @author Connery
  */
 public interface Metamodel {
 

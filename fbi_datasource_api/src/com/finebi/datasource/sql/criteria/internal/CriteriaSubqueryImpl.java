@@ -3,7 +3,6 @@ package com.finebi.datasource.sql.criteria.internal;
 
 import com.finebi.datasource.api.criteria.*;
 import com.finebi.datasource.api.metamodel.EntityType;
-import com.finebi.datasource.api.metamodel.PlainTable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.expression.DelegatedExpressionImpl;
 import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
@@ -32,10 +31,6 @@ public class CriteriaSubqueryImpl<T> extends ExpressionImpl<T> implements Subque
         this.queryStructure = new QueryStructure<T>(this, criteriaBuilder);
     }
 
-    @Override
-    public <X> Root<X> from(PlainTable plainTable) {
-        return null;
-    }
 
 
     @Override

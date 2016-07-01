@@ -7,7 +7,7 @@ import com.finebi.datasource.api.metamodel.ManagedType;
 import com.finebi.datasource.api.metamodel.MappedSuperclassType;
 import com.finebi.datasource.sql.criteria.internal.ArrayHelper;
 import com.finebi.datasource.sql.criteria.internal.CollectionHelper;
-import com.finebi.datasource.sql.criteria.internal.important.MetamodelImplementor;
+import com.finebi.datasource.sql.criteria.internal.important.MetamodelExpander;
 
 import java.io.Serializable;
 import java.util.*;
@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Steve Ebersole
  * @author Emmanuel Bernard
  */
-public class MetamodelImpl implements MetamodelImplementor, Serializable {
+public class MetamodelImpl implements MetamodelExpander, Serializable {
     private static final Object ENTITY_NAME_RESOLVER_MAP_VALUE = new Object();
 
 
@@ -140,8 +140,5 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
     }
 
 
-    @Override
-    public void close() {
-        // anything to do ?
-    }
+
 }

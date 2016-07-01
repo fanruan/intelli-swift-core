@@ -17,19 +17,16 @@ public abstract class AbstractAttribute<X, Y>
 	private final String name;
 	private final Class<Y> javaType;
 	private final AbstractManagedType<X> declaringType;
-	private transient Member member;
 	private final PersistentAttributeType persistentAttributeType;
 
 	public AbstractAttribute(
 			String name,
 			Class<Y> javaType,
 			AbstractManagedType<X> declaringType,
-			Member member,
 			PersistentAttributeType persistentAttributeType) {
 		this.name = name;
 		this.javaType = javaType;
 		this.declaringType = declaringType;
-		this.member = member;
 		this.persistentAttributeType = persistentAttributeType;
 	}
 
@@ -48,10 +45,7 @@ public abstract class AbstractAttribute<X, Y>
 		return javaType;
 	}
 
-	@Override
-	public Member getJavaMember() {
-		return member;
-	}
+
 
 	@Override
 	public PersistentAttributeType getPersistentAttributeType() {

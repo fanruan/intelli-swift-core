@@ -56,7 +56,6 @@ public class AttributeFactory {
 				attributeMetadata.getName(),
 				attributeMetadata.getJavaType(),
 				ownerType,
-				attributeMetadata.getMember(),
 				false,
 				false,
 				property.isOptional(),
@@ -102,7 +101,6 @@ public class AttributeFactory {
 				property.getName(),
 				attributeMetadata.getJavaType(),
 				ownerType,
-				attributeMetadata.getMember(),
 				metaModelType,
 				attributeMetadata.getPersistentAttributeType()
 		);
@@ -130,7 +128,6 @@ public class AttributeFactory {
 				property.getName(),
 				attributeMetadata.getJavaType(),
 				ownerType,
-				attributeMetadata.getMember(),
 				metaModelType,
 				attributeMetadata.getPersistentAttributeType()
 		);
@@ -147,7 +144,6 @@ public class AttributeFactory {
 					attributeMetadata.getJavaType(),
 					keyType
 			)
-					.member( attributeMetadata.getMember() )
 					.property( attributeMetadata.getPropertyMapping() )
 					.persistentAttributeType( attributeMetadata.getPersistentAttributeType() )
 					.build();
@@ -158,7 +154,6 @@ public class AttributeFactory {
 				attributeMetadata.getJavaType(),
 				null
 		)
-				.member( attributeMetadata.getMember() )
 				.property( attributeMetadata.getPropertyMapping() )
 				.persistentAttributeType( attributeMetadata.getPersistentAttributeType() )
 				.build();

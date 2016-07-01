@@ -60,12 +60,6 @@ public interface Attribute<X, Y> {
      */
     Class<Y> getJavaType();
 
-    /**
-     *  Return the <code>java.lang.reflect.Member</code> for the represented 
-     *  attribute.
-     *  @return corresponding <code>java.lang.reflect.Member</code>
-     */
-    java.lang.reflect.Member getJavaMember();
 
     /**
      *  Is the attribute an association.

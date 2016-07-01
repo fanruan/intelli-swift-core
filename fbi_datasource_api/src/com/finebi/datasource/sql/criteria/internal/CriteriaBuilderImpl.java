@@ -6,8 +6,7 @@ import com.finebi.datasource.api.criteria.*;
 import com.finebi.datasource.api.metamodel.PlainTable;
 import com.finebi.datasource.sql.criteria.internal.expression.*;
 import com.finebi.datasource.sql.criteria.internal.expression.function.*;
-import com.finebi.datasource.sql.criteria.internal.important.HibernateCriteriaBuilder;
-import com.finebi.datasource.sql.criteria.internal.important.SessionFactoryImpl;
+import com.finebi.datasource.sql.criteria.internal.context.AspireContext;
 import com.finebi.datasource.sql.criteria.internal.path.PluralAttributePath;
 import com.finebi.datasource.sql.criteria.internal.predicate.*;
 
@@ -21,19 +20,19 @@ import java.util.*;
  *
  * @author Steve Ebersole
  */
-public class CriteriaBuilderImpl implements HibernateCriteriaBuilder, Serializable {
-    private final SessionFactoryImpl sessionFactory;
+public class CriteriaBuilderImpl implements CriteriaBuilder, Serializable {
+    private final AspireContext context;
 
-    public CriteriaBuilderImpl(SessionFactoryImpl sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public CriteriaBuilderImpl(AspireContext context) {
+        this.context = context;
     }
 
     /**
-     * Provides protected access to the underlying {@link SessionFactoryImpl}.
+     * Provides protected access to the underlying {@link AspireContext}.
      *
-     * @return The underlying {@link SessionFactoryImpl}
+     * @return The underlying {@link AspireContext}
      */
-    public SessionFactoryImpl getEntityManagerFactory() {
+    public AspireContext getEntityManagerFactory() {
         return null;
     }
 
@@ -43,21 +42,14 @@ public class CriteriaBuilderImpl implements HibernateCriteriaBuilder, Serializab
 
     @Override
     public CriteriaQuery<PlainTable> createQuery() {
-        return null;
+        return new CriteriaQueryImpl<PlainTable>(this, PlainTable.class);
+
     }
 
     @Override
     public CriteriaQuery<Tuple> createTupleQuery() {
         return new CriteriaQueryImpl<Tuple>(this, Tuple.class);
     }
-
-
-
-
-
-
-
-
 
 
 

@@ -6,7 +6,7 @@ import com.finebi.datasource.sql.criteria.internal.Type;
 /**
  * NOTE: Consider this contract (and its sub-contracts) as incubating as we transition to 6.0 and SQM
  *
- * @author Steve Ebersole
+ * @author Connery
  */
 public interface QueryParameter<T> extends com.finebi.datasource.api.Parameter<T> {
 	/**

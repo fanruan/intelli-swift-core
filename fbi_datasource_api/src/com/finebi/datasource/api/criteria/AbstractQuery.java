@@ -32,7 +32,6 @@ public interface AbstractQuery<T> extends CommonAbstractCriteria {
      */
     <X> Root<X> from(Class<X> entityClass);
 
-    <X> Root<X> from(PlainTable plainTable);
 
     /**
      * Create and add a query root corresponding to the given entity,
