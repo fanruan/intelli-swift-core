@@ -475,6 +475,9 @@ public class ResourceHelper {
                 //选择日期
                 "com/fr/bi/web/css/modules/selectdate/tab.selectdate.css",
 
+                //实时报表进度条
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/cubeprogressbar/cubeprogressbar.css",
+
                 //详细设置相关模块
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/combo/combo.tabletype.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/charttype.css",
@@ -616,6 +619,9 @@ public class ResourceHelper {
                 //警戒线
                 "com/fr/bi/web/css/modules/cordon/pane/item.cordon.css",
                 "com/fr/bi/web/css/modules/cordon/pane/pane.cordon.css",
+
+                //维度下拉
+                "com/fr/bi/web/css/modules/base/combos/dimension/dimension/abstract.dimension.combo.css",
 
                 //带参数的日期控件
                 "com/fr/bi/web/css/modules/multidatecombowithparam/multidate.parampopup.css",
