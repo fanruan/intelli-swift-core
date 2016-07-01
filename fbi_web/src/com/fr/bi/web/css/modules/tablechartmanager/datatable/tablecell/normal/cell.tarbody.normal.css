@@ -2,14 +2,17 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-target-body-normal-cell {
+  color: #808080;
+}
+.bi-target-body-normal-cell .target-linkage-label {
+  text-decoration: underline;
+}
+.bi-target-body-normal-cell .target-cell-text,
+.bi-target-body-normal-cell .target-linkage-label {
   -webkit-user-select: initial;
   -khtml-user-select: initial;
   -moz-user-select: initial;
   -ms-user-select: initial;
   -o-user-select: initial;
   user-select: initial;
-  color: #808080;
-}
-.bi-target-body-normal-cell .target-linkage-label {
-  text-decoration: underline;
 }
