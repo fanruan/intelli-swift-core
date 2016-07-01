@@ -261,7 +261,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
         $table.find(".scroll-top-left .table,.scroll-top-right .table,.scroll-bottom-right .table > thead > tr,.sequence-table-title").css({
             fontWeight: "bold",
             fontSize: "12px"
-        }).css("color", "white");
+        });
     },
 
     setStyle: function (style) {

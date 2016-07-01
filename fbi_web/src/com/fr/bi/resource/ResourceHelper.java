@@ -1548,6 +1548,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/colorpicker/editor.colorpicker.css",
                 "com/fr/bi/web/css/base/pager/pager.css",
                 "com/fr/bi/web/css/base/pager/pager.number.css",
+                "com/fr/bi/web/css/base/pager/pager.direction.css",
                 "com/fr/bi/web/css/base/pager/pager.skip.css",
                 "com/fr/bi/web/css/base/pager/pager.all.css",
                 "com/fr/bi/web/css/base/pager/pager.updownprenext.css",
@@ -2148,6 +2149,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/tree/tree.branch.handstand.js",
 
                 "com/fr/bi/web/js/case/pager/pager.number.js",
+                "com/fr/bi/web/js/case/pager/pager.direction.js",
                 "com/fr/bi/web/js/case/pager/pager.skip.js",
                 "com/fr/bi/web/js/case/pager/pager.all.js",
                 "com/fr/bi/web/js/case/pager/pager.updownprenext.js",

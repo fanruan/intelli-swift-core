@@ -1,7 +1,11 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.bi-detail-table-cell {
+.bi-detail-table-cell .hyper-link-item {
+  text-decoration: underline;
+}
+.bi-detail-table-cell .detail-table-cell-text,
+.bi-detail-table-cell .hyper-link-item {
   -webkit-user-select: initial;
   -khtml-user-select: initial;
   -moz-user-select: initial;

@@ -1,10 +1,12 @@
 @import "../../../../../bibase";
 
 .bi-target-body-normal-cell {
-  .user-select(initial);
   color: @color-bi-text-gray;
   .target-linkage-label {
     text-decoration: underline;
+  }
+  & .target-cell-text, & .target-linkage-label {
+    .user-select(initial);
   }
   & .cell-detail-table-popup-button {
 

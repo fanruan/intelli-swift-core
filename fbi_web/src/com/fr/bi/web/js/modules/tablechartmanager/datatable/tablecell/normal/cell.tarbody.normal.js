@@ -164,6 +164,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 height: 25,
+                cls: "target-cell-text",
                 textAlign: "left",
                 lgap: 5
             });

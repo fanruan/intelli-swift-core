@@ -34,6 +34,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         } else {
             var item = BI.createWidget({
                 type: "bi.label",
+                cls: "detail-table-cell-text",
                 textAlign: "left",
                 whiteSpace: "nowrap",
                 height: this.options.height,
