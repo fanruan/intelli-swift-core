@@ -34,7 +34,6 @@ public class JSONErrorHandler implements ErrorHandler {
         return CURRENT_LEVEL;
     }
 
-    @Override
     public int layerIndex() {
         return 2;
     }
