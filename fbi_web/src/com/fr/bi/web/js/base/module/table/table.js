@@ -451,7 +451,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
                     if (stopPropagation === true) {
                         event.stopPropagation();
-                        //return false;
+                        return false;
                     }
                     return;
                 }
