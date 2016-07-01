@@ -475,6 +475,9 @@ public class ResourceHelper {
                 //选择日期
                 "com/fr/bi/web/css/modules/selectdate/tab.selectdate.css",
 
+                //实时报表进度条
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/cubeprogressbar/cubeprogressbar.css",
+
                 //详细设置相关模块
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/combo/combo.tabletype.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/charttype.css",
