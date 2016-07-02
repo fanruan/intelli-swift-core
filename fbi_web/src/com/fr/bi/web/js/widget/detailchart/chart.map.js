@@ -41,20 +41,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
     _formatConfig: function(config, items){
         var self = this, o = this.options;
         config.plotOptions.tooltip.formatter = this.config.tooltip;
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.rangeLegend.enabled = false;
-                config.rangeLegend.position = "bottom";
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.rangeLegend.enabled = false;
-                config.rangeLegend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.rangeLegend.enabled = false;
-                break;
-        }
+        formatRangeLegend();
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.geo = this.config.geo;
@@ -65,12 +52,35 @@ BI.MapChart = BI.inherit(BI.Widget, {
         delete config.yAxis;
         return [items, config];
 
+        function formatRangeLegend(){
+            switch (self.config.chart_legend){
+                case BICst.CHART_LEGENDS.BOTTOM:
+                    config.rangeLegend.enabled = true;
+                    config.rangeLegend.position = "right";
+                    break;
+                case BICst.CHART_LEGENDS.RIGHT:
+                    config.rangeLegend.enabled = true;
+                    config.rangeLegend.position = "right";
+                    break;
+                case BICst.CHART_LEGENDS.NOT_SHOW:
+                default:
+                    config.rangeLegend.enabled = false;
+                    break;
+            }
+            config.rangeLegend.range.max = self.max;
+
+        }
     },
 
     _formatItems: function(items){
+        var self = this;
+        this.max = null;
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
+                    if(BI.isNull(self.max) || da.y > self.max){
+                        self.max = da.y;
+                    }
                     if(BI.has(it, "type") && it.type == "bubble"){
                         da.name = da.x;
                         da.size = da.y;

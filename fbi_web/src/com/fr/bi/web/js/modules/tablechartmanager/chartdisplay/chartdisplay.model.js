@@ -68,7 +68,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         res.drilldown = {};
                         res.drilldown.series = self._formatDataForMap(item);
                         res.drilldown.geo = {
-                            data: BICst.MAP_PATH[BICst.MAP_NAME[res.name]]
+                            data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]]
                         };
                     }
                     return res;
