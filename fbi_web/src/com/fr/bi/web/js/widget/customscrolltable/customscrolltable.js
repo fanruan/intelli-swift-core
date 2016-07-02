@@ -98,6 +98,13 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                 self.layout.attr("items", items);
                 self.layout.resize();
             }
+            if (o.isNeedFreeze === true) {
+                self._resizeFreezeScroll();
+                self._scrollFreezeScroll();
+            } else if (o.isNeedFreeze === false) {
+                self._resizeScroll();
+                self._scrollScroll();
+            }
             if (isNeedResize) {
                 self.table.resize();
             }
