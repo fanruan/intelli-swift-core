@@ -56,7 +56,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
             switch (self.config.chart_legend){
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.enabled = true;
-                    config.rangeLegend.position = "right";
+                    config.rangeLegend.position = "bottom";
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     config.rangeLegend.enabled = true;
