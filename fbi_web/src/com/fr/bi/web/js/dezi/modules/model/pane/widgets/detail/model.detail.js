@@ -272,18 +272,30 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     }
                     //地图,由第二个指标区域决定其他区域的单选多选
                     if(type === BICst.WIDGET.MAP){
-                        var preTar2Select = [];
+                        var preTar2Select = [], preTar1Select = [];
                         BI.each(preDims, function (dId, dim) {
                             if (dim.used === true) {
+                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET1) {
+                                    preTar1Select.push(dId);
+                                }
                                 if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET2) {
                                     preTar2Select.push(dId);
                                 }
                             }
                         });
-                        var tar2Change = false;
+                        var tar2Change = false, tar1Change = false;
                         BI.each(dims, function (dId, dim) {
                             var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                             if (dim.used === true) {
+                                if (rType === BICst.REGION.TARGET1) {
+                                    if(!preTar1Select.contains(dId)){
+                                        if(BI.isNotEmptyArray(preTar1Select) && BI.size(dims) !== BI.size(preDims)){
+                                            dims[dId].used = false;
+                                        }else{
+                                            tar1Change = true;
+                                        }
+                                    }
+                                }
                                 if (rType === BICst.REGION.TARGET2) {
                                     if(!preTar2Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar2Select) && BI.size(dims) !== BI.size(preDims)){
@@ -304,13 +316,19 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             return dims[dId].used === true;
                         });
                         if(BI.isNotNull(find)){
-                            var fisrtSelecedTarget = false;
-                            BI.each(view[BICst.REGION.TARGET1], function(idx, dId){
-                                fisrtSelecedTarget === true && (dims[dId].used = false);
-                                if(dims[dId].used === true){
-                                    fisrtSelecedTarget = true;
-                                }
-                            })
+                            if (tar1Change === true) {
+                                BI.each(preTar1Select, function (i, dId) {
+                                    dims[dId].used = false;
+                                })
+                            }else{
+                                var firstSelectedTarget = false;
+                                BI.each(view[BICst.REGION.TARGET1], function(idx, dId){
+                                    firstSelectedTarget === true && (dims[dId].used = false);
+                                    if(dims[dId].used === true){
+                                        firstSelectedTarget = true;
+                                    }
+                                })
+                            }
                         }
                     }
                 }
