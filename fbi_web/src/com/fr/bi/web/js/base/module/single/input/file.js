@@ -578,18 +578,7 @@
         },
 
         getValue: function () {
-            var v = this.wrap;
-            if (!v.attach_array) {
-                //return [];
-                // shoc: 返回空数组有个问题,提交入库的时候空文件控件值到后台变成"[]"始终会入库一条记录，
-                // 后台拦截了null、""等情况，在那里判断拦截这个不太合适，还是改这里了
-                return "";
-            }
-            if (!this.options.multiple && v.attach_array[0]
-                && v.attach_array[0].attach_type == "image") {
-                return v.attach_array[0];
-            }
-            return v.attach_array.length === 0 ? "" : v.attach_array;
+            return this.wrap.attach_array;
         },
 
         reset: function () {
