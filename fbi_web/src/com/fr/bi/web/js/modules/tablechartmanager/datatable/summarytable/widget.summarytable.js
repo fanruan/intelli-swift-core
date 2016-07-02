@@ -36,7 +36,8 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     _createTable: function () {
         var self = this, o = this.options;
         this.empty();
-        this.vPage = 1, this.hPage = 1;
+        this.vPage = 1;
+        this.hPage = 1;
         var tableStyle = this.model.getTableForm();
         switch (tableStyle) {
             case BICst.TABLE_FORM.OPEN_COL:
@@ -90,10 +91,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                                 pages: false, //总页数
                                 curr: 1, //初始化当前页， pages为数字时可用
                                 hasPrev: function () {
-                                    return self.model.getPage()[0] === 1;
+                                    return self.model.getPage()[2] === 1;
                                 },
                                 hasNext: function () {
-                                    return self.model.getPage()[1] === 1;
+                                    return self.model.getPage()[3] === 1;
                                 },
                                 firstPage: 1,
                                 lastPage: BI.emptyFn
@@ -102,10 +103,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                                 pages: false, //总页数
                                 curr: 1, //初始化当前页， pages为数字时可用
                                 hasPrev: function () {
-                                    return self.model.getPage()[2] === 1;
+                                    return self.model.getPage()[0] === 1;
                                 },
                                 hasNext: function () {
-                                    return self.model.getPage()[3] === 1;
+                                    return self.model.getPage()[1] === 1;
                                 },
                                 firstPage: 1,
                                 lastPage: BI.emptyFn
@@ -350,6 +351,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 self.errorPane.setErrorInfo("error happens during populate for table: " + e);
                 self.errorPane.setVisible(true);
             }
+            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {_page_: {h: self.table.getHPage(), v: self.table.getVPage()}});
         }, this.model.getExtraInfo());
     },
 
@@ -479,6 +481,8 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         var widgetId = this.options.wId;
+        this.vPage = 1;
+        this.hPage = 1;
         this.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
         this.model.resetETree();
         this.loading();

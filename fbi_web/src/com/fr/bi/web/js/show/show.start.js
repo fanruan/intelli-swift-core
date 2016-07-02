@@ -2,7 +2,7 @@ BIShow = FR.BIShow = BI.Show = {};
 BI.extend(BIShow, {
     _init: function (options) {
         options["popConfig"] || (options["popConfig"] = {});
-        BI.Cache.setUsername(options["_createby"]);
+        BI.Cache.setUsername(options["createBy"]);
 
         var AppRouter = BI.Router.extend({
             routes: {
@@ -18,3 +18,8 @@ BI.extend(BIShow, {
         BI.history.start();
     }
 });
+
+//TODO show界面不做缓存
+BI.Cache.setItem = function(){
+    
+};

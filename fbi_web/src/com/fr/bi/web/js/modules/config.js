@@ -720,6 +720,33 @@ BICst.FILTER_DATE_COMBO = [[{
     cls: "dot-e-font"
 }]];
 
+//auth date
+BICst.AUTH_FILTER_DATE_COMBO = [[{
+    text: BI.i18nText("BI-In"),
+    value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.FILTER_DATE.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.FILTER_DATE.NOT_EQUAL_TO,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.FILTER_DATE.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.FILTER_DATE.NOT_NULL,
+    cls: "dot-e-font"
+}]];
+
 BICst.DATA_SETTING_FILTER_DATE_COMBO = [[{
     text: BI.i18nText("BI-In"),
     value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
