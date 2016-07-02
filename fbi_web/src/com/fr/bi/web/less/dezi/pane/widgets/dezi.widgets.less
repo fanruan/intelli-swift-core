@@ -1,49 +1,35 @@
 @import "../../../bibase";
 
-/***************************************FR.DbTabPane**************************************************/
-.bi-dashboard-tab {
-  background: rgb(244, 244, 244);
-  border: 1px solid #cccccc;
-  color: #707690;
-
-  .bi-dashboard-tab-item {
-    border-right: 1px solid #cccccc;
-    font-size: 14px;
-
-    &:hover,&.hover {
-      background-color: #fafafa;
-    }
-    &:active,&.active {
-      background-color: #ffffff;
-    }
-  }
-}
 /*******************widgets****************/
 
-.bi-dashboard-widget{
+.bi-dashboard-widget {
   background: @color-bi-background-default;
-  & .dashboard-title-left{
-    & .shelter-editor-text{
+  & .dashboard-title-left {
+    & .shelter-editor-text {
       cursor: default;
-      & .bi-text{
+      & .bi-text {
         text-align: left !important;
         font-size: @font-size-14 !important;
       }
     }
   }
-  & .dashboard-title-center{
-    & .shelter-editor-text{
+  & .dashboard-title-center {
+    & .shelter-editor-text {
       cursor: default;
-      & .bi-text{
+      & .bi-text {
         text-align: center !important;
         font-size: @font-size-14 !important;
       }
     }
   }
-  & .operator-region{
+  & .operator-region {
     z-index: @zIndex-layer;
   }
-  & .remove-button{
+  & .delete-button {
+    font-size: @font-size-14;
+    background-color: @color-bi-background-default;
+  }
+  & .remove-button {
     .border-radius(10px);
     background: @color-bi-background-default;
   }

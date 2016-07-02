@@ -17,8 +17,8 @@ BI.ImageButtonHref = BI.inherit(BI.Single, {
             type: "bi.icon_button",
             cls: "img-href-font",
             title: o.title,
-            height: 32,
-            width: 32
+            height: 24,
+            width: 24
         });
 
         this.input = BI.createWidget({
