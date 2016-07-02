@@ -19,6 +19,10 @@ public interface BICubeConfManagerProvider {
 
     Object getLoginFieldValue(BusinessField field, long userId);
 
+    void updatePackageLastModify();
+
+    long getPackageLastModify();
+
     JSONObject createJSON(long userId) throws Exception;
 
     @Deprecated

@@ -30,6 +30,8 @@ public class BICubeConfManager {
     private String cubePath;
     private String loginField;
 
+    private long packageLastModify;
+
     public String getCubePath() {
         return cubePath;
     }
@@ -44,6 +46,14 @@ public class BICubeConfManager {
 
     public void setLoginField(String loginField) {
         this.loginField = loginField;
+    }
+
+    public long getPackageLastModify() {
+        return packageLastModify;
+    }
+
+    public void setPackageLastModify(long packageLastModify) {
+        this.packageLastModify = packageLastModify;
     }
 
     public JSONObject createJSON() throws Exception {

@@ -124,6 +124,14 @@ BI.StyleTable = BI.inherit(BI.Widget, {
         return this.table.getVPage();
     },
 
+    setHPage: function (v) {
+        this.table.setHPage(v);
+    },
+
+    getHPage: function () {
+        return this.table.getHPage();
+    },
+
     attr: function () {
         BI.StyleTable.superclass.attr.apply(this, arguments);
         this.table.attr.apply(this.table, arguments);
