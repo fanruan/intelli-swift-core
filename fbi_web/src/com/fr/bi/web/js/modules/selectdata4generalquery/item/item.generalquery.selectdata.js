@@ -33,7 +33,7 @@ BI.GeneralQuerySelectDataItem = BI.inherit(BI.Single, {
             type: "bi.blank_icon_text_item",
             trigger: "mousedown",
             cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
-            blankWidth: 10,
+            blankWidth: 20,
             text: o.text,
             value: o.value,
             height: 25,
