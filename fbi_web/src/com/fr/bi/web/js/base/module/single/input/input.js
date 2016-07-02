@@ -103,8 +103,9 @@ BI.Input = BI.inherit(BI.Single, {
         if (keyCode == FR.keyCode.ENTER) {
             if (this.isValid() || this.options.quitChecker.apply(this, [BI.trim(this.getValue())]) !== false) {
                 this.blur();
+                this.fireEvent(BI.Input.EVENT_ENTER);
             } else {
-                this.fireEvent(BI.Input.EVENT_RESTRICT)
+                this.fireEvent(BI.Input.EVENT_RESTRICT);
             }
         }
         if (keyCode == FR.keyCode.SPACE) {
@@ -264,5 +265,6 @@ BI.Input.EVENT_REMOVE = "EVENT_REMOVE";
 BI.Input.EVENT_EMPTY = "EVENT_EMPTY";
 BI.Input.EVENT_VALID = "EVENT_VALID";
 BI.Input.EVENT_ERROR = "EVENT_ERROR";
+BI.Input.EVENT_ENTER = "EVENT_ENTER";
 BI.Input.EVENT_RESTRICT = "EVENT_RESTRICT";
 $.shortcut("bi.input", BI.Input);

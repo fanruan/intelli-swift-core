@@ -417,26 +417,26 @@ BI.Table = BI.inherit(BI.Widget, {
         scroll(this.scrollBottomLeft.element, this.scrollTopLeft.element, this.scrollBottomRight.element);
 
         function scroll(scrollElement, scrollTopElement, otherElement) {
-            var scrolling;
+            var scrolling, scrollingX;
             var fn = function (event, delta, deltaX, deltaY) {
                 var inf = self._getScrollOffsetAndDur(event);
                 if (deltaY < 0 || deltaY > 0) {
                     if (scrolling) {
-                        otherElement[0].scrollTop = scrolling;
+                        scrollElement[0].scrollTop = scrolling;
                     }
-                    scrolling = otherElement[0].scrollTop - delta * inf.offset;
+                    scrolling = scrollElement[0].scrollTop - delta * inf.offset;
                     var stopPropagation = false;
-                    var st = otherElement[0].scrollTop;
-                    otherElement[0].scrollTop = scrolling;
-                    if (otherElement[0].scrollTop !== scrollTop) {
+                    var st = scrollElement[0].scrollTop;
+                    scrollElement[0].scrollTop = scrolling;
+                    if (scrollElement[0].scrollTop !== st) {
                         stopPropagation = true;
                     }
-                    otherElement[0].scrollTop = st;
-                    self._animateScrollTopTo(otherElement, otherElement[0].scrollTop, scrolling, inf.dur, "linear", {
+                    scrollElement[0].scrollTop = st;
+                    self._animateScrollTo(scrollElement, scrollElement[0].scrollTop, scrolling, inf.dur, "linear", {
                         onStart: function () {
                         },
                         onUpdate: function (top) {
-                            scrollElement[0].scrollTop = top;
+                            otherElement[0].scrollTop = top;
                             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, top);
                         },
                         onComplete: function () {
@@ -453,9 +453,45 @@ BI.Table = BI.inherit(BI.Widget, {
                         event.stopPropagation();
                         return false;
                     }
+                    return;
                 }
+                //if (deltaX < 0 || deltaX > 0) {
+                //    if (scrollingX) {
+                //        scrollElement[0].scrollLeft = scrollingX;
+                //    }
+                //    scrollingX = scrollElement[0].scrollLeft + delta * inf.offset;
+                //    var stopPropagation = false;
+                //    var sl = scrollElement[0].scrollLeft;
+                //    scrollElement[0].scrollLeft = scrollingX;
+                //    if (scrollElement[0].scrollLeft !== sl) {
+                //        stopPropagation = true;
+                //    }
+                //    scrollElement[0].scrollLeft = sl;
+                //    self._animateScrollTo(scrollElement, scrollElement[0].scrollLeft, scrollingX, inf.dur, "linear", {
+                //        direction: "left",
+                //        onStart: function () {
+                //        },
+                //        onUpdate: function (left) {
+                //            scrollTopElement[0].scrollLeft = left;
+                //            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, null, left);
+                //        },
+                //        onComplete: function () {
+                //            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, null, scrollingX);
+                //            scrollingX = null;
+                //        }
+                //    });
+                //
+                //
+                //    //otherElement[0].scrollTop = scrollTop;
+                //    //scrollElement[0].scrollTop = scrollTop;
+                //    //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                //    if (stopPropagation === true) {
+                //        event.stopPropagation();
+                //        return false;
+                //    }
+                //}
             };
-            otherElement.mousewheel(fn);
+            scrollElement.mousewheel(fn);
             var scrollTop = 0, scrollLeft = 0;
             scrollElement.scroll(function (e) {
                 var change = false;
@@ -533,7 +569,7 @@ BI.Table = BI.inherit(BI.Widget, {
         });
     },
 
-    _animateScrollTopTo: function (el, from, to, duration, easing, op) {
+    _animateScrollTo: function (el, from, to, duration, easing, op) {
         var self = this;
         var onStart = op.onStart, onComplete = op.onComplete, onUpdate = op.onUpdate;
         var startTime = BI.getTime(), _delay, progress = 0, _request;
@@ -559,7 +595,7 @@ BI.Table = BI.inherit(BI.Widget, {
             if (el.time < duration) {
                 el._id = _request(_step);
             } else {
-                el.scrollTop(to);
+                el[op.direction == 'left' ? "scrollLeft" : "scrollTop"](to);
                 onComplete.call();
             }
         }
@@ -568,9 +604,9 @@ BI.Table = BI.inherit(BI.Widget, {
             var top = to;
             if (duration > 0) {
                 el.currVal = _ease(el.time, from, diff, duration, easing);
-                el.scrollTop(top = Math.round(el.currVal));
+                el[op.direction == 'left' ? "scrollLeft" : "scrollTop"](top = Math.round(el.currVal));
             } else {
-                el.scrollTop(to);
+                el[op.direction == 'left' ? "scrollLeft" : "scrollTop"](to);
             }
             onUpdate(top);
         }
@@ -1001,7 +1037,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     stopPropagation = true;
                 }
                 ele[0].scrollTop = st;
-                self._animateScrollTopTo(ele, ele[0].scrollTop, scrollTop, inf.dur, "linear", {
+                self._animateScrollTo(ele, ele[0].scrollTop, scrollTop, inf.dur, "linear", {
                     onStart: function () {
                     },
                     onUpdate: function (top) {
@@ -1192,13 +1228,21 @@ BI.Table = BI.inherit(BI.Widget, {
                                         wid += bodyTds[j][i].__mergeCols.length - 1;
                                     }
                                     if (BI.isNumeric(wid)) {
-                                        items[i].element.attr("width", wid).css("width", wid);
+                                        if (i == BI.size(items) - 1) {
+                                            items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                        } else {
+                                            items[i].element.attr("width", wid).css("width", wid);
+                                        }
                                     } else {
                                         items[i].element.attr("width", "").css("width", "");
                                     }
                                 } else {
                                     if (BI.isNumeric(w)) {
-                                        items[i].element.attr("width", w).css("width", w);
+                                        if (i == BI.size(items) - 1) {
+                                            items[i].element.attr("width", w - 1).css("width", w - 1);
+                                        } else {
+                                            items[i].element.attr("width", w).css("width", w);
+                                        }
                                     } else {
                                         items[i].element.attr("width", "").css("width", "");
                                     }
@@ -1337,13 +1381,21 @@ BI.Table = BI.inherit(BI.Widget, {
                                     wid += self.bodyTds[j][i].__mergeCols.length - 1;
                                 }
                                 if (BI.isNumeric(wid)) {
-                                    items[i].element.attr("width", wid).css("width", wid);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                    } else {
+                                        items[i].element.attr("width", wid).css("width", wid);
+                                    }
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
                             } else {
                                 if (BI.isNumeric(w)) {
-                                    items[i].element.attr("width", w).css("width", w);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].element.attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].element.attr("width", w).css("width", w);
+                                    }
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
@@ -1364,13 +1416,21 @@ BI.Table = BI.inherit(BI.Widget, {
                                     wid += self.headerTds[j][i].__mergeCols.length - 1;
                                 }
                                 if (BI.isNumeric(wid)) {
-                                    items[i].element.attr("width", wid).css("width", wid);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                    } else {
+                                        items[i].element.attr("width", wid).css("width", wid);
+                                    }
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
                             } else {
                                 if (BI.isNumeric(w)) {
-                                    items[i].element.attr("width", w).css("width", w);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].element.attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].element.attr("width", w).css("width", w);
+                                    }
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
@@ -1391,13 +1451,21 @@ BI.Table = BI.inherit(BI.Widget, {
                                     wid += self.footerTds[j][i].__mergeCols.length - 1;
                                 }
                                 if (BI.isNumeric(wid)) {
-                                    items[i].element.attr("width", wid).css("width", wid);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                    } else {
+                                        items[i].element.attr("width", wid).css("width", wid);
+                                    }
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
                             } else {
                                 if (BI.isNumeric(w)) {
-                                    items[i].element.attr("width", w).css("width", w);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].element.attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].element.attr("width", w).css("width", w);
+                                    }
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
@@ -1422,7 +1490,7 @@ BI.Table = BI.inherit(BI.Widget, {
         var o = this.options;
         var columnSize = [];
         if (o.isNeedFreeze) {
-            if(this.bottomLeftBodyTds.length > 0) {
+            if (this.bottomLeftBodyTds.length > 0) {
                 if (!BI.any(this.bottomLeftBodyTds, function (i, tds) {
                         if (!BI.any(tds, function (i, item) {
                                 if (item.__mergeCols.length > 1) {
@@ -1569,13 +1637,21 @@ BI.Table = BI.inherit(BI.Widget, {
                                         wid += bodyTds[j][i].__mergeCols.length - 1;
                                     }
                                     if (BI.isNumeric(wid)) {
-                                        items[i].element.attr("width", wid).css("width", wid);
+                                        if (i == BI.size(items) - 1) {
+                                            items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                        } else {
+                                            items[i].element.attr("width", wid).css("width", wid);
+                                        }
                                     } else {
                                         items[i].element.attr("width", "").css("width", "");
                                     }
                                 } else {
                                     if (BI.isNumeric(w)) {
-                                        items[i].element.attr("width", w).css("width", w);
+                                        if (i == BI.size(items) - 1) {
+                                            items[i].element.attr("width", w - 1).css("width", w - 1);
+                                        } else {
+                                            items[i].element.attr("width", w).css("width", w);
+                                        }
                                     } else {
                                         items[i].element.attr("width", "").css("width", "");
                                     }
@@ -1661,13 +1737,21 @@ BI.Table = BI.inherit(BI.Widget, {
                                     wid += self.headerTds[j][i].__mergeCols.length - 1;
                                 }
                                 if (BI.isNumeric(wid)) {
-                                    items[i].element.attr("width", wid).css("width", wid);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                    } else {
+                                        items[i].element.attr("width", wid).css("width", wid);
+                                    }
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
                             } else {
                                 if (BI.isNumeric(w)) {
-                                    items[i].element.attr("width", w).css("width", w);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].element.attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].element.attr("width", w).css("width", w);
+                                    }
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }

@@ -29,6 +29,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 type: "bi.page_table",
                 el: {
                     el: {
+                        pageSpace: 95,
                         el: {
                             el: {
                                 type: "bi.table_view"

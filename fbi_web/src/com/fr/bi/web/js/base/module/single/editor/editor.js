@@ -144,6 +144,9 @@ BI.Editor = BI.inherit(BI.Single, {
             self._checkWaterMark();
             self.fireEvent(BI.Editor.EVENT_EMPTY, arguments);
         });
+        this.editor.on(BI.Input.EVENT_ENTER, function () {
+            self.fireEvent(BI.Editor.EVENT_ENTER, arguments);
+        });
         this.editor.on(BI.Input.EVENT_SPACE, function () {
             self.fireEvent(BI.Editor.EVENT_SPACE, arguments);
         });
@@ -319,6 +322,7 @@ BI.Editor.EVENT_STOP = "EVENT_STOP";
 BI.Editor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.Editor.EVENT_VALID = "EVENT_VALID";
 BI.Editor.EVENT_ERROR = "EVENT_ERROR";
+BI.Editor.EVENT_ENTER = "EVENT_ENTER";
 BI.Editor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.Editor.EVENT_REMOVE = "EVENT_REMOVE";
 BI.Editor.EVENT_EMPTY = "EVENT_EMPTY";

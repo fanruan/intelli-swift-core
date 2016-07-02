@@ -475,6 +475,9 @@ public class ResourceHelper {
                 //选择日期
                 "com/fr/bi/web/css/modules/selectdate/tab.selectdate.css",
 
+                //实时报表进度条
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/cubeprogressbar/cubeprogressbar.css",
+
                 //详细设置相关模块
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/combo/combo.tabletype.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/charttype.css",
@@ -617,6 +620,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/cordon/pane/item.cordon.css",
                 "com/fr/bi/web/css/modules/cordon/pane/pane.cordon.css",
 
+                //维度下拉
+                "com/fr/bi/web/css/modules/base/combos/dimension/dimension/abstract.dimension.combo.css",
+
                 //带参数的日期控件
                 "com/fr/bi/web/css/modules/multidatecombowithparam/multidate.parampopup.css",
                 "com/fr/bi/web/css/modules/multidatecombowithparam/multidate.parampane.css",
@@ -645,6 +651,7 @@ public class ResourceHelper {
                 //明细表表格
                 "com/fr/bi/web/css/modules/detailtable/widget.detailtable.css",
                 "com/fr/bi/web/css/modules/detailtable/cell/header.detailtable.css",
+                "com/fr/bi/web/css/modules/detailtable/cell/cell.detailtable.css",
 
 
                 //联动
@@ -1548,6 +1555,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/colorpicker/editor.colorpicker.css",
                 "com/fr/bi/web/css/base/pager/pager.css",
                 "com/fr/bi/web/css/base/pager/pager.number.css",
+                "com/fr/bi/web/css/base/pager/pager.direction.css",
                 "com/fr/bi/web/css/base/pager/pager.skip.css",
                 "com/fr/bi/web/css/base/pager/pager.all.css",
                 "com/fr/bi/web/css/base/pager/pager.updownprenext.css",
@@ -2148,6 +2156,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/tree/tree.branch.handstand.js",
 
                 "com/fr/bi/web/js/case/pager/pager.number.js",
+                "com/fr/bi/web/js/case/pager/pager.direction.js",
                 "com/fr/bi/web/js/case/pager/pager.skip.js",
                 "com/fr/bi/web/js/case/pager/pager.all.js",
                 "com/fr/bi/web/js/case/pager/pager.updownprenext.js",

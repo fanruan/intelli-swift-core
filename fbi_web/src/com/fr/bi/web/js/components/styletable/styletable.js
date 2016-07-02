@@ -124,6 +124,14 @@ BI.StyleTable = BI.inherit(BI.Widget, {
         return this.table.getVPage();
     },
 
+    setHPage: function (v) {
+        this.table.setHPage(v);
+    },
+
+    getHPage: function () {
+        return this.table.getHPage();
+    },
+
     attr: function () {
         BI.StyleTable.superclass.attr.apply(this, arguments);
         this.table.attr.apply(this.table, arguments);
@@ -261,7 +269,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
         $table.find(".scroll-top-left .table,.scroll-top-right .table,.scroll-bottom-right .table > thead > tr,.sequence-table-title").css({
             fontWeight: "bold",
             fontSize: "12px"
-        }).css("color", "white");
+        });
     },
 
     setStyle: function (style) {

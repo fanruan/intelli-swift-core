@@ -31,7 +31,10 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
         this.xAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+            },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
             },
             formatter: "function(){if(this>0) return this; else return this*(-1); }",
             gridLineWidth: 0
@@ -39,7 +42,10 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
         this.yAxis = [{
             type: "category",
             title: {
-                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+            },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
             },
             gridLineWidth: 0,
             position: "left"
@@ -81,6 +87,7 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
         }
         config.zoom.zoomTool.visible = this.config.show_zoom;
         this.config.show_zoom === true && delete config.dataSheet;
+        config.plotOptions.tooltip.formatter.valueFormat = "function(){if(this > 0){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];} else {return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}}";
 
         config.yAxis = this.yAxis;
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
@@ -117,7 +124,7 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily": "Arial", "color": "rgba(0,0,0,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -142,7 +149,7 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily": "Arial", "color": "rgba(0,0,0,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -159,7 +166,7 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
                     BI.each(item.data, function(id, da){
                         da.x = da.x || 0;
                         da.x = da.x.div(magnify);
-                        if(self.constants.MINLIMIT.sub(da.x) > 0){
+                        if(self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
                             da.x = 0;
                         }
                     })

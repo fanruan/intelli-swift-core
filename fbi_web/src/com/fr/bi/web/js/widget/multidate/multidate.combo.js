@@ -108,7 +108,7 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
             this.popup.on(BI.MultiDatePopup.BUTTON_CLEAR_EVENT_CHANGE, function () {
                 self.setValue();
                 self.combo.hideView();
-                self.fireEvent(BI.MultiDateCombo.EVENT_CHANGE);
+                self.fireEvent(BI.MultiDateCombo.EVENT_CONFIRM);
             });
             this.popup.on(BI.MultiDatePopup.BUTTON_lABEL_EVENT_CHANGE, function () {
                 var date = new Date();
@@ -118,17 +118,18 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                     day: date.getDate()
                 });
                 self.combo.hideView();
-                self.fireEvent(BI.MultiDateCombo.EVENT_CHANGE);
+                self.fireEvent(BI.MultiDateCombo.EVENT_CONFIRM);
             });
             this.popup.on(BI.MultiDatePopup.BUTTON_OK_EVENT_CHANGE, function () {
                 self.setValue(self.popup.getValue());
                 self.combo.hideView();
-                self.fireEvent(BI.MultiDateCombo.EVENT_CHANGE);
+                self.fireEvent(BI.MultiDateCombo.EVENT_CONFIRM);
             });
             this.popup.on(BI.MultiDatePopup.CALENDAR_EVENT_CHANGE, function () {
                 self.setValue(self.popup.getValue());
                 self.combo.hideView();
-                self.fireEvent(BI.MultiDateCombo.EVENT_CHANGE);
+                //self.fireEvent(BI.MultiDateCombo.EVENT_CHANGE);
+                self.fireEvent(BI.MultiDateCombo.EVENT_CONFIRM);
             });
             this.combo = BI.createWidget({
                 element: this.element,

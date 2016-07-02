@@ -9,6 +9,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.BICubeManager;
+import com.fr.bi.conf.base.cube.BICubeConfManager;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
@@ -56,6 +57,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
             BICubeConfigureCenter.getAliasManager().persistData(userId);
             BICubeConfigureCenter.getDataSourceManager().persistData(userId);
+            BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
@@ -107,6 +109,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         saveRelations(relationsJO, userId);
         saveExcelView(excelViewJO, userId);
         saveUpdateSetting(updateSettingJO, userId);
+        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         writeResource(userId);
     }
 

@@ -31,7 +31,10 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
         this.xAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+            },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
             },
             position: "bottom",
             gridLineWidth: 0
@@ -39,7 +42,10 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
         this.yAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+            },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
             },
             position: "left",
             gridLineWidth: 0
@@ -119,7 +125,7 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily": "Arial", "color": "rgba(0,0,0,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"},
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -144,7 +150,7 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily": "Arial", "color": "rgba(0,0,0,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"},
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -271,7 +277,7 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
-            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
         }
     },
 

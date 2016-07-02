@@ -35,7 +35,7 @@ BI.DetailSelectDimensionLevel0Item = BI.inherit(BI.Single, {
             type: "bi.blank_icon_text_item",
             trigger: "mousedown",
             cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
-            blankWidth: 13 * o.layer,
+            blankWidth: 20 * o.layer,
             text: o.text,
             value: o.value,
             height: 25,

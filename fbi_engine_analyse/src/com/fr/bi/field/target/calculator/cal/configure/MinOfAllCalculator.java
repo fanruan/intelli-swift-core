@@ -116,7 +116,7 @@ public class MinOfAllCalculator extends SummaryOfAllCalculator {
             cursor_node = temp_node;
             if (min != null) {
                 while (isNotEnd(cursor_node, deep)) {
-                    cursor_node.setSummaryValue(createTargetKey(), min);
+                    cursor_node.setSummaryValue(createTargetGettingKey(), min);
                     cursor_node = cursor_node.getBottomSibling();
                 }
             }

@@ -31,7 +31,10 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         this.xAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+            },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
             },
             formatter: "function(){if(this>0) return this; else return this*(-1); }",
             gridLineWidth: 0
@@ -39,7 +42,10 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         this.yAxis = [{
             type: "category",
             title: {
-                style: {"fontFamily":"Verdana","color":"rgba(102,102,102,1.0)","fontSize":"11pt","fontWeight":""}
+                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+            },
+            labelStyle: {
+                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
             },
             gridLineWidth: 0,
             position: "left"
@@ -115,7 +121,7 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily": "Arial", "color": "rgba(0,0,0,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -140,7 +146,7 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily": "Arial", "color": "rgba(0,0,0,1.0)", "fontSize": "9pt", "fontWeight": ""},
+                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
                                 "text": t.text,
                                 "align": "left"
                             }

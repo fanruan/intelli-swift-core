@@ -294,33 +294,38 @@ Data.Req = BIReq = {
         });
     },
 
-    // updateCubeByTable: function (table, callback) {
-    //     BI.requestAsync("fr_bi_configure", "set_cube_generate", {
-    //         connectionName: table.connection_name,
-    //         tableName: table.table_name,
-    //         tableId: table.id
-    //     }, function (res) {
-    //         callback(res);
-    //     });
-    // },
-    reqGenerateCubeByTable: function (table, callback) {
+    reqGenerateCubeByTable: function (tableInfo, callback) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
-            connectionName: table.connection_name,
-            tableName: table.table_name,
-            tableId: table.id
-        }, function (res) {
-            callback(res);
-        });
+                // connectionName: table.connection_name,
+                // tableName: table.table_name,
+                // tableId: table.id
+                baseTableId: tableInfo.baseTable.id,
+                isETL: tableInfo.isETL,
+                ETLTableId: tableInfo.ETLTable.id
+            },
+            function (res) {
+                callback(res);
+            }
+        )
+        ;
     },
     reqGenerateCube: function (callback) {
-        BI.requestAsync("fr_bi_configure", "set_cube_generate",{}, function (res) {
+        BI.requestAsync("fr_bi_configure", "set_cube_generate", {}, function (res) {
             callback(res);
         });
     },
-    
+
     reqPrimaryTablesByTable: function (table, callback) {
         BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function (res) {
             callback(res);
         });
+    },
+
+    reqSaveUploadImage: function (attachId, callback) {
+        BI.requestAsync("fr_bi_dezi", "save_upload_image", {
+            attach_id: attachId
+        }, function (res) {
+            callback(res);
+        })
     }
 };

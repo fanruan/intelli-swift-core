@@ -47,7 +47,7 @@ BI.SortFilterDetailCombo = BI.inherit(BI.Widget, {
                     cls: "dot-e-font"
                 }],
                 [{
-                    text: BI.i18nText("BI-Filter"),
+                    text: BI.i18nText("BI-Filter_Number_Summary"),
                     value: BI.SortFilterDetailCombo.FILTER_ITEM,
                     cls: "dot-e-font"
                 }]

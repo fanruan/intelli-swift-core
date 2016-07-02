@@ -33,4 +33,8 @@ public class JSONErrorHandler implements ErrorHandler {
     public int currentAPILevel() {
         return CURRENT_LEVEL;
     }
+
+    public int layerIndex() {
+        return 2;
+    }
 }

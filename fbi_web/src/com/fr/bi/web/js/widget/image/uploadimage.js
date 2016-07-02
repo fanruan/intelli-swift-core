@@ -22,7 +22,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
         this.file = BI.createWidget({
             type: "bi.multifile_editor",
-            accept: "*.jpg;*.png;"
+            accept: "*.jpg;*.png;*.gif;"
         });
 
         this.img = BI.createWidget({
@@ -39,14 +39,20 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         });
 
         this.file.on(BI.MultifileEditor.EVENT_CHANGE, function (data) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                self.img.setSrc(e.target.result);
+            this.upload();
+        });
+        //直接把图片保存到resource目录下面
+        this.file.on(BI.MultifileEditor.EVENT_UPLOADED, function () {
+            var files = this.getValue();
+            var file = files[files.length - 1];
+            var attachId = file.attach_id, fileName = file.filename;
+            var src = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + attachId + "_" + fileName;
+            BI.Utils.saveUploadedImage(attachId, function () {
+                self.img.setSrc(src);
                 self._check();
                 self._setSize("auto", "auto");
-                self.fireEvent(BI.UploadImage.EVENT_CHANGE, e.target.result);
-            };
-            reader.readAsDataURL(data.file);
+                self.fireEvent(BI.UploadImage.EVENT_CHANGE, src);
+            });
         });
 
         this.upload = BI.createWidget({
@@ -66,7 +72,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         this.del = BI.createWidget({
             type: "bi.icon_button",
             cls: "upload-image-icon-button img-shutdown-font",
-            title: BI.i18nText("BI-Remove"),
+            title: BI.i18nText("BI-Delete"),
             height: 32,
             width: 32
         });

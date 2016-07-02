@@ -2,13 +2,13 @@
  * Created by Young's on 2016/5/19.
  */
 BI.AuthorityFilter = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.AuthorityFilter.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-authority-filter"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.AuthorityFilter.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.filter = BI.createWidget({
@@ -18,9 +18,9 @@ BI.AuthorityFilter = BI.inherit(BI.Widget, {
                 type: "bi.filter_operation",
                 selections: [BICst.FILTER_OPERATION_CONDITION]
             },
-            itemCreator: function(item){
+            itemCreator: function (item) {
                 var t = BI.AuthorityFilterItemFactory.createFilterItemByFilterType(item.value);
-                if(item.value === BICst.FILTER_TYPE.EMPTY_CONDITION) {
+                if (item.value === BICst.FILTER_TYPE.EMPTY_CONDITION) {
                     t.type = "bi.authority_no_type_field_filter_item";
                 }
                 item.type = t.type;
