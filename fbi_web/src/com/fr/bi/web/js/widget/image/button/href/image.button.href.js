@@ -24,10 +24,12 @@ BI.ImageButtonHref = BI.inherit(BI.Single, {
         this.input = BI.createWidget({
             type: "bi.clear_editor",
             watermark: BI.i18nText("BI-Input_Href"),
+            value: "http://",
+            allowBlank: false,
             width: 255,
             height: 30
         });
-        this.input.on(BI.ClearEditor.EVENT_CONFIRM, function(){
+        this.input.on(BI.ClearEditor.EVENT_CONFIRM, function () {
             self.combo.hideView();
         });
 
@@ -45,20 +47,26 @@ BI.ImageButtonHref = BI.inherit(BI.Single, {
             }
         });
 
-        this.combo.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function (){
+        this.combo.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function () {
             self.input.focus()
         });
 
-        this.combo.on(BI.Combo.EVENT_BEFORE_HIDEVIEW, function (){
-            self.fireEvent(BI.ImageButtonHref.EVENT_CHANGE , arguments)
+        this.combo.on(BI.Combo.EVENT_BEFORE_HIDEVIEW, function () {
+            self.fireEvent(BI.ImageButtonHref.EVENT_CHANGE, arguments)
         })
     },
 
-    getValue: function() {
+    getValue: function () {
+        if (this.input.getValue() === "http://") {
+            return "";
+        }
         return this.input.getValue();
     },
 
-    setValue: function(url) {
+    setValue: function (url) {
+        if (!BI.isNotEmptyString(url)) {
+            url = "http://";
+        }
         this.input.setValue(url)
     }
 });
