@@ -148,7 +148,7 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
                     title: BI.i18nText("BI-Remove"),
                     handler: function () {
                         var dataLinkName = info.name;
-                        BI.Msg.confirm(BI.i18nText('BI-Sure_Delete_Connection'), BI.i18nText('BI-Sure_Delete_Connection') + ":" + dataLinkName, function (v) {
+                        BI.Msg.confirm(BI.i18nText('BI-Sure_Delete_Connection'), BI.i18nText('BI-Sure_Delete_Connection') + ":" + dataLinkName + "?", function (v) {
                             if (BI.isNotNull(v) && v === true) {
                                 self.model.set("delete", info.id);
                             }
