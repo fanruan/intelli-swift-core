@@ -342,7 +342,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                             type: "bi.target_body_normal_cell",
                             text: sum,
                             dId: tId,
-                            clicked: pValues
+                            clicked: pValues,
+                            cls: "summary-cell cell"
                         })
                     });
                 }
@@ -553,16 +554,16 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     /**
      * 交叉表的(指标)汇总值
      */
-    _createTableSumItems: function (s, sum, pValues, ob) {
+    _createTableSumItems: function (s, sum, pValues, ob, isLast) {
         var self = this;
         BI.each(s, function (i, v) {
             if (BI.isObject(v)) {
                 var sums = v.s, child = v.c;
                 if (BI.isNotNull(sums) && BI.isNotNull(child)) {
-                    self._createTableSumItems(child, sum, pValues, ob);
-                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob);
+                    self._createTableSumItems(child, sum, pValues, ob, isLast);
+                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob, isLast);
                 } else if (BI.isNotNull(sums)) {
-                    self._createTableSumItems(sums, sum, pValues, ob);
+                    self._createTableSumItems(sums, sum, pValues, ob, isLast);
                 }
 
             } else {
@@ -574,7 +575,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     type: "bi.target_body_normal_cell",
                     text: v,
                     dId: tId,
-                    clicked: pValues.concat(self.crossPV[ob.index])
+                    clicked: pValues.concat(self.crossPV[ob.index]),
+                    cls: isLast ? "last summary-cell" : ""
                 });
                 ob.index++;
             }
@@ -750,9 +752,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             //汇总值
             var sums = [], ob = {index: 0};
             if (BI.isNotNull(left.s.c) && BI.isNotNull(left.s.s)) {
-                this._createTableSumItems(left.s.c, sums, [], ob);
+                this._createTableSumItems(left.s.c, sums, [], ob, true);
             } else {
-                BI.isArray(left.s) && this._createTableSumItems(left.s, sums, [], ob);
+                BI.isArray(left.s) && this._createTableSumItems(left.s, sums, [], ob, true);
             }
             if (this.showColTotal === true) {
                 var outerValues = [];
@@ -774,14 +776,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 });
                 sums = sums.concat(outerValues);
             }
-            // item.children.push({
-            //     type: "bi.page_table_cell",
-            //     text: BI.i18nText("BI-Summary_Values"),
-            //     tag: BI.UUID(),
-            //     isSum: true,
-            //     values: sums,
-            //     cls: "summary-cell"
-            // })
             item.values = sums;
         }
 
