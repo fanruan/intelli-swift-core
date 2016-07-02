@@ -74,6 +74,10 @@ BI.TooltipsController = BI.inherit(BI.Controller, {
         var top = offset.top + bounds.height + 5;
         var tooltip = this.get(name);
         tooltip.setText(text);
+        tooltip.element.css({
+            left: "0px",
+            top: "0px"
+        });
         tooltip.visible();
         tooltip.element.height(tooltip.element[0].scrollHeight);
         this.showingTips[name] = true;
