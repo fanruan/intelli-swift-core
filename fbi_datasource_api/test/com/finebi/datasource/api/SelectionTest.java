@@ -3,11 +3,17 @@ package com.finebi.datasource.api;
 
 import com.finebi.datasource.api.criteria.CriteriaBuilder;
 import com.finebi.datasource.api.criteria.CriteriaQuery;
+import com.finebi.datasource.api.criteria.ParameterExpression;
+import com.finebi.datasource.api.criteria.Root;
 import com.finebi.datasource.api.metamodel.EntityManager;
+import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.api.metamodel.PlainTable;
+import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
+import com.finebi.datasource.sql.criteria.internal.compile.ExplicitParameterInfo;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.context.AspirContextImpl;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContext;
-import com.finebi.datasource.sql.criteria.internal.metamodel.EntityManagerImpl;
+import com.finebi.datasource.sql.criteria.internal.metamodel.*;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -30,18 +36,48 @@ public class SelectionTest extends TestCase {
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            String result = ((CriteriaQueryImpl) query).render(new RenderingContext() {
+                @Override
+                public String generateAlias() {
+                    return "alisas";
+                }
 
+                @Override
+                public ExplicitParameterInfo registerExplicitParameter(ParameterExpression<?> criteriaQueryParameter) {
+                    return null;
+                }
 
+                @Override
+                public String registerLiteralParameterBinding(Object literal, Class javaType) {
+                    return null;
+                }
+
+                @Override
+                public String getCastType(Class javaType) {
+                    return "castType";
+                }
+            });
+            System.out.println(result);
 //            查询的表，获得根
 //            Root root = query.from(target);
 
 //            查询的结果元数据
 //            query.select(root);
-            Object result = executeQuery(query);
+//            Object result = executeQuery(query);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
+    }
+
+    public EntityType getEntity() {
+        AttributeFactory factory = new AttributeFactory(null);
+        AttributeImplementor implementor = factory.buildAttribute(null, new PropertyImpl("abc", false));
+        EntityTypeImpl entityType = new EntityTypeImpl(TestCase.class, null, new PerisitentClassImpl());
+        entityType.getBuilder().addAttribute(implementor);
+        return entityType;
     }
 
     /**
