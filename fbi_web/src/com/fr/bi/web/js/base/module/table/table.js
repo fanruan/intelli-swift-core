@@ -1229,18 +1229,20 @@ BI.Table = BI.inherit(BI.Widget, {
                                     }
                                     if (BI.isNumeric(wid)) {
                                         if (i == BI.size(items) - 1) {
-                                            wid--;
+                                            items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                        } else {
+                                            items[i].element.attr("width", wid).css("width", wid);
                                         }
-                                        items[i].element.attr("width", wid).css("width", wid);
                                     } else {
                                         items[i].element.attr("width", "").css("width", "");
                                     }
                                 } else {
                                     if (BI.isNumeric(w)) {
                                         if (i == BI.size(items) - 1) {
-                                            w--;
+                                            items[i].element.attr("width", w - 1).css("width", w - 1);
+                                        } else {
+                                            items[i].element.attr("width", w).css("width", w);
                                         }
-                                        items[i].element.attr("width", w).css("width", w);
                                     } else {
                                         items[i].element.attr("width", "").css("width", "");
                                     }
@@ -1380,18 +1382,20 @@ BI.Table = BI.inherit(BI.Widget, {
                                 }
                                 if (BI.isNumeric(wid)) {
                                     if (i == BI.size(items) - 1) {
-                                        wid--;
+                                        items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                    } else {
+                                        items[i].element.attr("width", wid).css("width", wid);
                                     }
-                                    items[i].element.attr("width", wid).css("width", wid);
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
                             } else {
                                 if (BI.isNumeric(w)) {
                                     if (i == BI.size(items) - 1) {
-                                        w--;
+                                        items[i].element.attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].element.attr("width", w).css("width", w);
                                     }
-                                    items[i].element.attr("width", w).css("width", w);
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
@@ -1413,18 +1417,20 @@ BI.Table = BI.inherit(BI.Widget, {
                                 }
                                 if (BI.isNumeric(wid)) {
                                     if (i == BI.size(items) - 1) {
-                                        wid--;
+                                        items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                    } else {
+                                        items[i].element.attr("width", wid).css("width", wid);
                                     }
-                                    items[i].element.attr("width", wid).css("width", wid);
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
                             } else {
                                 if (BI.isNumeric(w)) {
                                     if (i == BI.size(items) - 1) {
-                                        w--;
+                                        items[i].element.attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].element.attr("width", w).css("width", w);
                                     }
-                                    items[i].element.attr("width", w).css("width", w);
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
@@ -1446,18 +1452,20 @@ BI.Table = BI.inherit(BI.Widget, {
                                 }
                                 if (BI.isNumeric(wid)) {
                                     if (i == BI.size(items) - 1) {
-                                        wid--;
+                                        items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                    } else {
+                                        items[i].element.attr("width", wid).css("width", wid);
                                     }
-                                    items[i].element.attr("width", wid).css("width", wid);
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
                             } else {
                                 if (BI.isNumeric(w)) {
                                     if (i == BI.size(items) - 1) {
-                                        w--;
+                                        items[i].element.attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].element.attr("width", w).css("width", w);
                                     }
-                                    items[i].element.attr("width", w).css("width", w);
                                 } else {
                                     items[i].element.attr("width", "").css("width", "");
                                 }
@@ -1630,9 +1638,10 @@ BI.Table = BI.inherit(BI.Widget, {
                                     }
                                     if (BI.isNumeric(wid)) {
                                         if (i == BI.size(items) - 1) {
-                                            wid--;
+                                            items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                        } else {
+                                            items[i].element.attr("width", wid).css("width", wid);
                                         }
-                                        items[i].element.attr("width", wid).css("width", wid);
                                     } else {
                                         items[i].element.attr("width", "").css("width", "");
                                     }
