@@ -2385,7 +2385,7 @@
             }
             return {
                 start: start.getTime(),
-                end: end.getTime()
+                end: end.getTime() - 1
             }
         }
 

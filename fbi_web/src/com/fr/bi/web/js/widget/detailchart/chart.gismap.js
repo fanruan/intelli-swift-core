@@ -42,28 +42,17 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         delete config.dataSheet;
         delete config.zoom;
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
 
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
 
-        config.chartType = "areaMap";
+        config.geo = {
+            "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
+        };
+        config.chartType = "pointMap";
         config.plotOptions.marker = {
             symbol: BICst.GIS_ICON_PATH,
-                width:26,
-                height:41
+            width: 24,
+            height: 24
         };
         delete config.xAxis;
         delete config.yAxis;
@@ -75,12 +64,20 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
-                    da.lnglat = da.x;
+                    da.lnglat = da.x.split(",");
                     da.value = da.y;
                     da.name = da.z || "";
                 })
             })
         });
+        return [[{
+            data: [{
+                lnglat:[120.304319,31.552968],
+                name: "帆软",
+                value: 10000
+            }]
+        }]]
+
     },
 
     populate: function (items, options) {
@@ -94,8 +91,8 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         var types = [];
         BI.each(items, function(idx, axisItems){
             var type = [];
-            BI.each(axisItems, function(id, item){
-                type.push(BICst.WIDGET.MAP);
+            BI.each(axisItems, function(){
+                type.push(BICst.WIDGET.GIS_MAP);
             });
             types.push(type);
         });

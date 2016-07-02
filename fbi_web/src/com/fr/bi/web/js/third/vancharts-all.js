@@ -2907,6 +2907,8 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
 
                 size = chart.isForceBubble() ? pointOption.y : size;
 
+                size = series.type == Constants.AREA_MAP ? value : size;
+
                 color = rangeLegend.getColorWithSize(size) || color;
             }
 
@@ -9829,6 +9831,13 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                     var feature = point.feature;
                     lnglat = type == Constants.POINT_MAP ? feature.geometry.coordinates : feature.properties.center;
 
+                    if(!lnglat){
+                        var bounds = d3.geo.bounds(feature);
+                        var lng = (bounds[0][0] + bounds[1][0])/2;
+                        var lat = (bounds[0][1] + bounds[1][1])/2;
+                        lnglat = [lng, lat];
+                    }
+
                 }
 
                 return [lnglat[1], lnglat[0]];
@@ -9890,6 +9899,11 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                     //对于点地图,包括图片的点,和散点图和气泡图
                     var defaultIcon = this.getDefaultIcon();
                     sery.points.forEach(function(point){
+
+                        if(!point.visible){
+                            return ;
+                        }
+
                         //注意过滤掉数据不对的点
                         if(point.lnglat || geo._validPointName[point.name]){
 
@@ -9963,24 +9977,52 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
             }
         },
 
+        //这个fitbounds既需要考虑json文件,还要考虑点地图的时候的在数据里写死了经纬度
         getFitBounds:function(){
-            var boxes = this.maps.map(d3.geo.bounds);
 
-            var southWest = boxes[0][0];
-            var northEast = boxes[0][1];
+            //先统计数据里写死的经纬度信息,已写死的经纬度信息为准
+            var byJson = true;
+            var lngMin = 180, lngMax = -180, latMin = 90, latMax = -90;
+            var series = this.vanchart.series;
+            for(var i = 0, len = series.length; i < len; i++){
+                if(series[i].visible && series[i].type != Constants.AREA_MAP){
+                    series[i].points.forEach(function(point){
+                        var lnglat = point.lnglat;
+                        if(lnglat){
 
-            for(var i = boxes.length - 1; i > 0; i--){
+                            byJson = false;
 
-                var fitBounds = boxes[i];
+                            lngMin = Math.min(lngMin, lnglat[0]);
+                            lngMax = Math.max(lngMax, lnglat[0]);
 
-                southWest[0] = Math.min(fitBounds[0][0], southWest[0]);
-                southWest[1] = Math.min(fitBounds[0][1], southWest[1]);
-
-                northEast[0] = Math.max(fitBounds[1][0], northEast[0]);
-                northEast[1] = Math.max(fitBounds[1][1], northEast[1]);
+                            latMin = Math.min(latMin, lnglat[1]);
+                            latMax = Math.max(latMax, lnglat[1]);
+                        }
+                    });
+                }
             }
 
-            return [[southWest[1], southWest[0]], [northEast[1], northEast[0]]];
+            if(byJson && this.maps && this.maps.length){
+                var boxes = this.maps.map(d3.geo.bounds);
+
+                var southWest = boxes[0][0];
+                var northEast = boxes[0][1];
+
+                for(var i = boxes.length - 1; i > 0; i--){
+
+                    var fitBounds = boxes[i];
+
+                    southWest[0] = Math.min(fitBounds[0][0], southWest[0]);
+                    southWest[1] = Math.min(fitBounds[0][1], southWest[1]);
+
+                    northEast[0] = Math.max(fitBounds[1][0], northEast[0]);
+                    northEast[1] = Math.max(fitBounds[1][1], northEast[1]);
+                }
+
+                return [[southWest[1], southWest[0]], [northEast[1], northEast[0]]];
+            }
+
+            return [[latMin, lngMin],[latMax, lngMax]];
         }
     });
     
@@ -10070,6 +10112,11 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../Constants
                                 legend.items.push(item);
                             }
                         });
+
+                        legend.items.sort(function (a,b) {
+                            return a.pieDataIndex - b.pieDataIndex;
+                        });
+
                         break;
 
                     default:
@@ -10504,7 +10551,7 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
 
     var Tooltip = Base.extend({
 
-        _gCssText: 'position:absolute;display:block;border-style:solid;white-space:nowrap;z-index:800;-webkit-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none;',
+        _gCssText: 'position:absolute;display:block;border-style:solid;white-space:nowrap;z-index:800;-webkit-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none;pointer-events:none;',
 
         _style: function (opt) {
             if (!opt) {
@@ -12301,8 +12348,16 @@ define('theme/config',['require','../Constants'],function(require){
         }
     };
 
-    config[Constants.MAP_CHART] = {
-        
+    config[Constants.AREA_MAP] = {
+        legend:{
+            enabled:false
+        }
+    };
+
+    config[Constants.POINT_MAP] = {
+        legend:{
+            enabled:false
+        }
     };
 
 
@@ -13557,7 +13612,10 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
             vanChart.series.forEach(function (sery) {
                 sery.points.forEach(function (point) {
                     var temp = point.visible;
-                    point.visible = (point.size >= minSize && point.size <= maxSize) || (point.size >= maxSize && point.size <= minSize);
+
+                    var size = BaseUtils.hasDefined(point.size) ? point.size : point.value;
+
+                    point.visible = (size >= minSize && size <= maxSize) || (size >= maxSize && size <= minSize);
                     change = change || temp != point.visible;
                 });
             });
@@ -13616,6 +13674,7 @@ define('theme/default',[],function(){
         },
 
         rangeLegend:{
+            borderWidth:0,
             hiddenColor:'#cccccc',
             hoverColor:'green',
             style:{
@@ -14759,7 +14818,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextDimension(text, style, useHtml){
         text = pick(text, "");
         var div = document.createElement("div");
-        document.getElementById("container").appendChild(div);
+        document.body.appendChild(div);
 
         div.style.visibility = "hidden";
         div.style.whiteSpace = "nowrap";
@@ -14789,7 +14848,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var width = div.offsetWidth || 0;
         var height = div.offsetHeight || 0;
 
-        document.getElementById("container").removeChild(div);
+        document.body.removeChild(div);
 
         return {width:width, height:height};
     }
@@ -14797,7 +14856,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextWrapDimension(text, style, useHTML){
         text = pick(text, "");
         var div = document.createElement("div");
-        document.getElementById("container").appendChild(div);
+        document.body.appendChild(div);
 
         div.style.visibility = "hidden";
         div.style.whiteSpace = "normal";
@@ -14822,7 +14881,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var width = div.offsetWidth || 0;
         var height = div.offsetHeight || 0;
 
-        document.getElementById("container").removeChild(div);
+        document.body.removeChild(div);
 
         return {width:width, height:height};
     }
@@ -15918,15 +15977,16 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
             return false;
         },
 
-        _calculatePercentage:function(points){
+        _calculatePercentage:function(points, key){
+            key = key || 'value';
             var total = 0;
             points.forEach(function(d){
-                total += Math.abs(d.value);
+                total += Math.abs(d[key]);
             });
 
             total = total > 0 ? total : 1;
             points.forEach(function(point){
-                point.setPercentage(Math.abs(point.value) / total);
+                point.setPercentage(Math.abs(point[key]) / total);
             });
         },
 
@@ -17304,6 +17364,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
     var INNER_RADIUS_PCT = Options[Constants.MULTIPIE_CHART].innerRadiusPct;
 
+    var CIRCLE = 2 * Math.PI;
     var LINE_LABEL_GAP = 2;
     var STEP = Math.PI / 180;
 
@@ -17326,8 +17387,8 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
         _refresh: function () {
             // this.nodes = [];
-            // this.root = null;
-            // this.ordered = null;
+            this.root = null;
+            this.ordered = null;
         },
 
         mergeSeriesAttributes: function (series) {
@@ -17352,8 +17413,10 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             endAngle = BaseUtils.toRadian(endAngle);
 
             QueryUtils.merge(series, {
+                _center: center,
                 center: center,
                 innerRadius: innerRadius,
+                _radius: radius, // test
                 radius: radius,
                 gradual: gradual,
                 drilldown: drilldown,
@@ -17373,12 +17436,13 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             var radius = series.radius;
 
             var plotBounds = this.vanchart.getPlotBounds();
-            if (!center || center.length === 0) {
+            if (!series._center || series._center.length === 0) {
                 center = [
                     plotBounds.width / 2 + plotBounds.x,
                     plotBounds.height / 2 + plotBounds.y
                 ];
             } else {
+                series.fixedState = 'fixed';
                 center[0] = this._getPercentValue(center[0], this.vanchart.chartWidth());
                 center[1] = this._getPercentValue(center[1], this.vanchart.chartHeight());
             }
@@ -17386,9 +17450,8 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             series.centerX = center[0];
             series.centerY = center[1];
             series.bounds = {x: plotBounds.x, y: plotBounds.y, width: plotBounds.width, height: plotBounds.height};
-
-            ////
-            if (!radius) {
+            
+            if (!series._radius) {
                 var left = center[0] - plotBounds.x;
                 var right = plotBounds.x + plotBounds.width - center[0];
                 var top = center[1] - plotBounds.y;
@@ -17402,83 +17465,64 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                 series.innerRadius = innerRadius;
             }
 
-            this.initData(series);
+            this._initData(series);
 
         },
 
-        initData: function (series) {
+        _initData: function (series) {
             // making a Series object as a root node
             // has several problems in interactive events.
             // We need a 'true' Point object as a root.
             if (!this.root) {
                 this.root = new Point(series, series.seriesOption, -1);
                 this.root.children = series.points;
-                
-                this.traverseData(this.root, this.option.orderType);
-                this.nodes = this.bfsTraverseData(this.root);
-            } else {
-
-                // var stash = [];
-                // this.nodes.map(function (node) {
-                //     var depth = node.depth;
-                //     if (node.ancestor && node.ancestor.visible) {
-                //         if (!stash[depth]) {
-                //             stash[depth] = [];
-                //         }
-                //         stash[depth].push({
-                //             x1: node.x1,
-                //             dx1: node.dx1
-                //         });
-                //     }
-                // });
-
-                this.traverseData(this.root, this.option.orderType);
-                this.nodes = this.bfsTraverseData(this.root);
-
-                // function dfs(node) {
-                //     var children = node.children;
-                //
-                //     if (node.ancestor && node.ancestor.visible) {
-                //         var o = stash[node.depth].shift();
-                //         node.x1 = o.x1;
-                //         node.dx1 = o.dx1;
-                //     }
-                //
-                //     if (children && (n = children.length)) {
-                //         var i = -1, n;
-                //         while (++i < n) {
-                //             dfs(children[i]);
-                //         }
-                //     }
-                // }
-                //
-                // dfs(this.root);
             }
 
-            this.calcData(this.root);
+            this._dfsTraverseData(this.root, this.option.orderType);
+            this.nodes = this._bfsTraverseData(this.root);
 
-            this._calculateLabelPos();
+            // better sequence?
+            if (series.fixedState === 'fixed') {
+                this._calcData(this.root);
+                this._calculateLabelPos();
+            } else {
+                this._calcData(this.root);
 
-            this.calcData(this.root);
+                var outPoints = this.nodes.filter(function (node) {
+                    return (node.depth &&
+                        node.dx &&
+                        node.dataLabels &&
+                        node.dataLabels.enabled &&
+                        node.dataLabels.align === Constants.OUTSIDE)
+                });
 
-            console.log(this.root);
+                this._calculateOutsideLabelBounds(outPoints, this.root.series);
+
+                this._calcData(this.root);
+
+                this._calculateLabelPos();
+            }
+
+
+            // a log for different render ease functions
+            this.isChanged = this.ordered != this.option.orderType;
+            this.ordered = this.option.orderType;
+
+            // console.log(this.root);
         },
 
         orderData: function () {
 
         },
 
-        bfsTraverseData: function (root) {
+        _bfsTraverseData: function (root) {
             var queue = [];
-
             var stack = [];
-
             queue.push(root);
+
             while (node = queue.shift()) {
                 var node;
-
                 stack.push(node);
-
                 var children = node.children;
                 if (children && (n = children.length)) {
                     var i = -1, n;
@@ -17487,18 +17531,10 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                     }
                 }
             }
-
             return stack;
         },
 
-        /**
-         * input root node, output nodes array
-         * @param {object} root
-         * @returns {Array}
-         */
-        traverseData: function (root, orderType) {
-            var stack = [];
-
+        _dfsTraverseData: function (root, orderType) {
             var self = this;
 
             // get depth, parent, ancestor, chSum, size, height
@@ -17507,8 +17543,6 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             // instead, set 'size' as partition display value
             function dfsData(node, depth, parent, ancestor) {
                 var children = node.children;
-
-                stack.push(node);
 
                 node.parent = parent;
                 node.depth = depth;
@@ -17542,6 +17576,9 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                     }
 
                     children.sort(function(a, b){
+                        if (!a.size) {
+                            return -1;
+                        }
                         switch (orderType) {
                             case Constants.ASCENDING:
                                 return a.size - b.size;
@@ -17552,7 +17589,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                         }
                     });
 
-                    self._dealStackedPoints(children);
+                    // self._dealStackedPoints(children);
 
                     node.chSum = chSum;
                 }
@@ -17568,11 +17605,9 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             }
 
             dfsData(root, 0, null, null);
-
-            return stack;
         },
 
-        calcData: function (root) {
+        _calcData: function (root) {
 
             var height = root.height;
             
@@ -17620,23 +17655,24 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
                     self._setColor(node, gradual, height);
 
-                    // if (node.depth < root.height &&
-                    //     node.dataLabels &&
-                    //     node.dataLabels.enabled) {
-                    //     self._calculateInsideLabelBounds(node);
-                    // }
+                    if (node.dataLabels && node.dataLabels.enabled) {
+                        node.dataLabels._align = node.dataLabels._align || node.dataLabels.align;
+                        if (node.dataLabels._align === Constants.OUTSIDE) {
+                            // it's varied
+                            node.dataLabels = BaseUtils.clone(node.dataLabels);
+                            if (node.depth === height) {
+                                node.dataLabels.align = Constants.OUTSIDE;
+                            } else {
+                                node.dataLabels.align = Constants.INSIDE;
+                            }
+                        }
+                    }
 
                 } else {
                     // -1 to avoid dy=0, thus invalidate drill down scale
                     node.y = -1;
                     node.dy = ir + 1;
                 }
-
-                // // stash
-                // node.x1 = node.x1 || node.x;
-                // node.y1 = node.y1 || node.y;
-                // node.dx1 = node.dx1 || node.dx;
-                // node.dy1 = node.dy1 || node.dy;
 
                 if (children && (n = children.length)) {
                     var i = -1, n, c, d;
@@ -17647,6 +17683,9 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                         dfsData(c, x, d, dy, ir, iPr);
                         x += d;
                     }
+
+                    self._calculatePercentage(children, 'size');
+                    // self._mergeTooltipAttributes(children);
                 }
             }
 
@@ -17685,20 +17724,9 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             }
         },
 
+
+
         // --- label calculation revised from Pie
-        _calculateInsideLabelBounds:function(node){
-
-            var centerAngle = this.getCenterAngle(node);
-
-            var tmpR = node.y + node.dy / 2;
-
-            var center = this._getArcPoint(tmpR, centerAngle);
-
-            var x = center[0] - node.labelDim.width/2;
-            var y = center[1] - node.labelDim.height/2;
-
-            node.labelPos = {x:x, y:y};
-        },
 
         _getPossibleLabelBoundsByLocation:function(dim, location){
             var x , y;
@@ -17799,24 +17827,48 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
         _calculateLabelPos: function () {
             var root = this.root;
-            var outPoints = this.nodes.filter(function (node) {
-                return (node.depth === root.height &&
-                    node.dataLabels &&
-                    node.dataLabels.enabled &&
-                    node.dataLabels.align == Constants.OUTSIDE)
+            var outPoints = [];
+            var inPoints = [];
+            
+            this.nodes.map(function (node) {
+                if (node.depth && node.dx && node.dataLabels && node.dataLabels.enabled) {
+                    if (node.dataLabels.align === Constants.OUTSIDE) {
+                        outPoints.push(node);
+                    } else {
+                        inPoints.push(node);
+                    }
+                }
             });
 
-            this._calculateOutsideLabelBounds(outPoints, this.root.series);
+            this._calculateOutsideLabelBounds(outPoints, this.root.series, true);
 
             this._calculateLeadLineStartPos(outPoints);
+
+            this._calculateInsideLabelBounds(inPoints);
+        },
+
+        _calculateInsideLabelBounds:function(nodes){
+            nodes.map(function (a,i) {
+                var node = nodes[i];
+                var centerAngle = this.getCenterAngle(node);
+
+                var tmpR = node.y + node.dy / 2;
+
+                var center = this._getArcPoint(tmpR, centerAngle);
+
+                var x = center[0] - node.labelDim.width/2;
+                var y = center[1] - node.labelDim.height/2;
+
+                node.labelPos = {x:x, y:y};
+            }, this);
         },
 
         _calculateLeadLineStartPos:function(outPoints){
 
             var self = this;
-            var radius = this.root.series.radius;
             outPoints.forEach(function(arcPoint){
 
+                var radius = arcPoint.y + arcPoint.dy;
                 var centerAngle = self.getCenterAngle(arcPoint);
 
                 if(arcPoint.labelPos){
@@ -18128,6 +18180,52 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             return BaseUtils.makeValueInRange(0, 2*Math.PI, centerAngle);
         },
         // --- label calc
+
+        _getFixedPos:function(datum, divDim){
+
+            var plotBounds = this.getPlotBounds();
+
+            var translateX = this.center[0];
+            var translateY = this.center[1];
+
+            var centerAngle = this.getCenterAngle(datum);
+            var radius = datum.x + datum.dx;
+
+            var centerX = radius * Math.sin(centerAngle) + translateX + plotBounds.x;
+            var centerY = radius * Math.cos(centerAngle + Math.PI) + translateY + plotBounds.y;
+
+            if(centerAngle < Math.PI / 2){
+                centerY -= divDim.height;
+            }else if(centerAngle >= Math.PI && centerAngle < 3 * Math.PI / 2){
+                centerX -= divDim.width;
+            }else if(centerAngle >= 3 * Math.PI / 2 && centerAngle < CIRCLE){
+                centerY -= divDim.height;
+                centerX -= divDim.width;
+            }
+
+            return [centerX, centerY];
+        },
+
+        findDraggingTarget:function(event){
+
+            var pos = event.containerPoint;
+
+            var plotBounds = this.getPlotBounds();
+
+            var x = pos[0] - plotBounds.x;
+            var y = pos[1] - plotBounds.y;
+
+            var series = this.getVisibleChartData();
+
+            for(var i = series.length - 1; i >= 0; i--){
+                if(BaseUtils.containsPoint(this.root.series.bounds, [x,y]) && series[i].rotatable){
+                    this.render.onDragStart(this.root, pos);
+                    this._draggingSeries = series[i];
+                    return this;
+                }
+            }
+
+        },
         
         getChartNodes: function () {
             return this.nodes;
@@ -18151,6 +18249,10 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
         
         getEndAngle: function () {
             return this.endAngle;
+        },
+
+        getIsChanged: function () {
+            return this.isChanged;
         },
         
         // for test
@@ -21759,7 +21861,7 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var formatter =  dataLabels.formatter;
             var useHtml = dataLabels.useHtml;
 
-            var labelPosition = chartType == Constants.SCATTER_CHART ? Constants.OUTSIDE : Constants.INSIDE;
+            var labelPosition = (chartType == Constants.SCATTER_CHART || chartType == Constants.POINT_MAP) ? Constants.OUTSIDE : Constants.INSIDE;
 
             var content = [];
 
@@ -21967,18 +22069,21 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var geo = map.vanchart.getComponent(Constants.GEO_COMPONENT);
             var type = point.series.type;
 
+            var latlng = geo.getDataPointLatLng(point);
+            var pos = leaflet.latLngToLayerPoint(latlng);
+
             if(type == Constants.AREA_MAP){
-                var latlng = geo.getDataPointLatLng(point);
-                var pos = leaflet.latLngToContainerPoint(latlng);
                 return [pos.x, pos.y];
             }else{
-                var latlng = geo.getDataPointLatLng(point);
-                var pos = leaflet.latLngToContainerPoint(latlng);
-                var radius = point.radius || (point.marker && point.marker.radius) || this.getDefaultMarkerRadius();
-                radius = (radius + 1)/1.414;
-                return [pos.x + radius, pos.y + radius];
+                //散点和气泡有半径的时候
+                if(point.radius || point.marker && !BaseUtils.isImageMarker(point.marker.symbol)){
+                    var radius = point.radius || (point.marker && point.marker.radius) || this.getDefaultMarkerRadius();
+                    radius = (radius + 1)/1.414;
+                    return [pos.x + radius, pos.y + radius];
+                }
             }
 
+            return [pos.x, pos.y];
         }
     });
 
@@ -22491,10 +22596,12 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
     var INIT_ANIMATION_TIME = 800;
     var ANIMATION_TIME = 1000;
     var INNER_HOVER_TIME = 300;
+    var SORT_TIME = 400;
 
     var INIT_EASE = 'back-out';
     var EASE = 'bounce';
     var INNER_HOVER_EASE = Bezier.css.swing;
+    var SORT_EASE = Bezier.css.swing;
 
     var INNER_RING_RADIUS = 15;
     var INNER_RING_STROKE_WIDTH = 5;
@@ -22575,6 +22682,8 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             var radius = multiPie.getRadius();
             var startAngle = multiPie.getStartAngle();
             var endAngle = multiPie.getEndAngle();
+            var ease = multiPie.getIsChanged() ? SORT_EASE : EASE;
+            var aTime = multiPie.getIsChanged() ? SORT_TIME : ANIMATION_TIME;
 
             var x = d3.scale.linear()
                 .range([startAngle, endAngle]).domain([startAngle, endAngle]);
@@ -22592,26 +22701,6 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             this.y = y;
             this.arc = arc;
 
-            // // exit
-            // updatePath.exit()
-            //     .transition()
-            //     .duration(ANIMATION_TIME)
-            //     .attrTween("d", function(a) {
-            //         var pre = a.ancestor.parent.points[a.ancestor.index - 1];
-            //         var px = pre.x + pre.dx;
-            //         var i = d3.interpolate(
-            //             a, {
-            //                 x: px,
-            //                 dx: 0
-            //             });
-            //         return function(t) {
-            //             var b = i(t);
-            //             return arc(b);
-            //         };
-            //     })
-            //     .remove();
-
-
             // update
             updatePath
                 .attr("opacity", function(d) { return d.depth ? 1 : 0;})// hide inner ring
@@ -22619,8 +22708,8 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                 .style("stroke-width", function (d) { return d.borderWidth; })
                 .style("fill", function(d) { return d.color; })
                 .transition()
-                .ease(EASE)
-                .duration(ANIMATION_TIME)
+                .ease(ease)
+                .duration(aTime)
                 .attrTween("d", function(a) {
                     var self = this;
                     var i = d3.interpolate(
@@ -22643,7 +22732,6 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             // enter
 
             // stash old values
-            // we use 1 because y0 is used in Point... sigh...
             function stash(d) {
                 this.x1 = d.x;
                 this.y1 = d.y;
@@ -22670,7 +22758,8 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             delay = delay || 0;
             delay = this.component.isSupportAnimation() ? delay : 0;
 
-            var multiPieData = bodyG.datum();
+            var multiPieData = bodyG.datum()
+                .filter(function (d) { return d.dx; });
 
             var center = this.component.getCenter();
             var transX = center[0];
@@ -22756,14 +22845,14 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                                 return d.mouseOverColor;
                             });
 
-                        // if (d.tooltip && d.tooltip.shared) {
-                        //     var handler = this.component.vanchart.handler;
-                        //     var p;
-                        //     while ((p = d.parent) && p.depth) {
-                        //         console.log(p);
-                        //         handler.fireEventByData(p, 'cover', event);
-                        //     }
-                        // }
+                        if (d.tooltip && d.tooltip.shared) {
+                            var handler = this.component.vanchart.handler;
+                            var p, node = d;
+                            while ((p = node.parent) && p.depth) {
+                                node = p;
+                                handler.fireEventByData(p, 'cover', event);
+                            }
+                        }
                     }
 
                     pathNode.isChosen = true;
@@ -22790,6 +22879,15 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                             .style('fill', function(d){
                                 return d.color;
                             });
+
+                        if (d.tooltip && d.tooltip.shared) {
+                            var handler = this.component.vanchart.handler;
+                            var p, node = d;
+                            while ((p = node.parent) && p.depth) {
+                                node = p;
+                                handler.fireEventByData(p, 'leave', event);
+                            }
+                        }
                     }
 
                     pathNode.isChosen = false;
@@ -22810,11 +22908,59 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                 // event.target.style('fill', this._getMouseOverFill(d));
 
                 var multiPieG = this._bodyG.select('.' + MULTIPIE_G);
-                this._drillDown(d, multiPieG, innerRadius, radius, x, y, arc);
+                // this._drillDown(d, multiPieG, innerRadius, radius, x, y, arc);
             }
 
-        }
+        },
 
+        onDragStart:function(target, initPos){
+
+            var labelG = this._bodyG.select('g.' + LABEL_G);
+            var pathG = this._bodyG.select('g.' + MULTIPIE_G);
+
+            //旋转的时候把标签和牵引线隐藏
+            this._removeSvgDataLabels(labelG, target.category);
+
+            this.initPos = initPos;
+            this.initRotate = d3.transform(pathG.attr('transform')).rotate;
+        },
+
+        _getPositionInPie:function(absPos, target){
+
+            var plotBounds = this.component.getPlotBounds();
+
+            var x = absPos[0] - plotBounds.x - target.centerX;
+
+            var y = absPos[1] - plotBounds.y - target.centerY;
+
+            return [x, y];
+        },
+
+        onDrag:function(target, currentPos){
+
+            var pathG = this._bodyG.select('g.' + MULTIPIE_G);
+
+            var startAngle = this._getAngle(this._getPositionInPie(this.initPos, target), [0,0]);
+
+            var newAngle = this._getAngle(this._getPositionInPie(currentPos, target), [0,0]);
+
+            var rotate = newAngle - startAngle + this.initRotate;
+
+            pathG.attr("transform", "rotate(" + rotate + "," + 0 + "," + 0 + ")");
+
+        },
+
+        onDragEnd:function(target){
+
+            var labelG = this._bodyG.select('g.' + LABEL_G);
+            var pathG = this._bodyG.select('g.' + MULTIPIE_G);
+
+            var rotate = d3.transform(pathG.attr('transform')).rotate;
+
+            this.component.recalculateLabelPos(target, BaseUtils.toRadian(rotate));
+
+            this._drawLabel(labelG, target);
+        },
     });
 
     require('./RenderLibrary').register(Constants.MULTIPIE_SVG, MultiPieSvgRender);
@@ -25842,6 +25988,12 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                     var g = d3.select(this);
 
                     g.select('circle')
+                        .style('fill', function(d){
+                            return d.color;
+                        })
+                        .style('fill-opacity', function(d){
+                            return d.fillColorOpacity
+                        })
                         .transition()
                         .duration(750)
                         .attrTween("r", function(d) {
@@ -26967,10 +27119,20 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
             var layers = layerGroup.getLayers();
             var selection = this._rebindLayers(layers, features, pointKeyFunc);
             var geo = this.component.vanchart.getComponent(Constants.GEO_COMPONENT);
+            var leaflet = this.component.vanchart._leaflet;
 
             for(var i = selection.enter.length - 1; i >= 0; i--){
                 var point = selection.enter[i];
-                var layer = layerFunc(geo.getDataPointLatLng(point), options && options.style.call(null, point), point, this);
+                var latlng = geo.getDataPointLatLng(point);
+
+                //图片标记点的下边缘放在经纬度指定的位置
+                if(layerFunc == L.marker){
+                    var pos = leaflet.latLngToLayerPoint(latlng);
+                    pos.y -= point.icon.iconSize[1]/2;
+                    latlng = leaflet.layerPointToLatLng(pos);
+                }
+
+                var layer = layerFunc(latlng, options && options.style.call(null, point), point, this);
                 options && options.onEachLayer.call(null, layer);
                 layerGroup.addLayer(layer);
             }
@@ -27033,12 +27195,18 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
             var map = this.component, renderer = this;
             var tooltip = map.vanchart.getComponent(Constants.TOOLTIP_COMPONENT);
             return {
-                click:function(){
+                click:function(e){
                     var feature = layer._data;
                     map.drillDown(feature);
+                    if(feature.click){
+                        feature.click.call(feature, e.originalEvent);
+                    }
                 },
 
                 mouseover:function(){
+                    if(!layer._data.name){
+                        return;
+                    }
                     var areaLayers = renderer._areaLayer.getLayers();
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
@@ -27048,7 +27216,6 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
                 },
 
                 mouseout:function(){
-
                     tooltip.hide();
                     var areaLayers = renderer._areaLayer.getLayers();
                     for(var i = 0, len = areaLayers.length; i < len; i++){
@@ -27067,15 +27234,19 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
         },
 
         _bubbleMapHandler:function(layer){
-            var map = this.component, renderer = this, feature = layer._data;;
+            var map = this.component, renderer = this;
             var tooltip = map.vanchart.getComponent(Constants.TOOLTIP_COMPONENT);
             return {
-                click:function(){
+                click:function(e){
                     var feature = layer._data;
                     map.drillDown(feature);
+                    if(feature.click){
+                        feature.click.call(feature, e.originalEvent);
+                    }
                 },
 
                 mouseover:function(){
+                    var feature = layer._data;
                     var areaLayers = renderer._bubbleLayer.getLayers();
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
@@ -27119,18 +27290,22 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
         _scatterMapHandler:function(layer){
             var map = this.component, renderer = this;
             var tooltip = map.vanchart.getComponent(Constants.TOOLTIP_COMPONENT);
-            var feature = layer._data;
-            var markerType = feature.marker.symbol;
-            var radius =  feature.marker.radius || map.getDefaultMarkerRadius();
-            var markerHighlightColor = ColorUtils.getHighLightColor(feature.marker.fillColor);
 
             return {
-                click:function(){
+                click:function(e){
                     var feature = layer._data;
                     map.drillDown(feature);
+                    if(feature.click){
+                        feature.click.call(feature, e.originalEvent);
+                    }
                 },
 
                 mouseover:function(){
+                    var feature = layer._data;
+                    var markerType = feature.marker.symbol;
+                    var radius =  feature.marker.radius || map.getDefaultMarkerRadius();
+                    var markerHighlightColor = ColorUtils.getHighLightColor(feature.marker.fillColor);
+
                     var areaLayers = renderer._scatterLayer.getLayers();
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
@@ -27148,7 +27323,12 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
 
                 mouseout:function(){
                     tooltip.hide();
+
+                    var feature = layer._data;
+                    var markerType = feature.marker.symbol;
+                    var radius =  feature.marker.radius || map.getDefaultMarkerRadius();
                     var areaLayers = renderer._scatterLayer.getLayers();
+
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
                             d3.select(areaLayers[i]._path)
@@ -27170,9 +27350,12 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
             var map = this.component, renderer = this;
             var tooltip = map.vanchart.getComponent(Constants.TOOLTIP_COMPONENT);
             return {
-                click:function(){
+                click:function(e){
                     var feature = layer._data;
                     map.drillDown(feature);
+                    if(feature.click){
+                        feature.click.call(feature, e.originalEvent);
+                    }
                 },
 
                 mouseover:function(){
@@ -27192,6 +27375,10 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
 
         _getDropShadowID:function(){
             return this.component.vanchart.getIDPrefix() + Constants.MAP_CHART;
+        },
+
+        filterRender:function(){
+            this.render();
         }
     });
     

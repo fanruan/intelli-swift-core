@@ -7253,6 +7253,17 @@
             var labelContent = this._data.labelContent;
 
             var centerX = 0, startY = -this._data.labelDim.height/2;
+            var chartType = this._data.series.type;
+            if(chartType == 'scatter' || chartType == 'pointMap'){
+
+                if(this._data.marker && !VanUtils.isImageMarker(this._data.marker.symbol)){
+                    var radius = this._data.marker.radius || 4.5;
+                    startY = -radius-this._data.labelDim.height;
+                }else{
+                    var iconHeight = this._data.icon.iconSize[1];
+                    startY = -iconHeight -this._data.labelDim.height;
+                }
+            }
 
             for(var i = 0, count = labelContent.length; i < count; i++){
                 var label = labelContent[i];
@@ -7265,9 +7276,7 @@
                     .attr('dy', '.32em').attr("text-anchor", "middle")
                     .text(labelText);
 
-                for(var style in labelStyle){
-                    this._text[style] = labelStyle[style];
-                }
+                VanUtils.setTextStyle(d3.select(this._text), labelStyle);
 
                 startY += (labelDim.height + 2);
             }
@@ -10015,6 +10024,13 @@
             this._map
                 .fire('move', e)
                 .fire('drag', e);
+
+            //update vanchart position to avoid moving
+            if(this._map.vanchart){
+                var newPos = this._draggable._newPos;
+                var element = this._map.vanchart.render.getRenderRoot();
+                L.DomUtil.setPosition(element.node(), {x:-newPos.x, y:-newPos.y});
+            }
         },
 
         _onZoomEnd: function () {
@@ -11430,11 +11446,6 @@
         // @section
         // @aka Control.Attribution options
         options: {
-            position: 'bottomright',
-
-            // @option prefix: String = 'Leaflet'
-            // The HTML text shown before the attributions. Pass `false` to disable.
-            prefix: '<a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>'
         },
 
         initialize: function (options) {
