@@ -62,7 +62,7 @@ BI.SelectDataLevel1DateNode = BI.inherit(BI.NodeButton, {
                 el: {
                     type: "bi.layout"
                 },
-                width: 10
+                width: 20
             }, {
                 el: this.button
             }, {
