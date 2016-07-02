@@ -402,7 +402,9 @@ var _JS = [
     "detail/mvc.barcharts.js",
     "detail/mvc.areacharts.js",
 
-    "detail/mvc.selectcolorcombo.js"
+    "detail/mvc.selectcolorcombo.js",
+
+    "detail/mvc.addcondition.js"
 ];
 
 
@@ -610,7 +612,9 @@ var _Routes = {
     "/bar_charts": "BarChartsView",
     "/area_charts": "AreaChartsView",
     "/other_charts": "OtherChartsView",
-    "/select_color_combo": "SelectColorComboView"
+    "/select_color_combo": "SelectColorComboView",
+
+    "/add_condition": "AddConditionView"
 };
 
 var _Models = {};
@@ -1104,6 +1108,9 @@ _Models.detail = [{
 }, {
     id: 31,
     text: "详细图表"
+}, {
+    id: 33,
+    text: "条件添加"
 },
 
 
@@ -1431,6 +1438,10 @@ _Models.detail = [{
         pId: 31,
         text: "其他",
         value: "other_charts"
+    }, {
+        pId: 33,
+        text: "条件添加",
+        value: "add_condition"
     }];
 _Models.component = [];
 _Models.module = [];

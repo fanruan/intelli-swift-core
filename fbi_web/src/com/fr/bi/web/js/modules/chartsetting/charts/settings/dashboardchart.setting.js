@@ -19,6 +19,8 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         ICON_HEIGHT: 24,
         NUMBER_LEVEL_SEGMENT_WIDTH: 300,
         FORMAT_SEGMENT_WIDTH: 240,
+        RADIO_WIDTH: 100,
+        DASHBOARD_HEIGHT: 120,
         POINTER_SEGMENT_WIDTH: 150
     },
 
@@ -31,6 +33,9 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.DashboardChartSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+
+        var items = o.conditions;
+
 
         //联动传递指标过滤条件
         this.transferFilter = BI.createWidget({
@@ -57,7 +62,8 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+        this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(v){
+            self._showPointer(v);
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
@@ -156,7 +162,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
             verticalAlign: "top",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: this.constant.DASHBOARD_HEIGHT,
                 text: BI.i18nText("BI-Dashboard"),
                 textAlign: "left",
                 lgap: this.constant.SIMPLE_H_LGAP,
@@ -205,7 +211,24 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
             element: this.element,
             items: [tableStyle, pointers, lYAxis, otherAttr],
             hgap: 10
-        })
+        });
+
+    },
+
+    _showPointer: function (pictureType) {
+        self = this;
+        switch (pictureType) {
+            case BICst.CHART_STYLE.NORMAL:
+            case BICst.CHART_STYLE.HALF_DASHBOARD:
+                self.pointer.setEnable(true);
+                break;
+            case BICst.CHART_STYLE.PERCENT_DASHBOARD:
+            case BICst.CHART_STYLE.PERCENT_SCALE_SLOT:
+            case BICst.CHART_STYLE.VERTICAL_TUBE:
+            case BICst.CHART_STYLE.HORIZONTAL_TUBE:
+                self.pointer.setEnable(false);
+                break;
+        }
     },
 
     populate: function(){
@@ -213,6 +236,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.chartTypeGroup.setValue(BI.Utils.getWSChartDashboardTypeByID(wId));
         this.pointer.setValue(BI.Utils.getWSNumberOfPointerByID(wId));
+        this._showPointer(BI.Utils.getWSNumberOfPointerByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSDashboardNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSDashboardUnitByID(wId));
     },

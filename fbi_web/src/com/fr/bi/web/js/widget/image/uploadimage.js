@@ -66,7 +66,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         this.del = BI.createWidget({
             type: "bi.icon_button",
             cls: "upload-image-icon-button img-shutdown-font",
-            title: BI.i18nText("fbi_Delete"),
+            title: BI.i18nText("BI-Remove"),
             height: 32,
             width: 32
         });
