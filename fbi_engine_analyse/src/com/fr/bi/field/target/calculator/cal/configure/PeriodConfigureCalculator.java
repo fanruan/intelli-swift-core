@@ -225,7 +225,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 }
                 Object value = getValueFromLast(way);
                 if (value != null) {
-                    cursor_node.setSummaryValue(createTargetKey(), value);
+                    cursor_node.setSummaryValue(createTargetGettingKey(), value);
                 }
                 cursor_node = cursor_node.getBottomSibling();
             }

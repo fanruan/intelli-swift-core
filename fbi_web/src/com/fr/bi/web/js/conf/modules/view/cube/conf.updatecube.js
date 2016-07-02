@@ -12,7 +12,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
 
     _init: function () {
         BIConf.UpdateCubePaneView.superclass._init.apply(this, arguments);
-        /*监测cube状态走和生成cube走得是两个Action，会出现这么一个bug：在task还没add进入container的这个阶段，checkStatus返回是fasle，此时按钮会结束灰化，为了避免该bug，加入taskAdding来标识该阶段*/
+        /*监测cube状态走和生成cube走得是两个Action，会出现这么一个bug：在task还没add进入container的这个阶段，checkStatus返回是false，此时按钮会结束灰化，为了避免该bug，加入taskAdding来标识该阶段*/
         this.taskAdding=false;
     },
 

@@ -56,9 +56,9 @@ BI.Chart = BI.inherit(BI.Pane, {
         var setOptions = function () {
             self.vanCharts.setOptions(self.config);
             self.isSetOptions = true;
-            if (self.wants2SetData === true) {
-                self._setData();
-            }
+            //if (self.wants2SetData === true) {
+            //    self._setData();
+            //}
         };
         var init = function () {
             if (self.element.is(":visible")) {

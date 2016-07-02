@@ -50,10 +50,11 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.DASHBOARD:
                 item = BI.extend({"type": "gauge"}, items);
                 break;
-            case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
                 item = BI.extend({"type": "areaMap"}, items);
+                break;
+            case BICst.WIDGET.GIS_MAP:
+                item = BI.extend({"type": "pointMap"}, items);
                 break;
             default:
                 item = BI.extend({"type": "column"}, items);
