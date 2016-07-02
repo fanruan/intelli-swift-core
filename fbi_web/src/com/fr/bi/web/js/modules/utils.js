@@ -1134,7 +1134,7 @@
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
                 var fieldId = this.getFieldIDByDimensionID(did);
                 if (BI.isKey(fieldId)) {
-                    return this.getFieldTypeByID();
+                    return this.getFieldTypeByID(fieldId);
                 }
                 return BICst.COLUMN.NUMBER;
             }
