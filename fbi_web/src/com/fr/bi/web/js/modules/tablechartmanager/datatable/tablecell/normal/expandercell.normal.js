@@ -29,7 +29,8 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                         o.expandCallback();
                     }
                 },
-                width: 25
+                width: 25,
+                height: 25
             })
         }
 
