@@ -454,6 +454,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
         var chosenMap = self.fieldPane.getSelectedFieldMap();
         BI.each(chosenMap, function (id, fieldName) {
             self.fieldPane.addFieldWidget(id, fieldName, groupName);
+            self.fieldPane.setFieldSelectedFalse(id);
         });
         self._checkChosenNum();
     },

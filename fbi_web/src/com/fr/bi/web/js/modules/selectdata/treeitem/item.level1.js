@@ -25,6 +25,8 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
                 return "select-data-field-date-font";
             case BICst.COLUMN.COUNTER:
                 return "select-data-field-number-font";
+            default:
+                return "select-data-field-number-font";
         }
     },
 
@@ -37,7 +39,7 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
             cls: "select-date-level1-item-button " + this._getFieldClass(o.fieldType),
             text: o.text,
             value: o.value,
-            blankWidth: 35,
+            blankWidth: 40,
             height: 25,
             textLgap: 10,
             textRgap: 5
