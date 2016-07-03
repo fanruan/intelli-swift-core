@@ -15,16 +15,16 @@ public class EntityTypeImpl<X> extends AbstractIdentifiableType<X> implements En
 	private final String jpaEntityName;
 
 	@SuppressWarnings("unchecked")
-	public EntityTypeImpl(Class javaType, AbstractIdentifiableType<? super X> superType, PersistentClass persistentClass) {
+	public EntityTypeImpl(Class javaType, AbstractIdentifiableType<? super X> superType, EntityTypeProperty entityTypeProperty) {
 		super(
 				javaType,
-				persistentClass.getEntityName(),
+				entityTypeProperty.getEntityName(),
 				superType,
-				persistentClass.getDeclaredIdentifierMapper() != null || ( superType != null && superType.hasIdClass() ),
-				persistentClass.hasIdentifierProperty(),
-				persistentClass.isVersioned()
+				entityTypeProperty.getDeclaredIdentifierMapper() != null || ( superType != null && superType.hasIdClass() ),
+				entityTypeProperty.hasIdentifierProperty(),
+				entityTypeProperty.isVersioned()
 		);
-		this.jpaEntityName = persistentClass.getJpaEntityName();
+		this.jpaEntityName = entityTypeProperty.getJpaEntityName();
 	}
 
 	@Override

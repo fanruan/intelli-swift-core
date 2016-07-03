@@ -6,7 +6,7 @@ package com.finebi.datasource.sql.criteria.internal.metamodel;
  * @author Connery
  * @since 4.0
  */
-public class PerisitentClassImpl implements PersistentClass {
+public class PerisitentClassImpl implements EntityTypeProperty {
     @Override
     public String getEntityName() {
         return "entity";

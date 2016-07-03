@@ -3,6 +3,7 @@ package com.finebi.datasource.sql.criteria.internal.metamodel;
 
 import com.finebi.datasource.api.metamodel.SingularAttribute;
 import com.finebi.datasource.api.metamodel.Type;
+import com.finebi.datasource.sql.criteria.AttributeType;
 
 import java.io.Serializable;
 
@@ -16,18 +17,17 @@ public class SingularAttributeImpl<X, Y>
     private final boolean isIdentifier;
     private final boolean isVersion;
     private final boolean isOptional;
-    private final Type<Y> attributeType;
+    private final AttributeType<Y> attributeType;
 
     public SingularAttributeImpl(
             String name,
-            Class<Y> javaType,
+            AttributeType<Y> attributeType,
             AbstractManagedType<X> declaringType,
             boolean isIdentifier,
             boolean isVersion,
             boolean isOptional,
-            Type<Y> attributeType,
             PersistentAttributeType persistentAttributeType) {
-        super(name, javaType, declaringType, persistentAttributeType);
+        super(name, attributeType, declaringType, persistentAttributeType);
         this.isIdentifier = isIdentifier;
         this.isVersion = isVersion;
         this.isOptional = isOptional;
@@ -41,11 +41,10 @@ public class SingularAttributeImpl<X, Y>
     public static class Identifier<X, Y> extends SingularAttributeImpl<X, Y> {
         public Identifier(
                 String name,
-                Class<Y> javaType,
+                AttributeType<Y> attributeType,
                 AbstractManagedType<X> declaringType,
-                Type<Y> attributeType,
                 PersistentAttributeType persistentAttributeType) {
-            super(name, javaType, declaringType, true, false, false, attributeType, persistentAttributeType);
+            super(name, attributeType, declaringType, true, false, false, persistentAttributeType);
         }
     }
 
@@ -56,11 +55,10 @@ public class SingularAttributeImpl<X, Y>
     public static class Version<X, Y> extends SingularAttributeImpl<X, Y> {
         public Version(
                 String name,
-                Class<Y> javaType,
+                AttributeType<Y> attributeType,
                 AbstractManagedType<X> declaringType,
-                Type<Y> attributeType,
                 PersistentAttributeType persistentAttributeType) {
-            super(name, javaType, declaringType,  false, true, false, attributeType, persistentAttributeType);
+            super(name, attributeType, declaringType, false, true, false, persistentAttributeType);
         }
     }
 
@@ -81,7 +79,7 @@ public class SingularAttributeImpl<X, Y>
 
     @Override
     public Type<Y> getType() {
-        return attributeType;
+        return null;
     }
 
     @Override

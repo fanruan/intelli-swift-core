@@ -1,6 +1,6 @@
 package com.finebi.datasource.api.metamodel;
 
-import com.finebi.datasource.sql.criteria.JavaPrimitiveType;
+import com.finebi.datasource.sql.criteria.AttributeType;
 
 /**
  * This class created on 2016/6/23.
@@ -11,6 +11,6 @@ import com.finebi.datasource.sql.criteria.JavaPrimitiveType;
 public interface PlainColumn {
     String getColumnName();
 
-    JavaPrimitiveType getJavaType();
+    AttributeType getJavaType();
 
 }

@@ -1,13 +1,12 @@
 package com.finebi.datasource.api;
 
 
-import com.finebi.datasource.api.criteria.CriteriaBuilder;
-import com.finebi.datasource.api.criteria.CriteriaQuery;
-import com.finebi.datasource.api.criteria.ParameterExpression;
-import com.finebi.datasource.api.criteria.Root;
+import com.finebi.datasource.api.criteria.*;
 import com.finebi.datasource.api.metamodel.EntityManager;
 import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.api.metamodel.PlainTable;
+import com.finebi.datasource.sql.criteria.AttributeType;
+import com.finebi.datasource.sql.criteria.AttributeTypeImpl;
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.ExplicitParameterInfo;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
@@ -37,7 +36,7 @@ public class SelectionTest extends TestCase {
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
-            query.select(root);
+            query.select(root.get("abc"));
             String result = ((CriteriaQueryImpl) query).render(new RenderingContext() {
                 @Override
                 public String generateAlias() {
@@ -72,9 +71,10 @@ public class SelectionTest extends TestCase {
         }
     }
 
+
     public EntityType getEntity() {
         AttributeFactory factory = new AttributeFactory(null);
-        AttributeImplementor implementor = factory.buildAttribute(null, new PropertyImpl("abc", false));
+        AttributeImplementor implementor = factory.buildAttribute(null, new AttributePropertyImpl("id", false, new AttributeTypeImpl(AttributeType.InnerType.Integer)));
         EntityTypeImpl entityType = new EntityTypeImpl(TestCase.class, null, new PerisitentClassImpl());
         entityType.getBuilder().addAttribute(implementor);
         return entityType;
@@ -134,6 +134,73 @@ public class SelectionTest extends TestCase {
 //            join.on(cb.equal(tarRoot.get("id"), srcRoot.get("id"))).join(three);
 //            query.select(srcRoot);
             Object result = executeQuery(query);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    private RenderingContext getContext() {
+        return new RenderingContext() {
+            @Override
+            public String generateAlias() {
+                return "alisas";
+            }
+
+            @Override
+            public ExplicitParameterInfo registerExplicitParameter(ParameterExpression<?> criteriaQueryParameter) {
+                return null;
+            }
+
+            @Override
+            public String registerLiteralParameterBinding(Object literal, Class javaType) {
+                return null;
+            }
+
+            @Override
+            public String getCastType(Class javaType) {
+                return "castType";
+            }
+        };
+    }
+
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/23
+     */
+    public void testWhere() {
+        try {
+            AspireContext context = new AspirContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.gt(root.get("id"), 2);
+            query.where(condition);
+
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+
+    public void testRootCount() {
+        try {
+            AspireContext context = new AspirContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            Expression count = cb.count(root);
+            query.select(count);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

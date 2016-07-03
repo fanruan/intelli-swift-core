@@ -1,5 +1,7 @@
 package com.finebi.datasource.sql.criteria.internal.metamodel;
 
+import com.finebi.datasource.sql.criteria.AttributeType;
+import com.finebi.datasource.sql.criteria.AttributeTypeImpl;
 import junit.framework.TestCase;
 
 /**
@@ -17,7 +19,7 @@ public class EntityTypeImplTest extends TestCase {
     public void testBuildEntity() {
         try {
             AttributeFactory factory = new AttributeFactory(null);
-            AttributeImplementor implementor = factory.buildAttribute(null, new PropertyImpl("abc", false));
+            AttributeImplementor implementor = factory.buildAttribute(null, new AttributePropertyImpl("id", false, new AttributeTypeImpl(AttributeType.InnerType.Integer)));
             EntityTypeImpl entityType = new EntityTypeImpl(TestCase.class, null, new PerisitentClassImpl());
             entityType.getBuilder().addAttribute(implementor);
             System.out.println("");

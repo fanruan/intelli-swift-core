@@ -4,6 +4,7 @@ package com.finebi.datasource.sql.criteria.internal.metamodel;
 import com.finebi.datasource.api.metamodel.Attribute;
 import com.finebi.datasource.api.metamodel.PluralAttribute;
 import com.finebi.datasource.api.metamodel.Type;
+import com.finebi.datasource.sql.criteria.AttributeType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -38,7 +39,7 @@ public class AttributeFactory {
      * @return The built attribute descriptor or null if the attribute is not part of the JPA 2 model (eg backrefs)
      */
     @SuppressWarnings({"unchecked"})
-    public <X, Y> AttributeImplementor<X, Y> buildAttribute(AbstractManagedType<X> ownerType, Property property) {
+    public <X, Y> AttributeImplementor<X, Y> buildAttribute(AbstractManagedType<X> ownerType, AttributeProperty property) {
 
         final AttributeContext<X> attributeContext = wrap(ownerType, property);
         final AttributeMetadata<X, Y> attributeMetadata =
@@ -50,23 +51,22 @@ public class AttributeFactory {
         final Type<Y> metaModelType = getMetaModelType(singularAttributeMetadata.getValueContext());
         return new SingularAttributeImpl<X, Y>(
                 attributeMetadata.getName(),
-                attributeMetadata.getJavaType(),
+                attributeMetadata.getPropertyMapping().getAttributeType(),
                 ownerType,
                 false,
                 false,
                 property.isOptional(),
-                metaModelType,
                 attributeMetadata.getPersistentAttributeType()
         );
     }
 
-    private <X> AttributeContext<X> wrap(final AbstractManagedType<X> ownerType, final Property property) {
+    private <X> AttributeContext<X> wrap(final AbstractManagedType<X> ownerType, final AttributeProperty property) {
         return new AttributeContext<X>() {
             public AbstractManagedType<X> getOwnerType() {
                 return ownerType;
             }
 
-            public Property getPropertyMapping() {
+            public AttributeProperty getPropertyMapping() {
                 return property;
             }
         };
@@ -84,7 +84,7 @@ public class AttributeFactory {
     @SuppressWarnings({"unchecked"})
     public <X, Y> SingularAttributeImpl<X, Y> buildIdAttribute(
             AbstractIdentifiableType<X> ownerType,
-            Property property) {
+            AttributeProperty property) {
         final AttributeContext<X> attributeContext = wrap(ownerType, property);
         final SingularAttributeMetadata<X, Y> attributeMetadata =
                 (SingularAttributeMetadata<X, Y>) determineAttributeMetadata(
@@ -94,9 +94,8 @@ public class AttributeFactory {
         final Type<Y> metaModelType = getMetaModelType(attributeMetadata.getValueContext());
         return new SingularAttributeImpl.Identifier(
                 property.getName(),
-                attributeMetadata.getJavaType(),
+                attributeMetadata.getPropertyMapping().getAttributeType(),
                 ownerType,
-                metaModelType,
                 attributeMetadata.getPersistentAttributeType()
         );
     }
@@ -113,16 +112,15 @@ public class AttributeFactory {
     @SuppressWarnings({"unchecked"})
     public <X, Y> SingularAttributeImpl<X, Y> buildVersionAttribute(
             AbstractIdentifiableType<X> ownerType,
-            Property property) {
+            AttributeProperty property) {
         final AttributeContext<X> attributeContext = wrap(ownerType, property);
         final SingularAttributeMetadata<X, Y> attributeMetadata =
                 (SingularAttributeMetadata<X, Y>) determineAttributeMetadata(attributeContext, versionMemberResolver);
         final Type<Y> metaModelType = getMetaModelType(attributeMetadata.getValueContext());
         return new SingularAttributeImpl.Version(
                 property.getName(),
-                attributeMetadata.getJavaType(),
+                attributeMetadata.getPropertyMapping().getAttributeType(),
                 ownerType,
-                metaModelType,
                 attributeMetadata.getPersistentAttributeType()
         );
     }
@@ -176,7 +174,7 @@ public class AttributeFactory {
      * Basic contract for describing an attribute.  The "description" is partially in terms
      * of JPA ({@link #getPersistentAttributeType} and {@link #getOwnerType}), partially in
      * terms of Hibernate ({@link #getPropertyMapping}) and partially just in terms of the java
-     * model itself ({@link #getName}, {@link #getMember} and {@link #getJavaType}).
+     * model itself ({@link #getName}, {@link #getMember} and {@link #getAttributeType}).
      *
      * @param <X> The attribute owner type
      * @param <Y> The attribute type.
@@ -222,7 +220,7 @@ public class AttributeFactory {
          *
          * @return The Hibernate property mapping
          */
-        public Property getPropertyMapping();
+        public AttributeProperty getPropertyMapping();
 
         /**
          * Is the attribute plural (a collection)?
@@ -297,7 +295,7 @@ public class AttributeFactory {
          *
          * @return The Hibernate property mapping.
          */
-        public Property getPropertyMapping();
+        public AttributeProperty getPropertyMapping();
     }
 
     /**
@@ -331,14 +329,15 @@ public class AttributeFactory {
 
 
     private abstract class BaseAttributeMetadata<X, Y> implements AttributeMetadata<X, Y> {
-        private final Property propertyMapping;
+        private final AttributeProperty propertyMapping;
         private final AbstractManagedType<X> ownerType;
         private final Member member;
+        private final AttributeType<Y> attributeType;
         private final Attribute.PersistentAttributeType persistentAttributeType;
 
         @SuppressWarnings({"unchecked"})
         protected BaseAttributeMetadata(
-                Property propertyMapping,
+                AttributeProperty propertyMapping,
                 AbstractManagedType<X> ownerType,
                 Member member,
                 Attribute.PersistentAttributeType persistentAttributeType) {
@@ -346,6 +345,7 @@ public class AttributeFactory {
             this.ownerType = ownerType;
             this.member = member;
             this.persistentAttributeType = persistentAttributeType;
+            this.attributeType = propertyMapping.getAttributeType();
 
             final Class declaredType;
 
@@ -379,7 +379,7 @@ public class AttributeFactory {
         }
 
         public Class<Y> getJavaType() {
-            return null;
+            return attributeType.getJavaType();
         }
 
         public Attribute.PersistentAttributeType getPersistentAttributeType() {
@@ -394,7 +394,7 @@ public class AttributeFactory {
             return false;
         }
 
-        public Property getPropertyMapping() {
+        public AttributeProperty getPropertyMapping() {
             return propertyMapping;
         }
     }
@@ -441,7 +441,7 @@ public class AttributeFactory {
         private final ValueContext valueContext;
 
         private SingularAttributeMetadataImpl(
-                Property propertyMapping,
+                AttributeProperty propertyMapping,
                 AbstractManagedType<X> ownerType,
                 Member member,
                 Attribute.PersistentAttributeType persistentAttributeType) {

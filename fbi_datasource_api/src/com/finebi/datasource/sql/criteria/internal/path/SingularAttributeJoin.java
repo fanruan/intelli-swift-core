@@ -80,13 +80,13 @@ public class SingularAttributeJoin<O,X> extends AbstractJoinImpl<O,X> {
 			return (ManagedType<? super X>) getModel();
 		}
 		else if ( getModel().getBindableType() == Bindable.BindableType.SINGULAR_ATTRIBUTE ) {
-			final Type joinedAttributeType = ( (SingularAttribute) getAttribute() ).getType();
-			if ( !ManagedType.class.isInstance( joinedAttributeType ) ) {
-				throw new UnsupportedOperationException(
-						"Cannot further dereference attribute join [" + getPathIdentifier() + "] as its type is not a ManagedType"
-				);
-			}
-			return (ManagedType<? super X>) joinedAttributeType;
+//			final Type joinedAttributeType = ( (SingularAttribute) getAttribute() ).getType();
+//			if ( !ManagedType.class.isInstance( joinedAttributeType ) ) {
+//				throw new UnsupportedOperationException(
+//						"Cannot further dereference attribute join [" + getPathIdentifier() + "] as its type is not a ManagedType"
+//				);
+//			}
+//			return (ManagedType<? super X>) joinedAttributeType;
 		}
 		else if ( getModel().getBindableType() == Bindable.BindableType.PLURAL_ATTRIBUTE ) {
 			final Type elementType = ( (PluralAttribute) getAttribute() ).getElementType();

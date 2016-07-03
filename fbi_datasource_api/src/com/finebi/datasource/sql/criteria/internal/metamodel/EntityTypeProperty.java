@@ -6,7 +6,7 @@ package com.finebi.datasource.sql.criteria.internal.metamodel;
  * @author Connery
  * @since 4.0
  */
-public interface PersistentClass {
+public interface EntityTypeProperty {
 
     String getEntityName();
 
