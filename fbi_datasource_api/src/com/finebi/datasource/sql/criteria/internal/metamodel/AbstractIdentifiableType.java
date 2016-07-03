@@ -288,7 +288,7 @@ public abstract class AbstractIdentifiableType<X>
 
 			public void applyIdClassAttributes(Set<SingularAttribute<? super X,?>> idClassAttributes) {
 				for ( SingularAttribute<? super X,?> idClassAttribute : idClassAttributes ) {
-					if ( AbstractIdentifiableType.this == idClassAttribute.getDeclaringType() ) {
+					if ( AbstractIdentifiableType.this == idClassAttribute.getOwnerType() ) {
 						@SuppressWarnings({ "unchecked" })
                         SingularAttribute<X,?> declaredAttribute = (SingularAttribute<X,?>) idClassAttribute;
 						addAttribute( declaredAttribute );

@@ -55,8 +55,7 @@ public class AttributeFactory {
                 ownerType,
                 false,
                 false,
-                property.isOptional(),
-                attributeMetadata.getPersistentAttributeType()
+                property.isOptional()
         );
     }
 
@@ -94,9 +93,8 @@ public class AttributeFactory {
         final Type<Y> metaModelType = getMetaModelType(attributeMetadata.getValueContext());
         return new SingularAttributeImpl.Identifier(
                 property.getName(),
-                attributeMetadata.getPropertyMapping().getAttributeType(),
                 ownerType,
-                attributeMetadata.getPersistentAttributeType()
+                attributeMetadata.getPropertyMapping().getAttributeType()
         );
     }
 
@@ -119,9 +117,8 @@ public class AttributeFactory {
         final Type<Y> metaModelType = getMetaModelType(attributeMetadata.getValueContext());
         return new SingularAttributeImpl.Version(
                 property.getName(),
-                attributeMetadata.getPropertyMapping().getAttributeType(),
                 ownerType,
-                attributeMetadata.getPersistentAttributeType()
+                attributeMetadata.getPropertyMapping().getAttributeType()
         );
     }
 
@@ -172,9 +169,9 @@ public class AttributeFactory {
 
     /**
      * Basic contract for describing an attribute.  The "description" is partially in terms
-     * of JPA ({@link #getPersistentAttributeType} and {@link #getOwnerType}), partially in
+     * of JPA ({@link #} and {@link #getOwnerType}), partially in
      * terms of Hibernate ({@link #getPropertyMapping}) and partially just in terms of the java
-     * model itself ({@link #getName}, {@link #getMember} and {@link #getAttributeType}).
+     * model itself ({@link #getName}, {@link #getMember} and {@link #}).
      *
      * @param <X> The attribute owner type
      * @param <Y> The attribute type.
@@ -200,13 +197,6 @@ public class AttributeFactory {
          * @return The java type of the attribute.
          */
         public Class<Y> getJavaType();
-
-        /**
-         * Get the JPA attribute type classification for this attribute.
-         *
-         * @return The JPA attribute type classification
-         */
-        public Attribute.PersistentAttributeType getPersistentAttributeType();
 
         /**
          * Retrieve the attribute owner's metamodel information
@@ -323,7 +313,7 @@ public class AttributeFactory {
         return new SingularAttributeMetadataImpl<X, Y>(
                 attributeContext.getPropertyMapping(),
                 attributeContext.getOwnerType(),
-                null, null
+                null
         );
     }
 
@@ -333,18 +323,15 @@ public class AttributeFactory {
         private final AbstractManagedType<X> ownerType;
         private final Member member;
         private final AttributeType<Y> attributeType;
-        private final Attribute.PersistentAttributeType persistentAttributeType;
 
         @SuppressWarnings({"unchecked"})
         protected BaseAttributeMetadata(
                 AttributeProperty propertyMapping,
                 AbstractManagedType<X> ownerType,
-                Member member,
-                Attribute.PersistentAttributeType persistentAttributeType) {
+                Member member) {
             this.propertyMapping = propertyMapping;
             this.ownerType = ownerType;
             this.member = member;
-            this.persistentAttributeType = persistentAttributeType;
             this.attributeType = propertyMapping.getAttributeType();
 
             final Class declaredType;
@@ -382,9 +369,6 @@ public class AttributeFactory {
             return attributeType.getJavaType();
         }
 
-        public Attribute.PersistentAttributeType getPersistentAttributeType() {
-            return persistentAttributeType;
-        }
 
         public AbstractManagedType<X> getOwnerType() {
             return ownerType;
@@ -443,9 +427,8 @@ public class AttributeFactory {
         private SingularAttributeMetadataImpl(
                 AttributeProperty propertyMapping,
                 AbstractManagedType<X> ownerType,
-                Member member,
-                Attribute.PersistentAttributeType persistentAttributeType) {
-            super(propertyMapping, ownerType, member, persistentAttributeType);
+                Member member) {
+            super(propertyMapping, ownerType, member);
             valueContext = new ValueContext() {
                 public Value getValue() {
                     return null;
@@ -456,17 +439,7 @@ public class AttributeFactory {
                 }
 
                 public ValueClassification getValueClassification() {
-                    switch (getPersistentAttributeType()) {
-                        case EMBEDDED: {
-                            return ValueClassification.EMBEDDABLE;
-                        }
-                        case BASIC: {
-                            return ValueClassification.BASIC;
-                        }
-                        default: {
-                            return ValueClassification.ENTITY;
-                        }
-                    }
+                    return ValueClassification.ENTITY;
                 }
 
                 public AttributeMetadata getAttributeMetadata() {

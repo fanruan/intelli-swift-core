@@ -222,20 +222,7 @@ public abstract class AbstractManagedType<X>
 		return false;
 	}
 
-	@Override
-	@SuppressWarnings({ "unchecked" })
-	public Set<PluralAttribute<? super X, ?, ?>> getPluralAttributes() {
-		HashSet attributes = new HashSet<PluralAttribute<? super X, ?, ?>>( declaredPluralAttributes.values() );
-		if ( getSupertype() != null ) {
-			attributes.addAll( getSupertype().getPluralAttributes() );
-		}
-		return attributes;
-	}
 
-	@Override
-	public Set<PluralAttribute<X, ?, ?>> getDeclaredPluralAttributes() {
-		return new HashSet<PluralAttribute<X,?,?>>( declaredPluralAttributes.values() );
-	}
 
 	@Override
 	@SuppressWarnings({ "unchecked" })
@@ -345,24 +332,6 @@ public abstract class AbstractManagedType<X>
 		return (MapAttribute<X,?,?>) attribute;
 	}
 
-	@Override
-	@SuppressWarnings({ "unchecked" })
-	public <E> CollectionAttribute<? super X, E> getCollection(String name, Class<E> elementType) {
-		PluralAttribute<? super X, ?, ?> attribute = declaredPluralAttributes.get( name );
-		if ( attribute == null && getSupertype() != null ) {
-			attribute = getSupertype().getPluralAttribute( name );
-		}
-		checkCollectionElementType( attribute, name, elementType );
-		return (CollectionAttribute<? super X, E>) attribute;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <E> CollectionAttribute<X, E> getDeclaredCollection(String name, Class<E> elementType) {
-		final PluralAttribute<X,?,?> attribute = declaredPluralAttributes.get( name );
-		checkCollectionElementType( attribute, name, elementType );
-		return (CollectionAttribute<X, E>) attribute;
-	}
 
 	private <E> void checkCollectionElementType(PluralAttribute<?,?,?> attribute, String name, Class<E> elementType) {
 		checkTypeForPluralAttributes( "CollectionAttribute", attribute, name, elementType, PluralAttribute.CollectionType.COLLECTION );
@@ -385,64 +354,17 @@ public abstract class AbstractManagedType<X>
 		}
 	}
 
-	@Override
-	@SuppressWarnings({ "unchecked" })
-	public <E> SetAttribute<? super X, E> getSet(String name, Class<E> elementType) {
-		PluralAttribute<? super X, ?, ?> attribute = declaredPluralAttributes.get( name );
-		if ( attribute == null && getSupertype() != null ) {
-			attribute = getSupertype().getPluralAttribute( name );
-		}
-		checkSetElementType( attribute, name, elementType );
-		return (SetAttribute<? super X, E>) attribute;
-	}
+
 
 	private <E> void checkSetElementType(PluralAttribute<? super X, ?, ?> attribute, String name, Class<E> elementType) {
 		checkTypeForPluralAttributes( "SetAttribute", attribute, name, elementType, PluralAttribute.CollectionType.SET );
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <E> SetAttribute<X, E> getDeclaredSet(String name, Class<E> elementType) {
-		final PluralAttribute<X,?,?> attribute = declaredPluralAttributes.get( name );
-		checkSetElementType( attribute, name, elementType );
-		return (SetAttribute<X, E>) attribute;
-	}
-
-	@Override
-	@SuppressWarnings({ "unchecked" })
-	public <E> ListAttribute<? super X, E> getList(String name, Class<E> elementType) {
-		PluralAttribute<? super X, ?, ?> attribute = declaredPluralAttributes.get( name );
-		if ( attribute == null && getSupertype() != null ) {
-			attribute = getSupertype().getPluralAttribute( name );
-		}
-		checkListElementType( attribute, name, elementType );
-		return (ListAttribute<? super X, E>) attribute;
-	}
 
 	private <E> void checkListElementType(PluralAttribute<? super X, ?, ?> attribute, String name, Class<E> elementType) {
 		checkTypeForPluralAttributes( "ListAttribute", attribute, name, elementType, PluralAttribute.CollectionType.LIST );
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <E> ListAttribute<X, E> getDeclaredList(String name, Class<E> elementType) {
-		final PluralAttribute<X,?,?> attribute = declaredPluralAttributes.get( name );
-		checkListElementType( attribute, name, elementType );
-		return (ListAttribute<X, E>) attribute;
-	}
-
-	@Override
-	@SuppressWarnings({ "unchecked" })
-	public <K, V> MapAttribute<? super X, K, V> getMap(String name, Class<K> keyType, Class<V> valueType) {
-		PluralAttribute<? super X, ?, ?> attribute = getPluralAttribute( name );
-		if ( attribute == null && getSupertype() != null ) {
-			attribute = getSupertype().getPluralAttribute( name );
-		}
-		checkMapValueType( attribute, name, valueType );
-		final MapAttribute<? super X, K, V> mapAttribute = (MapAttribute<? super X, K, V>) attribute;
-		checkMapKeyType( mapAttribute, name, keyType );
-		return mapAttribute;
-	}
 
 	private <V> void checkMapValueType(PluralAttribute<? super X, ?, ?> attribute, String name, Class<V> valueType) {
 		checkTypeForPluralAttributes( "MapAttribute", attribute, name, valueType, PluralAttribute.CollectionType.MAP);
@@ -454,13 +376,4 @@ public abstract class AbstractManagedType<X>
 		}
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <K, V> MapAttribute<X, K, V> getDeclaredMap(String name, Class<K> keyType, Class<V> valueType) {
-		final PluralAttribute<X,?,?> attribute = declaredPluralAttributes.get( name );
-		checkMapValueType( attribute, name, valueType );
-		final MapAttribute<X, K, V> mapAttribute = (MapAttribute<X, K, V>) attribute;
-		checkMapKeyType( mapAttribute, name, keyType );
-		return mapAttribute;
-	}
 }

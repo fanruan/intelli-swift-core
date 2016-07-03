@@ -22,12 +22,11 @@ public class SingularAttributeImpl<X, Y>
     public SingularAttributeImpl(
             String name,
             AttributeType<Y> attributeType,
-            AbstractManagedType<X> declaringType,
+            AbstractManagedType<X> ownerType,
             boolean isIdentifier,
             boolean isVersion,
-            boolean isOptional,
-            PersistentAttributeType persistentAttributeType) {
-        super(name, attributeType, declaringType, persistentAttributeType);
+            boolean isOptional) {
+        super(name, attributeType, ownerType);
         this.isIdentifier = isIdentifier;
         this.isVersion = isVersion;
         this.isOptional = isOptional;
@@ -41,10 +40,9 @@ public class SingularAttributeImpl<X, Y>
     public static class Identifier<X, Y> extends SingularAttributeImpl<X, Y> {
         public Identifier(
                 String name,
-                AttributeType<Y> attributeType,
-                AbstractManagedType<X> declaringType,
-                PersistentAttributeType persistentAttributeType) {
-            super(name, attributeType, declaringType, true, false, false, persistentAttributeType);
+                AbstractManagedType<X> ownerType,
+                AttributeType<Y> attributeType) {
+            super(name, attributeType, ownerType, true, false, false);
         }
     }
 
@@ -55,10 +53,9 @@ public class SingularAttributeImpl<X, Y>
     public static class Version<X, Y> extends SingularAttributeImpl<X, Y> {
         public Version(
                 String name,
-                AttributeType<Y> attributeType,
-                AbstractManagedType<X> declaringType,
-                PersistentAttributeType persistentAttributeType) {
-            super(name, attributeType, declaringType, false, true, false, persistentAttributeType);
+                AbstractManagedType<X> ownerType,
+                AttributeType<Y> attributeType) {
+            super(name, attributeType, ownerType, false, true, false);
         }
     }
 
@@ -84,14 +81,9 @@ public class SingularAttributeImpl<X, Y>
 
     @Override
     public boolean isAssociation() {
-        return getPersistentAttributeType() == PersistentAttributeType.MANY_TO_ONE
-                || getPersistentAttributeType() == PersistentAttributeType.ONE_TO_ONE;
-    }
-
-    @Override
-    public boolean isCollection() {
         return false;
     }
+
 
     @Override
     public BindableType getBindableType() {

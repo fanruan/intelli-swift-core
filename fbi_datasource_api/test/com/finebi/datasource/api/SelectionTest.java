@@ -207,6 +207,23 @@ public class SelectionTest extends TestCase {
         }
     }
 
+    public void testCrossJoin() {
+        try {
+            AspireContext context = new AspirContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+
+            query.select(root);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
     private Object executeQuery(CriteriaQuery query) {
         return null;
     }

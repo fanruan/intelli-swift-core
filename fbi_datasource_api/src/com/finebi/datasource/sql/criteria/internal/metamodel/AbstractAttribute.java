@@ -16,18 +16,15 @@ public abstract class AbstractAttribute<X, Y>
         implements Attribute<X, Y>, AttributeImplementor<X, Y>, Serializable {
     private final String name;
     private final AttributeType<Y> attributeType;
-    private final AbstractManagedType<X> declaringType;
-    private final PersistentAttributeType persistentAttributeType;
+    private final AbstractManagedType<X> ownerType;
 
     public AbstractAttribute(
             String name,
             AttributeType<Y> attributeType,
-            AbstractManagedType<X> declaringType,
-            PersistentAttributeType persistentAttributeType) {
+            AbstractManagedType<X> ownerType) {
         this.name = name;
         this.attributeType = attributeType;
-        this.declaringType = declaringType;
-        this.persistentAttributeType = persistentAttributeType;
+        this.ownerType = ownerType;
     }
 
     @Override
@@ -36,19 +33,13 @@ public abstract class AbstractAttribute<X, Y>
     }
 
     @Override
-    public ManagedType<X> getDeclaringType() {
-        return declaringType;
+    public ManagedType<X> getOwnerType() {
+        return ownerType;
     }
 
     @Override
     public Class<Y> getJavaType() {
         return attributeType.getJavaType();
-    }
-
-
-    @Override
-    public PersistentAttributeType getPersistentAttributeType() {
-        return persistentAttributeType;
     }
 
 
