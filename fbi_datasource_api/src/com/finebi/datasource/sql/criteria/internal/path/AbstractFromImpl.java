@@ -4,8 +4,9 @@ package com.finebi.datasource.sql.criteria.internal.path;
 import com.finebi.datasource.api.criteria.From;
 import com.finebi.datasource.api.criteria.Join;
 import com.finebi.datasource.api.criteria.JoinType;
-import com.finebi.datasource.api.metamodel.*;
-import com.finebi.datasource.api.metamodel.Type;
+import com.finebi.datasource.api.metamodel.Attribute;
+import com.finebi.datasource.api.metamodel.EntityType;
+import com.finebi.datasource.api.metamodel.ManagedType;
 import com.finebi.datasource.sql.criteria.internal.*;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
@@ -27,12 +28,15 @@ public abstract class AbstractFromImpl<Z, X>
 
     private Set<Join<X, ?>> joins;
 
-    public AbstractFromImpl(CriteriaBuilderImpl criteriaBuilder, Class<X> javaType) {
-        this(criteriaBuilder, javaType, null);
+    private EntityType<X> entityType;
+
+    public AbstractFromImpl(CriteriaBuilderImpl criteriaBuilder, EntityType<X> entityType) {
+        this(criteriaBuilder, entityType, null);
     }
 
-    public AbstractFromImpl(CriteriaBuilderImpl criteriaBuilder, Class<X> javaType, PathSource pathSource) {
-        super(criteriaBuilder, javaType, pathSource);
+    public AbstractFromImpl(CriteriaBuilderImpl criteriaBuilder, EntityType<X> entityType, PathSource pathSource) {
+        super(criteriaBuilder, entityType.getJavaType(), pathSource);
+        this.entityType = entityType;
     }
 
     @Override
@@ -194,26 +198,12 @@ public abstract class AbstractFromImpl<Z, X>
                 : joins;
     }
 
-    @Override
-    public <Y> Join<X, Y> join(SingularAttribute<? super X, Y> singularAttribute) {
-        return join(singularAttribute, DEFAULT_JOIN_TYPE);
-    }
 
     @Override
     public Join join(EntityType entityType) {
-        return  join(entityType, DEFAULT_JOIN_TYPE);
+        return join(entityType, DEFAULT_JOIN_TYPE);
     }
 
-    @Override
-    public <Y> Join<X, Y> join(SingularAttribute<? super X, Y> attribute, JoinType jt) {
-        if (!canBeJoinSource()) {
-            throw illegalJoin();
-        }
-
-        Join<X, Y> join = constructJoin(attribute, jt);
-        joinScope.addJoin(join);
-        return join;
-    }
 
     @Override
     public <Y> Join<X, Y> join(EntityType<Y> entityType, JoinType jt) {
@@ -226,26 +216,7 @@ public abstract class AbstractFromImpl<Z, X>
         return join;
     }
 
-    private <Y> JoinImplementor<X, Y> constructJoin(SingularAttribute<? super X, Y> attribute, JoinType jt) {
-        if (Type.PersistenceType.BASIC.equals(attribute.getType().getPersistenceType())) {
-            throw new BasicPathUsageException("Cannot join to attribute of basic type", attribute);
-        }
 
-        // TODO : runtime check that the attribute in fact belongs to this From's model/bindable
-
-        if (jt.equals(JoinType.RIGHT)) {
-            throw new UnsupportedOperationException("RIGHT JOIN not supported");
-        }
-
-        final Class<Y> attributeType = attribute.getBindableJavaType();
-        return new SingularAttributeJoin<X, Y>(
-                criteriaBuilder(),
-                attributeType,
-                this,
-                attribute,
-                jt
-        );
-    }
 
     private <Y> JoinImplementor<X, Y> constructJoin(EntityType<Y> entityType, JoinType jt) {
         if (jt.equals(JoinType.RIGHT)) {
@@ -262,26 +233,10 @@ public abstract class AbstractFromImpl<Z, X>
     }
 
 
-    @Override
-    public <X, Y> Join<X, Y> join(String attributeName) {
-        return join(attributeName, DEFAULT_JOIN_TYPE);
+    public EntityType<X> getEntityType() {
+        return entityType;
     }
 
-    @Override
-    @SuppressWarnings({"unchecked"})
-    public <X, Y> Join<X, Y> join(String attributeName, JoinType jt) {
-        if (!canBeJoinSource()) {
-            throw illegalJoin();
-        }
-
-        if (jt.equals(JoinType.RIGHT)) {
-            throw new UnsupportedOperationException("RIGHT JOIN not supported");
-        }
-
-        final Attribute<X, ?> attribute = (Attribute<X, ?>) locateAttribute(attributeName);
-
-        return (Join<X, Y>) join((SingularAttribute) attribute, jt);
-    }
 
     protected boolean canBeFetchSource() {
         // the conditions should be the same...

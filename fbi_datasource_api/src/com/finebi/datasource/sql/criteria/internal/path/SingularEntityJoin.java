@@ -84,40 +84,6 @@ public class SingularEntityJoin<O, X> extends AbstractJoinImpl<O, X> {
         return model;
     }
 
-    @Override
-    public <T extends X> SingularEntityJoin<O, T> treatAs(Class<T> treatAsType) {
-        return new TreatedSingularAttributeJoin<O, T>(this, treatAsType);
-    }
 
-    public static class TreatedSingularAttributeJoin<O, T> extends SingularEntityJoin<O, T> {
-        private final SingularEntityJoin<O, ? super T> original;
-        private final Class<T> treatAsType;
 
-        public TreatedSingularAttributeJoin(SingularEntityJoin<O, ? super T> original, Class<T> treatAsType) {
-            super(
-                    original.criteriaBuilder(),
-                    treatAsType,
-                    original.getPathSource(),
-                    null,
-                    original.getJoinType()
-            );
-            this.original = original;
-            this.treatAsType = treatAsType;
-        }
-
-        @Override
-        public String getAlias() {
-            return original.getAlias();
-        }
-
-        @Override
-        public void prepareAlias(RenderingContext renderingContext) {
-            // do nothing...
-        }
-
-        @Override
-        public String render(RenderingContext renderingContext) {
-            return "treat(" + original.render(renderingContext) + " as " + treatAsType.getName() + ")";
-        }
-    }
 }

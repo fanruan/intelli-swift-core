@@ -3,7 +3,6 @@ package com.finebi.datasource.api.criteria;
 
 
 import com.finebi.datasource.api.metamodel.EntityType;
-import com.finebi.datasource.api.metamodel.PlainTable;
 
 import java.util.List;
 import java.util.Set;
@@ -23,14 +22,6 @@ import java.util.Set;
  */
 public interface AbstractQuery<T> extends CommonAbstractCriteria {
 
-    /**
-     * Create and add a query root corresponding to the given entity,
-     * forming a cartesian product with any existing roots.
-     *
-     * @param entityClass the entity class
-     * @return query root corresponding to the given entity
-     */
-    <X> Root<X> from(Class<X> entityClass);
 
 
     /**

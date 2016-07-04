@@ -86,11 +86,6 @@ public class CriteriaQueryImpl<T> extends AbstractNode implements CriteriaQuery<
         return queryStructure.from(entityType);
     }
 
-    @Override
-    public <X> Root<X> from(Class<X> entityClass) {
-        return queryStructure.from(entityClass);
-    }
-
 
     // RESTRICTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

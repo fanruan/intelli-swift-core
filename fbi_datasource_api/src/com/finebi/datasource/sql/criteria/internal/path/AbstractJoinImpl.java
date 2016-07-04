@@ -42,7 +42,7 @@ public abstract class AbstractJoinImpl<Z, X>
             PathSource<Z> pathSource,
             EntityType<X> rightEntityType,
             JoinType joinType) {
-        super(criteriaBuilder, javaType, pathSource);
+        super(criteriaBuilder, rightEntityType, pathSource);
         this.rightEntityType = rightEntityType;
         this.joinType = joinType;
     }
