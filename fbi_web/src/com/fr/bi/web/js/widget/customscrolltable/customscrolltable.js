@@ -79,25 +79,43 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             crossItems: o.crossItems
         });
 
-        this._adjustVerticalScrollBar = BI.debounce(function () {
-            var clients = self.table.getCalculateRegionRowSize();
-            var scrolls = self.table.getScrollRegionRowSize();
-
-            if (BI.last(scrolls) > BI.last(clients)) {
+        this._adjustScrollBar = BI.debounce(function () {
+            var isNeedResize = false;
+            if (self.hasVerticalScroll()) {
                 self.topScrollBar.setVisible(true);
                 var items = self.layout.attr("items");
-                var isNeedResize = items[0].right !== o.scrollWidth;
+                isNeedResize = isNeedResize || items[0].right !== o.scrollWidth;
                 items[0].right = o.scrollWidth;
                 self.layout.attr("items", items);
                 self.layout.resize();
             } else {
                 self.topScrollBar.setVisible(false);
                 var items = self.layout.attr("items");
-                var isNeedResize = items[0].right !== 0;
+                isNeedResize = isNeedResize || items[0].right !== 0;
                 items[0].right = 0;
                 self.layout.attr("items", items);
                 self.layout.resize();
             }
+
+            //if (self.hasLeftHorizontalScroll() || self.hasRightHorizontalScroll()) {
+            //    self.bottomLeftScrollBar && self.bottomLeftScrollBar.setVisible(true);
+            //    self.bottomRightScrollBar.setVisible(true);
+            //    var items = self.layout.attr("items");
+            //    isNeedResize = isNeedResize || items[0].bottom !== o.scrollWidth;
+            //    items[0].bottom = o.scrollWidth;
+            //    self.layout.attr("items", items);
+            //    self.layout.resize();
+            //
+            //} else {
+            //    self.bottomLeftScrollBar && self.bottomLeftScrollBar.setVisible(false);
+            //    self.bottomRightScrollBar.setVisible(false);
+            //    var items = self.layout.attr("items");
+            //    isNeedResize = isNeedResize || items[0].bottom !== 0;
+            //    items[0].bottom = 0;
+            //    self.layout.attr("items", items);
+            //    self.layout.resize();
+            //}
+
             if (isNeedResize) {
                 self.table.resize();
                 if (o.isNeedFreeze === true) {
@@ -116,12 +134,12 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze === true) {
             BI.nextTick(function () {
                 self._resizeFreezeScroll();
-                self._adjustVerticalScrollBar();
+                self._adjustScrollBar();
             });
         } else if (o.isNeedFreeze === false) {
             BI.nextTick(function () {
                 self._resizeScroll();
-                self._adjustVerticalScrollBar();
+                self._adjustScrollBar();
             });
         }
 
@@ -137,7 +155,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-            self._adjustVerticalScrollBar();
+            self._adjustScrollBar();
             self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
@@ -477,13 +495,13 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             BI.nextTick(function () {
                 self._resizeFreezeScroll();
                 self._scrollFreezeScroll();
-                self._adjustVerticalScrollBar()
+                self._adjustScrollBar()
             });
         } else if (o.isNeedFreeze === false) {
             BI.nextTick(function () {
                 self._resizeScroll();
                 self._scrollScroll();
-                self._adjustVerticalScrollBar()
+                self._adjustScrollBar()
             });
         }
     },
@@ -540,7 +558,9 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
     },
 
     hasVerticalScroll: function () {
-        return this.table.hasVerticalScroll();
+        var clients = this.table.getCalculateRegionRowSize();
+        var scrolls = this.table.getScrollRegionRowSize();
+        return BI.last(scrolls) > BI.last(clients);
     },
 
     setVerticalScroll: function (scrollTop) {
@@ -558,6 +578,18 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
     getVerticalScroll: function () {
         return this.topScrollBar && this.topScrollBar.getScrollTop();
         //return this.table.getVerticalScroll();
+    },
+
+    hasLeftHorizontalScroll: function () {
+        var clients = this.table.getCalculateRegionColumnSize();
+        var scrolls = this.table.getScrollRegionColumnSize();
+        return scrolls[0] > clients[0];
+    },
+
+    hasRightHorizontalScroll: function () {
+        var clients = this.table.getCalculateRegionColumnSize();
+        var scrolls = this.table.getScrollRegionColumnSize();
+        return scrolls[1] > clients[1];
     },
 
     getLeftHorizontalScroll: function () {

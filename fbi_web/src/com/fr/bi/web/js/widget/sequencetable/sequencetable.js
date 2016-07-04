@@ -162,6 +162,18 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         return this.table.getCalculateRegionColumnSize();
     },
 
+    hasVerticalScroll: function () {
+        return this.table.hasVerticalScroll();
+    },
+
+    hasLeftHorizontalScroll: function () {
+        return this.table.hasLeftHorizontalScroll();
+    },
+
+    hasRightHorizontalScroll: function () {
+        return this.table.hasRightHorizontalScroll();
+    },
+
     getVerticalScroll: function () {
         return this.table.getVerticalScroll();
     },
