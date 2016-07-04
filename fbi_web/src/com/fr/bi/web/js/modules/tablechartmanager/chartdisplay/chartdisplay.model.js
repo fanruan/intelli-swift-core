@@ -586,6 +586,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     getLinkageInfo: function(obj){
         var o = this.options;
+        this._refreshDimsInfo();
         var dId = [], clicked = [];
         // var drill = BI.Utils.getDrillByID(o.wId);
         // var drillId = this.cataDid;
@@ -611,6 +612,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 clicked = [{
                     dId: this.dimIds[0],
                     value: [obj.category]
+                }];
+                break;
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+                dId = obj.targetIds;
+                clicked = [{
+                    dId: this.dimIds[0],
+                    value: [obj.x]
                 }];
                 break;
             default:

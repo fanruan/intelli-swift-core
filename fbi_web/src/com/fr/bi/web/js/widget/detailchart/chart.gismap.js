@@ -52,6 +52,11 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
             "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
         };
         config.chartType = "pointMap";
+        config.plotOptions.icon = {
+            iconUrl: BICst.GIS_ICON_PATH,
+            iconSize: [24, 24]
+        };
+
         config.plotOptions.marker = {
             symbol: BICst.GIS_ICON_PATH,
             width: 24,
@@ -65,24 +70,24 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
     },
 
     _formatItems: function(items){
-        BI.each(items, function(idx, item){
-            BI.each(item, function(id, it){
-                BI.each(it.data, function(i, da){
-                    da.lnglat = da.x.split(",");
-                    da.value = da.y;
-                    da.name = da.z || "";
-                })
-            })
-        });
-        return items;
-        //return [[{
-        //    data: [{
-        //        lnglat:[120.304319,31.552968],
-        //        name: "帆软",
-        //        value: 10000
-        //    }],
-        //    name: "合同金额"
-        //}]]
+        //BI.each(items, function(idx, item){
+        //    BI.each(item, function(id, it){
+        //        BI.each(it.data, function(i, da){
+        //            da.lnglat = da.x.split(",");
+        //            da.value = da.y;
+        //            da.name = da.z || "";
+        //        })
+        //    })
+        //});
+        //return items;
+        return [[{
+            data: [{
+                lnglat:[120.304319,31.552968],
+                name: "帆软",
+                value: 10000
+            }],
+            name: "合同金额"
+        }]]
 
     },
 
