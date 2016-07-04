@@ -1388,6 +1388,7 @@ public class ResourceHelper {
 
                 //指标样式设置
                 "com/fr/bi/web/js/modules/targetstyle/widget.targetstylesetting.js",
+                "com/fr/bi/web/js/modules/targetstyle/widget.targetstylesetting.map.js",
                 "com/fr/bi/web/js/modules/targetstyle/widget.targetcondition.stylesetting.js",
                 "com/fr/bi/web/js/modules/targetstyle/widget.stylesetting.iconmark.js",
                 "com/fr/bi/web/js/modules/targetstyle/combo/combo.iconmark.js",

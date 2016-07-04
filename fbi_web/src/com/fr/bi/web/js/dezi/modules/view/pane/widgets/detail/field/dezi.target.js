@@ -344,13 +344,26 @@ BIDezi.TargetView = BI.inherit(BI.View, {
     _buildStyleSettingPane: function () {
         var self = this, id = this.model.get("id");
         BI.Popovers.remove(id);
-        var popup = BI.createWidget({
-            type: "bi.target_style_setting",
-            dId: this.model.get("id")
-        });
-        popup.on(BI.TargetStyleSetting.EVENT_CHANGE, function () {
-            self.model.set("settings", this.getValue());
-        });
+        switch(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(id))){
+            case BICst.WIDGET.MAP:
+                var popup = BI.createWidget({
+                    type: "bi.target_style_setting_for_map",
+                    dId: this.model.get("id")
+                });
+                popup.on(BI.TargetStyleSettingForMap.EVENT_CHANGE, function () {
+                    self.model.set("settings", this.getValue());
+                });
+                break;
+            default:
+                var popup = BI.createWidget({
+                    type: "bi.target_style_setting",
+                    dId: this.model.get("id")
+                });
+                popup.on(BI.TargetStyleSetting.EVENT_CHANGE, function () {
+                    self.model.set("settings", this.getValue());
+                });
+                break;
+        }
         BI.Popovers.create(id, popup).open(id);
     },
 
