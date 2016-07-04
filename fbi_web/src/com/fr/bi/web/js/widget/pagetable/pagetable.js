@@ -348,6 +348,11 @@ BI.PageTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         BI.delay(function () {
+            //if (!self.table.hasLeftHorizontalScroll() && !self.table.hasRightHorizontalScroll()) {
+            //    self.pager.setVisible(false);
+            //    self.tipPager.setVisible(false);
+            //    return;
+            //}
             var regionSize = self.table.getCalculateRegionColumnSize();
 
             var sWidth = o.isNeedFreeze === true ? regionSize[1] : regionSize[0];
