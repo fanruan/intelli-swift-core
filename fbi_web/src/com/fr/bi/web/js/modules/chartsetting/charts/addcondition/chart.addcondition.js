@@ -98,6 +98,18 @@ BI.ChartAddCondition = BI.inherit (BI.Widget, {
         var self = this;
         self.addConditionButton.setVisible(v);
         self.conditions.setVisible(v);
+    },
+
+    populate: function (items) {
+        this.conditions.populate(items)
+    },
+
+    setValue: function () {
+        
+    },
+
+    getValue: function () {
+        return this.conditions.getValue();
     }
 });
 BI.ChartAddCondition.EVENT_CHANGE = "EVENT_CHANGE";

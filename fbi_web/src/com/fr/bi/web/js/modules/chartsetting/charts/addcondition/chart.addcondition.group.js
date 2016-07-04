@@ -51,10 +51,12 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
         });
 
         if(BI.isNotNull(nextButton)) {
-            nextButton.setValue(BI.extend(nextButton.getValue() , {
-                closemin: !value.range.max,
-                min: value.range.max
-            }));
+            nextButton.setValue({
+                range: BI.extend(nextButton.getValue().range , {
+                    min: value.range.max,
+                    closemin: !value.range.closemax
+                })
+            });
         }
     },
 
@@ -64,14 +66,6 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
                 button.setSmallIntervalEnable();
             }
         } )
-    },
-
-    populate: function (items) {
-        this.options.items = items || [];
-        this.buttongroup.populate(items);
-        this.buttons = this.buttongroup.getAllButtons();
-        this._sendEventForButton(this.buttons);
-        this._checkButtonEnable();
     },
 
     addItem: function () {
@@ -97,9 +91,11 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
         } else {
             var beforeButton = this.buttons[this.buttons.length - 1];
             var beforeValue = beforeButton.getValue().range;
-            beforeButton.setValue(BI.extend(beforeValue , {
-                closemax: false
-            }));
+            beforeButton.setValue({
+                range: BI.extend(beforeValue , {
+                        closemax: false
+                        }
+                )});
             BI.extend(item , {
                 range: {
                     min: BI.parseInt(beforeValue.max),
@@ -119,14 +115,6 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
         this._sendEventForButton([this.buttons[this.buttons.length - 1 ]])
     },
 
-    setValue: function () {
-
-    },
-
-    getValue: function () {
-
-    },
-
     _removeCondition : function (id) {
         var allConditions = this.buttongroup.getAllButtons();
         var index = 0;
@@ -139,6 +127,28 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
         });
 
         this.buttongroup.removeItemAt(index)
+    },
+
+    populate: function (items) {
+        this.options.items = items || [];
+        this.buttongroup.populate(items);
+        this.buttons = this.buttongroup.getAllButtons();
+        this._sendEventForButton(this.buttons);
+        this._checkButtonEnable();
+    },
+
+    setValue: function (v) {
+
+    },
+
+    getValue: function () {
+        var buttons = [];
+
+        BI.each(this.buttons , function (inx , button) {
+            buttons.push(button.getValue())
+        });
+
+        return buttons;
     }
 
 });
