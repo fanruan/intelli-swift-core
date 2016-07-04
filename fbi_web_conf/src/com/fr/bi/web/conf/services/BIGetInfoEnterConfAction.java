@@ -2,7 +2,6 @@ package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -54,7 +53,7 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
                     Iterator<BusinessField> iterator = t.getFields().iterator();
                     while (iterator.hasNext()) {
                         BusinessField field = iterator.next();
-                        fields.put(BIModuleUtils.getBusinessFieldById( field.getFieldID()).getFieldID().getIdentity(), field.createJSON());
+                        fields.put(BIModuleUtils.getBusinessFieldById(field.getFieldID()).getFieldID().getIdentity(), field.createJSON());
                     }
                 }
             }
@@ -85,16 +84,16 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
             Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
-            JSONArray ja = new JSONArray();
+
             String primaryId = null;
             Set<BITableRelation> relations = entry.getValue().getContainer();
             for (BITableRelation relation : relations) {
-
+                JSONArray ja = new JSONArray();
                 primaryId = relation.getPrimaryField().getFieldID().getIdentityValue();
                 ja.put(relation.createJSON());
-            }
-            if (primaryId != null) {
-                jo.put(primaryId, ja);
+                if (primaryId != null) {
+                    jo.put(primaryId, ja);
+                }
             }
         }
         return jo;
@@ -104,16 +103,17 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
             Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
-            JSONArray ja = new JSONArray();
             String foreignId = null;
             Set<BITableRelation> relations = entry.getValue().getContainer();
             for (BITableRelation relation : relations) {
+                JSONArray ja = new JSONArray();
                 foreignId = relation.getForeignField().getFieldID().getIdentity();
                 ja.put(relation.createJSON());
+                if (foreignId != null) {
+                    jo.put(foreignId, ja);
+                }
             }
-            if (foreignId != null) {
-                jo.put(foreignId, ja);
-            }
+
         }
         return jo;
     }
