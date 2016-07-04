@@ -34,6 +34,9 @@ public class TableSourceFactory {
             ExcelTableSource excelTableSource = new ExcelTableSource();
             excelTableSource.parseJSON(jo);
             return excelTableSource;
+        } else if (ComparatorUtils.equals(connectionName, DBConstant.CONNECTION.SERVER_CONNECTION)) {
+            String tableName = jo.optString("table_name", StringUtils.EMPTY);
+            return new ServerTableSource(tableName);
         } else {
             String tableName = jo.optString("table_name", StringUtils.EMPTY);
             return new DBTableSource(connectionName, tableName);
