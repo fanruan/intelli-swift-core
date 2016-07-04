@@ -20,7 +20,7 @@ public class BIRenameAnalysisETLTableAction extends AbstractAnalysisETLAction{
         String describe = WebUtils.getHTTPRequestParameter(req, "describe");
         BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId).setDescribe(describe);
         BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
-        BIConfigureManagerCenter.getLogManager().logVersion(userId);
+        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         new Thread(){
             @Override
             public void run() {
