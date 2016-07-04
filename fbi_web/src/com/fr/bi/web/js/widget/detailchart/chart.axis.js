@@ -20,7 +20,8 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-3
+        MINLIMIT: 1e-3,
+        LEGEND_HEIGHT: 80
     },
 
     _defaultConfig: function () {
@@ -63,6 +64,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
+                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
@@ -240,7 +242,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             if(position === self.constants.RIGHT_AXIS_SECOND){
-                self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
+                self.config.right_y_axis_second_unit !== "" && (unit = unit + self.config.right_y_axis_second_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
         }

@@ -37,6 +37,14 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
     _init: function () {
         BI.DashboardChart.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        this.gaugeAxis = [{
+            "minorTickColor": "rgb(226,226,226)",
+            "tickColor": "rgb(186,186,186)",
+            labelStyle: {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+            },
+            "showLabel": true
+        }];
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             formatConfig: BI.bind(this._formatConfig, this),
@@ -56,6 +64,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         return [items, config];
 
         function formatChartDashboardStyle(){
+            config.gaugeAxis = self.gaugeAxis;
             switch (self.config.chart_dashboard_type) {
                 case BICst.CHART_STYLE.HALF_DASHBOARD:
                     config.plotOptions.style = "pointer_semi";
@@ -86,8 +95,8 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     break;
             }
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
-            config.plotOptions.valueLabel.formatter = function(){
-                return getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+            config.gaugeAxis[0].formatter = function(){
+                return this + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
             };
         }
 
