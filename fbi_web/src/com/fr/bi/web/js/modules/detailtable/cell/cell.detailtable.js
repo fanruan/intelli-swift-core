@@ -76,6 +76,9 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         if (text === Infinity || text !== text) {
             return text;
         }
+        if (!BI.isNumeric(text)) {
+            return text;
+        }
         var num = BI.parseFloat(text);
         switch (dot) {
             case BICst.TARGET_STYLE.FORMAT.NORMAL:
