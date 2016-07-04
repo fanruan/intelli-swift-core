@@ -20,7 +20,7 @@ public class EntityTypeImplTest extends TestCase {
         try {
             AttributeFactory factory = new AttributeFactory(null);
             AttributeImplementor implementor = factory.buildAttribute(null, new AttributePropertyImpl("id", false, new AttributeTypeImpl(AttributeType.InnerType.Integer)));
-            EntityTypeImpl entityType = new EntityTypeImpl(TestCase.class, null, new PerisitentClassImpl());
+            EntityTypeImpl entityType = new EntityTypeImpl(TestCase.class, null, new PersistentClassImpl("a","b"));
             entityType.getBuilder().addAttribute(implementor);
             System.out.println("");
         } catch (Exception e) {

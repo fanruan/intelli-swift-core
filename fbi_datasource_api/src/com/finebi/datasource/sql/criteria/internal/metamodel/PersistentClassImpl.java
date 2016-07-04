@@ -6,10 +6,18 @@ package com.finebi.datasource.sql.criteria.internal.metamodel;
  * @author Connery
  * @since 4.0
  */
-public class PerisitentClassImpl implements EntityTypeProperty {
+public class PersistentClassImpl implements EntityTypeProperty {
+    private String entityName;
+    private String sourceName;
+
+    public PersistentClassImpl(String entityName, String sourceName) {
+        this.entityName = entityName;
+        this.sourceName = sourceName;
+    }
+
     @Override
     public String getEntityName() {
-        return "entity";
+        return entityName;
     }
 
     @Override
@@ -29,6 +37,6 @@ public class PerisitentClassImpl implements EntityTypeProperty {
 
     @Override
     public String getJpaEntityName() {
-        return "jpaEntity";
+        return sourceName;
     }
 }

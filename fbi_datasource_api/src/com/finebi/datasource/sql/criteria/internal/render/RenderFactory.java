@@ -9,5 +9,5 @@ import com.finebi.datasource.sql.criteria.internal.QueryStructure;
  * @since 4.0
  */
 public interface RenderFactory {
-    QueryStructureRender getQueryStructureRender(QueryStructure queryStructure, String driverTag);
+    QueryStructureBasicRender getQueryStructureRender(QueryStructure queryStructure, String driverTag);
 }

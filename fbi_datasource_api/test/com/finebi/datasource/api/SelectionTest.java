@@ -70,12 +70,38 @@ public class SelectionTest extends TestCase {
         }
     }
 
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/23
+     */
+    public void testProjectionSelect() {
+        try {
+            AspireContext context = new AspireContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root.get("id"));
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
 
-    public EntityType getEntity() {
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public static EntityType getEntity() {
         AttributeFactory factory = new AttributeFactory(null);
         AttributeImplementor implementor = factory.buildAttribute(null, new AttributePropertyImpl("id", false, new AttributeTypeImpl(AttributeType.InnerType.Integer)));
-        EntityTypeImpl entityType = new EntityTypeImpl(TestCase.class, null, new PerisitentClassImpl());
+        AttributeImplementor implementor_name = factory.buildAttribute(null, new AttributePropertyImpl("A_name", false, new AttributeTypeImpl(AttributeType.InnerType.String)));
+        AttributeImplementor implementor_age = factory.buildAttribute(null, new AttributePropertyImpl("age", false, new AttributeTypeImpl(AttributeType.InnerType.Integer)));
+        EntityTypeImpl entityType = new EntityTypeImpl(TestCase.class, null, new PersistentClassImpl("entity", "jpa"));
         entityType.getBuilder().addAttribute(implementor);
+        entityType.getBuilder().addAttribute(implementor_name);
+
         return entityType;
     }
 
@@ -139,7 +165,7 @@ public class SelectionTest extends TestCase {
         }
     }
 
-    private RenderingContext getContext() {
+    public static RenderingContext getContext() {
         return new RenderingContext() {
             private int aliasCount;
             private int explicitParameterCount;
@@ -417,6 +443,7 @@ public class SelectionTest extends TestCase {
             assertTrue(false);
         }
     }
+
     /**
      * 普通查询
      * Detail:
@@ -433,7 +460,7 @@ public class SelectionTest extends TestCase {
             query.select(root);
             Predicate condition = cb.like(root.get("id"), "%a");
 
-            query.where( cb.and(condition,cb.equal(root.get("id"),2)));
+            query.where(cb.and(condition, cb.equal(root.get("id"), 2)));
 
             String result = ((CriteriaQueryImpl) query).render(getContext());
             System.out.println(result);
@@ -442,6 +469,7 @@ public class SelectionTest extends TestCase {
             assertTrue(false);
         }
     }
+
     /**
      * 普通查询
      * Detail:
