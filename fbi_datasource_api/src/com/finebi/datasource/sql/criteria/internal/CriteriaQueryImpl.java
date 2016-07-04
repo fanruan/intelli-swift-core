@@ -184,6 +184,11 @@ public class CriteriaQueryImpl<T> extends AbstractNode implements CriteriaQuery<
     }
 
     @Override
+    public <U> Subquery<U> subquery(EntityType<U> type) {
+        return queryStructure.subquery(type.getJavaType());
+    }
+
+    @Override
     public void validate() {
         // getRoots() is explicitly supposed to return empty if none defined, no need to check for null
         if (getRoots().isEmpty()) {

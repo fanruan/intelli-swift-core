@@ -1,4 +1,4 @@
-package com.finebi.datasource.sql.criteria;
+package com.finebi.datasource.api.metamodel;
 
 import com.finebi.datasource.api.metamodel.Type;
 

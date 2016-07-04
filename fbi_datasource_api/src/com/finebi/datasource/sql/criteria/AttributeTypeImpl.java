@@ -1,5 +1,6 @@
 package com.finebi.datasource.sql.criteria;
 
+import com.finebi.datasource.api.metamodel.AttributeType;
 import com.finebi.datasource.api.metamodel.Type;
 
 /**

@@ -32,7 +32,6 @@ public class CriteriaSubqueryImpl<T> extends ExpressionImpl<T> implements Subque
     }
 
 
-
     @Override
     public AbstractQuery<?> getParent() {
         if (!AbstractQuery.class.isInstance(parent)) {
@@ -76,8 +75,12 @@ public class CriteriaSubqueryImpl<T> extends ExpressionImpl<T> implements Subque
         return queryStructure.from(entityClass);
     }
 
+    @Override
+    public <U> Subquery<U> subquery(EntityType<U> type) {
+        return queryStructure.subquery(type.getJavaType());
+    }
 
-    // SELECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// SELECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     @Override
     public Subquery<T> distinct(boolean applyDistinction) {

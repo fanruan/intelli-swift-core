@@ -3,7 +3,7 @@ package com.finebi.datasource.sql.criteria.internal.metamodel;
 
 import com.finebi.datasource.api.metamodel.SingularAttribute;
 import com.finebi.datasource.api.metamodel.Type;
-import com.finebi.datasource.sql.criteria.AttributeType;
+import com.finebi.datasource.api.metamodel.AttributeType;
 
 import java.io.Serializable;
 

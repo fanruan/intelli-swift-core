@@ -200,12 +200,28 @@ public abstract class AbstractFromImpl<Z, X>
     }
 
     @Override
+    public Join join(EntityType entityType) {
+        return  join(entityType, DEFAULT_JOIN_TYPE);
+    }
+
+    @Override
     public <Y> Join<X, Y> join(SingularAttribute<? super X, Y> attribute, JoinType jt) {
         if (!canBeJoinSource()) {
             throw illegalJoin();
         }
 
         Join<X, Y> join = constructJoin(attribute, jt);
+        joinScope.addJoin(join);
+        return join;
+    }
+
+    @Override
+    public <Y> Join<X, Y> join(EntityType<Y> entityType, JoinType jt) {
+        if (!canBeJoinSource()) {
+            throw illegalJoin();
+        }
+
+        Join<X, Y> join = constructJoin(entityType, jt);
         joinScope.addJoin(join);
         return join;
     }
@@ -231,12 +247,19 @@ public abstract class AbstractFromImpl<Z, X>
         );
     }
 
+    private <Y> JoinImplementor<X, Y> constructJoin(EntityType<Y> entityType, JoinType jt) {
+        if (jt.equals(JoinType.RIGHT)) {
+            throw new UnsupportedOperationException("RIGHT JOIN not supported");
+        }
 
-
-
-
-
-
+        return new SingularEntityJoin<X, Y>(
+                criteriaBuilder(),
+                entityType.getJavaType(),
+                this,
+                entityType,
+                jt
+        );
+    }
 
 
     @Override

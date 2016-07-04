@@ -2,9 +2,8 @@
 package com.finebi.datasource.sql.criteria.internal.metamodel;
 
 import com.finebi.datasource.api.metamodel.Attribute;
-import com.finebi.datasource.api.metamodel.PluralAttribute;
 import com.finebi.datasource.api.metamodel.Type;
-import com.finebi.datasource.sql.criteria.AttributeType;
+import com.finebi.datasource.api.metamodel.AttributeType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -242,29 +241,7 @@ public class AttributeFactory {
      * @param <Y> The attribute type (the collection type)
      * @param <E> The collection element type
      */
-    @SuppressWarnings("UnusedDeclaration")
-    private interface PluralAttributeMetadata<X, Y, E> extends AttributeMetadata<X, Y> {
-        /**
-         * Retrieve the JPA collection type classification for this attribute
-         *
-         * @return The JPA collection type classification
-         */
-        public PluralAttribute.CollectionType getAttributeCollectionType();
 
-        /**
-         * Retrieve the value context for the collection's elements.
-         *
-         * @return The value context for the collection's elements.
-         */
-        public ValueContext getElementValueContext();
-
-        /**
-         * Retrieve the value context for the collection's keys (if a map, null otherwise).
-         *
-         * @return The value context for the collection's keys (if a map, null otherwise).
-         */
-        public ValueContext getMapKeyValueContext();
-    }
 
     /**
      * Bundle's a Hibernate property mapping together with the JPA metamodel information
@@ -470,21 +447,7 @@ public class AttributeFactory {
         return (ParameterizedType) type;
     }
 
-    public static PluralAttribute.CollectionType determineCollectionType(Class javaType) {
-        if (java.util.List.class.isAssignableFrom(javaType)) {
-            return PluralAttribute.CollectionType.LIST;
-        } else if (java.util.Set.class.isAssignableFrom(javaType)) {
-            return PluralAttribute.CollectionType.SET;
-        } else if (java.util.Map.class.isAssignableFrom(javaType)) {
-            return PluralAttribute.CollectionType.MAP;
-        } else if (java.util.Collection.class.isAssignableFrom(javaType)) {
-            return PluralAttribute.CollectionType.COLLECTION;
-        } else if (javaType.isArray()) {
-            return PluralAttribute.CollectionType.LIST;
-        } else {
-            throw new IllegalArgumentException("Expecting collection type [" + javaType.getName() + "]");
-        }
-    }
+
 
 
     private final MemberResolver embeddedMemberResolver = null;

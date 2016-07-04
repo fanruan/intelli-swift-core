@@ -1,6 +1,6 @@
 package com.finebi.datasource.sql.criteria.internal.metamodel;
 
-import com.finebi.datasource.sql.criteria.AttributeType;
+import com.finebi.datasource.api.metamodel.AttributeType;
 
 /**
  * This class created on 2016/7/1.

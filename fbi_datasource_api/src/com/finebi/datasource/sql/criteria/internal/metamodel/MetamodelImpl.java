@@ -1,7 +1,6 @@
 
 package com.finebi.datasource.sql.criteria.internal.metamodel;
 
-import com.finebi.datasource.api.metamodel.EmbeddableType;
 import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.api.metamodel.ManagedType;
 import com.finebi.datasource.api.metamodel.MappedSuperclassType;
@@ -60,15 +59,7 @@ public class MetamodelImpl implements MetamodelExpander, Serializable {
         return (ManagedType<X>) type;
     }
 
-    @Override
-    @SuppressWarnings({"unchecked"})
-    public <X> EmbeddableType<X> embeddable(Class<X> cls) {
-        final EmbeddableType<?> embeddableType = jpaEmbeddableTypeMap.get(cls);
-        if (embeddableType == null) {
-            throw new IllegalArgumentException("Not an embeddable: " + cls);
-        }
-        return (EmbeddableType<X>) embeddableType;
-    }
+
 
     @Override
     public Set<ManagedType<?>> getManagedTypes() {
@@ -87,10 +78,7 @@ public class MetamodelImpl implements MetamodelExpander, Serializable {
         return new HashSet<EntityType<?>>(jpaEntityTypesByEntityName.values());
     }
 
-    @Override
-    public Set<EmbeddableType<?>> getEmbeddables() {
-        return new HashSet<EmbeddableType<?>>(jpaEmbeddableTypeMap.values());
-    }
+
 
     @Override
     @SuppressWarnings("unchecked")

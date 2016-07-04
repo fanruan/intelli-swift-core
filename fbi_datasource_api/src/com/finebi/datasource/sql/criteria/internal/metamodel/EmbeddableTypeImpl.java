@@ -1,8 +1,6 @@
 
 package com.finebi.datasource.sql.criteria.internal.metamodel;
 
-import com.finebi.datasource.api.metamodel.EmbeddableType;
-
 import java.io.Serializable;
 
 /**
@@ -10,7 +8,7 @@ import java.io.Serializable;
  */
 public class EmbeddableTypeImpl<X>
         extends AbstractManagedType<X>
-        implements EmbeddableType<X>, Serializable {
+        implements Serializable, com.finebi.datasource.api.metamodel.ManagedType<X> {
 
     private final AbstractManagedType parent;
 

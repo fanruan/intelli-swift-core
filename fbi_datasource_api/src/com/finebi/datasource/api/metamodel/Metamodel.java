@@ -29,14 +29,7 @@ public interface Metamodel {
      */
     <X> ManagedType<X> managedType(Class<X> cls);
     
-    /**
-     *  Return the metamodel embeddable type representing the
-     *  embeddable class.
-     *  @param cls  the type of the represented embeddable class
-     *  @return the metamodel embeddable type
-     *  @throws IllegalArgumentException if not an embeddable class
-     */
-    <X> EmbeddableType<X> embeddable(Class<X> cls);
+
 
     /**
      *  Return the metamodel managed types.
@@ -50,10 +43,5 @@ public interface Metamodel {
      */
     Set<EntityType<?>> getEntities();
 
-    /**
-     * Return the metamodel embeddable types.  Returns empty set
-     * if there are no embeddable types.
-     * @return the metamodel embeddable types
-     */
-    Set<EmbeddableType<?>> getEmbeddables();
+
 }

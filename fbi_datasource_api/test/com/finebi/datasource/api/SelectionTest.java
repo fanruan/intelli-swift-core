@@ -2,17 +2,16 @@ package com.finebi.datasource.api;
 
 
 import com.finebi.datasource.api.criteria.*;
-import com.finebi.datasource.api.metamodel.EntityManager;
-import com.finebi.datasource.api.metamodel.EntityType;
-import com.finebi.datasource.api.metamodel.PlainTable;
-import com.finebi.datasource.sql.criteria.AttributeType;
+import com.finebi.datasource.api.metamodel.*;
 import com.finebi.datasource.sql.criteria.AttributeTypeImpl;
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.ExplicitParameterInfo;
+import com.finebi.datasource.sql.criteria.internal.compile.ImplicitParameterBinding;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.context.AspirContextImpl;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContext;
 import com.finebi.datasource.sql.criteria.internal.metamodel.*;
+import com.fr.fineengine.utils.StringHelper;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -36,7 +35,7 @@ public class SelectionTest extends TestCase {
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
-            query.select(root.get("abc"));
+            query.select(root.get("id"));
             String result = ((CriteriaQueryImpl) query).render(new RenderingContext() {
                 @Override
                 public String generateAlias() {
@@ -142,23 +141,69 @@ public class SelectionTest extends TestCase {
 
     private RenderingContext getContext() {
         return new RenderingContext() {
-            @Override
+            private int aliasCount;
+            private int explicitParameterCount;
+
             public String generateAlias() {
-                return "alisas";
+                return "generatedAlias" + aliasCount++;
+            }
+
+            public String generateParameterName() {
+                return "param" + explicitParameterCount++;
             }
 
             @Override
             public ExplicitParameterInfo registerExplicitParameter(ParameterExpression<?> criteriaQueryParameter) {
-                return null;
+                ExplicitParameterInfo parameterInfo = null;
+                if (parameterInfo == null) {
+                    if (StringHelper.isNotEmpty(criteriaQueryParameter.getName())) {
+                        parameterInfo = new ExplicitParameterInfo(
+                                criteriaQueryParameter.getName(),
+                                null,
+                                criteriaQueryParameter.getJavaType()
+                        );
+                    } else if (criteriaQueryParameter.getPosition() != null) {
+                        parameterInfo = new ExplicitParameterInfo(
+                                null,
+                                criteriaQueryParameter.getPosition(),
+                                criteriaQueryParameter.getJavaType()
+                        );
+                    } else {
+                        parameterInfo = new ExplicitParameterInfo(
+                                generateParameterName(),
+                                null,
+                                criteriaQueryParameter.getJavaType()
+                        );
+                    }
+
+//                    explicitParameterInfoMap.put(criteriaQueryParameter, parameterInfo);
+                }
+
+                return parameterInfo;
             }
 
-            @Override
-            public String registerLiteralParameterBinding(Object literal, Class javaType) {
-                return null;
+            public String registerLiteralParameterBinding(final Object literal, final Class javaType) {
+                final String parameterName = generateParameterName();
+                final ImplicitParameterBinding binding = new ImplicitParameterBinding() {
+                    public String getParameterName() {
+                        return parameterName;
+                    }
+
+                    public Class getJavaType() {
+                        return javaType;
+                    }
+
+                    public void bind(TypedQuery typedQuery) {
+                        typedQuery.setParameter(parameterName, literal);
+                    }
+                };
+
+//                implicitParameterBindings.add(binding);
+                return parameterName;
             }
 
-            @Override
             public String getCastType(Class javaType) {
+
                 return "castType";
             }
         };
@@ -214,7 +259,7 @@ public class SelectionTest extends TestCase {
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
-
+            root.join(getEntity());
             query.select(root);
             String result = ((CriteriaQueryImpl) query).render(getContext());
             System.out.println(result);
@@ -233,5 +278,68 @@ public class SelectionTest extends TestCase {
         return cb;
     }
 
+    /**
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/21
+     */
+    public void testSubquery() {
+        try {
+            AspireContext context = new AspirContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
 
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+
+            Subquery subquery = query.subquery(getEntity());
+            Root root = subquery.from(getEntity());
+            subquery.select(root.get("id"));
+            Root main = query.from(getEntity());
+            query.select(main);
+
+            Predicate condition = cb.in(root.get("id")).value(subquery);
+            query.where(condition);
+
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/21
+     */
+    public void testSubquerySubquery() {
+        try {
+            AspireContext context = new AspirContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+
+            Subquery subquery = query.subquery(getEntity());
+            Root root = subquery.from(getEntity());
+            subquery.select(root.get("id"));
+
+            Subquery subsubquery = subquery.subquery(getEntity());
+            Root subroot = subsubquery.from(getEntity());
+            subsubquery.select(subroot.get("id"));
+            Predicate subCondition = cb.in(root.get("id")).value(subsubquery);
+            subquery.where(subCondition);
+            Root main = query.from(getEntity());
+            query.select(main);
+            Predicate condition = cb.in(main.get("id")).value(subquery);
+            query.where(condition);
+
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 }
