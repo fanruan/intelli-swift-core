@@ -155,7 +155,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
         if (dimension.getRelationList() == null) {
             return ti.getAllShowIndex();
         }
-        Iterator it = dimension.createValueMapIterator(target, loader);
+        Iterator it = dimension.createNoneSortNoneGroupValueMapGetter(target, loader).iterator();
         GroupValueIndex gvi = null;
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();

@@ -21,7 +21,7 @@ BI.ChartType = BI.inherit(BI.Widget, {
             items: this._formatItems(BI.deepClone(BICst.DASHBOARD_WIDGETS[0])),
             layouts: [{
                 type: "bi.horizontal",
-                scrollx: false,
+                scrollx: true,
                 scrollable: false,
                 vgap: 3,
                 hgap: 3

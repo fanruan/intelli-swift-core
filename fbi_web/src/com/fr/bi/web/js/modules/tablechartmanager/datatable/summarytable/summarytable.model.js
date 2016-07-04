@@ -310,21 +310,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             //有c->说明有children，构造children，并且需要在children中加入汇总情况（如果有并且需要）
             if (BI.isNotNull(child.c)) {
                 item.children = self._createTableItems(child.c, currentLayer, node) || [];
-                // if (BI.isNotEmptyArray(child.s) && self.showRowTotal === true) {
-                //     var vs = [];
-                //     BI.each(child.s, function (k, cs) {
-                //         var tId = self.targetIds[k];
-                //         vs.push({
-                //             type: "bi.target_body_normal_cell",
-                //             text: cs,
-                //             dId: tId,
-                //             clicked: pValues,
-                //             cls: "summary-cell"
-                //         });
-                //     });
-                //     item.values = vs;
-                // }
-                if (self.showRowTotal === true) {
+                //在tableForm为 行展开模式 的时候 如果不显示汇总行 只是最后一行不显示汇总
+                if (self.showRowTotal === true || self.getTableForm() === BICst.TABLE_FORM.OPEN_COL) {
                     var vs = [];
                     var summary = self._getOneRowSummary(child.s);
                     var tarSize = self.targetIds.length;
@@ -388,7 +375,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             if (BI.isNotNull(c) && BI.isNotNull(s)) {
                 summary = summary.concat(self._getOneRowSummary(c));
                 if (this.showColTotal === true) {
-                    summary.concat(self._getOneRowSummary(s));
+                    summary = summary.concat(self._getOneRowSummary(s));
                 }
             } else if (BI.isNotNull(s)) {
                 summary = summary.concat(self._getOneRowSummary(s));
@@ -566,16 +553,16 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     /**
      * 交叉表的(指标)汇总值
      */
-    _createTableSumItems: function (s, sum, pValues, ob) {
+    _createTableSumItems: function (s, sum, pValues, ob, isLast) {
         var self = this;
         BI.each(s, function (i, v) {
             if (BI.isObject(v)) {
                 var sums = v.s, child = v.c;
                 if (BI.isNotNull(sums) && BI.isNotNull(child)) {
-                    self._createTableSumItems(child, sum, pValues, ob);
-                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob);
+                    self._createTableSumItems(child, sum, pValues, ob, isLast);
+                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob, isLast);
                 } else if (BI.isNotNull(sums)) {
-                    self._createTableSumItems(sums, sum, pValues, ob);
+                    self._createTableSumItems(sums, sum, pValues, ob, isLast);
                 }
 
             } else {
@@ -587,7 +574,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     type: "bi.target_body_normal_cell",
                     text: v,
                     dId: tId,
-                    clicked: pValues.concat(self.crossPV[ob.index])
+                    clicked: pValues.concat(self.crossPV[ob.index]),
+                    cls: isLast ? "last summary-cell" : ""
                 });
                 ob.index++;
             }
@@ -763,9 +751,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             //汇总值
             var sums = [], ob = {index: 0};
             if (BI.isNotNull(left.s.c) && BI.isNotNull(left.s.s)) {
-                this._createTableSumItems(left.s.c, sums, [], ob);
+                this._createTableSumItems(left.s.c, sums, [], ob, true);
             } else {
-                BI.isArray(left.s) && this._createTableSumItems(left.s, sums, [], ob);
+                BI.isArray(left.s) && this._createTableSumItems(left.s, sums, [], ob, true);
             }
             if (this.showColTotal === true) {
                 var outerValues = [];
@@ -787,14 +775,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 });
                 sums = sums.concat(outerValues);
             }
-            // item.children.push({
-            //     type: "bi.page_table_cell",
-            //     text: BI.i18nText("BI-Summary_Values"),
-            //     tag: BI.UUID(),
-            //     isSum: true,
-            //     values: sums,
-            //     cls: "summary-cell"
-            // })
             item.values = sums;
         }
 
@@ -850,6 +830,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 type: "bi.normal_expander_cell",
                 text: currValue,
                 dId: currDid,
+                isCross: true,
                 expandCallback: function () {
                     var clickNode = self.crossETree.search(nodeId);
                     //全部展开再收起——纵向

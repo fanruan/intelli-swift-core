@@ -28,8 +28,8 @@ BI.WebPage = BI.inherit(BI.Widget, {
             type: "bi.icon_button",
             cls: "web-page-button img-shutdown-font",
             title: BI.i18nText("BI-Delete"),
-            height: 32,
-            width: 32
+            height: 24,
+            width: 24
         });
 
         this.del.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -54,11 +54,11 @@ BI.WebPage = BI.inherit(BI.Widget, {
             }, {
                 el: this.del,
                 right: 4,
-                top: 4
+                top: 8
             }, {
                 el: this.href,
                 right: 36,
-                top: 4
+                top: 8
             }, {
                 el: this.label,
                 top: 32,

@@ -71,6 +71,10 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                 widgets[wId] = info;
                 widgets[wId].name = self._generateWidgetName(widgets[wId].name);
                 widgets[wId].init_time = new Date().getTime();
+                //添加查询按钮的时候在此保存一下当前的查询条件
+                if(info.type === BICst.WIDGET.QUERY) {
+                    Data.SharingPool.put("control_filters", BI.Utils.getControlCalculations());
+                }
             }
             this.set({"widgets": widgets});
             return true;

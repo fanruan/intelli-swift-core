@@ -463,7 +463,8 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                             dimension.sort = sort;
                         }
                         var groupArray = [BICst.GROUP.CUSTOM_GROUP, BICst.SUMMARY_TYPE.SUM, BICst.SUMMARY_TYPE.MAX
-                            , BICst.SUMMARY_TYPE.MIN, BICst.SUMMARY_TYPE.AVG
+                            , BICst.SUMMARY_TYPE.MIN, BICst.SUMMARY_TYPE.AVG, BICst.GROUP.Y, BICst.GROUP.S, BICst.GROUP.M,
+                        BICst.GROUP.W, BICst.GROUP.YMD
                         ];
                         if (BI.isNotNull(group) && BI.contains(groupArray, group.type)) {
                             dimension.group = group;

@@ -41,15 +41,34 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
-        this.popup.on(BI.SingleTreePopup.EVENT_CHANGE, function () {
+        this.popup.on(BI.DimensionTreePopup.EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
             self.combo.hideView();
             self.fireEvent(BI.DimensionTreeCombo.EVENT_CHANGE);
         });
     },
 
+    _isSelfCircleTable: function (tableId) {
+        return BI.Utils.getPathsFromTableAToTableB(tableId, tableId).length > 0;
+    },
+
+    _getSelfCircleFieldsByFieldId: function (fieldId, circleForeignIds) {
+        var self = this, o = this.options;
+        circleForeignIds || (circleForeignIds = []);
+        return BI.map(circleForeignIds, function (i, f) {
+            var fieldName = BI.Utils.getFieldNameByID(f) || "";
+            return {
+                id: f,
+                pId: fieldId,
+                text: fieldName,
+                title: fieldName,
+                value: f
+            };
+        });
+    },
+
     _createItemsByTargetIds: function(targetIds){
-        var o = this.options;
+        var o = this.options, self = this;
         if(BI.isEmpty(targetIds)){
             return [];
         }
@@ -66,6 +85,30 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
             var fieldIds = BI.filter(initialFieldIds, function(idx, ids){
                 return BI.Utils.getFieldTypeByID(ids) === BI.Utils.getFieldTypeByDimensionID(o.dId);
             });
+            var pIds = [], fIds = [];
+            if (self._isSelfCircleTable(tId)) {
+                var map = {};
+                var relations = BI.Utils.getPathsFromTableAToTableB(tId, tId);
+                BI.each(relations, function (i, path) {
+                    var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
+                    var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
+                    pIds.push(pId);
+                    if (!map[pId]) {
+                        map[pId] = [];
+                    }
+                    map[pId].push(fId);
+                    fIds.push(fId);
+                });
+                var newFields = [];
+                BI.each(fieldIds, function (i, id) {
+                    if (pIds.contains(id)) {
+                    } else if (!fIds.contains(id)) {
+                        newFields.push(id);
+                    }
+                });
+            } else {
+                newFields = fieldIds;
+            }
             var node, pId;
             var dimensionTableId = BI.Utils.getTableIDByDimensionID(o.dId);
             //推荐表： 1.是维度所在表且维度与指标有路径；2.维度与指标无路径时是指标所在表
@@ -92,14 +135,34 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
                 };
                 pId = idx + 1;
             }
-            var items = BI.map(fieldIds, function(id, fId){
-                return {
+            var items = [];
+            if(self._isSelfCircleTable(tId)){
+                BI.each(fieldIds, function (i, fId) {
+                    var id = fId;
+                    if (pIds.contains(id)) {
+                        var fieldName = BI.Utils.getFieldNameByID(id) || "";
+                        items.push({
+                            id: id,
+                            pId: pId,
+                            text: fieldName,
+                            title: fieldName,
+                            value: id
+                        });
+                        items = BI.concat(items, self._getSelfCircleFieldsByFieldId(id, map[id] || []))
+                    }
+                });
+            }
+            BI.each(fieldIds, function(id, fId){
+                if(pIds.contains(fId) || fIds.contains(fId)){
+                    return;
+                }
+                items.push({
                     pId: pId,
                     id: fId,
                     text: BI.Utils.getFieldNameByID(fId),
                     value: fId,
                     title: BI.Utils.getFieldNameByID(fId)
-                }
+                });
             });
             items.push(node);
             return items;

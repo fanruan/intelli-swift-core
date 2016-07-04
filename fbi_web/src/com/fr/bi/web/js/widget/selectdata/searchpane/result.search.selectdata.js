@@ -19,7 +19,6 @@ BI.SelectDataSearchResultPane = BI.inherit(BI.Widget, {
 
         this.segment = BI.createWidget({
             type: "bi.select_data_search_segment",
-            packages: o.packages,
             cls: "search-result-toolbar"
         });
         this.segment.on(BI.SelectDataSearchSegment.EVENT_CHANGE, function () {
@@ -82,10 +81,6 @@ BI.SelectDataSearchResultPane = BI.inherit(BI.Widget, {
 
     populate: function (searchResult, matchResult, keyword) {
         this.resultPane.populate.apply(this.resultPane, arguments);
-    },
-
-    setPackage: function (pId) {
-        this.segment.setPackage(pId);
     },
 
     setValue: function (v) {

@@ -30,6 +30,13 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             self.model.set("used", self.usedCheck.isSelected());
         });
 
+        this.usedRadio = BI.createWidget({
+            type: "bi.radio"
+        });
+        this.usedRadio.on(BI.Radio.EVENT_CHANGE, function () {
+            self.model.set("used", self.usedRadio.isSelected());
+        });
+
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: this.constants.TARGET_BUTTON_HEIGHT,
@@ -84,7 +91,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.center_adapt",
-                    items: [this.usedCheck]
+                    items: [this.usedCheck, this.usedRadio]
                 },
                 width: this.constants.CHECKBOX_WIDTH
             }, this.editor, {el: this.iconButton, width: 0},
@@ -236,6 +243,31 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         return [this.calculateTargetButton, this.combo]
     },
 
+    _checkUsedEnable: function () {
+        var isUsed = this.model.get("used");
+        var wId = BI.Utils.getWidgetIDByDimensionID(this.model.get("id"));
+        this.usedCheck.setEnable(true);
+        this.usedCheck.setSelected(isUsed);
+        this.usedRadio.setEnable(true);
+        this.usedRadio.setSelected(isUsed);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if ((wType !== BICst.WIDGET.TABLE &&
+            wType !== BICst.WIDGET.CROSS_TABLE &&
+            wType !== BICst.WIDGET.COMPLEX_TABLE &&
+            wType !== BICst.WIDGET.GIS_MAP)
+            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION2
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
+            this.usedCheck.setEnable(false);
+            this.usedRadio.setEnable(false);
+        }
+        if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
+            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION1
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
+            this.usedCheck.setEnable(false);
+            this.usedRadio.setEnable(false);
+        }
+    },
+
     _updateTarget: function () {
         var self = this;
         var dId = this.model.get("id");
@@ -268,6 +300,17 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             }
         });
         return valid;
+    },
+
+    _refreshCheckType: function(){
+        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.model.get("id")));
+        if (wType === BICst.WIDGET.FORCE_BUBBLE) {
+            this.usedCheck.setVisible(false);
+            this.usedRadio.setVisible(true);
+            return;
+        }
+        this.usedCheck.setVisible(true);
+        this.usedRadio.setVisible(false);
     },
 
     _buildFilterPane: function () {
@@ -337,6 +380,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
+        this._checkUsedEnable();
         this.usedCheck.setSelected(this.model.get("used"));
         this.editor.setValue(this.model.get("name"));
         this.editor.setState(this.model.get("name"));
@@ -345,5 +389,6 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         items[2].width = filterIconWidth;
         this.htape.attr("items", items);
         this.htape.resize();
+        this._refreshCheckType();
     }
 });

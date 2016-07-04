@@ -21,10 +21,7 @@ import com.fr.stable.bridge.Transmitter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 读取各种资源的帮助类
@@ -88,16 +85,34 @@ public class ResourceHelper {
         JSONObject excelViews = new JSONObject();
         List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
-            groups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
+            JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
             //管理员
             if (manageId == userId) {
                 packages = allPacks;
-            }
-            //前台能看到的业务包
-            for (BIPackageID pId : authPacks) {
-                if (allPacks.has(pId.getIdentityValue())) {
-                    packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
+                groups = allGroups;
+            } else {
+                //前台能看到的业务包
+                for (BIPackageID pId : authPacks) {
+                    if (allPacks.has(pId.getIdentityValue())) {
+                        packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
+                    }
+                }
+
+                //分组
+                Iterator<String> groupNames = groups.keys();
+                while (groupNames.hasNext()) {
+                    String groupName = groupNames.next();
+                    JSONArray pIds = allGroups.getJSONArray(groupName);
+                    JSONArray singleGroup = new JSONArray();
+                    for (int i = 0; i < pIds.length(); i++) {
+                        if (packages.getJSONObject(pIds.getString(i)) != null) {
+                            singleGroup.put(pIds.getString(i));
+                        }
+                    }
+                    if (singleGroup.length() > 0) {
+                        groups.put(groupName, singleGroup);
+                    }
                 }
             }
 
@@ -1502,7 +1517,7 @@ public class ResourceHelper {
 
                 /**
                  * 切片
-                 */
+                */
 
                 //tablechartmanager
                 "com/fr/bi/web/js/aspects/tablechartmanager/aspect.tablechartmanager.js",
@@ -1825,7 +1840,7 @@ public class ResourceHelper {
 
                 /**
                  * components
-                 */
+                */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
@@ -2172,7 +2187,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                 */
+                */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2226,7 +2241,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                 */
+                */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2533,7 +2548,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                 */
+                */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 

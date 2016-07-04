@@ -14,6 +14,8 @@ BI.SelectDataLevel0Node = BI.inherit(BI.NodeButton, {
         })
     },
     _init: function () {
+        var title = this.options.title;
+        this.options.title = "";
         BI.SelectDataLevel0Node.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.checkbox = BI.createWidget({
@@ -28,6 +30,7 @@ BI.SelectDataLevel0Node = BI.inherit(BI.NodeButton, {
             hgap: o.hgap,
             text: o.text,
             value: o.value,
+            title: title,
             py: o.py
         });
         this.tip = BI.createWidget({

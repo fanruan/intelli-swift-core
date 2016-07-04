@@ -8,7 +8,7 @@ BI.ImageButtonSize = BI.inherit(BI.Widget, {
         return BI.extend(BI.ImageButtonSize.superclass._defaultConfig.apply(this, arguments),{
             baseCls: "bi-image-button-size",
             width: 230,
-            height: 30
+            height: 24
         })
     },
 
