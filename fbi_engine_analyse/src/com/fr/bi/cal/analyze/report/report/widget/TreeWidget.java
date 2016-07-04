@@ -14,6 +14,7 @@ import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.dimension.BIDimensionFactory;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
 import com.fr.bi.stable.constant.BIExcutorConstant;
@@ -268,7 +269,7 @@ public class TreeWidget extends BIAbstractWidget {
     private void setTargetTable() {
         if (dimensions.length > 0) {
             BITableID targetTableID = dimensions[0].createTableKey().getID();
-            target = BusinessTableHelper.getBusinessTable(targetTableID);
+            target = BIModuleUtils.getBusinessTableById(targetTableID);
             for (int i = 0; i < dimensions.length; i++) {
                 List<BITableRelation> relations = this.getRelationList(dimensions[i]);
                 if (!relations.isEmpty()) {

@@ -56,7 +56,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
             switch (self.config.chart_legend){
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.enabled = true;
-                    config.rangeLegend.position = "right";
+                    config.rangeLegend.position = "bottom";
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     config.rangeLegend.enabled = true;
@@ -70,6 +70,24 @@ BI.MapChart = BI.inherit(BI.Widget, {
             config.rangeLegend.range.max = self.max;
 
         }
+    },
+
+    _formatDrillItems: function(items){
+        var self = this;
+        BI.each(items.series, function(idx, da){
+            BI.each(da.data, function(idx, data){
+                if(BI.has(da, "type") && da.type == "bubble"){
+                    data.name = data.x;
+                    data.size = data.y;
+                }else{
+                    data.name = data.x;
+                    data.value = data.y;
+                }
+                if(BI.has(data, "drilldown")){
+                    self._formatDrillItems(data.drilldown);
+                }
+            })
+        })
     },
 
     _formatItems: function(items){
@@ -87,6 +105,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     }else{
                         da.name = da.x;
                         da.value = da.y;
+                    }
+                    if(BI.has(da, "drilldown")){
+                        self._formatDrillItems(da.drilldown);
                     }
                 })
             })

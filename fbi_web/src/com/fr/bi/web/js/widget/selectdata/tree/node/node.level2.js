@@ -14,6 +14,8 @@ BI.SelectDataLevel2Node = BI.inherit(BI.NodeButton, {
         })
     },
     _init: function () {
+        var title = this.options.title;
+        this.options.title = "";
         BI.SelectDataLevel2Node.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
@@ -29,6 +31,7 @@ BI.SelectDataLevel2Node = BI.inherit(BI.NodeButton, {
             hgap: o.hgap,
             text: o.text,
             value: o.value,
+            title: title,
             py: o.py
         });
         this.tip = BI.createWidget({
@@ -39,7 +42,7 @@ BI.SelectDataLevel2Node = BI.inherit(BI.NodeButton, {
             height: o.height
         });
         this.checkbox.on(BI.Controller.EVENT_CHANGE, function (type) {
-            if(type ===  BI.Events.CLICK) {
+            if (type === BI.Events.CLICK) {
                 self.setSelected(self.isSelected());
             }
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
@@ -51,8 +54,8 @@ BI.SelectDataLevel2Node = BI.inherit(BI.NodeButton, {
                 el: {
                     type: "bi.layout"
                 },
-                width: 20
-            },{
+                width: 40
+            }, {
                 width: 23,
                 el: this.checkbox
             }, {
@@ -84,7 +87,7 @@ BI.SelectDataLevel2Node = BI.inherit(BI.NodeButton, {
 
     setValue: function (items) {
         BI.SelectDataLevel2Node.superclass.setValue.apply(this, arguments);
-        if(BI.isEmpty(items)){
+        if (BI.isEmpty(items)) {
             this.tip.setText("");
         } else {
             this.tip.setText("(" + items.length + ")");

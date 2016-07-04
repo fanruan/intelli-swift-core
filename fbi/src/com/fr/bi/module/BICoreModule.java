@@ -340,7 +340,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ResourceHelper.getConfCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ResourceHelper.getDeziJs());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DEZI_CSS, ResourceHelper.getDeziCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, ResourceHelper.getDeziCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ResourceHelper.getShowJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ResourceHelper.getShowCss());
@@ -360,9 +360,9 @@ public class BICoreModule extends AbstractModule {
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_MODULE_JS);
         ResourceHelper.FormulaTransmitter.transmit(ResourceHelper.getFormulaCollectionJS());
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
-        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);
-        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_SHOW_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_MODULE_CSS);
     }
