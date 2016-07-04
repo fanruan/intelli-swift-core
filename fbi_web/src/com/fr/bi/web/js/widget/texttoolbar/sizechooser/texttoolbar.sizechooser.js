@@ -15,8 +15,6 @@ BI.TextToolbarSizeChooser = BI.inherit(BI.Widget, {
     },
 
     _items: [{
-        value: 10
-    }, {
         value: 12
     }, {
         value: 14,

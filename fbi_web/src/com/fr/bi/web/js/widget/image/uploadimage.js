@@ -59,8 +59,8 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             type: "bi.icon_button",
             cls: "upload-image-icon-button img-upload-font",
             title: BI.i18nText("BI-Upload_Image"),
-            height: 32,
-            width: 32
+            height: 24,
+            width: 24
         });
 
         this.upload.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -73,8 +73,8 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             type: "bi.icon_button",
             cls: "upload-image-icon-button img-shutdown-font",
             title: BI.i18nText("BI-Delete"),
-            height: 32,
-            width: 32
+            height: 24,
+            width: 24
         });
 
         this.del.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -133,19 +133,19 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             }, {
                 el: this.del,
                 right: 4,
-                top: 4
+                top: 8
             }, {
                 el: this.href,
                 right: 36,
-                top: 4
+                top: 8
             }, {
                 el: this.size,
                 right: 68,
-                top: 4
+                top: 8
             }, {
                 el: this.upload,
                 right: 100,
-                top: 4
+                top: 8
             }]
         });
 

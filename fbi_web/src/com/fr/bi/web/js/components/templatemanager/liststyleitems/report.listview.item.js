@@ -223,7 +223,7 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
                 el: {
                     type: "bi.left_right_vertical_adapt",
                     items: {
-                        left: [sharedButton, this.hangout || BI.createWidget(), renameIcon, deleteIcon],
+                        left: [sharedButton, this.hangout, renameIcon, deleteIcon],
                         right: [timeText]
                     },
                     llgap: 20,

@@ -345,20 +345,23 @@ BI.PageTable = BI.inherit(BI.Widget, {
     },
 
     _dealWithPager: function () {
-        var o = this.options;
-        var regionSize = this.table.getCalculateRegionColumnSize();
+        var self = this, o = this.options;
 
-        var sWidth = o.isNeedFreeze === true ? regionSize[1] : regionSize[0];
+        BI.delay(function () {
+            var regionSize = self.table.getCalculateRegionColumnSize();
 
-        this._assertPager();
-        if (sWidth <= this._const.minScrollWidth) {
-            this.tipPager.setValue(this.getVPage());
-            this.pager.setVisible(false);
-            this.tipPager.setVisible(true);
-        } else {
-            this.tipPager.setVisible(false);
-            this.pager.setVisible(true);
-        }
+            var sWidth = o.isNeedFreeze === true ? regionSize[1] : regionSize[0];
+
+            self._assertPager();
+            if (sWidth <= self._const.minScrollWidth) {
+                self.tipPager.setValue(self.getVPage());
+                self.pager.setVisible(false);
+                self.tipPager.setVisible(true);
+            } else {
+                self.tipPager.setVisible(false);
+                self.pager.setVisible(true);
+            }
+        }, 30);
     },
 
     setHPage: function (v) {
