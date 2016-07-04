@@ -242,7 +242,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             if(position === self.constants.RIGHT_AXIS_SECOND){
-                self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
+                self.config.right_y_axis_second_unit !== "" && (unit = unit + self.config.right_y_axis_second_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
         }
