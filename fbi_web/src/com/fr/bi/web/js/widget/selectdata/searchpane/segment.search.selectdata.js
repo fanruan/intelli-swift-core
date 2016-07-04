@@ -20,7 +20,7 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
             type: "bi.line_segment_button",
             height: 24,
             selected: true,
-            text: BI.i18nText("BI-Package"),
+            text: BI.i18nText("BI-Current_Package"),
             value: BI.SelectDataSearchSegment.SECTION_PACKAGE
         });
         this.all = BI.createWidget({
@@ -81,16 +81,6 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
                 }]
             }]
         });
-    },
-
-    setPackage: function (pId) {
-        var name = "";
-        BI.each(this.options.packages, function (i, pack) {
-            if (pack.value === pId) {
-                name = pack.text;
-            }
-        });
-        this.pack.setText(name);
     },
 
     setValue: function (v) {

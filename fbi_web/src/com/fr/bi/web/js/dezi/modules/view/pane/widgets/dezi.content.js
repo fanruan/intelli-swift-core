@@ -29,10 +29,10 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
 
         this.del = BI.createWidget({
             type: "bi.icon_button",
-            width: 32,
-            height: 32,
+            width: 24,
+            height: 24,
             invisible: true,
-            cls: "img-shutdown-font",
+            cls: "img-shutdown-font delete-button",
             title: BI.i18nText("BI-Delete")
         });
 
@@ -63,8 +63,8 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
                 bottom: 0
             }, {
                 el: this.del,
-                right: 0,
-                top: 0
+                right: 4,
+                top: 8
             }]
         });
     },
