@@ -6,7 +6,6 @@ import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.CriteriaSubqueryImpl;
 import com.finebi.datasource.sql.criteria.internal.FromImplementor;
-import com.finebi.datasource.sql.criteria.internal.PathSource;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 import java.io.Serializable;
@@ -82,56 +81,6 @@ public class RootImpl<X> extends AbstractFromImpl<X, X> implements Root<X>, Seri
         return render(renderingContext);
     }
 
-    @Override
-    public <T extends X> RootImpl<T> treatAs(Class<T> treatAsType) {
-        return new TreatedRoot<T>(this, treatAsType);
-    }
 
-    public static class TreatedRoot<T> extends RootImpl<T> {
-        private final RootImpl<? super T> original;
-        private final Class<T> treatAsType;
-
-        public TreatedRoot(RootImpl<? super T> original, Class<T> treatAsType) {
-            super(
-                    original.criteriaBuilder(),
-                    original.criteriaBuilder().getEntityManagerFactory().getMetamodel().entity(treatAsType)
-            );
-            this.original = original;
-            this.treatAsType = treatAsType;
-        }
-
-
-        @Override
-        public String getAlias() {
-            return original.getAlias();
-        }
-
-        @Override
-        public void prepareAlias(RenderingContext renderingContext) {
-            // NOTE : we call `original#prepareAlias` here and during render
-            //		since in some cases only one or the other will be called
-            original.prepareAlias(renderingContext);
-        }
-
-        @Override
-        public String render(RenderingContext renderingContext) {
-            original.prepareAlias(renderingContext);
-            return getTreatFragment();
-        }
-
-        protected String getTreatFragment() {
-            return "treat(" + original.getAlias() + " as " + treatAsType.getName() + ")";
-        }
-
-        @Override
-        public String getPathIdentifier() {
-            return getTreatFragment();
-        }
-
-        @Override
-        protected PathSource getPathSourceForSubPaths() {
-            return this;
-        }
-    }
 
 }
