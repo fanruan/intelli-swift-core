@@ -17,7 +17,7 @@ BI.DetailDetailSelectDataLevel1Node4RealTime = BI.inherit(BI.AbstractDetailDetai
         var o = this.options;
         return BI.createWidget({
             type: "bi.select_data_level1_node",
-            warningTitle: "实时报表只可以使用一张表",
+            warningTitle: BI.i18nText("BI-Time_Only_Use_One_Table"),
             element: this.element,
             id: o.id,
             pId: o.pId,
