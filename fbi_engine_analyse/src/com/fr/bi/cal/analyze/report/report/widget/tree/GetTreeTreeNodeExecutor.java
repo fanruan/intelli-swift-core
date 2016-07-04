@@ -60,8 +60,13 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
             half = checkState.getBoolean("half");
         }
         boolean hasChild = (values.length + 1 < floors);
+        List<String> vl;
+        if (values.length > 0) {
+            vl = createData(values, -1);
+        } else {
+            vl = createData(values, times);
+        }
 
-        List<String> vl = createData(values, times);
 
         //如果结果为空，直接返回
         if (vl.isEmpty()) {
@@ -238,7 +243,7 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
     }
 
     private int getChildCount(String[] values) throws JSONException {
-        return createData(values,-1).size();
+        return createData(values, -1).size();
     }
 
 
