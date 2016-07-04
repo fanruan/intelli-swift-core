@@ -106,7 +106,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                             cls: "server-set-north",
                             items: [{
                                 type: "bi.label",
-                                text: BI.i18nText("BI-Set_Server_Dataset"),
+                                text: BI.i18nText("BI-SQL_Data_Set"),
                                 height: this.constants.SQL_EDIT_NORTH_HEIGHT
                             }]
                         },
