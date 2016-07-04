@@ -2,7 +2,10 @@
 package com.finebi.datasource.sql.criteria.internal.path;
 
 import com.finebi.datasource.api.criteria.JoinType;
-import com.finebi.datasource.api.metamodel.*;
+import com.finebi.datasource.api.metamodel.Bindable;
+import com.finebi.datasource.api.metamodel.EntityType;
+import com.finebi.datasource.api.metamodel.ManagedType;
+import com.finebi.datasource.api.metamodel.SingularAttribute;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.CriteriaSubqueryImpl;
 import com.finebi.datasource.sql.criteria.internal.FromImplementor;
@@ -16,22 +19,18 @@ import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
  * @param <X> Represents the parameterized type of the attribute
  * @author Steve Ebersole
  */
-public class SingularAttributeJoin<O, X> extends AbstractJoinImpl<O, X> {
+public class SingularEntityJoin<O, X> extends AbstractJoinImpl<O, X> {
     private final Bindable<X> model;
 
     @SuppressWarnings({"unchecked"})
-    public SingularAttributeJoin(
+    public SingularEntityJoin(
             CriteriaBuilderImpl criteriaBuilder,
             Class<X> javaType,
             PathSource<O> pathSource,
-            SingularAttribute<? super O, ?> joinAttribute,
+            EntityType<X> entityType,
             JoinType joinType) {
-        super(criteriaBuilder, javaType, pathSource, null, joinType);
-        if (javaType != null) {
-            this.model = (Bindable<X>) criteriaBuilder.getEntityManagerFactory().getMetamodel().managedType(javaType);
-        } else {
-            this.model = (Bindable<X>) joinAttribute.getType();
-        }
+        super(criteriaBuilder, javaType, pathSource, entityType, joinType);
+        this.model = entityType;
     }
 
     @Override
@@ -40,19 +39,20 @@ public class SingularAttributeJoin<O, X> extends AbstractJoinImpl<O, X> {
     }
 
     @Override
-    public SingularAttributeJoin<O, X> correlateTo(CriteriaSubqueryImpl subquery) {
-        return (SingularAttributeJoin<O, X>) super.correlateTo(subquery);
+    public SingularEntityJoin<O, X> correlateTo(CriteriaSubqueryImpl subquery) {
+        return (SingularEntityJoin<O, X>) super.correlateTo(subquery);
     }
 
     @Override
     protected FromImplementor<O, X> createCorrelationDelegate() {
-        return new SingularAttributeJoin<O, X>(
-                criteriaBuilder(),
-                getJavaType(),
-                getPathSource(),
-                getAttribute(),
-                getJoinType()
-        );
+//        return new SingularEntityJoin<O, X>(
+//                criteriaBuilder(),
+//                getJavaType(),
+//                getPathSource(),
+//                getAttribute(),
+//                getJoinType()
+//        );
+        return null;
     }
 
     @Override
@@ -85,20 +85,20 @@ public class SingularAttributeJoin<O, X> extends AbstractJoinImpl<O, X> {
     }
 
     @Override
-    public <T extends X> SingularAttributeJoin<O, T> treatAs(Class<T> treatAsType) {
+    public <T extends X> SingularEntityJoin<O, T> treatAs(Class<T> treatAsType) {
         return new TreatedSingularAttributeJoin<O, T>(this, treatAsType);
     }
 
-    public static class TreatedSingularAttributeJoin<O, T> extends SingularAttributeJoin<O, T> {
-        private final SingularAttributeJoin<O, ? super T> original;
+    public static class TreatedSingularAttributeJoin<O, T> extends SingularEntityJoin<O, T> {
+        private final SingularEntityJoin<O, ? super T> original;
         private final Class<T> treatAsType;
 
-        public TreatedSingularAttributeJoin(SingularAttributeJoin<O, ? super T> original, Class<T> treatAsType) {
+        public TreatedSingularAttributeJoin(SingularEntityJoin<O, ? super T> original, Class<T> treatAsType) {
             super(
                     original.criteriaBuilder(),
                     treatAsType,
                     original.getPathSource(),
-                    original.getAttribute(),
+                    null,
                     original.getJoinType()
             );
             this.original = original;

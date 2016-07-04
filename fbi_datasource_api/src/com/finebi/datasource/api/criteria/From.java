@@ -1,7 +1,7 @@
 
 package com.finebi.datasource.api.criteria;
 
-import com.finebi.datasource.api.metamodel.PlainTable;
+import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.api.metamodel.SingularAttribute;
 
 import java.util.Set;
@@ -61,7 +61,7 @@ public interface From<Z, X> extends Path<X> {
      */
     <Y> Join<X, Y> join(SingularAttribute<? super X, Y> attribute);
 
-    Join join(PlainTable attribute);
+    Join join(EntityType entityType);
 
     /**
      * Create a join to the specified single-valued attribute
@@ -74,7 +74,7 @@ public interface From<Z, X> extends Path<X> {
     <Y> Join<X, Y> join(SingularAttribute<? super X, Y> attribute, JoinType jt);
 
 
-
+    <Y> Join<X, Y> join(EntityType<Y> entityType, JoinType jt);
     //String-based:
 
     /**
@@ -89,8 +89,6 @@ public interface From<Z, X> extends Path<X> {
     <X, Y> Join<X, Y> join(String attributeName);
 
 
-
-
     /**
      * Create a join to the specified attribute using the given
      * join type.
@@ -103,7 +101,6 @@ public interface From<Z, X> extends Path<X> {
      *                                  name does not exist
      */
     <X, Y> Join<X, Y> join(String attributeName, JoinType jt);
-
 
 
 }

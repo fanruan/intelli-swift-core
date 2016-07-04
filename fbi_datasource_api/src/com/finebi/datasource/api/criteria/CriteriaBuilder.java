@@ -7,9 +7,6 @@ import com.finebi.datasource.api.metamodel.PlainTable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * 用来构建criteria queries, compound selections,expressions, predicates, orderings。
@@ -794,104 +791,104 @@ public interface CriteriaBuilder {
 
 
     //collection operations:
-
-    /**
-     * Create a predicate that tests whether a collection is empty.
-     *
-     * @param collection expression
-     * @return is-empty predicate
-     */
-    <C extends Collection<?>> Predicate isEmpty(Expression<C> collection);
-
-    /**
-     * Create a predicate that tests whether a collection is
-     * not empty.
-     *
-     * @param collection expression
-     * @return is-not-empty predicate
-     */
-    <C extends Collection<?>> Predicate isNotEmpty(Expression<C> collection);
-
-    /**
-     * Create an expression that tests the size of a collection.
-     *
-     * @param collection expression
-     * @return size expression
-     */
-    <C extends Collection<?>> Expression<Integer> size(Expression<C> collection);
-
-    /**
-     * Create an expression that tests the size of a collection.
-     *
-     * @param collection collection
-     * @return size expression
-     */
-    <C extends Collection<?>> Expression<Integer> size(C collection);
-
-    /**
-     * Create a predicate that tests whether an element is
-     * a member of a collection.
-     * If the collection is empty, the predicate will be false.
-     *
-     * @param elem       element expression
-     * @param collection expression
-     * @return is-member predicate
-     */
-    <E, C extends Collection<E>> Predicate isMember(Expression<E> elem, Expression<C> collection);
-
-    /**
-     * Create a predicate that tests whether an element is
-     * a member of a collection.
-     * If the collection is empty, the predicate will be false.
-     *
-     * @param elem       element
-     * @param collection expression
-     * @return is-member predicate
-     */
-    <E, C extends Collection<E>> Predicate isMember(E elem, Expression<C> collection);
-
-    /**
-     * Create a predicate that tests whether an element is
-     * not a member of a collection.
-     * If the collection is empty, the predicate will be true.
-     *
-     * @param elem       element expression
-     * @param collection expression
-     * @return is-not-member predicate
-     */
-    <E, C extends Collection<E>> Predicate isNotMember(Expression<E> elem, Expression<C> collection);
-
-    /**
-     * Create a predicate that tests whether an element is
-     * not a member of a collection.
-     * If the collection is empty, the predicate will be true.
-     *
-     * @param elem       element
-     * @param collection expression
-     * @return is-not-member predicate
-     */
-    <E, C extends Collection<E>> Predicate isNotMember(E elem, Expression<C> collection);
-
-
-    //get the values and keys collections of the Map, which may then
-    //be passed to size(), isMember(), isEmpty(), etc
-
-    /**
-     * Create an expression that returns the values of a map.
-     *
-     * @param map map
-     * @return collection expression
-     */
-    <V, M extends Map<?, V>> Expression<Collection<V>> values(M map);
-
-    /**
-     * Create an expression that returns the keys of a map.
-     *
-     * @param map map
-     * @return set expression
-     */
-    <K, M extends Map<K, ?>> Expression<Set<K>> keys(M map);
-
+//
+//    /**
+//     * Create a predicate that tests whether a collection is empty.
+//     *
+//     * @param collection expression
+//     * @return is-empty predicate
+//     */
+//    <C extends Collection<?>> Predicate isEmpty(Expression<C> collection);
+//
+//    /**
+//     * Create a predicate that tests whether a collection is
+//     * not empty.
+//     *
+//     * @param collection expression
+//     * @return is-not-empty predicate
+//     */
+//    <C extends Collection<?>> Predicate isNotEmpty(Expression<C> collection);
+//
+//    /**
+//     * Create an expression that tests the size of a collection.
+//     *
+//     * @param collection expression
+//     * @return size expression
+//     */
+//    <C extends Collection<?>> Expression<Integer> size(Expression<C> collection);
+//
+//    /**
+//     * Create an expression that tests the size of a collection.
+//     *
+//     * @param collection collection
+//     * @return size expression
+//     */
+//    <C extends Collection<?>> Expression<Integer> size(C collection);
+//
+//    /**
+//     * Create a predicate that tests whether an element is
+//     * a member of a collection.
+//     * If the collection is empty, the predicate will be false.
+//     *
+//     * @param elem       element expression
+//     * @param collection expression
+//     * @return is-member predicate
+//     */
+//    <E, C extends Collection<E>> Predicate isMember(Expression<E> elem, Expression<C> collection);
+//
+//    /**
+//     * Create a predicate that tests whether an element is
+//     * a member of a collection.
+//     * If the collection is empty, the predicate will be false.
+//     *
+//     * @param elem       element
+//     * @param collection expression
+//     * @return is-member predicate
+//     */
+//    <E, C extends Collection<E>> Predicate isMember(E elem, Expression<C> collection);
+//
+//    /**
+//     * Create a predicate that tests whether an element is
+//     * not a member of a collection.
+//     * If the collection is empty, the predicate will be true.
+//     *
+//     * @param elem       element expression
+//     * @param collection expression
+//     * @return is-not-member predicate
+//     */
+//    <E, C extends Collection<E>> Predicate isNotMember(Expression<E> elem, Expression<C> collection);
+//
+//    /**
+//     * Create a predicate that tests whether an element is
+//     * not a member of a collection.
+//     * If the collection is empty, the predicate will be true.
+//     *
+//     * @param elem       element
+//     * @param collection expression
+//     * @return is-not-member predicate
+//     */
+//    <E, C extends Collection<E>> Predicate isNotMember(E elem, Expression<C> collection);
+//
+//
+//    //get the values and keys collections of the Map, which may then
+//    //be passed to size(), isMember(), isEmpty(), etc
+//
+//    /**
+//     * Create an expression that returns the values of a map.
+//     *
+//     * @param map map
+//     * @return collection expression
+//     */
+//    <V, M extends Map<?, V>> Expression<Collection<V>> values(M map);
+//
+//    /**
+//     * Create an expression that returns the keys of a map.
+//     *
+//     * @param map map
+//     * @return set expression
+//     */
+//    <K, M extends Map<K, ?>> Expression<Set<K>> keys(M map);
+//
 
     //string functions:
 

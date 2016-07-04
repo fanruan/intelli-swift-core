@@ -1,13 +1,12 @@
 
 package com.finebi.datasource.sql.criteria.internal.metamodel;
 
-import com.finebi.datasource.api.metamodel.EmbeddableType;
 import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.api.metamodel.ManagedType;
 import com.finebi.datasource.api.metamodel.MappedSuperclassType;
 import com.finebi.datasource.sql.criteria.internal.ArrayHelper;
 import com.finebi.datasource.sql.criteria.internal.CollectionHelper;
-import com.finebi.datasource.sql.criteria.internal.important.MetamodelImplementor;
+import com.finebi.datasource.sql.criteria.internal.important.MetamodelExpander;
 
 import java.io.Serializable;
 import java.util.*;
@@ -19,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Steve Ebersole
  * @author Emmanuel Bernard
  */
-public class MetamodelImpl implements MetamodelImplementor, Serializable {
+public class MetamodelImpl implements MetamodelExpander, Serializable {
     private static final Object ENTITY_NAME_RESOLVER_MAP_VALUE = new Object();
 
 
@@ -60,15 +59,7 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
         return (ManagedType<X>) type;
     }
 
-    @Override
-    @SuppressWarnings({"unchecked"})
-    public <X> EmbeddableType<X> embeddable(Class<X> cls) {
-        final EmbeddableType<?> embeddableType = jpaEmbeddableTypeMap.get(cls);
-        if (embeddableType == null) {
-            throw new IllegalArgumentException("Not an embeddable: " + cls);
-        }
-        return (EmbeddableType<X>) embeddableType;
-    }
+
 
     @Override
     public Set<ManagedType<?>> getManagedTypes() {
@@ -87,10 +78,7 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
         return new HashSet<EntityType<?>>(jpaEntityTypesByEntityName.values());
     }
 
-    @Override
-    public Set<EmbeddableType<?>> getEmbeddables() {
-        return new HashSet<EmbeddableType<?>>(jpaEmbeddableTypeMap.values());
-    }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -140,8 +128,5 @@ public class MetamodelImpl implements MetamodelImplementor, Serializable {
     }
 
 
-    @Override
-    public void close() {
-        // anything to do ?
-    }
+
 }

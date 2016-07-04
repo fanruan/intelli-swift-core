@@ -6,9 +6,7 @@ import com.finebi.datasource.api.criteria.*;
 import com.finebi.datasource.api.metamodel.PlainTable;
 import com.finebi.datasource.sql.criteria.internal.expression.*;
 import com.finebi.datasource.sql.criteria.internal.expression.function.*;
-import com.finebi.datasource.sql.criteria.internal.important.HibernateCriteriaBuilder;
-import com.finebi.datasource.sql.criteria.internal.important.SessionFactoryImpl;
-import com.finebi.datasource.sql.criteria.internal.path.PluralAttributePath;
+import com.finebi.datasource.sql.criteria.internal.context.AspireContext;
 import com.finebi.datasource.sql.criteria.internal.predicate.*;
 
 import java.io.Serializable;
@@ -21,19 +19,19 @@ import java.util.*;
  *
  * @author Steve Ebersole
  */
-public class CriteriaBuilderImpl implements HibernateCriteriaBuilder, Serializable {
-    private final SessionFactoryImpl sessionFactory;
+public class CriteriaBuilderImpl implements CriteriaBuilder, Serializable {
+    private final AspireContext context;
 
-    public CriteriaBuilderImpl(SessionFactoryImpl sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public CriteriaBuilderImpl(AspireContext context) {
+        this.context = context;
     }
 
     /**
-     * Provides protected access to the underlying {@link SessionFactoryImpl}.
+     * Provides protected access to the underlying {@link AspireContext}.
      *
-     * @return The underlying {@link SessionFactoryImpl}
+     * @return The underlying {@link AspireContext}
      */
-    public SessionFactoryImpl getEntityManagerFactory() {
+    public AspireContext getEntityManagerFactory() {
         return null;
     }
 
@@ -43,21 +41,14 @@ public class CriteriaBuilderImpl implements HibernateCriteriaBuilder, Serializab
 
     @Override
     public CriteriaQuery<PlainTable> createQuery() {
-        return null;
+        return new CriteriaQueryImpl<PlainTable>(this, PlainTable.class);
+
     }
 
     @Override
     public CriteriaQuery<Tuple> createTupleQuery() {
         return new CriteriaQueryImpl<Tuple>(this, Tuple.class);
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -1052,85 +1043,4 @@ public class CriteriaBuilderImpl implements HibernateCriteriaBuilder, Serializab
         return new SearchedCaseExpression<R>(this, type);
     }
 
-    @Override
-    public <C extends Collection<?>> Expression<Integer> size(C c) {
-        int size = c == null ? 0 : c.size();
-        return new LiteralExpression<Integer>(this, Integer.class, size);
-    }
-
-    @Override
-    public <C extends Collection<?>> Expression<Integer> size(Expression<C> exp) {
-        if (LiteralExpression.class.isInstance(exp)) {
-            return size(((LiteralExpression<C>) exp).getLiteral());
-        } else if (PluralAttributePath.class.isInstance(exp)) {
-            return new SizeOfCollectionExpression<C>(this, (PluralAttributePath<C>) exp);
-        }
-        // TODO : what other specific types?  any?
-        throw new IllegalArgumentException("unknown collection expression type [" + exp.getClass().getName() + "]");
-    }
-
-    @Override
-    public <V, M extends Map<?, V>> Expression<Collection<V>> values(M map) {
-        return new LiteralExpression<Collection<V>>(this, map.values());
-    }
-
-    @Override
-    public <K, M extends Map<K, ?>> Expression<Set<K>> keys(M map) {
-        return new LiteralExpression<Set<K>>(this, map.keySet());
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked"})
-    public <C extends Collection<?>> Predicate isEmpty(Expression<C> collectionExpression) {
-        if (PluralAttributePath.class.isInstance(collectionExpression)) {
-            return new IsEmptyPredicate(this, (PluralAttributePath<C>) collectionExpression);
-        }
-        // TODO : what other specific types?  any?
-        throw new IllegalArgumentException(
-                "unknown collection expression type [" + collectionExpression.getClass().getName() + "]"
-        );
-    }
-
-    @Override
-    public <C extends Collection<?>> Predicate isNotEmpty(Expression<C> collectionExpression) {
-        return isEmpty(collectionExpression).not();
-    }
-
-    @Override
-    public <E, C extends Collection<E>> Predicate isMember(E e, Expression<C> collectionExpression) {
-        if (!PluralAttributePath.class.isInstance(collectionExpression)) {
-            throw new IllegalArgumentException(
-                    "unknown collection expression type [" + collectionExpression.getClass().getName() + "]"
-            );
-        }
-        return new MemberOfPredicate<E, C>(
-                this,
-                e,
-                (PluralAttributePath<C>) collectionExpression
-        );
-    }
-
-    @Override
-    public <E, C extends Collection<E>> Predicate isNotMember(E e, Expression<C> cExpression) {
-        return isMember(e, cExpression).not();
-    }
-
-    @Override
-    public <E, C extends Collection<E>> Predicate isMember(Expression<E> elementExpression, Expression<C> collectionExpression) {
-        if (!PluralAttributePath.class.isInstance(collectionExpression)) {
-            throw new IllegalArgumentException(
-                    "unknown collection expression type [" + collectionExpression.getClass().getName() + "]"
-            );
-        }
-        return new MemberOfPredicate<E, C>(
-                this,
-                elementExpression,
-                (PluralAttributePath<C>) collectionExpression
-        );
-    }
-
-    @Override
-    public <E, C extends Collection<E>> Predicate isNotMember(Expression<E> eExpression, Expression<C> cExpression) {
-        return isMember(eExpression, cExpression).not();
-    }
 }

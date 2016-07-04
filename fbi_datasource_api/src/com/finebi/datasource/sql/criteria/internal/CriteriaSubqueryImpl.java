@@ -3,7 +3,6 @@ package com.finebi.datasource.sql.criteria.internal;
 
 import com.finebi.datasource.api.criteria.*;
 import com.finebi.datasource.api.metamodel.EntityType;
-import com.finebi.datasource.api.metamodel.PlainTable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.expression.DelegatedExpressionImpl;
 import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
@@ -30,11 +29,6 @@ public class CriteriaSubqueryImpl<T> extends ExpressionImpl<T> implements Subque
         super(criteriaBuilder, javaType);
         this.parent = parent;
         this.queryStructure = new QueryStructure<T>(this, criteriaBuilder);
-    }
-
-    @Override
-    public <X> Root<X> from(PlainTable plainTable) {
-        return null;
     }
 
 
@@ -81,8 +75,12 @@ public class CriteriaSubqueryImpl<T> extends ExpressionImpl<T> implements Subque
         return queryStructure.from(entityClass);
     }
 
+    @Override
+    public <U> Subquery<U> subquery(EntityType<U> type) {
+        return queryStructure.subquery(type.getJavaType());
+    }
 
-    // SELECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// SELECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     @Override
     public Subquery<T> distinct(boolean applyDistinction) {
