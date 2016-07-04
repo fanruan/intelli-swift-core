@@ -100,15 +100,13 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             }
             if (isNeedResize) {
                 self.table.resize();
-            }
-            if (o.isNeedFreeze === true) {
-                self._resizeFreezeScroll();
-                self._scrollFreezeScroll();
-            } else if (o.isNeedFreeze === false) {
-                self._resizeScroll();
-                self._scrollScroll();
-            }
-            if (isNeedResize) {
+                if (o.isNeedFreeze === true) {
+                    self._resizeFreezeScroll();
+                    self._scrollFreezeScroll();
+                } else if (o.isNeedFreeze === false) {
+                    self._resizeScroll();
+                    self._scrollScroll();
+                }
                 self.table.resize();
             }
         }, 0);
