@@ -123,7 +123,7 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                     resetValue(fValue);
                     return;
                 }
-                filter.filter_value = {};
+                delete filter.filter_value;
             });
         }
 
