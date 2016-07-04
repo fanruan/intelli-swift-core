@@ -21861,7 +21861,7 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var formatter =  dataLabels.formatter;
             var useHtml = dataLabels.useHtml;
 
-            var labelPosition = chartType == Constants.SCATTER_CHART ? Constants.OUTSIDE : Constants.INSIDE;
+            var labelPosition = (chartType == Constants.SCATTER_CHART || chartType == Constants.POINT_MAP) ? Constants.OUTSIDE : Constants.INSIDE;
 
             var content = [];
 
@@ -22069,18 +22069,21 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var geo = map.vanchart.getComponent(Constants.GEO_COMPONENT);
             var type = point.series.type;
 
+            var latlng = geo.getDataPointLatLng(point);
+            var pos = leaflet.latLngToLayerPoint(latlng);
+
             if(type == Constants.AREA_MAP){
-                var latlng = geo.getDataPointLatLng(point);
-                var pos = leaflet.latLngToContainerPoint(latlng);
                 return [pos.x, pos.y];
             }else{
-                var latlng = geo.getDataPointLatLng(point);
-                var pos = leaflet.latLngToContainerPoint(latlng);
-                var radius = point.radius || (point.marker && point.marker.radius) || this.getDefaultMarkerRadius();
-                radius = (radius + 1)/1.414;
-                return [pos.x + radius, pos.y + radius];
+                //散点和气泡有半径的时候
+                if(point.radius || point.marker && !BaseUtils.isImageMarker(point.marker.symbol)){
+                    var radius = point.radius || (point.marker && point.marker.radius) || this.getDefaultMarkerRadius();
+                    radius = (radius + 1)/1.414;
+                    return [pos.x + radius, pos.y + radius];
+                }
             }
 
+            return [pos.x, pos.y];
         }
     });
 
@@ -27116,10 +27119,20 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
             var layers = layerGroup.getLayers();
             var selection = this._rebindLayers(layers, features, pointKeyFunc);
             var geo = this.component.vanchart.getComponent(Constants.GEO_COMPONENT);
+            var leaflet = this.component.vanchart._leaflet;
 
             for(var i = selection.enter.length - 1; i >= 0; i--){
                 var point = selection.enter[i];
-                var layer = layerFunc(geo.getDataPointLatLng(point), options && options.style.call(null, point), point, this);
+                var latlng = geo.getDataPointLatLng(point);
+
+                //图片标记点的下边缘放在经纬度指定的位置
+                if(layerFunc == L.marker){
+                    var pos = leaflet.latLngToLayerPoint(latlng);
+                    pos.y -= point.icon.iconSize[1]/2;
+                    latlng = leaflet.layerPointToLatLng(pos);
+                }
+
+                var layer = layerFunc(latlng, options && options.style.call(null, point), point, this);
                 options && options.onEachLayer.call(null, layer);
                 layerGroup.addLayer(layer);
             }
@@ -27182,9 +27195,12 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
             var map = this.component, renderer = this;
             var tooltip = map.vanchart.getComponent(Constants.TOOLTIP_COMPONENT);
             return {
-                click:function(){
+                click:function(e){
                     var feature = layer._data;
                     map.drillDown(feature);
+                    if(feature.click){
+                        feature.click.call(feature, e.originalEvent);
+                    }
                 },
 
                 mouseover:function(){
@@ -27200,7 +27216,6 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
                 },
 
                 mouseout:function(){
-
                     tooltip.hide();
                     var areaLayers = renderer._areaLayer.getLayers();
                     for(var i = 0, len = areaLayers.length; i < len; i++){
@@ -27219,15 +27234,19 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
         },
 
         _bubbleMapHandler:function(layer){
-            var map = this.component, renderer = this, feature = layer._data;;
+            var map = this.component, renderer = this;
             var tooltip = map.vanchart.getComponent(Constants.TOOLTIP_COMPONENT);
             return {
-                click:function(){
+                click:function(e){
                     var feature = layer._data;
                     map.drillDown(feature);
+                    if(feature.click){
+                        feature.click.call(feature, e.originalEvent);
+                    }
                 },
 
                 mouseover:function(){
+                    var feature = layer._data;
                     var areaLayers = renderer._bubbleLayer.getLayers();
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
@@ -27271,18 +27290,22 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
         _scatterMapHandler:function(layer){
             var map = this.component, renderer = this;
             var tooltip = map.vanchart.getComponent(Constants.TOOLTIP_COMPONENT);
-            var feature = layer._data;
-            var markerType = feature.marker.symbol;
-            var radius =  feature.marker.radius || map.getDefaultMarkerRadius();
-            var markerHighlightColor = ColorUtils.getHighLightColor(feature.marker.fillColor);
 
             return {
-                click:function(){
+                click:function(e){
                     var feature = layer._data;
                     map.drillDown(feature);
+                    if(feature.click){
+                        feature.click.call(feature, e.originalEvent);
+                    }
                 },
 
                 mouseover:function(){
+                    var feature = layer._data;
+                    var markerType = feature.marker.symbol;
+                    var radius =  feature.marker.radius || map.getDefaultMarkerRadius();
+                    var markerHighlightColor = ColorUtils.getHighLightColor(feature.marker.fillColor);
+
                     var areaLayers = renderer._scatterLayer.getLayers();
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
@@ -27300,7 +27323,12 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
 
                 mouseout:function(){
                     tooltip.hide();
+
+                    var feature = layer._data;
+                    var markerType = feature.marker.symbol;
+                    var radius =  feature.marker.radius || map.getDefaultMarkerRadius();
                     var areaLayers = renderer._scatterLayer.getLayers();
+
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
                             d3.select(areaLayers[i]._path)
@@ -27322,9 +27350,12 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
             var map = this.component, renderer = this;
             var tooltip = map.vanchart.getComponent(Constants.TOOLTIP_COMPONENT);
             return {
-                click:function(){
+                click:function(e){
                     var feature = layer._data;
                     map.drillDown(feature);
+                    if(feature.click){
+                        feature.click.call(feature, e.originalEvent);
+                    }
                 },
 
                 mouseover:function(){
