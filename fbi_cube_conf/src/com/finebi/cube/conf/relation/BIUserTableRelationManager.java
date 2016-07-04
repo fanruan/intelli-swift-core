@@ -87,7 +87,6 @@ public class BIUserTableRelationManager implements Release {
     }
 
 
-
     public void removeDisableRelations(BITableRelationPath disablePath) throws BITablePathAbsentException {
         disablePathsManager.removeDisablePath(disablePath);
     }
@@ -129,7 +128,7 @@ public class BIUserTableRelationManager implements Release {
 
     public void finishGenerateCubes(Set<BITableRelation> connectionSet) {
         synchronized (oldAnalyserHandler) {
-            oldAnalyserHandler.clear();
+//            oldAnalyserHandler.clear();
             for (BITableRelation relation : connectionSet) {
                 try {
                     oldAnalyserHandler.addRelation(relation);
@@ -178,6 +177,7 @@ public class BIUserTableRelationManager implements Release {
         }
         return set;
     }
+
     public BITableRelationPath getFirstPath(BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException {
         return null;
     }
@@ -212,4 +212,7 @@ public class BIUserTableRelationManager implements Release {
         return currentAnalyserHandler.getForeignRelation(table);
     }
 
+    public boolean isRelationGenerated(BITableRelation tableRelation) throws BIRelationAbsentException, BITableAbsentException {
+        return oldAnalyserHandler.contain(tableRelation);
+    }
 }

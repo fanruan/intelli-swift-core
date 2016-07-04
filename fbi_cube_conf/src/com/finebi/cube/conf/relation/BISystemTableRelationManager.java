@@ -274,6 +274,8 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     public IRelationContainer getForeignRelation(long userId, BusinessTable table) throws BITableAbsentException {
         return getUserGroupConfigManager(userId).getForeignRelation(table);
     }
-
+    public boolean isRelationGenerated(long userId, BITableRelation tableRelation) throws BITableAbsentException, BIRelationAbsentException {
+        return getUserGroupConfigManager(userId).isRelationGenerated(tableRelation);
+    }
 
 }
