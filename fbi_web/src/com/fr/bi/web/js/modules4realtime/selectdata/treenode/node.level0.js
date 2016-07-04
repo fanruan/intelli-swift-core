@@ -18,6 +18,7 @@ BI.DetailDetailSelectDataLevel0Node4RealTime = BI.inherit(BI.AbstractDetailDetai
         return BI.createWidget({
             type: "bi.select_data_level0_node",
             element: this.element,
+            warningTitle: BI.i18nText("BI-Time_Only_Use_One_Table"),
             id: o.id,
             pId: o.pId,
             open: o.open,
