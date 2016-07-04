@@ -41,29 +41,27 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
     _formatConfig: function(config, items){
         var self = this, o = this.options;
         delete config.dataSheet;
+        delete config.legend;
         delete config.zoom;
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
-
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.dataLabels.formatter = function() {
+            return this.name + "," + this.value;
+        };
+        config.plotOptions.tooltip.shared = true;
+        config.geo = {
+            "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
+        };
+        config.chartType = "pointMap";
+        config.plotOptions.icon = {
+            iconUrl: BICst.GIS_ICON_PATH,
+            iconSize: [24, 24]
+        };
 
-        config.chartType = "areaMap";
         config.plotOptions.marker = {
             symbol: BICst.GIS_ICON_PATH,
-                width:26,
-                height:41
+            width: 24,
+            height: 24,
+            enable: true
         };
         delete config.xAxis;
         delete config.yAxis;
@@ -72,15 +70,25 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
     },
 
     _formatItems: function(items){
-        BI.each(items, function(idx, item){
-            BI.each(item, function(id, it){
-                BI.each(it.data, function(i, da){
-                    da.lnglat = da.x;
-                    da.value = da.y;
-                    da.name = da.z || "";
-                })
-            })
-        });
+        //BI.each(items, function(idx, item){
+        //    BI.each(item, function(id, it){
+        //        BI.each(it.data, function(i, da){
+        //            da.lnglat = da.x.split(",");
+        //            da.value = da.y;
+        //            da.name = da.z || "";
+        //        })
+        //    })
+        //});
+        //return items;
+        return [[{
+            data: [{
+                lnglat:[120.304319,31.552968],
+                name: "帆软",
+                value: 10000
+            }],
+            name: "合同金额"
+        }]]
+
     },
 
     populate: function (items, options) {
@@ -94,8 +102,8 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         var types = [];
         BI.each(items, function(idx, axisItems){
             var type = [];
-            BI.each(axisItems, function(id, item){
-                type.push(BICst.WIDGET.MAP);
+            BI.each(axisItems, function(){
+                type.push(BICst.WIDGET.GIS_MAP);
             });
             types.push(type);
         });

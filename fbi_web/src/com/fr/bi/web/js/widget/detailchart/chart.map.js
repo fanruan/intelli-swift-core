@@ -41,21 +41,8 @@ BI.MapChart = BI.inherit(BI.Widget, {
     _formatConfig: function(config, items){
         var self = this, o = this.options;
         config.plotOptions.tooltip.formatter = this.config.tooltip;
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.rangeLegend.enabled = true;
-                config.rangeLegend.position = "bottom";
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.rangeLegend.enabled = true;
-                config.rangeLegend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.rangeLegend.enabled = false;
-                break;
-        }
-
+        formatRangeLegend();
+        delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.geo = this.config.geo;
         config.plotOptions.tooltip.shared = true;
@@ -65,18 +52,62 @@ BI.MapChart = BI.inherit(BI.Widget, {
         delete config.yAxis;
         return [items, config];
 
+        function formatRangeLegend(){
+            switch (self.config.chart_legend){
+                case BICst.CHART_LEGENDS.BOTTOM:
+                    config.rangeLegend.enabled = true;
+                    config.rangeLegend.position = "bottom";
+                    break;
+                case BICst.CHART_LEGENDS.RIGHT:
+                    config.rangeLegend.enabled = true;
+                    config.rangeLegend.position = "right";
+                    break;
+                case BICst.CHART_LEGENDS.NOT_SHOW:
+                default:
+                    config.rangeLegend.enabled = false;
+                    break;
+            }
+            config.rangeLegend.range.max = self.max;
+
+        }
+    },
+
+    _formatDrillItems: function(items){
+        var self = this;
+        BI.each(items.series, function(idx, da){
+            BI.each(da.data, function(idx, data){
+                if(BI.has(da, "type") && da.type == "bubble"){
+                    data.name = data.x;
+                    data.size = data.y;
+                }else{
+                    data.name = data.x;
+                    data.value = data.y;
+                }
+                if(BI.has(data, "drilldown")){
+                    self._formatDrillItems(data.drilldown);
+                }
+            })
+        })
     },
 
     _formatItems: function(items){
+        var self = this;
+        this.max = null;
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
+                    if(BI.isNull(self.max) || da.y > self.max){
+                        self.max = da.y;
+                    }
                     if(BI.has(it, "type") && it.type == "bubble"){
                         da.name = da.x;
                         da.size = da.y;
                     }else{
                         da.name = da.x;
                         da.value = da.y;
+                    }
+                    if(BI.has(da, "drilldown")){
+                        self._formatDrillItems(da.drilldown);
                     }
                 })
             })

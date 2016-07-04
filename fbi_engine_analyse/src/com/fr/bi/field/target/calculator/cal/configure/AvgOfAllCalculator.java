@@ -120,7 +120,7 @@ public class AvgOfAllCalculator extends SummaryOfAllCalculator {
             if (count > 0) {
                 Object value = new Double(sum / count);
                 while (isNotEnd(cursor_node, deep)) {
-                    cursor_node.setSummaryValue(createTargetKey(), value);
+                    cursor_node.setSummaryValue(createTargetGettingKey(), value);
                     cursor_node = cursor_node.getBottomSibling();
                 }
             }

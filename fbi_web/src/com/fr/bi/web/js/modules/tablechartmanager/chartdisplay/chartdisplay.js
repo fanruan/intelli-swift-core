@@ -207,13 +207,13 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 return chart;
             case BICst.WIDGET.MAP:
                 var chart = BI.createWidget({type: "bi.map_chart"});
-                chart.on(BI.ScatterChart.EVENT_CHANGE, function(obj){
+                chart.on(BI.MapChart.EVENT_CHANGE, function(obj){
                     self._doChartItemClick(obj);
                 });
                 return chart;
             case BICst.WIDGET.GIS_MAP:
                 var chart = BI.createWidget({type: "bi.gis_map_chart"});
-                chart.on(BI.ScatterChart.EVENT_CHANGE, function(obj){
+                chart.on(BI.GISMapChart.EVENT_CHANGE, function(obj){
                     self._doChartItemClick(obj);
                 });
                 return chart;

@@ -22,6 +22,7 @@ BI.AllPagger = BI.inherit(BI.Widget, {
         this.currentPage = o.curr;
         this.editor = BI.createWidget({
             type: "bi.small_text_editor",
+            cls: "pager-editor",
             validationChecker: function (v) {
                 return BI.isPositiveInteger(v);
             },

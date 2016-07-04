@@ -17,7 +17,7 @@ BI.CustomMultiDateCombo = BI.inherit(BI.Widget, {
             type: "bi.multidate_combo",
             element: this.element
         });
-        this.multiDate.on(BI.MultiDateCombo.EVENT_CHANGE,function(){
+        this.multiDate.on(BI.MultiDateCombo.EVENT_CONFIRM,function(){
             self.fireEvent(BI.CustomMultiDateCombo.EVENT_CHANGE);
         });
     },

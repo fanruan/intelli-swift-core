@@ -94,7 +94,7 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
             cursor_node = temp_node;
             Object value = count;
             while (isNotEnd(cursor_node, deep)) {
-                cursor_node.setSummaryValue(createTargetKey(), value);
+                cursor_node.setSummaryValue(createTargetGettingKey(), value);
                 cursor_node = cursor_node.getBottomSibling();
             }
             return null;

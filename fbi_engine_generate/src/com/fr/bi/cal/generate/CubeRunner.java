@@ -107,6 +107,17 @@ public class CubeRunner {
 //        return cubeThread.contains(task);
     }
 
+    public boolean hasTask(String uuid) {
+        Iterator<CubeTask> iterator = cubeThread.iterator();
+        while (iterator.hasNext()) {
+            CubeTask task = iterator.next();
+            if (task.getUUID().equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean hasTask() {
         return !cubeThread.isEmpty();
     }

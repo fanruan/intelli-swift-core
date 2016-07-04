@@ -3,7 +3,8 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-web-page .web-page-button {
   z-index: 1;
-  font-size: 16px;
+  font-size: 14px;
+  background-color: #ffffff;
 }
 .bi-web-page .web-page-text-button-label {
   font-size: 16px;

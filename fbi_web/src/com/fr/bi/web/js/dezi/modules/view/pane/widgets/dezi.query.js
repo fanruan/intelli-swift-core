@@ -34,7 +34,7 @@ BIDezi.QueryView = BI.inherit(BI.View, {
             title: BI.i18nText("BI-Remove")
         });
         deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
-            BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
+            BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Sure_Delete") + self.model.get("name") + "?", function (v) {
                 if (v === true) {
                     self.model.destroy();
                     BI.Utils.broadcastAllWidgets2Refresh();
@@ -65,10 +65,6 @@ BIDezi.QueryView = BI.inherit(BI.View, {
     },
 
     local: function () {
-        if (this.model.has("expand")) {
-            this.model.get("expand");
-            return true;
-        }
         return false;
     }
 });

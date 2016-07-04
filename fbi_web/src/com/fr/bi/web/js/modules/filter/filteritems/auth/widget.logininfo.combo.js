@@ -27,9 +27,18 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
     _beforeLoginComboPopup: function(){
         var self = this, o = this.options;
         var loginField = BI.Utils.getAuthorityLoginField();
+        var tableId = BI.Utils.getTableIdByFieldId4Conf(loginField);
         var fieldType = o.field_type;
         var items = [];
-        if(BI.isNotNull(loginField)) {
+        if(fieldType === BICst.COLUMN.STRING) {
+            items.push({
+                text: BI.i18nText("BI-System_Username"),
+                id: -1,
+                value: BI.LoginInfoCombo.SYSTEM_USER
+            });
+        }
+        //可能设置了，但是这个字段又已经不存在了
+        if(BI.isNotNull(loginField) && BI.isNotNull(tableId)) {
             var primaryFields = this._getPrimaryFieldsByFieldId(loginField);
             primaryFields.splice(0, 0, loginField);
             var comboValue = this.combo.getValue();
@@ -39,9 +48,10 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
                 var fields = self._getAllFieldsByTableId(tableId);
 
                 var parentOpen = false;
+                var singleItem = [];
                 BI.each(fields, function(j, field){
                     if(field.field_type === fieldType) {
-                        items.push({
+                        singleItem.push({
                             id: field.id,
                             pId: tableId,
                             text: field.field_name,
@@ -51,33 +61,26 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
                         comboValue.contains(field.id) && (parentOpen = true);
                     }
                 });
-                items.push({
-                    id: tableId,
-                    isParent: true,
-                    text: tableName,
-                    open: parentOpen
-                });
+                if(singleItem.length > 0) {
+                    singleItem.push({
+                        id: tableId,
+                        isParent: true,
+                        text: tableName,
+                        open: parentOpen
+                    });
+                }
+                items = items.concat(singleItem);
             });
+            if(items.length === 0) {
+                items.push({
+                    text: BI.i18nText("BI-Null"),
+                    disabled: true
+                })
+            }
             this.combo.populate(items);
             return;
         }
 
-        switch (fieldType) {
-            case BICst.COLUMN.STRING:
-                items.push({
-                    text: BI.i18nText("BI-System_Username"),
-                    id: -1,
-                    value: BI.LoginInfoCombo.SYSTEM_USER
-                });
-                break;
-            case BICst.COLUMN.NUMBER:
-                items.push({
-                    text: BI.i18nText("BI-Login_Info_Not_Set"),
-                    id: -1,
-                    disabled: true
-                });
-                break;
-        }
         this.combo.populate(items);
     },
 

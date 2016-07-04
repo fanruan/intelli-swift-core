@@ -131,6 +131,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
         this.dimensions = {};
         this.view = {};
         this.dimTarIdMap = {};
+        this.widgetType = widget.type;
         BI.each(widget.dimensions, function (idx, dimension) {
             var copy = self._createDimensionsAndTargets(idx);
             self.dimensions[copy.id] = copy.dimension;
@@ -180,11 +181,11 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                     dimension.dimension_map = {};
                     BI.each(self.oldDimensions[idx].dimension_map, function (id, map) {
                         //明细表dimensionmap存的key是tableId，与汇总表区分
-                        if(BI.Utils.isDimensionExist(id)){
+                        if(self.widgetType === BICst.WIDGET.DETAIL){
+                            dimension.dimension_map[id] = map;
+                        }else{
                             var result = self._createDimensionsAndTargets(id);
                             dimension.dimension_map[result.id] = map;
-                        }else{
-                            dimension.dimension_map[id] = map;
                         }
                     });
                 }

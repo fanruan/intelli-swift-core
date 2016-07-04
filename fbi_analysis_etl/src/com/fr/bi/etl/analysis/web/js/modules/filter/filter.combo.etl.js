@@ -38,9 +38,7 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
             }
         });
         this.popup.on(BI.ETLFilterPopupView.EVENT_CLICK_CONFIRM, function () {
-            self.storedValue = BI.extend(BI.deepClone(self.combo.getValue()), {field_name : self.options.field_name, field_type : self.options.field_type});
             self.combo.hideView();
-            self.fireEvent(BI.ETLFilterCombo.EVENT_VALUE_CHANGED);
         });
         this.popup.on(BI.ETLFilterPopupView.EVENT_CLICK_CANCEL, function () {
             self.setValue(self.storedValue);

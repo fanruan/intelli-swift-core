@@ -1,24 +1,6 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-/***************************************FR.DbTabPane**************************************************/
-.bi-dashboard-tab {
-  background: #f4f4f4;
-  border: 1px solid #cccccc;
-  color: #707690;
-}
-.bi-dashboard-tab .bi-dashboard-tab-item {
-  border-right: 1px solid #cccccc;
-  font-size: 14px;
-}
-.bi-dashboard-tab .bi-dashboard-tab-item:hover,
-.bi-dashboard-tab .bi-dashboard-tab-item.hover {
-  background-color: #fafafa;
-}
-.bi-dashboard-tab .bi-dashboard-tab-item:active,
-.bi-dashboard-tab .bi-dashboard-tab-item.active {
-  background-color: #ffffff;
-}
 /*******************widgets****************/
 .bi-dashboard-widget {
   background: #ffffff;
@@ -39,6 +21,10 @@
 }
 .bi-dashboard-widget .operator-region {
   z-index: 100000;
+}
+.bi-dashboard-widget .delete-button {
+  font-size: 14px;
+  background-color: #ffffff;
 }
 .bi-dashboard-widget .remove-button {
   -webkit-border-radius: 10px;

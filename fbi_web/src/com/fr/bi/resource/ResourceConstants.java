@@ -6,7 +6,7 @@ package com.fr.bi.resource;
 public class ResourceConstants {
 
     public static final String DEFAULT_DESIGN_JS = "dezi.js";
-    public static final String DEFAULT_DEZI_CSS = "dezi.css";
+    public static final String DEFAULT_DESIGN_CSS = "dezi.css";
 
     public static final String DEFAULT_SHOW_JS = "show.js";
     public static final String DEFAULT_SHOW_CSS = "show.css";

@@ -41,7 +41,7 @@ BI.DetailSelectCalculationTargetLevel0Button = BI.inherit(BI.BasicButton, {
                 el: {
                     type: "bi.layout"
                 },
-                width: o.layer * 13
+                width: o.layer * 20
             }, {
                 el: icon,
                 width: 25

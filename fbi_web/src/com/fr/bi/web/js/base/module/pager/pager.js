@@ -42,14 +42,20 @@ BI.Pager = BI.inherit(BI.Widget, {
     },
     _init: function () {
         BI.Pager.superclass._init.apply(this, arguments);
-        this.populate();
+        this.currPage = this.options.curr;
+        this._populate();
     },
 
-    populate: function () {
+    populate: function(){
+        this.currPage = this.options.curr;
+        this._populate();
+    },
+
+    _populate: function () {
         var self = this, o = this.options, view = [], dict = {};
         this.empty();
         var pages = BI.result(o, "pages");
-        var curr = BI.result(o, "curr");
+        var curr = BI.result(this, "currPage");
         var groups = BI.result(o, "groups");
         var first = BI.result(o, "first");
         var last = BI.result(o, "last");
@@ -181,26 +187,26 @@ BI.Pager = BI.inherit(BI.Widget, {
                 var v = self.button_group.getValue()[0];
                 switch (v) {
                     case "first":
-                        o.curr = 1;
+                        self.currPage = 1;
                         break;
                     case "last":
-                        o.curr = pages;
+                        self.currPage = pages;
                         break;
                     case "prev":
-                        o.curr--;
+                        self.currPage--;
                         break;
                     case "next":
-                        o.curr++;
+                        self.currPage++;
                         break;
                     default:
-                        o.curr = v;
+                        self.currPage = v;
                         break;
                 }
                 o.jump.apply(self, [{
                     pages: pages,
-                    curr: o.curr
+                    curr: self.currPage
                 }]);
-                self.populate();
+                self._populate();
                 self.fireEvent(BI.Pager.EVENT_CHANGE, obj);
             }
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
@@ -209,7 +215,7 @@ BI.Pager = BI.inherit(BI.Widget, {
     },
 
     getCurrentPage: function () {
-        return this.options.curr;
+        return this.currPage;
     },
 
     setAllPages: function (pages) {

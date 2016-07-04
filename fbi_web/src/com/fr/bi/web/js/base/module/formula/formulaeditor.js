@@ -188,7 +188,7 @@
 
         getValue: function () {
             var fieldMap = this.options.fieldTextValueMap;
-            return this.editor.getValue(true, function (line) {
+            return this.editor.getValue("\n", function (line) {
                 var rawText = line.text, value = line.text, num = 0;
                 value.text = rawText;
                 _.forEach(line.markedSpans, function (i, ms) {
