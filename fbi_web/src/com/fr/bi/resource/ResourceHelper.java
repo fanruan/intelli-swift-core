@@ -195,6 +195,16 @@ public class ResourceHelper {
 
     public static String[] getShowCss() {
         return new String[]{
+                //实时报表进度条
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/cubeprogressbar/cubeprogressbar.css",
+
+                //详细设置相关模块(预览)
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/charttype.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regions/region.dimension.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regions/region.target.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regionsmanager.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/dimensionsmanager.css",
 
                 "com/fr/bi/web/css/show/show.view.css",
                 "com/fr/bi/web/css/show/pane/show.pane.css",
@@ -209,6 +219,49 @@ public class ResourceHelper {
 
     public static String[] getShowJs() {
         return new String[]{
+                //自适应布局
+                "com/fr/bi/web/js/modules4show/fit/fit.js",
+
+                //实时报表进度条
+                "com/fr/bi/web/js/modules4show/cubeprogressbar/cubeprogressbar.js",
+                //实时报表指示器
+                "com/fr/bi/web/js/modules4show/cubeprogressindicator/cubeprogressindicator.js",
+
+                //dimensionmanager4show
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/model.dimensionsmanagershow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regionsmanagershow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/dimensionsmanagershow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/combo.maptype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/popup.maptype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/charttype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.dimensionshow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.targetshow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.detailshow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/abstract.regionshow.js",
+
+                //dimension show
+                "com/fr/bi/web/js/modules4show/dimension4show/abstract.dimensiontarget.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/abstract.dimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.numberdimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.datedimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.stringdimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.count.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.calculate.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detaildate.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailformula.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
+
+
+                "com/fr/bi/web/js/modules4show/config.js",
+                "com/fr/bi/web/js/modules4show/constant.js",
+                "com/fr/bi/web/js/modules4show/broadcast.js",
+                "com/fr/bi/web/js/modules4show/cache.js",
+                "com/fr/bi/web/js/modules4show/utils.js",
+
+
                 "com/fr/bi/web/js/show/show.start.js",
                 "com/fr/bi/web/js/show/model.js",
                 "com/fr/bi/web/js/show/view.js",
@@ -490,9 +543,6 @@ public class ResourceHelper {
                 //选择日期
                 "com/fr/bi/web/css/modules/selectdate/tab.selectdate.css",
 
-                //实时报表进度条
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/cubeprogressbar/cubeprogressbar.css",
-
                 //详细设置相关模块
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/combo/combo.tabletype.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/charttype.css",
@@ -741,15 +791,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/excelviewsetting/excel/excelviewsetting.cell.css",
                 "com/fr/bi/web/css/extend/excelviewsetting/excel/excel.excelviewsetting.css",
                 "com/fr/bi/web/css/extend/excelviewsetting/excelviewsetting.css",
-
-
-                //详细设置相关模块(预览)
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.css",
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/charttype.css",
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regions/region.dimension.css",
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regions/region.target.css",
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regionsmanager.css",
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/dimensionsmanager.css",
 
                 //更新设置
                 "com/fr/bi/web/css/extend/update/update.tabledata.css",
@@ -1424,53 +1465,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/permissionmanage/logininfo/widget.selectsinglefield.logininfo.js",
                 "com/fr/bi/web/js/modules/permissionmanage/logininfo/widget.selectfieldmask.logininfo.js",
 
-                //dimensionmanager4show
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/model.dimensionsmanagershow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regionsmanagershow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/dimensionsmanagershow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/combo.maptype.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/popup.maptype.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/charttype.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.dimensionshow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.targetshow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.detailshow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/abstract.regionshow.js",
-
-                //dimension show
-                "com/fr/bi/web/js/modules4show/dimension4show/abstract.dimensiontarget.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/dimension/abstract.dimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.numberdimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.datedimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.stringdimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.target.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.count.target.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.calculate.target.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detaildate.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailformula.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
-
-                //自适应布局
-                "com/fr/bi/web/js/modules4show/fit/fit.js",
-
-                //实时报表进度条
-                "com/fr/bi/web/js/modules4show/cubeprogressbar/cubeprogressbar.js",
-                //实时报表指示器
-                "com/fr/bi/web/js/modules4show/cubeprogressindicator/cubeprogressindicator.js",
-
-                //实时报表选择字段
-                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/abstract.node.level.js",
-                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level0.js",
-                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level1.js",
-                "com/fr/bi/web/js/modules4realtime/selectdata/widget.selectdata.js",
-                //实时报表文本选择字段
-                "com/fr/bi/web/js/modules4realtime/selectstring/widget.selectstring.js",
-                //实时报表数值选择字段
-                "com/fr/bi/web/js/modules4realtime/selectnumber/widget.selectnumber.js",
-                //实时报表日期选择字段
-                "com/fr/bi/web/js/modules4realtime/selectdate/widget.selectdate.js",
-
                 //表更新
                 "com/fr/bi/web/js/extend/update/update.tabledata.js",
                 "com/fr/bi/web/js/extend/update/update.tabledata.model.js",
@@ -1514,6 +1508,29 @@ public class ResourceHelper {
                 //简单字段选择服务
                 "com/fr/bi/web/js/services/simpleselectdataservice/simpleselectdataservice.js",
 
+
+                /**
+                 * 实时报表
+                 */
+
+
+                //实时报表选择字段
+                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level1.js",
+                "com/fr/bi/web/js/modules4realtime/selectdata/widget.selectdata.js",
+                //实时报表文本选择字段
+                "com/fr/bi/web/js/modules4realtime/selectstring/widget.selectstring.js",
+                //实时报表数值选择字段
+                "com/fr/bi/web/js/modules4realtime/selectnumber/widget.selectnumber.js",
+                //实时报表日期选择字段
+                "com/fr/bi/web/js/modules4realtime/selectdate/widget.selectdate.js",
+
+                "com/fr/bi/web/js/modules4realtime/config.js",
+                "com/fr/bi/web/js/modules4realtime/constant.js",
+                "com/fr/bi/web/js/modules4realtime/broadcast.js",
+                "com/fr/bi/web/js/modules4realtime/cache.js",
+                "com/fr/bi/web/js/modules4realtime/utils.js",
 
                 /**
                  * 切片

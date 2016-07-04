@@ -101,10 +101,6 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return this.button_group.getValue()[0] | this.segment.getValue()[0]
-    },
-
-    populatePackages: function (packages) {
-        this.options.packages = packages || [];
     }
 });
 

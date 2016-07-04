@@ -16,7 +16,8 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        MINLIMIT: 1e-3
+        MINLIMIT: 1e-3,
+        LEGEND_HEIGHT: 80
     },
 
     _defaultConfig: function () {
@@ -71,6 +72,7 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
+                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
@@ -109,6 +111,10 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
                     axis.title.rotation = self.constants.ROTATION;
                     break;
             }
+            var res = _calculateValueNiceDomain(0, self.maxes[axis.axisIndex]);
+            axis.max = res[1].mul(2);
+            axis.min = res[0].mul(2);
+            axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
         });
 
         config.xAxis[0].title.text = this.config.x_axis_title;
@@ -296,18 +302,58 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
             }
             return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
         }
+
+        function _calculateValueNiceDomain(minValue, maxValue){
+
+            minValue = Math.min(0, minValue);
+
+            var tickInterval = _linearTickInterval(minValue, maxValue);
+
+            return _linearNiceDomain(minValue, maxValue, tickInterval);
+        }
+
+        function _linearTickInterval(minValue, maxValue, m){
+
+            m = m || 5;
+            var span = maxValue - minValue;
+            var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
+            var err = m / span * step;
+
+            if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
+
+            return step;
+        }
+
+        function _linearNiceDomain(minValue, maxValue, tickInterval){
+
+            minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
+
+            maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
+
+            return [minValue, maxValue];
+        }
     },
 
     _formatItems: function(items){
-        return BI.map(items, function(idx, item){
-            return BI.map(item, function(id, it){
+        var self = this;
+        this.maxes = [];
+        BI.each(items, function(idx, item){
+            var max = null;
+            BI.each(item, function(id, it){
                 if(idx > 0){
-                    return BI.extend({}, it, {reversed: true, xAxis: 0});
+                    BI.extend(it, {reversed: true, xAxis: 0});
                 }else{
-                    return BI.extend({}, it, {reversed: false, xAxis: 1});
+                    BI.extend(it, {reversed: false, xAxis: 1});
                 }
+                BI.each(it.data, function(i, da){
+                    if((BI.isNull(max) || da.y > max)){
+                        max = da.y;
+                    }
+                })
             });
+            self.maxes.push(max);
         });
+        return items;
     },
 
     populate: function (items, options) {

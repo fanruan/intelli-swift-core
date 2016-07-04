@@ -24,7 +24,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
         this.table = BI.createWidget({
             type: "bi.style_table",
-            element: this.element,
+            isNeedFreeze: null,
             el: {
                 type: "bi.page_table",
                 el: {
@@ -63,6 +63,12 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             type: "bi.absolute",
             element: this.element,
             items: [{
+                el: this.table,
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0
+            }, {
                 el: this.errorPane,
                 top: 0,
                 left: 0,
