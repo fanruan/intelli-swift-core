@@ -2,10 +2,6 @@
     //运行时用到的工具类
     BI.Utils = {};
     BI.extend(BI.Utils, {
-        isRealTime: function () {
-            return Data.SharingPool.get("description") === "true";
-        },
-
         /**
          * lic相关
          */
