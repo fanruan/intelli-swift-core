@@ -417,7 +417,6 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
     },
 
     refresh: function () {
-
     },
 
     _createDimName: function (fieldName) {
