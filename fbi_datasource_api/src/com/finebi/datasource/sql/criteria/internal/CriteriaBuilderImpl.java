@@ -32,9 +32,8 @@ public class CriteriaBuilderImpl implements CriteriaBuilder, Serializable {
      * @return The underlying {@link AspireContext}
      */
     public AspireContext getEntityManagerFactory() {
-        return null;
+        return context;
     }
-
 
     // Query builders ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -49,7 +48,6 @@ public class CriteriaBuilderImpl implements CriteriaBuilder, Serializable {
     public CriteriaQuery<Tuple> createTupleQuery() {
         return new CriteriaQueryImpl<Tuple>(this, Tuple.class);
     }
-
 
 
     // ordering ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -917,7 +915,6 @@ public class CriteriaBuilderImpl implements CriteriaBuilder, Serializable {
     public ExpressionImplementor<String> toString(Expression<Character> characterExpression) {
         return ((ExpressionImplementor<Character>) characterExpression).asString();
     }
-
 
 
     // subqueries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
