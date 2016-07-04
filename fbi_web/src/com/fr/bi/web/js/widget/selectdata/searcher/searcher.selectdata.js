@@ -31,7 +31,6 @@ BI.SelectDataSearcher = BI.inherit(BI.Widget, {
             }
         });
         this.packagePane.on(BI.SelectDataSwitcher.EVENT_CHANGE, function () {
-            self.searcherPane.setPackage(this.getPackageId());
             self.fireEvent(BI.SelectDataSearcher.EVENT_CLICK_PACKAGE, arguments);
         });
         this.packagePane.on(BI.SelectDataSwitcher.EVENT_CLICK_ITEM, function () {
@@ -117,7 +116,6 @@ BI.SelectDataSearcher = BI.inherit(BI.Widget, {
     populatePackages: function (packages) {
         this.options.packages = packages;
         this.packagePane.populatePackages(packages);
-        this.searcherPane.populatePackages(packages);
         this.searcher.stopSearch();
         this.populate();
     },

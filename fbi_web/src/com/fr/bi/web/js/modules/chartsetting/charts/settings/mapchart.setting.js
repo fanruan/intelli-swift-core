@@ -56,7 +56,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
 
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",

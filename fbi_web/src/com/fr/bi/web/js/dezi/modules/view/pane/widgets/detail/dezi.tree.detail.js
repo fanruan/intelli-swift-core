@@ -83,7 +83,7 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: BI.Utils.isRealTime() ? "bi.select_string_4_realtime" : "bi.tree_select_data",
+                    type: "bi.tree_select_data",
                     wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },

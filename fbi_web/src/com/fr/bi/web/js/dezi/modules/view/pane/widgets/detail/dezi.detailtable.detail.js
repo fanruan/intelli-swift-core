@@ -87,7 +87,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: BI.Utils.isRealTime() ? "bi.detail_select_data_4_realtime" : "bi.detail_detail_table_select_data",
+                    type: "bi.detail_detail_table_select_data",
                     cls: "widget-select-data-pane",
                     wId: this.model.get("id")
                 },

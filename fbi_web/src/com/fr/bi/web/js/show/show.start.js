@@ -18,8 +18,3 @@ BI.extend(BIShow, {
         BI.history.start();
     }
 });
-
-//TODO show界面不做缓存
-BI.Cache.setItem = function(){
-    
-};

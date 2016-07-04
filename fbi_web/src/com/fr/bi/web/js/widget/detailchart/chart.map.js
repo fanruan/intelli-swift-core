@@ -96,7 +96,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
-                    if(BI.isNull(self.max) || da.y > self.max){
+                    if((BI.isNull(self.max) || da.y > self.max) && id === 0){
                         self.max = da.y;
                     }
                     if(BI.has(it, "type") && it.type == "bubble"){

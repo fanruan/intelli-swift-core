@@ -93,11 +93,6 @@ BI.SelectDataSearchResultPane = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return this.resultPane.getValue();
-    },
-
-    populatePackages: function (packages) {
-        this.options.packages = packages;
-        this.segment.populatePackages(packages);
     }
 });
 BI.SelectDataSearchResultPane.EVENT_CHANGE = "EVENT_CHANGE";
