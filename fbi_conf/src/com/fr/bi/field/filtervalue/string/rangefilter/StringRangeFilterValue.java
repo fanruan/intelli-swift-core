@@ -159,7 +159,7 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
         if (valueSet.getValues() == null || valueSet.getValues().isEmpty()) {
             return null;
         }
-        return createFilterIndexByRelations(dimension.getRelationList(), dimension.createNoneSortGroupValueMapGetter(target, loader),
+        return createFilterIndexByRelations(dimension.getRelationList(), dimension.createNoneSortNoneGroupValueMapGetter(target, loader),
                 loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()), loader.getTableIndex(target.getTableSource()), dimension.createKey());
     }
 
