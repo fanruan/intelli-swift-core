@@ -21,7 +21,7 @@ public class BIDeleteAnalysisETLTableAction extends AbstractAnalysisETLAction{
         BIAnalysisETLManagerCenter.getBusiPackManager().removeTable(tableId, userId);
         BIAnalysisETLManagerCenter.getDataSourceManager().removeTableSource(table);
         BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).removeTransName(tableId);
-        BIConfigureManagerCenter.getLogManager().logVersion(userId);
+        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         new Thread(){
             @Override
             public void run() {

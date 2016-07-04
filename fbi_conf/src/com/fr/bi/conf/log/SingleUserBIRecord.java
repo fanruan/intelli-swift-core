@@ -24,7 +24,6 @@ public class SingleUserBIRecord implements BIRecord {
     private Date relation_start;
     private Date cube_end;
     private Date index_start;
-    private Date confVersion;
     private long userId;
     private Set<CubeTableSource> cubeTableSourceSet;
     private Set<BITableSourceRelationPath> biTableSourceRelationPathSet;
@@ -72,15 +71,6 @@ public class SingleUserBIRecord implements BIRecord {
     @Override
     public void recordEnd() {
         cube_end = new Date();
-        recordVersion();
-    }
-
-    /**
-     * 日志结束
-     */
-    @Override
-    public void recordVersion() {
-        confVersion = new Date();
     }
 
     /**
@@ -257,8 +247,8 @@ public class SingleUserBIRecord implements BIRecord {
     }
 
     @Override
-    public Date getConfigVersion() {
-        return confVersion;
+    public Date getCubeEnd() {
+        return cube_end;
     }
 
     /**

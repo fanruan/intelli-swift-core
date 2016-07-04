@@ -20,7 +20,8 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-3
+        MINLIMIT: 1e-3,
+        LEGEND_HEIGHT: 80
     },
 
     _defaultConfig: function () {
@@ -63,6 +64,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
+                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
@@ -111,6 +113,10 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     axis.title.rotation = self.constants.ROTATION;
                     break;
             }
+            var res = _calculateValueNiceDomain(0, self.maxes[axis.axisIndex]);
+            axis.max = res[1];
+            axis.min = res[0];
+            axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
         });
         config.xAxis[0].title.text = this.config.x_axis_title;
         config.xAxis[0].labelRotation = this.config.text_direction;
@@ -119,6 +125,73 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
 
         return [items, config];
+
+        function formatTickInXYaxis(type, position){
+            var formatter = '#.##';
+            switch (type) {
+                case self.constants.NORMAL:
+                    formatter = '#.##';
+                    break;
+                case self.constants.ZERO2POINT:
+                    formatter = '#0';
+                    break;
+                case self.constants.ONE2POINT:
+                    formatter = '#0.0';
+                    break;
+                case self.constants.TWO2POINT:
+                    formatter = '#0.00';
+                    break;
+            }
+            if(position === self.constants.LEFT_AXIS){
+                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    if(type === self.constants.NORMAL){
+                        formatter = '#0%'
+                    }else{
+                        formatter += '%';
+                    }
+                }
+            }
+            if(position === self.constants.RIGHT_AXIS){
+                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    if(type === self.constants.NORMAL){
+                        formatter = '#0%'
+                    }else{
+                        formatter += '%';
+                    }
+                }
+            }
+            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+        }
+
+        function _calculateValueNiceDomain(minValue, maxValue){
+
+            minValue = Math.min(0, minValue);
+
+            var tickInterval = _linearTickInterval(minValue, maxValue);
+
+            return _linearNiceDomain(minValue, maxValue, tickInterval);
+        }
+
+        function _linearTickInterval(minValue, maxValue, m){
+
+            m = m || 5;
+            var span = maxValue - minValue;
+            var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
+            var err = m / span * step;
+
+            if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
+
+            return step;
+        }
+
+        function _linearNiceDomain(minValue, maxValue, tickInterval){
+
+            minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
+
+            maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
+
+            return [minValue, maxValue];
+        }
 
         function formatChartStyle(){
             switch (self.config.chart_style) {
@@ -240,7 +313,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             if(position === self.constants.RIGHT_AXIS_SECOND){
-                self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
+                self.config.right_y_axis_second_unit !== "" && (unit = unit + self.config.right_y_axis_second_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
         }
@@ -290,6 +363,23 @@ BI.AxisChart = BI.inherit(BI.Widget, {
             }
             return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
         }
+    },
+
+    _formatItems: function(items){
+        var self = this;
+        this.maxes = [];
+        BI.each(items, function(idx, item){
+            var max = null;
+            BI.each(item, function(id, it){
+                BI.each(it.data, function(i, da){
+                    if((BI.isNull(max) || da.y > max)){
+                        max = da.y;
+                    }
+                })
+            });
+            self.maxes.push(max);
+        });
+        return items;
     },
 
     populate: function (items, options, types) {
@@ -349,7 +439,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
             self.yAxis.push(newYAxis);
         });
 
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {

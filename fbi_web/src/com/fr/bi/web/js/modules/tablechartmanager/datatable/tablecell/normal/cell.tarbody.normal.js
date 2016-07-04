@@ -90,6 +90,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         if (text === Infinity || text !== text) {
             return text;
         }
+        if (!BI.isNumeric(text)) {
+            return text;
+        }
         var num = BI.parseFloat(text);
         switch (dot) {
             case BICst.TARGET_STYLE.FORMAT.NORMAL:
@@ -157,7 +160,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         if (text === Infinity) {
             text = "N/0";
         }
-       
+
         if (BI.isEmptyArray(linkedWidgets)) {
             return BI.createWidget({
                 type: "bi.label",
