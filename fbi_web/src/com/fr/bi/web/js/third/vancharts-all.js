@@ -2814,8 +2814,8 @@ define('theme/options',['require','../Constants'],function (require) {
     options[Constants.POINT_MAP] = {
         plotOptions:{
             icon:{
-                iconUrl:FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/address_marker_big.png",
-                iconSize: [24, 24]
+                iconUrl:'../../doc/example/marker-icon.png',
+                iconSize: [25, 41]
             }
         }
     };
@@ -9723,8 +9723,8 @@ define('theme/Options',['require','../Constants'],function (require) {
     options[Constants.POINT_MAP] = {
         plotOptions:{
             icon:{
-                iconUrl:FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/address_marker_big.png",
-                iconSize: [24, 24]
+                iconUrl:'../../doc/example/marker-icon.png',
+                iconSize: [25, 41]
             }
         }
     };
