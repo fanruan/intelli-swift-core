@@ -1245,6 +1245,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/dimensiontreecombo/dimensiontree.trigger.js",
 
                 //表格属性设置
+                "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/combo.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/wrap.item.selectcolor.js",

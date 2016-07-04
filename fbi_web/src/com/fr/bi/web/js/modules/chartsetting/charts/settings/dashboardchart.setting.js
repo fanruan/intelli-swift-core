@@ -26,7 +26,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
 
     _defaultConfig: function(){
         return BI.extend(BI.DashboardChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-dashboard-chart-setting"
         })
     },
 
@@ -101,6 +101,10 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
 
         this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
+        });
+
+        this.conditions = BI.createWidget({
+            type: "bi.chart_add_condition"
         });
 
         var tableStyle = BI.createWidget({
@@ -185,6 +189,10 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.LYUnit]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.conditions],
+                    height: ""
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),

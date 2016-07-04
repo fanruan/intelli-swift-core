@@ -72,9 +72,9 @@ BI.TargetStyleConditionItem = BI.inherit(BI.Widget, {
         this.colorChooser.setValue(v.color);
     },
 
-    setSmallIntervalEnable: function () {
-        this.numberRange.setMinEnable(true);
-        this.numberRange.setCloseMinEnable(true);
+    setSmallIntervalEnable: function (v) {
+        this.numberRange.setMinEnable(v);
+        this.numberRange.setCloseMinEnable(v);
     }
 
 });

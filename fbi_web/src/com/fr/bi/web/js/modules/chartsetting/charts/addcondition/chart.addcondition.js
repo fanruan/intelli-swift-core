@@ -53,53 +53,17 @@ BI.ChartAddCondition = BI.inherit (BI.Widget, {
         this.addConditionButton = BI.createWidget({
             type: "bi.button",
             text: "+" + BI.i18nText("BI-Add_Condition"),
-            height: this.constant.BUTTON_HEIGHT,
-            handler: function () {
-                self._addNewCondition();
-            }
+            height: this.constant.BUTTON_HEIGHT
         });
 
         //添加条件选择框
         this.conditions = BI.createWidget({
-            type: "bi.button_group",
-            items: BI.createItems([{
-                range: {
-                    min: 0,
-                    max: 100,
-                    closemin: false,
-                    clasemax: false
-                },
-                color: "#09ABE9",
-                cid: BI.UUID()
-            } , {
-                range: {
-                    min: 100,
-                    max: 200,
-                    closemin: true,
-                    clasemax: false
-                },
-                color: "#09ABE9",
-                cid: BI.UUID()
-            } , {
-                range: {
-                    min: 200,
-                    max: 300,
-                    closemin: true,
-                    clasemax: false
-                },
-                color: "#09ABE9",
-                cid: BI.UUID()
-            }], {
-                type: "bi.target_style_condition_item",
-                onRemoveCondition: function(id) {
-                    self._removeCondition(id)
-                }
-            }),
-            layouts: [{
-                type: "bi.vertical",
-                hgap: this.constant.SINGLE_H_GAP,
-                vgap: this.constant.SINGLE_V_GAP
-            }]
+            type: "bi.chart_add_condition_group",
+            items: []
+        });
+
+        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function() {
+            self.conditions.addItem();
         });
 
         self._setConditionVisible(false);
@@ -134,51 +98,7 @@ BI.ChartAddCondition = BI.inherit (BI.Widget, {
         var self = this;
         self.addConditionButton.setVisible(v);
         self.conditions.setVisible(v);
-    },
-
-    _addNewCondition : function () {
-        var self = this;
-        var allConditions = this.conditions.getAllButtons();
-
-        var nextMin = 0;
-        if( allConditions.length > 0) {
-            nextMin = BI.parseInt(allConditions[allConditions.length - 1].getValue().range.max) || 0;
-        }
-
-        this.conditions.addItems([{
-            type: "bi.target_style_condition_item",
-            range: {
-                min: nextMin,
-                max: nextMin + 100,
-                closemin: false,
-                clasemax: false
-            },
-            color: "#09ABE9",
-            cid: BI.UUID(),
-            onRemoveCondition: function () {
-                self._removeCondition()
-            }
-        }]);
-
-        if(this.conditions.length !==1) {
-            self.conditions[self.conditions.length - 1].setSmallIntervalEnable();
-        }
-    },
-
-    _removeCondition : function (id) {
-        var allConditions = this.conditions.getAllButtons();
-        var index = 0;
-
-        BI.some(allConditions , function ( i , con ) {
-            if(con.getValue().cid === id) {
-                index = i;
-                return true;
-            }
-        });
-
-        this.conditions.removeItemAt(index)
     }
-
 });
 BI.ChartAddCondition.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.chart_add_condition" , BI.ChartAddCondition);
