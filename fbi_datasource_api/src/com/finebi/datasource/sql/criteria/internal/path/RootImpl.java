@@ -16,127 +16,122 @@ import java.io.Serializable;
  *
  * @author Steve Ebersole
  */
-public class RootImpl<X> extends AbstractFromImpl<X,X> implements Root<X>, Serializable {
-	private final EntityType<X> entityType;
-	private final boolean allowJoins;
+public class RootImpl<X> extends AbstractFromImpl<X, X> implements Root<X>, Serializable {
+    private final boolean allowJoins;
 
-	public RootImpl(CriteriaBuilderImpl criteriaBuilder, EntityType<X> entityType) {
-		this( criteriaBuilder, entityType, true );
-	}
+    public RootImpl(CriteriaBuilderImpl criteriaBuilder, EntityType<X> entityType) {
+        this(criteriaBuilder, entityType, true);
+    }
 
 
     public RootImpl(CriteriaBuilderImpl criteriaBuilder, EntityType<X> entityType, boolean allowJoins) {
-		super( criteriaBuilder, entityType.getJavaType() );
-		this.entityType = entityType;
-		this.allowJoins = allowJoins;
-	}
+        super(criteriaBuilder, entityType);
+        this.allowJoins = allowJoins;
+    }
 
-	public EntityType<X> getEntityType() {
-		return entityType;
-	}
 
-	public EntityType<X> getModel() {
-		return getEntityType();
-	}
+    public EntityType<X> getModel() {
+        return getEntityType();
+    }
 
-	@Override
-	protected FromImplementor<X, X> createCorrelationDelegate() {
-		return new RootImpl<X>( criteriaBuilder(), getEntityType() );
-	}
+    @Override
+    protected FromImplementor<X, X> createCorrelationDelegate() {
+        return new RootImpl<X>(criteriaBuilder(), getEntityType());
+    }
 
-	@Override
-	public RootImpl<X> correlateTo(CriteriaSubqueryImpl subquery) {
-		return (RootImpl<X>) super.correlateTo( subquery );
-	}
+    @Override
+    public RootImpl<X> correlateTo(CriteriaSubqueryImpl subquery) {
+        return (RootImpl<X>) super.correlateTo(subquery);
+    }
 
-	@Override
-	protected boolean canBeJoinSource() {
-		return allowJoins;
-	}
+    @Override
+    protected boolean canBeJoinSource() {
+        return allowJoins;
+    }
 
-	@Override
-	@SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-	protected RuntimeException illegalJoin() {
-		return allowJoins ? super.illegalJoin() : new IllegalArgumentException( "UPDATE/DELETE criteria queries cannot define joins" );
-	}
+    @Override
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    protected RuntimeException illegalJoin() {
+        return allowJoins ? super.illegalJoin() : new IllegalArgumentException("UPDATE/DELETE criteria queries cannot define joins");
+    }
 
-	@Override
-	@SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-	protected RuntimeException illegalFetch() {
-		return allowJoins ? super.illegalFetch() : new IllegalArgumentException( "UPDATE/DELETE criteria queries cannot define fetches" );
-	}
+    @Override
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    protected RuntimeException illegalFetch() {
+        return allowJoins ? super.illegalFetch() : new IllegalArgumentException("UPDATE/DELETE criteria queries cannot define fetches");
+    }
 
-	public String renderTableExpression(RenderingContext renderingContext) {
-		prepareAlias( renderingContext );
-		return getModel().getName() + " as " + getAlias();
-	}
+    public String renderTableExpression(RenderingContext renderingContext) {
+        prepareAlias(renderingContext);
+        return getModel().getName() + " as " + getAlias();
+    }
 
-	@Override
-	public String getPathIdentifier() {
-		return getAlias();
-	}
+    @Override
+    public String getPathIdentifier() {
+        return getAlias();
+    }
 
-	@Override
-	public String render(RenderingContext renderingContext) {
-		prepareAlias( renderingContext );
-		return getAlias();
-	}
+    @Override
+    public String render(RenderingContext renderingContext) {
+        prepareAlias(renderingContext);
+        return getAlias();
+    }
 
-	@Override
-	public String renderProjection(RenderingContext renderingContext) {
-		return render( renderingContext );
-	}
+    @Override
+    public String renderProjection(RenderingContext renderingContext) {
+        return render(renderingContext);
+    }
 
-	@Override
-	public <T extends X> RootImpl<T> treatAs(Class<T> treatAsType) {
-		return new TreatedRoot<T>( this, treatAsType );
-	}
+    @Override
+    public <T extends X> RootImpl<T> treatAs(Class<T> treatAsType) {
+        return new TreatedRoot<T>(this, treatAsType);
+    }
 
-	public static class TreatedRoot<T> extends RootImpl<T> {
-		private final RootImpl<? super T> original;
-		private final Class<T> treatAsType;
+    public static class TreatedRoot<T> extends RootImpl<T> {
+        private final RootImpl<? super T> original;
+        private final Class<T> treatAsType;
 
-		public TreatedRoot(RootImpl<? super T> original, Class<T> treatAsType) {
-			super(
-					original.criteriaBuilder(),
-					original.criteriaBuilder().getEntityManagerFactory().getMetamodel().entity( treatAsType )
-			);
-			this.original = original;
-			this.treatAsType = treatAsType;
-		}
+        public TreatedRoot(RootImpl<? super T> original, Class<T> treatAsType) {
+            super(
+                    original.criteriaBuilder(),
+                    original.criteriaBuilder().getEntityManagerFactory().getMetamodel().entity(treatAsType)
+            );
+            this.original = original;
+            this.treatAsType = treatAsType;
+        }
 
 
         @Override
-		public String getAlias() {
-			return original.getAlias();
-		}
+        public String getAlias() {
+            return original.getAlias();
+        }
 
-		@Override
-		public void prepareAlias(RenderingContext renderingContext) {
-			// NOTE : we call `original#prepareAlias` here and during render
-			//		since in some cases only one or the other will be called
-			original.prepareAlias( renderingContext );
-		}
+        @Override
+        public void prepareAlias(RenderingContext renderingContext) {
+            // NOTE : we call `original#prepareAlias` here and during render
+            //		since in some cases only one or the other will be called
+            original.prepareAlias(renderingContext);
+        }
 
-		@Override
-		public String render(RenderingContext renderingContext) {
-			original.prepareAlias( renderingContext );
-			return getTreatFragment();
-		}
+        @Override
+        public String render(RenderingContext renderingContext) {
+            original.prepareAlias(renderingContext);
+            return getTreatFragment();
+        }
 
-		protected String getTreatFragment() {
-			return "treat(" + original.getAlias() + " as " + treatAsType.getName() + ")";
-		}
+        protected String getTreatFragment() {
+            return "treat(" + original.getAlias() + " as " + treatAsType.getName() + ")";
+        }
 
-		@Override
-		public String getPathIdentifier() {
-			return getTreatFragment();
-		}
+        @Override
+        public String getPathIdentifier() {
+            return getTreatFragment();
+        }
 
-		@Override
-		protected PathSource getPathSourceForSubPaths() {
-			return this;
-		}
-	}
+        @Override
+        protected PathSource getPathSourceForSubPaths() {
+            return this;
+        }
+    }
 
 }

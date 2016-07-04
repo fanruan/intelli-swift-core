@@ -71,11 +71,6 @@ public class CriteriaSubqueryImpl<T> extends ExpressionImpl<T> implements Subque
     }
 
     @Override
-    public <X> Root<X> from(Class<X> entityClass) {
-        return queryStructure.from(entityClass);
-    }
-
-    @Override
     public <U> Subquery<U> subquery(EntityType<U> type) {
         return queryStructure.subquery(type.getJavaType());
     }

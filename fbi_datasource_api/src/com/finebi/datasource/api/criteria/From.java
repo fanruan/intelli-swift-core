@@ -2,7 +2,6 @@
 package com.finebi.datasource.api.criteria;
 
 import com.finebi.datasource.api.metamodel.EntityType;
-import com.finebi.datasource.api.metamodel.SingularAttribute;
 
 import java.util.Set;
 
@@ -52,55 +51,15 @@ public interface From<Z, X> extends Path<X> {
      */
     From<Z, X> getCorrelationParent();
 
-    /**
-     * Create an inner join to the specified single-valued
-     * attribute.
-     *
-     * @param attribute target of the join
-     * @return the resulting join
-     */
-    <Y> Join<X, Y> join(SingularAttribute<? super X, Y> attribute);
+
 
     Join join(EntityType entityType);
 
-    /**
-     * Create a join to the specified single-valued attribute
-     * using the given join type.
-     *
-     * @param attribute target of the join
-     * @param jt        join type
-     * @return the resulting join
-     */
-    <Y> Join<X, Y> join(SingularAttribute<? super X, Y> attribute, JoinType jt);
 
 
     <Y> Join<X, Y> join(EntityType<Y> entityType, JoinType jt);
     //String-based:
 
-    /**
-     * Create an inner join to the specified attribute.
-     *
-     * @param attributeName name of the attribute for the
-     *                      target of the join
-     * @return the resulting join
-     * @throws IllegalArgumentException if attribute of the given
-     *                                  name does not exist
-     */
-    <X, Y> Join<X, Y> join(String attributeName);
 
-
-    /**
-     * Create a join to the specified attribute using the given
-     * join type.
-     *
-     * @param attributeName name of the attribute for the
-     *                      target of the join
-     * @param jt            join type
-     * @return the resulting join
-     * @throws IllegalArgumentException if attribute of the given
-     *                                  name does not exist
-     */
-    <X, Y> Join<X, Y> join(String attributeName, JoinType jt);
-
-
+    EntityType<X> getEntityType();
 }

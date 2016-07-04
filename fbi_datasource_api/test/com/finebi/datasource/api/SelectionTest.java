@@ -199,7 +199,7 @@ public class SelectionTest extends TestCase {
                 };
 
 //                implicitParameterBindings.add(binding);
-                return parameterName;
+                return literal.toString();
             }
 
             public String getCastType(Class javaType) {
@@ -335,6 +335,127 @@ public class SelectionTest extends TestCase {
             Predicate condition = cb.in(main.get("id")).value(subquery);
             query.where(condition);
 
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/23
+     */
+    public void testWhereEq() {
+        try {
+            AspireContext context = new AspirContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.equal(root.get("id"), 2);
+            query.where(condition);
+
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/23
+     */
+    public void testWhereNotNull() {
+        try {
+            AspireContext context = new AspirContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.isNotNull(root.get("id"));
+            query.where(condition);
+
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/23
+     */
+    public void testWhereLike() {
+        try {
+            AspireContext context = new AspirContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.like(root.get("id"), "%a");
+            query.where(condition);
+
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/23
+     */
+    public void testWhereAnd() {
+        try {
+            AspireContext context = new AspirContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.like(root.get("id"), "%a");
+
+            query.where( cb.and(condition,cb.equal(root.get("id"),2)));
+
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/23
+     */
+    public void testSqrt() {
+        try {
+            AspireContext context = new AspirContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(cb.sqrt(root.get("id")));
             String result = ((CriteriaQueryImpl) query).render(getContext());
             System.out.println(result);
         } catch (Exception e) {
