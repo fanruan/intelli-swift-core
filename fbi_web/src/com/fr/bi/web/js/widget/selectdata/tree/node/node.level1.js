@@ -51,7 +51,7 @@ BI.SelectDataLevel1Node = BI.inherit(BI.NodeButton, {
                 el: {
                     type: "bi.layout"
                 },
-                width: 10
+                width: 20
             },{
                 width: 23,
                 el: this.checkbox

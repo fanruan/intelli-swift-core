@@ -98,7 +98,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     "dashboard-title-center" : "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height:25,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
                 validationChecker: function (v) {
@@ -177,7 +177,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE :
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
+                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name") + "?", function (v) {
                         if (v === true) {
                             self.model.destroy();
                         }
