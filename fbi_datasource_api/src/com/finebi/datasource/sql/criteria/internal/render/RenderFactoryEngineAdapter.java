@@ -8,8 +8,8 @@ import com.finebi.datasource.sql.criteria.internal.QueryStructure;
  * @author Connery
  * @since 4.0
  */
-public class RenderFactorySQL implements RenderFactory {
+public class RenderFactoryEngineAdapter implements RenderFactory {
     public QueryStructureBasicRender getQueryStructureRender(QueryStructure queryStructure, String driverTag) {
-        return new QueryStructureRender(queryStructure);
+        return new QueryStructureRenderFineEngine(queryStructure);
     }
 }

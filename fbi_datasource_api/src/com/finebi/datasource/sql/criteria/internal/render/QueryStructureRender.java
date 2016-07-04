@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public class QueryStructureRender implements Renderable<StringBuilder> {
+public class QueryStructureRender implements QueryStructureBasicRender<StringBuilder> {
     StringBuilder jpaqlQuery;
     QueryStructure queryStructure;
 
@@ -29,6 +29,7 @@ public class QueryStructureRender implements Renderable<StringBuilder> {
         this.queryStructure = queryStructure;
     }
 
+    @Override
     public StringBuilder getRenderResult() {
         return jpaqlQuery;
     }
