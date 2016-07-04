@@ -71,7 +71,7 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
     addItem: function () {
         var self = this;
         var item = {
-            type: "bi.target_style_condition_item",
+            type: "bi.chart_add_condition_item",
             range: {
                 min: 0,
                 max: 100,
