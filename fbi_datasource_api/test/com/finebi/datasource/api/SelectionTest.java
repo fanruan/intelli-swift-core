@@ -8,7 +8,7 @@ import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.ExplicitParameterInfo;
 import com.finebi.datasource.sql.criteria.internal.compile.ImplicitParameterBinding;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-import com.finebi.datasource.sql.criteria.internal.context.AspirContextImpl;
+import com.finebi.datasource.sql.criteria.internal.context.AspireContextImpl;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContext;
 import com.finebi.datasource.sql.criteria.internal.metamodel.*;
 import com.fr.fineengine.utils.StringHelper;
@@ -30,7 +30,7 @@ public class SelectionTest extends TestCase {
      */
     public void testSelect() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -217,7 +217,7 @@ public class SelectionTest extends TestCase {
      */
     public void testWhere() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -237,7 +237,7 @@ public class SelectionTest extends TestCase {
 
     public void testRootCount() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -254,7 +254,7 @@ public class SelectionTest extends TestCase {
 
     public void testCrossJoin() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -285,7 +285,7 @@ public class SelectionTest extends TestCase {
      */
     public void testSubquery() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
 
             CriteriaBuilder cb = manager.getCriteriaBuilder();
@@ -315,7 +315,7 @@ public class SelectionTest extends TestCase {
      */
     public void testSubquerySubquery() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
 
             CriteriaBuilder cb = manager.getCriteriaBuilder();
@@ -351,7 +351,7 @@ public class SelectionTest extends TestCase {
      */
     public void testWhereEq() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -376,7 +376,7 @@ public class SelectionTest extends TestCase {
      */
     public void testWhereNotNull() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -401,7 +401,7 @@ public class SelectionTest extends TestCase {
      */
     public void testWhereLike() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -425,7 +425,7 @@ public class SelectionTest extends TestCase {
      */
     public void testWhereAnd() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -450,7 +450,7 @@ public class SelectionTest extends TestCase {
      */
     public void testSqrt() {
         try {
-            AspireContext context = new AspirContextImpl();
+            AspireContext context = new AspireContextImpl();
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();

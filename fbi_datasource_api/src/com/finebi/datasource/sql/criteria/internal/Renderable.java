@@ -9,7 +9,9 @@ import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
  *
  * @author Steve Ebersole
  */
-public interface Renderable {
-	public String render(RenderingContext renderingContext);
-	public String renderProjection(RenderingContext renderingContext);
+public interface Renderable<T> {
+    public String render(RenderingContext renderingContext);
+
+    public String renderProjection(RenderingContext renderingContext);
+
 }
