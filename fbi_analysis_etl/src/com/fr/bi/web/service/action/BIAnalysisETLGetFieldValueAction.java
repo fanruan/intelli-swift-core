@@ -50,7 +50,9 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
             set.add(getter.getValue(i));
         }
         for (Object ob : set){
-            ja.put(getText(ob, filedType));
+            if (ob != null){
+                ja.put(getText(ob, filedType));
+            }
         }
         JSONObject result = new JSONObject();
         result.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
@@ -58,10 +60,10 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
     }
 
     private Object getText(Object ob, int fieldType) {
-        if (ob != null && fieldType == DBConstant.COLUMN.DATE){
+        if (fieldType == DBConstant.COLUMN.DATE){
             return DateUtils.format(new Date((Long)ob));
         }
-        return ob == null ? StringUtils.EMPTY : ob;
+        return ob;
     }
 
     @Override
