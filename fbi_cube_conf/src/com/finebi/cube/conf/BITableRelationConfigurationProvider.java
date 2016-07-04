@@ -255,5 +255,11 @@ public interface BITableRelationConfigurationProvider {
 
     IRelationContainer getForeignRelation(long userId, BusinessTable table) throws BITableAbsentException;
 
-
+    /**
+     * 关联是否已生成过cube
+     *
+     * @param tableRelation
+     * @return
+     */
+    boolean isRelationGenerated(long userId, BITableRelation tableRelation) throws BITableAbsentException, BIRelationAbsentException;
 }
