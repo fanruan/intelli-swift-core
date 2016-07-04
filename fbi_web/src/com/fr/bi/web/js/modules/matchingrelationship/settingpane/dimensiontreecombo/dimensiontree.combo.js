@@ -41,7 +41,7 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
-        this.popup.on(BI.SingleTreePopup.EVENT_CHANGE, function () {
+        this.popup.on(BI.DimensionTreePopup.EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
             self.combo.hideView();
             self.fireEvent(BI.DimensionTreeCombo.EVENT_CHANGE);
@@ -85,8 +85,9 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
             var fieldIds = BI.filter(initialFieldIds, function(idx, ids){
                 return BI.Utils.getFieldTypeByID(ids) === BI.Utils.getFieldTypeByDimensionID(o.dId);
             });
-            if (this._isSelfCircleTable(tId)) {
-                var pIds = [], fIds = [], map = {};
+            var pIds = [], fIds = [];
+            if (self._isSelfCircleTable(tId)) {
+                var map = {};
                 var relations = BI.Utils.getPathsFromTableAToTableB(tId, tId);
                 BI.each(relations, function (i, path) {
                     var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
@@ -152,6 +153,9 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
                 });
             }
             BI.each(fieldIds, function(id, fId){
+                if(pIds.contains(fId) || fIds.contains(fId)){
+                    return;
+                }
                 items.push({
                     pId: pId,
                     id: fId,

@@ -19,7 +19,7 @@ BI.DimensionTreePopup = BI.inherit(BI.Pane, {
         var self = this, o = this.options;
 
         this.tree = BI.createWidget({
-            type: 'bi.multilayer_select_level_tree',
+            type: 'bi.multilayer_single_level_tree',
             expander: {
                 isDefaultInit: true
             },
@@ -37,7 +37,7 @@ BI.DimensionTreePopup = BI.inherit(BI.Pane, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
-        this.tree.on(BI.LevelTree.EVENT_CHANGE, function () {
+        this.tree.on(BI.MultiLayerSelectLevelTree.EVENT_CHANGE, function () {
             self.fireEvent(BI.DimensionTreePopup.EVENT_CHANGE);
         });
 
@@ -59,5 +59,5 @@ BI.DimensionTreePopup = BI.inherit(BI.Pane, {
     }
 });
 
-BI.DimensionTreePopup.EVENT_CHANGE = "EVENT_CHANGE";
+BI.DimensionTreePopup.EVENT_CHANGE = "DimensionTreePopup.EVENT_CHANGE";
 $.shortcut("bi.dimension_tree_popup", BI.DimensionTreePopup);
