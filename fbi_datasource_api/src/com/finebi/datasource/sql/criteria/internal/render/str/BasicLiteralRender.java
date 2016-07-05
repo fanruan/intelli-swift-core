@@ -11,6 +11,7 @@ import com.finebi.datasource.sql.criteria.internal.render.LiteralRender;
 public abstract class BasicLiteralRender<T> implements LiteralRender {
     protected StringBuilder jpaqlQuery;
     private T delegate;
+    private boolean negated;
 
     public BasicLiteralRender(T delegate) {
         this.jpaqlQuery = new StringBuilder();
@@ -27,4 +28,13 @@ public abstract class BasicLiteralRender<T> implements LiteralRender {
         return jpaqlQuery.toString();
     }
 
+    @Override
+    public void negate() {
+        negated = true;
+    }
+
+    @Override
+    public boolean isNegated() {
+        return negated;
+    }
 }

@@ -8,12 +8,10 @@ import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
  * @author Connery
  * @since 4.0
  */
-public abstract class BasicEngineRender<T> implements RenderExtended<Object> {
-    protected Object jpaqlQuery;
+public abstract class BasicEngineRender<T, R> implements RenderExtended<R> {
     private T delegate;
 
     public BasicEngineRender(T delegate) {
-        this.jpaqlQuery = new StringBuilder();
         this.delegate = delegate;
 
     }
@@ -23,7 +21,7 @@ public abstract class BasicEngineRender<T> implements RenderExtended<Object> {
     }
 
     @Override
-    public Object getRenderResult() {
-        return jpaqlQuery;
+    public R getRenderResult() {
+        throw new UnsupportedOperationException();
     }
 }

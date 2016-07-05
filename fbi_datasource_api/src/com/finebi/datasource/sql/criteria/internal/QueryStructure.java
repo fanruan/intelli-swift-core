@@ -207,8 +207,7 @@ public class QueryStructure<T> implements Serializable {
     @SuppressWarnings({"unchecked"})
     public Object render(RenderingContext renderingContext) {
         RenderExtended render = (RenderExtended) criteriaBuilder.getEntityManagerFactory().getRenderFactory().getQueryStructureRender(this, "sql");
-        render.render(renderingContext);
-        return render.getRenderResult();
+        return render.render(renderingContext);
     }
 
     public boolean isSubQuery() {

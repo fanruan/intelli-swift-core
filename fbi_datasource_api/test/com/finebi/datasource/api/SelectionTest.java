@@ -147,7 +147,11 @@ public class SelectionTest extends TestCase {
         }
     }
 
-    public static RenderingContext getContext() {
+    private static RenderingContext getContext() {
+        return getContext(new RenderFactoryDebug());
+    }
+
+    public static RenderingContext getContext(final RenderFactory factory) {
         return new RenderingContext() {
             private int aliasCount;
             private int explicitParameterCount;
@@ -212,7 +216,7 @@ public class SelectionTest extends TestCase {
 
             @Override
             public RenderFactory getRenderFactory() {
-                return new RenderFactoryDebug();
+                return factory;
             }
 
             public String getCastType(Class javaType) {

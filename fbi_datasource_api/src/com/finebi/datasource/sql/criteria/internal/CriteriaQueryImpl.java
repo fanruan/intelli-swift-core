@@ -6,7 +6,6 @@ import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.sql.criteria.internal.compile.CompilableCriteria;
 import com.finebi.datasource.sql.criteria.internal.compile.CriteriaInterpretation;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-import com.fr.engine.model.DataModel;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -225,7 +224,6 @@ public class CriteriaQueryImpl<T> extends AbstractNode implements CriteriaQuery<
 
     @Override
     public CriteriaInterpretation interpret(RenderingContext renderingContext) {
-
         return null;
     }
 
@@ -233,8 +231,8 @@ public class CriteriaQueryImpl<T> extends AbstractNode implements CriteriaQuery<
         return queryStructure.render(renderingContext).toString();
     }
 
-    public DataModel renderData(RenderingContext renderingContext) {
-        return (DataModel) queryStructure.render(renderingContext);
+    public Object renderData(RenderingContext renderingContext) {
+        return queryStructure.render(renderingContext);
 
     }
 }

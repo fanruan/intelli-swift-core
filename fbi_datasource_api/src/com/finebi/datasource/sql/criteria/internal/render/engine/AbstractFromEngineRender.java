@@ -9,7 +9,7 @@ import com.finebi.datasource.sql.criteria.internal.path.AbstractFromImpl;
  * @author Connery
  * @since 4.0
  */
-public class AbstractFromEngineRender extends BasicEngineRender<AbstractFromImpl> {
+public class AbstractFromEngineRender extends BasicEngineRender<AbstractFromImpl, String> {
 
     public AbstractFromEngineRender(AbstractFromImpl delegate) {
         super(delegate);
