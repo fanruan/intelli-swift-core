@@ -109,11 +109,6 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
-    public GroupValueIndex getIndexByRow(int rowNumber) throws BIResourceInvalidException, BICubeIndexException {
-        return selfColumnEntity.getIndexByRow(rowNumber);
-    }
-
-    @Override
     public T getGroupValue(int position) {
         return selfColumnEntity.getGroupValue(position);
     }

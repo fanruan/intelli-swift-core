@@ -307,7 +307,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
         CubeColumnReaderService columnReaderService = getColumnReader(key);
         checkFieldPathIndex(key, relationList, columnReaderService);
-        return new BCubeValueEntryGetter(columnReaderService, relationList);
+        return new BICubeValueEntryGetter(columnReaderService, relationList);
     }
 
     @Override

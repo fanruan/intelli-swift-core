@@ -19,12 +19,12 @@ import java.util.List;
 /**
  * Created by 小灰灰 on 2016/7/5.
  */
-public class BCubeValueEntryGetter<T> implements ICubeValueEntryGetter {
+public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
     private CubeColumnReaderService<T> columnReaderService;
     private ICubeIndexDataGetterService indexDataGetterService;
     private CubeRelationEntityGetterService reverseRowGetter;
 
-    public BCubeValueEntryGetter(CubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
+    public BICubeValueEntryGetter(CubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
         this.columnReaderService = columnReaderService;
         if (isRelationIndex(relationList)) {
             try {

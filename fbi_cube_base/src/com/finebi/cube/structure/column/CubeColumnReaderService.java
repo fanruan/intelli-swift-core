@@ -52,14 +52,6 @@ public interface CubeColumnReaderService<T> extends ICubeIndexDataGetterService,
     T getOriginalValueByRow(int rowNumber);
 
     /**
-     * 根据数据库中的行号来获得相应的索引值
-     *
-     * @param rowNumber 行号
-     * @return 索引
-     */
-    GroupValueIndex getIndexByRow(int rowNumber) throws BIResourceInvalidException, BICubeIndexException;
-
-    /**
      * 根据分组值来获得相应的索引值
      * @param groupValues 分组值
      * @return 索引值

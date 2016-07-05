@@ -131,15 +131,6 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     }
 
     @Override
-    public GroupValueIndex getIndexByRow(int rowNumber) throws BIResourceInvalidException, BICubeIndexException {
-        Integer position = getPositionOfGroupByRow(rowNumber);
-        if (position != null) {
-            return getBitmapIndex(position);
-        }
-        return getNULLIndex(0);
-    }
-
-    @Override
     public GroupValueIndex getBitmapIndex(int position) throws BICubeIndexException {
         return indexDataService.getBitmapIndex(position);
     }

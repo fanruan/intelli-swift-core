@@ -8,13 +8,13 @@ import com.fr.bi.stable.structure.object.CubeValueEntry;
  */
 public interface ICubeValueEntryGetter {
     /**
-     * 根据行号获取改行对应的索引
+     * 根据行号获取该行对应的索引
      * @param row
      * @return
      */
     GroupValueIndex getIndexByRow(int row);
     /**
-     * 根据行号获取改行对应的CubeValueEntry
+     * 根据行号获取该行对应的CubeValueEntry
      * @param row
      * @return
      */
