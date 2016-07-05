@@ -266,9 +266,18 @@ BI.StyleTable = BI.inherit(BI.Widget, {
         }
 
         //表头
-        $table.find(".scroll-top-left .table,.scroll-top-right .table,.scroll-bottom-right .table > thead > tr,.sequence-table-title").css({
-            fontWeight: "bold",
+        $table.find(".scroll-top-left .table,.scroll-top-right .table").css({
             fontSize: "12px"
+        });
+        $table.find(".scroll-bottom-right .table > thead > tr,.sequence-table-title").css({
+            fontSize: "12px",
+            fontWeight: "bold"
+        });
+        $table.find(".scroll-top-left .table .header-cell-text").css({
+            fontWeight: "bold"
+        });
+        $table.find(".scroll-top-right .table").find(" .header-cell-text, .cross-table-target-header, .cross-item-cell, .summary-cell").css({
+            fontWeight: "bold"
         });
     },
 

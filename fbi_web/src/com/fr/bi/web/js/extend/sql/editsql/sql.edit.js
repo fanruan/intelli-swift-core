@@ -143,7 +143,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
     _createCenter: function(){
         var self = this;
         this.previewWrapper = BI.createWidget({
-            type: "bi.vertical"
+            type: "bi.preview_table"
         });
         this.previewTab = BI.createWidget({
             type: "bi.tab",
@@ -353,7 +353,6 @@ BI.EditSQL = BI.inherit(BI.Widget, {
     },
 
     _createPreviewTable: function(data){
-        this.previewWrapper.empty();
         var fieldNames = data.field_names, previewData = data.data;
         var header = [], items = [], columnSize = [];
         BI.each(fieldNames, function(i, field){
@@ -369,12 +368,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             });
             items.push(item);
         });
-        this.previewWrapper.addItem({
-            type: "bi.preview_table",
-            header: [header],
-            items: items,
-            columnSize: columnSize
-        });
+        this.previewWrapper.populate(items, [header]);
     },
 
     _populate: function(){

@@ -272,8 +272,8 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                 self.sortedFieldIdsArray.push(fId);
             }
         });
-        this.dataTableWrapper = BI.createWidget({
-            type: "bi.absolute",
+        this.dataTable = BI.createWidget({
+            type: "bi.preview_table",
             cls: "table-data-container"
         });
         this._refreshDataTable();
@@ -292,7 +292,7 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                 top: 0,
                 bottom: 0
             }, {
-                el: this.dataTableWrapper,
+                el: this.dataTable,
                 top: 0,
                 bottom: 0,
                 left: 175,
@@ -304,7 +304,6 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
     //根据选中的checkbox展示表格
     _refreshDataTable: function () {
         var self = this;
-        this.dataTableWrapper.empty();
         var header = [], items = [], dataArray = [], selectedFields = [];
         BI.each(this.checkBoxes, function (i, check) {
             if (check.isSelected()) {
@@ -345,26 +344,18 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
             BI.each(value, function (j, v) {
                 if (BI.isNotNull(items[j])) {
                     items[j].push({
-                        text: v
+                        text: v,
+                        height: 25
                     });
                 } else {
                     items.push([{
-                        text: v
+                        text: v,
+                        height: 25
                     }]);
                 }
             });
         });
-        this.dataTableWrapper.addItem({
-            el: {
-                type: "bi.preview_table",
-                header: [header],
-                items: items
-            },
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0
-        });
+        this.dataTable.populate(items, [header]);
     }
 });
 BI.DetailSelectDataPreviewPane.EVENT_CHANGE = "DetailSelectDataPreviewPane.EVENT_CHANGE";

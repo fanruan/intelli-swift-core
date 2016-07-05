@@ -2,6 +2,7 @@ package com.fr.bi.stable.engine.index;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Delete;
@@ -83,4 +84,5 @@ public interface BITableCubeFile extends Delete {
 
     GroupValueIndex getIndexByRow(BIKey key, int row, SingleUserNIOReadManager manager);
 
+    ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList, SingleUserNIOReadManager manager);
 }

@@ -160,7 +160,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 /**
                  * value值在子字段中的索引位置
                  */
-                int position = foreignColumn.getPositionOfGroup(primaryColumnValue);
+                int position = foreignColumn.getPositionOfGroupByGroupValue(primaryColumnValue);
                 /**
                  * 依据索引位置，取出索引
                  */

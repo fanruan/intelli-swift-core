@@ -13,14 +13,13 @@ import com.fr.bi.cal.stable.io.NIOReadGroupMap;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.manager.PlugManager;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
-import com.fr.bi.stable.connection.DirectTableConnection;
+import com.fr.bi.stable.connection.DirectTableConnectionFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.util.BIConfUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.pinyin.PinyinHelper;
 
@@ -187,8 +186,7 @@ public class ControlShowValueCalculator {
         final Set<String> set = new TreeSet<String>(rank == BIReportConstant.SORT.ASC
                 ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC);
         final ICubeTableService ti = sessionIDInfo.getLoader().getTableIndex(currentKey.getField().getTableBelongTo().getTableSource());
-        DirectTableConnection c = BIConfUtils.createDirectTableConnection(relation, sessionIDInfo.getLoader());
-        final ConnectionRowGetter getter = new ConnectionRowGetter(c);
+        final ConnectionRowGetter getter = DirectTableConnectionFactory.createConnectionRow(Arrays.asList(relation), sessionIDInfo.getLoader());
         final BIKey index = currentKey.createKey();
         final ICubeColumnDetailGetter columnDetailReader = ti.getColumnDetailReader(index);
         parentIndex.BrokenableTraversal(new BrokenTraversalAction() {
@@ -230,8 +228,7 @@ public class ControlShowValueCalculator {
             final Set<String> set = new TreeSet<String>(rank == BIReportConstant.SORT.ASC
                     ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC);
             final ICubeTableService ti = sessionIDInfo.getLoader().getTableIndex(currentKey.getField().getTableBelongTo().getTableSource());
-            DirectTableConnection c = BIConfUtils.createDirectTableConnection(currentKey.getRelationList(), sessionIDInfo.getLoader());
-            final ConnectionRowGetter getter = new ConnectionRowGetter(c);
+            final ConnectionRowGetter getter = DirectTableConnectionFactory.createConnectionRow(currentKey.getRelationList(), sessionIDInfo.getLoader());
             final BIKey index = currentKey.createKey();
             final ICubeColumnDetailGetter columnDetailReader = ti.getColumnDetailReader(index);
             parentIndex.BrokenableTraversal(new BrokenTraversalAction() {

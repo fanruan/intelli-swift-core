@@ -20,7 +20,7 @@ BI.DetailNumberDimensionCombo = BI.inherit(BI.Widget, {
             iconCls: "detail-dimension-set-font",
             items: [
                 [{
-                    text: BI.i18nText("BI-Format_Setting"),
+                    text: BI.i18nText("BI-BI-Style_Setting"),
                     value: BICst.DETAIL_NUMBER_COMBO.FORM_SETTING
                 }],
                 [{
