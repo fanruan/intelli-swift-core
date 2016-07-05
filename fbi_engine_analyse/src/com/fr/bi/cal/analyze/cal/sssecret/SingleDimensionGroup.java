@@ -15,7 +15,6 @@ import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.cal.store.UserRightColumnKey;
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
-import com.fr.bi.stable.connection.DirectTableConnectionFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -229,8 +228,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     private Iterator getIterByAllValue() {
         TreeSet treeSet = new TreeSet(root.getComparator());
         Object[] res = TableIndexUtils.getValueFromGvi(loader.getTableIndex(column.getField().getTableBelongTo().getTableSource()),
-                column.createKey(), new GroupValueIndex[]{root.getGroupValueIndex()},
-                        DirectTableConnectionFactory.createConnectionRow(column.getRelationList(), getLoader()));
+                column.createKey(), new GroupValueIndex[]{root.getGroupValueIndex()}, column.getRelationList());
         for (int k = 0; k < res.length; k++) {
             if (res[k] != null) {
                 treeSet.add(res[k]);
