@@ -13,6 +13,7 @@ public interface ICubeValueEntryGetter {
      * @return
      */
     GroupValueIndex getIndexByRow(int row);
+
     /**
      * 根据行号获取该行对应的CubeValueEntry
      * @param row

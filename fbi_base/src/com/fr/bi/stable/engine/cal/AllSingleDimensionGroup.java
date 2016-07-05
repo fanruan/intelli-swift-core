@@ -10,9 +10,12 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.structure.CubeValueEntryNode;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.bi.stable.structure.object.CubeValueEntrySort;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Daniel
@@ -49,7 +52,7 @@ public class AllSingleDimensionGroup {
         final ICubeValueEntryGetter getter = ti.getValueEntryGetter(key, new ArrayList<BITableSourceRelation>());
 		while(!adapter.get().isAllEmpty()){
 			adapter.get().BrokenableTraversal(new BrokenTraversalAction() {
-				
+
 				@Override
 				public boolean actionPerformed(int row) {
 					GroupValueIndex gvi = getter.getIndexByRow(row);
@@ -63,6 +66,24 @@ public class AllSingleDimensionGroup {
 			});
 		}
 	}
+
+    public static Set getAllValue(GroupValueIndex parentIndex, final ICubeValueEntryGetter getter){
+        final Set set = new HashSet();
+        final FinalAdapter<GroupValueIndex> adapter = new FinalAdapter<GroupValueIndex>(parentIndex.clone());
+        while(!adapter.get().isAllEmpty()){
+            adapter.get().BrokenableTraversal(new BrokenTraversalAction() {
+                @Override
+                public boolean actionPerformed(int row) {
+                    CubeValueEntry entry = getter.getEntryByRow(row);
+                    GroupValueIndex currentIndex = adapter.get().AND(entry.getGvi());
+                    set.add(entry.getT());
+                    adapter.set(adapter.get().andnot(currentIndex));
+                    return true;
+                }
+            });
+        }
+        return set;
+    }
 
 	public static void run(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final NodeResultDealer deal, final CubeValueEntryNode snParent){
 		GroupValueIndex currentIndex = parentIndex.clone();
