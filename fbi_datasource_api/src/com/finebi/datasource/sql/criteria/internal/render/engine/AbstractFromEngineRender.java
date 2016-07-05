@@ -2,7 +2,6 @@ package com.finebi.datasource.sql.criteria.internal.render.engine;
 
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractFromImpl;
-import com.finebi.datasource.sql.criteria.internal.render.str.BasicLiteralRender;
 
 /**
  * This class created on 2016/7/4.
@@ -10,7 +9,7 @@ import com.finebi.datasource.sql.criteria.internal.render.str.BasicLiteralRender
  * @author Connery
  * @since 4.0
  */
-public class AbstractFromEngineRender extends BasicLiteralRender<AbstractFromImpl> {
+public class AbstractFromEngineRender extends BasicEngineRender<AbstractFromImpl> {
 
     public AbstractFromEngineRender(AbstractFromImpl delegate) {
         super(delegate);

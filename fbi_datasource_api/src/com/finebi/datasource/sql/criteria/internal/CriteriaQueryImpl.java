@@ -230,13 +230,11 @@ public class CriteriaQueryImpl<T> extends AbstractNode implements CriteriaQuery<
     }
 
     public String render(RenderingContext renderingContext) {
-        StringBuilder sb = new StringBuilder("");
-        return queryStructure.render(sb, renderingContext).toString();
+        return queryStructure.render(renderingContext).toString();
     }
 
     public DataModel renderData(RenderingContext renderingContext) {
-        StringBuilder sb = new StringBuilder("");
-        return (DataModel) queryStructure.render(sb, renderingContext);
+        return (DataModel) queryStructure.render(renderingContext);
 
     }
 }

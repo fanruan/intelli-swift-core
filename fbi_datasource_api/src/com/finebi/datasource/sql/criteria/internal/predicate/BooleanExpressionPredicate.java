@@ -1,13 +1,13 @@
 
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import java.io.Serializable;
 import com.finebi.datasource.api.criteria.Expression;
-
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+
+import java.io.Serializable;
 
 /**
  * Defines a {@link com.finebi.datasource.api.criteria.Predicate} used to wrap an {@link Expression Expression&lt;Boolean&gt;}.
@@ -40,6 +40,6 @@ public class BooleanExpressionPredicate
 
 	@Override
 	public String render(boolean isNegated, RenderingContext renderingContext) {
-		return ( (Renderable) getExpression() ).render( renderingContext );
+		return ( (Renderable) getExpression() ).render( renderingContext ).toString();
 	}
 }

@@ -219,7 +219,7 @@ public class CriteriaSubqueryImpl<T> extends ExpressionImpl<T> implements Subque
     @Override
     public String render(RenderingContext renderingContext) {
         StringBuilder subqueryBuffer = new StringBuilder("(");
-        queryStructure.render(subqueryBuffer, renderingContext);
+        queryStructure.render(renderingContext);
         subqueryBuffer.append(')');
         return subqueryBuffer.toString();
     }

@@ -9,6 +9,7 @@ import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.api.metamodel.ManagedType;
 import com.finebi.datasource.sql.criteria.internal.*;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -67,13 +68,13 @@ public abstract class AbstractFromImpl<Z, X>
     }
 
     @Override
-    public String renderProjection(RenderingContext renderingContext) {
-        prepareAlias(renderingContext);
-        return getAlias();
+    public Object renderProjection(RenderingContext renderingContext) {
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getAbstractFromRender(this, "d");
+        return renderExtended.getRenderResult();
     }
 
     @Override
-    public String render(RenderingContext renderingContext) {
+    public Object render(RenderingContext renderingContext) {
         return renderProjection(renderingContext);
     }
 
@@ -215,7 +216,6 @@ public abstract class AbstractFromImpl<Z, X>
         joinScope.addJoin(join);
         return join;
     }
-
 
 
     private <Y> JoinImplementor<X, Y> constructJoin(EntityType<Y> entityType, JoinType jt) {

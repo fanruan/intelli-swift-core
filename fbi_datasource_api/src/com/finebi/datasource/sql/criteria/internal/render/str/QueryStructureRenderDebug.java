@@ -9,7 +9,6 @@ import com.finebi.datasource.sql.criteria.internal.JoinImplementor;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
 import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-import com.finebi.datasource.sql.criteria.internal.render.QueryStructureRender;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,52 +20,45 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public class QueryStructureRenderDebug implements QueryStructureRender<StringBuilder> {
-    StringBuilder jpaqlQuery;
-    QueryStructure queryStructure;
+public class QueryStructureRenderDebug extends BasicLiteralRender<QueryStructure> {
 
-    public QueryStructureRenderDebug(QueryStructure queryStructure) {
-        this.jpaqlQuery = new StringBuilder();
-        this.queryStructure = queryStructure;
-    }
 
-    @Override
-    public StringBuilder getRenderResult() {
-        return jpaqlQuery;
+    public QueryStructureRenderDebug(QueryStructure delegate) {
+        super(delegate);
     }
 
     @Override
     public String render(RenderingContext renderingContext) {
         jpaqlQuery.append("select ");
-        if (queryStructure.isDistinct()) {
+        if (getDelegate().isDistinct()) {
             jpaqlQuery.append("distinct ");
         }
-        if (queryStructure.getSelection() == null) {
+        if (getDelegate().getSelection() == null) {
             jpaqlQuery.append(locateImplicitSelection().renderProjection(renderingContext));
         } else {
-            jpaqlQuery.append(((Renderable) queryStructure.getSelection()).renderProjection(renderingContext));
+            jpaqlQuery.append(((Renderable) getDelegate().getSelection()).renderProjection(renderingContext));
         }
 
         renderFromClause(jpaqlQuery, renderingContext);
 
-        if (queryStructure.getRestriction() != null) {
+        if (getDelegate().getRestriction() != null) {
             jpaqlQuery.append(" where ")
-                    .append(((Renderable) queryStructure.getRestriction()).render(renderingContext));
+                    .append(((Renderable) getDelegate().getRestriction()).render(renderingContext));
         }
 
-        if (!queryStructure.getGroupings().isEmpty()) {
+        if (!getDelegate().getGroupings().isEmpty()) {
             jpaqlQuery.append(" group by ");
             String sep = "";
-            List<Expression<?>> expressions = queryStructure.getGroupings();
+            List<Expression<?>> expressions = getDelegate().getGroupings();
             for (Expression grouping : expressions) {
                 jpaqlQuery.append(sep)
                         .append(((Renderable) grouping).render(renderingContext));
                 sep = ", ";
             }
 
-            if (queryStructure.getHaving() != null) {
+            if (getDelegate().getHaving() != null) {
                 jpaqlQuery.append(" having ")
-                        .append(((Renderable) queryStructure.getHaving()).render(renderingContext));
+                        .append(((Renderable) getDelegate().getHaving()).render(renderingContext));
             }
         }
         return jpaqlQuery.toString();
@@ -75,12 +67,12 @@ public class QueryStructureRenderDebug implements QueryStructureRender<StringBui
     public FromImplementor locateImplicitSelection() {
         FromImplementor implicitSelection = null;
 
-        if (!queryStructure.isSubQuery()) {
+        if (!getDelegate().isSubQuery()) {
             // we should have only a single root (query validation should have checked this...)
-            implicitSelection = (FromImplementor) queryStructure.getRoots().iterator().next();
+            implicitSelection = (FromImplementor) getDelegate().getRoots().iterator().next();
         } else {
             // we should only have a single "root" which can act as the implicit selection
-            final Set<Join<?, ?>> correlatedJoins = queryStructure.collectCorrelatedJoins();
+            final Set<Join<?, ?>> correlatedJoins = getDelegate().collectCorrelatedJoins();
             if (correlatedJoins != null) {
                 if (correlatedJoins.size() == 1) {
                     implicitSelection = (FromImplementor) correlatedJoins.iterator().next();
@@ -98,7 +90,7 @@ public class QueryStructureRenderDebug implements QueryStructureRender<StringBui
     private void renderFromClause(StringBuilder jpaqlQuery, RenderingContext renderingContext) {
         jpaqlQuery.append(" from ");
         String sep = "";
-        Set<Root<?>> roots = queryStructure.getRoots();
+        Set<Root<?>> roots = getDelegate().getRoots();
 
         for (Root root : roots) {
             ((FromImplementor) root).prepareAlias(renderingContext);
@@ -110,9 +102,9 @@ public class QueryStructureRenderDebug implements QueryStructureRender<StringBui
             renderJoins(jpaqlQuery, renderingContext, root.getJoins());
         }
 
-        if (queryStructure.isSubQuery()) {
-            if (queryStructure.getCorrelationRoots() != null) {
-                Set<FromImplementor<?, ?>> correlationRoots = queryStructure.getCorrelationRoots();
+        if (getDelegate().isSubQuery()) {
+            if (getDelegate().getCorrelationRoots() != null) {
+                Set<FromImplementor<?, ?>> correlationRoots = getDelegate().getCorrelationRoots();
                 for (FromImplementor<?, ?> correlationRoot : correlationRoots) {
                     final FromImplementor correlationParent = correlationRoot.getCorrelationParent();
                     correlationParent.prepareAlias(renderingContext);

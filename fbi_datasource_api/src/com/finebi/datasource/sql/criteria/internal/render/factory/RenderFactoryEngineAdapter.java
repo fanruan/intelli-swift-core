@@ -6,7 +6,7 @@ import com.finebi.datasource.sql.criteria.internal.path.AbstractFromImpl;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
 import com.finebi.datasource.sql.criteria.internal.path.RootImpl;
 import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
-import com.finebi.datasource.sql.criteria.internal.render.RenderFactory;
+import com.finebi.datasource.sql.criteria.internal.render.engine.AbstractPathEngineRender;
 import com.finebi.datasource.sql.criteria.internal.render.engine.QueryStructureRenderFineEngine;
 
 /**
@@ -22,7 +22,7 @@ public class RenderFactoryEngineAdapter implements RenderFactory {
 
     @Override
     public Object getAbstractPathRender(AbstractPathImpl path, String driverTag) {
-        return null;
+        return new AbstractPathEngineRender(path);
     }
 
     @Override

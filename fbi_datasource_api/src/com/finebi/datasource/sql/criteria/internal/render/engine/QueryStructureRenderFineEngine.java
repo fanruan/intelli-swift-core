@@ -1,7 +1,6 @@
 package com.finebi.datasource.sql.criteria.internal.render.engine;
 
 import com.finebi.datasource.api.criteria.Root;
-import com.finebi.datasource.api.metamodel.Attribute;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
@@ -62,11 +61,10 @@ public class QueryStructureRenderFineEngine implements RenderExtended<DataModel>
             AbstractPathImpl selection = (AbstractPathImpl) queryStructure.getSelection();
             List<Projection> projections = new ArrayList<Projection>();
 
-            if (selection.getPathSource() != null) {
-                Attribute<?, ?> attribute = selection.getAttribute();
-                final Projection idA = Projections.field(attribute.getName(), covert(attribute.getJavaType()));
-                projections.add(idA);
-            }
+
+            final Projection projection = (Projection) selection.render(renderingContext);
+            projections.add(projection);
+
             builder.setProjections(projections);
             builder.setSummaryInfo(new SummaryInfo() {
                 @Override
