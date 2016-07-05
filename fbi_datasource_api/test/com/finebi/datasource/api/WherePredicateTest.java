@@ -197,22 +197,22 @@ public class WherePredicateTest extends TestCase {
      * Author:Osborn
      * Date:2016/7/5
      */
-    public void testRootCount() {
-        try {
-
-            CriteriaBuilder cb = manager.getCriteriaBuilder();
-            CriteriaQuery<PlainTable> query = cb.createQuery();
-            Root root = query.from(getEntity());
-            Expression count = cb.count(root);
-            query.select(count);
-            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
-            assertEquals("select count(*) from jpa as generatedAlias0", result);
-            System.out.println(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
-        }
-    }
+//    public void testRootCount() {
+//        try {
+//
+//            CriteriaBuilder cb = manager.getCriteriaBuilder();
+//            CriteriaQuery<PlainTable> query = cb.createQuery();
+//            Root root = query.from(getEntity());
+//            Expression count = cb.count(root);
+//            query.select(count);
+//            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+//            assertEquals("select count(*) from jpa as generatedAlias0", result);
+//            System.out.println(result);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            assertTrue(false);
+//        }
+//    }
 
 
     private Object executeQuery(CriteriaQuery query) {
@@ -224,6 +224,28 @@ public class WherePredicateTest extends TestCase {
         return cb;
     }
 
+    public void testSubQuery() {
+        try {
+
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+
+            Subquery subquery = query.subquery(getEntity());
+            Root subRoot = subquery.from(getEntity());
+            subquery.select(subRoot.get("id"));
+            Root root = query.from(getEntity());
+            query.select(root);
+
+            Predicate condition = cb.in(subRoot.get("id")).value(subquery);
+            query.where(condition);
+
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 
     public void testWhereExists() {
         try {
@@ -256,7 +278,6 @@ public class WherePredicateTest extends TestCase {
      */
     public void testWhereEq() {
         try {
-
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -264,8 +285,26 @@ public class WherePredicateTest extends TestCase {
             query.select(root);
             Predicate condition = cb.equal(root.get("id"), 2);
             query.where(condition);
-
             String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id=2",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereNotEq() {
+        try {
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.notEqual(root.get("id"), 2);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id<>2",result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -302,7 +341,7 @@ public class WherePredicateTest extends TestCase {
      * Author:Connery
      * Date:2016/6/23
      */
-    public void testWhereNotNull() {
+    public void testWhereIsNotNull() {
         try {
 
             CriteriaBuilder cb = manager.getCriteriaBuilder();
@@ -326,7 +365,7 @@ public class WherePredicateTest extends TestCase {
      * Author:Connery
      * Date:2016/6/23
      */
-    public void testWhereNull() {
+    public void testWhereIsNull() {
         try {
 
             CriteriaBuilder cb = manager.getCriteriaBuilder();
@@ -361,6 +400,7 @@ public class WherePredicateTest extends TestCase {
             Predicate condition = cb.like(root.get("id"), "%a");
             query.where(condition);
             String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id like :%a",result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -384,6 +424,7 @@ public class WherePredicateTest extends TestCase {
             Predicate condition = cb.notLike(root.get("id"), "%a_");
             query.where(condition);
             String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id not like :%a_",result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -409,6 +450,27 @@ public class WherePredicateTest extends TestCase {
             query.where(cb.and(condition, cb.equal(root.get("id"), 2)));
 
             String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where ( generatedAlias0.id like :%a ) and ( generatedAlias0.id=2 )",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereOr() {
+        try {
+
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.like(root.get("id"), "%a");
+
+            query.where(cb.or(condition, cb.equal(root.get("id"), 2)));
+
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where ( generatedAlias0.id like :%a ) or ( generatedAlias0.id=2 )",result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -421,72 +483,89 @@ public class WherePredicateTest extends TestCase {
      * Detail:
      * Author:Connery
      * Date:2016/6/23
-     */
-    public void testSqrt() {
-        try {
+//     */
+//    public void testSqrt() {
+//        try {
+//
+//            CriteriaBuilder cb = manager.getCriteriaBuilder();
+//            CriteriaQuery<PlainTable> query = cb.createQuery();
+//            Root root = query.from(getEntity());
+//            query.select(cb.sqrt(root.get("id")));
+//            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+//            assertEquals("select sqrt(generatedAlias0.id) from jpa as generatedAlias0", result);
+//            System.out.println(result);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            assertTrue(false);
+//        }
+//    }
 
-            CriteriaBuilder cb = manager.getCriteriaBuilder();
-            CriteriaQuery<PlainTable> query = cb.createQuery();
-            Root root = query.from(getEntity());
-            query.select(cb.sqrt(root.get("id")));
-            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
-            assertEquals("select sqrt(generatedAlias0.id) from jpa as generatedAlias0", result);
-            System.out.println(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
-        }
-    }
+//    public void testGroupBy() {
+//        try {
+//
+//            CriteriaBuilder cb = manager.getCriteriaBuilder();
+//            CriteriaQuery query = cb.createQuery();
+//            Root root = query.from(getEntity());
+//            query.select(root);
+//            query.groupBy(root.get("A_name"));
+//            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+//            assertEquals("select generatedAlias0 from jpa as generatedAlias0 group by generatedAlias0.A_name", result);
+//            System.out.println(result);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            assertTrue(false);
+//        }
+//    }
 
-    public void testGroupBy() {
-        try {
-
-            CriteriaBuilder cb = manager.getCriteriaBuilder();
-            CriteriaQuery query = cb.createQuery();
-            Root root = query.from(getEntity());
-            query.select(root);
-            query.groupBy(root.get("A_name"));
-            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
-            assertEquals("select generatedAlias0 from jpa as generatedAlias0 group by generatedAlias0.A_name", result);
-            System.out.println(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
-        }
-    }
-
-    public void testHaving() {
-        try {
-
-            CriteriaBuilder cb = manager.getCriteriaBuilder();
-            CriteriaQuery query = cb.createQuery();
-            Root root = query.from(getEntity());
-            query.select(root);
-            query.groupBy(root.get("A_name"));
-            Predicate condition = cb.like(root.get("A_name"), "_a%");
-            query.having(condition);
-            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
-            assertEquals("select generatedAlias0 from jpa as generatedAlias0 group by generatedAlias0.A_name having generatedAlias0.A_name like :_a%", result);
-            System.out.println(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
-        }
-    }
+//    public void testHaving() {
+//        try {
+//
+//            CriteriaBuilder cb = manager.getCriteriaBuilder();
+//            CriteriaQuery query = cb.createQuery();
+//            Root root = query.from(getEntity());
+//            query.select(root);
+//            query.groupBy(root.get("A_name"));
+//            Predicate condition = cb.like(root.get("A_name"), "_a%");
+//            query.having(condition);
+//            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+//            assertEquals("select generatedAlias0 from jpa as generatedAlias0 group by generatedAlias0.A_name having generatedAlias0.A_name like :_a%", result);
+//            System.out.println(result);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            assertTrue(false);
+//        }
+//    }
 
     /**
      * Author:Osborn
      * Date:2016/7/5
      */
-    public void testOrderBy() {
-        try {
+//    public void testOrderBy() {
+//        try {
+//            CriteriaBuilder cb = manager.getCriteriaBuilder();
+//            CriteriaQuery query = cb.createQuery();
+//            Root root = query.from(getEntity());
+//            query.select(root);
+//            query.orderBy(cb.asc(root.get("id")));
+//            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+//            System.out.println(result);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            assertTrue(false);
+//        }
+//    }
 
+    public void testWhereGreaterThan() {
+        try {
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery query = cb.createQuery();
             Root root = query.from(getEntity());
             query.select(root);
-            query.orderBy(cb.asc(root.get("id")));
+            Predicate condition = cb.greaterThan(root.get("id"), 1);
+            query.where(condition);
             String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id>1",result);
             System.out.println(result);
 
         } catch (Exception e) {
@@ -494,6 +573,157 @@ public class WherePredicateTest extends TestCase {
             assertTrue(false);
         }
     }
-    
+
+    public void testWhereGreaterThanOrEq() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.greaterThanOrEqualTo(root.get("id"), 1);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id>=1",result);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereLessThan() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.lessThan(root.get("id"), 1);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id<1",result);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereLessThanOrEq() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.lessThanOrEqualTo(root.get("id"), 1);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id<=1",result);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereIsTrue() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.isTrue(cb.lessThanOrEqualTo(root.get("id"), 1));
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+//            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id<=1",result);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereIsFalse() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.isFalse(cb.lessThanOrEqualTo(root.get("id"), 1));
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+//            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id<=1",result);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereSome() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Subquery subquery = query.subquery(getEntity());
+            Root subRoot = subquery.from(getEntity());
+            subquery.select(subRoot.get("id"));
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.greaterThan(cb.some(subquery),3);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where some ()>3",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+    }
+
+    public void testWhereAll() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Subquery subquery = query.subquery(getEntity());
+            Root subRoot = subquery.from(getEntity());
+            subquery.select(subRoot.get("id"));
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.greaterThan(cb.all(subquery),3);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where all ()>3",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+    }
+
+    public void testWhereAny() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Subquery subquery = query.subquery(getEntity());
+            Root subRoot = subquery.from(getEntity());
+            subquery.select(subRoot.get("id"));
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.greaterThan(cb.any(subquery),3);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where any ()>3",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 }
 
