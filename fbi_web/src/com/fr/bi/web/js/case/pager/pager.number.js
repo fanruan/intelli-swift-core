@@ -96,11 +96,11 @@ BI.NumberPager = BI.inherit(BI.Widget, {
     },
 
     hasPrev: function () {
-
+        return this.pager.hasPrev();
     },
 
     hasNext: function () {
-
+        return this.pager.hasNext();
     },
 
     setValue: function (v) {
