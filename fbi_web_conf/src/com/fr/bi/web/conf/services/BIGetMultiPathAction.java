@@ -57,6 +57,7 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         jo.put("disabledRelations", multiPathJo.optJSONArray("disabledRelations"));
         jo.put("availableRelations", multiPathJo.optJSONArray("availableRelations"));
         jo.put("noneRelations", multiPathJo.optJSONArray("noneRelations"));
+        jo.put("needGenerateCube", multiPathJo.optInt("needGenerateCube"));
         WebUtils.printAsJSON(res, jo);
     }
 
@@ -140,6 +141,7 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         jo.put("disabledRelations", path2relations(disabledMultiSet));
         jo.put("availableRelations", path2relations(availableMultiSet));
         jo.put("noneRelations", path2relations(noneMultiSet));
+        jo.put("needGenerateCube", BIConfigureManagerCenter.getCubeConfManager().getMultiPathLastModify());
         return jo;
     }
 

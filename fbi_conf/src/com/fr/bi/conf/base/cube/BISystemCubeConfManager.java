@@ -4,6 +4,7 @@ import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.conf.provider.BICubeConfManagerProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
@@ -92,6 +93,25 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
             BILogger.getLogger().error(e.getMessage(), e);
         }
         return System.currentTimeMillis();
+    }
+
+    @Override
+    public void updateMultiPathLastModify(int needGenerateCube) {
+        try {
+            getValue(UserControl.getInstance().getSuperManagerID()).setMultiPathLastModify(needGenerateCube);
+        } catch (BIKeyAbsentException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+    }
+
+    @Override
+    public int getMultiPathLastModify() {
+        try {
+            return getValue(UserControl.getInstance().getSuperManagerID()).getMultiPathLastModify();
+        } catch (BIKeyAbsentException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return BIReportConstant.MULTIPATH.NOTNEEDGENERATECUBE;
     }
 
     @Override

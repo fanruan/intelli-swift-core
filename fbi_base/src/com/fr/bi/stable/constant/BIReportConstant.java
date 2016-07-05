@@ -529,5 +529,10 @@ public class BIReportConstant {
 
     }
 
+    public static final class MULTIPATH {
+        public static final int NEEDGENERATECUBE = 0;
+        public static final int NOTNEEDGENERATECUBE = 1;
+    }
+
 
 }

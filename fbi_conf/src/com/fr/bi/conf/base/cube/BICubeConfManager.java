@@ -32,6 +32,8 @@ public class BICubeConfManager {
 
     private long packageLastModify;
 
+    private int multiPathLastModify;
+
     public String getCubePath() {
         return cubePath;
     }
@@ -56,6 +58,14 @@ public class BICubeConfManager {
         this.packageLastModify = packageLastModify;
     }
 
+    public int getMultiPathLastModify() {
+        return multiPathLastModify;
+    }
+
+    public void setMultiPathLastModify(int multiPathLastModify) {
+        this.multiPathLastModify = multiPathLastModify;
+    }
+
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         if (cubePath != null) {
@@ -67,12 +77,12 @@ public class BICubeConfManager {
         return jo;
     }
 
-    public Object getFieldValue(BusinessField ck,long userId) {
+    public Object getFieldValue(BusinessField ck, long userId) {
         try {
             ICubeDataLoader loader = BICubeManager.getInstance().fetchCubeLoader(userId);
             String userName = UserControl.getInstance().getUser(userId).getUsername();
             BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(loginField));
-            BITableRelationPath firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userId, ck.getTableBelongTo(),field.getTableBelongTo());
+            BITableRelationPath firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userId, ck.getTableBelongTo(), field.getTableBelongTo());
             List<BITableRelation> relations;
             relations = firstPath.getAllRelations();
             BIKey userNameIndex = new IndexKey(field.getFieldName());

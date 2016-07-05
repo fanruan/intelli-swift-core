@@ -23,6 +23,10 @@ public interface BICubeConfManagerProvider {
 
     long getPackageLastModify();
 
+    void updateMultiPathLastModify(int needGenerateCube);
+
+    int getMultiPathLastModify();
+
     JSONObject createJSON(long userId) throws Exception;
 
     @Deprecated
