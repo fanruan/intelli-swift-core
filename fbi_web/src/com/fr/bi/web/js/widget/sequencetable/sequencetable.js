@@ -70,7 +70,6 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
 
             hideHorizontalScrollChecker: o.hideHorizontalScrollChecker,
 
-            pageSpace: 108,
             isNeedResize: o.isNeedResize,
             isResizeAdapt: o.isResizeAdapt,
 
