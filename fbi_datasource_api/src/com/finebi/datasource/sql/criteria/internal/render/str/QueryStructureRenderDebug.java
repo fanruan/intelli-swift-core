@@ -1,4 +1,4 @@
-package com.finebi.datasource.sql.criteria.internal.render;
+package com.finebi.datasource.sql.criteria.internal.render.str;
 
 import com.finebi.datasource.api.criteria.Expression;
 import com.finebi.datasource.api.criteria.Join;
@@ -9,6 +9,7 @@ import com.finebi.datasource.sql.criteria.internal.JoinImplementor;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
 import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.QueryStructureRender;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,11 +21,11 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public class QueryStructureRender implements QueryStructureBasicRender<StringBuilder> {
+public class QueryStructureRenderDebug implements QueryStructureRender<StringBuilder> {
     StringBuilder jpaqlQuery;
     QueryStructure queryStructure;
 
-    public QueryStructureRender(QueryStructure queryStructure) {
+    public QueryStructureRenderDebug(QueryStructure queryStructure) {
         this.jpaqlQuery = new StringBuilder();
         this.queryStructure = queryStructure;
     }

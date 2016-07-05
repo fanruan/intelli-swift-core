@@ -8,6 +8,6 @@ import com.finebi.datasource.sql.criteria.internal.Renderable;
  * @author Connery
  * @since 4.0
  */
-public interface QueryStructureBasicRender<T> extends Renderable<T> {
+public interface LiteralRender<T> extends Renderable<T> {
     T getRenderResult();
 }

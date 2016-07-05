@@ -2,15 +2,20 @@ package com.finebi.datasource.api;
 
 
 import com.finebi.datasource.api.criteria.*;
-import com.finebi.datasource.api.metamodel.*;
+import com.finebi.datasource.api.metamodel.AttributeType;
+import com.finebi.datasource.api.metamodel.EntityManager;
+import com.finebi.datasource.api.metamodel.EntityType;
+import com.finebi.datasource.api.metamodel.PlainTable;
 import com.finebi.datasource.sql.criteria.AttributeTypeImpl;
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.ExplicitParameterInfo;
 import com.finebi.datasource.sql.criteria.internal.compile.ImplicitParameterBinding;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-import com.finebi.datasource.sql.criteria.internal.context.AspireContextImpl;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContext;
+import com.finebi.datasource.sql.criteria.internal.context.AspireContextImpl;
 import com.finebi.datasource.sql.criteria.internal.metamodel.*;
+import com.finebi.datasource.sql.criteria.internal.render.factory.RenderFactory;
+import com.finebi.datasource.sql.criteria.internal.render.factory.RenderFactoryDebug;
 import com.fr.fineengine.utils.StringHelper;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -22,6 +27,10 @@ import org.easymock.EasyMock;
  * @since 4.0
  */
 public class SelectionTest extends TestCase {
+
+    private AspireContext context = new AspireContextImpl(new RenderFactoryDebug());
+    private EntityManager manager = new EntityManagerImpl(context);
+
     /**
      * 普通查询
      * Detail:
@@ -30,40 +39,14 @@ public class SelectionTest extends TestCase {
      */
     public void testSelect() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
+
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
-            query.select(root.get("id"));
-            String result = ((CriteriaQueryImpl) query).render(new RenderingContext() {
-                @Override
-                public String generateAlias() {
-                    return "alisas";
-                }
-
-                @Override
-                public ExplicitParameterInfo registerExplicitParameter(ParameterExpression<?> criteriaQueryParameter) {
-                    return null;
-                }
-
-                @Override
-                public String registerLiteralParameterBinding(Object literal, Class javaType) {
-                    return null;
-                }
-
-                @Override
-                public String getCastType(Class javaType) {
-                    return "castType";
-                }
-            });
+            query.select(root);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
             System.out.println(result);
-//            查询的表，获得根
-//            Root root = query.from(target);
 
-//            查询的结果元数据
-//            query.select(root);
-//            Object result = executeQuery(query);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -78,8 +61,7 @@ public class SelectionTest extends TestCase {
      */
     public void testProjectionSelect() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
+
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
@@ -179,7 +161,7 @@ public class SelectionTest extends TestCase {
             }
 
             @Override
-            public ExplicitParameterInfo registerExplicitParameter(ParameterExpression<?> criteriaQueryParameter) {
+            public ExplicitParameterInfo registerExplicitParameter(ParameterExpression criteriaQueryParameter) {
                 ExplicitParameterInfo parameterInfo = null;
                 if (parameterInfo == null) {
                     if (StringHelper.isNotEmpty(criteriaQueryParameter.getName())) {
@@ -228,6 +210,11 @@ public class SelectionTest extends TestCase {
                 return literal.toString();
             }
 
+            @Override
+            public RenderFactory getRenderFactory() {
+                return new RenderFactoryDebug();
+            }
+
             public String getCastType(Class javaType) {
 
                 return "castType";
@@ -243,8 +230,7 @@ public class SelectionTest extends TestCase {
      */
     public void testWhere() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
+
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
@@ -263,8 +249,7 @@ public class SelectionTest extends TestCase {
 
     public void testRootCount() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
+
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
@@ -280,8 +265,7 @@ public class SelectionTest extends TestCase {
 
     public void testCrossJoin() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
+
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
@@ -311,8 +295,6 @@ public class SelectionTest extends TestCase {
      */
     public void testSubquery() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
 
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -341,8 +323,6 @@ public class SelectionTest extends TestCase {
      */
     public void testSubquerySubquery() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
 
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -377,7 +357,7 @@ public class SelectionTest extends TestCase {
      */
     public void testWhereEq() {
         try {
-            AspireContext context = new AspireContextImpl();
+
             EntityManager manager = new EntityManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
@@ -402,8 +382,7 @@ public class SelectionTest extends TestCase {
      */
     public void testWhereNotNull() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
+
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
@@ -427,8 +406,7 @@ public class SelectionTest extends TestCase {
      */
     public void testWhereLike() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
+
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
@@ -452,8 +430,7 @@ public class SelectionTest extends TestCase {
      */
     public void testWhereAnd() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
+
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
@@ -478,8 +455,7 @@ public class SelectionTest extends TestCase {
      */
     public void testSqrt() {
         try {
-            AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
+
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
