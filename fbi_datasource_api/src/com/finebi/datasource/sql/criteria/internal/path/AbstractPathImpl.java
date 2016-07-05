@@ -12,6 +12,7 @@ import com.finebi.datasource.sql.criteria.internal.PathSource;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
 import com.finebi.datasource.sql.criteria.internal.expression.PathTypeExpression;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -130,7 +131,6 @@ public abstract class AbstractPathImpl<X>
     }
 
 
-
     @Override
     @SuppressWarnings({"unchecked"})
     public <Y> Path<Y> get(String attributeName) {
@@ -185,18 +185,21 @@ public abstract class AbstractPathImpl<X>
     }
 
     @Override
-    public String render(RenderingContext renderingContext) {
-        PathSource<?> source = getPathSource();
-        if (source != null) {
-            source.prepareAlias(renderingContext);
-            return source.getPathIdentifier() + "." + getAttribute().getName();
-        } else {
-            return getAttribute().getName();
-        }
+    public Object render(RenderingContext renderingContext) {
+        return delegateRender(renderingContext);
     }
 
     @Override
-    public String renderProjection(RenderingContext renderingContext) {
+    public Object renderProjection(RenderingContext renderingContext) {
         return render(renderingContext);
+    }
+
+    public Object delegateRender(RenderingContext renderingContext) {
+        RenderExtended render = choseRender(renderingContext);
+        return render.render(renderingContext);
+    }
+
+    protected RenderExtended choseRender(RenderingContext renderingContext) {
+        return (RenderExtended) renderingContext.getRenderFactory().getAbstractPathRender(this, "default");
     }
 }

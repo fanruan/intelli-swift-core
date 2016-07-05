@@ -5,7 +5,7 @@ import com.finebi.datasource.api.criteria.*;
 import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.RootImpl;
-import com.finebi.datasource.sql.criteria.internal.render.QueryStructureBasicRender;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 import java.io.Serializable;
 import java.util.*;
@@ -205,8 +205,8 @@ public class QueryStructure<T> implements Serializable {
     }
 
     @SuppressWarnings({"unchecked"})
-    public Object render(StringBuilder jpaqlQuery, RenderingContext renderingContext) {
-        QueryStructureBasicRender render = criteriaBuilder.getEntityManagerFactory().getRenderFactory().getQueryStructureRender(this, "sql");
+    public Object render(RenderingContext renderingContext) {
+        RenderExtended render = (RenderExtended) criteriaBuilder.getEntityManagerFactory().getRenderFactory().getQueryStructureRender(this, "sql");
         render.render(renderingContext);
         return render.getRenderResult();
     }

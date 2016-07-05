@@ -7,6 +7,7 @@ import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.CriteriaSubqueryImpl;
 import com.finebi.datasource.sql.criteria.internal.FromImplementor;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 import java.io.Serializable;
 
@@ -71,16 +72,19 @@ public class RootImpl<X> extends AbstractFromImpl<X, X> implements Root<X>, Seri
     }
 
     @Override
-    public String render(RenderingContext renderingContext) {
-        prepareAlias(renderingContext);
-        return getAlias();
+    public Object render(RenderingContext renderingContext) {
+        return delegateRender(renderingContext);
     }
 
     @Override
-    public String renderProjection(RenderingContext renderingContext) {
-        return render(renderingContext);
+    protected RenderExtended choseRender(RenderingContext renderingContext) {
+        return (RenderExtended)renderingContext.getRenderFactory().getRootRender(this, "d");
     }
 
+    @Override
+    public Object renderProjection(RenderingContext renderingContext) {
+        return render(renderingContext);
+    }
 
 
 }

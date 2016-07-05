@@ -3,7 +3,7 @@ package com.finebi.datasource.sql.criteria.internal.context;
 
 
 import com.finebi.datasource.sql.criteria.internal.important.MetamodelExpander;
-import com.finebi.datasource.sql.criteria.internal.render.RenderFactory;
+import com.finebi.datasource.sql.criteria.internal.render.factory.RenderFactory;
 
 /**
  * 中间层上下文。有以下几点作用
@@ -16,10 +16,10 @@ import com.finebi.datasource.sql.criteria.internal.render.RenderFactory;
  * @author Connery
  * @since Advanced FineBI Analysis 1.0
  */
-public interface AspireContext {
+public interface AspireContext<T> {
 
 
     MetamodelExpander getMetamodel();
 
-    RenderFactory getRenderFactory();
+    RenderFactory<T> getRenderFactory();
 }
