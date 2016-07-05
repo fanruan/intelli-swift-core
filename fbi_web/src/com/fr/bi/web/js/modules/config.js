@@ -1106,6 +1106,14 @@ BICst.DASHBOARD_CHART_STYLE_GROUP = [{
     value: BICst.CHART_STYLE.HORIZONTAL_TUBE
 }];
 
+BICst.CHART_SCALE_SETTING = [{
+    text: BI.i18nText("BI-Auto"),
+    value: BICst.SCALE_SETTING.AUTO
+}, {
+    text:　BI.i18nText("BI-Custom"),
+    value: BICst.SCALE_SETTING.CUSTOM
+}];
+
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
     text: "圆形",
     value: BICst.CHART_STYLE.CIRCLE
