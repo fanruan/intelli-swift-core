@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg">
 <metadata>
-Created by FontForge 20120731 at Wed Jun 29 16:04:04 2016
+Created by FontForge 20120731 at Tue Jul  5 12:58:01 2016
  By admin
 </metadata>
 <defs>
@@ -19,7 +19,7 @@ Created by FontForge 20120731 at Wed Jun 29 16:04:04 2016
     bbox="0 -218 1152 896"
     underline-thickness="50"
     underline-position="-100"
-    unicode-range="U+0078-E6B5"
+    unicode-range="U+0078-E6BA"
   />
 <missing-glyph horiz-adv-x="374" 
 d="M34 0v682h272v-682h-272zM68 34h204v614h-204v-614z" />
@@ -508,5 +508,15 @@ t-148.5 147.5t-204 54z" />
 d="M908 372q-14 14 -34 14t-34 -14l-120 -120l-121 120q-14 14 -33.5 14t-34 -14t-14.5 -34t14 -34l121 -120l-121 -121q-14 -14 -14 -33.5t14.5 -33.5t34 -14t33.5 14l121 120l120 -120q14 -14 34 -14t34 14t14 33.5t-14 33.5l-121 121l121 120q14 14 14 34t-14 34z
 M401 258q48 55 48 126q0 28 -11 59l169 92q27 -40 69 -63.5t92 -23.5q80 0 136 56t56 136t-56 136t-136 56t-136 -56t-56 -136q0 -21 6 -46l-173 -94q-27 35 -67 55.5t-85 20.5q-80 0 -136 -56t-56 -136t56 -136t136 -56q48 0 94 25l75 -75q9 -9 22.5 -9t23 9t9.5 22.5
 t-10 22.5zM768 736q40 0 68 -28t28 -68t-28 -68t-68 -28t-68 28t-28 68t28 68t68 28zM161 384q0 40 28 68t67.5 28t68 -28t28.5 -68t-28.5 -68t-68 -28t-67.5 28t-28 68z" />
+    <glyph glyph-name="uniE6B6" unicode="&#xe6b6;" 
+d="M316 192h392q19 0 28 17t-1 33l-196 294q-10 14 -27 14t-27 -14l-196 -294q-10 -16 -1 -33t28 -17z" />
+    <glyph glyph-name="uniE6B7" unicode="&#xe6b7;" 
+d="M708 576h-392q-19 0 -28 -17t1 -33l196 -294q10 -14 27 -14t27 14l196 294q10 16 1 33t-28 17z" />
+    <glyph glyph-name="uniE6B8" unicode="&#xe6b8;" 
+d="M320 188v392q0 19 17 28t33 -1l294 -196q14 -10 14 -27t-14 -27l-294 -196q-16 -10 -33 -1t-17 28z" />
+    <glyph glyph-name="uniE6B9" unicode="&#xe6b9;" 
+d="M704 188v392q0 19 -17 28t-33 -1l-294 -196q-14 -10 -14 -27t14 -27l294 -196q16 -10 33 -1t17 28z" />
+    <glyph glyph-name="uniE6BA" unicode="&#xe6ba;" 
+d="M384 192h256v320h168q22 0 29.5 21t-9.5 36l-296 246q-8 7 -20 7t-20 -7l-296 -246q-17 -15 -9.5 -36t29.5 -21h168v-320zM704 256v-128h-384v128h-256v-320h896v320h-256zM768 0h-64v64h64v-64zM896 0h-64v64h64v-64z" />
   </font>
 </defs></svg>

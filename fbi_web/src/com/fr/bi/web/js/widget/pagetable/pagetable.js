@@ -200,6 +200,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         });
 
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
+            self._assertRenderPager();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_INIT);
             self._dealWithPager();
@@ -326,7 +327,11 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 width: this._const.scrollWidth,
                 height: this._const.scrollWidth
             });
+        }
+    },
 
+    _assertRenderPager: function () {
+        if (!this._isRendered && this.pager && this.tipPager) {
             BI.createWidget({
                 type: "bi.absolute",
                 element: this.element,
@@ -340,6 +345,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
                     bottom: 0
                 }]
             });
+            this._isRendered = true;
         }
     },
 
@@ -470,8 +476,8 @@ BI.PageTable = BI.inherit(BI.Widget, {
     },
 
     _populate: function () {
-        this.table.populate.apply(this.table, arguments);
         this._assertPager();
+        this.table.populate.apply(this.table, arguments);
         this.pager.populate();
         this._hideCurrentColumn();
         this._dealWithPager();
