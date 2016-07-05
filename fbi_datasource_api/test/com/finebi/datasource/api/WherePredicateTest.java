@@ -319,7 +319,6 @@ public class WherePredicateTest extends TestCase {
             query.select(root);
             Predicate condition = cb.isNotNull(root.get("id"));
             query.where(condition);
-
             String result = ((CriteriaQueryImpl) query).render(getContext());
             System.out.println(result);
         } catch (Exception e) {
@@ -501,5 +500,94 @@ public class WherePredicateTest extends TestCase {
             assertTrue(false);
         }
     }
+
+    public void testCbPredicate() {
+        CriteriaBuilder cb = manager.getCriteriaBuilder();
+    }
+
+    public void testWhereGreaterThan() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.greaterThan(root.get("id"), 2);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id>2",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereGreaterThanOrEq() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.greaterThanOrEqualTo(root.get("id"), 1);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id>=1",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+    public void testWhereLessThan(){
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.lessThan(root.get("id"), 1);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id<1",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereLessThanOrEq() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.lessThanOrEqualTo(root.get("id"), 1);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id<=1",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereIsTrue() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.isTrue(cb.equal(root.get("id"),1));
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+//            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id<=1",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+    
 }
 
