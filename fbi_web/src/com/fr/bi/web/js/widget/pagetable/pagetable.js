@@ -84,10 +84,13 @@ BI.PageTable = BI.inherit(BI.Widget, {
         }, 300);
         this.hpage = 1;
         this.vpage = 1;
+        this._showNext = false;
 
         this.table = BI.createWidget(o.el, {
             type: "bi.sequence_table",
             element: this.element,
+
+            hideHorizontalScrollChecker: BI.bind(this._pagerHideChecker, this),
 
             pageSpace: 108,
 
@@ -197,6 +200,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         });
 
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
+            self._assertRenderPager();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_INIT);
             self._dealWithPager();
@@ -298,7 +302,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 height: this._const.scrollWidth,
                 cls: "page-table-pager"
             });
-            this.pager.on(BI.DirectionPager.EVENT_CHANGE, function () {
+            this.pager.on(BI.Pager.EVENT_CHANGE, function () {
                 self._loading();
                 var vpage = this.getHPage && this.getVPage();
                 if (BI.isNull(vpage)) {
@@ -311,7 +315,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 }, function (items, header, crossItems, crossHeader) {
                     BI.isNotNull(vpage) && self.setVPage(vpage);
                     BI.isNotNull(hpage) && self.setHPage(hpage);
-                    self.populate.apply(self, arguments);
+                    self._populate.apply(self, arguments);
                     self._loaded();
                 });
             });
@@ -323,7 +327,11 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 width: this._const.scrollWidth,
                 height: this._const.scrollWidth
             });
+        }
+    },
 
+    _assertRenderPager: function () {
+        if (!this._isRendered && this.pager && this.tipPager) {
             BI.createWidget({
                 type: "bi.absolute",
                 element: this.element,
@@ -337,6 +345,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
                     bottom: 0
                 }]
             });
+            this._isRendered = true;
         }
     },
 
@@ -344,10 +353,30 @@ BI.PageTable = BI.inherit(BI.Widget, {
         this._currentColumn && this._currentColumn.destroy();
     },
 
+    _pagerHideChecker: function () {
+        if (!this.table.hasLeftHorizontalScroll() && !this.table.hasRightHorizontalScroll()) {
+            if (this.pager.hasNext && this.pager.hasPrev && !this.pager.hasNext() && !this.pager.hasPrev()) {
+                return true;
+            }
+            if (this.pager.hasVNext && this.pager.hasHNext
+                && this.pager.hasVNext && this.pager.hasHNext
+                && !this.pager.hasVNext() && !this.pager.hasHNext()
+                && !this.pager.hasVPrev() && !this.pager.hasHPrev()) {
+                return true;
+            }
+        }
+        return false;
+    },
+
     _dealWithPager: function () {
         var self = this, o = this.options;
 
         BI.delay(function () {
+            if (self._pagerHideChecker()) {
+                self.pager.setVisible(false);
+                self.tipPager.setVisible(false);
+                return;
+            }
             var regionSize = self.table.getCalculateRegionColumnSize();
 
             var sWidth = o.isNeedFreeze === true ? regionSize[1] : regionSize[0];
@@ -369,6 +398,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         this._assertPager();
         this.pager.setHPage && this.pager.setHPage(v);
         this.table.setHPage && this.table.setHPage(v);
+        this.resize();
     },
 
     setVPage: function (v) {
@@ -376,6 +406,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         this.pager.setVPage && this.pager.setVPage(v);
         this.pager.setValue(v);
         this.table.setVPage && this.table.setVPage(v);
+        this.resize();
     },
 
     getHPage: function () {
@@ -444,12 +475,16 @@ BI.PageTable = BI.inherit(BI.Widget, {
         this.table.hideSequence();
     },
 
-    populate: function (items) {
-        this.table.populate.apply(this.table, arguments);
+    _populate: function () {
         this._assertPager();
+        this.table.populate.apply(this.table, arguments);
         this.pager.populate();
         this._hideCurrentColumn();
         this._dealWithPager();
+    },
+
+    populate: function () {
+        this._populate.apply(this, arguments);
     },
 
     destroy: function () {

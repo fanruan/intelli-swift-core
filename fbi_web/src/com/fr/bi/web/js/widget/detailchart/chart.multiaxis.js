@@ -1,16 +1,17 @@
 /**
  * 图表控件
- * @class BI.AxisChart
+ * @class BI.MultiAxisChart
  * @extends BI.Widget
  * leftYxis 左值轴属性
  * rightYxis 右值轴属性
  * xAxis    分类轴属性
  */
-BI.AxisChart = BI.inherit(BI.Widget, {
+BI.MultiAxisChart = BI.inherit(BI.Widget, {
 
     constants: {
         LEFT_AXIS: 0,
         RIGHT_AXIS: 1,
+        RIGHT_AXIS_SECOND: 2,
         X_AXIS: 3,
         ROTATION: -90,
         NORMAL: 1,
@@ -24,13 +25,13 @@ BI.AxisChart = BI.inherit(BI.Widget, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.AxisChart.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.MultiAxisChart.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-axis-chart"
         })
     },
 
     _init: function () {
-        BI.AxisChart.superclass._init.apply(this, arguments);
+        BI.MultiAxisChart.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.xAxis = [{
             type: "category",
@@ -50,7 +51,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
-            self.fireEvent(BI.AxisChart.EVENT_CHANGE, obj);
+            self.fireEvent(BI.MultiAxisChart.EVENT_CHANGE, obj);
         });
     },
 
@@ -92,6 +93,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
+                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[0];
                     break;
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed;
@@ -101,6 +103,17 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
+                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[1];
+                    break;
+                case self.constants.RIGHT_AXIS_SECOND:
+                    axis.reversed = self.config.right_y_axis_second_reversed;
+                    axis.formatter = formatTickInXYaxis(self.config.right_y_axis_second_style, self.constants.RIGHT_AXIS_SECOND);
+                    formatNumberLevelInYaxis(self.config.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
+                    axis.title.text = getXYAxisUnit(self.config.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
+                    axis.title.text = self.config.show_right_y_axis_second_title === true ? self.config.right_y_axis_second_title + axis.title.text : axis.title.text;
+                    axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
+                    axis.title.rotation = self.constants.ROTATION;
+                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[2];
                     break;
             }
         });
@@ -146,6 +159,9 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                             break;
                         case self.constants.RIGHT_AXIS:
                             magnify = calcMagnify(self.config.right_y_axis_number_level);
+                            break;
+                        case self.constants.RIGHT_AXIS_SECOND:
+                            magnify = calcMagnify(self.config.right_y_axis_second_number_level);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
@@ -228,6 +244,9 @@ BI.AxisChart = BI.inherit(BI.Widget, {
             if(position === self.constants.RIGHT_AXIS){
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
+            if(position === self.constants.RIGHT_AXIS_SECOND){
+                self.config.right_y_axis_second_unit !== "" && (unit = unit + self.config.right_y_axis_second_unit)
+            }
             return unit === "" ? unit : "(" + unit + ")";
         }
 
@@ -265,6 +284,15 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
+            if(position === self.constants.RIGHT_AXIS_SECOND){
+                if(self.config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    if(type === self.constants.NORMAL){
+                        formatter = '#0%'
+                    }else{
+                        formatter += '%';
+                    }
+                }
+            }
             return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
         }
     },
@@ -274,20 +302,26 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",
             right_y_axis_title: options.right_y_axis_title || "",
-            chart_color: options.chart_color || [],
+            right_y_axis_second_title: options.right_y_axis_second_title || "",
+            chart_color: options.chart_color || ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
             chart_style: options.chart_style || c.NORMAL,
             left_y_axis_style: options.left_y_axis_style || c.NORMAL,
             right_y_axis_style: options.right_y_axis_style || c.NORMAL,
+            right_y_axis_second_style: options.right_y_axis_second_style || c.NORMAL,
             show_x_axis_title: options.show_x_axis_title || false,
             show_left_y_axis_title: options.show_left_y_axis_title || false,
             show_right_y_axis_title: options.show_right_y_axis_title || false,
+            show_right_y_axis_second_title: options.show_right_y_axis_second_title || false,
             left_y_axis_reversed: options.left_y_axis_reversed || false,
             right_y_axis_reversed: options.right_y_axis_reversed || false,
+            right_y_axis_second_reversed: options.right_y_axis_second_reversed || false,
             left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
             right_y_axis_number_level:  options.right_y_axis_number_level || c.NORMAL,
+            right_y_axis_second_number_level: options.right_y_axis_second_number_level || c.NORMAL,
             x_axis_unit: options.x_axis_unit || "",
             left_y_axis_unit: options.left_y_axis_unit || "",
             right_y_axis_unit: options.right_y_axis_unit || "",
+            right_y_axis_second_unit: options.right_y_axis_second_unit || "",
             x_axis_title: options.x_axis_title || "",
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
@@ -331,5 +365,5 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         this.combineChart.magnify();
     }
 });
-BI.AxisChart.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut('bi.axis_chart', BI.AxisChart);
+BI.MultiAxisChart.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut('bi.multi_axis_chart', BI.MultiAxisChart);

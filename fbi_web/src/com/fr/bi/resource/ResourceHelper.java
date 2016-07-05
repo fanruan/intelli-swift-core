@@ -1593,7 +1593,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/pager/pager.direction.css",
                 "com/fr/bi/web/css/base/pager/pager.skip.css",
                 "com/fr/bi/web/css/base/pager/pager.all.css",
-                "com/fr/bi/web/css/base/pager/pager.updownprenext.css",
                 "com/fr/bi/web/css/base/segment/button.segment.css",
                 "com/fr/bi/web/css/base/segment/segment.css",
                 "com/fr/bi/web/css/base/trigger/trigger.css",
@@ -2194,7 +2193,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/pager/pager.direction.js",
                 "com/fr/bi/web/js/case/pager/pager.skip.js",
                 "com/fr/bi/web/js/case/pager/pager.all.js",
-                "com/fr/bi/web/js/case/pager/pager.updownprenext.js",
 
                 "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",
@@ -2277,6 +2275,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulateradar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.area.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.multiaxis.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",

@@ -39,14 +39,29 @@ BI.MapChart = BI.inherit(BI.Widget, {
     },
 
     _formatConfig: function(config, items){
-        var self = this, o = this.options;
-        config.plotOptions.tooltip.formatter = this.config.tooltip;
+        var self = this, o = this.options, c = this.constants;
         formatRangeLegend();
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.geo = this.config.geo;
         config.plotOptions.tooltip.shared = true;
-
+        var formatterArray = [];
+        BI.backEach(items, function(idx, item){
+            if(BI.has(item, "settings")){
+                formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL));
+            }
+        });
+        config.plotOptions.tooltip.formatter = function(){
+            var tip = this.name;
+            BI.each(this.points, function(idx, point){
+                var value = point.size || point.y;
+                tip += ('<div>' + point.seriesName + ':' + (window.FR ? FR.contentFormat(value, formatterArray[idx]) : value) + '</div>');
+            });
+            return tip;
+        };
+        config.plotOptions.dataLabels.formatter.valueFormat = function(){
+            return window.FR ? FR.contentFormat(arguments[0], formatterArray[0]) : arguments[0];
+        };
+        config.geo = this.config.geo;
         config.chartType = "areaMap";
         delete config.xAxis;
         delete config.yAxis;
@@ -70,6 +85,32 @@ BI.MapChart = BI.inherit(BI.Widget, {
             config.rangeLegend.range.max = self.max;
 
         }
+
+        function formatToolTipAndDataLabel(format, numberLevel){
+            var formatter = '#.##';
+            switch (format) {
+                case self.constants.NORMAL:
+                    formatter = '#.##';
+                    break;
+                case self.constants.ZERO2POINT:
+                    formatter = '#0';
+                    break;
+                case self.constants.ONE2POINT:
+                    formatter = '#0.0';
+                    break;
+                case self.constants.TWO2POINT:
+                    formatter = '#0.00';
+                    break;
+            }
+            if (numberLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (format === self.constants.NORMAL) {
+                    formatter = '#0%'
+                } else {
+                    formatter += '%';
+                }
+            }
+            return formatter;
+        }
     },
 
     _formatDrillItems: function(items){
@@ -91,7 +132,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
     },
 
     _formatItems: function(items){
-        var self = this;
+        var self = this, c = this.constants;
         this.max = null;
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){

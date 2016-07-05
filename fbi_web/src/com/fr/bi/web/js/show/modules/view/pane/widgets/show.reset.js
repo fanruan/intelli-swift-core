@@ -17,7 +17,8 @@ BIShow.ResetView = BI.inherit(BI.View, {
         var resetButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Reset"),
-            forceCenter: true
+            forceCenter: true,
+            height: 25
         });
         resetButton.on(BI.Button.EVENT_CHANGE, function () {
             self._resetAllControlValues();

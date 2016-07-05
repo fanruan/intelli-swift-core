@@ -100,7 +100,7 @@ public class BICubeConfManager {
                             return true;
                         }
                     });
-                    if (o.value != -1) {
+                    if (o.value != null) {
                         ICubeTableService cti = loader.getTableIndex(ck.getTableBelongTo().getTableSource());
                         return cti.getColumnDetailReader(cti.getColumnIndex(ck.getFieldName())).getValue(o.value);
                     }

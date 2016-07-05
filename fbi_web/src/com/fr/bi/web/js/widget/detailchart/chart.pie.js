@@ -51,7 +51,7 @@ BI.PieChart = BI.inherit(BI.Widget, {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
+                //config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
@@ -137,3 +137,4 @@ BI.PieChart = BI.inherit(BI.Widget, {
 });
 BI.PieChart.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.pie_chart', BI.PieChart);
+

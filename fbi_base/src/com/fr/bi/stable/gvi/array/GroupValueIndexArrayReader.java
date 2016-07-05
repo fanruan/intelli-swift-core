@@ -32,7 +32,7 @@ public class GroupValueIndexArrayReader implements NIOReader<GroupValueIndex>, I
     }
 
     @Override
-    public int getReverse(int row) {
+    public Integer getReverse(int row) {
         return 0;
     }
 
