@@ -117,8 +117,8 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
 
                 function resizeH() {
                     if (self.hasLeftHorizontalScroll() || self.hasRightHorizontalScroll() || !o.hideHorizontalScrollChecker()) {
-                        self.bottomLeftScrollBar && self.bottomLeftScrollBar.setHidden(true);
-                        self.bottomRightScrollBar.setHidden(true);
+                        self.bottomLeftScrollBar && self.bottomLeftScrollBar.setHidden(false);
+                        self.bottomRightScrollBar.setHidden(false);
                         var items = self.layout.attr("items");
                         isNeedHResize = isNeedHResize || items[0].bottom !== o.scrollWidth;
                         items[0].bottom = o.scrollWidth;
@@ -127,8 +127,8 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                         self.layout.resize();
                         return items[0].bottom !== o.scrollWidth;
                     } else {
-                        self.bottomLeftScrollBar && self.bottomLeftScrollBar.setHidden(false);
-                        self.bottomRightScrollBar.setHidden(false);
+                        self.bottomLeftScrollBar && self.bottomLeftScrollBar.setHidden(true);
+                        self.bottomRightScrollBar.setHidden(true);
                         var items = self.layout.attr("items");
                         isNeedHResize = isNeedHResize || items[0].bottom !== 0;
                         items[0].bottom = 0;
@@ -136,13 +136,12 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                         self.layout.attr("items", items);
                         self.layout.resize();
                         return items[0].bottom !== 0;
-                        ;
                     }
                 }
 
                 function resizeV() {
                     if (self.hasVerticalScroll() || !o.hideVerticalScrollChecker()) {
-                        self.topScrollBar.setHidden(true);
+                        self.topScrollBar.setHidden(false);
                         var items = self.layout.attr("items");
                         isNeedVResize = isNeedVResize || items[0].right !== o.scrollWidth;
                         items[0].right = o.scrollWidth;
@@ -150,7 +149,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                         self.layout.resize();
                         return items[0].right !== o.scrollWidth;
                     } else {
-                        self.topScrollBar.setHidden(false);
+                        self.topScrollBar.setHidden(true);
                         var items = self.layout.attr("items");
                         isNeedVResize = isNeedVResize || items[0].right !== 0;
                         items[0].right = 0;
@@ -338,7 +337,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             this._assertScroll();
             var regionSize = this.table.getCalculateRegionColumnSize();
             this.bottomLeftScrollBar.element.width(regionSize[0]);
-            this.bottomRightScrollBar.element.css("left", regionSize[0]);
+            this.bottomRightScrollBar.element.css("left", regionSize[0] + "px");
 
             if (regionSize[1] <= this._const.minScrollWidth) {
                 var r = 0;
@@ -411,6 +410,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
         var o = this.options;
         if (this.options.isNeedFreeze === false) {
             this._assertScroll();
+            this.bottomRightScrollBar.element.css("left", "0px");
             var regionSize = this.table.getCalculateRegionColumnSize();
 
             if (regionSize[0] <= this._const.minScrollWidth) {

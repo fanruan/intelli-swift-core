@@ -95,7 +95,15 @@ BI.NumberPager = BI.inherit(BI.Widget, {
         return this.currentPage;
     },
 
-    setValue: function(v){
+    hasPrev: function () {
+
+    },
+
+    hasNext: function () {
+
+    },
+
+    setValue: function (v) {
         this.currentPage = v;
         this.pager.setValue(v);
     },

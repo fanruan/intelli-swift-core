@@ -68,6 +68,8 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         this.table = BI.createWidget(o.el, {
             type: "bi.custom_scroll_table",
 
+            hideHorizontalScrollChecker: o.hideHorizontalScrollChecker,
+
             pageSpace: 108,
             isNeedResize: o.isNeedResize,
             isResizeAdapt: o.isResizeAdapt,
