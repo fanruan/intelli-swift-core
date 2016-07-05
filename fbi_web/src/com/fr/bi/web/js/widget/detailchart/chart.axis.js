@@ -93,6 +93,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
+                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[0];
                     break;
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed;
@@ -102,6 +103,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
+                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[1];
                     break;
                 case self.constants.RIGHT_AXIS_SECOND:
                     axis.reversed = self.config.right_y_axis_second_reversed;
@@ -111,6 +113,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     axis.title.text = self.config.show_right_y_axis_second_title === true ? self.config.right_y_axis_second_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
+                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[2];
                     break;
             }
             var res = _calculateValueNiceDomain(0, self.maxes[axis.axisIndex]);

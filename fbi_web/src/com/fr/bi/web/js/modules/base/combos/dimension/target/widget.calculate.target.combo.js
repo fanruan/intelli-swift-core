@@ -41,6 +41,10 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     text: BI.i18nText("BI-Area_Chart"),
                     value: BICst.WIDGET.AREA,
                     cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Accumulate_Area"),
+                    value: BICst.WIDGET.ACCUMULATE_AREA,
+                    cls: "dot-e-font"
                 }]
             }],
             //[{
