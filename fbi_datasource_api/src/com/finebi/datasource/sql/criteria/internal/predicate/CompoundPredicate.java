@@ -1,17 +1,17 @@
 
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
+import com.finebi.datasource.api.criteria.Expression;
+import com.finebi.datasource.api.criteria.Predicate;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
+import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.api.criteria.Predicate;
-
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
-import com.finebi.datasource.sql.criteria.internal.Renderable;
-import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
  * A compound {@link Predicate predicate} is a grouping of other {@link Predicate predicates} in order to convert
@@ -155,7 +155,7 @@ public class CompoundPredicate
 
 		// single valued junction ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		if ( predicate.getExpressions().size() == 1 ) {
-			return ( (Renderable) predicate.getExpressions().get( 0 ) ).render( renderingContext );
+			return ( (Renderable) predicate.getExpressions().get( 0 ) ).render( renderingContext ).toString();
 		}
 
 		final StringBuilder buffer = new StringBuilder();

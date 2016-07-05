@@ -12,6 +12,7 @@ import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContext;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContextImpl;
 import com.finebi.datasource.sql.criteria.internal.metamodel.*;
+import com.finebi.datasource.sql.criteria.internal.render.factory.RenderFactoryEngineAdapter;
 import com.fr.engine.model.DataModel;
 import junit.framework.TestCase;
 
@@ -22,6 +23,10 @@ import junit.framework.TestCase;
  * @since 4.0
  */
 public class SelectionFineEngineTest extends TestCase {
+
+    private AspireContext context = new AspireContextImpl(new RenderFactoryEngineAdapter());
+    private EntityManager manager = new EntityManagerImpl(context);
+
     /**
      * Detail:
      * Author:Connery
@@ -34,9 +39,11 @@ public class SelectionFineEngineTest extends TestCase {
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
-            query.select(root.get("idA"));
+            query.select(root.get("A_name"));
             DataModel result = ((CriteriaQueryImpl) query).renderData(SelectionTest.getContext());
             System.out.println(result.getRowSize());
+            System.out.println(result.getValue(0, 0));
+
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

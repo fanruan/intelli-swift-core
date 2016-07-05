@@ -1,10 +1,10 @@
-package com.finebi.datasource.sql.criteria.internal.render;
+package com.finebi.datasource.sql.criteria.internal.render.engine;
 
 import com.finebi.datasource.api.criteria.Root;
-import com.finebi.datasource.api.metamodel.Attribute;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 import com.fr.engine.model.DataModel;
 import com.fr.engine.model.calculate.CalculateDataModelManager;
 import com.fr.fineengine.criterion.*;
@@ -24,7 +24,7 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public class QueryStructureRenderFineEngine implements QueryStructureBasicRender<DataModel> {
+public class QueryStructureRenderFineEngine implements RenderExtended<DataModel> {
     private DataModel dataModel;
     private QueryStructure queryStructure;
     private Connection connection;
@@ -51,7 +51,7 @@ public class QueryStructureRenderFineEngine implements QueryStructureBasicRender
     }
 
     @Override
-    public String render(RenderingContext renderingContext) {
+    public DataModel render(RenderingContext renderingContext) {
         CriteriaBuilder builder = new CriteriaBuilder();
         Set<Root<?>> roots = queryStructure.getRoots();
         if (roots.size() == 1) {
@@ -61,11 +61,10 @@ public class QueryStructureRenderFineEngine implements QueryStructureBasicRender
             AbstractPathImpl selection = (AbstractPathImpl) queryStructure.getSelection();
             List<Projection> projections = new ArrayList<Projection>();
 
-            if (selection.getPathSource() != null) {
-                Attribute<?, ?> attribute = selection.getAttribute();
-                final Projection idA = Projections.field(attribute.getName(), covert(attribute.getJavaType()));
-                projections.add(idA);
-            }
+
+            final Projection projection = (Projection) selection.render(renderingContext);
+            projections.add(projection);
+
             builder.setProjections(projections);
             builder.setSummaryInfo(new SummaryInfo() {
                 @Override
@@ -96,7 +95,7 @@ public class QueryStructureRenderFineEngine implements QueryStructureBasicRender
     }
 
     @Override
-    public String renderProjection(RenderingContext renderingContext) {
+    public DataModel renderProjection(RenderingContext renderingContext) {
         return null;
     }
 }
