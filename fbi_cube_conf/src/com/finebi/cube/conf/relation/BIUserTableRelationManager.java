@@ -62,7 +62,8 @@ public class BIUserTableRelationManager implements Release {
 
     @Override
     public void clear() {
-        oldAnalyserHandler.clear();
+        // TODO: 16/7/5 分析关联只显示可用关联需求需要保留之前生成过cube的关联
+//        oldAnalyserHandler.clear();
         currentAnalyserHandler.clear();
         tableRelationshipService.clear();
     }
