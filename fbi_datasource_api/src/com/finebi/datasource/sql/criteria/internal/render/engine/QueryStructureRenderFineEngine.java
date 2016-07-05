@@ -4,9 +4,6 @@ import com.finebi.datasource.api.criteria.Root;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
-import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
-import com.fr.engine.model.DataModel;
-import com.fr.engine.model.calculate.CalculateDataModelManager;
 import com.fr.fineengine.criterion.*;
 import com.fr.fineengine.criterion.calculatetype.CalculateType;
 import com.fr.fineengine.criterion.valuetype.ValueTypes;
@@ -24,13 +21,12 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public class QueryStructureRenderFineEngine implements RenderExtended<DataModel> {
-    private DataModel dataModel;
-    private QueryStructure queryStructure;
+public class QueryStructureRenderFineEngine extends BasicEngineRender<QueryStructure, Criteria> {
+    private Criteria criteria;
     private Connection connection;
 
     public QueryStructureRenderFineEngine(QueryStructure queryStructure) {
-        this.queryStructure = queryStructure;
+        super(queryStructure);
         initialConnection();
     }
 
@@ -46,41 +42,59 @@ public class QueryStructureRenderFineEngine implements RenderExtended<DataModel>
         }
     }
 
-    public DataModel getRenderResult() {
-        return dataModel;
+    public Criteria getRenderResult() {
+        return criteria;
     }
 
     @Override
-    public DataModel render(RenderingContext renderingContext) {
+    public Criteria render(RenderingContext renderingContext) {
         CriteriaBuilder builder = new CriteriaBuilder();
-        Set<Root<?>> roots = queryStructure.getRoots();
+        Set<Root<?>> roots = getDelegate().getRoots();
+        if (roots.size() == 1) {
+            builder.setEntry(renderFrom(renderingContext));
+            builder.setProjections(renderSelection(renderingContext));
+            builder.setSummaryInfo(renderSummaryInfo(renderingContext));
+            return builder.build();
+        }
+        throw new UnsupportedOperationException();
+    }
+
+    private SummaryInfo renderSummaryInfo(RenderingContext renderingContext) {
+        return new SummaryInfo() {
+            @Override
+            public int getSummarySize() {
+                return 0;
+            }
+
+            @Override
+            public CalculateType[] getCalculateTypes() {
+                return new CalculateType[0];
+            }
+        };
+    }
+
+    private Entry renderFrom(RenderingContext renderingContext) {
+        Set<Root<?>> roots = getDelegate().getRoots();
         if (roots.size() == 1) {
             Root<?> root = roots.iterator().next();
-            Entry entry = SQLEntryFactory.create(root.getModel().getName(), "Select * from " + root.getModel().getName(), connection);
-            builder.setEntry(entry);
-            AbstractPathImpl selection = (AbstractPathImpl) queryStructure.getSelection();
-            List<Projection> projections = new ArrayList<Projection>();
-
-
-            final Projection projection = (Projection) selection.render(renderingContext);
-            projections.add(projection);
-
-            builder.setProjections(projections);
-            builder.setSummaryInfo(new SummaryInfo() {
-                @Override
-                public int getSummarySize() {
-                    return 0;
-                }
-
-                @Override
-                public CalculateType[] getCalculateTypes() {
-                    return new CalculateType[0];
-                }
-            });
-            Criteria criteria = builder.build();
-            dataModel = CalculateDataModelManager.getInstance().execute(criteria, connection);
+            return SQLEntryFactory.create(root.getModel().getName(), "Select * from " + root.getModel().getName(), connection);
+        } else {
+            throw new RuntimeException();
         }
-        return null;
+    }
+
+    private List<Projection> renderSelection(RenderingContext renderingContext) {
+        List<Projection> projections = new ArrayList<Projection>();
+        AbstractPathImpl selection = (AbstractPathImpl) getDelegate().getSelection();
+
+        final Projection projection = (Projection) selection.render(renderingContext);
+        projections.add(projection);
+
+        return projections;
+    }
+
+    private void renderWhere(RenderingContext renderingContext) {
+
     }
 
     private ValueTypes covert(Class javaType) {
@@ -95,7 +109,7 @@ public class QueryStructureRenderFineEngine implements RenderExtended<DataModel>
     }
 
     @Override
-    public DataModel renderProjection(RenderingContext renderingContext) {
-        return null;
+    public Criteria renderProjection(RenderingContext renderingContext) {
+        return criteria;
     }
 }

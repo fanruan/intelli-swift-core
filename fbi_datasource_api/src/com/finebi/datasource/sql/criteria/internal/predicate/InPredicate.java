@@ -2,13 +2,12 @@
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
 import com.finebi.datasource.api.criteria.Expression;
-import com.finebi.datasource.api.criteria.Subquery;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.ValueHandlerFactory;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.expression.LiteralExpression;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -142,32 +141,11 @@ public class InPredicate<T>
     }
 
     @Override
-    public String render(boolean isNegated, RenderingContext renderingContext) {
-        final StringBuilder buffer = new StringBuilder();
-        final Expression exp = getExpression();
-
-        buffer.append(((Renderable) getExpression()).render(renderingContext));
-
+    public Object render(boolean isNegated, RenderingContext renderingContext) {
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getInPredicateLiteralRender(this, "defaultTag");
         if (isNegated) {
-            buffer.append(" not");
+            renderExtended.negate();
         }
-        buffer.append(" in ");
-        // subquery expressions are already wrapped in parenthesis, so we only need to
-        // render the parenthesis here if the values represent an explicit value list
-        boolean isInSubqueryPredicate = getValues().size() == 1
-                && Subquery.class.isInstance(getValues().get(0));
-        if (isInSubqueryPredicate) {
-            buffer.append(((Renderable) getValues().get(0)).render(renderingContext));
-        } else {
-            buffer.append('(');
-            String sep = "";
-            for (Expression value : getValues()) {
-                buffer.append(sep)
-                        .append(((Renderable) value).render(renderingContext));
-                sep = ", ";
-            }
-            buffer.append(')');
-        }
-        return buffer.toString();
+        return renderExtended.render(renderingContext);
     }
 }

@@ -1,13 +1,13 @@
 
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import java.io.Serializable;
 import com.finebi.datasource.api.criteria.Expression;
-
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
-import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
+
+import java.io.Serializable;
 
 /**
  * Predicate to assert the explicit value of a boolean expression:<ul>
@@ -20,40 +20,39 @@ import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
  * @author Steve Ebersole
  */
 public class BooleanAssertionPredicate
-		extends AbstractSimplePredicate
-		implements Serializable {
-	private final Expression<Boolean> expression;
-	private final Boolean assertedValue;
+        extends AbstractSimplePredicate
+        implements Serializable {
+    private final Expression<Boolean> expression;
+    private final Boolean assertedValue;
 
-	public BooleanAssertionPredicate(
-			CriteriaBuilderImpl criteriaBuilder,
-			Expression<Boolean> expression,
-			Boolean assertedValue) {
-		super( criteriaBuilder );
-		this.expression = expression;
-		this.assertedValue = assertedValue;
-	}
+    public BooleanAssertionPredicate(
+            CriteriaBuilderImpl criteriaBuilder,
+            Expression<Boolean> expression,
+            Boolean assertedValue) {
+        super(criteriaBuilder);
+        this.expression = expression;
+        this.assertedValue = assertedValue;
+    }
 
-	public Expression<Boolean> getExpression() {
-		return expression;
-	}
+    public Expression<Boolean> getExpression() {
+        return expression;
+    }
 
-	public Boolean getAssertedValue() {
-		return assertedValue;
-	}
+    public Boolean getAssertedValue() {
+        return assertedValue;
+    }
 
-	@Override
-	public void registerParameters(ParameterRegistry registry) {
-		Helper.possibleParameter( expression, registry );
-	}
+    @Override
+    public void registerParameters(ParameterRegistry registry) {
+        Helper.possibleParameter(expression, registry);
+    }
 
-	@Override
-	public String render(boolean isNegated, RenderingContext renderingContext) {
-		final String operator = isNegated ? " <> " : " = ";
-		final String assertionLiteral = assertedValue ? "true" : "false";
-
-		return ( (Renderable) expression ).render( renderingContext )
-				+ operator
-				+ assertionLiteral;
-	}
+    @Override
+    public Object render(boolean isNegated, RenderingContext renderingContext) {
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getBooleanAssertionPredicateLiteralRender(this, "defaultTag");
+        if (isNegated) {
+            renderExtended.negate();
+        }
+        return renderExtended.render(renderingContext);
+    }
 }
