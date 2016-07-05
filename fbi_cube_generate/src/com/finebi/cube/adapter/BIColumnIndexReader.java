@@ -67,7 +67,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     private GroupValueIndex getNormalValueIndex(T groupValue) {
         try {
             if (groupValue != null) {
-                int position = columnReaderService.getPositionOfGroup(groupValue);
+                int position = columnReaderService.getPositionOfGroupByGroupValue(groupValue);
                 //todo lookup 抛出异常代替返回-1
                 if (position == -1) {
                     return GVIFactory.createAllEmptyIndexGVI();
@@ -199,7 +199,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         @Override
         public boolean contains(Object o) {
             try {
-                columnReaderService.getPositionOfGroup((T) o);
+                columnReaderService.getPositionOfGroupByGroupValue((T) o);
                 return true;
             } catch (BIResourceInvalidException e) {
                 return false;
@@ -280,7 +280,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
         public DIterator(T start) {
             try {
-                c_index = columnReaderService.getPositionOfGroup(start) + 1;
+                c_index = columnReaderService.getPositionOfGroupByGroupValue(start) + 1;
             } catch (BIResourceInvalidException e) {
                 e.printStackTrace();
             }
@@ -312,7 +312,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
         public CIterator(T start) {
             try {
-                c_index = columnReaderService.getPositionOfGroup(start);
+                c_index = columnReaderService.getPositionOfGroupByGroupValue(start);
             } catch (BIResourceInvalidException e) {
                 e.printStackTrace();
             }

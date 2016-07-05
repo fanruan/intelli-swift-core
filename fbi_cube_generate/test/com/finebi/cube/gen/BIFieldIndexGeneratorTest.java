@@ -272,7 +272,8 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 
             for (int i = 0; i < tableSource.stringData.size(); i++) {
                 String one = (String) columnReaderService.getOriginalValueByRow(i);
-                GroupValueIndex groupValueIndex = columnReaderService.getIndexByRow(i);
+                Integer groupRow = columnReaderService.getPositionOfGroupByRow(i);
+                GroupValueIndex groupValueIndex = columnReaderService.getBitmapIndex(i);
                 assertEquals(groupValueIndex, GroupValueIndexTestTool.build(tableSource.stringData, one));
             }
         } catch (Exception e) {
