@@ -221,6 +221,16 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
         return this.hpager.hasPrev();
     },
 
+    setHPagerVisible: function (b) {
+        this.hpager.setVisible(b);
+        this.hlabel.setVisible(b);
+    },
+
+    setVPagerVisible: function (b) {
+        this.vpager.setVisible(b);
+        this.vlabel.setVisible(b);
+    },
+
     populate: function () {
         this.vpager.populate();
         this.hpager.populate();
