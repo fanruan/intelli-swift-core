@@ -2,14 +2,19 @@ package com.finebi.datasource.api;
 
 
 import com.finebi.datasource.api.criteria.*;
-import com.finebi.datasource.api.metamodel.*;
+import com.finebi.datasource.api.metamodel.AttributeType;
+import com.finebi.datasource.api.metamodel.EntityManager;
+import com.finebi.datasource.api.metamodel.EntityType;
+import com.finebi.datasource.api.metamodel.PlainTable;
 import com.finebi.datasource.sql.criteria.AttributeTypeImpl;
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
+import com.finebi.datasource.sql.criteria.internal.OrderImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.ExplicitParameterInfo;
 import com.finebi.datasource.sql.criteria.internal.compile.ImplicitParameterBinding;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-import com.finebi.datasource.sql.criteria.internal.context.AspireContextImpl;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContext;
+import com.finebi.datasource.sql.criteria.internal.context.AspireContextImpl;
+import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
 import com.finebi.datasource.sql.criteria.internal.metamodel.*;
 import com.fr.fineengine.utils.StringHelper;
 import junit.framework.TestCase;
@@ -27,6 +32,12 @@ public class SelectionTest extends TestCase {
      * Detail:
      * Author:Connery
      * Date:2016/6/23
+     */
+    /**
+     * 添加断言
+     * Detail:
+     * Author:Osborn
+     * Date:2016/7/5
      */
     public void testSelect() {
         try {
@@ -57,6 +68,7 @@ public class SelectionTest extends TestCase {
                     return "castType";
                 }
             });
+            assertEquals("select alisas.id from jpa as alisas",result);
             System.out.println(result);
 //            查询的表，获得根
 //            Root root = query.from(target);
@@ -76,6 +88,12 @@ public class SelectionTest extends TestCase {
      * Author:Connery
      * Date:2016/6/23
      */
+    /**
+     * 添加断言
+     * Detail:
+     * Author:Osborn
+     * Date:2016/7/5
+     */
     public void testProjectionSelect() {
         try {
             AspireContext context = new AspireContextImpl();
@@ -85,8 +103,8 @@ public class SelectionTest extends TestCase {
             Root root = query.from(getEntity());
             query.select(root.get("id"));
             String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0.id from jpa as generatedAlias0",result);
             System.out.println(result);
-
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -111,27 +129,29 @@ public class SelectionTest extends TestCase {
      * Author:Connery
      * Date:2016/6/23
      */
+    /**
+     * 添加断言,修改代码
+     * Detail:
+     * Author:Osborn
+     * Date:2016/7/5
+     */
     public void testJoin() {
+
         try {
-            PlainTable tar = EasyMock.createMock(PlainTable.class);
-            PlainTable src = EasyMock.createMock(PlainTable.class);
-            CriteriaBuilder cb = generateCB();
+            AspireContext context = new AspireContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
-
-
-            //查询的表，获得根
-//            Root<PlainTable> srcRoot = query.from(src);
-//            Root<PlainTable> tarRoot = query.from(tar);
-//
-//
-//            查询的结果元数据
-//            query.select(srcRoot);
-//
-//            对查询根进行关联操作
-//            Join join = srcRoot.join(tar);
-//            join.on(cb.equal(tarRoot.get("id"), srcRoot.get("id")));
-            //获得结果
-            Object result = executeQuery(query);
+            EntityType one = getEntity();
+            EntityType two = getEntity();
+            Root srcRoot = query.from(one);
+            Root tarRoot = query.from(two);
+            Join join = srcRoot.join(two);
+            join.on(cb.equal(tarRoot.get("id"),srcRoot.get("id")));
+            query.select(srcRoot);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0, jpa as generatedAlias1 inner join jpa as generatedAlias2 with generatedAlias1.id=generatedAlias0.id",result);
+            System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -143,22 +163,30 @@ public class SelectionTest extends TestCase {
      * Author:Connery
      * Date:2016/6/23
      */
+    /**
+     * 添加断言,修改代码
+     * Detail:
+     * Author:Osborn
+     * Date:2016/7/5
+     */
     public void testMutiJoin() {
         try {
-            PlainTable one = EasyMock.createMock(PlainTable.class);
-            PlainTable two = EasyMock.createMock(PlainTable.class);
-            PlainTable three = EasyMock.createMock(PlainTable.class);
-
-            CriteriaBuilder cb = generateCB();
+            AspireContext aspireContext = new AspireContextImpl();
+            EntityManager manager = new EntityManagerImpl(aspireContext);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
+            EntityType<PlainTable> one = getEntity();
+            EntityType<PlainTable> two = getEntity();
+            EntityType<PlainTable> three = getEntity();
             //查询的表，获得根
-//            Root<PlainTable> srcRoot = query.from(one);
-//            Root<PlainTable> tarRoot = query.from(two);
-//            Join join = srcRoot.join(two);
-//            对关联进行再次关联操作
-//            join.on(cb.equal(tarRoot.get("id"), srcRoot.get("id"))).join(three);
-//            query.select(srcRoot);
-            Object result = executeQuery(query);
+            Root<PlainTable> srcRoot = query.from(one);
+            Root<PlainTable> tarRoot = query.from(two);
+            Join join = srcRoot.join(two);
+            join.on(cb.equal(tarRoot.get("id"), srcRoot.get("id"))).join(three);
+            query.select(srcRoot);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0, jpa as generatedAlias1 inner join jpa as generatedAlias2 with generatedAlias1.id=generatedAlias0.id inner join jpa as generatedAlias3",result);
+            System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -241,6 +269,12 @@ public class SelectionTest extends TestCase {
      * Author:Connery
      * Date:2016/6/23
      */
+    /**
+     * 添加断言
+     * Detail:
+     * Author:Osborn
+     * Date:2016/7/5
+     */
     public void testWhere() {
         try {
             AspireContext context = new AspireContextImpl();
@@ -251,8 +285,8 @@ public class SelectionTest extends TestCase {
             query.select(root);
             Predicate condition = cb.gt(root.get("id"), 2);
             query.where(condition);
-
             String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id>2",result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -260,7 +294,18 @@ public class SelectionTest extends TestCase {
         }
     }
 
-
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/23
+     */
+    /**
+     * 添加断言
+     * Detail:
+     * Author:Osborn
+     * Date:2016/7/5
+     */
     public void testRootCount() {
         try {
             AspireContext context = new AspireContextImpl();
@@ -271,13 +316,25 @@ public class SelectionTest extends TestCase {
             Expression count = cb.count(root);
             query.select(count);
             String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select count(*) from jpa as generatedAlias0",result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
     }
-
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/23
+     */
+    /**
+     * 添加断言
+     * Detail:
+     * Author:Osborn
+     * Date:2016/7/5
+     */
     public void testCrossJoin() {
         try {
             AspireContext context = new AspireContextImpl();
@@ -288,6 +345,7 @@ public class SelectionTest extends TestCase {
             root.join(getEntity());
             query.select(root);
             String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 inner join jpa as generatedAlias1",result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -324,6 +382,31 @@ public class SelectionTest extends TestCase {
             query.select(main);
 
             Predicate condition = cb.in(root.get("id")).value(subquery);
+            query.where(condition);
+
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testExists() {
+        try {
+            AspireContext context = new AspireContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+
+            Subquery subquery = query.subquery(getEntity());
+            Root root = subquery.from(getEntity());
+            subquery.select(root.get("id"));
+            Root main = query.from(getEntity());
+            query.select(main);
+
+            Predicate condition = cb.exists(subquery);
             query.where(condition);
 
             String result = ((CriteriaQueryImpl) query).render(getContext());
@@ -393,6 +476,30 @@ public class SelectionTest extends TestCase {
             assertTrue(false);
         }
     }
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Osborn
+     * Date:2016/7/5
+     */
+    public void testWhereBetween() {
+        try {
+            AspireContext context = new AspireContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.between(root.get("id"),1,3);
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id between 1 and 3",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 
     /**
      * 普通查询
@@ -418,7 +525,31 @@ public class SelectionTest extends TestCase {
             assertTrue(false);
         }
     }
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Connery
+     * Date:2016/6/23
+     */
+    public void testWhereNull() {
+        try {
+            AspireContext context = new AspireContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.isNull(root.get("id"));
+            query.where(condition);
 
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id is null",result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
     /**
      * 普通查询
      * Detail:
@@ -435,7 +566,30 @@ public class SelectionTest extends TestCase {
             query.select(root);
             Predicate condition = cb.like(root.get("id"), "%a");
             query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 
+    /**
+     * 普通查询
+     * Detail:
+     * Author:Osborn
+     * Date:2016/7/5
+     */
+    public void testWhereNotLike() {
+        try {
+            AspireContext context = new AspireContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery<PlainTable> query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.notLike(root.get("id"), "%a_");
+            query.where(condition);
             String result = ((CriteriaQueryImpl) query).render(getContext());
             System.out.println(result);
         } catch (Exception e) {
@@ -485,7 +639,69 @@ public class SelectionTest extends TestCase {
             Root root = query.from(getEntity());
             query.select(cb.sqrt(root.get("id")));
             String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select sqrt(generatedAlias0.id) from jpa as generatedAlias0",result);
             System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testGroupBy() {
+        try {
+            AspireContext context = new AspireContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            query.groupBy(root.get("A_name"));
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 group by generatedAlias0.A_name",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testHaving() {
+        try {
+            AspireContext context = new AspireContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            query.groupBy(root.get("A_name"));
+            Predicate condition = cb.like(root.get("A_name"), "_a%");
+            query.having(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 group by generatedAlias0.A_name having generatedAlias0.A_name like :_a%",result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * Author:Osborn
+     * Date:2016/7/5
+     */
+    public void testOrderBy() {
+        try {
+            AspireContext context = new AspireContextImpl();
+            EntityManager manager = new EntityManagerImpl(context);
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            query.orderBy(new OrderImpl(root.get("id"),true));
+            String result = ((CriteriaQueryImpl) query).render(getContext());
+            System.out.println(result);
+
+
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
