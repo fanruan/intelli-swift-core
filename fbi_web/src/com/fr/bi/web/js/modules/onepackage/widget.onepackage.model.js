@@ -314,9 +314,18 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             masker: BICst.BODY_ELEMENT,
             text: BI.i18nText("BI-Loading")
         });
+
+        //读关联的时候去除来自于服务器的
+        var oTables = {}, nTables = {};
+        BI.each(oldTables, function(id, t) {
+            t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (oTables[id] = t);
+        });
+        BI.each(this.getTablesData(), function(id, t) {
+            t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (nTables[id] = t);
+        });
         var data = {
-            oldTables: oldTables,
-            newTables: this.getTablesData()
+            oldTables: oTables,
+            newTables: nTables
         };
         BI.Utils.getRelationAndTransByTables(data, function (res) {
             var relations = res.relations, translations = res.translations;

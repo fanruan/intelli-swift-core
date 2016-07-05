@@ -168,10 +168,6 @@ public class DBTableSource extends AbstractTableSource {
         return rowCount;
     }
 
-//    public IDataSourceReader<BIDataValue> iterator() {
-//
-//    }
-
     /**
      * 获取某个字段的distinct值
      *
@@ -268,6 +264,16 @@ public class DBTableSource extends AbstractTableSource {
         return jo;
     }
 
+    @Override
+    public void parseJSON(JSONObject jo, long userId) throws Exception {
+        super.parseJSON(jo, userId);
+        if(jo.has("connection_name")) {
+            dbName = jo.getString("connection_name");
+        }
+        if(jo.has("table_name")) {
+            tableName = jo.getString("table_name");
+        }
+    }
 
     @Override
     public void readXML(XMLableReader reader) {

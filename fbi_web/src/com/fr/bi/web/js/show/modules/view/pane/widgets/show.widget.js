@@ -291,6 +291,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
     },
 
     change: function (changed, prev, context, options) {
+        console.log(BI.Utils.getWidgetBoundsByID(this.model.get("id")));
         if (options.notrefresh === true) {
             return;
         }

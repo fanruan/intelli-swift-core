@@ -16,14 +16,13 @@ import com.fr.bi.stable.utils.file.BIExcelUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.json.JSONTransform;
 
 import java.util.*;
 
 /**
  * Created by GUY on 2015/3/2.
  */
-public class ExcelTableSource extends AbstractTableSource implements JSONTransform {
+public class ExcelTableSource extends AbstractTableSource {
 
     public static final String XML_TAG = "ExcelTableSource";
     /**
@@ -224,7 +223,8 @@ public class ExcelTableSource extends AbstractTableSource implements JSONTransfo
         return jo;
     }
 
-    public void parseJSON(JSONObject jo) throws Exception {
+    public void parseJSON(JSONObject jo, long userId) throws Exception {
+        super.parseJSON(jo, userId);
         if (jo.has("full_file_name")) {
             fullFileName = jo.getString("full_file_name");
         }

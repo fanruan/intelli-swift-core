@@ -54,7 +54,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
     },
 
     change: function (changed) {
-
+        this.refresh();
     },
 
     _createNorth: function () {
@@ -99,7 +99,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
         });
         this.dashboard.on(BI.Fit4Show.EVENT_RESIZE, function () {
             var regions = this.getAllRegions();
-            var widgets = self.model.cat("widgets");
+            var widgets = self.model.get("widgets");
             BI.each(regions, function (i, region) {
                 if (BI.isNotNull(widgets[region.id])) {
                     widgets[region.id].bounds = {

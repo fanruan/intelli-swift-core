@@ -51,6 +51,16 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTab
     }
 
     @Override
+    public void parseJSON(JSONObject jo, long userId) throws Exception {
+        super.parseJSON(jo, userId);
+        oprators = OperatorFactory.createOperatorsByJSON(jo, userId);
+        JSONArray tables = jo.getJSONArray("tables");
+        for(int i = 0; i < tables.length(); i++) {
+            parents.add(TableSourceFactory.createTableSource(tables.getJSONObject(i), userId));
+        }
+    }
+
+    @Override
     public int getType() {
         return BIBaseConstant.TABLETYPE.ETL;
     }

@@ -95,8 +95,8 @@ public class ServerTableSource extends DBTableSource {
         super();
     }
 
-    public ServerTableSource(String dbName, String tableName, String schema, String dbLink) {
-        super("__FR__BI__SERVER__", tableName);
+    public ServerTableSource(String tableName) {
+        super(DBConstant.CONNECTION.SERVER_CONNECTION, tableName);
     }
 
     @Override
