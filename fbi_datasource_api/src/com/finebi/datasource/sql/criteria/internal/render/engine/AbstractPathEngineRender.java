@@ -3,6 +3,7 @@ package com.finebi.datasource.sql.criteria.internal.render.engine;
 import com.finebi.datasource.api.metamodel.Attribute;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
+import com.fr.fineengine.criterion.FieldProjection;
 import com.fr.fineengine.criterion.Projections;
 import com.fr.fineengine.criterion.valuetype.ValueTypes;
 
@@ -12,13 +13,13 @@ import com.fr.fineengine.criterion.valuetype.ValueTypes;
  * @author Connery
  * @since 4.0
  */
-public class AbstractPathEngineRender extends BasicEngineRender<AbstractPathImpl> {
+public class AbstractPathEngineRender extends BasicEngineRender<AbstractPathImpl, FieldProjection> {
     public AbstractPathEngineRender(AbstractPathImpl delegate) {
         super(delegate);
     }
 
     @Override
-    public Object render(RenderingContext renderingContext) {
+    public FieldProjection render(RenderingContext renderingContext) {
         if (getDelegate().getPathSource() != null) {
             Attribute<?, ?> attribute = getDelegate().getAttribute();
             return Projections.field(attribute.getName(), covert(attribute.getJavaType()));
@@ -39,7 +40,7 @@ public class AbstractPathEngineRender extends BasicEngineRender<AbstractPathImpl
     }
 
     @Override
-    public Object renderProjection(RenderingContext renderingContext) {
+    public FieldProjection renderProjection(RenderingContext renderingContext) {
         return render(renderingContext);
     }
 }

@@ -44,7 +44,7 @@ public class SelectionTest extends TestCase {
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
             query.select(root);
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
 
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class SelectionTest extends TestCase {
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
             query.select(root.get("id"));
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
 
         } catch (Exception e) {
@@ -147,7 +147,11 @@ public class SelectionTest extends TestCase {
         }
     }
 
-    public static RenderingContext getContext() {
+    private static RenderingContext getContext() {
+        return getContext(new RenderFactoryDebug());
+    }
+
+    public static RenderingContext getContext(final RenderFactory factory) {
         return new RenderingContext() {
             private int aliasCount;
             private int explicitParameterCount;
@@ -212,7 +216,7 @@ public class SelectionTest extends TestCase {
 
             @Override
             public RenderFactory getRenderFactory() {
-                return new RenderFactoryDebug();
+                return factory;
             }
 
             public String getCastType(Class javaType) {
@@ -238,7 +242,7 @@ public class SelectionTest extends TestCase {
             Predicate condition = cb.gt(root.get("id"), 2);
             query.where(condition);
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -255,7 +259,7 @@ public class SelectionTest extends TestCase {
             Root root = query.from(getEntity());
             Expression count = cb.count(root);
             query.select(count);
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -271,7 +275,7 @@ public class SelectionTest extends TestCase {
             Root root = query.from(getEntity());
             root.join(getEntity());
             query.select(root);
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -308,7 +312,7 @@ public class SelectionTest extends TestCase {
             Predicate condition = cb.in(root.get("id")).value(subquery);
             query.where(condition);
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -341,7 +345,7 @@ public class SelectionTest extends TestCase {
             Predicate condition = cb.in(main.get("id")).value(subquery);
             query.where(condition);
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -366,7 +370,7 @@ public class SelectionTest extends TestCase {
             Predicate condition = cb.equal(root.get("id"), 2);
             query.where(condition);
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -390,7 +394,7 @@ public class SelectionTest extends TestCase {
             Predicate condition = cb.isNotNull(root.get("id"));
             query.where(condition);
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -414,7 +418,7 @@ public class SelectionTest extends TestCase {
             Predicate condition = cb.like(root.get("id"), "%a");
             query.where(condition);
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -439,7 +443,7 @@ public class SelectionTest extends TestCase {
 
             query.where(cb.and(condition, cb.equal(root.get("id"), 2)));
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -460,7 +464,7 @@ public class SelectionTest extends TestCase {
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
             query.select(cb.sqrt(root.get("id")));
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();

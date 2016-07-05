@@ -1,11 +1,12 @@
 
 package com.finebi.datasource.sql.criteria.internal.predicate;
 
-import java.io.Serializable;
-
-import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
+
+import java.io.Serializable;
 
 /**
  * Predicate used to assert a static boolean condition.
@@ -13,33 +14,33 @@ import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
  * @author Steve Ebersole
  */
 public class BooleanStaticAssertionPredicate
-		extends AbstractSimplePredicate
-		implements Serializable {
-	private final Boolean assertedValue;
+        extends AbstractSimplePredicate
+        implements Serializable {
+    private final Boolean assertedValue;
 
-	public BooleanStaticAssertionPredicate(
-			CriteriaBuilderImpl criteriaBuilder,
-			Boolean assertedValue) {
-		super( criteriaBuilder );
-		this.assertedValue = assertedValue;
-	}
+    public BooleanStaticAssertionPredicate(
+            CriteriaBuilderImpl criteriaBuilder,
+            Boolean assertedValue) {
+        super(criteriaBuilder);
+        this.assertedValue = assertedValue;
+    }
 
-	public Boolean getAssertedValue() {
-		return assertedValue;
-	}
+    public Boolean getAssertedValue() {
+        return assertedValue;
+    }
 
-	@Override
-	public void registerParameters(ParameterRegistry registry) {
-		// nada
-	}
+    @Override
+    public void registerParameters(ParameterRegistry registry) {
+        // nada
+    }
 
-	@Override
-	public String render(boolean isNegated, RenderingContext renderingContext) {
-		boolean isTrue = getAssertedValue();
-		if ( isNegated ) {
-			isTrue = !isTrue;
-		}
-		return isTrue ? "1=1" : "0=1";
-	}
+    @Override
+    public Object render(boolean isNegated, RenderingContext renderingContext) {
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getBooleanStaticAssertionPredicateLiteralRender(this, "defaultTag");
+        if (isNegated) {
+            renderExtended.negate();
+        }
+        return renderExtended.render(renderingContext);
+    }
 
 }

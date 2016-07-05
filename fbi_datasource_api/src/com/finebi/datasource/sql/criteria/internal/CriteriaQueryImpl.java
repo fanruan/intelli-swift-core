@@ -6,7 +6,7 @@ import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.sql.criteria.internal.compile.CompilableCriteria;
 import com.finebi.datasource.sql.criteria.internal.compile.CriteriaInterpretation;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
-import com.fr.engine.model.DataModel;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -128,6 +128,10 @@ public class CriteriaQueryImpl<T> extends AbstractNode implements CriteriaQuery<
         return this;
     }
 
+    public QueryStructure<T> getQueryStructure() {
+        return queryStructure;
+    }
+
     @Override
     public Predicate getGroupRestriction() {
         return queryStructure.getHaving();
@@ -225,16 +229,16 @@ public class CriteriaQueryImpl<T> extends AbstractNode implements CriteriaQuery<
 
     @Override
     public CriteriaInterpretation interpret(RenderingContext renderingContext) {
-
         return null;
     }
 
-    public String render(RenderingContext renderingContext) {
-        return queryStructure.render(renderingContext).toString();
+    public Object render(RenderingContext renderingContext) {
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getCriteriaQueryLiteralRender(this, "defaultTag");
+        return renderExtended.render(renderingContext);
     }
 
-    public DataModel renderData(RenderingContext renderingContext) {
-        return (DataModel) queryStructure.render(renderingContext);
+    public Object renderData(RenderingContext renderingContext) {
+        return queryStructure.render(renderingContext);
 
     }
 }

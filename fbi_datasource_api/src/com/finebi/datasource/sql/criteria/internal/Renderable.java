@@ -5,13 +5,12 @@ package com.finebi.datasource.sql.criteria.internal;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 /**
- * TODO : javadoc
- *
- * @author Steve Ebersole
+ * @author Connery
+ * @since Advanced FineBI Analysis 1.0
  */
-public interface Renderable {
-    public Object render(RenderingContext renderingContext);
+public interface Renderable<R> {
+    R render(RenderingContext renderingContext);
 
-    public Object renderProjection(RenderingContext renderingContext);
+    R renderProjection(RenderingContext renderingContext);
 
 }

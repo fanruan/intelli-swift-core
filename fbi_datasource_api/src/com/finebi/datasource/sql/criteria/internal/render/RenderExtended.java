@@ -14,4 +14,8 @@ public interface RenderExtended<R> {
     R renderProjection(RenderingContext renderingContext);
 
     R getRenderResult();
+
+    void negate();
+
+    boolean isNegated();
 }
