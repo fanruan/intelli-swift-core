@@ -209,12 +209,14 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
                         if (self.constants.MINLIMIT.sub(da.y) > 0) {
                             da.y = 0;
                         }
-                    }
-                    if((BI.isNull(max) || da.y > max)){
-                        max = da.y;
+                        if((BI.isNull(max) || da.y > max)){
+                            max = da.y;
+                        }
                     }
                 });
-                self.maxes.push(max);
+                if(BI.isNotNull(max)){
+                    self.maxes.push(max);
+                }
             });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
