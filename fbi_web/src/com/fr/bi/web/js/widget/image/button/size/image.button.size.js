@@ -1,8 +1,4 @@
 /**
- * 选择图片大小
- * Created by GameJian on 2016/1/28.
- */
-/**
  * 单选框
  * Created by GameJian on 2016/1/28.
  */
