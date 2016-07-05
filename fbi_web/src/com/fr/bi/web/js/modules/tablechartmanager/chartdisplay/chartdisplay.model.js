@@ -61,7 +61,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         res = {
                             x: item.n,
                             y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
-                            targetIds: [targetIds[idx]]
+                            targetIds: [targetIds[idx]],
+                            settings: BI.Utils.getDimensionSettingsByID(targetIds[idx])
                         };
                     }
                     if(BI.has(item, "c")){
@@ -77,6 +78,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 obj.data = adjustData;
                 BI.isNotNull(type) && (obj.type = "bubble");
                 obj.name = BI.Utils.getDimensionNameByID(targetIds[idx]);
+                obj.settings = BI.Utils.getDimensionSettingsByID(targetIds[idx]);
                 return obj;
             });
         }
@@ -395,9 +397,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div><div>(" + BI.i18nText("BI-Size") + ")" + BI.Utils.getDimensionNameByID(this.targetIds[2])
                         + ":'+ this.size +'</div>'}";
                 }
-            case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
-                return "function(){var tip = this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + (point.size || point.y) + '</div>');});return tip; }";
             default:
                 return "";
         }
