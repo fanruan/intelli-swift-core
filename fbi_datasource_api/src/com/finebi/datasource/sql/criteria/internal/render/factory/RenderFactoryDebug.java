@@ -38,67 +38,67 @@ public class RenderFactoryDebug implements RenderFactory<LiteralRender> {
 
     @Override
     public LiteralRender getPathTypeExpressionRender(PathTypeExpression pathTypeExpression, String driverTag) {
-        return null;
+        return new PathTypeExpressionRender(pathTypeExpression);
     }
 
     @Override
     public LiteralRender getBetweenPredicateLiteralRender(BetweenPredicate betweenPredicate, String driverTag) {
-        return null;
+        return new BetweenPredicateLiteralRender(betweenPredicate);
     }
 
     @Override
     public LiteralRender getComparisonPredicateLiteralRender(ComparisonPredicate comparisonPredicate, String driverTag) {
-        return null;
+        return new ComparisonPredicateLiteralRender(comparisonPredicate);
     }
 
     @Override
     public LiteralRender getBooleanAssertionPredicateLiteralRender(BooleanAssertionPredicate booleanAssertionPredicate, String driverTag) {
-        return null;
+        return new BooleanAssertionPredicateLiteralRender(booleanAssertionPredicate);
     }
 
     @Override
     public LiteralRender getBooleanExpressionPredicateLiteralRender(BooleanExpressionPredicate booleanExpressionPredicate, String driverTag) {
-        return null;
+        return new BooleanExpressionPredicateLiteralRender(booleanExpressionPredicate);
     }
 
     @Override
     public LiteralRender getBooleanStaticAssertionPredicateLiteralRender(BooleanStaticAssertionPredicate booleanStaticAssertionPredicate, String driverTag) {
-        return null;
+        return new BooleanStaticAssertionPredicateLiteralRender(booleanStaticAssertionPredicate);
     }
 
     @Override
     public LiteralRender getCompoundPredicateLiteralRender(CompoundPredicate compoundPredicate, String driverTag) {
-        return null;
+        return new CompoundPredicateLiteralRender(compoundPredicate);
     }
 
     @Override
     public LiteralRender getExistsPredicateLiteralRender(ExistsPredicate existsPredicate, String driverTag) {
-        return null;
+        return new ExistsPredicateLiteralRender(existsPredicate);
     }
 
     @Override
     public LiteralRender getExplicitTruthValueCheckLiteralRender(ExplicitTruthValueCheck explicitTruthValueCheck, String driverTag) {
-        return null;
+        return new ExplicitTruthValueCheckLiteralRender(explicitTruthValueCheck);
     }
 
     @Override
     public LiteralRender getInPredicateLiteralRender(InPredicate inPredicate, String driverTag) {
-        return null;
+        return new InPredicateLiteralRender(inPredicate);
     }
 
     @Override
     public LiteralRender getLikePredicateLiteralRender(LikePredicate likePredicate, String driverTag) {
-        return null;
+        return new LikePredicateLiteralRender(likePredicate);
     }
 
     @Override
     public LiteralRender getNegatedPredicateLiteralRender(NegatedPredicateWrapper negatedPredicateWrapper, String driverTag) {
-        return null;
+        return new NegatedPredicateLiteralRender(negatedPredicateWrapper);
     }
 
     @Override
     public LiteralRender getNullnessPredicateLiteralRender(NullnessPredicate nullnessPredicate, String driverTag) {
-        return null;
+        return new NullnessPredicateLiteralRender(nullnessPredicate);
     }
 
     @Override
