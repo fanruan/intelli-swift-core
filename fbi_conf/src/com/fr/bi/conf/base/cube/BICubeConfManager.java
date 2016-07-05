@@ -32,7 +32,7 @@ public class BICubeConfManager {
 
     private long packageLastModify;
 
-    private int multiPathLastModify;
+    private int multiPathCubeStatus;
 
     public String getCubePath() {
         return cubePath;
@@ -58,12 +58,12 @@ public class BICubeConfManager {
         this.packageLastModify = packageLastModify;
     }
 
-    public int getMultiPathLastModify() {
-        return multiPathLastModify;
+    public int getMultiPathCubeStatus() {
+        return multiPathCubeStatus;
     }
 
-    public void setMultiPathLastModify(int multiPathLastModify) {
-        this.multiPathLastModify = multiPathLastModify;
+    public void setMultiPathCubeStatus(int multiPathCubeStatus) {
+        this.multiPathCubeStatus = multiPathCubeStatus;
     }
 
     public JSONObject createJSON() throws Exception {

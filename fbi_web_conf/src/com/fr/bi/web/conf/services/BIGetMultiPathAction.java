@@ -141,7 +141,7 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         jo.put("disabledRelations", path2relations(disabledMultiSet));
         jo.put("availableRelations", path2relations(availableMultiSet));
         jo.put("noneRelations", path2relations(noneMultiSet));
-        jo.put("needGenerateCube", BIConfigureManagerCenter.getCubeConfManager().getMultiPathLastModify());
+        jo.put("needGenerateCube", BIConfigureManagerCenter.getCubeConfManager().getMultiPathCubeStatus());
         return jo;
     }
 

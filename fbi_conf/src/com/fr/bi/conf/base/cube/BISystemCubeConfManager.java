@@ -96,18 +96,18 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public void updateMultiPathLastModify(int needGenerateCube) {
+    public void updateMultiPathLastCubeStatus(int needGenerateCube) {
         try {
-            getValue(UserControl.getInstance().getSuperManagerID()).setMultiPathLastModify(needGenerateCube);
+            getValue(UserControl.getInstance().getSuperManagerID()).setMultiPathCubeStatus(needGenerateCube);
         } catch (BIKeyAbsentException e) {
             BILogger.getLogger().error(e.getMessage());
         }
     }
 
     @Override
-    public int getMultiPathLastModify() {
+    public int getMultiPathCubeStatus() {
         try {
-            return getValue(UserControl.getInstance().getSuperManagerID()).getMultiPathLastModify();
+            return getValue(UserControl.getInstance().getSuperManagerID()).getMultiPathCubeStatus();
         } catch (BIKeyAbsentException e) {
             BILogger.getLogger().error(e.getMessage());
         }

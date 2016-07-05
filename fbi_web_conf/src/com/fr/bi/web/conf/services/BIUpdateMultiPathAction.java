@@ -77,7 +77,7 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
         }
 
 
-        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastModify(BIReportConstant.MULTIPATH.NEEDGENERATECUBE);
+        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTIPATH.NEEDGENERATECUBE);
         BICubeConfigureCenter.getTableRelationManager().persistData(userId);
         BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
 

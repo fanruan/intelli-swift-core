@@ -38,7 +38,7 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
                 cubeBuild = CubeTaskGenerate.CubeBuild(userId, new BITableID(baseTableId));
             }
         }
-        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastModify(BIReportConstant.MULTIPATH.NOTNEEDGENERATECUBE);
+        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTIPATH.NOTNEEDGENERATECUBE);
         JSONObject jsonObject = new JSONObject().put("result", cubeBuild);
         WebUtils.printAsJSON(res, jsonObject);
 

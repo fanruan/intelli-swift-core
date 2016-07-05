@@ -23,9 +23,9 @@ public interface BICubeConfManagerProvider {
 
     long getPackageLastModify();
 
-    void updateMultiPathLastModify(int needGenerateCube);
+    void updateMultiPathLastCubeStatus(int needGenerateCube);
 
-    int getMultiPathLastModify();
+    int getMultiPathCubeStatus();
 
     JSONObject createJSON(long userId) throws Exception;
 
