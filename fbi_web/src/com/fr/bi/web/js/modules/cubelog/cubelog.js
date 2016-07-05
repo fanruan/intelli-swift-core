@@ -87,7 +87,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             return;
         }
         BI.Utils.getCubeLog(function (data) {
-            if (BI.isNotNull(data.cube_end)) {
+            if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
                 self.interval && clearInterval(self.interval);
                 delete self.interval;
             }
