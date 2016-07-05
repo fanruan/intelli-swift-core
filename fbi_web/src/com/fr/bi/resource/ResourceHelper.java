@@ -2275,6 +2275,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulateradar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.area.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.multiaxis.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",
