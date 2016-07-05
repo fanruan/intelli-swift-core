@@ -404,7 +404,8 @@ var _JS = [
     "detail/mvc.barcharts.js",
     "detail/mvc.areacharts.js",
 
-    "detail/mvc.selectcolorcombo.js"
+    "detail/mvc.selectcolorcombo.js",
+
 ];
 
 

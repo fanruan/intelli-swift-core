@@ -14854,7 +14854,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextDimension(text, style, useHtml){
         text = pick(text, "");
         var div = document.createElement("div");
-        document.body.appendChild(div);
+        document.getElementById("container").appendChild(div);
 
         div.style.visibility = "hidden";
         div.style.whiteSpace = "nowrap";
@@ -14884,7 +14884,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var width = div.offsetWidth || 0;
         var height = div.offsetHeight || 0;
 
-        document.body.removeChild(div);
+        document.getElementById("container").removeChild(div);
 
         return {width:width, height:height};
     }
@@ -14892,7 +14892,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextWrapDimension(text, style, useHTML){
         text = pick(text, "");
         var div = document.createElement("div");
-        document.body.appendChild(div);
+        document.getElementById("container").appendChild(div);
 
         div.style.visibility = "hidden";
         div.style.whiteSpace = "normal";
@@ -14917,7 +14917,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var width = div.offsetWidth || 0;
         var height = div.offsetHeight || 0;
 
-        document.body.removeChild(div);
+        document.getElementById("container").removeChild(div);
 
         return {width:width, height:height};
     }

@@ -1106,6 +1106,14 @@ BICst.DASHBOARD_CHART_STYLE_GROUP = [{
     value: BICst.CHART_STYLE.HORIZONTAL_TUBE
 }];
 
+BICst.CHART_SCALE_SETTING = [{
+    text: BI.i18nText("BI-Auto"),
+    value: BICst.SCALE_SETTING.AUTO
+}, {
+    text:　BI.i18nText("BI-Custom"),
+    value: BICst.SCALE_SETTING.CUSTOM
+}];
+
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
     text: "圆形",
     value: BICst.CHART_STYLE.CIRCLE
@@ -1359,6 +1367,31 @@ BICst.TARGET_STYLE_FORMAT = [{
 }, {
     text: "0.00",
     value: BICst.TARGET_STYLE.FORMAT.TWO2POINT
+}];
+
+BICst.TARGET_STYLE_LEVEL = [{
+    text: BI.i18nText("BI-Count"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
+}, {
+    text: BI.i18nText("BI-Wan"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND
+}, {
+    text: BI.i18nText("BI-Million"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.MILLION
+}, {
+    text: BI.i18nText("BI-Yi"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.YI
+}, {
+    text: "%",
+    value: BICst.TARGET_STYLE.NUM_LEVEL.PERCENT
+}];
+
+BICst.TARGET_STYLE_LEVEL_SHORT = [{
+    text: BI.i18nText("BI-Normal"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
+}, {
+    text: "%",
+    value: BICst.TARGET_STYLE.NUM_LEVEL.PERCENT
 }];
 
 BICst.TARGET_STYLE_LEVEL = [{

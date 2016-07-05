@@ -91,13 +91,6 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         return BICubeConfigureCenter.getTableRelationManager().getAllUnavailablePath(userId, foreignTable, primaryTable);
     }
 
-//    private Set<BITableRelationPath> getDisabledPath(long userId, BusinessTable foreignTable, BusinessTable primaryTable) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
-//        Set<BITableRelationPath> allPath = getAllPath(userId, foreignTable, primaryTable);
-//        Set<BITableRelationPath> allAvailablePath = getAllAvailablePath(userId, foreignTable, primaryTable);
-//        allPath.removeAll(allAvailablePath);
-//        return allPath;
-//    }
-
     private JSONObject getMultiPath(long userId) throws Exception {
         JSONObject jo = new JSONObject();
         JSONArray multiJa = new JSONArray();
@@ -105,7 +98,10 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         Set<BITableRelationPath> disabledMultiSet = new HashSet<BITableRelationPath>();
         Set<BITableRelationPath> noneMultiSet = new HashSet<BITableRelationPath>();
         Set<BIBusinessTable> relatedTables = getRelatedTables(userId);
+        Set<BITableRelationPath> allDisabledPaths = getAllDisabledPath(userId);
         Iterator it = relatedTables.iterator();
+
+
         while (it.hasNext()) {
             BusinessTable foreignTable = (BusinessTable) it.next();
             Iterator primaryTableIt = relatedTables.iterator();
@@ -114,7 +110,13 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
                 Set<BITableRelationPath> allPath = getAllPath(userId, foreignTable, primaryTable);
                 Set<BITableRelationPath> multiPathItem = new HashSet<BITableRelationPath>();
                 if (allPath.size() > 1) {
-                    multiPathItem.addAll(allPath);
+                    Set<BITableRelationPath> displayPath = new HashSet<BITableRelationPath>();
+                    for (BITableRelationPath path : allPath) {
+                        if (checkHasDisablePath(allDisabledPaths, path)) {
+                            displayPath.add(path);
+                        }
+                    }
+                    multiPathItem.addAll(displayPath);
                     Set<BITableRelationPath> allAvailablePath = getAllAvailablePath(userId, foreignTable, primaryTable);
                     availableMultiSet.addAll(allAvailablePath);
                 }
@@ -141,6 +143,18 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         return jo;
     }
 
+    private boolean checkHasDisablePath(Set<BITableRelationPath> disabledPathSet, BITableRelationPath checkPath) {
+        List<BITableRelation> checkPathRelations = checkPath.getAllRelations();
+        Iterator<BITableRelationPath> it = disabledPathSet.iterator();
+        while (it.hasNext()) {
+            BITableRelationPath disabledPath = it.next();
+            if (checkPathRelations.containsAll(disabledPath.getAllRelations()) && checkPath != disabledPath) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     private JSONArray path2relations(Set<BITableRelationPath> multiPathSet) throws Exception {
         JSONArray multiPathJa = new JSONArray();
@@ -156,6 +170,21 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
             multiPathJa.put(multiRelationJa);
         }
         return multiPathJa;
+    }
+
+    private Set<BITableRelationPath> getAllDisabledPath(long userId) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        Set<BITableRelationPath> allDisabledPathSet = new HashSet<BITableRelationPath>();
+        Set<BIBusinessTable> allTables = this.getRelatedTables(userId);
+        Iterator<BIBusinessTable> primaryIt = allTables.iterator();
+        while (primaryIt.hasNext()) {
+            BusinessTable primaryTable = primaryIt.next();
+            Iterator<BIBusinessTable> foreignIt = allTables.iterator();
+            while (foreignIt.hasNext()) {
+                BusinessTable foreignTable = foreignIt.next();
+                allDisabledPathSet.addAll(getDisabledPath(userId, foreignTable, primaryTable));
+            }
+        }
+        return allDisabledPathSet;
     }
 
 

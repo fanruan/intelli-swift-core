@@ -418,6 +418,11 @@ BICst.CHART_STYLE = {
     STYLE_3D: 25            //3d
 };
 
+BICst.SCALE_SETTING = {
+    AUTO: 1,
+    CUSTOM: 2
+};
+
 BICst.GIS_POSITION_TYPE = {
     ADDRESS: 1,
     LNG_LAT: 2,
