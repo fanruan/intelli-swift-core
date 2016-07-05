@@ -190,6 +190,14 @@ BI.CustomScrollTableScrollBar = BI.inherit(BI.Widget, {
         } catch (e) {
 
         }
+    },
+
+    setHidden: function (b) {
+        if (!!b) {
+            this.element.css("visibility", "hidden");
+        } else {
+            this.element.css("visibility", "visible");
+        }
     }
 });
 BI.CustomScrollTableScrollBar.EVENT_SCROLL = "CustomScrollTableScrollBar.EVENT_SCROLL";

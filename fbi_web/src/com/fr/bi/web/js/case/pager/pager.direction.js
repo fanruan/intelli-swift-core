@@ -205,6 +205,22 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
         this.hpager.setValue(v);
     },
 
+    hasVNext: function () {
+        return this.vpager.hasNext();
+    },
+
+    hasHNext: function () {
+        return this.hpager.hasNext();
+    },
+
+    hasVPrev: function () {
+        return this.vpager.hasPrev();
+    },
+
+    hasHPrev: function () {
+        return this.hpager.hasPrev();
+    },
+
     populate: function () {
         this.vpager.populate();
         this.hpager.populate();

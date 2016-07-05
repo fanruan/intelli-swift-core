@@ -112,6 +112,14 @@ BI.AllPagger = BI.inherit(BI.Widget, {
         return this.currentPage;
     },
 
+    hasPrev: function () {
+        return this.pager.hasPrev();
+    },
+
+    hasNext: function () {
+        return this.pager.hasNext();
+    },
+
     populate: function () {
         this.pager.populate();
     }

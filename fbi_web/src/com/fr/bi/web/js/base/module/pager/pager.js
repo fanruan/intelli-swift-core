@@ -46,7 +46,7 @@ BI.Pager = BI.inherit(BI.Widget, {
         this._populate();
     },
 
-    populate: function(){
+    populate: function () {
         this.currPage = this.options.curr;
         this._populate();
     },
@@ -220,6 +220,20 @@ BI.Pager = BI.inherit(BI.Widget, {
 
     setAllPages: function (pages) {
         this.options.pages = pages;
+    },
+
+    hasPrev: function (v) {
+        v || (v = 1);
+        var o = this.options;
+        var pages = this.options.pages;
+        return pages === false ? o.hasPrev(v) : v > 1;
+    },
+
+    hasNext: function (v) {
+        v || (v = 1);
+        var o = this.options;
+        var pages = this.options.pages;
+        return pages === false ? o.hasNext(v) : v < pages;
     },
 
     setValue: function (v) {
