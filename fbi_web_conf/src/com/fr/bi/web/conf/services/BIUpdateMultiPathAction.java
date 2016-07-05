@@ -74,21 +74,19 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
             }
         }
 
+        BICubeConfigureCenter.getTableRelationManager().persistData(userId);
+
 
     }
 
     private BusinessTable getFirstForeignTable(JSONArray pathJa) throws Exception {
         JSONObject firstRelationJo = pathJa.getJSONObject(pathJa.length() - 1);
-//        BITableRelation re = new BITableRelation();
-//        re.parseJSON(firstRelationJo);
         BITableRelation re = BITableRelationHelper.getRelation(firstRelationJo);
         return re.getForeignTable();
     }
 
     private BusinessTable getLastPrimaryTable(JSONArray pathJa) throws Exception {
         JSONObject firstRelationJo = pathJa.getJSONObject(0);
-//        BITableRelation re = new BITableRelation();
-//        re.parseJSON(firstRelationJo);
         BITableRelation re = BITableRelationHelper.getRelation(firstRelationJo);
         return re.getPrimaryTable();
     }
@@ -96,8 +94,6 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
     private BITableRelationPath createPath(JSONArray pathJa) throws Exception {
         BITableRelationPath newPath = new BITableRelationPath();
         for (int i = 0; i < pathJa.length(); i++) {
-//            BITableRelation re = new BITableRelation();
-//            re.parseJSON(pathJa.getJSONObject(i));
             BITableRelation re = BITableRelationHelper.getRelation(pathJa.getJSONObject(i));
             newPath.addRelationAtTail(re);
         }
