@@ -11,9 +11,6 @@ import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 public class ConnectionRowGetter {
     private ICubeTableIndexReader reader;
 
-    public ConnectionRowGetter() {
-    }
-
     /**
      * 构造函数
      *

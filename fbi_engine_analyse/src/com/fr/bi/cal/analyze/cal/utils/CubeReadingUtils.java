@@ -8,7 +8,6 @@ import com.fr.bi.cal.analyze.cal.result.CrossNode;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.connection.DirectTableConnectionFactory;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -139,8 +138,7 @@ public class CubeReadingUtils {
         ICubeTableService ti = loader.getTableIndex(currentKey.getField().getTableBelongTo().getTableSource());
         ICubeTableService cTi = loader.getTableIndex(childKey.getField().getTableBelongTo().getTableSource());
         Object[] res = TableIndexUtils.getValueFromGvi(cTi, cTi.getColumnIndex(childKey.getField()),
-                ti.getIndexes(ti.getColumnIndex(currentKey.getField()), new Object[]{value}),
-                DirectTableConnectionFactory.createConnectionRow(Arrays.asList(targetRelation), loader));
+                ti.getIndexes(ti.getColumnIndex(currentKey.getField()), new Object[]{value}),Arrays.asList(targetRelation));
         for (int i = 0; i < res.length; i++) {
             if (res[i] != null) {
                 treeSet.add(res[i]);
