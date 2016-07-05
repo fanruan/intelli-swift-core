@@ -45,7 +45,7 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
                 return BI.i18nText("BI-Year_Trigger_Invalid_Text");
             }
         });
-        this.editor.on(BI.SignEditor.EVENT_KEY_DOWN, function(){
+        this.editor.on(BI.SignEditor.EVENT_KEY_DOWN, function () {
             self.fireEvent(BI.DateTrigger.EVENT_KEY_DOWN)
         });
         this.editor.on(BI.SignEditor.EVENT_FOCUS, function () {
@@ -75,38 +75,16 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
         this.editor.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.DateTrigger.EVENT_CHANGE);
         });
-
-        var triggerBtn = BI.createWidget({
-            type: "bi.icon_button",
-            stopPropagation: true,
-            cls: "bi-trigger-date-button chart-date-font",
-            width: c.triggerWidth
-        });
-        triggerBtn.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.DateTrigger.EVENT_TRIGGER_CLICK);
-        });
-        this.changeIcon = BI.createWidget({
-            type: "bi.icon_button",
-            cls: "bi-trigger-date-change widget-date-h-change-font",
-            width: c.triggerWidth
-        });
-        this.items = [{
-            el: triggerBtn,
-            width: c.triggerWidth
-        },
-            {
-                el: this.editor,
-                width: 'fill'
-            }, {
-                el: this.changeIcon,
-                width: 0
-            }];
-        this.layout = BI.createWidget({
+        BI.createWidget({
+            type: "bi.htape",
             element: this.element,
-            type: 'bi.htape',
-            items: this.items
-        });
-        this._setChangeIconVisible(false);
+            items: [{
+                el: BI.createWidget(),
+                width: 30
+            }, {
+                el: this.editor
+            }]
+        })
     },
     _dateCheck: function (date) {
         return Date.parseDateTime(date, "%Y-%x-%d").print("%Y-%x-%d") == date || Date.parseDateTime(date, "%Y-%X-%d").print("%Y-%X-%d") == date || Date.parseDateTime(date, "%Y-%x-%e").print("%Y-%x-%e") == date || Date.parseDateTime(date, "%Y-%X-%e").print("%Y-%X-%e") == date;
@@ -151,7 +129,6 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
             self.editor.setState(dateStr);
             self.editor.setValue(dateStr);
             self.setTitle(text + ":" + dateStr);
-            self._setChangeIconVisible(true);
         };
         switch (type) {
             case BICst.MULTI_DATE_YEAR_PREV:
@@ -250,7 +227,6 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
                     this.editor.setValue(dateStr);
                     this.setTitle(dateStr);
                 }
-                this._setChangeIconVisible(false);
                 break;
         }
     },
@@ -318,18 +294,8 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
             }
         }
         return this.store_value;
-    },
-
-    _setChangeIconVisible: function (v) {
-        this.changeIcon.setVisible(v);
-        if (v === true) {
-            this.items[2].width = this._const.triggerWidth;
-            this.layout.resize();
-        } else {
-            this.items[2].width = 0;
-            this.layout.resize();
-        }
     }
+
 });
 BI.DateTrigger.EVENT_FOCUS = "EVENT_FOCUS";
 BI.DateTrigger.EVENT_START = "EVENT_START";

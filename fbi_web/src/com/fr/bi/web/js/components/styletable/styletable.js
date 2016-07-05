@@ -186,7 +186,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 $table.find(".sequence-table-number.even").css("background", this._parseHEXAlpha2HEX(color, 0.05));
 
                 var summaryColor = this._parseHEXAlpha2HEX(color, 0.4);
-                $table.find(".scroll-bottom-left .table .summary-cell,.scroll-bottom-right .table .summary-cell").css({
+                $table.find(".scroll-bottom-left .table .summary-cell,.scroll-bottom-right .table > tbody .summary-cell").css({
                     "background": summaryColor,
                     color: "#1a1a1a",
                     fontWeight: "bold"
@@ -214,7 +214,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 $table.find(".sequence-table-title").css("background", color).css("color", "white");
                 $table.find(".sequence-table-title").css("background", color).css("color", "white");
 
-                $table.find(".scroll-bottom-left .table .summary-cell,.scroll-bottom-right .table .summary-cell").css({
+                $table.find(".scroll-bottom-left .table .summary-cell,.scroll-bottom-right .table >tbody .summary-cell").css({
                     "background": "white",
                     color: "#1a1a1a",
                     fontWeight: "bold"
@@ -242,7 +242,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 $table.find(".scroll-bottom-right .table > thead > tr").css("background", "white").css("color", "#808080");
                 $table.find(".sequence-table-title").css("background", "white").css("color", "#808080");
                 $table.find(".sequence-table-title").css("background", "white").css("color", "#808080");
-                $table.find(".scroll-bottom-left .table .summary-cell,.scroll-bottom-right .table .summary-cell").css({
+                $table.find(".scroll-bottom-left .table .summary-cell,.scroll-bottom-right .table >tbody .summary-cell").css({
                     "background": "white",
                     color: "#1a1a1a",
                     fontWeight: "bold"
