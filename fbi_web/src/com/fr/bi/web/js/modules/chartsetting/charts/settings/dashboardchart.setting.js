@@ -20,13 +20,13 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         NUMBER_LEVEL_SEGMENT_WIDTH: 300,
         FORMAT_SEGMENT_WIDTH: 240,
         RADIO_WIDTH: 100,
-        DASHBOARD_HEIGHT: 120,
+        DASHBOARD_HEIGHT: 60,
         POINTER_SEGMENT_WIDTH: 150
     },
 
     _defaultConfig: function(){
         return BI.extend(BI.DashboardChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-chart-setting"
+            baseCls: "bi-charts-setting"
         })
     },
 
@@ -103,13 +103,47 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
+        this.scale = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.CHART_SCALE_SETTING, {
+                type: "bi.single_select_radio_item",
+                width: this.constant.RADIO_WIDTH ,
+                height: this.constant.BUTTON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.horizontal_adapt",
+                height: this.constant.BUTTON_HEIGHT
+            }]
+        });
+
+        this.scale.on(BI.ButtonGroup.EVENT_CHANGE , function (v) {
+            self._doClickButton(v);
+            self. fireEvent(BI.DashboardChartSetting.EVENT_CHANGE)
+        });
+
+        //添加条件button
+        this.addConditionButton = BI.createWidget({
+            type: "bi.button",
+            text: "+" + BI.i18nText("BI-Add_Condition"),
+            height: this.constant.BUTTON_HEIGHT
+        });
+
+        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function () {
+            self.conditions.addItem();
+            self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
+        });
+
         this.conditions = BI.createWidget({
-            type: "bi.chart_add_condition"
+            type: "bi.chart_add_condition_group"
+        });
+
+        this.conditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE , function  () {
+            self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
@@ -191,7 +225,14 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
                     items: [this.LYUnit]
                 }, {
                     type: "bi.center_adapt",
+                    items: [this.scale]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.addConditionButton]
+                }, {
+                    type: "bi.center_adapt",
                     items: [this.conditions],
+                    width: 600,
                     height: ""
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
@@ -223,6 +264,20 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
 
     },
 
+    _doClickButton: function (v) {
+        var self = this;
+        switch(v) {
+            case BICst.SCALE_SETTING.AUTO:
+                self.addConditionButton.setVisible(false);
+                self.conditions.setVisible(false);
+                break;
+            case BICst.SCALE_SETTING.CUSTOM:
+                self.addConditionButton.setVisible(true);
+                self.conditions.setVisible(true);
+                break;
+        }
+    },
+
     _showPointer: function (pictureType) {
         self = this;
         switch (pictureType) {
@@ -245,6 +300,9 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         this.chartTypeGroup.setValue(BI.Utils.getWSChartDashboardTypeByID(wId));
         this.pointer.setValue(BI.Utils.getWSNumberOfPointerByID(wId));
         this._showPointer(BI.Utils.getWSNumberOfPointerByID(wId));
+        this.scale.setValue(BI.Utils.getWSScaleByID(wId));
+        this._doClickButton(BI.Utils.getWSScaleByID(wId));
+        this.conditions.populate(BI.Utils.getWSConditionButtonsByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSDashboardNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSDashboardUnitByID(wId));
     },
@@ -255,6 +313,8 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
             chart_dashboard_type: this.chartTypeGroup.getValue()[0],
             number_of_pointer: this.pointer.getValue()[0],
             dashboard_number_level: this.numberLevellY.getValue()[0],
+            auto_custom: this.scale.getValue()[0],
+            condition_buttons: this.conditions.getValue(),
             dashboard_unit: this.LYUnit.getValue()
         }
     },
@@ -264,6 +324,8 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         this.chartTypeGroup.setValue(v.chart_dashboard_type);
         this.pointer.setValue(v.number_of_pointer);
         this.numberLevellY.setValue(v.dashboard_number_level);
+        this.scale.setValue(v.auto_custom);
+        this.conditions.setValue(v.condition_buttons);
         this.LYUnit.setValue(v.dashboard_unit);
     }
 });
