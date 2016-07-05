@@ -4,10 +4,7 @@ import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
-import com.fr.bi.stable.engine.cal.AllSingleDimensionGroup;
-import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 
 import java.util.HashSet;
@@ -36,22 +33,22 @@ public class TableIndexUtils {
         final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(index);
         for (int i = 0; i < gvi.length; i++) {
             if (gvi[i] != null) {
-                AllSingleDimensionGroup.run(gvi[i], ti, index, new ResultDealer() {
-                    @Override
-                    public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex) {
-                        currentIndex.BrokenableTraversal(new BrokenTraversalAction() {
-                            @Override
-                            public boolean actionPerformed(int rowIndices) {
-                                Integer row = connectionRowGetter.getConnectedRow(rowIndices);
-                                Object v = row == null ? null : getter.getValue(row);
-                                if (v != null && (!values.contains(v))) {
-                                    values.add(v);
-                                }
-                                return true;
-                            }
-                        });
-                    }
-                });
+//                AllSingleDimensionGroup.run(gvi[i], ti, index, new ResultDealer() {
+//                    @Override
+//                    public void dealWith(ICubeTableService ti, GroupValueIndex currentIndex) {
+//                        currentIndex.BrokenableTraversal(new BrokenTraversalAction() {
+//                            @Override
+//                            public boolean actionPerformed(int rowIndices) {
+//                                Integer row = connectionRowGetter.getConnectedRow(rowIndices);
+//                                Object v = row == null ? null : getter.getValue(row);
+//                                if (v != null && (!values.contains(v))) {
+//                                    values.add(v);
+//                                }
+//                                return true;
+//                            }
+//                        });
+//                    }
+//                });
                 gvi[i].Traversal(new SingleRowTraversalAction() {
 
                     @Override
