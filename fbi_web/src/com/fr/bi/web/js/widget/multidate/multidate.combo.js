@@ -44,7 +44,8 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
         },
         _defaultConfig: function () {
             return BI.extend(BI.MultiDateCombo.superclass._defaultConfig.apply(this, arguments), {
-                baseCls: 'bi-multidate-combo'
+                baseCls: 'bi-multidate-combo',
+                height: 25
             });
         },
         _init: function () {
@@ -132,7 +133,6 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                 self.fireEvent(BI.MultiDateCombo.EVENT_CONFIRM);
             });
             this.combo = BI.createWidget({
-                element: this.element,
                 type: 'bi.combo',
                 toggle: false,
                 isNeedAdjustHeight: false,
@@ -150,6 +150,36 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                 self.popup.setValue(self.storeValue);
                 self.fireEvent(BI.MultiDateCombo.EVENT_BEFORE_POPUPVIEW);
             });
+
+            var triggerBtn = BI.createWidget({
+                type: "bi.trigger_icon_button",
+                cls: "bi-trigger-date-button chart-date-normal-font",
+                width: 30,
+                height: 23
+            });
+            triggerBtn.on(BI.TriggerIconButton.EVENT_CHANGE, function () {
+                if (self.combo.isViewVisible()) {
+                    self.combo.hideView();
+                } else {
+                    self.combo.showView();
+                }
+            });
+
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.element,
+                items: [{
+                    el: this.combo,
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0
+                }, {
+                    el: triggerBtn,
+                    top: 0,
+                    left: 0
+                }]
+            })
         },
         setValue: function (v) {
             this.storeValue = v;

@@ -733,6 +733,18 @@
                 BICst.POINTER.ONE;
         },
 
+        getWSScaleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.auto_custom) ? ws.auto_custom :
+                BICst.SCALE_SETTING.AUTO
+        },
+
+        getWSConditionButtonsByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.condition_buttons) ? ws.condition_buttons :
+                []
+        },
+
         getWSDashboardNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.dashboard_number_level) ? ws.dashboard_number_level :
@@ -1821,7 +1833,7 @@
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {type: BICst.GROUP.M, values: month};
+                                fValue = {type: BICst.GROUP.M, values: month + 1};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
