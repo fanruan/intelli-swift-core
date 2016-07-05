@@ -73,9 +73,14 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         switch (v) {
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 var chart = BI.createWidget({type: "bi.axis_chart"});
                 chart.on(BI.AxisChart.EVENT_CHANGE, function(obj){
+                    self._doChartItemClick(obj);
+                });
+                return chart;
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                var chart = BI.createWidget({type: "bi.multi_axis_chart"});
+                chart.on(BI.MultiAxisChart.EVENT_CHANGE, function(obj){
                     self._doChartItemClick(obj);
                 });
                 return chart;
