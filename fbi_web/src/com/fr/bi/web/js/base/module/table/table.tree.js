@@ -246,7 +246,7 @@ BI.extend(BI.TableTree, {
 
         function track(store, node) {
             var next;
-            if (BI.isNotEmptyArray(node.children)) {
+            if (BI.isArray(node.children)) {
                 BI.each(node.children, function (index, child) {
                     var next;
                     if (store != -1) {
