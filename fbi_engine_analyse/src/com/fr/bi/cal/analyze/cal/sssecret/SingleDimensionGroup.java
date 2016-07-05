@@ -15,24 +15,20 @@ import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.cal.store.UserRightColumnKey;
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
-import com.fr.bi.conf.data.source.DBTableSource;
-import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
-import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
-import com.fr.third.org.apache.poi.util.StringUtil;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -182,7 +178,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         int useableParentCount = 0;
         for (int i = 0; i < ckIndex; i++) {
             if (hasParentRelation(i)) {
-                Object[] res = CubeReadingUtils.getChildValuesAsParentOrSameTable(getRealTableKey4Calculate(), data[i], pcolumns[i], column, getLoader());
+                Object[] res = CubeReadingUtils.getChildValuesAsParentOrSameTable(data[i], pcolumns[i], column, getLoader());
                 for (int j = 0; j < res.length; j++) {
                     if (values.containsKey(res[j])) {
                         values.put(res[j], values.get(res[j]) + 1);
@@ -230,9 +226,9 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     private Iterator getIterByAllValue() {
-        final TreeSet treeSet = new TreeSet(root.getComparator());
-        final ConnectionRowGetter getter = new ConnectionRowGetter(BIConfUtils.createDirectTableConnection(column, getRealTableKey4Calculate(), getLoader()));
-        Object[] res = getter.getConnectedRows(column, root.getGroupValueIndex(), column.createKey(), getLoader());
+        TreeSet treeSet = new TreeSet(root.getComparator());
+        Object[] res = TableIndexUtils.getValueFromGvi(loader.getTableIndex(column.getField().getTableBelongTo().getTableSource()),
+                column.createKey(), new GroupValueIndex[]{root.getGroupValueIndex()}, column.getRelationList());
         for (int k = 0; k < res.length; k++) {
             if (res[k] != null) {
                 treeSet.add(res[k]);

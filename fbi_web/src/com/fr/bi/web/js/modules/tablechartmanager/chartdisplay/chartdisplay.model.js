@@ -93,19 +93,24 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var targetIds = this._getShowTarget();
         if (BI.has(data, "t")) {
             var top = data.t, left = data.l;
+            var result = [];
+            BI.each(left.c, function(idx, obj){
+
+            });
             return BI.map(top.c, function (id, tObj) {
                 var data = [];
                 BI.each(left.c, function (idx, obj) {
                     var x = obj.n;
-                    var value = obj.s.c[id].s[0];
-                    if(BI.isNotNull(value) || value !== ""){
-                        data.push({
-                            "x": x,
-                            "z": tObj.n,
-                            "y": obj.s.c[id].s[0],
-                            targetIds: [targetIds[0]]
-                        });
-                    }
+                    BI.each(obj.s.c[id].s, function(i, o){
+                        if(BI.isNotNull(o)){
+                            data.push({
+                                "x": x,
+                                "z": tObj.n,
+                                "y": o,
+                                targetIds: [targetIds[i]]
+                            });
+                        }
+                    });
                 });
                 var name = tObj.n;
                 var obj = {};

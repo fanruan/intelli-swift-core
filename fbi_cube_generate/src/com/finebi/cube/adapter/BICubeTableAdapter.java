@@ -1,9 +1,9 @@
 package com.finebi.cube.adapter;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
-import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.calculator.bidouble.MaxCalculator;
 import com.finebi.cube.calculator.bidouble.MinCalculator;
 import com.finebi.cube.calculator.bidouble.SumCalculator;
@@ -231,6 +231,11 @@ public class BICubeTableAdapter implements ICubeTableService {
     @Override
     public ICubeColumnIndexReader loadGroup(BIKey columnIndex, List<BITableSourceRelation> relationList) {
         CubeColumnReaderService columnReaderService = getColumnReader(columnIndex);
+        checkFieldPathIndex(columnIndex, relationList, columnReaderService);
+        return new BIColumnIndexReader(columnReaderService, relationList);
+    }
+
+    private void checkFieldPathIndex(BIKey columnIndex, List<BITableSourceRelation> relationList, CubeColumnReaderService columnReaderService) {
         if (relationList != null) {
             try {
                 BICubeTablePath path = BICubePathUtils.convert(relationList);
@@ -242,9 +247,7 @@ public class BICubeTableAdapter implements ICubeTableService {
                 throw BINonValueUtils.beyondControl(e);
             }
         }
-        return new BIColumnIndexReader(columnReaderService, relationList);
     }
-
 
     private CubeColumnReaderService buildColumnReader(BIKey biKey) {
         CubeColumnReaderService columnReaderService;
@@ -264,7 +267,7 @@ public class BICubeTableAdapter implements ICubeTableService {
         return columnReaderService;
     }
 
-    public CubeColumnReaderService getColumnReader(BIKey biKey) {
+    private CubeColumnReaderService getColumnReader(BIKey biKey) {
         if (columnReaderServiceMap.containsKey(biKey)) {
             return columnReaderServiceMap.get(biKey);
         } else {
@@ -301,22 +304,10 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     @Override
-    public GroupValueIndex getIndexByRow(BIKey key, int row) {
-        CubeColumnReaderService columnReaderService = null;
-
-        try {
-            columnReaderService = getColumnReader(key);
-            return columnReaderService.getIndexByRow(row);
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
-
-
-    }
-
-    @Override
-    public CubeValueEntry getEntryByRow(BIKey key, int row) {
-        return null;
+    public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
+        CubeColumnReaderService columnReaderService = getColumnReader(key);
+        checkFieldPathIndex(key, relationList, columnReaderService);
+        return new BICubeValueEntryGetter(columnReaderService, relationList);
     }
 
     @Override

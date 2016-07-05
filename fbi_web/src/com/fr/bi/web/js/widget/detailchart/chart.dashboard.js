@@ -81,6 +81,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.valueLabel.align = "bottom";
                     config.plotOptions.percentageLabel.align = "bottom";
+                    config.plotOptions.layout = "vertical";
                     break;
                 case BICst.CHART_STYLE.VERTICAL_TUBE:
                     config.plotOptions.style = "thermometer";
@@ -88,6 +89,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.valueLabel.align = "left";
                     config.plotOptions.percentageLabel.align = "left";
+                    config.plotOptions.layout = "vertical";
                     break;
                 case BICst.CHART_STYLE.NORMAL:
                 default:

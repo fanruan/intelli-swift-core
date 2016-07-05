@@ -84,15 +84,12 @@ BI.PageTable = BI.inherit(BI.Widget, {
         }, 300);
         this.hpage = 1;
         this.vpage = 1;
-        this._showNext = false;
 
         this.table = BI.createWidget(o.el, {
             type: "bi.sequence_table",
             element: this.element,
 
-            hideHorizontalScrollChecker: BI.bind(this._pagerHideChecker, this),
-
-            pageSpace: 108,
+            hideHorizontalScrollChecker: BI.bind(this._hideChecker, this),
 
             isNeedResize: true,
             isResizeAdapt: false,
@@ -119,87 +116,88 @@ BI.PageTable = BI.inherit(BI.Widget, {
             crossItems: o.crossItems
         });
 
-        this.table.on(BI.CustomScrollTable.EVENT_SCROLL_TO_LEFT, function () {
-            var dots = self.dots.toArray();
-            BI.delay(function () {
-                if (self.element.is(":visible")) {
-                    if (dots.length > 1
-                        && dots[0] - dots[1] >= 0 && dots[0] - dots[1] < 100
-                        && dots[1] - dots[2] >= 0 && dots[1] - dots[2] < 100
-                        && dots[2] - dots[3] >= 0 && dots[2] - dots[3] < 100
-                        && dots[3] - dots[4] >= 0 && dots[3] - dots[4] < 100
-                        && dots[4] - dots[5] >= 0 && dots[4] - dots[5] < 100
-                        && dots[5] - dots[6] >= 0 && dots[5] - dots[6] < 100
-                        && dots[6] - dots[7] >= 0 && dots[6] - dots[7] < 100
-                        && dots[7] - dots[8] >= 0 && dots[7] - dots[8] < 100
-                        && dots[8] - dots[9] >= 0 && dots[8] - dots[9] < 100
-                    ) {
-                        if (self.hpage <= 1) {
-                            self.hpage = 1;
-                            return;
-                        }
-                        self.hpage--;
-                        self._loading();
-                        o.itemsCreator({
-                            hpage: self.hpage
-                        }, function (items, header, crossItems, crossHeader) {
-                            self.populate.apply(self, arguments);
-                            self._loaded();
-                        });
-                    }
-                }
-            }, 10);
-        });
-        this.table.on(BI.CustomScrollTable.EVENT_SCROLL_TO_RIGHT, function () {
-            var dots = self.dots.toArray();
-            //当页面隐藏的时候同时会触发这个事件，要把这种情况去掉
-            BI.delay(function () {
-                if (self.element.is(":visible")) {
-                    if (dots.length > 1
-                        && dots[1] - dots[0] >= 0 && dots[1] - dots[0] < 100
-                        && dots[2] - dots[1] >= 0 && dots[2] - dots[1] < 100
-                        && dots[3] - dots[2] >= 0 && dots[3] - dots[2] < 100
-                        && dots[4] - dots[3] >= 0 && dots[4] - dots[3] < 100
-                        && dots[5] - dots[4] >= 0 && dots[5] - dots[4] < 100
-                        && dots[6] - dots[5] >= 0 && dots[6] - dots[5] < 100
-                        && dots[7] - dots[6] >= 0 && dots[7] - dots[6] < 100
-                        && dots[8] - dots[7] >= 0 && dots[8] - dots[7] < 100
-                        && dots[9] - dots[8] >= 0 && dots[9] - dots[8] < 100
-                    ) {
-                        var hasNext = false;
-                        if (o.hasHNext(self.hpage)) {
-                            hasNext = true;
-                        } else if (self.hpage < o.lastHPage()) {
-                            hasNext = true;
-                        }
-                        if (hasNext === true) {
-                            self.hpage++;
-                            self._loading();
-                            o.itemsCreator({
-                                hpage: self.hpage
-                            }, function (items, header, crossItems, crossHeader) {
-                                self.populate.apply(self, arguments);
-                                self._loaded();
-                            });
-                        }
-                    }
-                }
-            });
-        });
+        //this.table.on(BI.CustomScrollTable.EVENT_SCROLL_TO_LEFT, function () {
+        //    var dots = self.dots.toArray();
+        //    BI.delay(function () {
+        //        if (self.element.is(":visible")) {
+        //            if (dots.length > 1
+        //                && dots[0] - dots[1] >= 0 && dots[0] - dots[1] < 100
+        //                && dots[1] - dots[2] >= 0 && dots[1] - dots[2] < 100
+        //                && dots[2] - dots[3] >= 0 && dots[2] - dots[3] < 100
+        //                && dots[3] - dots[4] >= 0 && dots[3] - dots[4] < 100
+        //                && dots[4] - dots[5] >= 0 && dots[4] - dots[5] < 100
+        //                && dots[5] - dots[6] >= 0 && dots[5] - dots[6] < 100
+        //                && dots[6] - dots[7] >= 0 && dots[6] - dots[7] < 100
+        //                && dots[7] - dots[8] >= 0 && dots[7] - dots[8] < 100
+        //                && dots[8] - dots[9] >= 0 && dots[8] - dots[9] < 100
+        //            ) {
+        //                if (self.hpage <= 1) {
+        //                    self.hpage = 1;
+        //                    return;
+        //                }
+        //                self.hpage--;
+        //                self._loading();
+        //                o.itemsCreator({
+        //                    hpage: self.hpage
+        //                }, function (items, header, crossItems, crossHeader) {
+        //                    self.populate.apply(self, arguments);
+        //                    self._loaded();
+        //                });
+        //            }
+        //        }
+        //    }, 10);
+        //});
+        //this.table.on(BI.CustomScrollTable.EVENT_SCROLL_TO_RIGHT, function () {
+        //    var dots = self.dots.toArray();
+        //    //当页面隐藏的时候同时会触发这个事件，要把这种情况去掉
+        //    BI.delay(function () {
+        //        if (self.element.is(":visible")) {
+        //            if (dots.length > 1
+        //                && dots[1] - dots[0] >= 0 && dots[1] - dots[0] < 100
+        //                && dots[2] - dots[1] >= 0 && dots[2] - dots[1] < 100
+        //                && dots[3] - dots[2] >= 0 && dots[3] - dots[2] < 100
+        //                && dots[4] - dots[3] >= 0 && dots[4] - dots[3] < 100
+        //                && dots[5] - dots[4] >= 0 && dots[5] - dots[4] < 100
+        //                && dots[6] - dots[5] >= 0 && dots[6] - dots[5] < 100
+        //                && dots[7] - dots[6] >= 0 && dots[7] - dots[6] < 100
+        //                && dots[8] - dots[7] >= 0 && dots[8] - dots[7] < 100
+        //                && dots[9] - dots[8] >= 0 && dots[9] - dots[8] < 100
+        //            ) {
+        //                var hasNext = false;
+        //                if (o.hasHNext(self.hpage)) {
+        //                    hasNext = true;
+        //                } else if (self.hpage < o.lastHPage()) {
+        //                    hasNext = true;
+        //                }
+        //                if (hasNext === true) {
+        //                    self.hpage++;
+        //                    self._loading();
+        //                    o.itemsCreator({
+        //                        hpage: self.hpage
+        //                    }, function (items, header, crossItems, crossHeader) {
+        //                        self.populate.apply(self, arguments);
+        //                        self._loaded();
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    });
+        //});
 
-        this.table.on(BI.CustomScrollTable.EVENT_RIGHT_SCROLL, function () {
-            var dot = self.table.getRightHorizontalScroll();
-            self.dots.push(dot);
-            self.lock();
-            if (dot < 50 && dot >= 0) {
-                //显示页码
-                self._showCurrentColumn();
-            } else {
-                self._hideCurrentColumn();
-            }
-        });
+        //this.table.on(BI.CustomScrollTable.EVENT_RIGHT_SCROLL, function () {
+        //    var dot = self.table.getRightHorizontalScroll();
+        //    self.dots.push(dot);
+        //    self.lock();
+        //    if (dot < 50 && dot >= 0) {
+        //        //显示页码
+        //        self._showCurrentColumn();
+        //    } else {
+        //        self._hideCurrentColumn();
+        //    }
+        //});
 
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
+            self._assertRenderPager();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_INIT);
             self._dealWithPager();
@@ -213,7 +211,6 @@ BI.PageTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            self._hideCurrentColumn();
             self._dealWithPager();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
             self.fireEvent(BI.PageTable.EVENT_TABLE_AFTER_REGION_RESIZE);
@@ -254,7 +251,6 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     _showCurrentColumn: function () {
         var self = this, o = this.options;
-        this._hideCurrentColumn();
         /**
          * 暂时不用显示分页信息
          */
@@ -297,7 +293,6 @@ BI.PageTable = BI.inherit(BI.Widget, {
         if (!this.pager) {
             this.pager = BI.createWidget(o.pager, {
                 type: "bi.direction_pager",
-                width: 108,
                 height: this._const.scrollWidth,
                 cls: "page-table-pager"
             });
@@ -326,7 +321,11 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 width: this._const.scrollWidth,
                 height: this._const.scrollWidth
             });
+        }
+    },
 
+    _assertRenderPager: function () {
+        if (!this._isRendered && this.pager && this.tipPager) {
             BI.createWidget({
                 type: "bi.absolute",
                 element: this.element,
@@ -340,24 +339,40 @@ BI.PageTable = BI.inherit(BI.Widget, {
                     bottom: 0
                 }]
             });
+            this._isRendered = true;
         }
     },
 
-    _hideCurrentColumn: function () {
-        this._currentColumn && this._currentColumn.destroy();
+    _hideChecker: function () {
+        return !this.table.hasLeftHorizontalScroll()
+            && !this.table.hasRightHorizontalScroll()
+            && this._pagerHideChecker();
     },
 
     _pagerHideChecker: function () {
-        if (!this.table.hasLeftHorizontalScroll() && !this.table.hasRightHorizontalScroll()) {
-            if (this.pager.hasNext && this.pager.hasPrev && !this.pager.hasNext() && !this.pager.hasPrev()) {
-                return true;
-            }
-            if (this.pager.hasVNext && this.pager.hasHNext
-                && this.pager.hasVNext && this.pager.hasHNext
-                && !this.pager.hasVNext() && !this.pager.hasHNext()
-                && !this.pager.hasVPrev() && !this.pager.hasHPrev()) {
-                return true;
-            }
+        return this._pagerNextChecker() && this._pagerPrevChecker();
+    },
+
+    _pagerNextChecker: function () {
+        if (this.pager.hasNext
+            && !this.pager.hasNext()) {
+            return true;
+        }
+        if (this.pager.hasVNext && this.pager.hasHNext
+            && !this.pager.hasVNext() && !this.pager.hasHNext()) {
+            return true;
+        }
+        return false;
+    },
+
+    _pagerPrevChecker: function () {
+        if (this.pager.hasPrev
+            && !this.pager.hasPrev()) {
+            return true;
+        }
+        if (this.pager.hasHPrev && this.pager.hasHPrev
+            && !this.pager.hasVPrev() && !this.pager.hasHPrev()) {
+            return true;
         }
         return false;
     },
@@ -366,7 +381,8 @@ BI.PageTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         BI.delay(function () {
-            if (self._pagerHideChecker()) {
+            self._assertPager();
+            if (self._hideChecker()) {
                 self.pager.setVisible(false);
                 self.tipPager.setVisible(false);
                 return;
@@ -375,7 +391,6 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
             var sWidth = o.isNeedFreeze === true ? regionSize[1] : regionSize[0];
 
-            self._assertPager();
             if (sWidth <= self._const.minScrollWidth) {
                 self.tipPager.setValue(self.getVPage());
                 self.pager.setVisible(false);
@@ -457,7 +472,6 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     attr: function () {
         BI.PageTable.superclass.attr.apply(this, arguments);
-        this._hideCurrentColumn();
         this.table.attr.apply(this.table, arguments);
     },
 
@@ -470,14 +484,54 @@ BI.PageTable = BI.inherit(BI.Widget, {
     },
 
     _populate: function () {
-        this.table.populate.apply(this.table, arguments);
         this._assertPager();
+        this.table.populate.apply(this.table, arguments);
         this.pager.populate();
-        this._hideCurrentColumn();
         this._dealWithPager();
     },
 
     populate: function () {
+        this._assertPager();
+        if ((this.pager.hasNext && this.pager.hasNext())
+            || (this.pager.hasPrev && this.pager.hasPrev())) {
+            var w = this.pager.getWidth();
+            this.table.attr("pageSpace", w);
+        } else {
+            if (((this.pager.hasVNext && this.pager.hasVNext())
+                || (this.pager.hasVPrev && this.pager.hasVPrev))
+                &&
+                ((this.pager.hasHNext && this.pager.hasHNext())
+                || (this.pager.hasHPrev && this.pager.hasHPrev()))) {
+                this.pager.setHPagerVisible(true);
+                this.pager.setVPagerVisible(true);
+                this.pager.setVisible(true);
+                this.pager.element.width(this.pager.getWidth());
+                var w = this.pager.getWidth();
+                this.table.attr("pageSpace", w);
+            } else if ((this.pager.hasVNext && this.pager.hasVNext())
+                || (this.pager.hasVPrev && this.pager.hasVPrev())) {
+                this.pager.setHPagerVisible(false);
+                this.pager.setVPagerVisible(true);
+                this.pager.setVisible(true);
+                this.pager.element.width(this.pager.getWidth() / 2);
+                var w = this.pager.getWidth() / 2;
+                this.table.attr("pageSpace", w);
+            } else if ((this.pager.hasHNext && this.pager.hasHNext())
+                || (this.pager.hasHPrev && this.pager.hasHPrev())) {
+                this.pager.setHPagerVisible(true);
+                this.pager.setVPagerVisible(false);
+                this.pager.setVisible(true);
+                this.pager.element.width(this.pager.getWidth() / 2);
+                var w = this.pager.getWidth() / 2;
+                this.table.attr("pageSpace", w);
+            } else {
+                this.pager.setHPagerVisible && this.pager.setHPagerVisible(false);
+                this.pager.setVPagerVisible && this.pager.setVPagerVisible(false);
+                this.pager.setVisible(false);
+                this.pager.element.width(0);
+                this.table.attr("pageSpace", 0);
+            }
+        }
         this._populate.apply(this, arguments);
     },
 

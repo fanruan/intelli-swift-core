@@ -86,7 +86,6 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             crossHeader: o.crossHeader,
             crossItems: o.crossItems
         });
-        this.table.element.css("zIndex", "1");
 
         this._adjustScrollBar = BI.debounce(function () {
             if (o.isNeedFreeze === true || o.isNeedFreeze === false) {
@@ -108,6 +107,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
 
 
                 if (isNeedHResize || isNeedVResize) {
+                    self.table.resize();
                     self._resizeFreezeScroll();
                     self._scrollFreezeScroll();
                     self._resizeScroll();
