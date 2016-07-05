@@ -10,6 +10,7 @@ import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
  */
 public abstract class BasicEngineRender<T, R> implements RenderExtended<R> {
     private T delegate;
+    private boolean negated;
 
     public BasicEngineRender(T delegate) {
         this.delegate = delegate;
@@ -23,5 +24,15 @@ public abstract class BasicEngineRender<T, R> implements RenderExtended<R> {
     @Override
     public R getRenderResult() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void negate() {
+        negated = true;
+    }
+
+    @Override
+    public boolean isNegated() {
+        return negated;
     }
 }

@@ -2,22 +2,16 @@ package com.finebi.datasource.api;
 
 
 import com.finebi.datasource.api.criteria.*;
-import com.finebi.datasource.api.metamodel.AttributeType;
 import com.finebi.datasource.api.metamodel.EntityManager;
 import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.api.metamodel.PlainTable;
-import com.finebi.datasource.sql.criteria.AttributeTypeImpl;
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
-import com.finebi.datasource.sql.criteria.internal.OrderImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.ExplicitParameterInfo;
 import com.finebi.datasource.sql.criteria.internal.compile.ImplicitParameterBinding;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContext;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContextImpl;
-
-import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
-
-import com.finebi.datasource.sql.criteria.internal.metamodel.*;
+import com.finebi.datasource.sql.criteria.internal.metamodel.EntityManagerImpl;
 import com.finebi.datasource.sql.criteria.internal.render.factory.RenderFactory;
 import com.finebi.datasource.sql.criteria.internal.render.factory.RenderFactoryDebug;
 import com.fr.fineengine.utils.StringHelper;
@@ -54,8 +48,8 @@ public class WherePredicateTest extends TestCase {
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
             query.select(root.get("id"));
-            String result = ((CriteriaQueryImpl) query).render(getContext());
-            assertEquals("select generatedAlias0.id from jpa as generatedAlias0",result);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0.id from jpa as generatedAlias0", result);
 
             System.out.println(result);
 
@@ -64,7 +58,6 @@ public class WherePredicateTest extends TestCase {
             assertTrue(false);
         }
     }
-
 
 
     public static EntityType getEntity() {
@@ -188,8 +181,8 @@ public class WherePredicateTest extends TestCase {
             query.select(root);
             Predicate condition = cb.gt(root.get("id"), 2);
             query.where(condition);
-            String result = ((CriteriaQueryImpl) query).render(getContext());
-            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id>2",result);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id>2", result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -212,15 +205,14 @@ public class WherePredicateTest extends TestCase {
             Root root = query.from(getEntity());
             Expression count = cb.count(root);
             query.select(count);
-            String result = ((CriteriaQueryImpl) query).render(getContext());
-            assertEquals("select count(*) from jpa as generatedAlias0",result);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select count(*) from jpa as generatedAlias0", result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
     }
-
 
 
     private Object executeQuery(CriteriaQuery query) {
@@ -231,7 +223,6 @@ public class WherePredicateTest extends TestCase {
         CriteriaBuilder cb = EasyMock.createMock(CriteriaBuilder.class);
         return cb;
     }
-
 
 
     public void testWhereExists() {
@@ -248,7 +239,7 @@ public class WherePredicateTest extends TestCase {
             Predicate condition = cb.exists(subquery);
             query.where(condition);
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -274,13 +265,14 @@ public class WherePredicateTest extends TestCase {
             Predicate condition = cb.equal(root.get("id"), 2);
             query.where(condition);
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
     }
+
     /**
      * 普通查询
      * Detail:
@@ -293,10 +285,10 @@ public class WherePredicateTest extends TestCase {
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
             query.select(root);
-            Predicate condition = cb.between(root.get("id"),1,3);
+            Predicate condition = cb.between(root.get("id"), 1, 3);
             query.where(condition);
-            String result = ((CriteriaQueryImpl) query).render(getContext());
-            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id between 1 and 3",result);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id between 1 and 3", result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -320,13 +312,14 @@ public class WherePredicateTest extends TestCase {
             Predicate condition = cb.isNotNull(root.get("id"));
             query.where(condition);
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
     }
+
     /**
      * 普通查询
      * Detail:
@@ -343,14 +336,15 @@ public class WherePredicateTest extends TestCase {
             Predicate condition = cb.isNull(root.get("id"));
             query.where(condition);
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
-            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id is null",result);
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where generatedAlias0.id is null", result);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
     }
+
     /**
      * 普通查询
      * Detail:
@@ -366,7 +360,7 @@ public class WherePredicateTest extends TestCase {
             query.select(root);
             Predicate condition = cb.like(root.get("id"), "%a");
             query.where(condition);
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -389,7 +383,7 @@ public class WherePredicateTest extends TestCase {
             query.select(root);
             Predicate condition = cb.notLike(root.get("id"), "%a_");
             query.where(condition);
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -414,7 +408,7 @@ public class WherePredicateTest extends TestCase {
 
             query.where(cb.and(condition, cb.equal(root.get("id"), 2)));
 
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -435,8 +429,8 @@ public class WherePredicateTest extends TestCase {
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());
             query.select(cb.sqrt(root.get("id")));
-            String result = ((CriteriaQueryImpl) query).render(getContext());
-            assertEquals("select sqrt(generatedAlias0.id) from jpa as generatedAlias0",result);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select sqrt(generatedAlias0.id) from jpa as generatedAlias0", result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -452,8 +446,8 @@ public class WherePredicateTest extends TestCase {
             Root root = query.from(getEntity());
             query.select(root);
             query.groupBy(root.get("A_name"));
-            String result = ((CriteriaQueryImpl) query).render(getContext());
-            assertEquals("select generatedAlias0 from jpa as generatedAlias0 group by generatedAlias0.A_name",result);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 group by generatedAlias0.A_name", result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -471,8 +465,8 @@ public class WherePredicateTest extends TestCase {
             query.groupBy(root.get("A_name"));
             Predicate condition = cb.like(root.get("A_name"), "_a%");
             query.having(condition);
-            String result = ((CriteriaQueryImpl) query).render(getContext());
-            assertEquals("select generatedAlias0 from jpa as generatedAlias0 group by generatedAlias0.A_name having generatedAlias0.A_name like :_a%",result);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 group by generatedAlias0.A_name having generatedAlias0.A_name like :_a%", result);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -492,9 +486,8 @@ public class WherePredicateTest extends TestCase {
             Root root = query.from(getEntity());
             query.select(root);
             query.orderBy(cb.asc(root.get("id")));
-            String result = ((CriteriaQueryImpl) query).render(getContext());
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
             System.out.println(result);
-
 
         } catch (Exception e) {
             e.printStackTrace();

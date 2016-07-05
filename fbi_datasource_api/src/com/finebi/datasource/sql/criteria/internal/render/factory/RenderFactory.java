@@ -1,5 +1,6 @@
 package com.finebi.datasource.sql.criteria.internal.render.factory;
 
+import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
 import com.finebi.datasource.sql.criteria.internal.expression.PathTypeExpression;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractFromImpl;
@@ -50,7 +51,8 @@ public interface RenderFactory<R> {
     R getNegatedPredicateLiteralRender(NegatedPredicateWrapper negatedPredicateWrapper, String driverTag);
 
     R getNullnessPredicateLiteralRender(NullnessPredicate nullnessPredicate, String driverTag);
-//    R get(CompoundPredicate compoundPredicate, String driverTag);
+
+    R getCriteriaQueryLiteralRender(CriteriaQueryImpl criteriaQuery, String driverTag);
 //    R get(CompoundPredicate compoundPredicate, String driverTag);
 
 

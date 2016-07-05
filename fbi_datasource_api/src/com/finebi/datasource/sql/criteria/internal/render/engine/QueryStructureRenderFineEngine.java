@@ -4,7 +4,6 @@ import com.finebi.datasource.api.criteria.Root;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
-import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 import com.fr.fineengine.criterion.*;
 import com.fr.fineengine.criterion.calculatetype.CalculateType;
 import com.fr.fineengine.criterion.valuetype.ValueTypes;
@@ -22,13 +21,12 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public class QueryStructureRenderFineEngine implements RenderExtended<Criteria> {
+public class QueryStructureRenderFineEngine extends BasicEngineRender<QueryStructure, Criteria> {
     private Criteria criteria;
-    private QueryStructure queryStructure;
     private Connection connection;
 
     public QueryStructureRenderFineEngine(QueryStructure queryStructure) {
-        this.queryStructure = queryStructure;
+        super(queryStructure);
         initialConnection();
     }
 
@@ -51,7 +49,7 @@ public class QueryStructureRenderFineEngine implements RenderExtended<Criteria> 
     @Override
     public Criteria render(RenderingContext renderingContext) {
         CriteriaBuilder builder = new CriteriaBuilder();
-        Set<Root<?>> roots = queryStructure.getRoots();
+        Set<Root<?>> roots = getDelegate().getRoots();
         if (roots.size() == 1) {
             builder.setEntry(renderFrom(renderingContext));
             builder.setProjections(renderSelection(renderingContext));
@@ -76,7 +74,7 @@ public class QueryStructureRenderFineEngine implements RenderExtended<Criteria> 
     }
 
     private Entry renderFrom(RenderingContext renderingContext) {
-        Set<Root<?>> roots = queryStructure.getRoots();
+        Set<Root<?>> roots = getDelegate().getRoots();
         if (roots.size() == 1) {
             Root<?> root = roots.iterator().next();
             return SQLEntryFactory.create(root.getModel().getName(), "Select * from " + root.getModel().getName(), connection);
@@ -87,7 +85,7 @@ public class QueryStructureRenderFineEngine implements RenderExtended<Criteria> 
 
     private List<Projection> renderSelection(RenderingContext renderingContext) {
         List<Projection> projections = new ArrayList<Projection>();
-        AbstractPathImpl selection = (AbstractPathImpl) queryStructure.getSelection();
+        AbstractPathImpl selection = (AbstractPathImpl) getDelegate().getSelection();
 
         final Projection projection = (Projection) selection.render(renderingContext);
         projections.add(projection);
