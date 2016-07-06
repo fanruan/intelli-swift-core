@@ -91,31 +91,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
             if (o.isNeedFreeze === true || o.isNeedFreeze === false) {
                 self._assertScroll();
                 var isNeedVResize = false, isNeedHResize = false;
-
-                resizeV();
-                if (isNeedVResize) {
-                    self.table.resize();
-                }
-                resizeH();
-
-                if (isNeedHResize) {
-                    self.table.resize();
-                    if (resizeV()) {
-                        self.table.resize();
-                    }
-                }
-
-
-                if (isNeedHResize || isNeedVResize) {
-                    self.table.resize();
-                    self._resizeFreezeScroll();
-                    self._scrollFreezeScroll();
-                    self._resizeScroll();
-                    self._scrollScroll();
-                    self.table.resize();
-                }
-
-                function resizeH() {
+                var resizeH = function resizeH() {
                     if (self.hasLeftHorizontalScroll() || self.hasRightHorizontalScroll() || !o.hideHorizontalScrollChecker()) {
                         self.bottomLeftScrollBar && self.bottomLeftScrollBar.setHidden(false);
                         self.bottomRightScrollBar.setHidden(false);
@@ -137,9 +113,9 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                         self.layout.resize();
                         return items[0].bottom !== 0;
                     }
-                }
+                };
 
-                function resizeV() {
+                var resizeV = function resizeV() {
                     if (self.hasVerticalScroll() || !o.hideVerticalScrollChecker()) {
                         self.topScrollBar.setHidden(false);
                         var items = self.layout.attr("items");
@@ -157,6 +133,28 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                         self.layout.resize();
                         return items[0].right !== 0;
                     }
+                };
+
+                resizeV();
+                if (isNeedVResize) {
+                    self.table.resize();
+                }
+                resizeH();
+
+                if (isNeedHResize) {
+                    self.table.resize();
+                    if (resizeV()) {
+                        self.table.resize();
+                    }
+                }
+
+                if (isNeedHResize || isNeedVResize) {
+                    self.table.resize();
+                    self._resizeFreezeScroll();
+                    self._scrollFreezeScroll();
+                    self._resizeScroll();
+                    self._scrollScroll();
+                    self.table.resize();
                 }
             }
         }, 0);

@@ -741,8 +741,8 @@
 
         getWSConditionButtonsByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.condition_buttons) ? ws.condition_buttons :
-                []
+            return BI.isNotNull(ws.style_conditions) ? ws.style_conditions :
+                BICst.STYLE_CONDITIONS
         },
 
         getWSDashboardNumLevelByID: function (wid) {
