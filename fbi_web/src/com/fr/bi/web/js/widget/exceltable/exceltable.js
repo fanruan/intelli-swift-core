@@ -56,19 +56,21 @@ BI.ExcelTable = BI.inherit(BI.Widget, {
             mergeRule: o.mergeRule,
 
             columnSize: [""].concat(o.columnSize),
-            headerRowSize: 16,
+            headerRowSize: 18,
             rowSize: o.rowSize,
 
             regionColumnSize: o.regionColumnSize || [81, ""]
         });
 
-        this.populate(o.items);
+        if (BI.isNotEmptyArray(o.items)) {
+            this.populate(o.items);
+        }
         BI.nextTick(function () {
             self.setRegionColumnSize(o.regionColumnSize || [81, ""]);
         });
     },
 
-    resize: function(){
+    resize: function () {
         this.table.resize();
     },
 
@@ -153,7 +155,7 @@ BI.ExcelTable = BI.inherit(BI.Widget, {
         this.table._resizeHeader && this.table._resizeHeader();
     },
 
-    attr: function(){
+    attr: function () {
         BI.ExcelTable.superclass.attr.apply(this, arguments);
         this.table.attr.apply(this.table, arguments);
     },
@@ -166,7 +168,7 @@ BI.ExcelTable = BI.inherit(BI.Widget, {
             type: "bi.excel_table_header_cell"
         }];
         if (BI.isNotNull(rows)) {
-            BI.each(columnSize, function(i, size){
+            BI.each(columnSize, function (i, size) {
                 header.push({
                     type: "bi.excel_table_header_cell",
                     text: BI.int2Abc(i + 1)

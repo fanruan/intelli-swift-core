@@ -1490,7 +1490,7 @@ BI.Table = BI.inherit(BI.Widget, {
         var o = this.options;
         var columnSize = [];
         if (o.isNeedFreeze) {
-            if (this.bottomLeftBodyTds.length > 0) {
+            if (BI.size(this.bottomLeftBodyTds) > 0 || BI.size(this.bottomRightBodyTds) > 0) {
                 if (!BI.any(this.bottomLeftBodyTds, function (i, tds) {
                         if (!BI.any(tds, function (i, item) {
                                 if (item.__mergeCols.length > 1) {
