@@ -224,6 +224,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants, o = this.options;
         this.config = {
             dashboard_number_level: options.dashboard_number_level || c.NORMAL,

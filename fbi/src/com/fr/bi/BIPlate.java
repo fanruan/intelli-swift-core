@@ -224,6 +224,7 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/css/bi.template.list.css",
                 "/com/fr/bi/web/cross/css/bi.template.createdlist.css",
 
+                "/com/fr/bi/web/cross/css/theme/bi.chartpreview.css",
                 "/com/fr/bi/web/cross/css/theme/bi.stylesetting.css",
                 "/com/fr/bi/web/cross/css/theme/bi.theme.css",
 
@@ -246,6 +247,7 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",
                 "/com/fr/bi/web/cross/js/effect/allreports.js",
                 "/com/fr/bi/web/cross/js/bi.share.js",
+                "/com/fr/bi/web/cross/js/theme/bi.chartpreview.js",
                 "/com/fr/bi/web/cross/js/theme/bi.stylesetting.js",
                 "/com/fr/bi/web/cross/js/theme/bi.theme.js",
                 "/com/fr/bi/web/cross/js/theme/bi.widget.newanalysis.js",

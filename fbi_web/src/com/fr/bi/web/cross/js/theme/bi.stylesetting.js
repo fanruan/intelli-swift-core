@@ -1,7 +1,7 @@
 /**
  * BI风格
  *
- * Created by GUY on 2016/2/15.
+ * Created by GUY on 2016/7/6.
  * @class FS.StyleSetting
  * @extends BI.Widget
  */
@@ -18,11 +18,12 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
 
         var style = this._createStyle();
         var color = this._createColor();
+        var preview = this._createPreview();
 
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [style, color]
+            items: [style, color, preview]
         });
     },
 
@@ -49,6 +50,7 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
         });
         this.style.on(BI.TextValueCombo.EVENT_CHANGE, function () {
             self._save();
+            self._preview();
         });
         this.style.setValue(0);
 
@@ -77,6 +79,7 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
         });
         this.color.on(BI.TextValueCombo.EVENT_CHANGE, function () {
             self._save();
+            self._preview();
         });
 
         return BI.createWidget({
@@ -87,10 +90,40 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
         })
     },
 
+    _createPreview: function () {
+        var self = this;
+        var label = BI.createWidget({
+            type: "bi.label",
+            height: 25,
+            textAlign: "left",
+            hgap: 10,
+            text: BI.i18nText('BI-Pre_View')
+        });
+
+        this.preview = BI.createWidget({
+            type: "fs.chart_preview",
+            width: 600,
+            height: 400
+        });
+
+        return BI.createWidget({
+            type: "bi.horizontal_adapt",
+            verticalAlign: "top",
+            columnSize: [135, 600, ''],
+            items: [label, this.preview, BI.createWidget()]
+        })
+    },
+
+    _preview: function () {
+        this.preview.populate(this.data);
+    },
+
     _save: function () {
         var chartStyle = this.style.getValue()[0] || 0;
         var defaultColor = this.color.getValue()[0];
 
+        this.data.chartStyle = chartStyle;
+        this.data.defaultColor = defaultColor;
         BI.requestAsync('fr_bi_base', 'set_config_setting', {
                 chartStyle: chartStyle,
                 defaultColor: defaultColor
@@ -110,6 +143,7 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
         } else if (this.data.styleList.length > 0) {
             this.color.setValue(this.data.styleList[0].value);
         }
+        this._preview();
     }
 });
 $.shortcut('fs.style_setting', FS.StyleSetting);
