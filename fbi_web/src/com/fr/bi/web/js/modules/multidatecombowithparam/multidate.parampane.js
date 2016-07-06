@@ -101,6 +101,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
     setValue: function (v) {
         v = BI.isArray(v) ? v : [v];
         this.stored_value = v;
+        this.tree.setValue(this.stored_value);
     },
 
     getValue: function () {

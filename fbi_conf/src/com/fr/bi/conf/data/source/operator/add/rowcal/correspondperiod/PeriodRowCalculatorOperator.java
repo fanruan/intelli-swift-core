@@ -21,7 +21,7 @@ public class PeriodRowCalculatorOperator extends CorrespondRowCalculatorOperator
      */
     private static final long serialVersionUID = 574637556670188056L;
     @BICoreField
-    private static final String XML_TAG="PeriodRowCalculatorOperator";
+    private String XML_TAG="PeriodRowCalculatorOperator";
 
 
     @Override

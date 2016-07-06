@@ -141,7 +141,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
     },
     setValue: function (v) {
         var type, value, self = this;
-        this.stored_value = v || {};
+        this.stored_value = v;
         var date = new Date();
         if (BI.isNotNull(v)) {
             if(BI.has(v, "value")){
@@ -339,7 +339,6 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
                 day: date[2] | 0
             }
         }
-        return this.stored_value;
     },
 
     _setChangeIconVisible: function (v) {
