@@ -225,7 +225,7 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
             return BI.Utils.getTableNameByFieldId4Conf(BI.lastObject(item[0]).foreignKey.field_id)
         });
         self.multiRelation.populate(relations, availableRelations);
-        if (needGenerateCube === BICst.MULTIPATH.NEEDGENERATECUBE) {
+        if (needGenerateCube === BICst.MULTI_PATH_STATUS.NEED_GENERATE_CUBE) {
             self.cubeLabel.setValue(BI.i18nText("BI-Generate_Cube_First"));
         } else {
             self.cubeLabel.setValue(BI.i18nText("BI-Multi_Path_Use_Cur_Cube_Version") + ": " + cubeEnd);

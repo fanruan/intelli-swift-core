@@ -4,7 +4,7 @@ import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.conf.provider.BICubeConfManagerProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.constant.MultiPathCubeStatus;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
@@ -96,7 +96,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public void updateMultiPathLastCubeStatus(MultiPathCubeStatus needGenerateCube) {
+    public void updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS needGenerateCube) {
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).setMultiPathCubeStatus(needGenerateCube);
         } catch (BIKeyAbsentException e) {
@@ -105,13 +105,13 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public MultiPathCubeStatus getMultiPathCubeStatus() {
+    public BIReportConstant.MULTI_PATH_STATUS getMultiPathCubeStatus() {
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getMultiPathCubeStatus();
         } catch (BIKeyAbsentException e) {
             BILogger.getLogger().error(e.getMessage());
         }
-        return MultiPathCubeStatus.NOT_NEED_GENERATE_CUBE;
+        return BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE;
     }
 
     @Override

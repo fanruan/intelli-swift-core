@@ -1,7 +1,7 @@
 package com.fr.bi.conf.provider;
 
 import com.finebi.cube.conf.field.BusinessField;
-import com.fr.bi.stable.constant.MultiPathCubeStatus;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONObject;
 
 /**
@@ -24,9 +24,9 @@ public interface BICubeConfManagerProvider {
 
     long getPackageLastModify();
 
-    void updateMultiPathLastCubeStatus(MultiPathCubeStatus needGenerateCube);
+    void updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS status);
 
-    MultiPathCubeStatus getMultiPathCubeStatus();
+    BIReportConstant.MULTI_PATH_STATUS getMultiPathCubeStatus();
 
     JSONObject createJSON(long userId) throws Exception;
 

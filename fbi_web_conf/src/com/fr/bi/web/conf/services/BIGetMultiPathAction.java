@@ -10,8 +10,6 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.MultiPathCubeStatus;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITableRelationConfusionException;
@@ -143,7 +141,7 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         jo.put("disabledRelations", path2relations(disabledMultiSet));
         jo.put("availableRelations", path2relations(availableMultiSet));
         jo.put("noneRelations", path2relations(noneMultiSet));
-        jo.put("needGenerateCube", BIConfigureManagerCenter.getCubeConfManager().getMultiPathCubeStatus() == MultiPathCubeStatus.NEED_GENERATE_CUBE ? BIReportConstant.MULTIPATH.NEEDGENERATECUBE : BIReportConstant.MULTIPATH.NOTNEEDGENERATECUBE);
+        jo.put("needGenerateCube", BIConfigureManagerCenter.getCubeConfManager().getMultiPathCubeStatus().getStatus());
         return jo;
     }
 

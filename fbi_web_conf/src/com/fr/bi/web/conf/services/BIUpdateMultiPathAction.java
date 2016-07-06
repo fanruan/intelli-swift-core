@@ -6,7 +6,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.constant.MultiPathCubeStatus;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
@@ -77,7 +77,7 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
         }
 
 
-        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(MultiPathCubeStatus.NEED_GENERATE_CUBE);
+        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NEED_GENERATE_CUBE);
         BICubeConfigureCenter.getTableRelationManager().persistData(userId);
         BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
 
