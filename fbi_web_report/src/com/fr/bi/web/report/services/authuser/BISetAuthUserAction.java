@@ -23,9 +23,7 @@ public class BISetAuthUserAction extends ActionNoSessionCMD{
         PrintWriter writer = WebUtils.createPrintWriter(res);
         JSONObject jo = new JSONObject();
         jo.put("success", saveMobileUserAuth(req));
-        writer.print(jo.toString());
-        writer.flush();
-        writer.close();
+        WebUtils.printAsJSON(res, jo);
     }
 
     private boolean saveMobileUserAuth(HttpServletRequest req) throws Exception {

@@ -38,9 +38,7 @@ public class BIGetAllAuthUserListAction extends ActionNoSessionCMD {
                 }
             }
         }
-        writer.print(allUsers.toString());
-        writer.flush();
-        writer.close();
+        WebUtils.printAsJSON(res, allUsers);
     }
 
     /**
