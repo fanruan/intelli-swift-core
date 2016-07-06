@@ -13,7 +13,7 @@ import com.fr.bi.stable.engine.cal.ResultDealer;
  */
 public class CorrespondMonthPeriodPercentRowCalculatorOperator extends CorrespondMonthPeriodRowCalculatorOperator {
     @BICoreField
-    private static final String XML_TAG="CorrespondMonthPeriodPercentRowCalculatorOperator";
+    private String XML_TAG="CorrespondMonthPeriodPercentRowCalculatorOperator";
     @Override
     protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
         return new CorrespondPeriodPercentResultDealer(key, travel, periodKey, startCol);

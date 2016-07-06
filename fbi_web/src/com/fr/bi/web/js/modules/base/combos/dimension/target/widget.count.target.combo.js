@@ -153,7 +153,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -178,7 +178,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                        BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                         items[this.constants.CordonPos][0].disabled = true;
                         return addDependency();
                 }
@@ -190,10 +190,10 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
             default:
-                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
         }
 
@@ -203,7 +203,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
                 break;
             default:
-                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
         }
         return addDependency();

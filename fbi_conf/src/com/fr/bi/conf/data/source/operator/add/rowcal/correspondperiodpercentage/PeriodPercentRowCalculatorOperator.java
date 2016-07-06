@@ -22,7 +22,7 @@ public class PeriodPercentRowCalculatorOperator extends PeriodRowCalculatorOpera
 	 */
 	private static final long serialVersionUID = 574637556670188056L;
     @BICoreField
-	private static final String XML_TAG="PeriodPercentRowCalculatorOperator";
+	private String XML_TAG="PeriodPercentRowCalculatorOperator";
 
 	@Override
 	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
