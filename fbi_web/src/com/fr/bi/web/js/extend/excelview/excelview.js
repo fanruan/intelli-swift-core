@@ -44,7 +44,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
                 type: "bi.horizontal_adapt",
                 items: [this.open, this.close]
             },
-            adjustLength: 20,
+            adjustLength: 10,
             popup: {
                 type: "bi.popup_view",
                 cls: "excel-table-popup-view",

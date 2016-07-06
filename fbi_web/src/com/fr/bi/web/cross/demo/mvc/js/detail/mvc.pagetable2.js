@@ -379,6 +379,7 @@ PageTable2View = BI.inherit(BI.View, {
             columnSize: ["", "", "", "", "", "", "", "", "", ""],
             isNeedMerge: true,
             mergeCols: [0, 1, 2],
+            regionColumnSize: [200, 'fill'],
             header: header,
             items: items,
             crossHeader: crossHeader,

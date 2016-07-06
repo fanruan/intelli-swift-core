@@ -498,7 +498,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
             this.table.attr("pageSpace", w);
         } else {
             if (((this.pager.hasVNext && this.pager.hasVNext())
-                || (this.pager.hasVPrev && this.pager.hasVPrev))
+                || (this.pager.hasVPrev && this.pager.hasVPrev()))
                 &&
                 ((this.pager.hasHNext && this.pager.hasHNext())
                 || (this.pager.hasHPrev && this.pager.hasHPrev()))) {
