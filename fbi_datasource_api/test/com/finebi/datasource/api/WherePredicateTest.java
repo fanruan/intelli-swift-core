@@ -483,22 +483,8 @@ public class WherePredicateTest extends TestCase {
      * Detail:
      * Author:Connery
      * Date:2016/6/23
-//     */
-//    public void testSqrt() {
-//        try {
-//
-//            CriteriaBuilder cb = manager.getCriteriaBuilder();
-//            CriteriaQuery<PlainTable> query = cb.createQuery();
-//            Root root = query.from(getEntity());
-//            query.select(cb.sqrt(root.get("id")));
-//            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
-//            assertEquals("select sqrt(generatedAlias0.id) from jpa as generatedAlias0", result);
-//            System.out.println(result);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            assertTrue(false);
-//        }
-//    }
+     */
+
 
 //    public void testGroupBy() {
 //        try {
