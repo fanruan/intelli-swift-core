@@ -54,6 +54,10 @@ public class BIUserTableRelationManager implements Release {
         return currentAnalyserHandler.getRelationContainer().getContainer();
     }
 
+    public Set<BITableRelation> getAllOldTableRelation() {
+        return oldAnalyserHandler.getRelationContainer().getContainer();
+    }
+
 
     @Override
     public Object clone() throws CloneNotSupportedException {

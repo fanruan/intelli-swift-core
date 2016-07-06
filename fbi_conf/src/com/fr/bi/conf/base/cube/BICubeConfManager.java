@@ -12,6 +12,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.connection.DirectTableConnectionFactory;
+import com.fr.bi.stable.constant.MultiPathCubeStatus;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -32,7 +33,7 @@ public class BICubeConfManager {
 
     private long packageLastModify;
 
-    private int multiPathCubeStatus;
+    private MultiPathCubeStatus multiPathCubeStatus;
 
     public String getCubePath() {
         return cubePath;
@@ -58,11 +59,11 @@ public class BICubeConfManager {
         this.packageLastModify = packageLastModify;
     }
 
-    public int getMultiPathCubeStatus() {
+    public MultiPathCubeStatus getMultiPathCubeStatus() {
         return multiPathCubeStatus;
     }
 
-    public void setMultiPathCubeStatus(int multiPathCubeStatus) {
+    public void setMultiPathCubeStatus(MultiPathCubeStatus multiPathCubeStatus) {
         this.multiPathCubeStatus = multiPathCubeStatus;
     }
 

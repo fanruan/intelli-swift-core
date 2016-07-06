@@ -56,6 +56,11 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
+    public Set<BITableRelation> getAllOldTableRelation(long userId) {
+        return getUserGroupConfigManager(userId).getAllOldTableRelation();
+    }
+
+    @Override
     public void envChanged() {
 
     }
@@ -220,18 +225,9 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         JSONObject jo = new JSONObject();
         Set<BusinessTable> primaryTables = new HashSet<BusinessTable>();
         Set<BusinessTable> foreignTables = new HashSet<BusinessTable>();
-        for (BITableRelation relation : getAllTableRelation(userId)) {
-            try {
-                if (BICubeConfigureCenter.getTableRelationManager().isRelationGenerated(userId, relation)) {
-                    primaryTables.add(relation.getPrimaryTable());
-                    foreignTables.add(relation.getForeignTable());
-                }
-            } catch (BITableAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());
-            } catch (BIRelationAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());
-            }
-
+        for (BITableRelation relation : getAllOldTableRelation(userId)) {
+            primaryTables.add(relation.getPrimaryTable());
+            foreignTables.add(relation.getForeignTable());
         }
         for (BusinessTable p : primaryTables) {
             JSONObject relation = new JSONObject();

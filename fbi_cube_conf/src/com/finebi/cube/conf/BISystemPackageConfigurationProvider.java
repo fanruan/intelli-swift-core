@@ -251,15 +251,24 @@ public interface BISystemPackageConfigurationProvider {
      * @throws Exception
      */
     JSONObject createPackageJSON(long userId) throws Exception;
+
     /**
      * 根据locale创建业务包的Json数据
      *
-     * @param  locale 国际化
+     * @param locale 国际化
      * @param userId 用户ID
      * @return json数据
      * @throws Exception
      */
     JSONObject createPackageJSON(long userId, Locale locale) throws Exception;
+
+    /**
+     * 根据locale创建分析用的生成过cube的业务包Json数据
+     * @param userId
+     * @param locale
+     * @return
+     */
+    JSONObject createAnalysisPackageJSON(long userId, Locale locale) throws Exception;
 
     /**
      * 从指定业务包中移走指定表

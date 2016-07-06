@@ -198,6 +198,11 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     }
 
     @Override
+    public JSONObject createAnalysisPackageJSON(long userId, Locale locale) throws Exception {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().createAnalysisPackageJSON();
+    }
+
+    @Override
     public boolean isPackageDataChanged(long userId) {
         return getUserGroupConfigManager(userId).getPackageConfigManager().isPackageDataChanged();
     }

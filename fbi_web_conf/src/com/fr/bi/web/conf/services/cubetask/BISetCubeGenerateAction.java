@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.cubetask;
 
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.MultiPathCubeStatus;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.services.cubetask.utils.CubeTaskGenerate;
@@ -38,7 +38,9 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
                 cubeBuild = CubeTaskGenerate.CubeBuild(userId, new BITableID(baseTableId));
             }
         }
-        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTIPATH.NOTNEEDGENERATECUBE);
+        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(MultiPathCubeStatus.NOT_NEED_GENERATE_CUBE);
+        BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         JSONObject jsonObject = new JSONObject().put("result", cubeBuild);
         WebUtils.printAsJSON(res, jsonObject);
 
