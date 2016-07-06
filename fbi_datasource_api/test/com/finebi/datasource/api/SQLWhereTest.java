@@ -34,7 +34,7 @@ public class SQLWhereTest extends TestCase {
             CriteriaQuery query = cb.createQuery();
             Root root = query.from(WherePredicateTest.getEntity());
             query.select(root);
-            query.where(cb.isTrue(root.get("id")));
+            query.where(cb.isTrue(cb.equal(root.get("id"), 1)));
             String result = ((CriteriaQueryImpl) query).render(WherePredicateTest.getContext()).toString();
             System.out.println(result);
 
