@@ -2,7 +2,9 @@ package com.finebi.datasource.sql.criteria.internal.render.factory;
 
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
+import com.finebi.datasource.sql.criteria.internal.expression.BinaryArithmeticOperation;
 import com.finebi.datasource.sql.criteria.internal.expression.PathTypeExpression;
+import com.finebi.datasource.sql.criteria.internal.expression.function.BasicFunctionExpression;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractFromImpl;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
 import com.finebi.datasource.sql.criteria.internal.path.RootImpl;
@@ -104,6 +106,16 @@ public class RenderFactoryEngineAdapter implements RenderFactory {
 
     @Override
     public Object getCriteriaQueryLiteralRender(CriteriaQueryImpl criteriaQuery, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getBasicFunctionExpressionLiteralRender(BasicFunctionExpression basicFunctionExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getBinaryArithmeticOperationLiteralRender(BinaryArithmeticOperation binaryArithmeticOperation, String driverTag) {
         return null;
     }
 }

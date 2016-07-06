@@ -8,6 +8,7 @@ import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.predicate.ImplicitNumericExpressionTypeDeterminer;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 import java.io.Serializable;
 
@@ -23,43 +24,43 @@ public class BinaryArithmeticOperation<N extends Number>
     public static enum Operation {
         ADD {
             @Override
-            String apply(String lhs, String rhs) {
+            public String apply(String lhs, String rhs) {
                 return applyPrimitive(lhs, '+', rhs);
             }
         },
         SUBTRACT {
             @Override
-            String apply(String lhs, String rhs) {
+            public String apply(String lhs, String rhs) {
                 return applyPrimitive(lhs, '-', rhs);
             }
         },
         MULTIPLY {
             @Override
-            String apply(String lhs, String rhs) {
+            public String apply(String lhs, String rhs) {
                 return applyPrimitive(lhs, '*', rhs);
             }
         },
         DIVIDE {
             @Override
-            String apply(String lhs, String rhs) {
+            public String apply(String lhs, String rhs) {
                 return applyPrimitive(lhs, '/', rhs);
             }
         },
         QUOT {
             @Override
-            String apply(String lhs, String rhs) {
+            public String apply(String lhs, String rhs) {
                 return applyPrimitive(lhs, '/', rhs);
             }
         },
         MOD {
             @Override
-            String apply(String lhs, String rhs) {
+            public String apply(String lhs, String rhs) {
 //				return lhs + " % " + rhs;
                 return "mod(" + lhs + "," + rhs + ")";
             }
         };
 
-        abstract String apply(String lhs, String rhs);
+        public abstract String apply(String lhs, String rhs);
 
         private static final char LEFT_PAREN = '(';
         private static final char RIGHT_PAREN = ')';
@@ -203,14 +204,20 @@ public class BinaryArithmeticOperation<N extends Number>
 
     @Override
     public Object render(RenderingContext renderingContext) {
-        return getOperator().apply(
-                ((Renderable) getLeftHandOperand()).render(renderingContext).toString(),
-                ((Renderable) getRightHandOperand()).render(renderingContext).toString()
-        );
+        return delegateRender(renderingContext);
     }
 
     @Override
     public Object renderProjection(RenderingContext renderingContext) {
         return render(renderingContext);
+    }
+
+    public Object delegateRender(RenderingContext renderingContext) {
+        RenderExtended render = choseRender(renderingContext);
+        return render.render(renderingContext);
+    }
+
+    protected RenderExtended choseRender(RenderingContext renderingContext) {
+        return (RenderExtended) renderingContext.getRenderFactory().getBinaryArithmeticOperationLiteralRender(this, "default");
     }
 }

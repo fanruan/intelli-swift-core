@@ -7,6 +7,8 @@ import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
+import com.fr.report.core.A.O;
 
 /**
  * Models the basic concept of a SQL function.
@@ -43,11 +45,20 @@ public class BasicFunctionExpression<X>
 		// nothing to do here...
 	}
 
-	public String render(RenderingContext renderingContext) {
-		return getFunctionName() + "()";
+	public Object render(RenderingContext renderingContext) {
+		return delegateRender(renderingContext);
 	}
 
-	public String renderProjection(RenderingContext renderingContext) {
+	public Object renderProjection(RenderingContext renderingContext) {
 		return render( renderingContext );
+	}
+
+	public Object delegateRender(RenderingContext renderingContext) {
+		RenderExtended render = choseRender(renderingContext);
+		return render.render(renderingContext);
+	}
+
+	protected RenderExtended choseRender(RenderingContext renderingContext) {
+		return (RenderExtended) renderingContext.getRenderFactory().getBasicFunctionExpressionLiteralRender(this, "default");
 	}
 }
