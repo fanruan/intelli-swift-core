@@ -1183,6 +1183,32 @@ BICst.DEFAULT_CHART_SETTING = {
     show_zoom: false
 };
 
+BICst.STYLE_CONDITIONS = [{
+    range: {
+        min: 0,
+        max: 100,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#09ABE9"
+} , {
+    range: {
+        min: 100,
+        max: 200,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#09ABE9",
+} , {
+    range: {
+        min: 200,
+        max: 300,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#09ABE9",
+}];
+
 BICst.CAL_TARGET_TYPE = [{
     text: BI.i18nText("BI-Formula"),
     value: BICst.TARGET_TYPE.FORMULA

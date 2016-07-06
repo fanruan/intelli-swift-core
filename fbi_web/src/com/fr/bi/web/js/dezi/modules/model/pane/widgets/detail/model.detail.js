@@ -290,7 +290,6 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                 if (rType === BICst.REGION.TARGET1) {
                                     if(!preTar1Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar1Select) && BI.size(dims) !== BI.size(preDims)){
-                                            dims[dId].used = false;
                                         }else{
                                             tar1Change = true;
                                         }

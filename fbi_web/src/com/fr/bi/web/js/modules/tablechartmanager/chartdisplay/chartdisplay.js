@@ -72,6 +72,35 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, obj);
     },
 
+    _onClickDrill: function (dId, value, drillId) {
+        var wId = this.options.wId;
+        var drillMap = BI.Utils.getDrillByID(wId);
+        //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
+        //当前钻取的根节点
+        var rootId = dId;
+        BI.each(drillMap, function (drId, ds) {
+            if (dId === drId || (ds.length > 0 && ds[ds.length - 1].dId === dId)) {
+                rootId = drId;
+            }
+        });
+
+        var drillOperators = drillMap[rootId] || [];
+        //上钻
+        if (BI.isNull(drillId)) {
+            drillOperators.pop();
+        } else {
+            drillOperators.push({
+                dId: drillId,
+                values: [{
+                    dId: dId,
+                    value: [value]
+                }]
+            });
+        }
+        drillMap[rootId] = drillOperators;
+        this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
+    },
+
     _send2AllChildLinkWidget: function (wid, dId, clicked) {
         var self = this;
         var linkage = BI.Utils.getWidgetLinkageByID(wid);
@@ -227,6 +256,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 var chart = BI.createWidget({type: "bi.map_chart"});
                 chart.on(BI.MapChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                    self._onClickDrill(obj.dId, obj.x, obj.drillDid);
                 });
                 return chart;
             case BICst.WIDGET.GIS_MAP:

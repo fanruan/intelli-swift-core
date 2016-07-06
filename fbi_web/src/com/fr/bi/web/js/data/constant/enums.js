@@ -487,6 +487,25 @@ BICst.TARGET_STYLE = {
     }
 };
 
+//仪表盘自动样式
+BICst.DASHBOARD_CHART_STYLE_AUTO = {
+        FIRST: {
+            color: "",
+            from: 0,
+            to: 100
+        },
+        SECOND: {
+            color: "",
+            from: 100,
+            to: 200
+        },
+        THIRD: {
+            color: "",
+            from: 200,
+            to: 300
+        }
+};
+
 //单个指标、多个指标
 BICst.POINTER = {
     ONE: 1,

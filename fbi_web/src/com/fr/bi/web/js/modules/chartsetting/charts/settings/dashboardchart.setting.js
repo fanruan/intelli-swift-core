@@ -302,7 +302,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         this._showPointer(BI.Utils.getWSNumberOfPointerByID(wId));
         this.scale.setValue(BI.Utils.getWSScaleByID(wId));
         this._doClickButton(BI.Utils.getWSScaleByID(wId));
-        this.conditions.populate(BI.Utils.getWSConditionButtonsByID(wId));
+        this.conditions.setValue(BI.Utils.getWSConditionButtonsByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSDashboardNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSDashboardUnitByID(wId));
     },
@@ -314,7 +314,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
             number_of_pointer: this.pointer.getValue()[0],
             dashboard_number_level: this.numberLevellY.getValue()[0],
             auto_custom: this.scale.getValue()[0],
-            condition_buttons: this.conditions.getValue(),
+            style_conditions: this.conditions.getValue(),
             dashboard_unit: this.LYUnit.getValue()
         }
     },
@@ -325,6 +325,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         this.pointer.setValue(v.number_of_pointer);
         this.numberLevellY.setValue(v.dashboard_number_level);
         this.scale.setValue(v.auto_custom);
+        this.conditions.setValue(v.style_conditions);
         this.LYUnit.setValue(v.dashboard_unit);
     }
 });

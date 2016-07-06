@@ -70,9 +70,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
                 }
             });
             BI.each(dimensions, function(id, map){
-                if(BI.isNull(oldMap[id])) {
-                    oldMap[id] = BI.deepClone(map);
-                }
+                oldMap[id] = BI.deepClone(map);
             });
             return;
         }
