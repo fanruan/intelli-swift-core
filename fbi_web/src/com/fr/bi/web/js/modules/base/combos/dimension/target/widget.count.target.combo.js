@@ -85,7 +85,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: fromText,
                 title: fromText,
-                tipType: "warning",
+                tipType: "success",
                 value: BICst.TARGET_COMBO.INFO,
                 cls: "dimension-from-font",
                 disabled: true

@@ -1142,7 +1142,7 @@ define('utils/ColorUtils',[],function(){
 
         return (color && typeof color == 'string' && (color.indexOf('rgba') != -1)) ?
             getRGBAColorArray(color)[3] :
-            undefined;
+            1;
     }
 
     //没有a定义的话返回空
@@ -2931,9 +2931,7 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
 
             var clickColor = ColorUtils.getClickColor(color);
 
-            if (series.type !== Constants.MULTIPIE_CHART) {
-                var mouseOverColor = QueryUtils.queryList(queryList, 'mouseOverColor') || ColorUtils.getHighLightColor(color);
-            }
+            var mouseOverColor = QueryUtils.queryList(queryList, 'mouseOverColor') || ColorUtils.getHighLightColor(color);
 
             QueryUtils.merge(this, {
 
@@ -3662,14 +3660,13 @@ define('render/LegendIconFactory',['require','../Constants'],function(require){
     }
 
     function getLegendIconSize(name){
-        return LegendSize[name];
+        return LegendSize[name] ? LegendSize[name] : LegendSize[Constants.NORMAL_ICON];
     }
 
     function hasIcon(name){
         return LegendPath[name];
     }
-
-
+    
     return {
         getLegendIconPath:getLegendIconPath,
         getLegendIconSize:getLegendIconSize,
@@ -3802,6 +3799,7 @@ define('component/Base',['require','../utils/BaseUtils','../utils/ColorUtils','.
             var icon = '';
 
             switch (sery.type) {
+                case Constants.MULTIPIE_CHART:
                 case Constants.PIE_CHART:
                     if (sery.innerRadius || (sery.innerRadius && parseFloat(sery.innerRadius) > 0)) {
                         icon = Constants.DONUT_ICON;
@@ -3809,43 +3807,29 @@ define('component/Base',['require','../utils/BaseUtils','../utils/ColorUtils','.
                         icon = Constants.PIE_ICON;
                     }
                     break;
-                case Constants.BUBBLE_CHART:
-                    icon = Constants.BUBBLE_ICON;
-                    break;
-
-                // line type series have specific markers
-                case Constants.SCATTER_CHART:
-                    icon = Constants.SCATTER_ICON;
                 case Constants.RADAR_CHART:
                     if (sery.columnType) {
                         icon = Constants.NORMAL_ICON;
-                        break;
                     }
-                case Constants.LINE_CHART:
-                case Constants.AREA_CHART:
-                    icon += this._getLegendTypeFromMarker(marker) || Constants.NULL_MARKER;
                     break;
-
+                case Constants.BUBBLE_CHART:
+                    icon = Constants.BUBBLE_ICON;
+                    break;
                 default:
                     icon = Constants.NORMAL_ICON;
             }
-            return icon;
-        },
 
-        _getLegendTypeFromMarker:function(marker){
-
-            if (marker && LegendIconFactory.hasIcon(marker.symbol)) {
-                return marker.symbol;
+            //有marker的图例,跟marker的类型一致,跟具体的图表类型无关
+            if(marker){
+                icon = marker.symbol;
+                if(sery.type == Constants.SCATTER_CHART && !BaseUtils.isImageMarker(icon)){
+                    icon = Constants.SCATTER_CHART + marker.symbol;
+                }
+            }else if(sery.type == Constants.POINT_MAP && sery.icon){
+                icon = sery.icon.iconUrl;
             }
 
-            return null;
-        },
-
-        _isLineTypeSeries:function(type){
-            return type == Constants.LINE_CHART
-                || type == Constants.AREA_CHART
-                || type == Constants.RADAR_CHART
-                || type == Constants.SCATTER_CHART;
+            return icon;
         },
 
         //用百分比表示或者数字表示的值
@@ -4132,6 +4116,10 @@ define('component/Base',['require','../utils/BaseUtils','../utils/ColorUtils','.
 
         getParentDom:function(){
             return this.vanchart.getParentDom();
+        },
+
+        getDivParentDom:function(){
+            return this.vanchart.getDivParentDom();
         },
 
         getTooltipComponent:function(){
@@ -7659,7 +7647,8 @@ define('utils/LabelDivManager',['require','./BaseUtils','./ColorUtils','./Bezier
                     (div.textContent = label) :
                     (div.innerText = label);
             }
-
+            
+            div.style.zIndex = 1001;
             div.style.position = 'absolute';
             div.style.left = posOrDim.x + 'px';
             div.style.top = posOrDim.y + 'px';
@@ -7995,7 +7984,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
             this.component = component;
 
             if(component && component.getParentDom){
-                this.labelDivManager = new LabelDivManager(component.getParentDom());
+                this.labelDivManager = new LabelDivManager(component.getDivParentDom());
             }
 
             this.drawLabelTimeOut = {};
@@ -9800,7 +9789,15 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
 
     var Geo = Base.extend({
 
-        _refresh:function(){
+        //每次钻取的时候要loadGeo的数据
+        loadGeo:function(){
+
+            if(this._loaded){
+                return;
+            }
+
+            this._loaded = true;
+
             var cfg = this.componentOption, geo = this;
             var leaflet = this.vanchart._leaflet;
 
@@ -9835,6 +9832,9 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
 
         //point的feature
         getDataPointLatLng:function(point){
+
+            this.loadGeo();
+
             var type = point.series.type;
             if(point){
 
@@ -9882,6 +9882,9 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
         },
 
         getFeatureMap:function(series){
+
+            this.loadGeo();
+
             var areaFeatures = [], bubbleFeatures = [], scatterFeatures = [], imageFeatures = [];
 
             var validArea = {}, validPoint = {},geo = this, hasAreaMap = false;
@@ -9905,7 +9908,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                         var feature = geo._validAreaName[point.name];
                         //这一步是过滤数据里多余的和json里没有对应的数据
                         if(feature && feature.length){
-                            if(point.visible && !validArea[point.name]){
+                            if(point.visible && !validArea[point.name] &&!point.isNull){
                                 validArea[point.name] = true;
                                 feature.forEach(function(f, index){
                                     var p = BaseUtils.extend({}, point);
@@ -9923,7 +9926,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                     var defaultIcon = this.getDefaultIcon();
                     sery.points.forEach(function(point){
 
-                        if(!point.visible){
+                        if(!point.visible || point.isNull){
                             return ;
                         }
 
@@ -9997,6 +10000,9 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
         },
 
         fitMapBounds:function(){
+
+            this.loadGeo();
+
             var leaflet = this.vanchart._leaflet;
             var cfg = this.componentOption;
 
@@ -10005,14 +10011,14 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
             if(level && center){
                 leaflet.setView(center, level);
             }else{
-                leaflet.fitBounds(this.getFitBounds());
+                leaflet.fitBounds(this._getFitBounds());
                 level && leaflet.setZoom(level);
                 center && leaflet.panTo(center);
             }
         },
 
         //这个fitbounds既需要考虑json文件,还要考虑点地图的时候的在数据里写死了经纬度
-        getFitBounds:function(){
+        _getFitBounds:function(){
 
             //先统计数据里写死的经纬度信息,已写死的经纬度信息为准
             var byJson = true;
@@ -10133,9 +10139,9 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../Constants
                     case Constants.GAUGE_CHART:
                         break;
                     case Constants.PIE_CHART:
-                        var key = 'seriesName';
                     case Constants.MULTIPIE_CHART:
-                        var key = 'name';
+                        var key = sery.type === Constants.PIE_CHART ? 'seriesName' : 'name';
+
                         sery.points.map(function (point) {
                             if(!(namedSeries[point[key]])){
 
@@ -10708,7 +10714,7 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
 
         doLayout:function(){
             if(!this._tDom){
-                var dom = this.vanchart.dom;
+                var dom = this.vanchart.getDivParentDom();
 
                 this._tDom = document.createElement('div');
 
@@ -10726,7 +10732,7 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
 
         remove:function(){
             if(this._tDom){
-                var dom = this.vanchart.dom;
+                var dom = this.vanchart.getDivParentDom();
                 dom.removeChild(this._tDom);
             }
         },
@@ -10845,11 +10851,6 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
 
     });
 
-    // function (vanchart, option, componentType){
-    //     Base.call(this, vanchart, option, componentType);
-    //     this.refresh(option);
-    // }
-    
     require('../ComponentLibrary').register(Constants.TOOLTIP_COMPONENT, Tooltip);
     return Tooltip;
 });
@@ -13466,7 +13467,10 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
             seriesS.forEach(function (sery) {
                 var pointS = sery.points;
                 pointS.forEach(function (point) {
-                    var size = point.size;
+
+                    //todo 这个指标的含义
+                    var size = BaseUtils.hasDefined(point.size) ? point.size : point.value;
+
                     var item = self._getPointItem(size);
                     if(item) {
                         item.points.push(point);
@@ -13582,8 +13586,8 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
                 if(position == Constants.RIGHT || position == Constants.RIGHT_TOP){
                     var toolbarHeight = this.vanchart.getToolbarHeight();
                     this.bounds.y += toolbarHeight;
-                    this.bounds.height -= toolbarHeight;
                 }
+                
             }
         },
 
@@ -14399,6 +14403,10 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             return this.dom;
         },
 
+        getDivParentDom:function(){
+            return this.vancharts.dom;
+        },
+
         chartWidth:function(){
             return this.width;
         },
@@ -14742,7 +14750,7 @@ define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart'],fu
             options = options || this.options;
             this.options = options;
 
-            this.setOptions(options);
+            options && this.setOptions(options);
         },
 
         setData:function(options){
@@ -16454,19 +16462,29 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
             }else{
 
                 var content = '';
-                var seriesString = Formatter.format(data.seriesName, formatter.seriesFormat);
                 var valueString = Formatter.format(
                     data.series.chart.componentType == Constants.MULTIPIE_CHART ? data.size : data.value,
                     formatter.valueFormat);
                 var percentString = Formatter.format(data.percentage, formatter.percentFormat);
 
-                if(label.indexOf(SERIES) != -1 && !BaseUtils.isEmpty(seriesString)){
+                var items = [];
+                if (label.indexOf(NAME) != -1) {
+                    var nameString = Formatter.format(data.name, formatter.nameFormat);
+                    items.push(nameString);
+                }
+                if (label.indexOf(SERIES) != -1) {
+                    var seriesString = Formatter.format(data.seriesName, formatter.seriesFormat);
+                    items.push(seriesString);
+                }
 
-                    if(label.indexOf(VALUE) != -1 || label.indexOf(PERCENT) != -1){
-                        seriesString += ':';
+                var textString = items.join('&nbsp;');
+                if (textString) {
+
+                    if (label.indexOf(VALUE) != -1 || label.indexOf(PERCENT) != -1) {
+                        textString += ':';
                     }
 
-                    content += (style ? '<span >' : Constants.TOOLTIP_SERIES_STYLE) + seriesString +'</span>';
+                    content += (style ? '<span >' : Constants.TOOLTIP_SERIES_STYLE) + textString +'</span>';
                 }
 
                 if(label.indexOf(VALUE) != -1 && label.indexOf(PERCENT) != -1){
@@ -17409,6 +17427,8 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
     var DECREASE = [0.75,0.7,0.65,0.6,0.55];
 
+    var VIS_MIN = 1E-10;
+
     var multiPie = BaseChart.extend({
         
         nodes: [],
@@ -17556,7 +17576,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             this.isChanged = this.ordered != this.option.orderType;
             this.ordered = this.option.orderType;
 
-            console.log(this.root);
+            // console.log(this.root);
         },
 
         orderData: function () {
@@ -17641,7 +17661,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                     node.chSum = chSum;
                 }
 
-                node.size = node.value || node.chSum || 0;
+                node.size = Math.abs(node.value) || node.chSum || 0;
 
                 if (!node.visible) {
                     // set size to 0,
@@ -17703,12 +17723,14 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                     self._setColor(node, gradual, height);
                     self._mergeTooltipAttributes(node);
 
+                    // outside label may be revised to inside,
+                    // otherwise do nothing
                     if (node.dataLabels && node.dataLabels.enabled) {
                         // clone once only
                         if (!node.dataLabels._align && node.dataLabels.align === Constants.OUTSIDE) {
                             node.dataLabels = BaseUtils.clone(node.dataLabels);
+                            node.dataLabels._align = node.dataLabels._align || node.dataLabels.align;
                         }
-                        node.dataLabels._align = node.dataLabels._align || node.dataLabels.align;
                         if (node.dataLabels._align === Constants.OUTSIDE) {
                             if (node.depth === height) {
                                 node.dataLabels.align = Constants.OUTSIDE;
@@ -17855,8 +17877,8 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             }
 
             arcs.sort(function(a, b){
-                var startA = a.startAngle;
-                var startB = b.startAngle;
+                var startA = a.x;
+                var startB = b.x;
 
                 if(startA < startB){
                     return -1;
@@ -17912,12 +17934,16 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             var inPoints = [];
 
             this.nodes.map(function (node) {
+                if (node.dx < VIS_MIN) {
+                    return;
+                }
+
                 if (node.depth &&
                     node.dx &&
                     node.dy &&
                     node.y+node.dy !== INNER_RING_RADIUS &&
                     node.dataLabels && node.dataLabels.enabled) {
-                    console.log(node);
+
                     if (node.dataLabels.align === Constants.OUTSIDE) {
                         outPoints.push(node);
                     } else {
@@ -18059,10 +18085,10 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             var tmpLeftTop = this._ignoreMinArcLabel(usedR, leftTop);
             var tmpLeftBottom = this._ignoreMinArcLabel(usedR, leftBottom);
 
-            var rightTop = this._testIfHorizontalFit(rightTop, tmpRightTop, usedR, dim, RIGHT_TOP);
-            var rightBottom = this._testIfHorizontalFit(rightBottom, tmpRightBottom, usedR, dim, RIGHT_BOTTOM);
-            var leftTop = this._testIfHorizontalFit(leftTop, tmpLeftTop, usedR, dim, LEFT_TOP);
-            var leftBottom = this._testIfHorizontalFit(leftBottom, tmpLeftBottom, usedR, dim, LEFT_BOTTOM);
+            var rightTop = this._testIfHorizontalFit(tmpRightTop, usedR, dim, RIGHT_TOP);
+            var rightBottom = this._testIfHorizontalFit(tmpRightBottom, usedR, dim, RIGHT_BOTTOM);
+            var leftTop = this._testIfHorizontalFit(tmpLeftTop, usedR, dim, LEFT_TOP);
+            var leftBottom = this._testIfHorizontalFit(tmpLeftBottom, usedR, dim, LEFT_BOTTOM);
 
             return rightTop && rightBottom && leftTop && leftBottom;
         },
@@ -18342,7 +18368,10 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             this.sy.domain(yDomain).range(yRange);
 
             this.nodes.map(function (node) {
-                if (node.depth && node.dataLabels.enabled) {
+                if (node.depth &&
+                    node.dataLabels &&
+                    node.dataLabels.enabled &&
+                    node.dataLabels._align === Constants.OUTSIDE) {
                     if (node.depth === h) {
                         node.dataLabels.align = Constants.OUTSIDE;
                         node.labelContent[0].style.color = node.color;
@@ -22004,9 +22033,9 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var nameMap = {};
 
             //计算百分比
-            for(var i = series.length - 1; i >= 0; i--){
+            for(var i = 0, count = series.length; i < count; i++){
                 var total = 0;
-                var points = series[i].points;
+                var points = series[i].points.filter(function(p){return !p.isNull;});
 
                 points.forEach(function(point){
                     total = BaseUtils.accAdd(total, Math.abs(point.value));
@@ -22166,6 +22195,7 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             ];
 
             series.mapStyle = this._getComputedMapStyle(queryList);
+            series.icon = QueryUtils.queryList(queryList, 'icon');
         },
 
         mergeDataPointAttributes:function(point){
@@ -22197,12 +22227,13 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var style = this._getComputedMapStyle(queryList);
             style.fillColor = point.color;//todo fillColor,color属性重复
 
-            QueryUtils.merge(point, {
+            BaseUtils.extend(point, {
                 mapStyle:style,
                 drillSeries:series,
                 geo:geo,
-                value:value
-            }, true);
+                value:value,
+                isNull:BaseUtils.hasNotDefined(value)
+            });
 
             point.series.validMap = point.series.validMap || {};
             point.series.validMap[location] = true;
@@ -22254,7 +22285,7 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var type = point.series.type;
 
             var latlng = geo.getDataPointLatLng(point);
-            var pos = leaflet.latLngToLayerPoint(latlng);
+            var pos = leaflet.latLngToContainerPoint(latlng);
 
             if(type == Constants.AREA_MAP){
                 return [pos.x, pos.y];
@@ -22806,6 +22837,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             var svgRoot = this.component.getVanchartRender().getRenderRoot();
             var center = this.component.getCenter();
             var multiPieData = this.component.getChartNodes();
+            var supportAnimation = this.component.isSupportAnimation();
 
             if(!this._bodyG){
                 this._bodyG = svgRoot.append('g').datum(multiPieData);
@@ -22813,17 +22845,19 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                 this._bodyG.append('g').attr('class', LABEL_G);
 
                 // initial animation
-                multiPieG
-                    .transition()
-                    .duration(INIT_ANIMATION_TIME)
-                    .ease(INIT_EASE)
-                    .attrTween('transform', function () {
-                        var i = d3.interpolate([180, 0], [0, 1]);
-                        return function(t) {
-                            var inter = i(t);
-                            return 'rotate(' + Math.max(0, inter[0]) + ') scale(' + inter[1] + ')';
-                        };
-                    });
+                if (supportAnimation) {
+                    multiPieG
+                        .transition()
+                        .duration(INIT_ANIMATION_TIME)
+                        .ease(INIT_EASE)
+                        .attrTween('transform', function () {
+                            var i = d3.interpolate([180, 0], [0, 1]);
+                            return function (t) {
+                                var inter = i(t);
+                                return 'rotate(' + Math.max(0, inter[0]) + ') scale(' + inter[1] + ')';
+                            };
+                        });
+                }
 
                 this._bodyG
                     .append('path')
@@ -22864,6 +22898,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             var multiPie = this.component;
             var ease = multiPie.getIsChanged() ? SORT_EASE : EASE;
             var aTime = multiPie.getIsChanged() ? SORT_TIME : ANIMATION_TIME;
+            var supportAnimation = this.component.isSupportAnimation();
 
             var arc = d3.svg.arc()
                 .startAngle(function (d) { return d.x; })
@@ -22874,32 +22909,57 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             this.arc = arc;
 
             // update
-            updatePath
-                .attr("opacity", function(d) { return d.depth ? 1 : 0;})// hide inner ring
-                .style("stroke", function (d) { return d.borderColor; })
-                .style("stroke-width", function (d) { return d.borderWidth; })
-                .style("fill", function(d) { return d.color; })
-                .transition()
-                .ease(ease)
-                .duration(aTime)
-                .attrTween("d", function(a) {
-                    var self = this;
-                    var i = d3.interpolate(
-                        {
-                            x: self.x1,
-                            y: self.y1,
-                            dx: self.dx1,
-                            dy: self.dy1
-                        }, a);
-                    return function(t) {
-                        var b = i(t);
-                        self.x1 = b.x;
-                        self.y1 = b.y;
-                        self.dx1 = b.dx;
-                        self.dy1 = b.dy;
-                        return arc(b);
-                    };
-                });
+            if (supportAnimation) {
+                updatePath
+                    .attr("opacity", function (d) {
+                        return d.depth ? 1 : 0;
+                    })// hide inner ring
+                    .style("stroke", function (d) {
+                        return d.borderColor;
+                    })
+                    .style("stroke-width", function (d) {
+                        return d.borderWidth;
+                    })
+                    .style("fill", function (d) {
+                        return d.color;
+                    })
+                    .transition()
+                    .ease(ease)
+                    .duration(aTime)
+                    .attrTween("d", function (a) {
+                        var self = this;
+                        var i = d3.interpolate(
+                            {
+                                x: self.x1,
+                                y: self.y1,
+                                dx: self.dx1,
+                                dy: self.dy1
+                            }, a);
+                        return function (t) {
+                            var b = i(t);
+                            self.x1 = b.x;
+                            self.y1 = b.y;
+                            self.dx1 = b.dx;
+                            self.dy1 = b.dy;
+                            return arc(b);
+                        };
+                    });
+            } else {
+                updatePath
+                    .attr("opacity", function (d) {
+                        return d.depth ? 1 : 0;
+                    })// hide inner ring
+                    .style("stroke", function (d) {
+                        return d.borderColor;
+                    })
+                    .style("stroke-width", function (d) {
+                        return d.borderWidth;
+                    })
+                    .style("fill", function (d) {
+                        return d.color;
+                    })
+                    .attr("d", arc);
+            }
 
             // enter
 
@@ -22942,43 +23002,54 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
         drillDown: function (d) {
             var multiPieG = this._bodyG.select('.' + MULTIPIE_G);
             var labelG = multiPieG.select('g.' + LABEL_G);
+            var supportAnimation = this.component.isSupportAnimation();
 
             this._removeSvgDataLabels(labelG, '');
 
             var arc = this.arc;
-            multiPieG.transition()
-                .duration(ANIMATION_TIME)
-                .selectAll("path")
-                .attrTween("d", function(a) {
-                    var self = this;
-                    var i = d3.interpolate(
-                        {
-                            x: self.x1,
-                            y: self.y1,
-                            dx: self.dx1,
-                            dy: self.dy1
-                        }, a);
-                    return function(t) {
-                        var b = i(t);
-                        self.x1 = b.x;
-                        self.y1 = b.y;
-                        self.dx1 = b.dx;
-                        self.dy1 = b.dy;
-                        return arc(b);
-                    };
-                })
-                // following handle the small edge things,
-                // doesn't matter to the main animation...
-                .attrTween('opacity', function (d) {
-                    var self = this;
-                    return function (t) {
-                        return ((self.y1+self.dy1) > INNER_RING_RADIUS) ? 1 : 0
-                    }
-                })
-                .each('end', function (d) {
-                    this.isChosen = false;
-                    d3.select(this).attr('opacity', (d.dx && (d.y+d.dy) > INNER_RING_RADIUS) ? 1 : 0)
-                });
+            if (supportAnimation) {
+                multiPieG.transition()
+                    .duration(ANIMATION_TIME)
+                    .selectAll("path")
+                    .attrTween("d", function (a) {
+                        var self = this;
+                        var i = d3.interpolate(
+                            {
+                                x: self.x1,
+                                y: self.y1,
+                                dx: self.dx1,
+                                dy: self.dy1
+                            }, a);
+                        return function (t) {
+                            var b = i(t);
+                            self.x1 = b.x;
+                            self.y1 = b.y;
+                            self.dx1 = b.dx;
+                            self.dy1 = b.dy;
+                            return arc(b);
+                        };
+                    })
+                    // following handle the small edge things,
+                    // doesn't matter to the main animation...
+                    .attrTween('opacity', function (d) {
+                        var self = this;
+                        return function (t) {
+                            return (d.depth && (self.y1 + self.dy1) > INNER_RING_RADIUS) ? 1 : 0
+                        }
+                    })
+                    .each('end', function (d) {
+                        this.isChosen = false;
+                        d3.select(this).attr('opacity', (d.depth && d.dx && (d.y + d.dy) > INNER_RING_RADIUS) ? 1 : 0)
+                    });
+            } else {
+                multiPieG
+                    .selectAll("path")
+                    .attr("d", arc)
+                    .each(function (d) {
+                        this.isChosen = false;
+                        d3.select(this).attr('opacity', (d.depth && d.dx && (d.y + d.dy) > INNER_RING_RADIUS) ? 1 : 0)
+                    });
+            }
 
             this._drawLabel(this._bodyG);
 
@@ -27255,7 +27326,9 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
             var scatterOptions = {
                 style:function(feature){
                     return {
-                        fillColor:'blue'
+                        fillColor:'blue',
+                        markerType:feature.marker.symbol,
+                        radius:feature.marker.radius
                     }
                 },
 
@@ -27378,24 +27451,23 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
                     var areaLayers = renderer._areaLayer.getLayers(), feature = layer._data;
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
-                            d3.select(areaLayers[i]._path).style({
-                                'fill':feature.mouseOverColor,
-                                'stroke-width': 2,
-                                'filter':'url(#' + renderer._getDropShadowID() + ')'}
-                            );
+                            areaLayers[i].setStyle({
+                                fillColor:feature.mouseOverColor,
+                                weight:2,
+                                'filter':'url(#' + renderer._getDropShadowID() + ')'
+                            });
                         }
                     }
                 },
-
                 mouseout:function(){
                     tooltip.hide();
                     var areaLayers = renderer._areaLayer.getLayers();
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
                             var feature = areaLayers[i]._data;
-                            d3.select(areaLayers[i]._path).style({
-                                'fill':feature.fillColor,
-                                'stroke-width': feature.borderWidth,
+                            areaLayers[i].setStyle({
+                                fillColor:feature.fillColor,
+                                weight: feature.borderWidth,
                                 'filter':''
                             });
                         }
@@ -28340,9 +28412,9 @@ define('render/BaseAxisSvgRender',['require','./BaseRender','../utils/BaseUtils'
 
             this._drawPlotBands(g);
 
-            this._drawGridLine(g);
-
             this._drawAxisLine(g);
+
+            this._drawGridLine(g);
 
             this._drawArrow(g);
 
@@ -29399,12 +29471,13 @@ define('render/LegendSvgRender',['require','./BaseRender','../utils/BaseUtils','
                 .enter()
                 .append('g')
                 .attr('class', LEGEND_ITEM)
-                .each(function(){
+                .each(function(d){
 
                     var rowSelection = d3.select(this);
 
-                    rowSelection.append('path').attr('class', LEGEND_MARKER);
+                    var marker = LegendIconFactory.hasIcon(d.legendIconType) ? 'path' : 'image';
 
+                    rowSelection.append(marker).attr('class', LEGEND_MARKER);
                     rowSelection.append('text').attr('class', LEGEND_LABEL);
 
                     rowSelection.call(self._bindMouseEvent.bind(self));
@@ -29422,26 +29495,10 @@ define('render/LegendSvgRender',['require','./BaseRender','../utils/BaseUtils','
 
                     var preHeight = legend.getPreHeight(i);
 
-                    var markerG = rowSelection
-                        .select('path.' + LEGEND_MARKER);
+                    var markerS = rowSelection.select('.' + LEGEND_MARKER)
+                        .attr('transform', 'translate(' + PADDING + ',' + (preHeight + detY - iconSize.height/2) + ')');
 
-                    markerG
-                        .attr('transform', 'translate(' + PADDING + ',' + (preHeight + detY - iconSize.height/2) + ')')
-                        .attr('d', function(){
-                            return LegendIconFactory.getLegendIconPath(d.legendIconType);
-                        })
-                        .style('fill', function(d){
-                            return d.visible ? d.color : d.hiddenColor
-                        });
-
-                    if(d.series.type == Constants.BUBBLE_CHART){
-                        markerG
-                            .style('fill-opacity', 0.7)
-                            .style('stroke', function(d){
-                                return d.visible ? d.color : d.hiddenColor
-                            })
-                            .style('stroke-width',1);
-                    }
+                    self._updateLegendMarker(markerS, d);
 
                     rowSelection
                         .select('text.' + LEGEND_LABEL)
@@ -29531,9 +29588,13 @@ define('render/LegendSvgRender',['require','./BaseRender','../utils/BaseUtils','
             newItems
                 .append('g')
                 .attr('class', LEGEND_ITEM)
-                .each(function(){
+                .each(function(d){
                     var newItem = d3.select(this);
-                    newItem.append('path').attr('class', LEGEND_MARKER);
+
+                    var marker = LegendIconFactory.hasIcon(d.legendIconType) ? 'path' : 'image';
+
+                    newItem.append(marker).attr('class', LEGEND_MARKER);
+
                     newItem.append('text').attr('class', LEGEND_LABEL);
                     newItem.call(self._bindMouseEvent.bind(self));
                 });
@@ -29552,23 +29613,11 @@ define('render/LegendSvgRender',['require','./BaseRender','../utils/BaseUtils','
                 var y = lineStartY[d.lineIndex];
 
                 var textColor = d.visible ? cfg.style.color : d.hiddenColor;
-                var markerColor = d.visible ? d.color : d.hiddenColor;
 
-                var markerG = rowSelection.select('path');
+                var markerS = rowSelection.select('.' + LEGEND_MARKER)
+                    .attr('transform', 'translate(' + x + ',' + (y + detY - iconSize.height/2) + ')');
 
-                markerG
-                    .attr('transform', 'translate(' + x + ',' + (y + detY - iconSize.height/2) + ')')
-                    .attr('d', function(){
-                        return LegendIconFactory.getLegendIconPath(d.legendIconType);
-                    })
-                    .style('fill', markerColor);
-
-                if(d.series.type == Constants.BUBBLE_CHART){
-                    markerG
-                        .style('fill-opacity', 0.3)
-                        .style('stroke', markerColor)
-                        .style('stroke-width',1);
-                }
+                self._updateLegendMarker(markerS, d);
 
                 rowSelection.select('text')
                     .text(function(d){return d.itemName})
@@ -29578,6 +29627,32 @@ define('render/LegendSvgRender',['require','./BaseRender','../utils/BaseUtils','
                     .call(BaseUtils.setTextStyle, cfg.style)
                     .style('fill', textColor);
             });
+        },
+
+        _updateLegendMarker:function(markerS, d){
+            var markerColor = d.visible ? d.color : d.hiddenColor;
+            if(LegendIconFactory.hasIcon(d.legendIconType)){
+                markerS
+                    .attr('d', function(){
+                        return LegendIconFactory.getLegendIconPath(d.legendIconType);
+                    })
+                    .style('fill', markerColor);
+
+                if(d.series.type == Constants.BUBBLE_CHART){
+                    markerS
+                        .style('fill-opacity', 0.7)
+                        .style('stroke', function(d){
+                            return d.visible ? d.color : d.hiddenColor
+                        })
+                        .style('stroke-width',1);
+                }
+            }else{
+                markerS
+                    .attr('preserveAspectRatio', 'none')
+                    .attr('xlink:href', d.legendIconType)
+                    .attr('width', 12).attr('height', 12);
+            }
+
         },
 
         _bindMouseEvent:function(rowSelection){
@@ -29595,9 +29670,7 @@ define('render/LegendSvgRender',['require','./BaseRender','../utils/BaseUtils','
                     d3.select(this).select('.' + LEGEND_LABEL).style('fill', textColor);
                 })
                 .on('click', function(d){
-                    var series = d.series;
                     var name = d.itemName;
-
                     vanchart.series.map(function(sery){
 
                         if(sery.type == Constants.PIE_CHART || sery.type === Constants.MULTIPIE_CHART){
@@ -32482,7 +32555,7 @@ define('render/MultiPieVmlRender',['require','./BaseRender','../utils/BaseUtils'
                         'fill-opacity':ColorUtils.getColorOpacity(point.color),
                         stroke:point.borderColor,
                         'stroke-width':point.borderWidth,
-                        opacity: (point.dx && (point.y+point.dy) > INNER_RING_RADIUS) ? 1 : 0
+                        opacity: (point.depth && point.dx && (point.y+point.dy) > INNER_RING_RADIUS) ? 1 : 0
                     })
                     .datum(point);
 
