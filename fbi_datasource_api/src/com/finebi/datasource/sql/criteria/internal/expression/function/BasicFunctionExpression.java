@@ -8,7 +8,6 @@ import com.finebi.datasource.sql.criteria.internal.expression.ExpressionImpl;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
-import com.fr.report.core.A.O;
 
 /**
  * Models the basic concept of a SQL function.
