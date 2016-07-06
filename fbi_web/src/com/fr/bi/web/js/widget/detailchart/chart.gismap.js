@@ -16,7 +16,9 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        STYLE_NORMAL: 21
+        STYLE_NORMAL: 21,
+        LNG_FIRST: 3,
+        LAT_FIRST: 4
     },
 
     _defaultConfig: function () {
@@ -68,24 +70,53 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
 
     },
 
+    _checkLngLatValid: function(lnglat){
+        if(lnglat.length < 2){
+            return false;
+        }
+        return lnglat[0] <= 180 && lnglat[0] >= -180 && lnglat[1] <= 90 && lnglat[1] >= -90;
+    },
+
     _formatItems: function(items){
+        var self = this;
+        var results = [];
         BI.each(items, function(idx, item){
+            var result = [];
             BI.each(item, function(id, it){
+                var res = [];
                 BI.each(it.data, function(i, da){
-                    da.lnglat = da.x.split(",");
+                    var lnglat = da.x.split(",");
+                    if(self.config.lnglat === self.constants.LAT_FIRST){
+                        var lng = lnglat[1];
+                        lnglat[1] = lnglat[0];
+                        lnglat[0] = lng;
+                    }
+                    da.lnglat = lnglat;
                     da.value = da.y;
                     da.name = BI.isNotNull(da.z) ? da.z : da.lnglat;
-                })
-            })
+                    if(self._checkLngLatValid(da.lnglat)){
+                        res.push(da);
+                    }
+                });
+                if(BI.isNotEmptyArray(res)){
+                    result.push(BI.extend(it, {
+                        data: res
+                    }));
+                }
+            });
+            if(BI.isNotEmptyArray(result)){
+                results.push(result);
+            }
         });
-        return items;
+        return results;
     },
 
     populate: function (items, options) {
         var self = this, c = this.constants;
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false
+            show_data_label: options.show_data_label || false,
+            lnglat: options.lnglat || c.LNG_FIRST
         };
         this.options.items = items;
 
