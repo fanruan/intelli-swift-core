@@ -647,5 +647,50 @@ public class WherePredicateTest extends TestCase {
             assertTrue(false);
         }
     }
+
+    /**
+     * conjunction
+     * Detail:
+     *
+     * @Author Osborn
+     * @Date 2016/7/6
+     */
+    public void testWhereDisjunction() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate conjunction = cb.disjunction();
+
+            query.where(conjunction);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where 0=1",result);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void testWhereConjunction() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate conjunction = cb.conjunction();
+
+            query.where(conjunction);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where 1=1",result);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 }
 

@@ -11,6 +11,7 @@ import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 /**
  * Models an ANSI SQL <tt>COALESCE</tt> expression.  <tt>COALESCE</tt> is a specialized <tt>CASE</tt> statement.
@@ -61,18 +62,18 @@ public class CoalesceExpression<T> extends ExpressionImpl<T> implements Coalesce
 		}
 	}
 
-	public String render(RenderingContext renderingContext) {
-		StringBuilder buffer = new StringBuilder( "coalesce(" );
-		String sep = "";
-		for ( Expression expression : getExpressions() ) {
-			buffer.append( sep )
-					.append( ( (Renderable) expression ).render( renderingContext ) );
-			sep = ", ";
-		}
-		return buffer.append( ")" ).toString();
+	public Object render(RenderingContext renderingContext) {
+		return delegateRender(renderingContext);
+	}
+	public Object renderProjection(RenderingContext renderingContext) {
+		return render( renderingContext );
+	}
+	public Object delegateRender(RenderingContext renderingContext) {
+		RenderExtended render = choseRender(renderingContext);
+		return render.render(renderingContext);
 	}
 
-	public String renderProjection(RenderingContext renderingContext) {
-		return render( renderingContext );
+	protected RenderExtended choseRender(RenderingContext renderingContext) {
+		return (RenderExtended) renderingContext.getRenderFactory().getCoalesceExpressionLiteralRender(this, "default");
 	}
 }
