@@ -22,7 +22,7 @@ BI.Chart = BI.inherit(BI.Pane, {
         var height = 0;
 
         this._resizer = BI.debounce(function () {
-            if (self.vanCharts) {
+            if (self.element.is(":visible") && self.vanCharts) {
                 self.vanCharts.resize();
             }
         }, 0);
