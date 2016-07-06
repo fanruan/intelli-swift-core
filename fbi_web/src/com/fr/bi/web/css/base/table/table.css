@@ -12,24 +12,18 @@
 }
 .bi-table > div > div > table {
   border-bottom: 1px solid #eaeaea;
+  border-right: 1px solid #eaeaea;
 }
-.bi-table > div > div > table > tbody > tr > td.last-col > div,
-.bi-table > div > div > table > thead > tr > td.last-col > div {
-  border-right: 1px solid #eaeaea !important;
-}
-.bi-table > div.top-right > div > div > table > tbody > tr > td.last-col > div,
-.bi-table > div.top-right > div > div > table > thead > tr > td.last-col > div {
-  border-right: 1px solid #eaeaea !important;
+.bi-table > div.top-right > div > div > table {
+  border-right: 1px solid #eaeaea;
 }
 .bi-table > div.bottom-left > div > div > table {
   border-bottom: 1px solid #eaeaea;
+  border-right: 1px solid #eaeaea;
 }
 .bi-table > div.bottom-right > div > div > table {
+  border-right: 1px solid #eaeaea;
   border-bottom: 1px solid #eaeaea;
-}
-.bi-table > div.bottom-right > div > div > table > tbody > tr > td.last-col > div,
-.bi-table > div.bottom-right > div > div > table > thead > tr > td.last-col > div {
-  border-right: 1px solid #eaeaea !important;
 }
 .bi-table > div > div > table,
 .bi-table > div > div > div > table {
