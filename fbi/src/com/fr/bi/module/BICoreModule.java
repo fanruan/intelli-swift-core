@@ -331,7 +331,9 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registerResources() {
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, ResourceHelper.getThirdJs());
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, ResourceHelper.getBaseJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, ResourceHelper.getThirdCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, ResourceHelper.getBaseCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, ResourceHelper.getDataJS(), ResourceHelper.DataTransmitter);

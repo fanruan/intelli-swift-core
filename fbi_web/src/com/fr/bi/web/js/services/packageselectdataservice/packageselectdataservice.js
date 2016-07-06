@@ -376,7 +376,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         id: BI.UUID(),
                         pId: tableId,
                         type: "bi.excel_view",
-                        items: items
+                        tableId: tableId
                     });
                 }
             }

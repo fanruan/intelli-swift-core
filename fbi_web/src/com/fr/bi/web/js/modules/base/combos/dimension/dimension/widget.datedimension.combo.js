@@ -80,6 +80,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
             [{
                 text: BI.i18nText("BI-Dimension_From"),
                 value: BICst.DIMENSION_DATE_COMBO.INFO,
+                tipType: "success",
                 cls: "dimension-from-font",
                 disabled: true
             }]

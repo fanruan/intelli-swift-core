@@ -256,19 +256,24 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
 
         function formatNumberLevelInYaxis(type, position){
             var magnify = calcMagnify(type);
-            if(magnify > 1){
-                BI.each(items, function(idx, item){
-                    BI.each(item.data, function(id, da){
-                        if (position === item.yAxis) {
-                            da.y = da.y || 0;
-                            da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(da.y) > 0){
-                                da.y = 0;
-                            }
+            BI.each(items, function (idx, item) {
+                var max = null;
+                BI.each(item.data, function (id, da) {
+                    if (position === item.yAxis) {
+                        da.y = da.y || 0;
+                        da.y = da.y.div(magnify);
+                        if (self.constants.MINLIMIT.sub(da.y) > 0) {
+                            da.y = 0;
                         }
-                    })
-                })
-            }
+                    }
+                    if((BI.isNull(max) || da.y > max)){
+                        max = da.y;
+                    }
+                });
+                if(BI.isNotNull(max)){
+                    self.maxes.push(max);
+                }
+            });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }
@@ -364,20 +369,13 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
         var self = this;
         this.maxes = [];
         BI.each(items, function(idx, item){
-            var max = null;
             BI.each(item, function(id, it){
                 if(idx > 0){
                     BI.extend(it, {reversed: true, xAxis: 0});
                 }else{
                     BI.extend(it, {reversed: false, xAxis: 1});
                 }
-                BI.each(it.data, function(i, da){
-                    if((BI.isNull(max) || da.y > max)){
-                        max = da.y;
-                    }
-                })
             });
-            self.maxes.push(max);
         });
         return items;
     },

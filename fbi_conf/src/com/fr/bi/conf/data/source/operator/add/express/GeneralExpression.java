@@ -73,18 +73,18 @@ public class GeneralExpression implements Expression {
     }
 
 	@Override
-	public Object get(ICubeTableService ti, int row) {
+	public Object get(ICubeTableService ti, int row, int columnType) {
 		//倒序遍历找到值就结束
 		for(int i = expressions.length; i > 0; i --){
 			Expression e = expressions[i - 1];
 			if(e != null){
-				Object v = e.get(ti, row);
+				Object v = e.get(ti, row, columnType);
 				if(v != null){
 					return v;
 				}
 			}
 		}
-		return leftValues != null ? leftValues.get(ti, row) : null;
+		return leftValues != null ? leftValues.get(ti, row, columnType) : null;
 	}
 
 }

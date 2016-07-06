@@ -13,7 +13,7 @@ AddConditionView = BI.inherit(BI.View, {
         var self = this, o = this.options;
 
         this.condition = BI.createWidget({
-            type: "bi.chart_add_condition",
+            type: "bi.chart_add_condition_group",
             height: 180
         });
 

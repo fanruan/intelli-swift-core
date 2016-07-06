@@ -1303,7 +1303,6 @@ public class ResourceHelper {
                 //表格属性设置
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/combo.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/wrap.item.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.js",
@@ -1576,9 +1575,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/tip/tip.bubble.css",
                 "com/fr/bi/web/css/base/single/tip/tip.toast.css",
                 "com/fr/bi/web/css/base/single/tip/tip.tooltip.css",
-                "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
-                "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
-                "com/fr/bi/web/css/base/third/leaflet.css",
+
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
                 "com/fr/bi/web/css/base/view/scrollview.css",
@@ -1887,6 +1884,32 @@ public class ResourceHelper {
         };
     }
 
+    public static String [] getThirdCss() {
+        return new String[] {
+                "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
+                "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
+                "com/fr/bi/web/css/base/third/leaflet.css",
+        };
+    }
+
+    public static String [] getThirdJs() {
+        return new String[] {
+                "com/fr/bi/web/js/third/jquery.mousewheel.js",
+                "com/fr/bi/web/js/third/jquery.mCustomScrollbar.js",
+                "com/fr/bi/web/js/third/jquery.ui.core.js",
+                "com/fr/bi/web/js/third/jquery.ui.widget.js",
+                "com/fr/bi/web/js/third/jquery.ui.mouse.js",
+                "com/fr/bi/web/js/third/jquery.ui.position.js",
+                "com/fr/bi/web/js/third/jquery.ui.resizable.js",
+                "com/fr/bi/web/js/third/jquery.ui.draggable.js",
+                "com/fr/bi/web/js/third/jquery.ui.droppable.js",
+                "com/fr/bi/web/js/third/jquery.ui.sortable.js",
+                "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/js/third/leaflet.js",
+        };
+    }
+
     public static String[] getBaseJs() {
         return new String[]{
                 //core
@@ -2087,23 +2110,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.vertical.js",
-
-                "com/fr/bi/web/js/third/jquery.mousewheel.js",
-                "com/fr/bi/web/js/third/jquery.mCustomScrollbar.js",
-                "com/fr/bi/web/js/third/jquery.ui.core.js",
-                "com/fr/bi/web/js/third/jquery.ui.widget.js",
-                "com/fr/bi/web/js/third/jquery.ui.mouse.js",
-                "com/fr/bi/web/js/third/jquery.ui.position.js",
-                "com/fr/bi/web/js/third/jquery.ui.button.js",
-                "com/fr/bi/web/js/third/jquery.ui.resizable.js",
-                "com/fr/bi/web/js/third/jquery.ui.draggable.js",
-                "com/fr/bi/web/js/third/jquery.ui.droppable.js",
-                "com/fr/bi/web/js/third/jquery.ui.sortable.js",
-                "com/fr/bi/web/js/third/jquery.ui.effect.js",
-                "com/fr/bi/web/js/third/d3.js",
-                "com/fr/bi/web/js/third/vancharts-all.js",
-                "com/fr/bi/web/js/third/leaflet.js",
-
 
                 "com/fr/bi/web/js/case/case.js",
                 "com/fr/bi/web/js/case/layer/panel.js",
@@ -2617,9 +2623,7 @@ public class ResourceHelper {
     }
 
     public static String[] getFoundationCss() {
-        String[] base = getBaseCss();
-        String[] widget = getCommonCss();
-        return (String[]) ArrayUtils.addAll(base, widget);
+        return getBaseCss();
     }
 
     /**
@@ -2628,8 +2632,6 @@ public class ResourceHelper {
      * @return JS文件数组
      */
     public static String[] getFoundationJs() {
-        String[] base = getBaseJs();
-        String[] widget = getCommonJs();
-        return (String[]) ArrayUtils.addAll(base, widget);
+        return getBaseJs();
     }
 }
