@@ -45,9 +45,16 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         delete config.zoom;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.formatter = function() {
-            return this.name + "," + this.value;
+            //return "<div style = padding:>" + this.name + "," + this.value + "</div>";
+            //"padding": 5,
+            //    "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
+            //    "borderColor": "rgb(0,0,0)",
+            //    "shadow": false,
+            //    "borderRadius": 2,
+            //    "borderWidth": 0,
         };
         config.plotOptions.tooltip.shared = true;
+        config.plotOptions.tooltip.formatter = "function(){console.log(this.points); var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + (point.size || point.y) + '</div>');});return tip; }";
         config.geo = {
             "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
         };
@@ -70,25 +77,16 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
     },
 
     _formatItems: function(items){
-        //BI.each(items, function(idx, item){
-        //    BI.each(item, function(id, it){
-        //        BI.each(it.data, function(i, da){
-        //            da.lnglat = da.x.split(",");
-        //            da.value = da.y;
-        //            da.name = da.z || "";
-        //        })
-        //    })
-        //});
-        //return items;
-        return [[{
-            data: [{
-                lnglat:[120.304319,31.552968],
-                name: "帆软",
-                value: 10000
-            }],
-            name: "合同金额"
-        }]]
-
+        BI.each(items, function(idx, item){
+            BI.each(item, function(id, it){
+                BI.each(it.data, function(i, da){
+                    da.lnglat = da.x.split(",");
+                    da.value = da.y;
+                    da.name = BI.isNotNull(da.z) ? da.z : da.lnglat;
+                })
+            })
+        });
+        return items;
     },
 
     populate: function (items, options) {
