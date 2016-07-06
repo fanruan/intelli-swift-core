@@ -101,7 +101,7 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
         if (ck instanceof CombinationDimensionCalculator || ck instanceof CombinationDateDimensionCalculator) {
             return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
         }
-
+//        return new AllCalSingleDimensionGroup(tableKey, pck, node.getGroupValueIndex(), loader, false);
         return SingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
     }
 
@@ -109,10 +109,11 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
         return SingleDimensionGroup.createGroupKey(tableKey, ck, node.getGroupValueIndex(), useRealData);
     }
 
-    public SingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
+    public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
         if (ck instanceof CombinationDimensionCalculator || ck instanceof CombinationDateDimensionCalculator) {
             return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, gvi, loader, useRealData);
         }
+//        return new AllCalSingleDimensionGroup(tableKey, pck, gvi, loader, false);
         return SingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, gvi, loader, useRealData);
     }
 

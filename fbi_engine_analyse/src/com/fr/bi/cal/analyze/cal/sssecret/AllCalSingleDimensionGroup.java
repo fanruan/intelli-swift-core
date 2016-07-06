@@ -2,10 +2,13 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.result.AllCalNode;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.store.GroupKey;
+import com.fr.bi.cal.analyze.cal.store.UserRightColumnKey;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.cal.NodeResultDealer;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -13,6 +16,7 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.CubeValueEntryNode;
 import com.fr.bi.stable.utils.BIServerUtils;
+import com.fr.general.ComparatorUtils;
 
 /**
  * Created by loy on 16/6/22.
@@ -39,26 +43,31 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
         }
     }
 
+    public static GroupKey createGroupKey(BusinessTable tableKey, DimensionCalculator column, GroupValueIndex gvi, boolean useRealData) {
+        DimensionCalculator[] columnKey = new DimensionCalculator[2];
+        columnKey[0] = new UserRightColumnKey(gvi, tableKey);
+        columnKey[1] = column;
+        return new GroupKey(tableKey, columnKey, useRealData);
+    }
+
     protected boolean isTurnOnWhenInit() {
         return true;
     }
 
     public void turnOnExecutor() {
-        BIKey[] keys = new BIKey[pcolumns.length];
         NodeResultDealer dealer;
         if(doSort) {
             boolean[] sortType = new boolean[pcolumns.length];
             for (int i = 0; i < pcolumns.length; i++) {
-                keys[i] = pcolumns[i].createKey();
                 sortType[i] = pcolumns[i].getSortType() != BIReportConstant.SORT.DESC;
             }
-            dealer = BIServerUtils.createAllCalDimensonDealer(keys, null, sortType);
+            dealer = BIServerUtils.createAllCalDimensonDealer(pcolumns, null, sortType, loader);
         }
         else{
-            dealer = BIServerUtils.createAllCalDimensonDealer(keys, null);
+            dealer = BIServerUtils.createAllCalDimensonDealer(pcolumns, null, loader);
         }
         CubeValueEntryNode calRootNode = new CubeValueEntryNode();
-        dealer.dealWithNode(cubeTableService, root.getGroupValueIndex(), calRootNode);
+        dealer.dealWithNode(root.getGroupValueIndex(), calRootNode);
         copyNode(calRootNode, root, 0);
     }
 
@@ -88,17 +97,26 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
     @Override
     public NoneDimensionGroup getChildDimensionGroup(int row) {
         AllCalNode node = (AllCalNode) root.getChild(row);
+        if(node == null){
+            return null;
+        }
         return createDimensionGroup(tableKey, node.getGroupValueIndex(), getLoader());
     }
 
     @Override
     public Object getChildData(int row) {
+        if(row > root.getChildLength() - 1){
+            throw GroupOutOfBoundsException.create(-1);
+        }
         AllCalNode node = (AllCalNode) root.getChild(row);
         return node.getData();
     }
 
     @Override
     public String getChildShowName(int row) {
+        if(row > root.getChildLength() - 1){
+            throw GroupOutOfBoundsException.create(-1);
+        }
         AllCalNode node = (AllCalNode) root.getChild(row);
         return node.getShowValue();
     }
