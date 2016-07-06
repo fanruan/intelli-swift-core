@@ -30,10 +30,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     },
 
-    _formatDataForMap: function (data) {
+    _formatDataForMap: function (data, currentLayer) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
         var result = [];
+        currentLayer++;
         if (BI.has(data, "c")) {
             var obj = (data.c)[0];
             var view = BI.Utils.getWidgetViewByID(o.wId);
@@ -54,7 +55,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                 res = {
                                     x: item.n,
                                     y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
-                                    targetIds: [targetIds[idx]]
+                                    targetIds: [targetIds[idx]],
+                                    dId: self.dimIds[currentLayer - 1]
                                 };
                         }
                     }else{
@@ -62,12 +64,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             x: item.n,
                             y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
                             targetIds: [targetIds[idx]],
-                            settings: BI.Utils.getDimensionSettingsByID(targetIds[idx])
+                            settings: BI.Utils.getDimensionSettingsByID(targetIds[idx]),
+                            dId: self.dimIds[currentLayer - 1]
                         };
                     }
                     if(BI.has(item, "c")){
                         res.drilldown = {};
-                        res.drilldown.series = self._formatDataForMap(item);
+                        res.drilldown.series = self._formatDataForMap(item, currentLayer);
                         res.drilldown.geo = {
                             data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]]
                         };
@@ -494,7 +497,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.SCATTER:
                 return this._formatDataForScatter(data);
             case BICst.WIDGET.MAP:
-                var da = this._formatDataForMap(data);
+                var da = this._formatDataForMap(data, 0);
                 return BI.isEmptyArray(da) ? da : [da];
             case BICst.WIDGET.GIS_MAP:
                 var da = this._formatDataForGISMap(data);
@@ -601,29 +604,20 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var o = this.options;
         this._refreshDimsInfo();
         var dId = [], clicked = [];
-        // var drill = BI.Utils.getDrillByID(o.wId);
-        // var drillId = this.cataDid;
-        // if(BI.isNotNull(drill[drillId])) {
-        //     var drillArr = drill[drillId] || [];
-        //     var drillOb = drill[drillId][drillArr.length - 1];
-        //     if(BI.isNotNull(drillOb)) {
-        //         drillId = drillOb.dId;
-        //     }
-        // }
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.dimIds[0],
+                    dId: obj.dId || this.dimIds[0],
                     value: [obj.seriesName]
                 }];
                 break;
             case BICst.WIDGET.DASHBOARD:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.dimIds[0],
+                    dId: obj.dId || this.dimIds[0],
                     value: [obj.category]
                 }];
                 break;
@@ -631,19 +625,19 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.GIS_MAP:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.dimIds[0],
+                    dId: obj.dId || this.dimIds[0],
                     value: [obj.x]
                 }];
                 break;
             default:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.dimIds[0],
+                    dId: obj.dId || this.dimIds[0],
                     value: [obj.value || obj.x]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
-                        dId: this.crossDimIds[0],
+                        dId: obj.dId || this.crossDimIds[0],
                         value: [obj.seriesName]
                     })
                 }

@@ -170,107 +170,130 @@ BI.StyleTable = BI.inherit(BI.Widget, {
 
     setStyleAndColor: function (style, color) {
         var $table = this.table.element;
+        var $topLeft = $table.find(".scroll-top-left .table"), $topRight = $table.find(".scroll-top-right .table"),
+            $bottomLeft = $table.find(".scroll-bottom-left .table"), $bottomRight = $table.find(".scroll-bottom-right .table"),
+            $sequenceHeader = $table.find(".sequence-table-title"), $oddSequence = $table.find(".sequence-table-number.odd"),
+            $evenSequence = $table.find(".sequence-table-number.even");
+        var $bottomLeftSum = $bottomLeft.find(".summary-cell"), $bottomRightSum = $bottomRight.find(">tbody .summary-cell"),
+            $bottomLeftSumLast = $bottomLeft.find(".summary-cell.last"), $bottomRightSumLast = $bottomRight.find(">tbody .summary-cell.last"),
+            $sequenceSum = $table.find(".sequence-table-summary"), $sequenceSumLast = $table.find(".sequence-table-summary.last");
         switch (style) {
             case BI.StyleTable.STYLE1:
-                $table.find(".scroll-top-left .table").css("background", color).css("color", "white");
-                $table.find(".scroll-top-right .table").css("background", color).css("color", "white");
-                $table.find(".scroll-bottom-right .table > thead > tr").css("background", color).css("color", "white");
-
                 var oddColor = this._parseHEXAlpha2HEX(color, 0.2),
-                    evenColor = this._parseHEXAlpha2HEX(color, 0.05);
-                $table.find(".scroll-bottom-left .table > tbody tr.odd,.scroll-bottom-right .table > tbody tr.odd").css("background", oddColor);
-                $table.find(".scroll-bottom-left .table > tbody tr.even,.scroll-bottom-right .table > tbody tr.even").css("background", evenColor);
+                    evenColor = this._parseHEXAlpha2HEX(color, 0.05),
+                    summaryColor = this._parseHEXAlpha2HEX(color, 0.4);
 
-                $table.find(".sequence-table-title").css("background", color).css("color", "white");
-                $table.find(".sequence-table-number.odd").css("background", this._parseHEXAlpha2HEX(color, 0.2));
-                $table.find(".sequence-table-number.even").css("background", this._parseHEXAlpha2HEX(color, 0.05));
+                //background
+                $topLeft.css("background", color);
+                $topRight.css("background", color);
+                $bottomRight.find(">thead > tr").css("background", color);
+                $bottomLeft.find("> tbody tr.odd").css("background", oddColor);
+                $bottomRight.find("> tbody tr.odd").css("background", oddColor);
+                $bottomLeft.find("> tbody tr.even").css("background", evenColor);
+                $bottomRight.find("> tbody tr.even").css("background", evenColor);
+                $sequenceHeader.css("background", color);
+                $oddSequence.css("background", this._parseHEXAlpha2HEX(color, 0.2));
+                $evenSequence.css("background", this._parseHEXAlpha2HEX(color, 0.05));
+                $bottomLeftSum.css("background", summaryColor);
+                $bottomRightSum.css("background", summaryColor);
+                $sequenceSum.css("background", summaryColor);
+                $bottomLeftSumLast.css("background", color);
+                $bottomRightSumLast.css("background", color);
+                $sequenceSumLast.css("background", color);
 
-                var summaryColor = this._parseHEXAlpha2HEX(color, 0.4);
-                $table.find(".scroll-bottom-left .table .summary-cell,.scroll-bottom-right .table > tbody .summary-cell").css({
-                    "background": summaryColor,
-                    color: "#1a1a1a",
-                    fontWeight: "bold"
-                });
-                $table.find(".scroll-bottom-left .table .summary-cell.last,.scroll-bottom-right .table .summary-cell.last").css({
-                    "background": color,
-                    color: "#ffffff",
-                    fontWeight: "bold"
-                });
-                $table.find(".sequence-table-summary").css({
-                    "background": summaryColor,
-                    color: "#1a1a1a",
-                    fontWeight: "bold"
-                });
-                $table.find(".sequence-table-summary.last").css({
-                    "background": color,
-                    color: "#ffffff",
-                    fontWeight: "bold"
-                });
+                //color
+                $topLeft.css("color", "white");
+                $topRight.css("color", "white");
+                $bottomRight.find("thead > tr").css("color", "white");
+                $sequenceHeader.css("color", "white");
+                $bottomLeftSum.css("color", "#1a1a1a");
+                $bottomRightSum.css("color", "#1a1a1a");
+                $sequenceSum.css("color", "#1a1a1a");
+                $bottomLeftSumLast.css("color", "#ffffff");
+                $bottomRightSumLast.css("color", "#ffffff");
+                $sequenceSumLast.css("color", "#ffffff");
+
+                //font weight
+                $bottomLeftSum.css("fontWeight", "bold");
+                $bottomRightSum.css("fontWeight", "bold");
+                $sequenceSum.css("fontWeight", "bold");
+                $bottomLeftSumLast.css("fontWeight", "bold");
+                $bottomRightSumLast.css("fontWeight", "bold");
+                $sequenceSumLast.css("fontWeight", "bold");
+
                 break;
             case BI.StyleTable.STYLE2:
-                $table.find(".scroll-top-left .table").css("background", color).css("color", "white");
-                $table.find(".scroll-top-right .table").css("background", color).css("color", "white");
-                $table.find(".scroll-bottom-right .table > thead > tr").css("background", color).css("color", "white");
-                $table.find(".sequence-table-title").css("background", color).css("color", "white");
-                $table.find(".sequence-table-title").css("background", color).css("color", "white");
+                //background
+                $topLeft.css("background", color);
+                $topRight.css("background", color);
+                $bottomRight.find(">thead > tr").css("background", color);
+                $sequenceHeader.css("background", color);
+                $bottomLeftSum.css("background", "white");
+                $bottomRightSum.css("background", "white");
+                $sequenceSum.css("background", "white");
+                $bottomLeftSumLast.css("background", color);
+                $bottomRightSumLast.css("background", color);
+                $sequenceSumLast.css("background", color);
 
-                $table.find(".scroll-bottom-left .table .summary-cell,.scroll-bottom-right .table >tbody .summary-cell").css({
-                    "background": "white",
-                    color: "#1a1a1a",
-                    fontWeight: "bold"
-                });
-                $table.find(".sequence-table-summary").css({
-                    "background": "white",
-                    color: "#1a1a1a",
-                    fontWeight: "bold"
-                });
+                //color
+                $topLeft.css("color", "white");
+                $topRight.css("color", "white");
+                $bottomRight.find("thead > tr").css("color", "white");
+                $sequenceHeader.css("color", "white");
+                $bottomLeftSum.css("color", "#1a1a1a");
+                $bottomRightSum.css("color", "#1a1a1a");
+                $sequenceSum.css("color", "#1a1a1a");
+                $bottomLeftSumLast.css("color", color);
+                $bottomRightSumLast.css("color", color);
+                $sequenceSumLast.css("color", color);
 
-                $table.find(".sequence-table-summary.last").css({
-                    "background": "white",
-                    color: color,
-                    fontWeight: "bold"
-                });
-                $table.find(".scroll-bottom-left .table .summary-cell.last,.scroll-bottom-right .table .summary-cell.last").css({
-                    "background": "white",
-                    color: color,
-                    fontWeight: "bold"
-                });
+                //font weight
+                $bottomLeftSum.css("fontWeight", "bold");
+                $bottomRightSum.css("fontWeight", "bold");
+                $sequenceSum.css("fontWeight", "bold");
+                $bottomLeftSumLast.css("fontWeight", "bold");
+                $bottomRightSumLast.css("fontWeight", "bold");
+                $sequenceSumLast.css("fontWeight", "bold");
+
                 break;
             case BI.StyleTable.STYLE3:
-                $table.find(".scroll-top-left .table").css("background", "white").css("color", "#808080");
-                $table.find(".scroll-top-right .table").css("background", "white").css("color", "#808080");
-                $table.find(".scroll-bottom-right .table > thead > tr").css("background", "white").css("color", "#808080");
-                $table.find(".sequence-table-title").css("background", "white").css("color", "#808080");
-                $table.find(".sequence-table-title").css("background", "white").css("color", "#808080");
-                $table.find(".scroll-bottom-left .table .summary-cell,.scroll-bottom-right .table >tbody .summary-cell").css({
-                    "background": "white",
-                    color: "#1a1a1a",
-                    fontWeight: "bold"
-                });
-                $table.find(".sequence-table-summary").css({
-                    "background": "white",
-                    color: "#1a1a1a",
-                    fontWeight: "bold"
-                });
-                $table.find(".sequence-table-summary.last").css({
-                    "background": "white",
-                    color: color,
-                    fontWeight: "bold"
-                });
-                $table.find(".scroll-bottom-left .table .summary-cell.last,.scroll-bottom-right .table .summary-cell.last").css({
-                    "background": "white",
-                    color: color,
-                    fontWeight: "bold"
-                });
+                //background
+                $topLeft.css("background", "white");
+                $topRight.css("background", "white");
+                $bottomRight.find(">thead > tr").css("background", "white");
+                $sequenceHeader.css("background", "white");
+                $bottomLeftSum.css("background", "white");
+                $bottomRightSum.css("background", "white");
+                $sequenceSum.css("background", "white");
+                $bottomLeftSumLast.css("background", color);
+                $bottomRightSumLast.css("background", color);
+                $sequenceSumLast.css("background", color);
+
+                //color
+                $topLeft.css("color", "#808080");
+                $topRight.css("color", "#808080");
+                $bottomRight.find("thead > tr").css("color", "#808080");
+                $sequenceHeader.css("color", "#808080");
+                $bottomLeftSum.css("color", "#1a1a1a");
+                $bottomRightSum.css("color", "#1a1a1a");
+                $sequenceSum.css("color", "#1a1a1a");
+                $bottomLeftSumLast.css("color", color);
+                $bottomRightSumLast.css("color", color);
+                $sequenceSumLast.css("color", color);
+
+                //font weight
+                $bottomLeftSum.css("fontWeight", "bold");
+                $bottomRightSum.css("fontWeight", "bold");
+                $sequenceSum.css("fontWeight", "bold");
+                $bottomLeftSumLast.css("fontWeight", "bold");
+                $bottomRightSumLast.css("fontWeight", "bold");
+                $sequenceSumLast.css("fontWeight", "bold");
+
                 break;
         }
 
         //表头
-        $table.find(".scroll-top-left .table,.scroll-top-right .table").css({
-            fontSize: "12px"
-        });
         $table.find(".scroll-bottom-right .table > thead > tr,.sequence-table-title").css({
-            fontSize: "12px",
             fontWeight: "bold"
         });
         $table.find(".scroll-top-left .table .header-cell-text").css({
