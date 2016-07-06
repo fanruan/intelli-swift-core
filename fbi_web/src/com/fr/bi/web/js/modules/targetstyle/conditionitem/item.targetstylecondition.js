@@ -46,7 +46,7 @@ BI.TargetStyleConditionItem = BI.inherit(BI.Widget, {
         this.deleteIcon.setVisible(false);
 
         this.element.hover(function () {
-           self.deleteIcon.setVisible(true);
+            self.deleteIcon.setVisible(true);
         }, function () {
             self.deleteIcon.setVisible(false);
         });
