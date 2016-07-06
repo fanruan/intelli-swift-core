@@ -325,7 +325,6 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         this.pointer.setValue(v.number_of_pointer);
         this.numberLevellY.setValue(v.dashboard_number_level);
         this.scale.setValue(v.auto_custom);
-        this.conditions.setValue(v.condition_buttons);
         this.LYUnit.setValue(v.dashboard_unit);
     }
 });
