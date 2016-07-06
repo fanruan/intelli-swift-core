@@ -64,7 +64,7 @@ public class ExpressionValueOperator extends AbstractAddColumnOperator {
         int rowCount = ti.getRowCount();
         for (int row = 0; row < rowCount; row++) {
             try {
-            	Object value = expression == null ? null : expression.get(ti, row);
+            	Object value = expression == null ? null : expression.get(ti, row, columnType);
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
                 BILogger.getLogger().error("incorrect formular");
