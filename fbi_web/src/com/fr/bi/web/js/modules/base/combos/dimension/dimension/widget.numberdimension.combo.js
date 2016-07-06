@@ -147,6 +147,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             [{
                 text: BI.i18nText("BI-Dimension_From"),
                 value: BICst.DIMENSION_NUMBER_COMBO.INFO,
+                tipType: "success",
                 cls: "dimension-from-font",
                 disabled: true
             }]

@@ -130,21 +130,24 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
         this.buttongroup.removeItemAt(index)
     },
 
-    populate: function (items) {
+    createItems: function (items) {
         this.options.items = items || [];
-        this.buttongroup.populate(items);
+        var buttons = BI.createItems(items , {
+           type: "bi.chart_add_condition_item"
+        });
+        this.buttongroup.populate(buttons);
         this.buttons = this.buttongroup.getAllButtons();
         this._sendEventForButton(this.buttons);
         this._checkButtonEnable();
     },
 
-    /*setValue: function (v) {
-        this.options.items = v || [];
-        this.buttongroup.populate(v);
-        this.buttons = this.buttongroup.getAllButtons();
-        this._sendEventForButton(this.buttons);
-        this._checkButtonEnable();
-    },*/
+    populate: function (items) {
+        this.createItems(items)
+    },
+
+    setValue: function (v) {
+        this.createItems(v)
+    },
 
     getValue: function () {
         var buttons = [];

@@ -93,11 +93,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var targetIds = this._getShowTarget();
         if (BI.has(data, "t")) {
             var top = data.t, left = data.l;
-            var result = [];
-            BI.each(left.c, function(idx, obj){
-
-            });
-            return BI.map(top.c, function (id, tObj) {
+            var init = BI.map(top.c, function (id, tObj) {
                 var data = [];
                 BI.each(left.c, function (idx, obj) {
                     var x = obj.n;
@@ -118,6 +114,19 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 obj.name = name;
                 return obj;
             });
+            var result = [];
+            var size = 0;
+            if(init.length > 0){
+                size = init[0].data.length;
+            }
+            BI.each(BI.makeArray(size, null), function(idx, index){
+                var res = {data: [], name: BI.Utils.getDimensionNameByID(targetIds[idx])};
+                BI.each(init, function(id, obj){
+                    res.data.push(obj.data[idx]);
+                });
+                result.push(res);
+            });
+            return result;
         }
         if (BI.has(data, "c")) {
             var obj = (data.c)[0];
