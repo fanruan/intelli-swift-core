@@ -31,7 +31,7 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
             height: 30
         });
 
-        this.colorChooser.setValue(color);
+        //this.colorChooser.setValue(color);
 
         this.colorChooser.on(BI.ColorChooser.EVENT_CHANGE , function () {
             self.fireEvent(BI.ChartAddConditionItem.EVENT_CHANGE)
