@@ -1088,22 +1088,22 @@ BICst.RADAR_CHART_STYLE_GROUP = [{
 //仪表盘类型
 BICst.DASHBOARD_CHART_STYLE_GROUP = [{
     cls: "dashboard-chart-style-360-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "dashboard-chart-style-180-icon",
-    value: BICst.CHART_STYLE.HALF_DASHBOARD
+    value: BICst.CHART_SHAPE.HALF_DASHBOARD
 }, {
     cls: "dashboard-chart-style-percent-icon",
-    value: BICst.CHART_STYLE.PERCENT_DASHBOARD
+    value: BICst.CHART_SHAPE.PERCENT_DASHBOARD
 }, {
     cls: "dashboard-chart-style-percent-scale-slot-icon",
-    value: BICst.CHART_STYLE.PERCENT_SCALE_SLOT
+    value: BICst.CHART_SHAPE.PERCENT_SCALE_SLOT
 }, {
     cls: "dashboard-chart-style-vertical-tube-icon",
-    value: BICst.CHART_STYLE.VERTICAL_TUBE
+    value: BICst.CHART_SHAPE.VERTICAL_TUBE
 }, {
     cls: "dashboard-chart-style-horizontal-tube-icon",
-    value: BICst.CHART_STYLE.HORIZONTAL_TUBE
+    value: BICst.CHART_SHAPE.HORIZONTAL_TUBE
 }];
 
 BICst.CHART_SCALE_SETTING = [{

@@ -66,16 +66,16 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         function formatChartDashboardStyle(){
             config.gaugeAxis = self.gaugeAxis;
             switch (self.config.chart_dashboard_type) {
-                case BICst.CHART_STYLE.HALF_DASHBOARD:
+                case BICst.CHART_SHAPE.HALF_DASHBOARD:
                     config.plotOptions.style = "pointer_semi";
                     break;
-                case BICst.CHART_STYLE.PERCENT_DASHBOARD:
+                case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                     config.plotOptions.style = "ring";
                     break;
-                case BICst.CHART_STYLE.PERCENT_SCALE_SLOT:
+                case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                     config.plotOptions.style = "slot";
                     break;
-                case BICst.CHART_STYLE.HORIZONTAL_TUBE:
+                case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                     config.plotOptions.style = "thermometer";
                     config.plotOptions.thermometerLayout = "horizontal";
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
@@ -83,7 +83,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.percentageLabel.align = "bottom";
                     config.plotOptions.layout = "vertical";
                     break;
-                case BICst.CHART_STYLE.VERTICAL_TUBE:
+                case BICst.CHART_SHAPE.VERTICAL_TUBE:
                     config.plotOptions.style = "thermometer";
                     config.plotOptions.thermometerLayout = "vertical";
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
@@ -91,7 +91,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.percentageLabel.align = "left";
                     config.plotOptions.layout = "vertical";
                     break;
-                case BICst.CHART_STYLE.NORMAL:
+                case BICst.CHART_SHAPE.NORMAL:
                 default:
                     config.plotOptions.style = "pointer";
                     break;
