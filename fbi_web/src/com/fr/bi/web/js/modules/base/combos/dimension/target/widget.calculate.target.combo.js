@@ -106,7 +106,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                item[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.remove(item, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -141,10 +141,10 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                item[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.remove(item, this.constants.CHART_TYPE_POSITION);
                 break;
             default:
-                item[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.remove(item, this.constants.CHART_TYPE_POSITION);
                 break;
         }
         return item;
