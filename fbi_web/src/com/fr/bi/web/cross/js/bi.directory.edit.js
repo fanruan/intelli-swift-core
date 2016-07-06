@@ -106,7 +106,7 @@
             return result;
         },
         fillCoverData : function () {
-            return 'bireport';
+            return {name: "bireport"};
         }
     });
 })(jQuery);

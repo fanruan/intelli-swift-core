@@ -55,9 +55,9 @@ FS.BIUSERMGR = {
             async: false,
             math:Math.random()
         });
-        self.editUserAuthLimit = parseInt( userAuthJo['edit'] ) || 0;
-        self.viewUserAuthLimit = parseInt( userAuthJo['view'] ) || 0;
-        self.mobileUserAuthLimit = parseInt( userAuthJo['mobile'] ) || 0;
+        self.editUserAuthLimit = BI.parseInt( userAuthJo['edit'] ) || 0;
+        self.viewUserAuthLimit = BI.parseInt( userAuthJo['view'] ) || 0;
+        self.mobileUserAuthLimit = BI.parseInt( userAuthJo['mobile'] ) || 0;
     },
 
     getAuthLimitByMode: function( mode ){
