@@ -33,8 +33,9 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
         var self = this;
 
         BI.each(buttons , function (idx , button){
-            button.on(BI.TargetStyleConditionItem.EVENT_CHANGE , function () {
+            button.on(BI.ChartAddConditionItem.EVENT_CHANGE , function () {
                 self._checkNextItemState(this.getValue());
+                self.fireEvent(BI.ChartAddConditionGroup.EVENT_CHANGE)
             })
         })
     },
@@ -63,7 +64,7 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
     _checkButtonEnable: function () {
         BI.each(this.buttons , function (idx , button) {
             if(idx !== 0) {
-                button.setSmallIntervalEnable();
+                button.setSmallIntervalEnable(false);
             }
         } )
     },
@@ -129,16 +130,23 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
         this.buttongroup.removeItemAt(index)
     },
 
-    populate: function (items) {
+    createItems: function (items) {
         this.options.items = items || [];
-        this.buttongroup.populate(items);
+        var buttons = BI.createItems(items , {
+           type: "bi.chart_add_condition_item"
+        });
+        this.buttongroup.populate(buttons);
         this.buttons = this.buttongroup.getAllButtons();
         this._sendEventForButton(this.buttons);
         this._checkButtonEnable();
     },
 
-    setValue: function (v) {
+    populate: function (items) {
+        this.createItems(items)
+    },
 
+    setValue: function (v) {
+        this.createItems(v)
     },
 
     getValue: function () {

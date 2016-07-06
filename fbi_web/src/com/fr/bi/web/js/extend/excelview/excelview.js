@@ -11,7 +11,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
         return BI.extend(BI.ExcelView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-excel-view",
             height: 25,
-            items: []
+            tableId: ""
         });
     },
 
@@ -31,9 +31,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
             text: BI.i18nText("BI-Close_Excel_View")
         });
         this.table = BI.createWidget({
-            type: "bi.excel_table",
-            columnSize: BI.makeArray(o.items[0].length, ""),
-            items: this._createItems(o.items)
+            type: "bi.excel_table"
         });
         this.combo = BI.createWidget({
             type: "bi.combo",
@@ -44,7 +42,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
                 type: "bi.horizontal_adapt",
                 items: [this.open, this.close]
             },
-            adjustLength: 20,
+            adjustLength: 10,
             popup: {
                 type: "bi.popup_view",
                 cls: "excel-table-popup-view",
@@ -60,7 +58,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
                                 type: "bi.button",
                                 text: BI.i18nText("BI-Close"),
                                 height: 28,
-                                handler: function(){
+                                handler: function () {
                                     self.combo.hideView();
                                 }
                             }],
@@ -77,7 +75,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
             direction: "left,custom"
         });
         this.combo.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function () {
-            self.table.resizeHeader();
+            self.populate();
             self._showClose();
         });
         this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
@@ -130,7 +128,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
                         },
                         type: targetType
                     };
-                    if(targetType === BICst.TARGET_TYPE.DATE) {
+                    if (targetType === BICst.TARGET_TYPE.DATE) {
                         data.group = {type: BICst.GROUP.M};
                         data.name = BI.i18nText("BI-Month_Fen") + "(" + BI.Utils.getFieldNameByID(fId) + ")";
                     }
@@ -205,6 +203,29 @@ BI.ExcelView = BI.inherit(BI.Single, {
 
     unHighLight: function () {
 
+    },
+
+    populate: function () {
+        var o = this.options;
+        var tableId = o.tableId;
+        var excelView = BI.Utils.getExcelViewByTableId(tableId);
+        if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
+            var excel = excelView.excel;
+            var positions = excelView.positions;
+            var items = [];
+            BI.each(excel, function (i, row) {
+                var item = [];
+                BI.each(row, function (j, cell) {
+                    item.push({text: cell})
+                });
+                items.push(item);
+            });
+            BI.each(positions, function (id, position) {
+                items[position.row][position.col].value = id;
+            });
+            this.table.attr("columnSize", BI.makeArray(items[0].length, ""));
+            this.table.populate(items);
+        }
     }
 });
 $.shortcut('bi.excel_view', BI.ExcelView);

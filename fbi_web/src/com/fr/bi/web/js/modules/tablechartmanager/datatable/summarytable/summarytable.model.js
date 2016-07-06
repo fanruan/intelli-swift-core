@@ -334,7 +334,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     //交叉表，pValue来自于行列表头的结合
                     var ob = {index: 0};
                     self._createTableSumItems(child.s.c, values, pValues, ob);
-                    self.showColTotal === true && self._createTableSumItems(child.s.s, values, pValues, ob);
+                    //显示列汇总 有指标
+                    if(self.showColTotal === true && self.targetIds.length > 0) {
+                        self._createTableSumItems(child.s.s, values, pValues, ob);
+                    }
                 } else {
                     BI.each(child.s, function (j, sum) {
                         var tId = self.targetIds[j];
@@ -347,10 +350,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     });
                 }
                 item.values = values;
-            }
-            //children 为空的时候values 也不应该有？
-            if (BI.isNotNull(item.children) && item.children.length === 0) {
-                item.values = [];
             }
             items.push(item);
         });
@@ -591,7 +590,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         //可以直接根据crossItems确定header的后半部分
         function parseHeader(items) {
             BI.each(items, function (i, item) {
-                var dName = BI.Utils.getDimensionNameByID(self.targetIds[i % (self.targetIds.length)]);
+                var dName = BI.Utils.getDimensionNameByID(self.targetIds[i % (self.targetIds.length)]) || "--";
                 if (BI.isNotNull(item.children)) {
                     parseHeader(item.children);
                     if (BI.isNotNull(item.values) && self.showColTotal === true) {
@@ -611,7 +610,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     item.text = BI.i18nText("BI-Summary_Values") + ":" + dName;
                     item.cls = "cross-table-target-header";
                     self.header.push(item);
-                } else if (BI.isNotNull(item.values)) {
+                } else if (BI.isNotEmptyArray(item.values)) {
                     BI.each(item.values, function(k, v){
                         self.header.push({
                             type: "bi.page_table_cell",
@@ -679,10 +678,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 });
                 item.values = item;
             }
-        }
-        //children 为空的时候values 也不应该有？
-        if (BI.isNotNull(item.children) && item.children.length === 0) {
-            item.values = [];
         }
         this.items = [item];
     },
@@ -758,17 +753,15 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             if (this.showColTotal === true) {
                 var outerValues = [];
                 BI.each(left.s.s, function (i, v) {
-                    //有列表头无指标情况下，以该列表头为指标（内容都是--）
-                    var tId = self.targetIds[i];
-                    if (self.targetIds.length === 0) {
-                        tId = self.crossDimIds[i];
+                    if(self.targetIds.length > 0) {
+                        var tId = self.targetIds[i];
+                        outerValues.push({
+                            type: "bi.target_body_normal_cell",
+                            text: v,
+                            dId: tId,
+                            cls: "summary-cell last"
+                        });
                     }
-                    outerValues.push({
-                        type: "bi.target_body_normal_cell",
-                        text: v,
-                        dId: tId,
-                        cls: "summary-cell last"
-                    });
                 });
                 BI.each(sums, function (i, sum) {
                     sums[i].cls = "summary-cell last"
@@ -776,11 +769,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 sums = sums.concat(outerValues);
             }
             item.values = sums;
-        }
-
-        //children 为空的时候values 也不应该有？
-        if (BI.isNotNull(item.children) && item.children.length === 0) {
-            item.values = [];
         }
         this.items = [item];
     },
@@ -889,13 +877,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             }
             if (hasSum === true && self.showColTotal === true && BI.isNotEmptyArray(item.children)) {
                 BI.each(self.targetIds, function (k, tId) {
-                    // item.children.push({
-                    //     type: "bi.page_table_cell",
-                    //     text: BI.i18nText("BI-Summary_Values"),
-                    //     tag: BI.UUID(),
-                    //     isSum: true,
-                    //     cls: "summary-cell"
-                    // });
                     item.values = [];
                     BI.each(self.targetIds, function (k, tarId) {
                         item.values.push("");

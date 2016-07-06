@@ -241,7 +241,7 @@ AdaptiveTableView = BI.inherit(BI.View, {
             },
             isNeedFreeze: true,
             isNeedMerge: true,
-            freezeCols: [],
+            freezeCols: [0, 1, 2],
             mergeCols: [0, 1, 2],
             columnSize: ["", "", "", "", "", "", "", "", "", ""],
             header: header,

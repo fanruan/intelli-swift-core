@@ -87,15 +87,24 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
 
     },
 
+    _assertBounds: function () {
+        if (!this.layoutType) {
+            this.layoutType = Data.SharingPool.get("layoutType");
+            if (BI.isNull(this.layoutType)) {
+                this.layoutType = BI.Arrangement.LAYOUT_TYPE.FREE;
+            }
+        }
+        if (!this.bounds) {
+            this.bounds = Data.SharingPool.cat("widgets");
+        }
+    },
+
     populate: function () {
         var self = this, o = this.options;
-        var layoutType = Data.SharingPool.get("layoutType");
-        if (BI.isNull(layoutType)) {
-            layoutType = BI.Arrangement.LAYOUT_TYPE.FREE;
-        }
-        var widgets = Data.SharingPool.cat("widgets");
+
+        this._assertBounds();
         var items = [];
-        BI.each(widgets, function (wid, widget) {
+        BI.each(this.bounds, function (wid, widget) {
             var w = o.widgetCreator(wid);
             var container = BI.createWidget({
                 type: "bi.absolute",
@@ -119,9 +128,9 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
         BI.each(items, function (i, item) {
             self._initResizable(item.el);
         });
-        this.arrangement.setLayoutType(layoutType);
+        this.arrangement.setLayoutType(this.layoutType);
         this.arrangement.populate(items);
-        switch (layoutType) {
+        switch (this.layoutType) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 BI.nextTick(function () {
                     self.arrangement.resize();

@@ -23,11 +23,24 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         this.model = new BI.ChartDisplayModel({
             wId: o.wId
         });
+
         this.tab = BI.createWidget({
             type: "bi.tab",
-            element: this.element,
             cardCreator: BI.bind(this._createTabs, this)
         });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.tab,
+                top: 10,
+                bottom: 0,
+                left: 0,
+                right: 0
+            }]
+        });
+
         this.errorPane = BI.createWidget({
             type: "bi.table_chart_error_pane",
             invisible: true
