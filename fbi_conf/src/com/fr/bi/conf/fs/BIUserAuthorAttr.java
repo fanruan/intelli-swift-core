@@ -81,6 +81,15 @@ public class BIUserAuthorAttr implements XMLable {
         }
     }
 
+    public JSONObject createAuthLimitJo() throws JSONException {
+        JSONObject limitJo = new JSONObject();
+        limitJo.put("edit", biEditUserLimit);
+        limitJo.put("view", biViewUserLimit );
+        limitJo.put("mobile", biMobileUserLimit );
+
+        return limitJo;
+    }
+
     public long getBiEditUserLimit() {
         return biEditUserLimit;
     }

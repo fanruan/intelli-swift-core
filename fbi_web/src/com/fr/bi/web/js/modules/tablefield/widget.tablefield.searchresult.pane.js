@@ -73,10 +73,10 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
             }]];
 
         this.table = BI.createWidget({
-            type: "bi.table_view",
+            type: "bi.preview_table",
             element: this.element,
             isNeedMerge: false,
-            columnSize: [125, 65, 90, 120, 100],
+            columnSize: [125, 65, 90, 120, ""],
             header: header
         });
 
@@ -163,7 +163,8 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
             isUsable.attr("disabled") === false && self.isUsableArray.push(isUsable);
             item.push({
                 type: "bi.center_adapt",
-                items: [isUsable]
+                items: [isUsable],
+                height: 25
             });
             items.push(item);
         });
@@ -206,6 +207,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
             title: tranName,
             allowBlank: true,
             errorText: BI.i18nText("BI-Trans_Name_Exist"),
+            height: 25,
             validationChecker: function (v) {
                 var isValid = true;
                 var allFields = self.tableInfo.all_fields;
