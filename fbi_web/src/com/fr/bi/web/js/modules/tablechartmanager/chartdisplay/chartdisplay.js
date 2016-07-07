@@ -21,11 +21,13 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         BI.ChartDisplay.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.ChartDisplayModel({
-            wId: o.wId
+            wId: o.wId,
+            status: o.status
         });
 
         this.tab = BI.createWidget({
             type: "bi.tab",
+            cls: "chart-tab",
             cardCreator: BI.bind(this._createTabs, this)
         });
 
@@ -332,7 +334,6 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     tooltip: self.model.getToolTip(type),
                     lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
                 });
-
                 selectedTab.populate(data, op, types);
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);

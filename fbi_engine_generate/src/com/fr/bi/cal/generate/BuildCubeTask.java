@@ -99,7 +99,7 @@ public class BuildCubeTask implements CubeTask {
     }
 
     private  Set<BITableRelation> setOldAnalysisTableRelations(BIUser biUser, Set<BITableRelation> tableRelationSet) {
-        Set<BITableRelation> set= BICubeConfigureCenter.getTableRelationManager().getAllOldTableRelation(biUser.getUserId());
+        Set<BITableRelation> set= BICubeConfigureCenter.getTableRelationManager().getAnalysisAllTableRelation(biUser.getUserId());
         for (BITableRelation biTableRelation : set) {
             tableRelationSet.add(biTableRelation);
         }

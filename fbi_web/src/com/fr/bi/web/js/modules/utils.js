@@ -430,6 +430,10 @@
             return Data.SharingPool.get("widgets", wid, "sort_sequence") || [];
         },
 
+        isShowWidgetRealDataByID: function(wid) {
+            return Data.SharingPool.get("widgets", wid, "real_data");
+        },
+
         //获取指定widget的拷贝,拷贝信息只包含widget的自身信息，如维度指标及其相关属性
         //不包含widge间的信息,如widget间的联动什么的
         getWidgetCopyByID: function (wid) {
@@ -2191,6 +2195,11 @@
         },
 
         getWidgetDataByID: function (wid, callback, options) {
+            var status = options.status;
+            options.real_time = true;
+            if(status === BICst.WIDGET_STATUS.DETAIL) {
+                options.real_time = this.isShowWidgetRealDataByID(wid) || false;
+            }
             Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
                 callback(data);
             });

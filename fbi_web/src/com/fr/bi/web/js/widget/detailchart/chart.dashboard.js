@@ -84,6 +84,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.valueLabel.align = "bottom";
                     config.plotOptions.percentageLabel.align = "bottom";
+                    config.plotOptions.layout = "vertical";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
                 case BICst.CHART_SHAPE.VERTICAL_TUBE:
@@ -274,6 +275,18 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     name: ""
                 }]];
             }
+        }else{
+            var others = [];
+            BI.each(items[0][0].data, function(idx, da){
+                others.push({
+                    data: [{
+                        x: items[0][0].name,
+                        y: da.y
+                    }],
+                    name: da.x
+                })
+            });
+            return [others];
         }
         return items;
     },

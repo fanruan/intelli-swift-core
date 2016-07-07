@@ -120,7 +120,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             var result = [];
             var size = 0;
             if(init.length > 0){
-                size = init[0].data.length;
+                size = targetIds.length;
             }
             BI.each(BI.makeArray(size, null), function(idx, index){
                 var res = {data: [], name: BI.Utils.getDimensionNameByID(targetIds[idx])};
@@ -602,7 +602,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     value: [[]]
                 }
             },
-            page: -1
+            page: -1,
+            status: this.options.status
         });
     },
 

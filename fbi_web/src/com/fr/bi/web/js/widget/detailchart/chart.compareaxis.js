@@ -87,7 +87,10 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        this.config.show_zoom === true && delete config.dataSheet;
+        if(this.config.show_zoom === true){
+            delete config.dataSheet;
+            delete config.zoom.zoomType;
+        }
         config.yAxis = this.yAxis;
 
         BI.each(config.yAxis, function(idx, axis){

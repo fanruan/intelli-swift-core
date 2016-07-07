@@ -12,7 +12,7 @@ BI.TargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         COMBO_WIDTH: 130,
         FIELD_NAME_BUTTON_WIDTH: 90,
         TEXT_BUTTON_H_GAP: 10,
-        INPUT_WIDTH: 230
+        INPUT_WIDTH: 200
     },
 
     _defaultConfig: function () {

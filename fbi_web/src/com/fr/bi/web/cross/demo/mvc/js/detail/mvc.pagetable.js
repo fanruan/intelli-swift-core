@@ -122,11 +122,12 @@ PageTableView = BI.inherit(BI.View, {
             columnSize: ["", "", "", "", "", "", ""],
             isNeedMerge: true,
             mergeCols: [0, 1],
-            header: header,
-            items: items,
-            crossHeader: crossHeader,
-            crossItems: crossItems
+            // header: header,
+            // items: items,
+            // crossHeader: crossHeader,
+            // crossItems: crossItems
         });
+        table1.populate([], [], crossItems, crossHeader);
         BI.createWidget({
             type: "bi.absolute",
             element: vessel,
