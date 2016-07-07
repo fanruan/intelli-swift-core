@@ -172,16 +172,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     removeTable: function (tableId) {
         var self = this;
 
-        //删除表的转义
-        delete self.translations[tableId];
-        //删除表中字段转义
-        var allFieldsArray = self.tablesData[tableId].fields;
-        BI.each(allFieldsArray, function (i, fieldsArray) {
-            BI.each(fieldsArray, function (index, fieldObj) {
-                delete self.translations[fieldObj.id];
-            })
-        });
-
         delete this.tablesData[tableId];
         BI.some(this.getTables(), function (i, table) {
             if (table.id === tableId) {

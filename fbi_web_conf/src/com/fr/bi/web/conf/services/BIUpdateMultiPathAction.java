@@ -5,6 +5,8 @@ import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
@@ -75,20 +77,20 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
         }
 
 
+        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NEED_GENERATE_CUBE);
+        BICubeConfigureCenter.getTableRelationManager().persistData(userId);
+        BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+
     }
 
     private BusinessTable getFirstForeignTable(JSONArray pathJa) throws Exception {
         JSONObject firstRelationJo = pathJa.getJSONObject(pathJa.length() - 1);
-//        BITableRelation re = new BITableRelation();
-//        re.parseJSON(firstRelationJo);
         BITableRelation re = BITableRelationHelper.getRelation(firstRelationJo);
         return re.getForeignTable();
     }
 
     private BusinessTable getLastPrimaryTable(JSONArray pathJa) throws Exception {
         JSONObject firstRelationJo = pathJa.getJSONObject(0);
-//        BITableRelation re = new BITableRelation();
-//        re.parseJSON(firstRelationJo);
         BITableRelation re = BITableRelationHelper.getRelation(firstRelationJo);
         return re.getPrimaryTable();
     }
@@ -96,8 +98,6 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
     private BITableRelationPath createPath(JSONArray pathJa) throws Exception {
         BITableRelationPath newPath = new BITableRelationPath();
         for (int i = 0; i < pathJa.length(); i++) {
-//            BITableRelation re = new BITableRelation();
-//            re.parseJSON(pathJa.getJSONObject(i));
             BITableRelation re = BITableRelationHelper.getRelation(pathJa.getJSONObject(i));
             newPath.addRelationAtTail(re);
         }
