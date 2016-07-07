@@ -739,11 +739,18 @@
                 BICst.SCALE_SETTING.AUTO
         },
 
-        getWSConditionButtonsByID: function (wid) {
+        getWSDashboardStylesByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.style_conditions) ? ws.style_conditions :
-                BICst.STYLE_CONDITIONS
+                BICst.DASHBOARD_STYLE_CONDITIONS
         },
+
+        getWSMapStylesByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.map_styles) ? ws.map_styles :
+                BICst.MAP_STYLE_CONDITIONS
+        },
+
 
         getWSDashboardNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);

@@ -165,7 +165,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
                         items: [this.chartTypeGroup]
                     },
                     lgap: this.constant.SIMPLE_H_GAP
-                }], {
+                }] , {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 })
             }]
@@ -232,7 +232,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.conditions],
-                    width: 600,
+                    width: "100%",
                     height: ""
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
@@ -302,7 +302,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         this._showPointer(BI.Utils.getWSNumberOfPointerByID(wId));
         this.scale.setValue(BI.Utils.getWSScaleByID(wId));
         this._doClickButton(BI.Utils.getWSScaleByID(wId));
-        this.conditions.setValue(BI.Utils.getWSConditionButtonsByID(wId));
+        this.conditions.setValue(BI.Utils.getWSDashboardStylesByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSDashboardNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSDashboardUnitByID(wId));
     },

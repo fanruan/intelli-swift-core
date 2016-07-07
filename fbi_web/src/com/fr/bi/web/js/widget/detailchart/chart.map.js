@@ -83,7 +83,19 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     break;
             }
             config.rangeLegend.range.max = self.max;
+            config.rangeLegend.range.min = self.min;
+            config.rangeLegend.range.color = rangeColor(self.config.map_styles);
+        }
 
+        function rangeColor (mapStyles) {
+            var rangeStyles = [];
+            BI.each(mapStyles , function (idx , style) {
+                var styles = [];
+                styles.push(style.range.min);
+                styles.push(style.color);
+                rangeStyles.push(styles)
+            });
+            return rangeStyles
         }
 
         function formatToolTipAndDataLabel(format, numberLevel){
@@ -134,11 +146,15 @@ BI.MapChart = BI.inherit(BI.Widget, {
     _formatItems: function(items){
         var self = this, c = this.constants;
         this.max = null;
+        this.min = null;
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
                     if((BI.isNull(self.max) || da.y > self.max) && id === 0){
                         self.max = da.y;
+                    }
+                    if((BI.isNull(self.min) || da.y < self.min) && id === 0){
+                        self.min = da.y;
                     }
                     if(BI.has(it, "type") && it.type == "bubble"){
                         da.name = da.x;
@@ -162,7 +178,8 @@ BI.MapChart = BI.inherit(BI.Widget, {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
             geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]},
-            tooltip: options.tooltip || ""
+            tooltip: options.tooltip || "",
+            map_styles: options.map_styles
         };
         this.options.items = items;
 
