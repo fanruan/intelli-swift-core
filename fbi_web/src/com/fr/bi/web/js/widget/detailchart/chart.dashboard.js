@@ -170,6 +170,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         }
 
         function getBandsStyles (styles , change) {
+            var min = 0;
             var bands = [];
             switch (change) {
                 case BICst.SCALE_SETTING.AUTO:
@@ -180,11 +181,51 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                             color: style.color,
                             from: style.range.min,
                             to: style.range.max
-                        })
+                        });
                     });
-                    return bands
+                    min = BI.parseInt(styles[0].range.min);
+                    bands.push({
+                        color: "#808080",
+                        from: 0,
+                        to: min
+                    });
+                    return bands;
                     break;
             }
+        }
+
+        function getMax (items) {
+
+        }
+
+        function _calculateValueNiceDomain(minValue, maxValue){
+
+            minValue = Math.min(0, minValue);
+
+            var tickInterval = _linearTickInterval(minValue, maxValue);
+
+            return _linearNiceDomain(minValue, maxValue, tickInterval);
+        }
+
+        function _linearTickInterval(minValue, maxValue, m){
+
+            m = m || 5;
+            var span = maxValue - minValue;
+            var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
+            var err = m / span * step;
+
+            if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
+
+            return step;
+        }
+
+        function _linearNiceDomain(minValue, maxValue, tickInterval){
+
+            minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
+
+            maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
+
+            return [minValue, maxValue];
         }
     },
 

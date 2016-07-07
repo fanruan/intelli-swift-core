@@ -302,6 +302,8 @@ public interface BISystemPackageConfigurationProvider {
 
     Set<BusinessTable> getAllTables(long userId);
 
+    Set<BusinessTable> getAnalysisAllTables(long userId);
+
     Set<BIBusinessPackage> getPackages4CubeGenerate(long userId);
 
 }

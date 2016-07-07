@@ -74,8 +74,6 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     }
 
 
-
-
     /**
      * 更新
      */
@@ -233,14 +231,19 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     }
 
     @Override
-    public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId){
+    public Set<BusinessTable> getAnalysisAllTables(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisAllTables();
+    }
+
+    @Override
+    public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId) {
         IPackagesManagerService analysisPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisPackageManager();
         IPackagesManagerService currentPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getCurrentPackageManager();
         Set<BIBusinessPackage> analysisPackages = analysisPackageManager.getAllPackages();
         Set<BIBusinessPackage> currentPackages = currentPackageManager.getAllPackages();
-        Set<BIBusinessPackage> packageSet=new HashSet<BIBusinessPackage>();
+        Set<BIBusinessPackage> packageSet = new HashSet<BIBusinessPackage>();
         for (BIBusinessPackage biBusinessPackage : currentPackages) {
-            if (!analysisPackages.contains(biBusinessPackage)){
+            if (!analysisPackages.contains(biBusinessPackage)) {
                 try {
                     packageSet.add((BIBusinessPackage) biBusinessPackage.clone());
                 } catch (CloneNotSupportedException e) {

@@ -47,7 +47,7 @@ public interface BITableRelationConfigurationProvider {
      * @param userId
      * @return
      */
-    Set<BITableRelation> getAllOldTableRelation(long userId);
+    Set<BITableRelation> getAnalysisAllTableRelation(long userId);
     /**
      * 获得一个表与关联集合的MAP，并且该表是集合中关联的主键
      *
@@ -81,6 +81,22 @@ public interface BITableRelationConfigurationProvider {
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException;
 
     /**
+     * 计算分析用的全部路径
+     *
+     * @param userId
+     * @param juniorTable
+     * @param primaryTable
+     * @return
+     * @throws BITableUnreachableException
+     * @throws BITableAbsentException
+     * @throws BITableRelationConfusionException
+     * @throws BITablePathConfusionException
+     */
+    Set<BITableRelationPath> getAnalysisAllPath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
+            BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException;
+
+
+    /**
      * 获得全部可用的路径
      *
      * @param userId       用户ID
@@ -96,11 +112,18 @@ public interface BITableRelationConfigurationProvider {
     Set<BITableRelationPath> getAllAvailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException;
 
+    Set<BITableRelationPath> getAnalysisAllAvailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
+            BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException;
+
     Set<BITableRelationPath> getAllUnavailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
+            BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException;
+
+    Set<BITableRelationPath> getAnalysisAllUnavailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException;
 
     Set<BITableRelationPath> getAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException;
 
+    Set<BITableRelationPath> getAnalysisAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException;
     /**
      * 获得第一条路径
      *
