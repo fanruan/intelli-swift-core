@@ -512,20 +512,20 @@ BICst.TARGET_FILTER_STRING_COMBO = [[{
 
 //target number
 BICst.TARGET_FILTER_NUMBER_COMBO = [[{
-    text: BI.i18nText("BI-Equal"),
-    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
-    cls: "dot-e-font"
-}, {
-    text: BI.i18nText("BI-Not_Equal_To"),
-    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
-    cls: "dot-e-font"
-}], [{
     text: BI.i18nText("BI-In"),
     value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
     value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
     cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
@@ -1183,7 +1183,7 @@ BICst.DEFAULT_CHART_SETTING = {
     show_zoom: false
 };
 
-BICst.STYLE_CONDITIONS = [{
+BICst.DASHBOARD_STYLE_CONDITIONS = [{
     range: {
         min: 0,
         max: 100,
@@ -1198,7 +1198,7 @@ BICst.STYLE_CONDITIONS = [{
         closemin: true,
         clasemax: false
     },
-    color: "#09ABE9",
+    color: "#09ABE9"
 } , {
     range: {
         min: 200,
@@ -1206,7 +1206,49 @@ BICst.STYLE_CONDITIONS = [{
         closemin: true,
         clasemax: true
     },
-    color: "#09ABE9",
+    color: "#09ABE9"
+}];
+
+BICst.MAP_STYLE_CONDITIONS = [{
+    range: {
+        min: 0,
+        max: 0.2,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#09ABE9"
+} , {
+    range: {
+        min: 0.2,
+        max: 0.4,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#09ABE9"
+} , {
+    range: {
+        min: 0.4,
+        max: 0.6,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#09ABE9"
+} , {
+    range: {
+        min: 0.6,
+        max: 0.8,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#09ABE9"
+} , {
+    range: {
+        min: 0.8,
+        max: 1,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#09ABE9"
 }];
 
 BICst.CAL_TARGET_TYPE = [{

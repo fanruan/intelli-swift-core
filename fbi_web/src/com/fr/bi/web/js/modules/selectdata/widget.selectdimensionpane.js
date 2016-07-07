@@ -224,19 +224,22 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         var call = function (widgets) {
-            var result = BI.map(widgets, function (wId, widget) {
-                return {
-                    id: wId,
-                    pId: id,
-                    isParent: true,
-                    layer: layer,
-                    nodeType: self.constants.WIDGET,
+            var result = [];
+            BI.each(widgets, function (wId, widget) {
+                if(!BI.Utils.isControlWidgetByWidgetId(wId)){
+                    result.push({
+                        id: wId,
+                        pId: id,
+                        isParent: true,
+                        layer: layer,
+                        nodeType: self.constants.WIDGET,
 
-                    type: "bi.multilayer_icon_arrow_node",
-                    text: widget.name,
-                    title: widget.name,
-                    value: wId,
-                    iconCls: self._getWidgetClass(widget.type)
+                        type: "bi.multilayer_icon_arrow_node",
+                        text: widget.name,
+                        title: widget.name,
+                        value: wId,
+                        iconCls: self._getWidgetClass(widget.type)
+                    });
                 }
             });
             callback(BI.sortBy(result, "text"));

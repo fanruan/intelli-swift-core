@@ -285,6 +285,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
+    public Set<BusinessTable> getAnalysisAllTables(long userId) {
+        return null;
+    }
+
+    @Override
     public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId) {
         return null;
     }
