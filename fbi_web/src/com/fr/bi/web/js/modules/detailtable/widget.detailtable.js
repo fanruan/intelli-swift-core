@@ -133,6 +133,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
                 self.pager.setAllPages(Math.ceil(row / size));
                 self.pager.setValue(vPage);
+                self.table.attr("columnSize", self._getColumnSize([header]));
                 callback(items, [header]);
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
@@ -250,7 +251,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
-            self.table.attr("columnSize", self._getColumnSize(header));
             self.table.attr("isNeedFreeze", self._isNeedFreeze());
             self.table.attr("freezeCols", self._getFreezeCols());
             self.table.populate(items, header);
