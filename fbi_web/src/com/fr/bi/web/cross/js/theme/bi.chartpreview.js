@@ -27,10 +27,6 @@ FS.ChartPreview = BI.inherit(BI.Widget, {
         })
     },
 
-    _createTitle: function (index) {
-
-    },
-
     _getData1: function () {
         return [[{
             "data": [{
@@ -521,7 +517,7 @@ FS.ChartPreview = BI.inherit(BI.Widget, {
                 "seriesName": "回款金额",
                 "targetIds": ["f80a62a6d4680200"]
             }], "name": "回款金额"
-        }, {
+        }], [{
             "data": [{
                 "x": "常州市",
                 "y": 77,
@@ -599,7 +595,7 @@ FS.ChartPreview = BI.inherit(BI.Widget, {
             "show_right_y_axis_title": false,
             "show_right_y_axis_second_title": false,
             "left_y_axis_title": "回款金额",
-            "right_y_axis_title": "",
+            "right_y_axis_title": "回款金额",
             "right_y_axis_second_title": "",
             "left_y_axis_reversed": false,
             "right_y_axis_reversed": false,
@@ -668,7 +664,7 @@ FS.ChartPreview = BI.inherit(BI.Widget, {
                 "seriesName": "合同总价",
                 "targetIds": ["91597d222c224da6"]
             }], "name": "合同总价"
-        }], [{
+        }, {
             "data": [{
                 "x": "常州市",
                 "y": 23,
@@ -746,7 +742,7 @@ FS.ChartPreview = BI.inherit(BI.Widget, {
             "show_right_y_axis_title": false,
             "show_right_y_axis_second_title": false,
             "left_y_axis_title": "回款金额",
-            "right_y_axis_title": "",
+            "right_y_axis_title": "回款金额",
             "right_y_axis_second_title": "",
             "left_y_axis_reversed": false,
             "right_y_axis_reversed": false,
@@ -780,7 +776,7 @@ FS.ChartPreview = BI.inherit(BI.Widget, {
 
     _createLine: function () {
         this.chart3 = BI.createWidget({
-            type: "bi.line_chart"
+            type: "bi.compare_area_chart"
         });
         return this.chart3;
     },
@@ -806,7 +802,7 @@ FS.ChartPreview = BI.inherit(BI.Widget, {
         }
         if (BI.isKey(data.defaultColor)) {
             var finded = BI.find(data.styleList, function (i, style) {
-                return data.defaultColor = style.value;
+                return data.defaultColor === style.value;
             });
             if (finded) {
                 config1.chart_color = finded.colors;
@@ -819,7 +815,7 @@ FS.ChartPreview = BI.inherit(BI.Widget, {
         this.chart1.populate(this._getData1(), config1);
         this.chart2.populate(this._getData2(), config2);
         this.chart3.populate(this._getData3(), config3);
-        this.chart4.populate(this._getData4(), config4, [[13], [5]]);
+        this.chart4.populate(this._getData4(), config4, [[13, 5]]);
     }
 });
 $.shortcut('fs.chart_preview', FS.ChartPreview);

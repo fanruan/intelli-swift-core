@@ -413,8 +413,8 @@ BICst.CHART_SHAPE = {
 
 BICst.CHART_STYLE = {
     //风格
-    STYLE_NORMAL: 0,       //普通风格
-    STYLE_GRADUAL: 1      //渐变
+    STYLE_NORMAL: 1,       //普通风格
+    STYLE_GRADUAL: 2      //渐变
 };
 
 BICst.SCALE_SETTING = {

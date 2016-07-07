@@ -286,7 +286,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             //    cordon: self.model.getCordon(),
             //    mapType: {type: BI.Utils.getWidgetTypeByID(o.wId), subType: BI.Utils.getWidgetSubTypeByID(o.wId)}
             //}));
-            selectedTab.populate(data, BI.extend({
+            var op = BI.extend({
                 chart_color: BI.Utils.getWSChartColorByID(o.wId),
                 chart_style: BI.Utils.getWSChartStyleByID(o.wId),
                 chart_line_type: BI.Utils.getWSChartLineTypeByID(o.wId),
@@ -330,7 +330,8 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
             }, options, {
                 cordon: self.model.getCordon(),
                 tooltip: self.model.getToolTip(type)
-            }), types);
+            });
+            selectedTab.populate(data, op, types);
             //} catch (e) {
             //    self.errorPane.setErrorInfo("error happens during populate chart: " + e);
             //    self.errorPane.setVisible(true);

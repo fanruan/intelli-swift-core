@@ -43,16 +43,16 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
             height: 25,
             text: BI.i18nText('BI-Common'),
             items: [{
-                text: BI.i18nText('BI-Common'), value: 0
+                text: BI.i18nText('BI-Common'), value: BICst.CHART_STYLE.STYLE_NORMAL
             }, {
-                text: BI.i18nText('BI-Top_Down_Shade'), value: 1
+                text: BI.i18nText('BI-Top_Down_Shade'), value: BICst.CHART_STYLE.STYLE_GRADUAL
             }]
         });
         this.style.on(BI.TextValueCombo.EVENT_CHANGE, function () {
             self._save();
             self._preview();
         });
-        this.style.setValue(0);
+        this.style.setValue(BICst.CHART_STYLE.STYLE_NORMAL);
 
         return BI.createWidget({
             type: "bi.horizontal_adapt",
@@ -119,7 +119,7 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
     },
 
     _save: function () {
-        var chartStyle = this.style.getValue()[0] || 0;
+        var chartStyle = this.style.getValue()[0] || BICst.CHART_STYLE.STYLE_NORMAL;
         var defaultColor = this.color.getValue()[0];
 
         this.data.chartStyle = chartStyle;
