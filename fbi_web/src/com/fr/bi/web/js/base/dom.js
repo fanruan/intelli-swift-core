@@ -76,12 +76,12 @@ BI.extend(jQuery.fn, {
 
     //是否有竖直滚动条
     hasVerticalScroll: function () {
-        return this[0].clientWidth < this[0].offsetWidth;
+        return this.height() > 0 && this[0].clientWidth < this[0].offsetWidth;
     },
 
     //是否有水平滚动条
     hasHorizonScroll: function () {
-        return this[0].clientHeight < this[0].offsetHeight;
+        return this.width() > 0 && this[0].clientHeight < this[0].offsetHeight;
     },
 
     getStyle: function (name) {

@@ -112,7 +112,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                     self._drag(id, size || {}, ui.position);
                 },
                 stop: function (e, ui) {
-                    self._stopDrag(widget);
+                    self._stopDrag(id, ui.position, widget);
                 },
                 //helper: function (e) {
                 //    var helper = self.arrangement.getHelper();
@@ -165,14 +165,14 @@ BI.Fit = BI.inherit(BI.Widget, {
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 this.arrangement.setRegionPosition(id, {
-                    left: position.left ,
-                    top: position.top
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
                 });
                 break;
         }
     },
 
-    _stopDrag: function (widget) {
+    _stopDrag: function (id, position, widget) {
         var flag = false;
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
@@ -183,6 +183,10 @@ BI.Fit = BI.inherit(BI.Widget, {
                 }
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
+                });
                 flag = true;
                 break;
         }
