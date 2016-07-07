@@ -6,6 +6,7 @@ import java.io.Serializable;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 /**
  * TODO : javadoc
@@ -21,12 +22,19 @@ public class EntityTypeExpression<T> extends ExpressionImpl<T> implements Serial
 		// nothign to do
 	}
 
-	public String render(RenderingContext renderingContext) {
-		// todo : is it valid for this to get rendered into the query itself?
-		throw new IllegalArgumentException( "Unexpected call on EntityTypeExpression#render" );
+	public Object render(RenderingContext renderingContext) {
+		return delegateRender(renderingContext);
 	}
 
-	public String renderProjection(RenderingContext renderingContext) {
+	public Object renderProjection(RenderingContext renderingContext) {
 		return render( renderingContext );
+	}
+	public Object delegateRender(RenderingContext renderingContext) {
+		RenderExtended render = choseRender(renderingContext);
+		return render.render(renderingContext);
+	}
+
+	protected RenderExtended choseRender(RenderingContext renderingContext) {
+		return (RenderExtended) renderingContext.getRenderFactory().getEntityTypeExpressionLiteralRender(this, "default");
 	}
 }

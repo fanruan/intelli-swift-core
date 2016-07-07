@@ -2,10 +2,7 @@ package com.finebi.datasource.sql.criteria.internal.render.factory;
 
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
-import com.finebi.datasource.sql.criteria.internal.expression.BinaryArithmeticOperation;
-import com.finebi.datasource.sql.criteria.internal.expression.CoalesceExpression;
-import com.finebi.datasource.sql.criteria.internal.expression.ConcatExpression;
-import com.finebi.datasource.sql.criteria.internal.expression.PathTypeExpression;
+import com.finebi.datasource.sql.criteria.internal.expression.*;
 import com.finebi.datasource.sql.criteria.internal.expression.function.BasicFunctionExpression;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractFromImpl;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
@@ -65,12 +62,27 @@ public interface RenderFactory<R> {
     R getCoalesceExpressionLiteralRender(CoalesceExpression coalesceExpression, String driverTag);
 
     R getConcatExpressionLiteralRender(ConcatExpression concatExpression, String driverTag);
-//    R get(CompoundPredicate compoundPredicate, String driverTag);
-//    R get(CompoundPredicate compoundPredicate, String driverTag);
-//    R get(CompoundPredicate compoundPredicate, String driverTag);
-//    R get(CompoundPredicate compoundPredicate, String driverTag);
-//    R get(CompoundPredicate compoundPredicate, String driverTag);
-//    R get(CompoundPredicate compoundPredicate, String driverTag);
+
+    R getEntityTypeExpressionLiteralRender(EntityTypeExpression entityTypeExpression, String driverTag);
+
+    R getLiteralExpressionLiteralRender(LiteralExpression literalExpression, String driverTag);
+
+    R getNullifExpressionLiteralRender(NullifExpression nullifExpression, String driverTag);
+
+    R getNullLiteralExpressionLiteralRender(NullLiteralExpression nullLiteralExpression, String driverTag);
+
+    R getParameterExpressionImplLiteralRender(ParameterExpressionImpl parameterExpression, String driverTag);
+
+    R getPathTypeExpressionLiteralRender(PathTypeExpression PathTypeExpression, String driverTag);
+
+    R getSimpleCaseExpressionLiteralRender(SimpleCaseExpression simpleCaseExpression, String driverTag);
+
+    R getSubqueryComparisonModifierExpressionLiteralRender(SubqueryComparisonModifierExpression subqueryComparisonModifierExpression, String driverTag);
+
+    R getUnaryArithmeticOperationLiteralRender(UnaryArithmeticOperation unaryArithmeticOperation, String driverTag);
+    //    R get(CompoundPredicate compoundPredicate, String driverTag);
+    //    R get(CompoundPredicate compoundPredicate, String driverTag);
+    //    R get(CompoundPredicate compoundPredicate, String driverTag);
 
 
 }

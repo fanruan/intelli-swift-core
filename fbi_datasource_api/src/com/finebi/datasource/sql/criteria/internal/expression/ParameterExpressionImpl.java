@@ -9,6 +9,8 @@ import com.finebi.datasource.sql.criteria.internal.compile.ExplicitParameterInfo
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 import com.finebi.datasource.api.criteria.ParameterExpression;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
+
 import java.io.Serializable;
 
 /**
@@ -73,14 +75,20 @@ public class ParameterExpressionImpl<T>
 	}
 
 	public String render(RenderingContext renderingContext) {
-		final ExplicitParameterInfo parameterInfo = renderingContext.registerExplicitParameter( this );
-		return parameterInfo.render();
+		return (String)delegateRender(renderingContext);
 	}
 
 	public String renderProjection(RenderingContext renderingContext) {
 		return render( renderingContext );
 	}
+	public Object delegateRender(RenderingContext renderingContext) {
+		RenderExtended render = choseRender(renderingContext);
+		return render.render(renderingContext);
+	}
 
+	protected RenderExtended choseRender(RenderingContext renderingContext) {
+		return (RenderExtended) renderingContext.getRenderFactory().getParameterExpressionImplLiteralRender(this, "default");
+	}
 	@Override
 	public Type getType() {
 		return expectedType;

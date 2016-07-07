@@ -759,5 +759,23 @@ public class WherePredicateTest extends TestCase {
             assertTrue(false);
         }
     }
+    public void testWhereNULLIF() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+            Root root = query.from(getEntity());
+            query.select(root);
+            Predicate condition = cb.isTrue(cb.abs(root.get("id")));
+
+            query.where(condition);
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+//            assertEquals("select generatedAlias0 from jpa as generatedAlias0 where 1=1",result);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 }
 
