@@ -2,7 +2,11 @@ package com.finebi.datasource.sql.criteria.internal.render.factory;
 
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
+import com.finebi.datasource.sql.criteria.internal.expression.BinaryArithmeticOperation;
+import com.finebi.datasource.sql.criteria.internal.expression.CoalesceExpression;
+import com.finebi.datasource.sql.criteria.internal.expression.ConcatExpression;
 import com.finebi.datasource.sql.criteria.internal.expression.PathTypeExpression;
+import com.finebi.datasource.sql.criteria.internal.expression.function.BasicFunctionExpression;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractFromImpl;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
 import com.finebi.datasource.sql.criteria.internal.path.RootImpl;
@@ -20,6 +24,16 @@ import com.finebi.datasource.sql.criteria.internal.render.engine.QueryStructureR
 public class RenderFactoryEngineAdapter implements RenderFactory {
     public RenderExtended getQueryStructureRender(QueryStructure queryStructure, String driverTag) {
         return new QueryStructureRenderFineEngine(queryStructure);
+    }
+
+    @Override
+    public Object getCoalesceExpressionLiteralRender(CoalesceExpression coalesceExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getConcatExpressionLiteralRender(ConcatExpression concatExpression, String driverTag) {
+        return null;
     }
 
     @Override
@@ -104,6 +118,16 @@ public class RenderFactoryEngineAdapter implements RenderFactory {
 
     @Override
     public Object getCriteriaQueryLiteralRender(CriteriaQueryImpl criteriaQuery, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getBasicFunctionExpressionLiteralRender(BasicFunctionExpression basicFunctionExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getBinaryArithmeticOperationLiteralRender(BinaryArithmeticOperation binaryArithmeticOperation, String driverTag) {
         return null;
     }
 }
