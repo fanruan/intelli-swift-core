@@ -251,7 +251,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
-            self.table.attr("isNeedFreeze", self._isNeedFreeze());
+            self.table.attr("isNeedFreeze", true);
             self.table.attr("freezeCols", self._getFreezeCols());
             self.table.populate(items, header);
         });
