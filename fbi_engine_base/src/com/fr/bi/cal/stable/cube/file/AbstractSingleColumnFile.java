@@ -210,6 +210,10 @@ public abstract class AbstractSingleColumnFile<T> extends LinkIndexFile implemen
         return map.getGroupIndex(keys)[0];
     }
 
+    @Override
+    public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
+        return 0;
+    }
 
     @Override
     public ICubeColumnIndexReader createGroupByType(BIKey key, List<BITableSourceRelation> relationList, SingleUserNIOReadManager manager) {
