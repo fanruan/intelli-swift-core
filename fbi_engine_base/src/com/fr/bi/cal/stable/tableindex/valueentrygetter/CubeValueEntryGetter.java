@@ -32,7 +32,7 @@ public class CubeValueEntryGetter implements ICubeValueEntryGetter {
 
     @Override
     public CubeValueEntry getEntryByRow(int row) {
-        return null;
+        return new CubeValueEntry(cf.createDetailGetter(manager).getValue(row), cf.getIndexByRow(row, manager), cf.getPositionOfGroup(row, manager));
     }
 
     @Override
