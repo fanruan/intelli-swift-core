@@ -97,7 +97,6 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
                     closemax: false
                 })
             }));
-            beforeButton.getValue();
             BI.extend(item , {
                 range: {
                     min: BI.parseInt(beforeValue.max),
