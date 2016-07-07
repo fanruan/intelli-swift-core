@@ -118,8 +118,10 @@ public class DetailExecutor extends AbstractDetailExecutor {
                     return x;
                 }
                 List list = new ArrayList();
-                for (Object ob : row.getValues()) {
-                    list.add(ob);
+                for (int i = 0; i < row.getValues().length; i++){
+                    if (viewDimension[i].isUsed()){
+                        list.add(row.getValues()[i]);
+                    }
                 }
                 data.add(list);
                 return false;
