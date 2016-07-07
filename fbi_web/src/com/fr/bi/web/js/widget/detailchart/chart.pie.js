@@ -85,13 +85,13 @@ BI.PieChart = BI.inherit(BI.Widget, {
 
         function formatChartPieStyle(){
             switch (self.config.chart_pie_type){
-                case BICst.CHART_STYLE.EQUAL_ARC_ROSE:
+                case BICst.CHART_SHAPE.EQUAL_ARC_ROSE:
                     config.plotOptions.roseType = "sameArc";
                     break;
-                case BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE:
+                case BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE:
                     config.plotOptions.roseType = "differentArc";
                     break;
-                case BICst.CHART_STYLE.NORMAL:
+                case BICst.CHART_SHAPE.NORMAL:
                 default:
                     delete config.plotOptions.roseType;
                     break;

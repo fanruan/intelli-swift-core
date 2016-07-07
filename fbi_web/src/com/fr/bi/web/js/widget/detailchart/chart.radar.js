@@ -98,10 +98,10 @@ BI.RadarChart = BI.inherit(BI.Widget, {
 
         function formatChartRadarStyle(){
             switch (self.config.chart_radar_type) {
-                case BICst.CHART_STYLE.POLYGON:
+                case BICst.CHART_SHAPE.POLYGON:
                     config.plotOptions.shape = "polygon";
                     break;
-                case BICst.CHART_STYLE.CIRCLE:
+                case BICst.CHART_SHAPE.CIRCLE:
                     config.plotOptions.shape = "circle";
                     break;
             }
