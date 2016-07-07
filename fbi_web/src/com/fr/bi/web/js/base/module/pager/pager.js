@@ -42,12 +42,12 @@ BI.Pager = BI.inherit(BI.Widget, {
     },
     _init: function () {
         BI.Pager.superclass._init.apply(this, arguments);
-        this.currPage = this.options.curr;
+        this.currPage = BI.result(this.options, "curr");
         this._populate();
     },
 
     populate: function () {
-        this.currPage = this.options.curr;
+        this.currPage = BI.result(this.options, "curr");
         this._populate();
     },
 

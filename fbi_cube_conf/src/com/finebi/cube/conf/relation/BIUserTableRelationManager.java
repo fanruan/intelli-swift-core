@@ -133,7 +133,7 @@ public class BIUserTableRelationManager implements Release {
 
     public void finishGenerateCubes(Set<BITableRelation> connectionSet) {
         synchronized (oldAnalyserHandler) {
-//            oldAnalyserHandler.clear();
+            oldAnalyserHandler.clear();
             for (BITableRelation relation : connectionSet) {
                 try {
                     oldAnalyserHandler.addRelation(relation);
