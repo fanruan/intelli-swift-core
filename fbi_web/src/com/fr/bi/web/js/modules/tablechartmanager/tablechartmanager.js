@@ -63,10 +63,11 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     },
 
     _createChart: function () {
-        var self = this;
+        var self = this, o = this.options;
         var chart = BI.createWidget({
             type: "bi.chart_display",
-            wId: this.options.wId
+            wId: o.wId,
+            status: o.status 
         });
         chart.on(BI.ChartDisplay.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableChartManager.EVENT_CLICK_CHART, arguments);
@@ -78,7 +79,8 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.table = BI.createWidget({
             type: "bi.summary_table",
-            wId: o.wId
+            wId: o.wId,
+            status: o.status
         });
         this.table.on(BI.SummaryTable.EVENT_CHANGE, function (obs) {
             self.fireEvent(BI.TableChartManager.EVENT_CHANGE, obs);

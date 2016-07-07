@@ -223,6 +223,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
             BI.each(positions, function (id, position) {
                 items[position.row][position.col].value = id;
             });
+            items = this._createItems(items);
             this.table.attr("columnSize", BI.makeArray(items[0].length, ""));
             this.table.populate(items);
         }

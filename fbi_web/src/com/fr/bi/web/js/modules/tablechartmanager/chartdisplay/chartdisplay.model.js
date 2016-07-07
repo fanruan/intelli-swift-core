@@ -602,7 +602,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     value: [[]]
                 }
             },
-            page: -1
+            page: -1,
+            status: this.options.status
         });
     },
 
