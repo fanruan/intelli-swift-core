@@ -139,12 +139,11 @@ public class CriteriaBuilderImpl implements CriteriaBuilder, Serializable {
                         predicate.getOperator() == Predicate.BooleanOperator.OR
                 );
             }
-            predicate.not();
-            return predicate;
+           return predicate.not();
         } else if (Predicate.class.isInstance(expression)) {
             final Predicate predicate = (Predicate) expression;
-            predicate.not();
-            return predicate;
+            return predicate.not();
+
         }
         return new BooleanAssertionPredicate(this, expression, Boolean.FALSE);
     }

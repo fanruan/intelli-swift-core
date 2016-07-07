@@ -23,7 +23,7 @@ public class SQLAdapterDemo extends TestCase {
 
     public void testSQLAdapter() {
         try {
-            String url = "jdbc:mysql://127.0.0.1:3306/demo?user=root&password=123456";
+            String url = "jdbc:mysql://127.0.0.1:3306/osborn_db?user=root&password=";
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url);
 

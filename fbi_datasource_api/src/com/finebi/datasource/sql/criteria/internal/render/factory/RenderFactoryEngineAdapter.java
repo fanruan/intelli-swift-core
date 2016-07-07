@@ -2,7 +2,8 @@ package com.finebi.datasource.sql.criteria.internal.render.factory;
 
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
-import com.finebi.datasource.sql.criteria.internal.expression.PathTypeExpression;
+import com.finebi.datasource.sql.criteria.internal.expression.*;
+import com.finebi.datasource.sql.criteria.internal.expression.function.BasicFunctionExpression;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractFromImpl;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
 import com.finebi.datasource.sql.criteria.internal.path.RootImpl;
@@ -20,6 +21,61 @@ import com.finebi.datasource.sql.criteria.internal.render.engine.QueryStructureR
 public class RenderFactoryEngineAdapter implements RenderFactory {
     public RenderExtended getQueryStructureRender(QueryStructure queryStructure, String driverTag) {
         return new QueryStructureRenderFineEngine(queryStructure);
+    }
+
+    @Override
+    public Object getNullLiteralExpressionLiteralRender(NullLiteralExpression nullLiteralExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getParameterExpressionImplLiteralRender(ParameterExpressionImpl parameterExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getPathTypeExpressionLiteralRender(PathTypeExpression PathTypeExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getSimpleCaseExpressionLiteralRender(SimpleCaseExpression simpleCaseExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getSubqueryComparisonModifierExpressionLiteralRender(SubqueryComparisonModifierExpression subqueryComparisonModifierExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getUnaryArithmeticOperationLiteralRender(UnaryArithmeticOperation unaryArithmeticOperation, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getCoalesceExpressionLiteralRender(CoalesceExpression coalesceExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getLiteralExpressionLiteralRender(LiteralExpression literalExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getNullifExpressionLiteralRender(NullifExpression nullifExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getConcatExpressionLiteralRender(ConcatExpression concatExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getEntityTypeExpressionLiteralRender(EntityTypeExpression entityTypeExpression, String driverTag) {
+        return null;
     }
 
     @Override
@@ -104,6 +160,16 @@ public class RenderFactoryEngineAdapter implements RenderFactory {
 
     @Override
     public Object getCriteriaQueryLiteralRender(CriteriaQueryImpl criteriaQuery, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getBasicFunctionExpressionLiteralRender(BasicFunctionExpression basicFunctionExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getBinaryArithmeticOperationLiteralRender(BinaryArithmeticOperation binaryArithmeticOperation, String driverTag) {
         return null;
     }
 }

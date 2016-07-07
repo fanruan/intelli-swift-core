@@ -8,6 +8,7 @@ import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 /**
  * Represents a {@link Modifier#ALL}, {@link Modifier#ANY}, {@link Modifier#SOME} modifier appplied to a subquery as
@@ -20,21 +21,21 @@ public class SubqueryComparisonModifierExpression<Y>
 		implements Serializable {
 	public static enum Modifier {
 		ALL {
-			String rendered() {
+			public String rendered() {
 				return "all ";
 			}
 		},
 		SOME {
-			String rendered() {
+			public String rendered() {
 				return "some ";
 			}
 		},
 		ANY {
-			String rendered() {
+			public String rendered() {
 				return "any ";
 			}
 		};
-		abstract String rendered();
+		public abstract String rendered();
 	}
 
 	private final Subquery<Y> subquery;
@@ -63,10 +64,18 @@ public class SubqueryComparisonModifierExpression<Y>
 	}
 
 	public String render(RenderingContext renderingContext) {
-		return getModifier().rendered() + ( (Renderable) getSubquery() ).render( renderingContext );
+		return (String)delegateRender(renderingContext);
 	}
 
 	public String renderProjection(RenderingContext renderingContext) {
 		return render( renderingContext );
+	}
+	public Object delegateRender(RenderingContext renderingContext) {
+		RenderExtended render = choseRender(renderingContext);
+		return render.render(renderingContext);
+	}
+
+	protected RenderExtended choseRender(RenderingContext renderingContext) {
+		return (RenderExtended) renderingContext.getRenderFactory().getSubqueryComparisonModifierExpressionLiteralRender(this, "default");
 	}
 }
