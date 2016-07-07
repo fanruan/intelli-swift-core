@@ -58,11 +58,13 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             //}],
             [{
                 text: BI.i18nText("BI-Copy"),
-                value: BICst.CALCULATE_TARGET_COMBO.COPY
+                value: BICst.CALCULATE_TARGET_COMBO.COPY,
+                cls: "copy-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Remove"),
-                value: BICst.CALCULATE_TARGET_COMBO.DELETE
+                value: BICst.CALCULATE_TARGET_COMBO.DELETE,
+                cls: "delete-h-font"
             }]
         ];
     },

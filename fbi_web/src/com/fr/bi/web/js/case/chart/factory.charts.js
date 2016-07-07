@@ -198,6 +198,15 @@ BI.ChartCombineFormatItemFactory = {
                     }
                 }
             },
+            dTools:{
+                enabled:'true',
+                style:{
+                    fontFamily: "Microsoft YaHei, Hiragino Sans GB W3",
+                    color: "#1a1a1a",
+                    fontSize: "12px"
+                },
+                backgroundColor:'white'
+            },
             dataSheet: {
                 enabled: false,
                 "borderColor": "rgb(0,0,0)",
