@@ -1688,7 +1688,7 @@ define('dom/Browser',['require'],function(require){
         // `true` for browsers on a high-resolution "retina" screen.
         retina: (window.devicePixelRatio || (window.screen.deviceXDPI / window.screen.logicalXDPI)) > 1
     };
-    
+
 });
 
 /**
@@ -2320,7 +2320,7 @@ define('Handler',['require','./utils/BaseUtils','./Constants','./dom/DomEvent','
         _fireDOMEvent: function (e, type, targets) {
 
             if (e._stopped) { return; }
-            
+
             // Find the layer the event is propagating from and its parents.
             targets = (targets || []).concat(this._findEventTargets(e, type));
 
@@ -2384,7 +2384,7 @@ define('Handler',['require','./utils/BaseUtils','./Constants','./dom/DomEvent','
             var data = domWrapper.datum();
 
             this._targets[BaseUtils.stamp(domEl)] = domWrapper;
-            
+
             this._targets[BaseUtils.stamp(data)] = domWrapper;
 
             domWrapper.on(types, render);
@@ -2651,7 +2651,7 @@ define('Handler',['require','./utils/BaseUtils','./Constants','./dom/DomEvent','
                 axis.getRender().drawHighlightBand(pos);
                 this._setCoveredKey(key);
                 this.fireEventByData(this.vanchart.hoverSeries, 'forceMouseOut', event);
-                
+
                 // todo, shouldn't calculate dim&content every time
                 tooltip.showWithSharedPoints(this._getCoveredPointsByKey(this.vanchart.coveredKey));
 
@@ -2727,7 +2727,7 @@ define('theme/options',['require','../Constants'],function (require) {
 
     options[Constants.MULTIPIE_CHART] = {
         innerRadiusPct: 2/3,
-        
+
         plotOptions: {
             borderWidth: 1,
             borderColor: 'rgb(255,255,255)',
@@ -2902,7 +2902,7 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
             //饼图要反过来
             if (series.type === Constants.PIE_CHART || series.type === Constants.GAUGE_CHART) {
                 seriesName = [category, category = seriesName][0];
-                seriesName = BaseUtils.isNull(seriesName) ? 'SeriesX' + this.index : seriesName; 
+                seriesName = BaseUtils.isNull(seriesName) ? 'SeriesX' + this.index : seriesName;
             }
 
             if (series.type === Constants.GAUGE_CHART || this.index < 0) {
@@ -3013,7 +3013,7 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
                     var nameString = Formatter.format(this.name, formatter.nameFormat);
                     items.push(nameString);
                 }
-                
+
                 if (items.length) {
                     var text = items.join(' ');
                     var style = this.getCategorySeriesStyle(dataLabels);
@@ -3209,7 +3209,7 @@ define('component/Series',['require','../utils/BaseUtils','../utils/QueryUtils',
 
             this.className = 'vancharts-series-' + this.index;
 
-            // pie charts have colors inside 
+            // pie charts have colors inside
             if ([
                     Constants.PIE_CHART,
                     Constants.GAUGE_CHART,
@@ -3253,7 +3253,7 @@ define('component/Series',['require','../utils/BaseUtils','../utils/QueryUtils',
                     this.gaugeAxis = vanchart.gaugeAxis(QueryUtils.queryList(queryList, 'gaugeAxis'));
                     break;
                 case Constants.RADAR_CHART:
-                    
+
                     var isColumnType = QueryUtils.queryList(queryList, 'columnType');
                     if (isColumnType) {
                         this.stack = Constants.RADAR_CHART;
@@ -3470,7 +3470,7 @@ define('component/Series',['require','../utils/BaseUtils','../utils/QueryUtils',
                         }
                     }
                 }
-                
+
             }
         }
     };
@@ -3666,7 +3666,7 @@ define('render/LegendIconFactory',['require','../Constants'],function(require){
     function hasIcon(name){
         return LegendPath[name];
     }
-    
+
     return {
         getLegendIconPath:getLegendIconPath,
         getLegendIconSize:getLegendIconSize,
@@ -4238,7 +4238,7 @@ define('component/Title',['require','./Base','../utils/BaseUtils','../Constants'
             this.render.changeTextRightSpace(changes);
         }
     });
-    
+
     require('../ComponentLibrary').register(Constants.TITLE_COMPONENT, Title);
     return Title;
 });
@@ -4616,11 +4616,11 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
     var ARROW_SIZE = 15;
 
     var BaseAxis = Base.extend({
-        
+
         init: function () {
             this.sharedPoints = {};
         },
-        
+
         getSharedPointsFromSeries: function (series) {
             if (!this.isBaseAxis) {
                 return;
@@ -4632,7 +4632,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                     seriesItem.tooltip &&
                     seriesItem.tooltip.shared &&
                     self._isSeriesVisible(seriesItem)) {
-                    if (seriesItem.type === Constants.BAR_CHART || 
+                    if (seriesItem.type === Constants.BAR_CHART ||
                         seriesItem.type === Constants.COLUMN_CHART ||
                         seriesItem.stack === Constants.RADAR_CHART ) {
                         self.highlightType = 'band';
@@ -4643,14 +4643,14 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 }
             });
         },
-        
+
         _getSharedPoints: function (point) {
             var series = point.series;
-            
+
             if (series.supportSharedTooltip &&
-                series.visible && 
-                series.tooltip && 
-                series.tooltip.shared && 
+                series.visible &&
+                series.tooltip &&
+                series.tooltip.shared &&
                 !point.isNull &&
                 point.visible
             ) {
@@ -4763,7 +4763,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 otherAxis = this.vanchart[otherAxis]();
 
                 axisOption.position = otherAxis.isHorizontal() ? Constants.RIGHT : Constants.BOTTOM;
-                
+
                 this._updateFloatBounds(axisOption.position, usedSize);
 
             }else if(this.getRender()){
@@ -5941,7 +5941,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
     // }
 
     BaseAxis.addInitHook(BaseAxis.prototype.init);
-    
+
     return BaseAxis;
 });
 /**
@@ -5953,11 +5953,11 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
     var BaseAxis = require('./BaseAxis');
     var BaseUtils = require('../utils/BaseUtils');
     var Constants = require('../Constants');
-    
+
     var CategoryAxis = BaseAxis.extend({
 
         type:Constants.CATEGORY_AXIS_COMPONENT,
-        
+
         init: function () {
             this.isRangePoints = null;
             this.piece = null;
@@ -6004,7 +6004,7 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
                     }
                 }
             }
-            
+
             this.categories = categories;
 
             this.scale = d3.scale.ordinal().domain(this.categories);
@@ -6429,7 +6429,7 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
             return this._getBandByIndex(index);
         }
     });
-    
+
     // function (vanchart, option, axisOption, componentType){
     //     BaseAxis.call(this, vanchart, option, componentType);
     //     this.isRangePoints = false;
@@ -6473,7 +6473,7 @@ define('component/ValueAxis',['require','./Base','./BaseAxis','../utils/BaseUtil
                     this.byPercent = sery.stackByPercent && !this.isBaseAxis;
                 }
             }
-            
+
             var minMax = this._calculateMinMaxValue();
 
             var axisOption = this.componentOption;
@@ -7052,7 +7052,7 @@ define('component/Polar',['require','../Constants','../utils/BaseUtils','../util
                 this.option.plotOptions,
                 Options[Constants.RADAR_CHART].plotOptions
             ];
-            
+
             this.shape = QueryUtils.queryList(queryList, 'shape');
         },
 
@@ -7112,7 +7112,7 @@ define('component/Polar',['require','../Constants','../utils/BaseUtils','../util
             return null;
         }
     });
-    
+
     require('../ComponentLibrary').register(Constants.POLAR_COMPONENT, Polar);
     return Polar;
 });
@@ -7626,7 +7626,7 @@ define('utils/LabelDivManager',['require','./BaseUtils','./ColorUtils','./Bezier
             if (typeof wrap === 'undefined') {
                 wrap = false;
             }
-            
+
             if (typeof useHTML === 'undefined') {
                 useHTML = true;
             }
@@ -7647,7 +7647,7 @@ define('utils/LabelDivManager',['require','./BaseUtils','./ColorUtils','./Bezier
                     (div.textContent = label) :
                     (div.innerText = label);
             }
-            
+
             div.style.zIndex = 1001;
             div.style.position = 'absolute';
             div.style.left = posOrDim.x + 'px';
@@ -8334,7 +8334,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
         },
 
         _cancelMarkerClickedState:function(markerG, d){
-            
+
             var backgroundColor = this.component._getBackgroundColor();
             var markerFillColor = d.marker.fillColor;
 
@@ -9219,7 +9219,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
             if (hoverSeries && hoverSeries !== series) {
                 handler.fireEventByData(hoverSeries, 'forceMouseOut', event);
             }
-            
+
             chart.hoverSeries = series;
             var closestPoint = series.chart.getClosestPoint(event.containerPoint);
 
@@ -9369,7 +9369,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
 
         }
     });
-    
+
     return BaseRender;
 });
 /**
@@ -9610,7 +9610,7 @@ define('component/Axis',['require','./Base','../utils/BaseUtils','../Constants',
             return axisRenders;
         }
     });
-    
+
     require('../ComponentLibrary').register(Constants.AXIS_COMPONENT, Axis);
 
     return Axis;
@@ -9632,7 +9632,7 @@ define('theme/Options',['require','../Constants'],function (require) {
 
     options[Constants.MULTIPIE_CHART] = {
         innerRadiusPct: 2/3,
-        
+
         plotOptions: {
             borderWidth: 1,
             borderColor: 'rgb(255,255,255)',
@@ -10065,7 +10065,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
             return [[latMin, lngMin],[latMax, lngMax]];
         }
     });
-    
+
     require('../ComponentLibrary').register(Constants.GEO_COMPONENT, Geo);
     return Geo;
 });
@@ -10748,7 +10748,7 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
                 this.show(pos, opt, point.tooltipText);
             }
         },
-        
+
         showWithSharedPoints: function (points) {
             if (!points || points.length === 0) {
                 this.hide();
@@ -11802,7 +11802,7 @@ define('component/Toolbar',['require','./Base','../utils/BaseUtils','../Constant
     //     this.refresh(option);
     //     this.isOpen = !this.componentOption.hidden;
     // }
-    
+
     require('../ComponentLibrary').register(Constants.TOOLBAR_COMPONENT, Toolbar);
     return Toolbar;
 });
@@ -13081,7 +13081,7 @@ define('component/ZoomBar',['require','../render/ZoomBarRender','./Base','../uti
             return this.bounds.width;
         }
     });
-    
+
     require('../ComponentLibrary').register(Constants.ZOOM_COMPONENT, ZoomBar);
     return ZoomBar;
 
@@ -13587,7 +13587,7 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
                     var toolbarHeight = this.vanchart.getToolbarHeight();
                     this.bounds.y += toolbarHeight;
                 }
-                
+
             }
         },
 
@@ -14862,7 +14862,12 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextDimension(text, style, useHtml){
         text = pick(text, "");
         var div = document.createElement("div");
-        document.getElementById("container").appendChild(div);
+        var container = document.getElementById("container");
+        if(!container){
+            container = document.getElementsByTagName("body")[0]
+        }
+        container.appendChild(div);
+
 
         div.style.visibility = "hidden";
         div.style.whiteSpace = "nowrap";
@@ -14892,7 +14897,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var width = div.offsetWidth || 0;
         var height = div.offsetHeight || 0;
 
-        document.getElementById("container").removeChild(div);
+        container.removeChild(div);
 
         return {width:width, height:height};
     }
@@ -14900,7 +14905,11 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextWrapDimension(text, style, useHTML){
         text = pick(text, "");
         var div = document.createElement("div");
-        document.getElementById("container").appendChild(div);
+        var container = document.getElementById("container");
+        if(!container){
+            container = document.getElementsByTagName("body")[0]
+        }
+        container.appendChild(div);
 
         div.style.visibility = "hidden";
         div.style.whiteSpace = "normal";
@@ -14925,7 +14934,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var width = div.offsetWidth || 0;
         var height = div.offsetHeight || 0;
 
-        document.getElementById("container").removeChild(div);
+        container.removeChild(div);
 
         return {width:width, height:height};
     }
@@ -16123,7 +16132,7 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
 
             return [xValues, yValues, Constants.BOTTOM];
         },
-        
+
         //默认是按照分类总值来排序
         orderData:function(){
 
@@ -16529,9 +16538,9 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
         },
 
         getClosestPoint:function(){
-            
+
         }
-        
+
     });
 
     return BaseChart;
@@ -17391,7 +17400,7 @@ define('chart/Pie',['require','../Constants','../utils/BaseUtils','./BaseChart',
                     return this;
                 }
             }
-            
+
         }
 
     });
@@ -17430,9 +17439,9 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
     var VIS_MIN = 1E-10;
 
     var multiPie = BaseChart.extend({
-        
+
         nodes: [],
-        
+
         root: null,
 
         ordered: null,
@@ -17455,7 +17464,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
         },
 
         mergeSeriesAttributes: function (series) {
-            
+
             var queryList = [
                 series.seriesOption,
                 this.option.plotOptions[this.componentType],
@@ -17516,7 +17525,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             series.centerX = center[0];
             series.centerY = center[1];
             series.bounds = {x: plotBounds.x, y: plotBounds.y, width: plotBounds.width, height: plotBounds.height};
-            
+
             if (!series._radius) {
                 var left = center[0] - plotBounds.x;
                 var right = plotBounds.x + plotBounds.width - center[0];
@@ -17677,7 +17686,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
         _calcData: function (root) {
 
             var height = root.height;
-            
+
             var center = root.series.center;
             var innerRadius = root.series.innerRadius;
             var radius = root.series.radius;
@@ -17745,7 +17754,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                     node.y = -1;
                     node.dy = ir + 1;
                 }
-                
+
                 node._x = node.x;
                 node._dx = node.dx;
                 node._y = node.y;
@@ -18315,7 +18324,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
             return [centerX, centerY];
         },
-        
+
         drillDown: function (d) {
 
             var radius = this.radius;
@@ -18388,7 +18397,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             }, this);
 
             this._calculateLabelPos();
-            
+
             this.render.drillDown(d);
         },
 
@@ -18431,7 +18440,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
         safeRadius: function (y) {
             return Math.max(0, this.sy(y));
         },
-        
+
         getChartNodes: function () {
             return this.nodes;
         },
@@ -18447,19 +18456,19 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
         getRadius: function () {
             return this.radius;
         },
-        
+
         getStartAngle: function () {
             return this.startAngle;
         },
-        
+
         getEndAngle: function () {
             return this.endAngle;
         },
-        
+
         getDrilldown: function () {
             return this.drilldown;
         },
-        
+
         getRotatable: function () {
             return this.rotatable;
         },
@@ -18467,7 +18476,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
         getIsChanged: function () {
             return this.isChanged;
         },
-        
+
         // for test
         getOriginData: function () {
             var data = this.option.series[0];
@@ -18476,7 +18485,7 @@ define('chart/multiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
         }
 
     });
-    
+
     require('../ChartLibrary').register(Constants.MULTIPIE_CHART, multiPie);
 });
 /**
@@ -18489,7 +18498,7 @@ define('chart/Bar',['require','./BaseChart','../utils/BaseUtils','../Constants',
     var QueryUtils = require('../utils/QueryUtils');
     var BoundsManager = require('../utils/BoundsManager');
     var Options = require('../theme/options');
-    
+
     var TOOLTIP_GAP = 1;
     var LABEL_GAP = 3;
     var MIN_BAR_SIZE = 2;
@@ -19267,7 +19276,7 @@ define('chart/Line',['require','../Constants','../utils/BaseUtils','../utils/Que
             return selectedPoint;
         }
     });
-    
+
     require('../ChartLibrary').register(Constants.LINE_CHART, Line);
 
     return Line;
@@ -19286,7 +19295,7 @@ define('chart/Area',['require','../Constants','./Line','../ChartLibrary'],functi
     });
 
     require('../ChartLibrary').register(Constants.AREA_CHART, Area);
-    
+
     return Area;
 });
 /**
@@ -21306,7 +21315,7 @@ define('chart/Radar',['require','./BaseChart','../utils/BaseUtils','../Constants
     });
 
     require('../ChartLibrary').register(Constants.RADAR_CHART, Radar);
-    
+
     return Radar;
 });
 /**
@@ -21480,7 +21489,7 @@ define('chart/Bubble',['require','./BaseChart','../utils/BaseUtils','../Constant
             if(this.isUpdateWithForce()){
                 return;
             }
-            
+
             d3.layout.pack().sort(null)
                 .size(size)
                 .children(function(d) {
@@ -21673,7 +21682,7 @@ define('chart/Bubble',['require','./BaseChart','../utils/BaseUtils','../Constant
             var size = BaseUtils.pick(QueryUtils.queryList(queryList, 'size'), 0);
             size = isForceBubble ? (point.isNull ? '-' : point.value) : size; //力学气泡图没有size的值
             var value = point.value, category = point.category;
-            
+
             BaseUtils.extend(point, {
                 fillColorOpacity: fillColorOpacity,
                 x:category,
@@ -21737,7 +21746,7 @@ define('chart/Bubble',['require','./BaseChart','../utils/BaseUtils','../Constant
         getRender:function(){
             return !this.vanchart._leaflet && this.render;
         }
-        
+
     });
 
     require('../ChartLibrary').register(Constants.BUBBLE_CHART, Bubble);
@@ -21761,9 +21770,9 @@ define('chart/Scatter',['require','./BaseChart','../utils/BaseUtils','../utils/C
     var LABEL_GAP = 2;
 
     var Scatter = BaseChart.extend({
-        
+
         type:Constants.SCATTER_CHART,
-        
+
         selfSeryIndex: 0,
 
         doLayout: function () {
@@ -21968,7 +21977,7 @@ define('chart/Scatter',['require','./BaseChart','../utils/BaseUtils','../utils/C
     });
 
     require('../ChartLibrary').register(Constants.SCATTER_CHART, Scatter);
-    
+
     return Scatter;
 });
 
@@ -21987,7 +21996,7 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
     var QueryUtils = require('../utils/QueryUtils');
     var BaseChart = require('./BaseChart');
     var Geo = require('../component/Geo');
-    
+
     var Series = require('../component/Series');
     var Options = require('../theme/options');
     var Formatter = require('../utils/Formatter');
@@ -22334,7 +22343,7 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
     var END_STOP = 'end-gradual-stop';
 
     var PieSvgRender = BaseRender.extend({
-        
+
         render:function(){
 
             var plotBounds = this.component.getPlotBounds();
@@ -22832,7 +22841,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
         arc: null,
 
         render: function () {
-            
+
             var plotBounds = this.component.getPlotBounds();
             var svgRoot = this.component.getVanchartRender().getRenderRoot();
             var center = this.component.getCenter();
@@ -23141,7 +23150,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
 
             if(event && event.target){
                 var d = event.target.datum();
-                
+
                 if (this.component.getDrilldown() && this.down === d) {
                     this.component.drillDown(d);
                 }
@@ -23666,7 +23675,7 @@ define('render/BarSvgRender',['require','./BaseRender','../utils/BaseUtils','../
                 event.target.style('fill', this._getMouseOverFill(d));
             }
         }
-        
+
     });
 
     require('./RenderLibrary').register(Constants.BAR_SVG, BarSvgRender);
@@ -26073,7 +26082,7 @@ define('render/RadarSvgRender',['require','./BaseRender','../utils/BaseUtils','.
         mouseUp:function(event){
             if(event && event.target){
                 var d = event.target.datum();
-                
+
                 if(d.columnType){
                     event.target.style('fill', d.mouseOverColor);
                 }else{
@@ -27623,7 +27632,7 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
             this.render();
         }
     });
-    
+
     require('./RenderLibrary').register(Constants.MAP_SVG, MapSvgRender);
 });
 /**
@@ -27688,7 +27697,7 @@ define('render/DrillToolsSvgRender',['require','./BaseRender','../utils/BaseUtil
             })
         }
     });
-    
+
     require('./RenderLibrary').register(Constants.DRILL_TOOLS_SVG, DrillToolsSvgRender);
 
     return DrillToolsSvgRender;
@@ -27950,7 +27959,7 @@ define('render/BaseAxisSvgRender',['require','./BaseRender','../utils/BaseUtils'
         removeHighlightBand: function () {
             this._axisG.select('.' + HIGHLIGHT_BAND).remove();
         },
-        
+
         _drawPlotBands:function(g){
 
             var plotBands = this.component._preCalculatePlotBands();
@@ -28611,7 +28620,7 @@ define('render/BaseAxisSvgRender',['require','./BaseRender','../utils/BaseUtils'
 define('render/CategoryAxisSvgRender',['require','./BaseAxisSvgRender','../Constants','./RenderLibrary'],function(require){
 
     var BaseAxisRender = require('./BaseAxisSvgRender');
-    
+
     var Constants = require('../Constants');
 
     var CategoryAxisSvgRender = BaseAxisRender.extend({});
@@ -28628,7 +28637,7 @@ define('render/ValueAxisSvgRender',['require','./BaseAxisSvgRender','../Constant
     var Constants = require('../Constants');
 
     var ValueAxisSvgRender = BaseAxisRender.extend({});
-    
+
     require('./RenderLibrary').register(Constants.VALUE_AXIS_SVG, ValueAxisSvgRender);
 });
 /**
@@ -28972,7 +28981,7 @@ define('render/RadiusAxisSvgRender',['require','./BaseRender','../utils/BaseUtil
         }
 
     });
-    
+
     require('./RenderLibrary').register(Constants.RADIUS_AXIS_SVG, RadiusAxisSvgRender);
 
 });
@@ -29042,7 +29051,7 @@ define('render/AngleAxisSvgRender',['require','./BaseRender','../utils/BaseUtils
                     break;
                 case 'line':
                 default:
-                    
+
                     this._axisG
                         .append('line')
                         .attr('class', HIGHLIGHT_BAND)
@@ -29807,7 +29816,7 @@ define('render/ToolbarSvgRender',['require','./BaseRender','../utils/BaseUtils',
     });
 
     require('./RenderLibrary').register(Constants.TOOLBAR_SVG, ToolbarSvgRender);
-    
+
     return ToolbarSvgRender;
 });
 /**
@@ -30061,7 +30070,7 @@ define('render/DataSheetSvgRender',['require','./BaseRender','../utils/BaseUtils
         }
 
     });
-    
+
     require('./RenderLibrary').register(Constants.DATA_SHEET_SVG, DataSheetSvgRender);
 
 });
@@ -30570,7 +30579,7 @@ define('render/RangeLegendSvgRender',['require','./BaseRender','../utils/BaseUti
                 });
         }
     });
-    
+
     require('./RenderLibrary').register(Constants.RANGE_LEGEND_SVG, RangeLegendSvgRender);
 
     return RangeLegendSvgRender;
@@ -30595,7 +30604,7 @@ define('render/VanChartSvgRender',['require','../Constants','./BaseRender','../u
             var dom = this.component.getParentDom();
             var width = this.component.chartWidth();
             var height = this.component.chartHeight();
-            
+
             if(!this.svgRoot){
                 this.svgRoot = d3.select(dom).append('svg')
                     .attr('width', width).attr('height', height);
@@ -31264,7 +31273,7 @@ define('render/RadarVmlRender',['require','./BaseRender','../utils/BaseUtils','.
                 }
             }
         },
-        
+
         _removeAll:function(){
 
             if(this._bodySet){
@@ -32185,7 +32194,7 @@ define('render/LineVmlRender',['require','./BaseRender','../utils/BaseUtils','..
             this.labelDivManager.clearAllLabels();
         }
     });
-    
+
     require('./RenderLibrary').register(Constants.LINE_VML, LineVmlRender);
 
     return LineVmlRender;
@@ -32260,7 +32269,7 @@ define('render/BarVmlRender',['require','./BaseRender','../utils/BaseUtils','../
                     'stroke-width':d.borderWidth
                 })
                 .datum(d);
-            
+
             this.addShapeEventHandler(rect);
 
             this.shapeMap[d.className] = rect;
@@ -32489,7 +32498,7 @@ define('render/PieVmlRender',['require','./BaseRender','../utils/BaseUtils','../
         },
 
         onDragEnd:function(){
-            
+
         }
 
     });
@@ -32515,7 +32524,7 @@ define('render/MultiPieVmlRender',['require','./BaseRender','../utils/BaseUtils'
         render:function(){
 
             this._removeAll();
-        
+
             var paper = this.component.getVanchartRender().getRenderRoot();
             var plotBounds = this.component.getPlotBounds();
             var center = this.component.getCenter();
@@ -32533,10 +32542,10 @@ define('render/MultiPieVmlRender',['require','./BaseRender','../utils/BaseUtils'
                 var attrs = {
                     path: arc(d)
                 };
-        
+
                 return attrs;
             };
-        
+
             var points = this.component.getChartNodes();
 
 
@@ -32768,7 +32777,7 @@ define('render/BubbleVmlRender',['require','./BaseRender','../utils/BaseUtils','
                 })
                 .datum(point)
                 .transform('t' + (point.posX + transX) + ',' + (point.posY + transY));
-            
+
             this.addShapeEventHandler(bubble);
 
             this.shapeMap[point.className] = bubble;
@@ -32897,7 +32906,7 @@ define('render/ScatterVmlRender',['require','./BubbleVmlRender','../utils/BaseUt
             }
         }
     });
-    
+
     require('./RenderLibrary').register(Constants.SCATTER_VML, ScatterVmlRender);
 
     return ScatterVmlRender;
@@ -34220,12 +34229,12 @@ define('render/RadiusAxisVmlRender',['require','./BaseRender','../utils/BaseUtil
                 }
             }
         },
-        
+
         remove:function(){
             this._removeAll();
         }
     });
-    
+
     require('./RenderLibrary').register(Constants.RADIUS_AXIS_VML, RadiusAxisVmlRender);
 });
 /**
@@ -34242,7 +34251,7 @@ define('render/BaseAxisVmlRender',['require','./BaseRender','../utils/BaseUtils'
 
     var BaseAxisVmlRender = BaseRender.extend({
         render:function(){
-            
+
             this.highlightBandID = null;
 
             this._removeAll();
@@ -34727,7 +34736,7 @@ define('render/BaseAxisVmlRender',['require','./BaseRender','../utils/BaseUtils'
             band && band.remove();
 
         },
-        
+
         drawHighlightBand:function(pos){
             var axis = this.component;
             if (!axis._getBandByPosition) {
@@ -34808,7 +34817,7 @@ define('render/ValueAxisVmlRender',['require','./BaseAxisVmlRender','../Constant
 define('render/CategoryAxisVmlRender',['require','./BaseAxisVmlRender','../Constants','./RenderLibrary'],function(require){
 
     var BaseAxisRender = require('./BaseAxisVmlRender');
-    
+
     var Constants = require('../Constants');
 
     var CategoryAxisVmlRender = BaseAxisRender.extend({});
@@ -35348,7 +35357,7 @@ define('render/RangeLegendVmlRender',['require','./BaseRender','../utils/BaseUti
         }
 
     });
-    
+
     require('./RenderLibrary').register(Constants.RANGE_LEGEND_VML, RangeLegendVmlRender);
 
     return RangeLegendVmlRender;
@@ -35523,7 +35532,7 @@ define('render/VanChartVmlRender',['require','./BaseRender','../utils/BaseUtils'
             });
         }
     });
-    
+
     require('./RenderLibrary').register(Constants.VANCHART_VML, VanChartVmlRender);
 
     return VanChartVmlRender;
