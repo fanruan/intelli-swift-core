@@ -7,6 +7,7 @@ import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.ValueHandlerFactory;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 /**
  * Represents a literal expression.
@@ -15,7 +16,6 @@ import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
  */
 public class LiteralExpression<T> extends ExpressionImpl<T> implements Serializable {
 	private Object literal;
-
 	@SuppressWarnings({ "unchecked" })
 	public LiteralExpression(CriteriaBuilderImpl criteriaBuilder, T literal) {
 		this( criteriaBuilder, (Class<T>) determineClass( literal ), literal );
@@ -40,27 +40,13 @@ public class LiteralExpression<T> extends ExpressionImpl<T> implements Serializa
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	public String render(RenderingContext renderingContext) {
-		if ( ValueHandlerFactory.isNumeric( literal ) ) {
-			return ValueHandlerFactory.determineAppropriateHandler( (Class) literal.getClass() ).render( literal );
-		}
-
-		// else...
-		final String parameterName = renderingContext.registerLiteralParameterBinding( getLiteral(), getJavaType() );
-		return ':' + parameterName;
+	public Object render(RenderingContext renderingContext) {
+		return delegateRender(renderingContext);
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	public String renderProjection(RenderingContext renderingContext) {
-		// some drivers/servers do not like parameters in the select clause
-		final ValueHandlerFactory.ValueHandler handler =
-				ValueHandlerFactory.determineAppropriateHandler( literal.getClass() );
-		if ( ValueHandlerFactory.isCharacter( literal ) ) {
-			return '\'' + handler.render( literal ) + '\'';
-		}
-		else {
-			return handler.render( literal );
-		}
+	public Object renderProjection(RenderingContext renderingContext) {
+		return delegateRenderProjection(renderingContext);
 	}
 
 	@Override
@@ -77,4 +63,18 @@ public class LiteralExpression<T> extends ExpressionImpl<T> implements Serializa
 			literal = valueHandler.convert( literal );
 		}
 	}
+	public  String delegateRender(RenderingContext renderingContext) {
+		RenderExtended render = choseRender(renderingContext);
+		return (String)render.render(renderingContext);
+	}
+
+	public String delegateRenderProjection(RenderingContext renderingContext) {
+		RenderExtended render = choseRender(renderingContext);
+		return (String)render.renderProjection(renderingContext);
+	}
+
+	protected RenderExtended choseRender(RenderingContext renderingContext) {
+		return (RenderExtended) renderingContext.getRenderFactory().getLiteralExpressionLiteralRender(this, "default");
+	}
+
 }

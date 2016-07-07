@@ -2,10 +2,7 @@ package com.finebi.datasource.sql.criteria.internal.render.factory;
 
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
-import com.finebi.datasource.sql.criteria.internal.expression.BinaryArithmeticOperation;
-import com.finebi.datasource.sql.criteria.internal.expression.CoalesceExpression;
-import com.finebi.datasource.sql.criteria.internal.expression.ConcatExpression;
-import com.finebi.datasource.sql.criteria.internal.expression.PathTypeExpression;
+import com.finebi.datasource.sql.criteria.internal.expression.*;
 import com.finebi.datasource.sql.criteria.internal.expression.function.BasicFunctionExpression;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractFromImpl;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
@@ -128,5 +125,50 @@ public class RenderFactoryDebug implements RenderFactory<LiteralRender> {
     @Override
     public LiteralRender getConcatExpressionLiteralRender(ConcatExpression concatExpression, String driverTag) {
         return new ConcatExpressionLiteralRender(concatExpression);
+    }
+
+    @Override
+    public LiteralRender getEntityTypeExpressionLiteralRender(EntityTypeExpression entityTypeExpression, String driverTag) {
+        return new EntityTypeExpressionLiteralRender(entityTypeExpression);
+    }
+
+    @Override
+    public LiteralRender getNullLiteralExpressionLiteralRender(NullLiteralExpression nullLiteralExpression, String driverTag) {
+        return new NullLiteralExpressionLiteralRender(nullLiteralExpression);
+    }
+
+    @Override
+    public LiteralRender getParameterExpressionImplLiteralRender(ParameterExpressionImpl parameterExpression, String driverTag) {
+        return new ParameterExpressionImplLiteralRender(parameterExpression);
+    }
+
+    @Override
+    public LiteralRender getPathTypeExpressionLiteralRender(PathTypeExpression PathTypeExpression, String driverTag) {
+        return new PathTypeExpressionLiteralRender(PathTypeExpression) ;
+    }
+
+    @Override
+    public LiteralRender getSimpleCaseExpressionLiteralRender(SimpleCaseExpression simpleCaseExpression, String driverTag) {
+        return new SimpleCaseExpressionLiteralRender(simpleCaseExpression);
+    }
+
+    @Override
+    public LiteralRender getSubqueryComparisonModifierExpressionLiteralRender(SubqueryComparisonModifierExpression subqueryComparisonModifierExpression, String driverTag) {
+        return new SubqueryComparisonModifierExpressionLiteralRender(subqueryComparisonModifierExpression) ;
+    }
+
+    @Override
+    public LiteralRender getUnaryArithmeticOperationLiteralRender(UnaryArithmeticOperation unaryArithmeticOperation, String driverTag) {
+        return new UnaryArithmeticOperationLiteralRender(unaryArithmeticOperation);
+    }
+
+    @Override
+    public LiteralRender getLiteralExpressionLiteralRender(LiteralExpression literalExpression, String driverTag) {
+        return new LiteralExpressionLiteralRender(literalExpression);
+    }
+
+    @Override
+    public LiteralRender getNullifExpressionLiteralRender(NullifExpression nullifExpression, String driverTag) {
+        return new NullifExpressionLiteralRender(nullifExpression);
     }
 }

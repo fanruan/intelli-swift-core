@@ -180,4 +180,39 @@ public class StringFunctionTest extends TestCase{
             assertTrue(false);
         }
     }
+
+    public void testStringLiteral() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+
+            Root root = query.from(getEntity());
+            query.select(cb.literal(1D));
+
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select 1.0D from jpa as generatedAlias0",result);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+    public void testStringNullLiteral() {
+        try {
+            CriteriaBuilder cb = manager.getCriteriaBuilder();
+            CriteriaQuery query = cb.createQuery();
+
+            Root root = query.from(getEntity());
+            query.select(cb.nullLiteral("1".getClass()));
+
+            String result = ((CriteriaQueryImpl) query).render(getContext()).toString();
+            assertEquals("select null from jpa as generatedAlias0",result);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 }

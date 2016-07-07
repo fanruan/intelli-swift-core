@@ -7,6 +7,8 @@ import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 
 import com.finebi.datasource.api.criteria.CriteriaBuilder.SimpleCase;
 import com.finebi.datasource.api.criteria.Expression;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,12 +121,20 @@ public class SimpleCaseExpression<C, R>
     }
 
     public String render(RenderingContext renderingContext) {
-        return "";
+        return (String) delegateRender(renderingContext);
     }
 
     public String renderProjection(RenderingContext renderingContext) {
-        return "";
+        return render(renderingContext);
     }
 
+    public Object delegateRender(RenderingContext renderingContext) {
+        RenderExtended render = choseRender(renderingContext);
+        return render.render(renderingContext);
+    }
+
+    protected RenderExtended choseRender(RenderingContext renderingContext) {
+        return (RenderExtended) renderingContext.getRenderFactory().getSimpleCaseExpressionLiteralRender(this, "default");
+    }
 
 }

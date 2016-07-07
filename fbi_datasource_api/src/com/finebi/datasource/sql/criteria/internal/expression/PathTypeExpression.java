@@ -27,16 +27,20 @@ public class PathTypeExpression<T> extends ExpressionImpl<T> implements Serializ
     }
 
     public String render(RenderingContext renderingContext) {
-        RenderExtended render = (RenderExtended) renderingContext.getRenderFactory().getPathTypeExpressionRender(this, "d");
-        render.render(renderingContext);
-        return render.getRenderResult().toString();
+        return (String)delegateRender(renderingContext);
     }
-
-    public AbstractPathImpl<T> getPath() {
-        return pathImpl;
-    }
-
     public String renderProjection(RenderingContext renderingContext) {
         return render(renderingContext);
+    }
+    public Object delegateRender(RenderingContext renderingContext) {
+        RenderExtended render = choseRender(renderingContext);
+        return render.render(renderingContext);
+    }
+
+    protected RenderExtended choseRender(RenderingContext renderingContext) {
+        return (RenderExtended) renderingContext.getRenderFactory().getPathTypeExpressionLiteralRender(this, "default");
+    }
+    public AbstractPathImpl<T> getPath() {
+        return pathImpl;
     }
 }
