@@ -20,7 +20,8 @@ BIConf.MultiRelationModel = BI.inherit(BI.Model, {
             disabledRelations: data.disabledRelations || [],
             availableRelations: data.availableRelations || [],
             translations: data.translations || {},
-            cubeEnd: data.cubeEnd
+            cubeEnd: data.cubeEnd,
+            needGenerateCube: data.needGenerateCube
         }, {
             silent: true
         })
