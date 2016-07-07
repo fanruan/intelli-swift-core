@@ -36,7 +36,6 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
         BI.DirectionPager.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var v = o.vertical, h = o.horizontal;
-        this.currentPage = [v.curr, h.curr];
         this._createVPager();
         this._createHPager();
         BI.createWidget({
@@ -116,10 +115,7 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
         });
 
         this.vpager.on(BI.Pager.EVENT_CHANGE, function () {
-            if (self.getVPage() !== self.vpager.getCurrentPage()) {
-                self.currentPage[0] = self.vpager.getCurrentPage();
-                self.fireEvent(BI.DirectionPager.EVENT_CHANGE);
-            }
+            self.fireEvent(BI.DirectionPager.EVENT_CHANGE);
         });
         this.vpager.on(BI.Pager.EVENT_AFTER_POPULATE, function () {
             self.vlabel.setValue(this.getCurrentPage());
@@ -179,10 +175,7 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
         });
 
         this.hpager.on(BI.Pager.EVENT_CHANGE, function () {
-            if (self.getHPage() !== self.hpager.getCurrentPage()) {
-                self.currentPage[1] = self.hpager.getCurrentPage();
-                self.fireEvent(BI.DirectionPager.EVENT_CHANGE);
-            }
+            self.fireEvent(BI.DirectionPager.EVENT_CHANGE);
         });
         this.hpager.on(BI.Pager.EVENT_AFTER_POPULATE, function () {
             self.hlabel.setValue(this.getCurrentPage());
@@ -190,11 +183,11 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
     },
 
     getVPage: function () {
-        return this.currentPage[0];
+        return this.vpager.getCurrentPage();
     },
 
     getHPage: function () {
-        return this.currentPage[1];
+        return this.hpager.getCurrentPage();
     },
 
     setVPage: function (v) {

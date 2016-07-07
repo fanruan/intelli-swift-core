@@ -484,14 +484,13 @@ BI.PageTable = BI.inherit(BI.Widget, {
     },
 
     _populate: function () {
-        this._assertPager();
         this.table.populate.apply(this.table, arguments);
-        this.pager.populate();
         this._dealWithPager();
     },
 
     populate: function () {
         this._assertPager();
+        this.pager.populate();
         if ((this.pager.hasNext && this.pager.hasNext())
             || (this.pager.hasPrev && this.pager.hasPrev())) {
             var w = this.pager.getWidth();
