@@ -26,6 +26,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
 
         this.tab = BI.createWidget({
             type: "bi.tab",
+            cls: "chart-tab",
             cardCreator: BI.bind(this._createTabs, this)
         });
 

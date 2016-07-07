@@ -95,7 +95,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 cls: "copy-h-font"
             }],
             [{
-                text: BI.i18nText("BI-Delete_Target"),
+                text: BI.i18nText("BI-Remove"),
                 value: BICst.TARGET_COMBO.DELETE,
                 cls: "delete-h-font"
             }],

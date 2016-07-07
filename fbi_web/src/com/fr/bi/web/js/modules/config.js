@@ -512,20 +512,20 @@ BICst.TARGET_FILTER_STRING_COMBO = [[{
 
 //target number
 BICst.TARGET_FILTER_NUMBER_COMBO = [[{
-    text: BI.i18nText("BI-Equal"),
-    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
-    cls: "dot-e-font"
-}, {
-    text: BI.i18nText("BI-Not_Equal_To"),
-    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
-    cls: "dot-e-font"
-}], [{
     text: BI.i18nText("BI-In"),
     value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
     value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
     cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
