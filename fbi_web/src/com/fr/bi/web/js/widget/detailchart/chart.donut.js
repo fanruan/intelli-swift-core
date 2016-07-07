@@ -86,6 +86,7 @@ BI.DonutChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             chart_color: options.chart_color || [],

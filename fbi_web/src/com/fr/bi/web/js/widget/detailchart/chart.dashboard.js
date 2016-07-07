@@ -66,19 +66,19 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         function formatChartDashboardStyle(){
             config.gaugeAxis = self.gaugeAxis;
             switch (self.config.chart_dashboard_type) {
-                case BICst.CHART_STYLE.HALF_DASHBOARD:
+                case BICst.CHART_SHAPE.HALF_DASHBOARD:
                     config.plotOptions.style = "pointer_semi";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
-                case BICst.CHART_STYLE.PERCENT_DASHBOARD:
+                case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                     config.plotOptions.style = "ring";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
-                case BICst.CHART_STYLE.PERCENT_SCALE_SLOT:
+                case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                     config.plotOptions.style = "slot";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
-                case BICst.CHART_STYLE.HORIZONTAL_TUBE:
+                case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                     config.plotOptions.style = "thermometer";
                     config.plotOptions.thermometerLayout = "horizontal";
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
@@ -86,7 +86,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.percentageLabel.align = "bottom";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
-                case BICst.CHART_STYLE.VERTICAL_TUBE:
+                case BICst.CHART_SHAPE.VERTICAL_TUBE:
                     config.plotOptions.style = "thermometer";
                     config.plotOptions.thermometerLayout = "vertical";
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
@@ -94,7 +94,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.percentageLabel.align = "left";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
-                case BICst.CHART_STYLE.NORMAL:
+                case BICst.CHART_SHAPE.NORMAL:
                 default:
                     config.plotOptions.style = "pointer";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
@@ -224,6 +224,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants, o = this.options;
         this.config = {
             dashboard_number_level: options.dashboard_number_level || c.NORMAL,

@@ -93,7 +93,7 @@ public class UserWidget {
             if (rowCount == 0){
                 v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
             } else {
-                v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
+                v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT);
             }
             for (int i = 0; i < v.size(); i++){
                 tempValue.put(rowCount, v.get(i));

@@ -202,9 +202,9 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 $sequenceSumLast.css("background", color);
 
                 //color
-                $topLeft.css("color", "white");
-                $topRight.css("color", "white");
-                $bottomRight.find("thead > tr").css("color", "white");
+                $topLeft.css("color", "#ffffff");
+                $topRight.css("color", "#ffffff");
+                $bottomRight.find("thead > tr").css("color", "#ffffff");
                 $sequenceHeader.css("color", "white");
                 $bottomLeftSum.css("color", "#1a1a1a");
                 $bottomRightSum.css("color", "#1a1a1a");
@@ -228,17 +228,17 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 $topRight.css("background", color);
                 $bottomRight.find(">thead > tr").css("background", color);
                 $sequenceHeader.css("background", color);
-                $bottomLeftSum.css("background", "white");
-                $bottomRightSum.css("background", "white");
-                $sequenceSum.css("background", "white");
+                $bottomLeftSum.css("background", "#ffffff");
+                $bottomRightSum.css("background", "#ffffff");
+                $sequenceSum.css("background", "#ffffff");
                 $bottomLeftSumLast.css("background", color);
                 $bottomRightSumLast.css("background", color);
                 $sequenceSumLast.css("background", color);
 
                 //color
-                $topLeft.css("color", "white");
-                $topRight.css("color", "white");
-                $bottomRight.find("thead > tr").css("color", "white");
+                $topLeft.css("color", "#ffffff");
+                $topRight.css("color", "#ffffff");
+                $bottomRight.find("thead > tr").css("color", "#ffffff");
                 $sequenceHeader.css("color", "white");
                 $bottomLeftSum.css("color", "#1a1a1a");
                 $bottomRightSum.css("color", "#1a1a1a");
@@ -258,13 +258,13 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 break;
             case BI.StyleTable.STYLE3:
                 //background
-                $topLeft.css("background", "white");
-                $topRight.css("background", "white");
-                $bottomRight.find(">thead > tr").css("background", "white");
-                $sequenceHeader.css("background", "white");
-                $bottomLeftSum.css("background", "white");
-                $bottomRightSum.css("background", "white");
-                $sequenceSum.css("background", "white");
+                $topLeft.css("background", "#ffffff");
+                $topRight.css("background", "#ffffff");
+                $bottomRight.find(">thead > tr").css("background", "#ffffff");
+                $sequenceHeader.css("background", "#ffffff");
+                $bottomLeftSum.css("background", "#ffffff");
+                $bottomRightSum.css("background", "#ffffff");
+                $sequenceSum.css("background", "#ffffff");
                 $bottomLeftSumLast.css("background", color);
                 $bottomRightSumLast.css("background", color);
                 $sequenceSumLast.css("background", color);
@@ -277,9 +277,9 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 $bottomLeftSum.css("color", "#1a1a1a");
                 $bottomRightSum.css("color", "#1a1a1a");
                 $sequenceSum.css("color", "#1a1a1a");
-                $bottomLeftSumLast.css("color", color);
-                $bottomRightSumLast.css("color", color);
-                $sequenceSumLast.css("color", color);
+                $bottomLeftSumLast.css("color", "#ffffff");
+                $bottomRightSumLast.css("color", "#ffffff");
+                $sequenceSumLast.css("color", "#ffffff");
 
                 //font weight
                 $bottomLeftSum.css("fontWeight", "bold");

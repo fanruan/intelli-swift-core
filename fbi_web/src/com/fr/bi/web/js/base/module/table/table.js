@@ -329,74 +329,80 @@ BI.Table = BI.inherit(BI.Widget, {
                 resizer = null;
             };
             var handle;
-            if (isRight) {
-                var options = {
-                    handles: "w",
-                    minWidth: 15,
-                    helper: "clone",
-                    start: function (event, ui) {
-                        createResizer(ui.size, ui.position);
-                        self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
-                    },
-                    resize: function (e, ui) {
-                        resizeResizer(ui.size, ui.position);
-                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
-                        e.stopPropagation();
-                        //return false;
-                    },
-                    stop: function (e, ui) {
-                        stopResizer();
-                        if (o.isResizeAdapt) {
-                            var increment = ui.size.width - (BI.sum(self.columnRight) + self.columnRight.length);
-                            o.columnSize[self.columnLeft.length] += increment;
-                        } else {
-                            self.setRegionColumnSize(["fill", ui.size.width]);
+            if (o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
+                if (isRight) {
+                    var options = {
+                        handles: "w",
+                        minWidth: 15,
+                        helper: "clone",
+                        start: function (event, ui) {
+                            createResizer(ui.size, ui.position);
+                            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
+                        },
+                        resize: function (e, ui) {
+                            resizeResizer(ui.size, ui.position);
+                            self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
+                            e.stopPropagation();
+                            //return false;
+                        },
+                        stop: function (e, ui) {
+                            stopResizer();
+                            if (o.isResizeAdapt) {
+                                var increment = ui.size.width - (BI.sum(self.columnRight) + self.columnRight.length);
+                                o.columnSize[self.columnLeft.length] += increment;
+                            } else {
+                                self.setRegionColumnSize(["fill", ui.size.width]);
+                            }
+                            self._resize();
+                            ui.element.css("left", "");
+                            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                         }
-                        self._resize();
-                        ui.element.css("left", "");
-                        self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
-                    }
-                };
-                self.bottomRight.element.resizable(options);
-                handle = $(".ui-resizable-handle", this.bottomRight.element).css("top", -1 * headerHeight);
-            } else {
-                var options = {
-                    handles: "e",
-                    minWidth: 15,
-                    helper: "clone",
-                    start: function (event, ui) {
-                        createResizer(ui.size, ui.position);
-                        self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
-                    },
-                    resize: function (e, ui) {
-                        resizeResizer(ui.size, ui.position);
-                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
-                        e.stopPropagation();
-                        //return false;
-                    },
-                    stop: function (e, ui) {
-                        stopResizer();
-                        if (o.isResizeAdapt) {
-                            var increment = ui.size.width - (BI.sum(self.columnLeft) + self.columnLeft.length);
-                            o.columnSize[self.columnLeft.length - 1] += increment;
-                        } else {
-                            self.setRegionColumnSize([ui.size.width, "fill"]);
+                    };
+                    self.bottomRight.element.resizable(options);
+                    handle = $(".ui-resizable-handle", this.bottomRight.element).css("top", -1 * headerHeight);
+                } else {
+                    var options = {
+                        handles: "e",
+                        minWidth: 15,
+                        helper: "clone",
+                        start: function (event, ui) {
+                            createResizer(ui.size, ui.position);
+                            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
+                        },
+                        resize: function (e, ui) {
+                            resizeResizer(ui.size, ui.position);
+                            self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
+                            e.stopPropagation();
+                            //return false;
+                        },
+                        stop: function (e, ui) {
+                            stopResizer();
+                            if (o.isResizeAdapt) {
+                                var increment = ui.size.width - (BI.sum(self.columnLeft) + self.columnLeft.length);
+                                o.columnSize[self.columnLeft.length - 1] += increment;
+                            } else {
+                                self.setRegionColumnSize([ui.size.width, "fill"]);
+                            }
+                            self._resize();
+                            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                         }
-                        self._resize();
-                        self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
-                    }
-                };
-                self.bottomLeft.element.resizable(options);
-                handle = $(".ui-resizable-handle", this.bottomLeft.element).css("top", -1 * headerHeight);
+                    };
+                    self.bottomLeft.element.resizable(options);
+                    handle = $(".ui-resizable-handle", this.bottomLeft.element).css("top", -1 * headerHeight);
+                }
             }
         }
 
+        var regionColumnSize = o.regionColumnSize;
+        if (o.freezeCols.length === 0 || o.freezeCols.length >= o.columnSize.length) {
+            regionColumnSize = isRight ? ['fill', 0] : [0, 'fill'];
+        }
         this.partitions = BI.createWidget(BI.extend({
             element: this.element
         }, BI.LogicFactory.createLogic("table", BI.extend({}, o.logic, {
             rows: 2,
             columns: 2,
-            columnSize: o.regionColumnSize || (isRight ? ['fill', leftWidth] : [leftWidth, 'fill']),
+            columnSize: regionColumnSize || (isRight ? ['fill', leftWidth] : [leftWidth, 'fill']),
             rowSize: [headerHeight, 'fill'],
             items: [[{
                 el: this.topLeft
@@ -1882,11 +1888,20 @@ BI.Table = BI.inherit(BI.Widget, {
     setRegionColumnSize: function (columnSize) {
         var self = this, o = this.options;
         o.regionColumnSize = columnSize;
-        if (o.isNeedFreeze) {
-            this.partitions.attr("columnSize", columnSize);
-            this.partitions.resize();
+        if (o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
+            if (o.isNeedFreeze) {
+                this.partitions.attr("columnSize", columnSize);
+                this.partitions.resize();
+            } else {
+                this.tableContainer.element.width(columnSize[0]);
+            }
         } else {
-            this.tableContainer.element.width(columnSize[0]);
+            if (o.isNeedFreeze) {
+                this.partitions.attr("columnSize", this._isRightFreeze() ? ['fill', 0] : [0, 'fill']);
+                this.partitions.resize();
+            } else {
+                this.tableContainer.element.width(columnSize[0]);
+            }
         }
     },
 

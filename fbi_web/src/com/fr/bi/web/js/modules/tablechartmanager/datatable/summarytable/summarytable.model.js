@@ -569,6 +569,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 if (self.targetIds.length === 0) {
                     tId = self.crossDimIds[i];
                 }
+
                 sum.push({
                     type: "bi.target_body_normal_cell",
                     text: v,
@@ -726,11 +727,32 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 if (BI.isNotNull(crossItem.children)) {
                     var tempPV = [];
                     if (BI.isNotNull(crossItem.dId)) {
-                        tempPV = pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]);
+                        if(BI.isNotEmptyArray(crossItem.values) ) {
+                            BI.each(crossItem.values, function(j, v){
+                                tempPV = pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]);
+                            });
+                            //显示列汇总的时候需要构造汇总
+                        } else {
+                            tempPV = pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]);
+                        }
                     }
                     parseCrossItem2Array(crossItem.children, pValues, tempPV);
+                    //汇总
+                    if(BI.isNotEmptyArray(crossItem.values)) {
+                        BI.each(crossItem.values, function(j, v) {
+                            pValues.push([{dId: crossItem.dId, value: [crossItem.text]}]);
+                        });
+                    }
                 } else if (BI.isNotNull(crossItem.dId)) {
-                    pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
+                    if(BI.isNotEmptyArray(crossItem.values)) {
+                        BI.each(crossItem.values, function(j, v) {
+                            pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
+                        });
+                    } else {
+                        // pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
+                        //最外层
+                        pValues.push([]);
+                    }
                 } else if (BI.isNotNull(crossItem.isSum)) {
                     pValues.push(pv);
                 }
