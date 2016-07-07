@@ -223,6 +223,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             chart_radar_type: options.chart_radar_type || c.NORMAL,

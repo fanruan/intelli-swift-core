@@ -213,16 +213,7 @@ public class BIPlate extends AbstractFSPlate {
     public String[] getPlateStyleFiles4WebClient() {
         return (String[]) ArrayUtils.addAll(ResourceHelper.getFoundationCss(), new String[]{
                 "/com/fr/bi/web/cross/css/bi.toolbar.add.css",
-                "/com/fr/bi/web/cross/css/bi.segment.css",
-                "/com/fr/bi/web/cross/css/bi.combo.css",
-                "/com/fr/bi/web/cross/css/bi.button.css",
-
-                "/com/fr/bi/web/cross/css/bi.button.css",
                 "/com/fr/bi/web/cross/css/bi.shared.table.css",
-                "/com/fr/bi/web/cross/css/bi.quarter.css",
-
-                "/com/fr/bi/web/cross/css/bi.label.css",
-                "/com/fr/bi/web/cross/css/bi.title.css",
 
                 "/com/fr/bi/web/cross/css/bi.extra.dialog.css",
                 "/com/fr/bi/web/cross/css/bi.edit.dialog.css",
@@ -233,6 +224,8 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/css/bi.template.list.css",
                 "/com/fr/bi/web/cross/css/bi.template.createdlist.css",
 
+                "/com/fr/bi/web/cross/css/theme/bi.chartpreview.css",
+                "/com/fr/bi/web/cross/css/theme/bi.stylesetting.css",
                 "/com/fr/bi/web/cross/css/theme/bi.theme.css",
 
                 "/com/fr/bi/web/cross/css/reporthangout/hangoutreport.plate.css",
@@ -254,6 +247,8 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",
                 "/com/fr/bi/web/cross/js/effect/allreports.js",
                 "/com/fr/bi/web/cross/js/bi.share.js",
+                "/com/fr/bi/web/cross/js/theme/bi.chartpreview.js",
+                "/com/fr/bi/web/cross/js/theme/bi.stylesetting.js",
                 "/com/fr/bi/web/cross/js/theme/bi.theme.js",
                 "/com/fr/bi/web/cross/js/theme/bi.widget.newanalysis.js",
                 "/com/fr/bi/web/cross/js/bi.toolbar.add.js",

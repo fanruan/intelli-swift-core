@@ -21,8 +21,13 @@ BI.Chart = BI.inherit(BI.Pane, {
         var width = 0;
         var height = 0;
 
-        BI.Resizers.add(this.getName(), function () {
-            if (self.element.is(":visible")) {
+        this._resizer = BI.debounce(function () {
+            if (self.element.is(":visible") && self.vanCharts) {
+                self.vanCharts.resize();
+            }
+        }, 0);
+        BI.Resizers.add(this.getName(), function (e) {
+            if (BI.isWindow(e.target) && self.element.is(":visible")) {
                 var newW = self.element.width(), newH = self.element.height();
                 if (newW > 0 && newH > 0 && (width !== newW || height !== newH)) {
                     self.vanCharts.resize();
@@ -39,11 +44,11 @@ BI.Chart = BI.inherit(BI.Pane, {
 
     resize: function () {
         if (this.element.is(":visible") && this.isSetOptions === true) {
-            this.vanCharts && BI.debounce(this.vanCharts.resize, 30);
+            this.vanCharts && this._resizer();
         }
     },
 
-    magnify: function(){
+    magnify: function () {
         this.vanCharts.charts[0].refreshRestore();
     },
 
