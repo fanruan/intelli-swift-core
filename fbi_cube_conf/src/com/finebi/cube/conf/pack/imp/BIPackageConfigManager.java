@@ -263,6 +263,16 @@ public class BIPackageConfigManager implements Release {
         return jo;
     }
 
+    public JSONObject createAnalysisPackageJSON() throws Exception {
+        JSONObject jo = new JSONObject();
+        Iterator<Map.Entry<Long, BIBusinessPackage>> iterator = analysisSortPackages();
+        while (iterator.hasNext()) {
+            BIBusinessPackage pack = iterator.next().getValue();
+            jo.put(pack.getID().getIdentity(), pack.createJSON());
+        }
+        return jo;
+    }
+
     private Iterator<Map.Entry<Long, BIBusinessPackage>> sortPackages() {
         Map<Long, BIBusinessPackage> packageMap = new TreeMap<Long, BIBusinessPackage>(new Comparator<Long>() {
             @Override
@@ -271,6 +281,19 @@ public class BIPackageConfigManager implements Release {
             }
         });
         for (BIBusinessPackage pack : currentPackageManager.getAllPackages()) {
+            packageMap.put(pack.getPosition(), pack);
+        }
+        return packageMap.entrySet().iterator();
+    }
+
+    private Iterator<Map.Entry<Long, BIBusinessPackage>> analysisSortPackages() {
+        Map<Long, BIBusinessPackage> packageMap = new TreeMap<Long, BIBusinessPackage>(new Comparator<Long>() {
+            @Override
+            public int compare(Long o1, Long o2) {
+                return (o2 - o1) > 0 ? -1 : 1;
+            }
+        });
+        for (BIBusinessPackage pack : analysisPackageManager.getAllPackages()) {
             packageMap.put(pack.getPosition(), pack);
         }
         return packageMap.entrySet().iterator();

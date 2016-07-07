@@ -86,7 +86,7 @@ public class ResourceHelper {
         List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
-            JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
+            JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
             //管理员
             if (manageId == userId) {
                 packages = allPacks;
@@ -1535,7 +1535,7 @@ public class ResourceHelper {
 
                 /**
                  * 切片
-                */
+                 */
 
                 //tablechartmanager
                 "com/fr/bi/web/js/aspects/tablechartmanager/aspect.tablechartmanager.js",
@@ -1855,7 +1855,7 @@ public class ResourceHelper {
 
                 /**
                  * components
-                */
+                 */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
@@ -1884,16 +1884,16 @@ public class ResourceHelper {
         };
     }
 
-    public static String [] getThirdCss() {
-        return new String[] {
+    public static String[] getThirdCss() {
+        return new String[]{
                 "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
                 "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
                 "com/fr/bi/web/css/base/third/leaflet.css",
         };
     }
 
-    public static String [] getThirdJs() {
-        return new String[] {
+    public static String[] getThirdJs() {
+        return new String[]{
                 "com/fr/bi/web/js/third/jquery.mousewheel.js",
                 "com/fr/bi/web/js/third/jquery.mCustomScrollbar.js",
                 "com/fr/bi/web/js/third/jquery.ui.core.js",
@@ -1905,8 +1905,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/third/jquery.ui.droppable.js",
                 "com/fr/bi/web/js/third/jquery.ui.sortable.js",
                 "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/es5-sham.js",
+                "com/fr/bi/web/js/third/raphael.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
-                "com/fr/bi/web/js/third/leaflet.js",
+                "com/fr/bi/web/js/third/leaflet.js"
         };
     }
 
@@ -2210,7 +2212,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                */
+                 */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2264,7 +2266,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                */
+                 */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2572,7 +2574,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                */
+                 */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 
@@ -2623,7 +2625,11 @@ public class ResourceHelper {
     }
 
     public static String[] getFoundationCss() {
-        return getBaseCss();
+        String[] base = getBaseCss();
+        String[] third = new String[]{
+                "com/fr/bi/web/css/base/third/leaflet.css",
+        };
+        return (String[]) ArrayUtils.addAll(third, base);
     }
 
     /**
@@ -2632,6 +2638,12 @@ public class ResourceHelper {
      * @return JS文件数组
      */
     public static String[] getFoundationJs() {
-        return getBaseJs();
+        String[] base = getBaseJs();
+        String[] third = new String[]{
+                "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/js/third/leaflet.js",
+        };
+        return (String[]) ArrayUtils.addAll(third, base);
     }
 }

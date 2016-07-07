@@ -205,6 +205,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     }
 
+    @Override
+    public JSONObject createAnalysisPackageJSON(long userId, Locale locale) throws Exception {
+        return getUserAnalysisBusiPackManager(userId).createJSON(locale);
+    }
+
     private void setEdit(JSONObject jo) throws Exception {
         if (jo.has(Constants.PACK_ID)){
             JSONObject pack = jo.getJSONObject(Constants.PACK_ID);
