@@ -43,6 +43,12 @@ public interface BITableRelationConfigurationProvider {
     Set<BITableRelation> getAllTableRelation(long userId);
 
     /**
+     * 获得所有生成过cube的关联
+     * @param userId
+     * @return
+     */
+    Set<BITableRelation> getAllOldTableRelation(long userId);
+    /**
      * 获得一个表与关联集合的MAP，并且该表是集合中关联的主键
      *
      * @param userId 用户ID

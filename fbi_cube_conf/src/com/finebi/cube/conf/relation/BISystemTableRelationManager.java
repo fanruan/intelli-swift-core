@@ -1,7 +1,7 @@
 package com.finebi.cube.conf.relation;
 
-import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.conf.relation.path.BITableContainer;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
@@ -53,6 +53,11 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     public Set<BITableRelation> getAllTableRelation(long userId) {
         return getUserGroupConfigManager(userId).getAllTableRelation();
 
+    }
+
+    @Override
+    public Set<BITableRelation> getAllOldTableRelation(long userId) {
+        return getUserGroupConfigManager(userId).getAllOldTableRelation();
     }
 
     @Override
@@ -220,7 +225,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         JSONObject jo = new JSONObject();
         Set<BusinessTable> primaryTables = new HashSet<BusinessTable>();
         Set<BusinessTable> foreignTables = new HashSet<BusinessTable>();
-        for (BITableRelation relation : getAllTableRelation(userId)) {
+        for (BITableRelation relation : getAllOldTableRelation(userId)) {
             primaryTables.add(relation.getPrimaryTable());
             foreignTables.add(relation.getForeignTable());
         }
@@ -274,6 +279,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     public IRelationContainer getForeignRelation(long userId, BusinessTable table) throws BITableAbsentException {
         return getUserGroupConfigManager(userId).getForeignRelation(table);
     }
+
     public boolean isRelationGenerated(long userId, BITableRelation tableRelation) throws BITableAbsentException, BIRelationAbsentException {
         return getUserGroupConfigManager(userId).isRelationGenerated(tableRelation);
     }
