@@ -26,6 +26,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
 
         this.tab = BI.createWidget({
             type: "bi.tab",
+            cls: "chart-tab",
             cardCreator: BI.bind(this._createTabs, this)
         });
 
@@ -330,7 +331,6 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     tooltip: self.model.getToolTip(type),
                     lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
                 });
-
                 selectedTab.populate(data, op, types);
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
