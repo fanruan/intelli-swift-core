@@ -741,8 +741,8 @@
 
         getWSConditionButtonsByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.condition_buttons) ? ws.condition_buttons :
-                []
+            return BI.isNotNull(ws.style_conditions) ? ws.style_conditions :
+                BICst.STYLE_CONDITIONS
         },
 
         getWSDashboardNumLevelByID: function (wid) {
@@ -2009,7 +2009,7 @@
 
             //钻取条件  对于交叉表，要考虑的不仅仅是used，还有行表头与列表头之间的钻取问题
             var drill = this.getDrillByID(wid);
-            if (BI.isNotNull(drill)) {
+            if (BI.isNotNull(drill) && widget.type !== BICst.WIDGET.MAP) {
                 BI.each(drill, function (drId, drArray) {
                     if (drArray.length === 0) {
                         return;
@@ -2201,7 +2201,7 @@
             var wWid = value.wId, se = value.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
-                if (BI.isNull(wWValue)) {
+                if (BI.isNull(wWValue) || BI.isEmptyObject(wWValue)) {
                     return;
                 }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {

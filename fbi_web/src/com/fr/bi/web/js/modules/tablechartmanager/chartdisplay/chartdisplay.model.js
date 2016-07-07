@@ -56,7 +56,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                     x: item.n,
                                     y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
                                     targetIds: [targetIds[idx]],
-                                    dId: self.dimIds[currentLayer - 1]
+                                    dId: self.dimIds[currentLayer - 1],
+                                    drillDid: self.dimIds[currentLayer]
                                 };
                         }
                     }else{
@@ -65,7 +66,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
                             targetIds: [targetIds[idx]],
                             settings: BI.Utils.getDimensionSettingsByID(targetIds[idx]),
-                            dId: self.dimIds[currentLayer - 1]
+                            dId: self.dimIds[currentLayer - 1],
+                            drillDid: self.dimIds[currentLayer]
                         };
                     }
                     if(BI.has(item, "c")){

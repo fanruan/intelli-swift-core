@@ -17,7 +17,7 @@ import com.fr.json.JSONObject;
  */
 public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCalculatorOperator {
     @BICoreField
-    private static final String XML_TAG="CorrespondMonthPeriodRowCalculatorOperator";
+    private String XML_TAG="CorrespondMonthPeriodRowCalculatorOperator";
     @BICoreField
     private BIKey monthKey;
 

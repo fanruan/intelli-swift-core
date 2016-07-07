@@ -68,12 +68,15 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             switch (self.config.chart_dashboard_type) {
                 case BICst.CHART_STYLE.HALF_DASHBOARD:
                     config.plotOptions.style = "pointer_semi";
+                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
                 case BICst.CHART_STYLE.PERCENT_DASHBOARD:
                     config.plotOptions.style = "ring";
+                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
                 case BICst.CHART_STYLE.PERCENT_SCALE_SLOT:
                     config.plotOptions.style = "slot";
+                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
                 case BICst.CHART_STYLE.HORIZONTAL_TUBE:
                     config.plotOptions.style = "thermometer";
@@ -81,7 +84,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.valueLabel.align = "bottom";
                     config.plotOptions.percentageLabel.align = "bottom";
-                    config.plotOptions.layout = "vertical";
+                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
                 case BICst.CHART_STYLE.VERTICAL_TUBE:
                     config.plotOptions.style = "thermometer";
@@ -89,11 +92,12 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.valueLabel.align = "left";
                     config.plotOptions.percentageLabel.align = "left";
-                    config.plotOptions.layout = "vertical";
+                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
                 case BICst.CHART_STYLE.NORMAL:
                 default:
                     config.plotOptions.style = "pointer";
+                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
             }
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
@@ -163,6 +167,24 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             }
             return unit === "" ? unit : "(" + unit + ")";
         }
+
+        function getBandsStyles (styles , change) {
+            var bands = [];
+            switch (change) {
+                case BICst.SCALE_SETTING.AUTO:
+                    break;
+                case BICst.SCALE_SETTING.CUSTOM:
+                    BI.each(styles , function (idx , style) {
+                        bands.push({
+                            color: style.color,
+                            from: style.range.min,
+                            to: style.range.max
+                        })
+                    });
+                    return bands
+                    break;
+            }
+        }
     },
 
     _formatItems: function(items){
@@ -207,7 +229,9 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             dashboard_number_level: options.dashboard_number_level || c.NORMAL,
             dashboard_unit: options.dashboard_unit || "",
             chart_dashboard_type: options.chart_dashboard_type || c.NORMAL,
-            number_of_pointer: options.number_of_pointer || c.ONE_POINTER
+            number_of_pointer: options.number_of_pointer || c.ONE_POINTER,
+            bands_styles: options.style_conditions,
+            auto_custom_style: options.auto_custom
         };
         o.items = this._formatItems(items);
         var types = [];

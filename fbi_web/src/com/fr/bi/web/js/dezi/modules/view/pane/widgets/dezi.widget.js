@@ -139,7 +139,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     _onClickChart: function (obj) {
-        this.chartDrill.populate(obj);
+        if(BI.has(obj, "clicked")){
+            this.model.set(obj);
+        }else{
+            this.chartDrill.populate(obj);
+        }
     },
 
     _createTools: function () {
