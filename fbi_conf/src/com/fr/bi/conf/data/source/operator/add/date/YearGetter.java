@@ -14,9 +14,9 @@ public class YearGetter implements DateGetter {
 	public static final YearGetter INSTANCE = new YearGetter();
 
 	@Override
-	public int get(Long v) {
+	public Integer get(Long v) {
 		if(v == null){
-			return 0;
+			return null;
 		}
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(v);
