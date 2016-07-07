@@ -3,6 +3,10 @@ package com.fr.bi.web.report;
 
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.report.services.*;
+import com.fr.bi.web.report.services.authuser.BIGetAllAuthUserListAction;
+import com.fr.bi.web.report.services.authuser.BIGetAuthUserListAction;
+import com.fr.bi.web.report.services.authuser.BIGetLimitBIUserCountAction;
+import com.fr.bi.web.report.services.authuser.BISetAuthUserAction;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
 import com.fr.fs.privilege.auth.FSAuthentication;
@@ -47,7 +51,12 @@ public class Service4BIReport implements Service {
             new BITemplateHangoutAction(),
             new BIGetAllHangoutReportsAction(),
             new BIReportHangout2PlateAction(),
-            new BIGetUploadedImageAction()
+            new BIGetUploadedImageAction(),
+
+            new BIGetAuthUserListAction(),
+            new BIGetAllAuthUserListAction(),
+            new BIGetLimitBIUserCountAction(),
+            new BISetAuthUserAction()
 
     };
 

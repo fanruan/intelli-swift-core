@@ -74,7 +74,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         res.drilldown = {};
                         res.drilldown.series = self._formatDataForMap(item, currentLayer);
                         res.drilldown.geo = {
-                            data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]]
+                            data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]],
+                            geoName: res.x
                         };
                     }
                     return res;
@@ -100,7 +101,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 BI.each(left.c, function (idx, obj) {
                     var x = obj.n;
                     BI.each(obj.s.c[id].s, function(i, o){
-                        if(BI.isNotNull(o)){
+                        if(BI.isNotNull(o) && BI.isNotNull(x)){
                             data.push({
                                 "x": x,
                                 "z": tObj.n,
@@ -579,7 +580,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             });
             if(type === BICst.WIDGET.MAP){
-                options.geo = {data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]}
+                options.geo = {
+                    data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
+                    geoName: BICst.MAP_TYPE_NAME[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                }
             }
             if(type === BICst.WIDGET.GIS_MAP){
                 options.geo = {
