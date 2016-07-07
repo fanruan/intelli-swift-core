@@ -293,6 +293,7 @@ BI.LineChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",

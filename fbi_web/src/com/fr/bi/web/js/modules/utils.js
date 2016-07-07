@@ -57,6 +57,13 @@
             return Data.SharingPool.get("reg", "supportSimpleControl");
         },
 
+        getDefaultChartConfig: function () {
+            if (!this.defaultChartConfig) {
+                this.defaultChartConfig = Data.Req.reqGetChartPreStyle()
+            }
+            return this.defaultChartConfig;
+        },
+
         getAllGroupedPackagesTreeJSON: function () {
             var groups = Pool.groups, packages = Pool.packages;
             var packStructure = [], groupedPacks = [];
@@ -638,15 +645,47 @@
         },
 
         getWSChartColorByID: function (wid) {
+            var self = this;
+
+            function getDefaultColor() {
+                var defaultChartConfig = self.getDefaultChartConfig();
+                var type = defaultChartConfig.defaultColor;
+                if (BI.isKey(type)) {
+                    var finded = BI.find(defaultChartConfig.styleList, function (i, style) {
+                        return style.value === type;
+                    });
+                    if (finded) {
+                        return finded.colors;
+                    }
+                }
+                if (defaultChartConfig.styleList.length > 0) {
+                    return defaultChartConfig.styleList[0].colors;
+                }
+            }
+
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_color) ? ws.chart_color :
-                BICst.DEFAULT_CHART_SETTING.chart_color;
+            return ws.chart_color
+                || getDefaultColor()
+                || BICst.DEFAULT_CHART_SETTING.chart_color;
         },
 
         getWSChartStyleByID: function (wid) {
+            var self = this;
+
+            function getChartStyle() {
+                var defaultChartConfig = self.getDefaultChartConfig();
+                return defaultChartConfig.chartStyle;
+            }
+
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_style) ? ws.chart_style :
-                BICst.DEFAULT_CHART_SETTING.chart_style;
+            var chartStyle;
+            if (BI.isNotNull(ws.chart_style)) {
+                return ws.chart_style;
+            }
+            if (BI.isNotNull(chartStyle = getChartStyle())) {
+                return chartStyle;
+            }
+            return BICst.DEFAULT_CHART_SETTING.chart_style;
         },
 
         getWSChartLineTypeByID: function (wid) {

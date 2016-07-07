@@ -62,6 +62,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         this.iconButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "filter-font",
+            title: BI.i18nText("BI-Modify_Filter_Conditions"),
             height: this.constants.DIMENSION_BUTTON_HEIGHT
         });
 

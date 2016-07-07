@@ -172,6 +172,7 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
     },
 
     _getFieldsStructureByTableId: function (tableId) {
+        var translations = this.model.getTranslations();
         var fieldStructure = [];
         var tables = BI.Utils.getCurrentPackageTables4Conf();
         var fieldType = this.model.getFieldTypeByFieldId(this.model.getFieldId());
@@ -186,7 +187,7 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
                     pId: tableId,
                     type: "bi.select_data_level0_item",
                     fieldType: fieldType,
-                    text: field.field_name,
+                    text: translations[field.id] || field.field_name,
                     value: {
                         field_id: field.id
                     }
@@ -203,7 +204,7 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
                                     pId: tableId,
                                     type: "bi.select_data_level0_item",
                                     fieldType: fieldType,
-                                    text: field.field_name,
+                                    text: translations[field.id] || field.field_name,
                                     value: {
                                         field_id: field.id
                                     }

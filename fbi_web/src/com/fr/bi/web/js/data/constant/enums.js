@@ -393,7 +393,7 @@ BICst.TABLE_STYLE = {
     STYLE3: 3     //内容间隔色
 };
 
-BICst.CHART_STYLE = {
+BICst.CHART_SHAPE = {
     //类型
     NORMAL: 1,      //普通形态
     RIGHT_ANGLE: 2,        //直角线形
@@ -408,14 +408,13 @@ BICst.CHART_STYLE = {
     VERTICAL_TUBE: 12,      //竖起来的试管型仪表盘
     HORIZONTAL_TUBE: 13,//横过来的试管型仪表盘
     BAIDU: 14,           //百度地图
-    GOOGLE: 15,          //谷歌地图
+    GOOGLE: 15          //谷歌地图
+};
 
+BICst.CHART_STYLE = {
     //风格
-    STYLE_NORMAL: 21,       //普通风格
-    STYLE_GRADUAL: 22,      //渐变
-    STYLE_TRANSPARENT: 23,   //透明
-    STYLE_GRADUAL_HIGHLIGHT: 24, //渐变高亮
-    STYLE_3D: 25            //3d
+    STYLE_NORMAL: 1,       //普通风格
+    STYLE_GRADUAL: 2      //渐变
 };
 
 BICst.SCALE_SETTING = {

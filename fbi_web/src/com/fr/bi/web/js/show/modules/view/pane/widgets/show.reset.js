@@ -37,6 +37,7 @@ BIShow.ResetView = BI.inherit(BI.View, {
     },
 
     _resetAllControlValues: function () {
+        Data.SharingPool.put("control_filters", []);
         BI.each(BI.Utils.getAllWidgetIDs(), function (i, wid) {
             BI.Broadcasts.send(BICst.BROADCAST.RESET_PREFIX + wid);
         });
