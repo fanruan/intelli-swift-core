@@ -4,6 +4,7 @@ import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
 import com.finebi.datasource.sql.criteria.internal.expression.BinaryArithmeticOperation;
 import com.finebi.datasource.sql.criteria.internal.expression.CoalesceExpression;
+import com.finebi.datasource.sql.criteria.internal.expression.ConcatExpression;
 import com.finebi.datasource.sql.criteria.internal.expression.PathTypeExpression;
 import com.finebi.datasource.sql.criteria.internal.expression.function.BasicFunctionExpression;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractFromImpl;
@@ -27,6 +28,11 @@ public class RenderFactoryEngineAdapter implements RenderFactory {
 
     @Override
     public Object getCoalesceExpressionLiteralRender(CoalesceExpression coalesceExpression, String driverTag) {
+        return null;
+    }
+
+    @Override
+    public Object getConcatExpressionLiteralRender(ConcatExpression concatExpression, String driverTag) {
         return null;
     }
 
