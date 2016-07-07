@@ -140,6 +140,12 @@ public class BIPackageConfigManager implements Release {
         }
     }
 
+    public Set<BIBusinessPackage> getAnalysisAllPackages() {
+        synchronized (analysisPackageManager) {
+            return analysisPackageManager.getAllPackages();
+        }
+    }
+
 
     public void renamePack(BIPackageID id, BIPackageName newName) throws BIPackageAbsentException {
         synchronized (currentPackageManager) {
@@ -376,4 +382,15 @@ public class BIPackageConfigManager implements Release {
         }
         return result;
     }
+
+    public Set<BusinessTable> getAnalysisAllTables() {
+        Set<BusinessTable> result = new HashSet<BusinessTable>();
+        Iterator<BIBusinessPackage> it = getAnalysisAllPackages().iterator();
+        while (it.hasNext()) {
+            result.addAll(it.next().getBusinessTables());
+        }
+        return result;
+    }
+
+
 }

@@ -18,6 +18,7 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +37,8 @@ public class BIUserTableRelationManager implements Release {
     protected BITableRelationAnalysisService currentAnalyserHandler;
     protected BIDisablePathsManager disablePathsManager;
     protected BITableRelationshipService tableRelationshipService;
+    protected BITableRelationshipService analysisTableRelationShipService;
+    protected Boolean analysisStatus = false;
     protected BIUser biUser;
 
     public BITableRelationshipService getTableRelationshipService() {
@@ -48,7 +51,25 @@ public class BIUserTableRelationManager implements Release {
         currentAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);
         disablePathsManager = new BIDisablePathsManager();
         tableRelationshipService = new BITableRelationshipManager(currentAnalyserHandler);
+        initAnalysisTableRelationShipService();
     }
+
+    protected void initAnalysisTableRelationShipService() {
+        Iterator<BITableRelation> iterator = oldAnalyserHandler.getRelationContainer().getContainer().iterator();
+        BITableRelationAnalysisService copyAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);
+        while (iterator.hasNext()) {
+            BITableRelation relation = iterator.next();
+            BITableRelation copyRelation = new BITableRelation(relation.getPrimaryTable().getID().getIdentityValue(), relation.getPrimaryField().getFieldName(), relation.getForeignTable().getID().getIdentityValue(), relation.getForeignField().getFieldName());
+            try {
+                copyAnalyserHandler.addRelation(copyRelation);
+            } catch (BIRelationDuplicateException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                continue;
+            }
+        }
+        this.analysisTableRelationShipService = new BITableRelationshipManager(copyAnalyserHandler);
+    }
+
 
     public Set<BITableRelation> getAllTableRelation() {
         return currentAnalyserHandler.getRelationContainer().getContainer();
@@ -79,6 +100,10 @@ public class BIUserTableRelationManager implements Release {
 
     public BITableContainer getCommonSeniorTables(BITablePair tablePair) throws BITableAbsentException {
         return tableRelationshipService.getCommonSeniorTables(tablePair);
+    }
+
+    public BITableContainer getAnalysisCommonSeniorTables(BITablePair tablePair) throws BITableAbsentException {
+        return analysisTableRelationShipService.getCommonSeniorTables(tablePair);
     }
 
 
@@ -133,10 +158,13 @@ public class BIUserTableRelationManager implements Release {
 
     public void finishGenerateCubes(Set<BITableRelation> connectionSet) {
         synchronized (oldAnalyserHandler) {
-//            oldAnalyserHandler.clear();
+            oldAnalyserHandler.clear();
+            analysisTableRelationShipService.clear();
             for (BITableRelation relation : connectionSet) {
                 try {
                     oldAnalyserHandler.addRelation(relation);
+                    analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
+                    analysisTableRelationShipService.addBITableRelation(relation);
                 } catch (BIRelationDuplicateException e) {
                     BILogger.getLogger().error(e.getMessage());
                 }
@@ -160,6 +188,22 @@ public class BIUserTableRelationManager implements Release {
         return tableRelationshipService.getAllPath(new BITablePair(primaryTable, juniorTable));
     }
 
+    public Set<BITableRelationPath> getAnalysisAllPath(BusinessTable juniorTable, BusinessTable primaryTable)
+            throws BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        return analysisTableRelationShipService.getAllPath(new BITablePair(primaryTable, juniorTable));
+    }
+
+    public Set<BITableRelationPath> getAnalysisAllAvailablePath(BusinessTable juniorTable, BusinessTable primaryTable) throws
+            BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        Set<BITableRelationPath> set = new HashSet<BITableRelationPath>();
+        for (BITableRelationPath path : getAnalysisAllPath(juniorTable, primaryTable)) {
+            if (!isPathDisable(path)) {
+                set.add(path);
+            }
+        }
+        return set;
+    }
+
 
     public Set<BITableRelationPath> getAllAvailablePath(BusinessTable juniorTable, BusinessTable primaryTable) throws
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
@@ -176,6 +220,17 @@ public class BIUserTableRelationManager implements Release {
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         Set<BITableRelationPath> set = new HashSet<BITableRelationPath>();
         for (BITableRelationPath path : getAllPath(juniorTable, primaryTable)) {
+            if (isPathDisable(path)) {
+                set.add(path);
+            }
+        }
+        return set;
+    }
+
+    public Set<BITableRelationPath> getAnalysisAllUnavailablePath(BusinessTable juniorTable, BusinessTable primaryTable) throws
+            BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        Set<BITableRelationPath> set = new HashSet<BITableRelationPath>();
+        for (BITableRelationPath path : getAnalysisAllPath(juniorTable, primaryTable)) {
             if (isPathDisable(path)) {
                 set.add(path);
             }
