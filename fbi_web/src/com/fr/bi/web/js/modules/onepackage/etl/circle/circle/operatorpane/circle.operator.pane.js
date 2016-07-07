@@ -102,6 +102,7 @@ BI.CircleOperatorPane = BI.inherit(BI.LoadingPane, {
                 divide_length: ""
             }), function(res){
                 self._setLevelEditorVisible(res.size);
+                self.levelLengthEditor.isVisible() && self.levelLengthEditor.setValue(res.size);
                 self.loaded();
                 self._checkValid();
             });
