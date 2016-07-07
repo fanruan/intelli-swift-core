@@ -3,7 +3,7 @@ package com.finebi.datasource.api;
 
 import com.finebi.datasource.api.criteria.*;
 import com.finebi.datasource.api.metamodel.AttributeType;
-import com.finebi.datasource.api.metamodel.EntityManager;
+import com.finebi.datasource.api.metamodel.EntityTypeManager;
 import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.api.metamodel.PlainTable;
 import com.finebi.datasource.sql.criteria.AttributeTypeImpl;
@@ -29,7 +29,7 @@ import org.easymock.EasyMock;
 public class SelectionTest extends TestCase {
 
     private AspireContext context = new AspireContextImpl(new RenderFactoryDebug());
-    private EntityManager manager = new EntityManagerImpl(context);
+    private EntityTypeManager manager = new EntityTypeManagerImpl(context);
 
     /**
      * 普通查询

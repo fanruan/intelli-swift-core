@@ -4,7 +4,7 @@ import com.finebi.datasource.api.criteria.CriteriaBuilder;
 import com.finebi.datasource.api.criteria.CriteriaQuery;
 import com.finebi.datasource.api.criteria.Root;
 import com.finebi.datasource.api.metamodel.AttributeType;
-import com.finebi.datasource.api.metamodel.EntityManager;
+import com.finebi.datasource.api.metamodel.EntityTypeManager;
 import com.finebi.datasource.api.metamodel.EntityType;
 import com.finebi.datasource.api.metamodel.PlainTable;
 import com.finebi.datasource.sql.criteria.AttributeTypeImpl;
@@ -32,7 +32,7 @@ import java.sql.SQLException;
 public class SelectionFineEngineTest extends TestCase {
 
     private AspireContext context = new AspireContextImpl(new RenderFactoryEngineAdapter());
-    private EntityManager manager = new EntityManagerImpl(context);
+    private EntityTypeManager manager = new EntityTypeManagerImpl(context);
 
     /**
      * Detail:
@@ -42,7 +42,7 @@ public class SelectionFineEngineTest extends TestCase {
     public void testSingleSelection() {
         try {
             AspireContext context = new AspireContextImpl();
-            EntityManager manager = new EntityManagerImpl(context);
+            EntityTypeManager manager = new EntityTypeManagerImpl(context);
             CriteriaBuilder cb = manager.getCriteriaBuilder();
             CriteriaQuery<PlainTable> query = cb.createQuery();
             Root root = query.from(getEntity());

@@ -36,6 +36,8 @@ public class BIUserTableRelationManager implements Release {
     protected BITableRelationAnalysisService currentAnalyserHandler;
     protected BIDisablePathsManager disablePathsManager;
     protected BITableRelationshipService tableRelationshipService;
+    protected BITableRelationshipService analysisTableRelationShipService;
+    protected Boolean analysieStatus = true;
     protected BIUser biUser;
 
     public BITableRelationshipService getTableRelationshipService() {
@@ -48,6 +50,7 @@ public class BIUserTableRelationManager implements Release {
         currentAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);
         disablePathsManager = new BIDisablePathsManager();
         tableRelationshipService = new BITableRelationshipManager(currentAnalyserHandler);
+        analysisTableRelationShipService = new BITableRelationshipManager(currentAnalyserHandler);
     }
 
     public Set<BITableRelation> getAllTableRelation() {
@@ -85,7 +88,6 @@ public class BIUserTableRelationManager implements Release {
     public void addDisableRelations(BITableRelationPath disablePath) throws BITablePathDuplicationException {
         disablePathsManager.addDisabledPath(disablePath);
     }
-
 
 
     public void removeDisableRelations(BITableRelationPath disablePath) throws BITablePathAbsentException {
@@ -130,9 +132,11 @@ public class BIUserTableRelationManager implements Release {
     public void finishGenerateCubes(Set<BITableRelation> connectionSet) {
         synchronized (oldAnalyserHandler) {
             oldAnalyserHandler.clear();
+            analysisTableRelationShipService.clear();
             for (BITableRelation relation : connectionSet) {
                 try {
                     oldAnalyserHandler.addRelation(relation);
+                    analysisTableRelationShipService.addBITableRelation(relation);
                 } catch (BIRelationDuplicateException e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 }
@@ -150,12 +154,22 @@ public class BIUserTableRelationManager implements Release {
 
     }
 
+    public void analyStatus() {
+        analysieStatus = true;
+    }
+
+    public void confStatus() {
+        analysieStatus = false;
+    }
 
     public Set<BITableRelationPath> getAllPath(BusinessTable juniorTable, BusinessTable primaryTable)
             throws BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
-        return tableRelationshipService.getAllPath(new BITablePair(primaryTable, juniorTable));
+        return choseTableRelationshipService().getAllPath(new BITablePair(primaryTable, juniorTable));
     }
 
+    private BITableRelationshipService choseTableRelationshipService() {
+        return this.analysieStatus ? analysisTableRelationShipService : tableRelationshipService;
+    }
 
     public Set<BITableRelationPath> getAllAvailablePath(BusinessTable juniorTable, BusinessTable primaryTable) throws
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
