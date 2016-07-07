@@ -127,7 +127,8 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
             }
         });
 
-        this.buttongroup.removeItemAt(index)
+        this.buttongroup.removeItemAt(index);
+        this._checkButtonEnable()
     },
 
     createItems: function (items) {
