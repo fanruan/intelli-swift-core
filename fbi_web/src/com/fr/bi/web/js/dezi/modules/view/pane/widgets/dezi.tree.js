@@ -183,17 +183,10 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
     },
 
     change: function (changed, prev, context, options) {
-        if (options.notrefresh === true) {
-            return;
-        }
         if (BI.has(changed, "bounds")) {
             this._refreshLayout();
         }
 
-        if (BI.has(changed, "detail")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
-        }
-        
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
