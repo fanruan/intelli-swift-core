@@ -46,7 +46,8 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
                 self.taskAdding = true;
                 BI.Utils.generateCube(function (data) {
                     self.taskAdding = false;
-                })
+                });
+                self._createCheckInterval();
             }
         });
 
@@ -66,6 +67,8 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
                 if (isGenerating === false && self.taskAdding ==false) {
                     self.immediateButton.setEnable(true);
                     self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
+                    //清掉interval了
+                    clearInterval(self.interval);
                 } else {
                     self.immediateButton.setEnable(false);
                     self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));

@@ -21,7 +21,8 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         BI.ChartDisplay.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.ChartDisplayModel({
-            wId: o.wId
+            wId: o.wId,
+            status: o.status
         });
 
         this.tab = BI.createWidget({

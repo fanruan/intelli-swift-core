@@ -10,9 +10,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     _init: function () {
         BI.SummaryTable.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.model = new BI.SummaryTableModel({
-            wId: this.options.wId
+            wId: o.wId,
+            status: o.status
         });
         this._createTable();
         this.errorPane = BI.createWidget({
