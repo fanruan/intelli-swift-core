@@ -54,6 +54,10 @@ public class BIUserTableRelationManager implements Release {
         return currentAnalyserHandler.getRelationContainer().getContainer();
     }
 
+    public Set<BITableRelation> getAllOldTableRelation() {
+        return oldAnalyserHandler.getRelationContainer().getContainer();
+    }
+
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -62,7 +66,8 @@ public class BIUserTableRelationManager implements Release {
 
     @Override
     public void clear() {
-        oldAnalyserHandler.clear();
+        // TODO: 16/7/5 分析关联只显示可用关联需求需要保留之前生成过cube的关联
+//        oldAnalyserHandler.clear();
         currentAnalyserHandler.clear();
         tableRelationshipService.clear();
     }
@@ -128,12 +133,12 @@ public class BIUserTableRelationManager implements Release {
 
     public void finishGenerateCubes(Set<BITableRelation> connectionSet) {
         synchronized (oldAnalyserHandler) {
-//            oldAnalyserHandler.clear();
+            oldAnalyserHandler.clear();
             for (BITableRelation relation : connectionSet) {
                 try {
                     oldAnalyserHandler.addRelation(relation);
                 } catch (BIRelationDuplicateException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILogger.getLogger().error(e.getMessage());
                 }
             }
         }

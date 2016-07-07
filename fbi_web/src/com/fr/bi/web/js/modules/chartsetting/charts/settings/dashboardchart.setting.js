@@ -281,14 +281,14 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
     _showPointer: function (pictureType) {
         self = this;
         switch (pictureType) {
-            case BICst.CHART_STYLE.NORMAL:
-            case BICst.CHART_STYLE.HALF_DASHBOARD:
+            case BICst.CHART_SHAPE.NORMAL:
+            case BICst.CHART_SHAPE.HALF_DASHBOARD:
                 self.pointer.setEnable(true);
                 break;
-            case BICst.CHART_STYLE.PERCENT_DASHBOARD:
-            case BICst.CHART_STYLE.PERCENT_SCALE_SLOT:
-            case BICst.CHART_STYLE.VERTICAL_TUBE:
-            case BICst.CHART_STYLE.HORIZONTAL_TUBE:
+            case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
+            case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
+            case BICst.CHART_SHAPE.VERTICAL_TUBE:
+            case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                 self.pointer.setEnable(false);
                 break;
         }

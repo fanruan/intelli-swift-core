@@ -50,19 +50,14 @@ FS.BIUSERMGR = {
         this.editUserAuthLimit = 0;
         this.viewUserAuthLimit = 0;
         this.mobileUserAuthLimit = 0;
-        BI.requestAsync("fbi", "get_bi_limit_user", {
+        var userAuthJo = BI.requestSync("fr_bi", "get_bi_limit_user", {
             type: 'POST',
             async: false,
             math:Math.random()
-        }, function(res, status) {
-            if (res.responseText == null || res.responseText == "") {
-                return;
-            }
-            var userAuthJo = FR.jsonDecode(res.responseText);
-            self.editUserAuthLimit = parseInt( userAuthJo['edit'] ) || 0;
-            self.viewUserAuthLimit = parseInt( userAuthJo['view'] ) || 0;
-            self.mobileUserAuthLimit = parseInt( userAuthJo['mobile'] ) || 0;
         });
+        self.editUserAuthLimit = BI.parseInt( userAuthJo['edit'] ) || 0;
+        self.viewUserAuthLimit = BI.parseInt( userAuthJo['view'] ) || 0;
+        self.mobileUserAuthLimit = BI.parseInt( userAuthJo['mobile'] ) || 0;
     },
 
     getAuthLimitByMode: function( mode ){
@@ -85,7 +80,7 @@ FS.BIUSERMGR = {
         var self = this;
         var title = mode === Consts.BIEDIT ? BI.i18nText("BI-BI_Edit_User") : (mode === Consts.BIVIEW ? BI.i18nText("BI-BI_View_User") : BI.i18nText("BI-BI_Move_User"));
         return {
-            title : BI.i18nText(title),
+            title : FR.i18nText(title),
             content : {
                 type : 'panel',
                 widgetName: Consts.userLimitConfigPanelWD+mode,
@@ -114,7 +109,7 @@ FS.BIUSERMGR = {
 
         return {
             type: "label",
-            value: BI.i18nText("FS-Mobile_User_Limit_Tip_Left")
+            value: FR.i18nText("FS-Mobile_User_Limit_Tip_Left")
             + " " + this.getAuthLimitByMode( mode ) + " "
             + (mode===1 ? BI.i18nText("BI-User_With_Edit_Privilege") : BI.i18nText("BI-User_With_View_Privilege")),
             x: 0,
@@ -128,16 +123,16 @@ FS.BIUSERMGR = {
         var self = this;
         var userPanelOptions = isAuthorizedList ? {
             panelWidgetName: Consts.userLimitUnauthorizedPanelWD + mode,
-            panelTitle: BI.i18nText("FS-Mobile_Authorized_Users"),
+            panelTitle: FR.i18nText("FS-Mobile_Authorized_Users"),
             listWidgetName:  Consts.userLimitAuthorizedListWD + mode,
             listPanelWidgetName: Consts.userLimitAuthorizedListPanelWD + mode,
-            listUrl: FR.servletURL + "?op=fbi&cmd=bi_get_auth_user&mode=" + mode
+            listUrl: FR.servletURL + "?op=fr_bi&cmd=get_auth_user_list&mode=" + mode
         } : {
             panelWidgetName: Consts.userLimitAuthorizedPanelWD + mode,
-            panelTitle: BI.i18nText("FS-Mobile_Unauthorized_Users"),
+            panelTitle: FR.i18nText("FS-Mobile_Unauthorized_Users"),
             listWidgetName: Consts.userLimitUnauthorizedListWD + mode,
             listPanelWidgetName: Consts.userLimitUnauthorizedListPanelWD + mode,
-            listUrl: FR.servletURL + "?op=fbi&cmd=bi_auth_getallusers&mode=" + mode
+            listUrl: FR.servletURL + "?op=fr_bi&cmd=get_all_auth_user_list&mode=" + mode
         };
         var searchFunc = function(e){
             if (self.searchId != null) {
@@ -147,7 +142,7 @@ FS.BIUSERMGR = {
             self.searchId = setTimeout(function () {
                 if (!FR.isNavKeyPress(e)) {
                     var val = this.getValue();
-                    var userList = FS.USERMGR.user.getWidgetByName(userPanelOptions.listWidgetName);
+                    var userList = FS.USERMGR.tabPane.getWidgetByName(userPanelOptions.listWidgetName);
                     userList.refresh({
                         async: {
                             url: userPanelOptions.listUrl,
@@ -234,7 +229,7 @@ FS.BIUSERMGR = {
                     width: 44,
                     height: 24,
                     handler: function () {
-                        var unauthorizedList = FS.USERMGR.user.getWidgetByName(Consts.userLimitUnauthorizedListWD + mode);
+                        var unauthorizedList = FS.USERMGR.tabPane.getWidgetByName(Consts.userLimitUnauthorizedListWD + mode);
                         var index = unauthorizedList.getSelectedIndex();
                         if (index == null) {
                             return;
@@ -250,7 +245,7 @@ FS.BIUSERMGR = {
                     width: 44,
                     height: 24,
                     handler: function () {
-                        var authorizedList = FS.USERMGR.user.getWidgetByName(Consts.userLimitAuthorizedListWD + mode);
+                        var authorizedList = FS.USERMGR.tabPane.getWidgetByName(Consts.userLimitAuthorizedListWD + mode);
                         var index = authorizedList.getSelectedIndex();
                         if (index === null) {
                             return;
@@ -266,7 +261,7 @@ FS.BIUSERMGR = {
      * 支持移动端访问用户设置设置按钮状态
      */
     setMobileAuthButtonStatus : function( mode ) {
-        var pane = FS.USERMGR.user;
+        var pane = FS.USERMGR.tabPane;
         var authorizedList = pane.getWidgetByName(Consts.userLimitAuthorizedListWD + mode),
             unauthorizedList = pane.getWidgetByName(Consts.userLimitUnauthorizedListWD + mode);
         var moveLeftButton = pane.getWidgetByName(Consts.userLimitAuthMoveLeftButtonWD + mode),
@@ -289,40 +284,38 @@ FS.BIUSERMGR = {
      */
     setLoginUser : function (index, isRemove, mode) {
         var self = this;
-        var tabPane = FS.USERMGR.user;
+        var tabPane = FS.USERMGR.tabPane;
         var sourceList = isRemove ? tabPane.getWidgetByName(Consts.userLimitAuthorizedListWD + mode)
             : tabPane.getWidgetByName(Consts.userLimitUnauthorizedListWD + mode);
         var targetList = isRemove ? tabPane.getWidgetByName(Consts.userLimitUnauthorizedListWD + mode)
             : tabPane.getWidgetByName(Consts.userLimitAuthorizedListWD + mode);
         var username = sourceList.getValue();
         var realname = sourceList.options.listItems[index].options.realname;
-        BI.requestAsync("fbi","bi_set_auth_user", {
+        BI.requestAsync("fr_bi","set_auth_user", {
             'username': username,
             'fullname': realname,
             'remove': isRemove,
             'type': "POST",
             'mode':mode
         },function(res, status) {
-            if (status == "success") {
-                var success = FR.jsonDecode(res.responseText).success;
-                if (success === true) {
-                    sourceList.remove(index);
-                    targetList.addItem({
-                        text: (realname || "") + '(' + username + ')',
-                        value: username,
-                        realname: realname
-                    });
-                    //重新选取
-                    if (sourceList.getItemLength() === 0) {
-                        index = -1;
-                    } else if (index >= sourceList.getItemLength()) {
-                        index = sourceList.getItemLength() - 1;
-                    }
-                    if (index !== -1) {
-                        sourceList.selectItemByIndex(index);
-                    }
-                    self.setMobileAuthButtonStatus( mode );
+            var success = res['success'];
+            if (success === true) {
+                sourceList.remove(index);
+                targetList.addItem({
+                    text: (realname || "") + '(' + username + ')',
+                    value: username,
+                    realname: realname
+                });
+                //重新选取
+                if (sourceList.getItemLength() === 0) {
+                    index = -1;
+                } else if (index >= sourceList.getItemLength()) {
+                    index = sourceList.getItemLength() - 1;
                 }
+                if (index !== -1) {
+                    sourceList.selectItemByIndex(index);
+                }
+                self.setMobileAuthButtonStatus( mode );
             }
         });
     }

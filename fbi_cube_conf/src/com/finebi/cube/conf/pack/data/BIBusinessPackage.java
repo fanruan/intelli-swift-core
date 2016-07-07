@@ -76,6 +76,12 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
         return new LinkedHashSet<T>();
     }
 
+    public void parseTableContainer(BIBusinessPackage container) {
+        synchronized (container) {
+            clear();
+            this.useContent(container);
+        }
+    }
     @Override
     public boolean isNeed2BuildCube(BIBusinessPackage targetPackage) {
         if (size() == targetPackage.size()) {

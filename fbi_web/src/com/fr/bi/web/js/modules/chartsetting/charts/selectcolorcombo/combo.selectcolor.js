@@ -8,7 +8,7 @@ BI.ChartSettingSelectColorCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.ChartSettingSelectColorCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-chart-setting-select-color-combo",
-            items: BICst.CHART_COLORS
+            width: 130
         })
     },
 
@@ -31,18 +31,29 @@ BI.ChartSettingSelectColorCombo = BI.inherit(BI.Widget, {
                 el: this.popup,
                 stopPropagation: false,
                 minWidth: 145
-            },
-            items: o.items
+            }
         });
 
-        this.combo.on(BI.Combo.EVENT_CHANGE, function(){
+        this.combo.on(BI.Combo.EVENT_CHANGE, function () {
             self.setValue(this.getValue()[0]);
             self.combo.hideView();
             self.fireEvent(BI.ChartSettingSelectColorCombo.EVENT_CHANGE);
         });
     },
 
-    populate: function(items){
+    populate: function () {
+        var defaultChartConfig = BI.Utils.getDefaultChartConfig();
+        var items = [];
+        if (defaultChartConfig.styleList.length > 0) {
+            BI.each(defaultChartConfig.styleList, function (i, config) {
+                items.push({
+                    text: config.value,
+                    value: config.colors
+                })
+            });
+        } else {
+            items = BICst.CHART_COLORS;
+        }
         this.combo.populate(items);
     },
 

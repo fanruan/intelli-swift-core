@@ -30,11 +30,10 @@ public class BIFSSetConfigAction extends AbstractBIBaseAction {
     public void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res)
             throws Exception {
         FBIConfig.getInstance().getChartStyleAttr().setChartStyle(Integer.parseInt(WebUtils.getHTTPRequestParameter(req, "chartStyle")));
-        FBIConfig.getInstance().getChartStyleAttr().setDefaultStyle(Integer.parseInt(WebUtils.getHTTPRequestParameter(req, "defaultStyle")));
+//        FBIConfig.getInstance().getChartStyleAttr().setDefaultStyle(Integer.parseInt(WebUtils.getHTTPRequestParameter(req, "defaultStyle")));
         ChartPreStyleServerManager.getInstance().setCurrentStyle(WebUtils.getHTTPRequestParameter(req, "defaultColor"));
 
         FRContext.getCurrentEnv().writeResource(ChartPreStyleServerManager.getInstance());
         FRContext.getCurrentEnv().writeResource(FBIConfig.getInstance());
     }
-
 }

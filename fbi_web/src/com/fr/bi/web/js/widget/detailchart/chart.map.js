@@ -173,11 +173,12 @@ BI.MapChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]},
+            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], geoName: BI.i18nText("BI-China")},
             tooltip: options.tooltip || "",
             map_styles: options.map_styles
         };

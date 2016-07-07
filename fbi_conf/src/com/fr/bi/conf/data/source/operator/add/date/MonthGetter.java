@@ -14,10 +14,10 @@ public class MonthGetter implements DateGetter {
 	public static final MonthGetter INSTANCE = new MonthGetter();
 
 	@Override
-	public int get(Long v) {
-		if(v == null){
-			return 0;
-		}
+	public Integer get(Long v) {
+        if(v == null){
+            return null;
+        }
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(v);
 		//需要加1Calendar的月份从0开始-11
