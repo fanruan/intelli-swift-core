@@ -163,7 +163,6 @@ public class BIUserTableRelationManager implements Release {
             for (BITableRelation relation : connectionSet) {
                 try {
                     oldAnalyserHandler.addRelation(relation);
-                    analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
                     analysisTableRelationShipService.addBITableRelation(relation);
                 } catch (BIRelationDuplicateException e) {
                     BILogger.getLogger().error(e.getMessage());
