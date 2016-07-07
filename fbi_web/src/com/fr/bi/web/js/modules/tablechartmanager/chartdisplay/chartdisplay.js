@@ -280,7 +280,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 self.errorPane.setVisible(true);
                 return;
             }
-            try {
+            //try {
                 var dimensionIds = BI.Utils.getAllDimDimensionIDs(o.wId);
                 var lnglat = BI.Utils.getDimensionPositionByID(dimensionIds[0]);
                 selectedTab.populate(data, BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), options, {
@@ -288,10 +288,10 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     tooltip: self.model.getToolTip(type),
                     lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
                 }), types);
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate chart: " + e);
-                self.errorPane.setVisible(true);
-            }
+            //} catch (e) {
+            //    self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+            //    self.errorPane.setVisible(true);
+            //}
         });
     },
 
