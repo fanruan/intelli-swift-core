@@ -8,6 +8,7 @@ import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
 import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 /**
  * A string concatenation.
@@ -58,13 +59,19 @@ public class ConcatExpression extends ExpressionImpl<String> implements Serializ
 		Helper.possibleParameter( getString2(), registry );
 	}
 
-	public String render(RenderingContext renderingContext) {
-		return ( (Renderable) getString1() ).render( renderingContext )
-				+ " || "
-				+ ( (Renderable) getString2() ).render( renderingContext );
+	public Object render(RenderingContext renderingContext) {
+		return delegateRender(renderingContext);
 	}
 
-	public String renderProjection(RenderingContext renderingContext) {
+	public Object renderProjection(RenderingContext renderingContext) {
 		return render( renderingContext );
+	}
+	public Object delegateRender(RenderingContext renderingContext) {
+		RenderExtended render = choseRender(renderingContext);
+		return render.render(renderingContext);
+	}
+
+	protected RenderExtended choseRender(RenderingContext renderingContext) {
+		return (RenderExtended) renderingContext.getRenderFactory().getConcatExpressionLiteralRender(this, "default");
 	}
 }

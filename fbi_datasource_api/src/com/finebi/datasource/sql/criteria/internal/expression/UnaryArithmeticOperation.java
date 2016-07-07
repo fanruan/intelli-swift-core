@@ -7,6 +7,7 @@ import com.finebi.datasource.sql.criteria.internal.ParameterContainer;
 import com.finebi.datasource.sql.criteria.internal.ParameterRegistry;
 import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
+import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
 
 import java.io.Serializable;
 
@@ -52,12 +53,19 @@ public class UnaryArithmeticOperation<T>
 
     @Override
     public Object render(RenderingContext renderingContext) {
-        return (getOperation() == Operation.UNARY_MINUS ? '-' : '+')
-                + ((Renderable) getOperand()).render(renderingContext).toString();
+        return delegateRender(renderingContext);
     }
 
     @Override
     public Object renderProjection(RenderingContext renderingContext) {
         return render(renderingContext);
+    }
+    public Object delegateRender(RenderingContext renderingContext) {
+        RenderExtended render = choseRender(renderingContext);
+        return render.render(renderingContext);
+    }
+
+    protected RenderExtended choseRender(RenderingContext renderingContext) {
+        return (RenderExtended) renderingContext.getRenderFactory().getUnaryArithmeticOperationLiteralRender(this, "default");
     }
 }
