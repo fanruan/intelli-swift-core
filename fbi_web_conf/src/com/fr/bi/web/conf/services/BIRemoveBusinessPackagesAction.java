@@ -1,7 +1,6 @@
 package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -70,15 +69,6 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
                 if (BICubeConfigureCenter.getTableRelationManager().containTableForeignRelation(userId, table)) {
                     IRelationContainer foreignContainer = BICubeConfigureCenter.getTableRelationManager().getForeignRelation(userId, table);
                     addToRemoveList(foreignContainer, removeList);
-                }
-                //删除业务包中所有表的表名转义
-                BICubeConfigureCenter.getAliasManager().getTransManager(userId).removeTransName(table.getID().getIdentityValue());
-
-                //删除业务包中所有表中字段的转义
-                List<BusinessField> fieldsOfTableList = table.getFields();
-                Iterator<BusinessField> it = fieldsOfTableList.iterator();
-                while (it.hasNext()) {
-                    BICubeConfigureCenter.getAliasManager().getTransManager(userId).removeTransName(it.next().getFieldID().getIdentityValue());
                 }
 
                 //删除权限配置
