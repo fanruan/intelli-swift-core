@@ -18,7 +18,6 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,23 +50,7 @@ public class BIUserTableRelationManager implements Release {
         currentAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);
         disablePathsManager = new BIDisablePathsManager();
         tableRelationshipService = new BITableRelationshipManager(currentAnalyserHandler);
-        initAnalysisTableRelationShipService();
-    }
-
-    protected void initAnalysisTableRelationShipService() {
-        Iterator<BITableRelation> iterator = oldAnalyserHandler.getRelationContainer().getContainer().iterator();
-        BITableRelationAnalysisService copyAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);
-        while (iterator.hasNext()) {
-            BITableRelation relation = iterator.next();
-            BITableRelation copyRelation = new BITableRelation(relation.getPrimaryTable().getID().getIdentityValue(), relation.getPrimaryField().getFieldName(), relation.getForeignTable().getID().getIdentityValue(), relation.getForeignField().getFieldName());
-            try {
-                copyAnalyserHandler.addRelation(copyRelation);
-            } catch (BIRelationDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-                continue;
-            }
-        }
-        this.analysisTableRelationShipService = new BITableRelationshipManager(copyAnalyserHandler);
+        analysisTableRelationShipService = new BITableRelationshipManager(currentAnalyserHandler);
     }
 
 
@@ -163,11 +146,15 @@ public class BIUserTableRelationManager implements Release {
             for (BITableRelation relation : connectionSet) {
                 try {
                     oldAnalyserHandler.addRelation(relation);
-                    analysisTableRelationShipService.addBITableRelation(relation);
                 } catch (BIRelationDuplicateException e) {
                     BILogger.getLogger().error(e.getMessage());
                 }
             }
+            analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
+            for (BITableRelation relation : connectionSet) {
+                analysisTableRelationShipService.addBITableRelation(relation);
+            }
+
         }
     }
 
