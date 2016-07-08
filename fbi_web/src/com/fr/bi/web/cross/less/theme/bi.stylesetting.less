@@ -1,5 +1,14 @@
 @import "../bi-extra-core";
 
 .bi-fs-style-setting {
-
+  & .style-setting-style-button {
+    border: 1px solid @color-bi-border-default;
+    .border-radius(2px);
+    &:hover{
+      background: @color-bi-background-gray;
+    }
+    &.active{
+      border: 1px solid @color-bi-border-highlight;
+    }
+  }
 }
