@@ -99,6 +99,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             self.widget.attr("items")[3].top = 0;
             self.widget.resize();
         });
+
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        });
     },
 
     _buildWidgetTitle: function () {
@@ -139,7 +145,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     _onClickChart: function (obj) {
-        this.chartDrill.populate(obj);
+        if (BI.has(obj, "clicked")) {
+            this.model.set(obj);
+        } else {
+            this.chartDrill.populate(obj);
+        }
     },
 
     _createTools: function () {
@@ -327,7 +337,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         switch (this.model.get("type")) {
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.ACCUMULATE_AREA:
-            case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
@@ -341,16 +350,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
             case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.DONUT:
-            case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.FORCE_BUBBLE:
-            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
                 this.refreshChartButton.setVisible(true);
                 break;
             default:

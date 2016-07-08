@@ -359,4 +359,9 @@ public class DateColumnFile implements ColumnFile<Long> {
     public NIOReader createDetailNIOReader(SingleUserNIOReadManager manager) {
         return createBaseFile().createDetailNIOReader(manager);
     }
+
+    @Override
+    public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
+        return 0;
+    }
 }

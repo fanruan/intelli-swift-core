@@ -339,6 +339,10 @@ public abstract class AbstractTableSource implements CubeTableSource {
         return jo;
     }
 
+    public void parseJSON(JSONObject jo, long userId) throws Exception {
+
+    }
+
     @Override
     public void readXML(XMLableReader reader) {
         if (reader.isAttr()) {

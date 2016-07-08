@@ -7,7 +7,7 @@ BIShow.DetailTableModel = BI.inherit(BI.Model, {
             dimensions: {},
             view: {},
             page: 0,
-            settings: BICst.DEFAULT_CHART_SETTING
+            settings: {}
         })
     },
 

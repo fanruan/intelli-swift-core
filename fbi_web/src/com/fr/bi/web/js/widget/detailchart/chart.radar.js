@@ -17,7 +17,8 @@ BI.RadarChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         POLYGON: 7,
-        MINLIMIT: 1e-3
+        MINLIMIT: 1e-3,
+        LEGEND_HEIGHT: 80
     },
 
     _defaultConfig: function () {
@@ -61,6 +62,7 @@ BI.RadarChart = BI.inherit(BI.Widget, {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
+                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
@@ -96,10 +98,10 @@ BI.RadarChart = BI.inherit(BI.Widget, {
 
         function formatChartRadarStyle(){
             switch (self.config.chart_radar_type) {
-                case BICst.CHART_STYLE.POLYGON:
+                case BICst.CHART_SHAPE.POLYGON:
                     config.plotOptions.shape = "polygon";
                     break;
-                case BICst.CHART_STYLE.CIRCLE:
+                case BICst.CHART_SHAPE.CIRCLE:
                     config.plotOptions.shape = "circle";
                     break;
             }
@@ -212,6 +214,7 @@ BI.RadarChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             chart_radar_type: options.chart_radar_type || c.POLYGON,

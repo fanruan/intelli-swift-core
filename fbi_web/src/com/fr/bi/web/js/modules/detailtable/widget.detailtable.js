@@ -24,12 +24,11 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
         this.table = BI.createWidget({
             type: "bi.style_table",
-            element: this.element,
+            isNeedFreeze: null,
             el: {
                 type: "bi.page_table",
                 el: {
                     el: {
-                        pageSpace: 95,
                         el: {
                             el: {
                                 type: "bi.table_view"
@@ -63,6 +62,12 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             type: "bi.absolute",
             element: this.element,
             items: [{
+                el: this.table,
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0
+            }, {
                 el: this.errorPane,
                 top: 0,
                 left: 0,
@@ -127,6 +132,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
                 self.pager.setAllPages(Math.ceil(row / size));
                 self.pager.setValue(vPage);
+                self.table.attr("columnSize", self._getColumnSize(header));
                 callback(items, [header]);
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
@@ -244,8 +250,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
-            self.table.attr("columnSize", self._getColumnSize(header));
-            self.table.attr("isNeedFreeze", self._isNeedFreeze());
+            self.table.attr("isNeedFreeze", true);
             self.table.attr("freezeCols", self._getFreezeCols());
             self.table.populate(items, header);
         });

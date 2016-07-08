@@ -172,16 +172,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     removeTable: function (tableId) {
         var self = this;
 
-        //删除表的转义
-        delete self.translations[tableId];
-        //删除表中字段转义
-        var allFieldsArray = self.tablesData[tableId].fields;
-        BI.each(allFieldsArray, function (i, fieldsArray) {
-            BI.each(fieldsArray, function (index, fieldObj) {
-                delete self.translations[fieldObj.id];
-            })
-        });
-
         delete this.tablesData[tableId];
         BI.some(this.getTables(), function (i, table) {
             if (table.id === tableId) {
@@ -314,9 +304,18 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             masker: BICst.BODY_ELEMENT,
             text: BI.i18nText("BI-Loading")
         });
+
+        //读关联的时候去除来自于服务器的
+        var oTables = {}, nTables = {};
+        BI.each(oldTables, function(id, t) {
+            t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (oTables[id] = t);
+        });
+        BI.each(this.getTablesData(), function(id, t) {
+            t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (nTables[id] = t);
+        });
         var data = {
-            oldTables: oldTables,
-            newTables: this.getTablesData()
+            oldTables: oTables,
+            newTables: nTables
         };
         BI.Utils.getRelationAndTransByTables(data, function (res) {
             var relations = res.relations, translations = res.translations;

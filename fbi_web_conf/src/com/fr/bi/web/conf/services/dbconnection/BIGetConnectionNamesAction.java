@@ -1,11 +1,6 @@
 package com.fr.bi.web.conf.services.dbconnection;
 
-import java.util.Iterator;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.file.DatasourceManager;
@@ -13,6 +8,10 @@ import com.fr.file.DatasourceManagerProvider;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.web.utils.WebUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Iterator;
 
 /**
  * Created by Young's on 2015/8/13.
@@ -36,7 +35,7 @@ public class BIGetConnectionNamesAction extends AbstractBIConfigureAction {
 
         boolean discardServer = WebUtils.getHTTPRequestBoolParameter(req, "discard_server");
         if (!discardServer) {
-            ja.put(BIBaseConstant.SERVERCONNECTNAME);
+            ja.put(DBConstant.CONNECTION.SERVER_CONNECTION);
         }
 
         WebUtils.printAsJSON(res, ja);

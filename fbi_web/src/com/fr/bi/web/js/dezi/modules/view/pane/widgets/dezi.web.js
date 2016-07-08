@@ -42,6 +42,11 @@ BIDezi.WebWidgetView = BI.inherit(BI.View, {
                 self.web.setToolbarVisible(false);
             }
         });
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.web.element.parent().parent().parent().hasClass("selected")) {
+                self.web.setToolbarVisible(false);
+            }
+        });
     },
 
     local: function () {

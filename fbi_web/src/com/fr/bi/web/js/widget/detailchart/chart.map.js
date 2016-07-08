@@ -39,14 +39,29 @@ BI.MapChart = BI.inherit(BI.Widget, {
     },
 
     _formatConfig: function(config, items){
-        var self = this, o = this.options;
-        config.plotOptions.tooltip.formatter = this.config.tooltip;
+        var self = this, o = this.options, c = this.constants;
         formatRangeLegend();
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.geo = this.config.geo;
         config.plotOptions.tooltip.shared = true;
-
+        var formatterArray = [];
+        BI.backEach(items, function(idx, item){
+            if(BI.has(item, "settings")){
+                formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL));
+            }
+        });
+        config.plotOptions.tooltip.formatter = function(){
+            var tip = this.name;
+            BI.each(this.points, function(idx, point){
+                var value = point.size || point.y;
+                tip += ('<div>' + point.seriesName + ':' + (window.FR ? FR.contentFormat(value, formatterArray[idx]) : value) + '</div>');
+            });
+            return tip;
+        };
+        config.plotOptions.dataLabels.formatter.valueFormat = function(){
+            return window.FR ? FR.contentFormat(arguments[0], formatterArray[0]) : arguments[0];
+        };
+        config.geo = this.config.geo;
         config.chartType = "areaMap";
         delete config.xAxis;
         delete config.yAxis;
@@ -68,7 +83,45 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     break;
             }
             config.rangeLegend.range.max = self.max;
+            config.rangeLegend.range.min = self.min;
+            config.rangeLegend.range.color = rangeColor(self.config.map_styles);
+        }
 
+        function rangeColor (mapStyles) {
+            var rangeStyles = [];
+            BI.each(mapStyles , function (idx , style) {
+                var styles = [];
+                styles.push(style.range.min);
+                styles.push(style.color);
+                rangeStyles.push(styles)
+            });
+            return rangeStyles
+        }
+
+        function formatToolTipAndDataLabel(format, numberLevel){
+            var formatter = '#.##';
+            switch (format) {
+                case self.constants.NORMAL:
+                    formatter = '#.##';
+                    break;
+                case self.constants.ZERO2POINT:
+                    formatter = '#0';
+                    break;
+                case self.constants.ONE2POINT:
+                    formatter = '#0.0';
+                    break;
+                case self.constants.TWO2POINT:
+                    formatter = '#0.00';
+                    break;
+            }
+            if (numberLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (format === self.constants.NORMAL) {
+                    formatter = '#0%'
+                } else {
+                    formatter += '%';
+                }
+            }
+            return formatter;
         }
     },
 
@@ -91,13 +144,17 @@ BI.MapChart = BI.inherit(BI.Widget, {
     },
 
     _formatItems: function(items){
-        var self = this;
+        var self = this, c = this.constants;
         this.max = null;
+        this.min = null;
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
-                    if(BI.isNull(self.max) || da.y > self.max){
+                    if((BI.isNull(self.max) || da.y > self.max) && id === 0){
                         self.max = da.y;
+                    }
+                    if((BI.isNull(self.min) || da.y < self.min) && id === 0){
+                        self.min = da.y;
                     }
                     if(BI.has(it, "type") && it.type == "bubble"){
                         da.name = da.x;
@@ -116,12 +173,14 @@ BI.MapChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]},
-            tooltip: options.tooltip || ""
+            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], geoName: BI.i18nText("BI-China")},
+            tooltip: options.tooltip || "",
+            map_styles: options.map_styles
         };
         this.options.items = items;
 

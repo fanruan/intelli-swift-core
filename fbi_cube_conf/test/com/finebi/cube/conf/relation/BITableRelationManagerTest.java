@@ -7,6 +7,7 @@ import com.fr.bi.stable.exception.BIRelationDuplicateException;
 import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -245,7 +246,8 @@ public class BITableRelationManagerTest extends TestCase {
             assertTrue(false);
         }
     }
-/*设置ABC，disable掉AB，查看AC是否可用*/
+
+    /*设置ABC，disable掉AB，查看AC是否可用*/
     public void testAddDisablePathByPart() {
         try {
             manager.registerTableRelation(user.getUserId(), BITableRelationTestTool.getAaBa());
@@ -303,6 +305,27 @@ public class BITableRelationManagerTest extends TestCase {
 
         } catch (Exception ignore) {
             BILogger.getLogger().error(ignore.getMessage(), ignore);
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * relation是否已经生成过cube
+     */
+    public void testIsRelationGenerated() {
+        try {
+            BITableRelation aaBa = BITableRelationTestTool.getAaBa();
+            BITableRelation aaCa = BITableRelationTestTool.getAaCa();
+            manager.registerTableRelation(user.getUserId(), aaBa);
+            manager.registerTableRelation(user.getUserId(), aaCa);
+            assertFalse(manager.isRelationGenerated(user.getUserId(),aaBa));
+            assertFalse(manager.isRelationGenerated(user.getUserId(),aaCa));
+            Set<BITableRelation> biTableRelationSet = new HashSet<BITableRelation>();
+            biTableRelationSet.add(aaBa);
+            manager.finishGenerateCubes(user.getUserId(), biTableRelationSet);
+            assertTrue(manager.isRelationGenerated(user.getUserId(),aaBa));
+            assertFalse(manager.isRelationGenerated(user.getUserId(),aaCa));
+        } catch (Exception ignore) {
             assertTrue(false);
         }
     }

@@ -57,7 +57,8 @@ BIDezi.View = BI.inherit(BI.View, {
             BI.requestAsync("fr_bi", "add_report", {
                 reportName: data.report_name,
                 reportLocation: data.report_location,
-                popConfig: self.model.get("popConfig")
+                popConfig: self.model.get("popConfig"),
+                realTime: self.model.get("description")
             }, function(res, model){
                 if (BI.isNotNull(res) && BI.isNotNull(res.reportId)) {
                     BI.Msg.toast(BI.i18nText("BI-Save_As_Success"));

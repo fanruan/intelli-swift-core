@@ -31,7 +31,7 @@ BI.RelationTablesButton = BI.inherit(BI.BasicButton, {
                 type: "bi.vertical",
                 items: BI.createItems( items, {
                     type: "bi.label",
-                    height: 30,
+                    height: 25,
                     whiteSpace: "normal",
                     textAlign: "left"
                 })

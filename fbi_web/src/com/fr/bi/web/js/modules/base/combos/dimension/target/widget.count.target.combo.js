@@ -47,6 +47,10 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     text: BI.i18nText("BI-Area_Chart"),
                     value: BICst.WIDGET.AREA,
                     cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Accumulate_Area"),
+                    value: BICst.WIDGET.ACCUMULATE_AREA,
+                    cls: "dot-e-font"
                 }]
             }],
             [{
@@ -74,14 +78,14 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 cls: "copy-h-font"
             }],
             [{
-                text: BI.i18nText("BI-Delete_Target"),
+                text: BI.i18nText("BI-Remove"),
                 value: BICst.TARGET_COMBO.DELETE,
                 cls: "delete-h-font"
             }],
             [{
                 text: fromText,
                 title: fromText,
-                tipType: "warning",
+                tipType: "success",
                 value: BICst.TARGET_COMBO.INFO,
                 cls: "dimension-from-font",
                 disabled: true
@@ -149,7 +153,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -174,7 +178,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                        BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                         items[this.constants.CordonPos][0].disabled = true;
                         return addDependency();
                 }
@@ -186,10 +190,10 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
             default:
-                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
         }
 
@@ -199,7 +203,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
                 break;
             default:
-                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
         }
         return addDependency();

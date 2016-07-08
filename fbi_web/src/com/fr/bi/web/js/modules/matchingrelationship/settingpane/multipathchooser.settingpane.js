@@ -127,7 +127,7 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
                         region: BI.Utils.getTableNameByID(ptId),
                         regionText: BI.Utils.getTableNameByID(ptId),
                         text: BI.Utils.getFieldNameByID(items.dimensionFieldId),
-                        value: primaryId
+                        value: items.dimensionFieldId
                     });
                 }
             });

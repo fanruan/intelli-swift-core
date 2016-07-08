@@ -16,7 +16,8 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        MINLIMIT: 1e-3
+        MINLIMIT: 1e-3,
+        LEGEND_HEIGHT: 80
     },
 
     _defaultConfig: function () {
@@ -59,6 +60,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
+                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
@@ -73,7 +75,10 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        this.config.show_zoom === true && delete config.dataSheet;
+        if(this.config.show_zoom === true){
+            delete config.dataSheet;
+            delete config.zoom.zoomType;
+        }
 
         config.yAxis = this.yAxis;
 
@@ -120,15 +125,15 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
 
         function formatChartLineStyle(){
             switch (self.config.chart_line_type) {
-                case BICst.CHART_STYLE.RIGHT_ANGLE:
+                case BICst.CHART_SHAPE.RIGHT_ANGLE:
                     config.plotOptions.curve = false;
                     config.plotOptions.step = true;
                     break;
-                case BICst.CHART_STYLE.CURVE:
+                case BICst.CHART_SHAPE.CURVE:
                     config.plotOptions.curve = true;
                     config.plotOptions.step = false;
                     break;
-                case BICst.CHART_STYLE.NORMAL:
+                case BICst.CHART_SHAPE.NORMAL:
                 default:
                     config.plotOptions.curve = false;
                     config.plotOptions.step = false;
@@ -296,6 +301,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",

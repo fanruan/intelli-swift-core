@@ -41,6 +41,10 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     text: BI.i18nText("BI-Area_Chart"),
                     value: BICst.WIDGET.AREA,
                     cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Accumulate_Area"),
+                    value: BICst.WIDGET.ACCUMULATE_AREA,
+                    cls: "dot-e-font"
                 }]
             }],
             //[{
@@ -54,11 +58,13 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             //}],
             [{
                 text: BI.i18nText("BI-Copy"),
-                value: BICst.CALCULATE_TARGET_COMBO.COPY
+                value: BICst.CALCULATE_TARGET_COMBO.COPY,
+                cls: "copy-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Remove"),
-                value: BICst.CALCULATE_TARGET_COMBO.DELETE
+                value: BICst.CALCULATE_TARGET_COMBO.DELETE,
+                cls: "delete-h-font"
             }]
         ];
     },
@@ -102,7 +108,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                item[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.remove(item, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -137,10 +143,10 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                item[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.remove(item, this.constants.CHART_TYPE_POSITION);
                 break;
             default:
-                item[this.constants.CHART_TYPE_POSITION][0].el.disabled = true;
+                BI.remove(item, this.constants.CHART_TYPE_POSITION);
                 break;
         }
         return item;

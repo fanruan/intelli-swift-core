@@ -86,7 +86,7 @@ public class ResourceHelper {
         List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
-            JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
+            JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
             //管理员
             if (manageId == userId) {
                 packages = allPacks;
@@ -195,6 +195,16 @@ public class ResourceHelper {
 
     public static String[] getShowCss() {
         return new String[]{
+                //实时报表进度条
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/cubeprogressbar/cubeprogressbar.css",
+
+                //详细设置相关模块(预览)
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/charttype.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regions/region.dimension.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regions/region.target.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regionsmanager.css",
+                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/dimensionsmanager.css",
 
                 "com/fr/bi/web/css/show/show.view.css",
                 "com/fr/bi/web/css/show/pane/show.pane.css",
@@ -209,6 +219,49 @@ public class ResourceHelper {
 
     public static String[] getShowJs() {
         return new String[]{
+                //自适应布局
+                "com/fr/bi/web/js/modules4show/fit/fit.js",
+
+                //实时报表进度条
+                "com/fr/bi/web/js/modules4show/cubeprogressbar/cubeprogressbar.js",
+                //实时报表指示器
+                "com/fr/bi/web/js/modules4show/cubeprogressindicator/cubeprogressindicator.js",
+
+                //dimensionmanager4show
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/model.dimensionsmanagershow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regionsmanagershow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/dimensionsmanagershow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/combo.maptype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/popup.maptype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/charttype.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.dimensionshow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.targetshow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.detailshow.js",
+                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/abstract.regionshow.js",
+
+                //dimension show
+                "com/fr/bi/web/js/modules4show/dimension4show/abstract.dimensiontarget.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/abstract.dimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.numberdimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.datedimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.stringdimension.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.count.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.calculate.target.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detaildate.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailformula.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
+                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
+
+
+                "com/fr/bi/web/js/modules4show/config.js",
+                "com/fr/bi/web/js/modules4show/constant.js",
+                "com/fr/bi/web/js/modules4show/broadcast.js",
+                "com/fr/bi/web/js/modules4show/cache.js",
+                "com/fr/bi/web/js/modules4show/utils.js",
+
+
                 "com/fr/bi/web/js/show/show.start.js",
                 "com/fr/bi/web/js/show/model.js",
                 "com/fr/bi/web/js/show/view.js",
@@ -490,9 +543,6 @@ public class ResourceHelper {
                 //选择日期
                 "com/fr/bi/web/css/modules/selectdate/tab.selectdate.css",
 
-                //实时报表进度条
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/cubeprogressbar/cubeprogressbar.css",
-
                 //详细设置相关模块
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/combo/combo.tabletype.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/charttype.css",
@@ -651,6 +701,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/widget.summarytable.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/combo/sortfilter.combo.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/tablechartmanager.css",
+                "com/fr/bi/web/css/modules/tablechartmanager/chartdisplay/chartdisplay.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/errorpane/tablechart.errorpane.css",
 
                 //自适应布局
@@ -741,15 +792,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/excelviewsetting/excel/excelviewsetting.cell.css",
                 "com/fr/bi/web/css/extend/excelviewsetting/excel/excel.excelviewsetting.css",
                 "com/fr/bi/web/css/extend/excelviewsetting/excelviewsetting.css",
-
-
-                //详细设置相关模块(预览)
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.css",
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/charttype/charttype.css",
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regions/region.dimension.css",
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regions/region.target.css",
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regionsmanager.css",
-                "com/fr/bi/web/css/modules4show/dimensionsmanager4show/dimensionsmanager.css",
 
                 //更新设置
                 "com/fr/bi/web/css/extend/update/update.tabledata.css",
@@ -1260,6 +1302,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/dimensiontreecombo/dimensiontree.trigger.js",
 
                 //表格属性设置
+                "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.item.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/combo.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/wrap.item.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.js",
@@ -1347,6 +1391,7 @@ public class ResourceHelper {
 
                 //指标样式设置
                 "com/fr/bi/web/js/modules/targetstyle/widget.targetstylesetting.js",
+                "com/fr/bi/web/js/modules/targetstyle/widget.targetstylesetting.map.js",
                 "com/fr/bi/web/js/modules/targetstyle/widget.targetcondition.stylesetting.js",
                 "com/fr/bi/web/js/modules/targetstyle/widget.stylesetting.iconmark.js",
                 "com/fr/bi/web/js/modules/targetstyle/combo/combo.iconmark.js",
@@ -1422,53 +1467,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/permissionmanage/logininfo/widget.selectsinglefield.logininfo.js",
                 "com/fr/bi/web/js/modules/permissionmanage/logininfo/widget.selectfieldmask.logininfo.js",
 
-                //dimensionmanager4show
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/model.dimensionsmanagershow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regionsmanagershow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/dimensionsmanagershow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/combo.maptype.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/popup.maptype.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/charttype.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.dimensionshow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.targetshow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.detailshow.js",
-                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/abstract.regionshow.js",
-
-                //dimension show
-                "com/fr/bi/web/js/modules4show/dimension4show/abstract.dimensiontarget.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/dimension/abstract.dimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.numberdimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.datedimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/dimension/widget.stringdimension.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.target.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.count.target.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/target/widget.calculate.target.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detaildate.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailformula.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
-                "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
-
-                //自适应布局
-                "com/fr/bi/web/js/modules4show/fit/fit.js",
-
-                //实时报表进度条
-                "com/fr/bi/web/js/modules4show/cubeprogressbar/cubeprogressbar.js",
-                //实时报表指示器
-                "com/fr/bi/web/js/modules4show/cubeprogressindicator/cubeprogressindicator.js",
-
-                //实时报表选择字段
-                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/abstract.node.level.js",
-                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level0.js",
-                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level1.js",
-                "com/fr/bi/web/js/modules4realtime/selectdata/widget.selectdata.js",
-                //实时报表文本选择字段
-                "com/fr/bi/web/js/modules4realtime/selectstring/widget.selectstring.js",
-                //实时报表数值选择字段
-                "com/fr/bi/web/js/modules4realtime/selectnumber/widget.selectnumber.js",
-                //实时报表日期选择字段
-                "com/fr/bi/web/js/modules4realtime/selectdate/widget.selectdate.js",
-
                 //表更新
                 "com/fr/bi/web/js/extend/update/update.tabledata.js",
                 "com/fr/bi/web/js/extend/update/update.tabledata.model.js",
@@ -1514,8 +1512,31 @@ public class ResourceHelper {
 
 
                 /**
+                 * 实时报表
+                 */
+
+
+                //实时报表选择字段
+                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level1.js",
+                "com/fr/bi/web/js/modules4realtime/selectdata/widget.selectdata.js",
+                //实时报表文本选择字段
+                "com/fr/bi/web/js/modules4realtime/selectstring/widget.selectstring.js",
+                //实时报表数值选择字段
+                "com/fr/bi/web/js/modules4realtime/selectnumber/widget.selectnumber.js",
+                //实时报表日期选择字段
+                "com/fr/bi/web/js/modules4realtime/selectdate/widget.selectdate.js",
+
+                "com/fr/bi/web/js/modules4realtime/config.js",
+                "com/fr/bi/web/js/modules4realtime/constant.js",
+                "com/fr/bi/web/js/modules4realtime/broadcast.js",
+                "com/fr/bi/web/js/modules4realtime/cache.js",
+                "com/fr/bi/web/js/modules4realtime/utils.js",
+
+                /**
                  * 切片
-                */
+                 */
 
                 //tablechartmanager
                 "com/fr/bi/web/js/aspects/tablechartmanager/aspect.tablechartmanager.js",
@@ -1555,9 +1576,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/tip/tip.bubble.css",
                 "com/fr/bi/web/css/base/single/tip/tip.toast.css",
                 "com/fr/bi/web/css/base/single/tip/tip.tooltip.css",
-                "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
-                "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
-                "com/fr/bi/web/css/base/third/leaflet.css",
+
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
                 "com/fr/bi/web/css/base/view/scrollview.css",
@@ -1572,7 +1591,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/pager/pager.direction.css",
                 "com/fr/bi/web/css/base/pager/pager.skip.css",
                 "com/fr/bi/web/css/base/pager/pager.all.css",
-                "com/fr/bi/web/css/base/pager/pager.updownprenext.css",
                 "com/fr/bi/web/css/base/segment/button.segment.css",
                 "com/fr/bi/web/css/base/segment/segment.css",
                 "com/fr/bi/web/css/base/trigger/trigger.css",
@@ -1838,7 +1856,7 @@ public class ResourceHelper {
 
                 /**
                  * components
-                */
+                 */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
@@ -1864,6 +1882,34 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/share/sharetome.css",
                 "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
 
+        };
+    }
+
+    public static String[] getThirdCss() {
+        return new String[]{
+                "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
+                "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
+                "com/fr/bi/web/css/base/third/leaflet.css",
+        };
+    }
+
+    public static String[] getThirdJs() {
+        return new String[]{
+                "com/fr/bi/web/js/third/jquery.mousewheel.js",
+                "com/fr/bi/web/js/third/jquery.mCustomScrollbar.js",
+                "com/fr/bi/web/js/third/jquery.ui.core.js",
+                "com/fr/bi/web/js/third/jquery.ui.widget.js",
+                "com/fr/bi/web/js/third/jquery.ui.mouse.js",
+                "com/fr/bi/web/js/third/jquery.ui.position.js",
+                "com/fr/bi/web/js/third/jquery.ui.resizable.js",
+                "com/fr/bi/web/js/third/jquery.ui.draggable.js",
+                "com/fr/bi/web/js/third/jquery.ui.droppable.js",
+                "com/fr/bi/web/js/third/jquery.ui.sortable.js",
+                "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/es5-sham.js",
+                "com/fr/bi/web/js/third/raphael.js",
+                "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/js/third/leaflet.js"
         };
     }
 
@@ -2068,23 +2114,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.vertical.js",
 
-                "com/fr/bi/web/js/third/jquery.mousewheel.js",
-                "com/fr/bi/web/js/third/jquery.mCustomScrollbar.js",
-                "com/fr/bi/web/js/third/jquery.ui.core.js",
-                "com/fr/bi/web/js/third/jquery.ui.widget.js",
-                "com/fr/bi/web/js/third/jquery.ui.mouse.js",
-                "com/fr/bi/web/js/third/jquery.ui.position.js",
-                "com/fr/bi/web/js/third/jquery.ui.button.js",
-                "com/fr/bi/web/js/third/jquery.ui.resizable.js",
-                "com/fr/bi/web/js/third/jquery.ui.draggable.js",
-                "com/fr/bi/web/js/third/jquery.ui.droppable.js",
-                "com/fr/bi/web/js/third/jquery.ui.sortable.js",
-                "com/fr/bi/web/js/third/jquery.ui.effect.js",
-                "com/fr/bi/web/js/third/d3.js",
-                "com/fr/bi/web/js/third/vancharts-all.js",
-                "com/fr/bi/web/js/third/leaflet.js",
-
-
                 "com/fr/bi/web/js/case/case.js",
                 "com/fr/bi/web/js/case/layer/panel.js",
                 "com/fr/bi/web/js/case/layer/pane.list.js",
@@ -2173,7 +2202,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/pager/pager.direction.js",
                 "com/fr/bi/web/js/case/pager/pager.skip.js",
                 "com/fr/bi/web/js/case/pager/pager.all.js",
-                "com/fr/bi/web/js/case/pager/pager.updownprenext.js",
 
                 "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",
@@ -2185,7 +2213,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                */
+                 */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2239,7 +2267,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                */
+                 */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2256,6 +2284,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulateradar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.area.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.multiaxis.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",
@@ -2546,7 +2575,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                */
+                 */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 
@@ -2598,8 +2627,10 @@ public class ResourceHelper {
 
     public static String[] getFoundationCss() {
         String[] base = getBaseCss();
-        String[] widget = getCommonCss();
-        return (String[]) ArrayUtils.addAll(base, widget);
+        String[] third = new String[]{
+                "com/fr/bi/web/css/base/third/leaflet.css",
+        };
+        return (String[]) ArrayUtils.addAll(third, base);
     }
 
     /**
@@ -2609,7 +2640,11 @@ public class ResourceHelper {
      */
     public static String[] getFoundationJs() {
         String[] base = getBaseJs();
-        String[] widget = getCommonJs();
-        return (String[]) ArrayUtils.addAll(base, widget);
+        String[] third = new String[]{
+                "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/js/third/leaflet.js",
+        };
+        return (String[]) ArrayUtils.addAll(third, base);
     }
 }

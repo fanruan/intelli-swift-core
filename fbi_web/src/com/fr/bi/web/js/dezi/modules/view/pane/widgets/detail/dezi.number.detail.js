@@ -92,7 +92,7 @@ BIDezi.NumberDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: BI.Utils.isRealTime() ? "bi.select_number_4_realtime" : "bi.select_number",
+                    type: "bi.select_number",
                     wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },

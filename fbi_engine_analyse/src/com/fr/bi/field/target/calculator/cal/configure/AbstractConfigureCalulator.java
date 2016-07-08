@@ -1,5 +1,6 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
+import com.fr.bi.cal.analyze.cal.result.CrossNode;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
@@ -100,7 +101,7 @@ public abstract class AbstractConfigureCalulator extends CalCalculator {
     protected int getCalDeep(Object rank_node) {
         int deep = 0;
         if (rank_node instanceof LightNode) {
-            LightNode node = (LightNode)rank_node;
+            LightNode node = (LightNode) rank_node;
             while (node.getFirstChild() != null) {
                 deep++;
                 node = node.getFirstChild();
@@ -111,22 +112,31 @@ public abstract class AbstractConfigureCalulator extends CalCalculator {
                 deep++;
                 node = node.getLeftFirstChild();
             }
-        }else{
+        } else {
             return 1;
         }
 
         return deep;
     }
 
-    protected double getAvgValue(String targetName, AvgKey targetKey, LightNode cursor_node) {
+    protected double getAvgValue(String targetName, AvgKey targetKey, Object cursor_node) {
+        Number sumValue = null;
+        Number countValue = null;
         TargetGettingKey sumGettingKey = new TargetGettingKey(targetKey.getSumKey(), targetName);
         TargetGettingKey countGettingKey = new TargetGettingKey(targetKey.getCountKey(), targetName);
-        Number sumValue = cursor_node.getSummaryValue(sumGettingKey);
-        Number countValue = cursor_node.getSummaryValue(countGettingKey);
+        if (cursor_node instanceof LightNode) {
+            sumValue = ((LightNode) cursor_node).getSummaryValue(sumGettingKey);
+            countValue = ((LightNode) cursor_node).getSummaryValue(countGettingKey);
+        } else if (cursor_node instanceof CrossNode) {
+            sumValue = ((CrossNode)cursor_node).getSummaryValue(sumGettingKey);
+            countValue = ((CrossNode)cursor_node).getSummaryValue(countGettingKey);
+        }
         double avgValue = 0;
         if (sumValue != null && countValue != null) {
             avgValue = sumValue.doubleValue() / countValue.doubleValue();
         }
         return avgValue;
     }
+
+
 }

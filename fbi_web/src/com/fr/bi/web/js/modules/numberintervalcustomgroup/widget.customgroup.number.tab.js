@@ -40,7 +40,7 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         this.tab.on(BI.Tab.EVENT_CHANGE, function(){
             self._checkState();
         });
-
+        
         this.tab.setSelect(BI.NumberIntervalCustomGroupCombo.Type_Auto);
     },
 

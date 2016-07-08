@@ -68,7 +68,8 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         this.table = BI.createWidget(o.el, {
             type: "bi.custom_scroll_table",
 
-            pageSpace: 108,
+            hideHorizontalScrollChecker: o.hideHorizontalScrollChecker,
+
             isNeedResize: o.isNeedResize,
             isResizeAdapt: o.isResizeAdapt,
 
@@ -160,6 +161,18 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
 
     getCalculateRegionColumnSize: function () {
         return this.table.getCalculateRegionColumnSize();
+    },
+
+    hasVerticalScroll: function () {
+        return this.table.hasVerticalScroll();
+    },
+
+    hasLeftHorizontalScroll: function () {
+        return this.table.hasLeftHorizontalScroll();
+    },
+
+    hasRightHorizontalScroll: function () {
+        return this.table.hasRightHorizontalScroll();
     },
 
     getVerticalScroll: function () {

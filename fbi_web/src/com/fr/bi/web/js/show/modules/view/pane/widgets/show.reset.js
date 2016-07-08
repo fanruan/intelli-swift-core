@@ -17,7 +17,8 @@ BIShow.ResetView = BI.inherit(BI.View, {
         var resetButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Reset"),
-            forceCenter: true
+            forceCenter: true,
+            height: 25
         });
         resetButton.on(BI.Button.EVENT_CHANGE, function () {
             self._resetAllControlValues();
@@ -36,6 +37,7 @@ BIShow.ResetView = BI.inherit(BI.View, {
     },
 
     _resetAllControlValues: function () {
+        Data.SharingPool.put("control_filters", []);
         BI.each(BI.Utils.getAllWidgetIDs(), function (i, wid) {
             BI.Broadcasts.send(BICst.BROADCAST.RESET_PREFIX + wid);
         });

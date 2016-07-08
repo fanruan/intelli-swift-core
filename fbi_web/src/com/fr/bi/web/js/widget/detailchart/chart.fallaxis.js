@@ -74,7 +74,10 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
             config.xAxis[0].showLabel = false;
         }
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        this.config.show_zoom === true && delete config.dataSheet;
+        if(this.config.show_zoom === true){
+            delete config.dataSheet;
+            delete config.zoom.zoomType;
+        }
         config.yAxis = this.yAxis;
 
         config.yAxis[0].reversed = this.config.left_y_axis_reversed;
@@ -303,6 +306,7 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",

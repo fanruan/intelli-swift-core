@@ -18,7 +18,8 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-3
+        MINLIMIT: 1e-3,
+        LEGEND_HEIGHT: 80
     },
 
     _defaultConfig: function () {
@@ -72,6 +73,7 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
+                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
@@ -296,6 +298,7 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",

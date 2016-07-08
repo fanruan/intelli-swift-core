@@ -58,9 +58,12 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
 
     _rebuildItems :function(){
         var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
-        var group = this._assertGroup(BI.Utils.getDimensionGroupByID(o.dId));
-        var customSort = items[0][this.constants.customSortPos];
-        group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
+        if(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP){
+        }else{
+            var group = this._assertGroup(BI.Utils.getDimensionGroupByID(o.dId));
+            var customSort = items[0][this.constants.customSortPos];
+            group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
+        }
         switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId))) {
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
@@ -75,11 +78,17 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
+                    BI.removeAt(items, this.constants.CordonPos);
+                }
                 break;
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
                 items[this.constants.CordonPos][0].text = BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") +")";
+                if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
+                    BI.removeAt(items, this.constants.CordonPos);
+                }
                 break;
             default:
                 BI.removeAt(items, this.constants.CordonPos);
@@ -147,6 +156,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             [{
                 text: BI.i18nText("BI-Dimension_From"),
                 value: BICst.DIMENSION_NUMBER_COMBO.INFO,
+                tipType: "success",
                 cls: "dimension-from-font",
                 disabled: true
             }]

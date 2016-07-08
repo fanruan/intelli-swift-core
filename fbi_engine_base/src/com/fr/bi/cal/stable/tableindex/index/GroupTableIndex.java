@@ -1,13 +1,14 @@
 package com.fr.bi.cal.stable.tableindex.index;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,6 +37,11 @@ public abstract class GroupTableIndex extends BaseTableIndex {
     }
 
     @Override
+    public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
+        return cube.getValueEntryGetter(key, relationList, manager);
+    }
+
+    @Override
     public ICubeTableIndexReader ensureBasicIndex(final List<BITableSourceRelation> relationList) {
         if (relationList == null || relationList.isEmpty()) {
             return null;
@@ -56,15 +62,6 @@ public abstract class GroupTableIndex extends BaseTableIndex {
         return cube.createGroupByType(key, new ArrayList<BITableSourceRelation>(), manager);
     }
 
-    /**
-     * @param key
-     * @param row
-     * @return
-     */
-	@Override
-	public GroupValueIndex getIndexByRow(BIKey key, int row) {
-        return cube.getIndexByRow(key,row, manager);
-	}
 
     @Override
     public GroupValueIndex[] getIndexes(BIKey key, Object[] values) {

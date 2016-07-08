@@ -1,7 +1,7 @@
 package com.finebi.cube.conf.relation;
 
-import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.conf.relation.path.BITableContainer;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
@@ -53,6 +53,11 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     public Set<BITableRelation> getAllTableRelation(long userId) {
         return getUserGroupConfigManager(userId).getAllTableRelation();
 
+    }
+
+    @Override
+    public Set<BITableRelation> getAnalysisAllTableRelation(long userId) {
+        return getUserGroupConfigManager(userId).getAllOldTableRelation();
     }
 
     @Override
@@ -163,15 +168,30 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
+    public Set<BITableRelationPath> getAnalysisAllPath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        return getUserGroupConfigManager(userId).getAnalysisAllPath(juniorTable, primaryTable);
+    }
+
+    @Override
     public Set<BITableRelationPath> getAllAvailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         return getUserGroupConfigManager(userId).getAllAvailablePath(juniorTable, primaryTable);
     }
 
     @Override
+    public Set<BITableRelationPath> getAnalysisAllAvailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        return getUserGroupConfigManager(userId).getAnalysisAllAvailablePath(juniorTable, primaryTable);
+    }
+
+    @Override
     public Set<BITableRelationPath> getAllUnavailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException,
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         return getUserGroupConfigManager(userId).getAllUnavailablePath(juniorTable, primaryTable);
+    }
+
+    @Override
+    public Set<BITableRelationPath> getAnalysisAllUnavailablePath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException, BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        return getUserGroupConfigManager(userId).getAnalysisAllUnavailablePath(juniorTable, primaryTable);
     }
 
     @Override
@@ -196,8 +216,34 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         return resultPaths;
     }
 
+    @Override
+    public Set<BITableRelationPath> getAnalysisAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException {
+        Set<BusinessTable> allTables = getAnalysisAllTables(userId);
+        Iterator<BusinessTable> superTableIt = allTables.iterator();
+        Set<BITableRelationPath> resultPaths = new HashSet<BITableRelationPath>();
+        while (superTableIt.hasNext()) {
+            BusinessTable superTable = superTableIt.next();
+            Iterator<BusinessTable> juniorTableIt = allTables.iterator();
+            while (juniorTableIt.hasNext()) {
+                BusinessTable juniorTable = juniorTableIt.next();
+                if (!ComparatorUtils.equals(superTable, juniorTable)) {
+                    try {
+                        resultPaths.addAll(getAnalysisAllPath(userId, juniorTable, superTable));
+                    } catch (Exception e) {
+                        continue;
+                    }
+                }
+            }
+        }
+        return resultPaths;
+    }
+
     protected Set<BusinessTable> getAllTables(long userId) {
         return BICubeConfigureCenter.getPackageManager().getAllTables(userId);
+    }
+
+    protected Set<BusinessTable> getAnalysisAllTables(long userId) {
+        return BICubeConfigureCenter.getPackageManager().getAnalysisAllTables(userId);
     }
 
     @Override
@@ -220,7 +266,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         JSONObject jo = new JSONObject();
         Set<BusinessTable> primaryTables = new HashSet<BusinessTable>();
         Set<BusinessTable> foreignTables = new HashSet<BusinessTable>();
-        for (BITableRelation relation : getAllTableRelation(userId)) {
+        for (BITableRelation relation : getAnalysisAllTableRelation(userId)) {
             primaryTables.add(relation.getPrimaryTable());
             foreignTables.add(relation.getForeignTable());
         }
@@ -229,7 +275,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
             jo.put(p.getID().getIdentity(), relation);
             for (BusinessTable f : foreignTables) {
                 try {
-                    Set<BITableRelationPath> path = getAllAvailablePath(userId, f, p);
+                    Set<BITableRelationPath> path = getAnalysisAllAvailablePath(userId, f, p);
                     if (path != null || !path.isEmpty()) {
                         relation.put(f.getID().getIdentity(), createPathJSON(path));
                     }
@@ -275,5 +321,8 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         return getUserGroupConfigManager(userId).getForeignRelation(table);
     }
 
+    public boolean isRelationGenerated(long userId, BITableRelation tableRelation) throws BITableAbsentException, BIRelationAbsentException {
+        return getUserGroupConfigManager(userId).isRelationGenerated(tableRelation);
+    }
 
 }

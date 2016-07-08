@@ -58,8 +58,8 @@ BI.GridLayout = BI.inherit(BI.Layout, {
             if (col === 0) {
                 item.addClass("first-col");
             }
-            item.addClass(BI.isOdd(row) ? "odd-row" : "even-row");
-            item.addClass(BI.isOdd(col) ? "odd-col" : "even-col");
+            item.addClass(BI.isOdd(row + 1) ? "odd-row" : "even-row");
+            item.addClass(BI.isOdd(col + 1) ? "odd-col" : "even-col");
             item.addClass("center-element");
         }
 

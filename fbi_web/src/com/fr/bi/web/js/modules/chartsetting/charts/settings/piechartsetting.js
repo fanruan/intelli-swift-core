@@ -37,7 +37,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
             type: "bi.chart_setting_select_color_combo",
             width: 130
         });
-        this.colorSelect.populate(BICst.CHART_COLORS);
+        this.colorSelect.populate();
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);

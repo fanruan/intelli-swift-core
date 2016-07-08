@@ -101,7 +101,7 @@ BI.CircleOperatorPane = BI.inherit(BI.LoadingPane, {
             BI.Utils.getCircleLayerLevelInfo(self.options.table, BI.extend(self.getValue(), {
                 divide_length: ""
             }), function(res){
-                self._setLevelEditorVisible(res.size);
+                self._setLevelEditorVisible(BI.parseInt(res.size) === 1);
                 self.loaded();
                 self._checkValid();
             });
@@ -193,11 +193,11 @@ BI.CircleOperatorPane = BI.inherit(BI.LoadingPane, {
             this.constructRelationButton.setTitle(BI.i18nText("BI-Fields_Type_Different_Not_Construct"));
             return;
         }
-        if(manageValue === BI.CircleOperatorPane.CONDITION_TYPE_NOT_HAS_PARENT && this.levelLengthEditor.isVisible() === false){
-            this.constructRelationButton.setEnable(false);
-            this.constructRelationButton.setTitle(BI.i18nText("BI-Cannot_Create_Layer"));
-            return;
-        }
+        //if(manageValue === BI.CircleOperatorPane.CONDITION_TYPE_NOT_HAS_PARENT && this.levelLengthEditor.isVisible() === false){
+        //    this.constructRelationButton.setEnable(false);
+        //    this.constructRelationButton.setTitle(BI.i18nText("BI-Cannot_Create_Layer"));
+        //    return;
+        //}
         this.constructRelationButton.setEnable(true);
         this.constructRelationButton.setTitle("");
     },

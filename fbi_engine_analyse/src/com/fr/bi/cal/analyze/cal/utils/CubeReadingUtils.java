@@ -2,19 +2,18 @@ package com.fr.bi.cal.analyze.cal.utils;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.TableData;
 import com.fr.bi.cal.analyze.cal.result.CrossNode;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.connection.ConnectionRowGetter;
+import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.util.BIConfUtils;
 import com.fr.data.impl.EmbeddedTableData;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,14 +118,13 @@ public class CubeReadingUtils {
      * TODO 这里只是优化父元素的读取，尚未优化子表
      * 获取相同路径上的维度的值用于运算
      *
-     * @param tableKey   指标table
      * @param value      当前父的值
      * @param currentKey 父的列信息
-     * @param childkey   子的维度信息
+     * @param childKey   子的维度信息
      * @return 子维度的可能值
      */
-    public static Object[] getChildValuesAsParentOrSameTable(BusinessTable tableKey, Object value, DimensionCalculator currentKey, final DimensionCalculator childkey, ICubeDataLoader loader) {
-        BITableSourceRelation[] relationChild = childkey.getRelationList().toArray(new BITableSourceRelation[childkey.getRelationList().size()]);
+    public static Object[] getChildValuesAsParentOrSameTable(Object value, DimensionCalculator currentKey, final DimensionCalculator childKey, ICubeDataLoader loader) {
+        BITableSourceRelation[] relationChild = childKey.getRelationList().toArray(new BITableSourceRelation[childKey.getRelationList().size()]);
         if (relationChild == null) {
             relationChild = new BITableSourceRelation[0];
         }
@@ -136,10 +134,11 @@ public class CubeReadingUtils {
         }
         BITableSourceRelation[] targetRelation = new BITableSourceRelation[relationChild.length - currentRelation.length];
         System.arraycopy(relationChild, 0, targetRelation, 0, targetRelation.length);
-        final TreeSet treeSet = new TreeSet(childkey.getComparator());
+        final TreeSet treeSet = new TreeSet(childKey.getComparator());
         ICubeTableService ti = loader.getTableIndex(currentKey.getField().getTableBelongTo().getTableSource());
-        final ConnectionRowGetter getter = new ConnectionRowGetter(BIConfUtils.createDirectTableConnection(targetRelation, loader));
-        Object[] res = getter.getConnectedValues(currentKey.getField(), childkey.getField(), value, loader);
+        ICubeTableService cTi = loader.getTableIndex(childKey.getField().getTableBelongTo().getTableSource());
+        Object[] res = TableIndexUtils.getValueFromGvi(cTi, cTi.getColumnIndex(childKey.getField()),
+                ti.getIndexes(ti.getColumnIndex(currentKey.getField()), new Object[]{value}),Arrays.asList(targetRelation));
         for (int i = 0; i < res.length; i++) {
             if (res[i] != null) {
                 treeSet.add(res[i]);
@@ -147,6 +146,7 @@ public class CubeReadingUtils {
         }
         return treeSet.toArray(new Object[treeSet.size()]);
     }
+
 
 
 }

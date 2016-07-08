@@ -21,25 +21,40 @@ BI.TargetStyleConditionItem = BI.inherit(BI.Widget, {
             closemax: range.closemax
         });
 
+        this.numberRange.on(BI.NumericalInterval.EVENT_CHANGE , function () {
+            self.fireEvent(BI.TargetStyleConditionItem.EVENT_CHANGE);
+        });
+
         this.colorChooser = BI.createWidget({
             type: "bi.color_chooser",
             width: 30,
             height: 30
         });
+
         this.colorChooser.setValue(color);
+
+        this.deleteIcon = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "data-link-remove-font",
+            width: 30,
+            height: 30,
+            handler: function () {
+                o.onRemoveCondition(o.cid);
+            }
+        });
+
+        this.deleteIcon.setVisible(false);
+
+        this.element.hover(function () {
+            self.deleteIcon.setVisible(true);
+        }, function () {
+            self.deleteIcon.setVisible(false);
+        });
 
         BI.createWidget({
             type: "bi.left",
             element: this.element,
-            items: [this.numberRange, this.colorChooser, {
-                type: "bi.icon_button",
-                cls: "data-link-remove-font",
-                width: 30,
-                height: 30,
-                handler: function(){
-                    o.onRemoveCondition(o.cid);
-                }
-            }],
+            items: [this.numberRange, this.colorChooser, this.deleteIcon],
             hgap: 5
         })
     },
@@ -55,6 +70,15 @@ BI.TargetStyleConditionItem = BI.inherit(BI.Widget, {
     setValue: function(v){
         this.numberRange.setValue(v.range);
         this.colorChooser.setValue(v.color);
+    },
+
+    setSmallIntervalEnable: function (v) {
+        this.numberRange.setMinEnable(v);
+        this.numberRange.setCloseMinEnable(v);
     }
+
 });
+
+BI.TargetStyleConditionItem.EVENT_CHANGE = "EVENT_CHANGE";
+
 $.shortcut("bi.target_style_condition_item", BI.TargetStyleConditionItem);

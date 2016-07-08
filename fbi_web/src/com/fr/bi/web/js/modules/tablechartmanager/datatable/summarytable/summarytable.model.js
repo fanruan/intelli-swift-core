@@ -6,6 +6,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         BI.SummaryTableModel.superclass._init.apply(this, arguments);
         var self = this;
         this.wId = this.options.wId;
+        this.status = this.options.status;      //一个恶心的属性，来自于详细设置，查看真实数据
         this.EMPTY_VALUE = BI.UUID();
         this._refreshDimsInfo();
 
@@ -46,6 +47,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
 
     getWidgetId: function () {
         return this.wId;
+    },
+    
+    getStatus: function() {
+        return this.status;  
     },
 
     isNeed2Freeze: function () {
@@ -136,6 +141,11 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         };
         op.clickvalue = this.clickValue;
         op.page = this.pageOperator;
+        op.status = this.status;
+        op.real_data = true;
+        if(this.status === BICst.WIDGET_STATUS.DETAIL) {
+            op.real_data = BI.Utils.isShowWidgetRealDataByID(this.wId) || false;
+        }
         return op;
     },
 
@@ -334,7 +344,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     //交叉表，pValue来自于行列表头的结合
                     var ob = {index: 0};
                     self._createTableSumItems(child.s.c, values, pValues, ob);
-                    self.showColTotal === true && self._createTableSumItems(child.s.s, values, pValues, ob);
+                    //显示列汇总 有指标
+                    if (self.showColTotal === true && self.targetIds.length > 0) {
+                        self._createTableSumItems(child.s.s, values, pValues, ob);
+                    }
                 } else {
                     BI.each(child.s, function (j, sum) {
                         var tId = self.targetIds[j];
@@ -347,10 +360,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     });
                 }
                 item.values = values;
-            }
-            //children 为空的时候values 也不应该有？
-            if (BI.isNotNull(item.children) && item.children.length === 0) {
-                item.values = [];
             }
             items.push(item);
         });
@@ -570,6 +579,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 if (self.targetIds.length === 0) {
                     tId = self.crossDimIds[i];
                 }
+
                 sum.push({
                     type: "bi.target_body_normal_cell",
                     text: v,
@@ -591,7 +601,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         //可以直接根据crossItems确定header的后半部分
         function parseHeader(items) {
             BI.each(items, function (i, item) {
-                var dName = BI.Utils.getDimensionNameByID(self.targetIds[i % (self.targetIds.length)]);
+                var dName = BI.Utils.getDimensionNameByID(self.targetIds[i % (self.targetIds.length)]) || "--";
                 if (BI.isNotNull(item.children)) {
                     parseHeader(item.children);
                     if (BI.isNotNull(item.values) && self.showColTotal === true) {
@@ -611,8 +621,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     item.text = BI.i18nText("BI-Summary_Values") + ":" + dName;
                     item.cls = "cross-table-target-header";
                     self.header.push(item);
-                } else if (BI.isNotNull(item.values)) {
-                    BI.each(item.values, function(k, v){
+                } else if (BI.isNotEmptyArray(item.values)) {
+                    BI.each(item.values, function (k, v) {
                         self.header.push({
                             type: "bi.page_table_cell",
                             cls: "cross-table-target-header",
@@ -680,10 +690,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 item.values = item;
             }
         }
-        //children 为空的时候values 也不应该有？
-        if (BI.isNotNull(item.children) && item.children.length === 0) {
-            item.values = [];
-        }
         this.items = [item];
     },
 
@@ -731,11 +737,32 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 if (BI.isNotNull(crossItem.children)) {
                     var tempPV = [];
                     if (BI.isNotNull(crossItem.dId)) {
-                        tempPV = pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]);
+                        if (BI.isNotEmptyArray(crossItem.values)) {
+                            BI.each(crossItem.values, function (j, v) {
+                                tempPV = pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]);
+                            });
+                            //显示列汇总的时候需要构造汇总
+                        } else {
+                            tempPV = pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]);
+                        }
                     }
                     parseCrossItem2Array(crossItem.children, pValues, tempPV);
+                    //汇总
+                    if (BI.isNotEmptyArray(crossItem.values)) {
+                        BI.each(crossItem.values, function (j, v) {
+                            pValues.push([{dId: crossItem.dId, value: [crossItem.text]}]);
+                        });
+                    }
                 } else if (BI.isNotNull(crossItem.dId)) {
-                    pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
+                    if (BI.isNotEmptyArray(crossItem.values)) {
+                        BI.each(crossItem.values, function (j, v) {
+                            pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
+                        });
+                    } else {
+                        // pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
+                        //最外层
+                        pValues.push([]);
+                    }
                 } else if (BI.isNotNull(crossItem.isSum)) {
                     pValues.push(pv);
                 }
@@ -758,17 +785,15 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             if (this.showColTotal === true) {
                 var outerValues = [];
                 BI.each(left.s.s, function (i, v) {
-                    //有列表头无指标情况下，以该列表头为指标（内容都是--）
-                    var tId = self.targetIds[i];
-                    if (self.targetIds.length === 0) {
-                        tId = self.crossDimIds[i];
+                    if (self.targetIds.length > 0) {
+                        var tId = self.targetIds[i];
+                        outerValues.push({
+                            type: "bi.target_body_normal_cell",
+                            text: v,
+                            dId: tId,
+                            cls: "summary-cell last"
+                        });
                     }
-                    outerValues.push({
-                        type: "bi.target_body_normal_cell",
-                        text: v,
-                        dId: tId,
-                        cls: "summary-cell last"
-                    });
                 });
                 BI.each(sums, function (i, sum) {
                     sums[i].cls = "summary-cell last"
@@ -776,11 +801,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 sums = sums.concat(outerValues);
             }
             item.values = sums;
-        }
-
-        //children 为空的时候values 也不应该有？
-        if (BI.isNotNull(item.children) && item.children.length === 0) {
-            item.values = [];
         }
         this.items = [item];
     },
@@ -884,30 +904,52 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 }
             }
             var hasSum = false;
-            if (BI.isNotNull(self.crossItemsSums[currentLayer]) && self.crossItemsSums[currentLayer][i] === true) {
+            if (BI.isNotNull(self.crossItemsSums) &&
+                BI.isNotNull(self.crossItemsSums[currentLayer]) &&
+                self.crossItemsSums[currentLayer][i] === true) {
                 hasSum = true;
             }
             if (hasSum === true && self.showColTotal === true && BI.isNotEmptyArray(item.children)) {
                 BI.each(self.targetIds, function (k, tId) {
-                    // item.children.push({
-                    //     type: "bi.page_table_cell",
-                    //     text: BI.i18nText("BI-Summary_Values"),
-                    //     tag: BI.UUID(),
-                    //     isSum: true,
-                    //     cls: "summary-cell"
-                    // });
                     item.values = [];
                     BI.each(self.targetIds, function (k, tarId) {
                         item.values.push("");
                     });
                 });
             }
-            if(self.showColTotal === true || BI.isNull(item.children)) {
+            if (self.showColTotal === true || BI.isNull(item.children)) {
                 item.values = BI.makeArray(self.targetIds.length, "");
             }
             crossHeaderItems.push(item);
         });
         return crossHeaderItems;
+    },
+
+    //仅有列表头的交叉表
+    _createCrossHeader4OnlyCross: function () {
+        var self = this;
+        BI.each(this.crossDimIds, function (i, dId) {
+            if (BI.isNotNull(dId)) {
+                self.crossHeader.push({
+                    type: "bi.normal_header_cell",
+                    dId: dId,
+                    text: BI.Utils.getDimensionNameByID(dId),
+                    sortFilterChange: function (v) {
+                        self.resetETree();
+                        self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
+                        self.headerOperatorCallback(v, dId);
+                    }
+                });
+            }
+        });
+    },
+
+    _createCrossItems4OnlyCross: function () {
+        //交叉表items
+        var crossItem = {
+            children: this._createCrossPartItems(this.data.c, 0)
+        };
+        this.crossItems = [crossItem];
     },
 
     _setOtherGroupAttrs: function () {
@@ -954,6 +996,24 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         }
     },
 
+    _setOtherAttrs4OnlyCross: function() {
+        var self = this;
+        this.columnSize = [""];
+        this.freezeCols = [];
+        this.mergeCols = [0];
+        function parseSizeOfCrossItems(items) {
+            BI.each(items, function(i, item) {
+                if(BI.isNotNull(item.children)) {
+                    parseSizeOfCrossItems(item.children);
+                } else {
+                    self.columnSize.push("");
+                }
+            });
+        }
+        parseSizeOfCrossItems(this.crossItems);
+
+    },
+
     createGroupTableAttrs: function () {
         //几个回调
         this.headerOperatorCallback = arguments[0];
@@ -962,6 +1022,16 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
 
         this._resetPartAttrs();
         this._refreshDimsInfo();
+
+        //仅有列表头的时候
+        if (this.dimIds.length === 0 &&
+            this.crossDimIds.length > 0 &&
+            this.targetIds.length === 0) {
+            this._createCrossHeader4OnlyCross();
+            this._createCrossItems4OnlyCross();
+            this._setOtherAttrs4OnlyCross();
+            return;
+        }
 
         //header
         this._createGroupTableHeader();
