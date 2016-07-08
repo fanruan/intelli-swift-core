@@ -31,9 +31,9 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
     protected void exportBook(ResultWorkBook book, POIWorkbookAction workbookWrapper, List cellList, List cellFormulaList, List list, boolean reUse) throws Exception {
         innerReport = book.getResultReport(0);
 
-        Point offset = new Point(0, 0);
         //b:TODO 2 elmentcase
         ElementCase ec = null;
+        Point offset = new Point(0, 0);
         //b:TODO
         Block block = ((AbstractPolyReport) innerReport).getBlock(0);
         if (block instanceof ResultChartBlock) {
@@ -44,18 +44,17 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
 
         int columnCount = ec.getColumnCount();
         int rowCount = ec.getRowCount();
-        // marks:当报表行数超过最大行数，超过最大列数，自动新建一个excelsheet
         int c = 1;
         while (offset.x < columnCount) {
             offset.y = 0;
             while (offset.y < rowCount) {
-                this.innerExportReport(new BIExcelExporterBlock(innerReport, offset.x, offset.y, Math.min(columnCount - offset.x, ExportConstants.MAX_COLS), Math.min(rowCount - offset.y, ExportConstants.MAX_ROWS)),
+                this.innerExportReport(new BIExcelExporterBlock(innerReport, offset.x, offset.y, Math.min(columnCount - offset.x, ExportConstants.MAX_COLS_2007), Math.min(rowCount - offset.y, ExportConstants.MAX_ROWS_2007)),
                         book.getReportExportAttr(), book.getReportName(0) + (c == 1 ? "" : "_" + c),
                         (SXSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
-                offset.y += ExportConstants.MAX_ROWS;
+                offset.y += ExportConstants.MAX_ROWS_2007;
                 c++;
             }
-            offset.x += ExportConstants.MAX_COLS;
+            offset.x += ExportConstants.MAX_COLS_2007;
         }
     }
 
