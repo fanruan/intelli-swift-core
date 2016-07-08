@@ -31,7 +31,7 @@ public class BIUserTableRelationManager implements Release {
      *
      */
     private static final long serialVersionUID = -4599513067350765988L;
-    private static final String XML_TAG = "ConnectionManager";
+    
     protected BITableRelationAnalysisService oldAnalyserHandler;
     protected BITableRelationAnalysisService currentAnalyserHandler;
     protected BIDisablePathsManager disablePathsManager;

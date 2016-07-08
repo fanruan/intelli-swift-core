@@ -84,6 +84,7 @@ public class BuildCubeTask implements CubeTask {
         try {
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
             BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(),cubeBuildStuff.getTableRelationSet());
+            BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
             BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
@@ -97,13 +98,6 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
-//    private  Set<BITableRelation> setOldAnalysisTableRelations(BIUser biUser, Set<BITableRelation> tableRelationSet) {
-//        Set<BITableRelation> set= BICubeConfigureCenter.getTableRelationManager().getAnalysisAllTableRelation(biUser.getUserId());
-//        for (BITableRelation biTableRelation : set) {
-//            tableRelationSet.add(biTableRelation);
-//        }
-//        return tableRelationSet;
-//    }
 
     @Override
     public void run() {
