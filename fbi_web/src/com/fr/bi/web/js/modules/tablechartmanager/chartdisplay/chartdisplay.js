@@ -326,7 +326,9 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     show_data_label: BI.Utils.getWSShowDataLabelByID(o.wId),
                     show_data_table: BI.Utils.getWSShowDataTableByID(o.wId),
                     show_grid_line: BI.Utils.getWSShowGridLineByID(o.wId),
-                    show_zoom: BI.Utils.getWSShowZoomByID(o.wId)
+                    show_zoom: BI.Utils.getWSShowZoomByID(o.wId),
+                    style_conditions: BI.Utils.getWSDashboardStylesByID(o.wId),
+                    auto_custom: BI.Utils.getWSScaleByID(o.wId)
                 }, options, {
                     cordon: self.model.getCordon(),
                     tooltip: self.model.getToolTip(type),
