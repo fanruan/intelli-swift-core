@@ -3,13 +3,13 @@ package com.finebi.datasource.api;
 import com.finebi.datasource.api.criteria.CriteriaBuilder;
 import com.finebi.datasource.api.criteria.CriteriaQuery;
 import com.finebi.datasource.api.criteria.Root;
-import com.finebi.datasource.api.metamodel.EntityManager;
 import com.finebi.datasource.api.metamodel.EntityType;
+import com.finebi.datasource.api.metamodel.EntityTypeManager;
 import com.finebi.datasource.sql.criteria.internal.CriteriaQueryImpl;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContext;
 import com.finebi.datasource.sql.criteria.internal.context.AspireContextImpl;
-import com.finebi.datasource.sql.criteria.internal.metamodel.EntityManagerImpl;
+import com.finebi.datasource.sql.criteria.internal.metamodel.EntityTypeManagerImpl;
 import com.finebi.datasource.sql.criteria.internal.render.factory.RenderFactoryDebug;
 import junit.framework.TestCase;
 
@@ -24,7 +24,7 @@ public class StringFunctionTest extends TestCase{
      * global variables
      */
     private AspireContext context = new AspireContextImpl(new RenderFactoryDebug());
-    private EntityManager manager = new EntityManagerImpl(context);
+    private EntityTypeManager manager = new EntityTypeManagerImpl(context);
 
     /**
      * static methods

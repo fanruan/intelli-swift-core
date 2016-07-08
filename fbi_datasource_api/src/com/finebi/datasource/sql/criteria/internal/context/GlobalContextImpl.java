@@ -17,17 +17,23 @@ public class GlobalContextImpl {
         globalProperties = new ContextProperty();
     }
 
-    public boolean containeEntityType(EntityType entityType) {
+    public boolean containEntityType(EntityType entityType) {
         synchronized (globalMetamodel) {
             return globalMetamodel.contain(entityType);
         }
     }
 
-    public void addEntityType(EntityType entityType) {
+    public void registerEntityType(EntityType entityType) {
         synchronized (globalMetamodel) {
-            if (!containeEntityType(entityType)){
+            if (!containEntityType(entityType)) {
                 globalMetamodel.build().addEntityType(entityType);
             }
+        }
+    }
+
+    public void registerProperty(String name, Object property) {
+        synchronized (globalProperties) {
+            globalProperties.addProperty(name, property);
         }
     }
 }
