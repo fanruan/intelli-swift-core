@@ -2195,11 +2195,6 @@
         },
 
         getWidgetDataByID: function (wid, callback, options) {
-            var status = options.status;
-            options.real_time = true;
-            if(status === BICst.WIDGET_STATUS.DETAIL) {
-                options.real_time = this.isShowWidgetRealDataByID(wid) || false;
-            }
             Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
                 callback(data);
             });

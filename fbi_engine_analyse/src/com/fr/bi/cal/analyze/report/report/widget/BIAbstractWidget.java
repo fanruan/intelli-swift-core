@@ -45,7 +45,7 @@ public abstract class BIAbstractWidget implements BIWidget {
     private TargetFilter filter;
     private long initTime;
     private long userId;
-    private boolean realData;
+    private boolean realData = true;
 
     public long getUserId() {
         return userId;
