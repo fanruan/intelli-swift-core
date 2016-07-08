@@ -97,20 +97,24 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                         self.bottomRightScrollBar.setHidden(false);
                         var items = self.layout.attr("items");
                         isNeedHResize = isNeedHResize || items[0].bottom !== o.scrollWidth;
-                        items[0].bottom = o.scrollWidth;
-                        items[1].bottom = o.scrollWidth;
-                        self.layout.attr("items", items);
-                        self.layout.resize();
+                        if (items[0].bottom !== o.scrollWidth || items[1].bottom !== o.scrollWidth) {
+                            items[0].bottom = o.scrollWidth;
+                            items[1].bottom = o.scrollWidth;
+                            self.layout.attr("items", items);
+                            self.layout.resize();
+                        }
                         return items[0].bottom !== o.scrollWidth;
                     } else {
                         self.bottomLeftScrollBar && self.bottomLeftScrollBar.setHidden(true);
                         self.bottomRightScrollBar.setHidden(true);
                         var items = self.layout.attr("items");
                         isNeedHResize = isNeedHResize || items[0].bottom !== 0;
-                        items[0].bottom = 0;
-                        items[1].bottom = 0;
-                        self.layout.attr("items", items);
-                        self.layout.resize();
+                        if (items[0].bottom !== 0 || items[1].bottom !== 0) {
+                            items[0].bottom = 0;
+                            items[1].bottom = 0;
+                            self.layout.attr("items", items);
+                            self.layout.resize();
+                        }
                         return items[0].bottom !== 0;
                     }
                 };
@@ -120,17 +124,21 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
                         self.topScrollBar.setHidden(false);
                         var items = self.layout.attr("items");
                         isNeedVResize = isNeedVResize || items[0].right !== o.scrollWidth;
-                        items[0].right = o.scrollWidth;
-                        self.layout.attr("items", items);
-                        self.layout.resize();
+                        if (items[0].right !== o.scrollWidth) {
+                            items[0].right = o.scrollWidth;
+                            self.layout.attr("items", items);
+                            self.layout.resize();
+                        }
                         return items[0].right !== o.scrollWidth;
                     } else {
                         self.topScrollBar.setHidden(true);
                         var items = self.layout.attr("items");
                         isNeedVResize = isNeedVResize || items[0].right !== 0;
-                        items[0].right = 0;
-                        self.layout.attr("items", items);
-                        self.layout.resize();
+                        if (items[0].right !== 0) {
+                            items[0].right = 0;
+                            self.layout.attr("items", items);
+                            self.layout.resize();
+                        }
                         return items[0].right !== 0;
                     }
                 };
