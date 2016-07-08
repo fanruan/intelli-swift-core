@@ -1700,6 +1700,7 @@
             dimension.used = true;
             var widget = Data.SharingPool.get("widgets", wid);
             widget.page = -1;
+            widget.real_data = true;
             widget.dimensions = {};
             widget.dimensions[dId] = dimension;
             widget.view = {};
@@ -2191,6 +2192,7 @@
             });
 
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
+            widget.real_data = true;
             return widget;
         },
 
