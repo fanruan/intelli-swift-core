@@ -29,6 +29,9 @@ public class IOSWriter extends AbstractWriter{
         if (ob instanceof String){
             return "@\"" + ob + "\"";
         }
+        if (ob instanceof Enum) {
+            return ob.toString();
+        }
         return ob;
     }
 }
