@@ -44,6 +44,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
+        config.plotOptions.color = BI.isArray(this.config.theme_color) ? this.config.theme_color : [this.config.theme_color];
         var formatterArray = [];
         BI.backEach(items, function(idx, item){
             if(BI.has(item, "settings")){
@@ -61,6 +62,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         config.plotOptions.dataLabels.formatter.valueFormat = function(){
             return window.FR ? FR.contentFormat(arguments[0], formatterArray[0]) : arguments[0];
         };
+
         config.geo = this.config.geo;
         config.chartType = "areaMap";
         delete config.xAxis;
@@ -82,20 +84,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     config.rangeLegend.enabled = false;
                     break;
             }
-            config.rangeLegend.range.max = self.max;
-            config.rangeLegend.range.min = self.min;
-            config.rangeLegend.range.color = rangeColor(self.config.map_styles);
-        }
-
-        function rangeColor (mapStyles) {
-            var rangeStyles = [];
-            BI.each(mapStyles , function (idx , style) {
-                var styles = [];
-                styles.push(style.range.min);
-                styles.push(style.color);
-                rangeStyles.push(styles)
-            });
-            return rangeStyles
+           // config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
         }
 
         function formatToolTipAndDataLabel(format, numberLevel){
@@ -122,6 +111,95 @@ BI.MapChart = BI.inherit(BI.Widget, {
                 }
             }
             return formatter;
+        }
+
+        function getRangeStyle (styles , change , defaultColor) {
+            var range = [], color = null;
+            var conditionMax = null, conditionMin = null, max = null, min = null;
+
+            BI.each(items , function (idx , item) {
+                BI.each(item.data , function (id , it) {
+                    if(BI.isNull(min) || min > it.y) {
+                        min = it.y
+                    }
+                    if(BI.isNull(max) || max < it.y) {
+                        max = it.y
+                    }
+                })
+            });
+
+            switch (change) {
+                case BICst.SCALE_SETTING.AUTO:
+                    range.color = defaultColor;
+                    range.splitNumber = 2;
+                    return range;
+                    break;
+                case BICst.SCALE_SETTING.CUSTOM:
+                    if(styles.length !== 0) {
+                        BI.each(styles, function (idx, style) {
+                            range.push({
+                                color: style.color,
+                                from: style.range.min,
+                                to: style.range.max
+                            });
+                            color = style.color;
+                            conditionMax = style.range.max
+                        });
+
+                        conditionMin = BI.parseInt(styles[0].range.min);
+                        if (conditionMin !== 0) {
+                            range.push({
+                                color: "#808080",
+                                from: 0,
+                                to: conditionMin
+                            });
+                        }
+
+                        var maxScale = _calculateValueNiceDomain(0, max)[1];
+
+                        if (conditionMax < maxScale) {
+                            range.push({
+                                color: color,
+                                from: conditionMax,
+                                to: maxScale
+                            });
+
+                        }
+                    }
+
+                    return range;
+                    break;
+            }
+        }
+
+        function _calculateValueNiceDomain(minValue, maxValue){
+
+            minValue = Math.min(0, minValue);
+
+            var tickInterval = _linearTickInterval(minValue, maxValue);
+
+            return _linearNiceDomain(minValue, maxValue, tickInterval);
+        }
+
+        function _linearTickInterval(minValue, maxValue, m){
+
+            m = m || 5;
+            var span = maxValue - minValue;
+            var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
+            var err = m / span * step;
+
+            if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
+
+            return step;
+        }
+
+        function _linearNiceDomain(minValue, maxValue, tickInterval){
+
+            minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
+
+            maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
+
+            return [minValue, maxValue];
         }
     },
 
@@ -180,7 +258,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
             show_data_label: options.show_data_label || false,
             geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], geoName: BI.i18nText("BI-China")},
             tooltip: options.tooltip || "",
-            map_styles: options.map_styles
+            theme_color: options.theme_color,
+            map_styles: options.map_styles,
+            auto_custom: options.auto_custom
         };
         this.options.items = items;
 
