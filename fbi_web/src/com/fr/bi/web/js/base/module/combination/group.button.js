@@ -154,7 +154,7 @@ BI.ButtonGroup = BI.inherit(BI.Widget, {
             buttons.push(self.buttons[index]);
         });
         BI.each(buttons, function (i, btn) {
-            btn.destroy();
+            btn && btn.destroy();
         })
     },
 

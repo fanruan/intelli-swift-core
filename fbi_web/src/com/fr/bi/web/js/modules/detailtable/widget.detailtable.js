@@ -133,7 +133,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
                 self.pager.setAllPages(Math.ceil(row / size));
                 self.pager.setValue(vPage);
-                self.table.attr("columnSize", self._getColumnSize([header]));
+                self.table.attr("columnSize", self._getColumnSize(header));
                 callback(items, [header]);
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
