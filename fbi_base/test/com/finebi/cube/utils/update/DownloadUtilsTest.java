@@ -14,7 +14,6 @@ import java.io.File;
 public class DownloadUtilsTest extends TestCase {
     /**
      * demo主程序
-     *
      */
     public void testDownload() {
         String folderName = "DownloadUtilsTest";
