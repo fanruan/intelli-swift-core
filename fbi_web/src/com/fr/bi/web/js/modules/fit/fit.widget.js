@@ -44,9 +44,9 @@ BI.FitWidget = BI.inherit(BI.BasicButton, {
                 right: 5
             }]
         });
-        this.element.hover(function(){
+        this.element.hover(function () {
             self.draggable.element.addClass("fit-widget-drag-bar drag-tip-dots-icon");
-        }, function(){
+        }, function () {
             self.draggable.element.removeClass("fit-widget-drag-bar drag-tip-dots-icon");
         });
     },

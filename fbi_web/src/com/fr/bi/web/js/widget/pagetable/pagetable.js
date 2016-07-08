@@ -377,6 +377,51 @@ BI.PageTable = BI.inherit(BI.Widget, {
         return false;
     },
 
+    _adjustPager: function () {
+        this._assertPager();
+        if ((this.pager.hasNext && this.pager.hasNext())
+            || (this.pager.hasPrev && this.pager.hasPrev())) {
+            var w = this.pager.getWidth();
+            this.pager.element.width(w);
+            this.table.attr("pageSpace", w);
+        } else {
+            if (((this.pager.hasVNext && this.pager.hasVNext())
+                || (this.pager.hasVPrev && this.pager.hasVPrev()))
+                &&
+                ((this.pager.hasHNext && this.pager.hasHNext())
+                || (this.pager.hasHPrev && this.pager.hasHPrev()))) {
+                this.pager.setHPagerVisible(true);
+                this.pager.setVPagerVisible(true);
+                this.pager.setVisible(true);
+                this.pager.element.width(this.pager.getWidth());
+                var w = this.pager.getWidth();
+                this.table.attr("pageSpace", w);
+            } else if ((this.pager.hasVNext && this.pager.hasVNext())
+                || (this.pager.hasVPrev && this.pager.hasVPrev())) {
+                this.pager.setHPagerVisible(false);
+                this.pager.setVPagerVisible(true);
+                this.pager.setVisible(true);
+                this.pager.element.width(this.pager.getWidth() / 2);
+                var w = this.pager.getWidth() / 2;
+                this.table.attr("pageSpace", w);
+            } else if ((this.pager.hasHNext && this.pager.hasHNext())
+                || (this.pager.hasHPrev && this.pager.hasHPrev())) {
+                this.pager.setHPagerVisible(true);
+                this.pager.setVPagerVisible(false);
+                this.pager.setVisible(true);
+                this.pager.element.width(this.pager.getWidth() / 2);
+                var w = this.pager.getWidth() / 2;
+                this.table.attr("pageSpace", w);
+            } else {
+                this.pager.setHPagerVisible && this.pager.setHPagerVisible(false);
+                this.pager.setVPagerVisible && this.pager.setVPagerVisible(false);
+                this.pager.setVisible(false);
+                this.pager.element.width(0);
+                this.table.attr("pageSpace", 0);
+            }
+        }
+    },
+
     _dealWithPager: function () {
         var self = this, o = this.options;
 
@@ -398,6 +443,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
             } else {
                 self.tipPager.setVisible(false);
                 self.pager.setVisible(true);
+                self._adjustPager();
             }
         }, 30);
     },
@@ -491,47 +537,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
     populate: function () {
         this._assertPager();
         this.pager.populate();
-        if ((this.pager.hasNext && this.pager.hasNext())
-            || (this.pager.hasPrev && this.pager.hasPrev())) {
-            var w = this.pager.getWidth();
-            this.pager.element.width(w);
-            this.table.attr("pageSpace", w);
-        } else {
-            if (((this.pager.hasVNext && this.pager.hasVNext())
-                || (this.pager.hasVPrev && this.pager.hasVPrev()))
-                &&
-                ((this.pager.hasHNext && this.pager.hasHNext())
-                || (this.pager.hasHPrev && this.pager.hasHPrev()))) {
-                this.pager.setHPagerVisible(true);
-                this.pager.setVPagerVisible(true);
-                this.pager.setVisible(true);
-                this.pager.element.width(this.pager.getWidth());
-                var w = this.pager.getWidth();
-                this.table.attr("pageSpace", w);
-            } else if ((this.pager.hasVNext && this.pager.hasVNext())
-                || (this.pager.hasVPrev && this.pager.hasVPrev())) {
-                this.pager.setHPagerVisible(false);
-                this.pager.setVPagerVisible(true);
-                this.pager.setVisible(true);
-                this.pager.element.width(this.pager.getWidth() / 2);
-                var w = this.pager.getWidth() / 2;
-                this.table.attr("pageSpace", w);
-            } else if ((this.pager.hasHNext && this.pager.hasHNext())
-                || (this.pager.hasHPrev && this.pager.hasHPrev())) {
-                this.pager.setHPagerVisible(true);
-                this.pager.setVPagerVisible(false);
-                this.pager.setVisible(true);
-                this.pager.element.width(this.pager.getWidth() / 2);
-                var w = this.pager.getWidth() / 2;
-                this.table.attr("pageSpace", w);
-            } else {
-                this.pager.setHPagerVisible && this.pager.setHPagerVisible(false);
-                this.pager.setVPagerVisible && this.pager.setVPagerVisible(false);
-                this.pager.setVisible(false);
-                this.pager.element.width(0);
-                this.table.attr("pageSpace", 0);
-            }
-        }
+        this._adjustPager();
         this._populate.apply(this, arguments);
     },
 
