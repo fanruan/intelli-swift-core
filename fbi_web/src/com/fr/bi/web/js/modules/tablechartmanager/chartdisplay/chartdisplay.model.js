@@ -576,7 +576,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var i = BI.UUID();
                 var type = types[idx];
                 BI.each(item, function(id, it){
-                    type[id] === BICst.WIDGET.ACCUMULATE_AXIS && BI.extend(it, {stack: i});
+                    (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
                 });
             });
             if(type === BICst.WIDGET.MAP){
