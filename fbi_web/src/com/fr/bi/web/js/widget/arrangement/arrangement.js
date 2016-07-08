@@ -2221,10 +2221,10 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     setRegionPosition: function (name, position) {
         var self = this, o = this.options;
         var offset = this._getScrollOffset();
-        position = {
-            left: position.left + offset.left,
-            top: position.top + offset.top
-        };
+        //position = {
+        //    left: position.left + offset.left,
+        //    top: position.top + offset.top
+        //};
         switch (o.layoutType) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 break;
