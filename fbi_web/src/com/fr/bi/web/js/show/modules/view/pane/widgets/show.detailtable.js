@@ -143,7 +143,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
                 });
                 BI.createWidget({
                     type: "bi.absolute",
-                    element: self.tableChart,
+                    element: self.table,
                     items: [{
                         el: self.filterPane,
                         top: 0,

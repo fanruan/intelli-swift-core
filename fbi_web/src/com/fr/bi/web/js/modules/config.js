@@ -354,7 +354,7 @@ BICst.TIME_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_WIDGET_EXPAND,
         text: BI.i18nText("BI-Detailed_Setting"),
-        cls: "dashboard-widget-combo-detail-set-font"
+        cls: "widget-combo-expand-font"
     }],
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
@@ -383,7 +383,7 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_WIDGET_EXPAND,
         text: BI.i18nText("BI-Detailed_Setting"),
-        cls: "dashboard-widget-combo-detail-set-font"
+        cls: "widget-combo-expand-font"
     }],
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
