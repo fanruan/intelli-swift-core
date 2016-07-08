@@ -16,7 +16,6 @@ import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageTopic;
-import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
@@ -84,7 +83,8 @@ public class BuildCubeTask implements CubeTask {
         Future<String> result = finishObserver.getOperationResult();
         try {
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-            BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(),setOldAnalysisTableRelations(biUser,cubeBuildStuff.getTableRelationSet()));
+            BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(),cubeBuildStuff.getTableRelationSet());
+            BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
             BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
@@ -98,13 +98,6 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
-    private  Set<BITableRelation> setOldAnalysisTableRelations(BIUser biUser, Set<BITableRelation> tableRelationSet) {
-        Set<BITableRelation> set= BICubeConfigureCenter.getTableRelationManager().getAnalysisAllTableRelation(biUser.getUserId());
-        for (BITableRelation biTableRelation : set) {
-            tableRelationSet.add(biTableRelation);
-        }
-        return tableRelationSet;
-    }
 
     @Override
     public void run() {

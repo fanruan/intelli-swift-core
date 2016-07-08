@@ -19,7 +19,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-4,
+        MINLIMIT: 1e-6,
         LEGEND_HEIGHT: 80
     },
 

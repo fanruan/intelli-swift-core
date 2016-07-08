@@ -53,7 +53,7 @@ BI.SetMatchingRelationTargetRegion = BI.inherit(BI.Widget, {
             type: "bi.label",
             textAlign: "left",
             cls: "region-title-label",
-            text: BI.i18nText("BI-Following_Targets_Correspond_To_Dimension_Field") + BI.Utils.getDimensionNameByID(o.dId),
+            text: BI.i18nText("BI-Following_Targets_Correspond_To_Dimension_Field") + BI.Utils.getFieldNameByID(o.fieldId),
             height: 25
         });
 
