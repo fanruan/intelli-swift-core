@@ -415,9 +415,9 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
-        this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
-        this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
+        this.lYAxisStyle.setValue(BI.Utils.getWSXAxisStyleByID(wId));
+        this.numberLevellY.setValue(BI.Utils.getWSXAxisNumLevelByID(wId));
+        this.LYUnit.setValue(BI.Utils.getWSXAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
         this.editTitleLY.setValue(titleX);

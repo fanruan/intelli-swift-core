@@ -282,13 +282,15 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             }
         }else{
             var others = [];
-            BI.each(items[0][0].data, function(idx, da){
-                others.push({
-                    data: [{
-                        x: items[0][0].name,
-                        y: da.y
-                    }],
-                    name: da.x
+            BI.each(items[0], function(idx, item){
+                BI.each(item.data, function(id, da){
+                    others.push({
+                        data: [{
+                            x: item.name,
+                            y: da.y
+                        }],
+                        name: da.x
+                    })
                 })
             });
             return [others];
