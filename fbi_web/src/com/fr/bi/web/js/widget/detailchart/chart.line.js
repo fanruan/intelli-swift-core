@@ -170,15 +170,15 @@ BI.LineChart = BI.inherit(BI.Widget, {
 
         function formatChartLineStyle(){
             switch (self.config.chart_line_type) {
-                case BICst.CHART_STYLE.RIGHT_ANGLE:
+                case BICst.CHART_SHAPE.RIGHT_ANGLE:
                     config.plotOptions.curve = false;
                     config.plotOptions.step = true;
                     break;
-                case BICst.CHART_STYLE.CURVE:
+                case BICst.CHART_SHAPE.CURVE:
                     config.plotOptions.curve = true;
                     config.plotOptions.step = false;
                     break;
-                case BICst.CHART_STYLE.NORMAL:
+                case BICst.CHART_SHAPE.NORMAL:
                 default:
                     config.plotOptions.curve = false;
                     config.plotOptions.step = false;
