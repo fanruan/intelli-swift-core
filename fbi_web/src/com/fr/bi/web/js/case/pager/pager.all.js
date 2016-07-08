@@ -10,7 +10,7 @@ BI.AllPagger = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.AllPagger.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-all-pager",
-            width: 95,
+            width: 96,
             height: 25,
             pages: 1, //必选项
             curr: 1 //初始化当前页， pages为数字时可用
@@ -88,6 +88,7 @@ BI.AllPagger = BI.inherit(BI.Widget, {
 
         this.allPages = BI.createWidget({
             type: "bi.label",
+            width: 30,
             text: "/" + o.pages
         });
 
