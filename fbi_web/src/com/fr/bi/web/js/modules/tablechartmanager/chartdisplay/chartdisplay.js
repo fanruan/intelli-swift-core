@@ -299,7 +299,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     x_axis_style: BI.Utils.getWSXAxisStyleByID(o.wId),
                     right_y_axis_style: BI.Utils.getWSRightYAxisStyleByID(o.wId),
                     right_y_axis_second_style: BI.Utils.getWSRightYAxis2StyleByID(o.wId),
-                    left_y_axis_number_level: BI.Utils.getWSRightYAxisNumLevelByID(o.wId),
+                    left_y_axis_number_level: BI.Utils.getWSLeftYAxisNumLevelByID(o.wId),
                     number_of_pointer: BI.Utils.getWSNumberOfPointerByID(o.wId),
                     dashboard_number_level: BI.Utils.getWSDashboardNumLevelByID(o.wId),
                     x_axis_number_level: BI.Utils.getWSXAxisNumLevelByID(o.wId),
