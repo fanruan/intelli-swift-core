@@ -279,7 +279,7 @@ public class DimensionGroupFilter {
                     continue;
                 }
                 DimensionFilter resultFilter =  rowDimension[deep].getFilter();
-                if (resultFilter.canCreateDirectFilter()) {
+                if (resultFilter != null && resultFilter.canCreateDirectFilter()) {
                     DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
                     BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BITable.BI_EMPTY_TABLE())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
                     GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
