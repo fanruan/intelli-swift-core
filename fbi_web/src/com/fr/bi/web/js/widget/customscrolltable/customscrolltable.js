@@ -339,7 +339,7 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
 
             if (regionSize[1] <= this._const.minScrollWidth) {
                 var r = 0;
-                if (o.pageSpace > 0) {
+                if (o.pageSpace > 1.05) {
                     r = o.scrollWidth;
                 }
                 this.bottomRightScrollBar.element.css("right", r + "px");
