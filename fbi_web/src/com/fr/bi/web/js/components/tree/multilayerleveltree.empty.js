@@ -26,6 +26,12 @@ BI.MultiLayerSingleEmptyLevelTree = BI.inherit(BI.Widget, {
             element: this.element,
             items: this._formatItems(o.items),
             itemsCreator: o.itemsCreator
+        });
+        this.tree.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
+        });
+        this.tree.on(BI.MultiLayerSingleLevelTree.EVENT_CHANGE, function(){
+           self.fireEvent(BI.MultiLayerSingleEmptyLevelTree.EVENT_CHANGE, arguments);
         })
     },
 
@@ -86,5 +92,5 @@ BI.MultiLayerSingleEmptyLevelTree = BI.inherit(BI.Widget, {
         return this.tree.getNodeByValue(id);
     }
 });
-BI.MultiLayerSingleEmptyLevelTree.EVENT_CONFIRM = "MultiLayerSingleEmptyLevelTree.EVENT_CONFIRM";
+BI.MultiLayerSingleEmptyLevelTree.EVENT_CHANGE = "MultiLayerSingleEmptyLevelTree.EVENT_CONFIRM";
 $.shortcut('bi.multi_layer_single_empty_level_tree', BI.MultiLayerSingleEmptyLevelTree);

@@ -28,7 +28,13 @@ BI.EmptyLevelTree = BI.inherit(BI.Widget, {
             element: this.element,
             expander: o.expander,
             items: this._formatItems(o.items)
-        })
+        });
+        this.tree.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
+        });
+        this.tree.on(BI.LevelTree.EVENT_CHANGE, function(){
+            self.fireEvent(BI.BI.EmptyLevelTree.EVENT_CHANGE, arguments);
+        });
     },
 
     _formatItems: function(items){
@@ -93,5 +99,5 @@ BI.EmptyLevelTree = BI.inherit(BI.Widget, {
         return this.tree.getNodeByValue(id);
     }
 });
-BI.EmptyLevelTree.EVENT_CONFIRM = "EmptyLevelTree.EVENT_CONFIRM";
+BI.EmptyLevelTree.EVENT_CHANGE = "EmptyLevelTree.EVENT_CONFIRM";
 $.shortcut('bi.empty_level_tree', BI.EmptyLevelTree);

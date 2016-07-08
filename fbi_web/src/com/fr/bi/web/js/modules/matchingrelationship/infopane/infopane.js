@@ -121,12 +121,12 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
             if((BI.size(self.stored_paths[tId]) > 1 || BI.size(self.stored_paths[tId]) === 0)){
                 self.addRegion(self.constants.UNSETTING_REGION, tId);
             }else{
-                self.addRegion(self.constants.SET_REGION, tId);
+                self.addRegion(self.constants.SET_REGION, tId, res);
             }
         });
     },
 
-    addRegion: function(type, tId){
+    addRegion: function(type, tId,  res){
         var self = this, o = this.options;
         var tableId = BI.Utils.getTableIDByDimensionID(tId);
         var region = null, tableName = BI.Utils.getTableNameByID(tableId);
@@ -166,10 +166,14 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
                 }
                 var regionKey = this._getMD5ByPathAndDimensionFieldId(this.stored_paths[tId][0], field_id);
                 if(BI.isEmpty(this.regionMap[regionKey])){
+                    var fId = BI.Utils.getFieldIDByDimensionID(o.dId);
+                    if(BI.has(res, "_src")){
+                        fId = res._src.field_id;
+                    }
                     region = BI.createWidget({
                         type: "bi.set_matching_relation_target_region",
                         tableName: tableName,
-                        dId: o.dId
+                        fieldId: fId
                     });
                     region.on(BI.SetMatchingRelationTargetRegion.EVENT_SET_RELATION, function(){
                         var tIds = this.getValue();
