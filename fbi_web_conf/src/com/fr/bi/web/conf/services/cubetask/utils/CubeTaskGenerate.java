@@ -5,7 +5,6 @@ import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffManager;
-import com.finebi.cube.impl.conf.CubeBuildStuffManagerIncremental;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
@@ -42,16 +41,17 @@ public class CubeTaskGenerate {
         Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
 /*若有新增表，增量更新，否则进行全量*/
         String messages = "Cube incremental update start! \n tables updated listed：\n";
-        if (newTables.size() != 0) {
-            for (BIBusinessTable table : newTables) {
-                messages += table.getTableSource().getTableName() + "\n";
-            }
-            BILogger.getLogger().info(messages);
-            cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
-        } else {
-            BILogger.getLogger().info("Cube global update start");
-            cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
-        }
+//        if (newTables.size() != 0) {
+//            for (BIBusinessTable table : newTables) {
+//                messages += table.getTableSource().getTableName() + "\n";
+//            }
+//            BILogger.getLogger().info(messages);
+//            cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
+//        } else {
+//            BILogger.getLogger().info("Cube global update start");
+//            cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
+//        }
+        cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
         if (preConditionsCheck(userId, cubeBuildStuff)) {
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
             taskAddResult = cubeManager.addTask(task, userId);
