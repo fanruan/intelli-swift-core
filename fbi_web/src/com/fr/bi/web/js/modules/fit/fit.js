@@ -119,6 +119,11 @@ BI.Fit = BI.inherit(BI.Widget, {
                 //    return helper.element;
                 //}
             });
+
+            widget.on(BI.BasicButton.EVENT_CHANGE, function () {
+                BI.Broadcasts.send(BICst.BROADCAST.WIDGET_SELECTED_PREFIX);
+            });
+
             //widget.getDraggable().element.draggable({
             //    // cursor: "move",
             //    cursorAt: {left: 0, top: 0},

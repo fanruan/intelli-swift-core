@@ -54,6 +54,11 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
                 self.tools.setVisible(false);
             }
         });
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        });
 
     },
 

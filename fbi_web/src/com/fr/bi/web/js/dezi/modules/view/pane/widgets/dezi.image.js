@@ -44,6 +44,11 @@ BIDezi.ImageWidgetView = BI.inherit(BI.View, {
                 self.image.setToolbarVisible(false);
             }
         });
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.image.element.parent().parent().parent().hasClass("selected")) {
+                self.image.setToolbarVisible(false);
+            }
+        });
     },
 
     local: function () {
