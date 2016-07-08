@@ -247,7 +247,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             [{
                 value: BICst.DASHBOARD_WIDGET_EXPAND,
                 text: BI.i18nText("BI-Detailed_Setting"),
-                cls: "dashboard-widget-combo-detail-set-font"
+                cls: "widget-combo-expand-font"
             }],
             [{
                 value: BICst.DASHBOARD_CONTROL_RANG_ASC,

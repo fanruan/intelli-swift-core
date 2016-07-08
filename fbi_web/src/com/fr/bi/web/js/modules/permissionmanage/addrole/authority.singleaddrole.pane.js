@@ -99,11 +99,15 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
             var roles = BI.Utils.getPackageAuthorityByID(v);
             var items = [];
             BI.each(roles, function(i, role) {
+                var roleName = self._getRoleNameByRoleIdType(role.role_id, role.role_type);
+                if(BI.isNull(roleName) || roleName === "") {
+                    return;
+                }
                 var filter = role.filter;
                 var trigger = BI.createWidget({
                     type: "bi.text_button",
                     cls: "role-item",
-                    text: self._getRoleNameByRoleIdType(role.role_id, role.role_type),
+                    text: roleName,
                     height: 30,
                     hgap: 5
                 });
@@ -114,7 +118,7 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
                         logic: {
                             dynamic: true
                         },
-                        text: self._getRoleNameByRoleIdType(role.role_id, role.role_type),
+                        text: roleName,
                         height: 30,
                         textHgap: 5
                     });
