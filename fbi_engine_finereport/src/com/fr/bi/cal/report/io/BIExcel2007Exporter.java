@@ -2,24 +2,23 @@ package com.fr.bi.cal.report.io;
 
 import com.fr.bi.cal.report.io.core.BIExcelExporterBlock;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.io.exporter.Excel2007Exporter;
-import com.fr.io.exporter.POIWrapper.POIWorkbookAction;
+import com.fr.io.exporter.excel.stream.StreamExcel2007Exporter;
+import com.fr.io.exporter.poi.wrapper.POIWorkbookAction;
 import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.block.Block;
 import com.fr.report.elementcase.ElementCase;
 import com.fr.report.poly.AbstractPolyReport;
 import com.fr.report.poly.ResultChartBlock;
-import com.fr.report.report.Report;
 import com.fr.report.report.ResultReport;
 import com.fr.script.Calculator;
 import com.fr.stable.ExportConstants;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.hslf.model.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.awt.*;
 import java.util.List;
 
-public class BIExcel2007Exporter extends Excel2007Exporter {
+public class BIExcel2007Exporter extends StreamExcel2007Exporter {
 
     private ResultReport innerReport = null;
 
@@ -52,21 +51,12 @@ public class BIExcel2007Exporter extends Excel2007Exporter {
             while (offset.y < rowCount) {
                 this.innerExportReport(new BIExcelExporterBlock(innerReport, offset.x, offset.y, Math.min(columnCount - offset.x, ExportConstants.MAX_COLS), Math.min(rowCount - offset.y, ExportConstants.MAX_ROWS)),
                         book.getReportExportAttr(), book.getReportName(0) + (c == 1 ? "" : "_" + c),
-                        (XSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
+                        (SXSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
                 offset.y += ExportConstants.MAX_ROWS;
                 c++;
             }
             offset.x += ExportConstants.MAX_COLS;
         }
-    }
-
-    protected void setAttr4ECReportSIL(Calculator cal, IntList hiddenRowList, IntList hiddenColList, ElementCase report) {
-        //b：do nothing
-    }
-
-    @Override
-    protected void dealECReportAndBlockPageSetting(ElementCase report, XSSFSheet hssfSheet, int reportIndex) {
-        dealWithPageSetting(innerReport, hssfSheet, reportIndex);
     }
 
 }
