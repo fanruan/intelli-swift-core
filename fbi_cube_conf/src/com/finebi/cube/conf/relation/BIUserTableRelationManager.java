@@ -50,7 +50,7 @@ public class BIUserTableRelationManager implements Release {
         currentAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);
         disablePathsManager = new BIDisablePathsManager();
         tableRelationshipService = new BITableRelationshipManager(currentAnalyserHandler);
-        analysisTableRelationShipService = new BITableRelationshipManager(currentAnalyserHandler);
+        analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
     }
 
 
@@ -161,7 +161,6 @@ public class BIUserTableRelationManager implements Release {
             for (BITableRelation relation : connectionSet) {
                 analysisTableRelationShipService.addBITableRelation(relation);
             }
-
         }
     }
 
