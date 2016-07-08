@@ -547,6 +547,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var self = this, o = this.options;
         var options = {};
         this._refreshDimsInfo();
+        var realData = true;
+        if(o.status === BICst.WIDGET_STATUS.DETAIL) {
+            realData = BI.Utils.isShowWidgetRealDataByID(o.wId) || false;
+        }
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
             if(BI.isNotNull(jsonData.error)) {
                 callback(jsonData);
@@ -603,7 +607,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 }
             },
             page: -1,
-            status: this.options.status
+            real_data: realData
         });
     },
 
