@@ -118,7 +118,7 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
 
     _removeCondition : function (id) {
         var allConditions = this.buttongroup.getAllButtons();
-        var index = 0;
+        var index = -1;
 
         BI.some(allConditions , function ( i , con ) {
             if(con.getValue().cid === id) {
@@ -127,7 +127,9 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
             }
         });
 
-        this.buttongroup.removeItemAt(index)
+        this.buttongroup.removeItemAt(index);
+        this._checkButtonEnable();
+        this.fireEvent(BI.ChartAddConditionGroup.EVENT_CHANGE)
     },
 
     createItems: function (items) {
@@ -135,6 +137,7 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
         this.options.items = items || [];
         var buttons = BI.createItems(items , {
             type: "bi.chart_add_condition_item",
+            cid: BI.UUID(),
             onRemoveCondition: function (cid) {
                 self._removeCondition(cid)
             }

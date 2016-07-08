@@ -81,9 +81,9 @@ public class GetValueFromDateOperator extends AbstractAddColumnOperator {
         BIDateUtils.checkDateFieldType(ti.getColumns(), key);
         ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
         for (int row = 0; row < rowCount; row++) {
-            long value = dg.get((Long)getter.getValue(row));
+            Integer value = dg.get((Long)getter.getValue(row));
             try {
-                travel.actionPerformed(new BIDataValue(row, startCol, value));
+                travel.actionPerformed(new BIDataValue(row, startCol, value == null ? value : value.longValue()));
             } catch (Exception e) {
                 BILogger.getLogger().error("incorrect formular");
                 travel.actionPerformed(new BIDataValue(row, startCol, null));

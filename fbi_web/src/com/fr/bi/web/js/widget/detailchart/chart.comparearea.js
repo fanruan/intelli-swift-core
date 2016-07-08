@@ -76,7 +76,10 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        this.config.show_zoom === true && delete config.dataSheet;
+        if(this.config.show_zoom === true){
+            delete config.dataSheet;
+            delete config.zoom.zoomType;
+        }
         config.yAxis = this.yAxis;
 
         BI.each(config.yAxis, function(idx, axis){
@@ -238,15 +241,15 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
 
         function formatChartLineStyle(){
             switch (self.config.chart_line_type) {
-                case BICst.CHART_STYLE.RIGHT_ANGLE:
+                case BICst.CHART_SHAPE.RIGHT_ANGLE:
                     config.plotOptions.curve = false;
                     config.plotOptions.step = true;
                     break;
-                case BICst.CHART_STYLE.CURVE:
+                case BICst.CHART_SHAPE.CURVE:
                     config.plotOptions.curve = true;
                     config.plotOptions.step = false;
                     break;
-                case BICst.CHART_STYLE.NORMAL:
+                case BICst.CHART_SHAPE.NORMAL:
                 default:
                     config.plotOptions.curve = false;
                     config.plotOptions.step = false;

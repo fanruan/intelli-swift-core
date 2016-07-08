@@ -52,10 +52,7 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
         if (BI.isNotNull(change.group)) {
             var groupObject = self.get("group");
             if (groupObject.type === BICst.GROUP.CUSTOM_GROUP) {
-                var sortObject = self.get("sort");
-                if (!BI.isNotNull(sortObject)) {
-                    sortObject = {}
-                }
+                var sortObject = {};
                 sortObject.type = BICst.SORT.CUSTOM;
                 sortObject.details = [];
                 BI.each(groupObject.details, function (i, groupitem) {

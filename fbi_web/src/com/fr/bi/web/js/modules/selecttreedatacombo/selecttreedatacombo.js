@@ -27,8 +27,8 @@ BI.SelectTreeDataCombo = BI.inherit(BI.Widget, {
                     if (op.times === 1) {
                         if (nodes.length === 0) {
                             jsonData.items = [{
-                                value: "(空)",
-                                text: "(空)",
+                                value: BI.i18nText("BI-(Empty)"),
+                                text: BI.i18nText("BI-(Empty)"),
                                 id: BI.UUID(),
                                 nocheck: true
                             }]

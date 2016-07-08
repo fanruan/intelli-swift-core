@@ -84,6 +84,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.valueLabel.align = "bottom";
                     config.plotOptions.percentageLabel.align = "bottom";
+                    config.plotOptions.layout = "vertical";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
                 case BICst.CHART_SHAPE.VERTICAL_TUBE:
@@ -168,8 +169,16 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             return unit === "" ? unit : "(" + unit + ")";
         }
 
-        function getBandsStyles (styles , change) {
-            var bands = [];
+        function getBandsStyles (styles , change ) {
+            var min = 0, bands = [], color = null, max = null, conditionMax = null;
+
+            BI.each(items , function (idx , item) {
+                    var data = item.data[0];
+                    if ((BI.isNull(max) || data.y > max)) {
+                        max = data.y
+                    }
+            });
+
             switch (change) {
                 case BICst.SCALE_SETTING.AUTO:
                     break;
@@ -179,11 +188,58 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                             color: style.color,
                             from: style.range.min,
                             to: style.range.max
-                        })
+                        });
+                        color = style.color;
+                        conditionMax = style.range.max
                     });
-                    return bands
+                    min = BI.parseInt(styles[0].range.min);
+                    bands.push({
+                        color: "#808080",
+                        from: 0,
+                        to: min
+                    });
+
+                    var maxScale = _calculateValueNiceDomain(0 , max)[1];
+
+                    bands.push({
+                        color: color,
+                        from: conditionMax,
+                        to: maxScale
+                    });
+
+                    return bands;
                     break;
             }
+        }
+
+        function _calculateValueNiceDomain(minValue, maxValue){
+
+            minValue = Math.min(0, minValue);
+
+            var tickInterval = _linearTickInterval(minValue, maxValue);
+
+            return _linearNiceDomain(minValue, maxValue, tickInterval);
+        }
+
+        function _linearTickInterval(minValue, maxValue, m){
+
+            m = m || 5;
+            var span = maxValue - minValue;
+            var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
+            var err = m / span * step;
+
+            if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
+
+            return step;
+        }
+
+        function _linearNiceDomain(minValue, maxValue, tickInterval){
+
+            minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
+
+            maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
+
+            return [minValue, maxValue];
         }
     },
 
@@ -219,6 +275,18 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     name: ""
                 }]];
             }
+        }else{
+            var others = [];
+            BI.each(items[0][0].data, function(idx, da){
+                others.push({
+                    data: [{
+                        x: items[0][0].name,
+                        y: da.y
+                    }],
+                    name: da.x
+                })
+            });
+            return [others];
         }
         return items;
     },

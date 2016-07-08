@@ -1,9 +1,10 @@
 package com.fr.bi.cal.stable.cube.memory;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.ValueConverter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.file.MemoryColumnFile;
@@ -11,20 +12,15 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.index.CubeGenerator;
-import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
-import com.fr.stable.Constants;
 import com.fr.stable.StringUtils;
-import org.apache.jute.Index;
 
 import java.util.Comparator;
 import java.util.List;
@@ -122,6 +118,10 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         throw new UnsupportedOperationException(UNSUPPORT);
     }
 
+    @Override
+    public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
+        return 0;
+    }
 
 
     public ICubeColumnIndexReader createGroupByType(BIKey key, ValueConverter converter, Comparator comparator) {

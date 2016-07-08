@@ -55,21 +55,25 @@ BI.DetailDateDimensionCombo = BI.inherit(BI.Widget, {
                     cls: "dot-e-font"
                 }],
                 [{
-                    text: BI.i18nText("BI-Filter_Setting"),
-                    value: BICst.DETAIL_DATE_COMBO.FILTER
+                    text: BI.i18nText("BI-Show_Qualified_Result"),
+                    value: BICst.DETAIL_DATE_COMBO.FILTER,
+                    cls: "filter-h-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Hyperlink"),
-                    value: BICst.DETAIL_DATE_COMBO.HYPERLINK
+                    value: BICst.DETAIL_DATE_COMBO.HYPERLINK,
+                    cls: "hyper-link-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Remove"),
-                    value: BICst.DETAIL_DATE_COMBO.DELETE
+                    value: BICst.DETAIL_DATE_COMBO.DELETE,
+                    cls: "delete-h-font"
                 }],
                 [{
                     text: BI.i18nText("BI-This_Target_From") + ":" + BI.Utils.getDimensionNameByID(o.dId),
                     title: BI.i18nText("BI-This_Target_From") + ":" + BI.Utils.getDimensionNameByID(o.dId),
                     tipType: "warning",
+                    cls: "dimension-from-font",
                     value: BICst.DETAIL_DATE_COMBO.INFO,
                     disabled: true
                 }]

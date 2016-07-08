@@ -41,7 +41,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     protected BISummaryTarget[] targets;
     @BICoreField
     protected BIDimension[] dimensions;
-
+    @BICoreField
     protected NameObject targetSort;
     @BICoreField
     protected Map<String, DimensionFilter> targetFilterMap = new LinkedHashMap<String, DimensionFilter>();
