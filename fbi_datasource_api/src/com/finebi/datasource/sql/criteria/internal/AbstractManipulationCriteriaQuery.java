@@ -37,7 +37,7 @@ public abstract class AbstractManipulationCriteriaQuery<T> implements Compilable
     public Root from(Class<T> entityClass) {
         EntityType<T> entityType = criteriaBuilder.getEntityManagerFactory()
                 .getMetamodel()
-                .entity(entityClass);
+                .entity(entityClass.getName());
         if (entityType == null) {
             throw new IllegalArgumentException(entityClass + " is not an entity");
         }

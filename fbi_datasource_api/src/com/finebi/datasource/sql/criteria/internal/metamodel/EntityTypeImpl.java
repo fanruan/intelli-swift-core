@@ -46,4 +46,20 @@ public class EntityTypeImpl<X> extends AbstractIdentifiableType<X> implements En
 	public PersistenceType getPersistenceType() {
 		return PersistenceType.ENTITY;
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EntityTypeImpl)) return false;
+
+        EntityTypeImpl<?> that = (EntityTypeImpl<?>) o;
+
+        return !(jpaEntityName != null ? !jpaEntityName.equals(that.jpaEntityName) : that.jpaEntityName != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return jpaEntityName != null ? jpaEntityName.hashCode() : 0;
+    }
 }

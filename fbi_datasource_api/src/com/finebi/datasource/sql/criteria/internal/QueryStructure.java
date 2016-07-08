@@ -101,7 +101,7 @@ public class QueryStructure<T> implements Serializable {
     public <X> Root<X> from(Class<X> entityClass) {
         EntityType<X> entityType = criteriaBuilder.getEntityManagerFactory()
                 .getMetamodel()
-                .entity(entityClass);
+                .entity(entityClass.getName());
         if (entityType == null) {
             throw new IllegalArgumentException(entityClass + " is not an entity");
         }
