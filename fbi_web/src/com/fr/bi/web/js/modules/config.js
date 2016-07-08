@@ -1044,45 +1044,45 @@ BICst.AXIS_STYLE_GROUP = [{
 //折线图和面积图线形
 BICst.LINE_CHART_STYLE_GROUP = [{
     cls: "line-chart-style-broken-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "line-chart-style-curve-icon",
-    value: BICst.CHART_STYLE.CURVE
+    value: BICst.CHART_SHAPE.CURVE
 }, {
     cls: "line-chart-style-vertical-icon",
-    value: BICst.CHART_STYLE.RIGHT_ANGLE
+    value: BICst.CHART_SHAPE.RIGHT_ANGLE
 }];
 
 BICst.AREA_CHART_STYLE_GROUP = [{
     cls: "area-chart-style-broken-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "area-chart-style-curve-icon",
-    value: BICst.CHART_STYLE.CURVE
+    value: BICst.CHART_SHAPE.CURVE
 }, {
     cls: "area-chart-style-vertical-icon",
-    value: BICst.CHART_STYLE.RIGHT_ANGLE
+    value: BICst.CHART_SHAPE.RIGHT_ANGLE
 }];
 
 //饼图类型
 BICst.PIE_CHART_STYLE_GROUP = [{
     cls: "pie-chart-style-normal-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "pie-chart-style-equal-arc-rose-icon",
-    value: BICst.CHART_STYLE.EQUAL_ARC_ROSE
+    value: BICst.CHART_SHAPE.EQUAL_ARC_ROSE
 }, {
     cls: "pie-chart-style-not-equal-arc-rose-icon",
-    value: BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE
+    value: BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE
 }];
 
 //雷达图类性
 BICst.RADAR_CHART_STYLE_GROUP = [{
     cls: "radar-chart-style-polygon-icon",
-    value: BICst.CHART_STYLE.POLYGON
+    value: BICst.CHART_SHAPE.POLYGON
 }, {
     cls: "radar-chart-style-circle-icon",
-    value: BICst.CHART_STYLE.CIRCLE
+    value: BICst.CHART_SHAPE.CIRCLE
 }];
 
 //仪表盘类型
@@ -1116,10 +1116,10 @@ BICst.CHART_SCALE_SETTING = [{
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
     text: "圆形",
-    value: BICst.CHART_STYLE.CIRCLE
+    value: BICst.CHART_SHAPE.CIRCLE
 }, {
     text: "多边形",
-    value: BICst.CHART_STYLE.POLYGON
+    value: BICst.CHART_SHAPE.POLYGON
 }];
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
@@ -1143,10 +1143,10 @@ BICst.DEFAULT_CHART_SETTING = {
     //图
     chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
     chart_style: BICst.CHART_STYLE.STYLE_NORMAL,
-    chart_line_type: BICst.CHART_STYLE.NORMAL,
-    chart_pie_type: BICst.CHART_STYLE.NORMAL,
-    chart_radar_type: BICst.CHART_STYLE.POLYGON,
-    chart_dashboard_type: BICst.CHART_STYLE.NORMAL,
+    chart_line_type: BICst.CHART_SHAPE.NORMAL,
+    chart_pie_type: BICst.CHART_SHAPE.NORMAL,
+    chart_radar_type: BICst.CHART_SHAPE.POLYGON,
+    chart_dashboard_type: BICst.CHART_SHAPE.NORMAL,
     chart_inner_radius: 0,
     chart_total_angle: BICst.PIE_ANGLES.TOTAL,
     left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
