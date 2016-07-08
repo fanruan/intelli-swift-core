@@ -618,7 +618,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     }
                 } else if (BI.isNotNull(item.isSum)) {
                     //合计
-                    item.text = BI.i18nText("BI-Summary_Values") + ":" + dName;
+                    item.text = BI.i18nText("BI-Summary_Values") + ":" + BI.Utils.getDimensionNameByID(item.dId);
                     item.cls = "cross-table-target-header";
                     self.header.push(item);
                 } else if (BI.isNotEmptyArray(item.values)) {
