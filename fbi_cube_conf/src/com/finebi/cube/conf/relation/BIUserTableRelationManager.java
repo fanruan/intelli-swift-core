@@ -1,6 +1,5 @@
 package com.finebi.cube.conf.relation;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.relation.path.BITableContainer;
 import com.finebi.cube.conf.relation.path.BITableRelationshipManager;
 import com.finebi.cube.conf.relation.path.BITableRelationshipService;
@@ -155,7 +154,6 @@ public class BIUserTableRelationManager implements Release {
             for (BITableRelation relation : connectionSet) {
                 analysisTableRelationShipService.addBITableRelation(relation);
             }
-            BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
         }
     }
 
