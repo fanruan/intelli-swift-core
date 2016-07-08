@@ -4,7 +4,7 @@ import com.fr.bi.cal.report.io.core.BIExcelExporterBlock;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.io.exporter.AppExporter;
 import com.fr.io.exporter.ExcelExporter;
-import com.fr.io.exporter.POIWrapper.POIWorkbookAction;
+import com.fr.io.exporter.poi.wrapper.POIWorkbookAction;
 import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.block.Block;
 import com.fr.report.elementcase.ElementCase;
@@ -71,9 +71,6 @@ public class BIExcelExporter extends ExcelExporter {
         }
     }
 
-    protected void setAttr4ECReportSIL(Calculator cal, IntList hiddenRowList, IntList hiddenColList, ElementCase report) {
-        //b：do nothing
-    }
 
     @Override
     protected void dealECReportAndBlockPageSetting(ElementCase report, HSSFSheet hssfSheet, int reportIndex) {

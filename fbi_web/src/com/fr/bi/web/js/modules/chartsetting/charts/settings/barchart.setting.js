@@ -393,7 +393,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
     populate: function(){
         var wId = this.options.wId;
         var view = BI.Utils.getWidgetViewByID(wId);
-        var titleLY = BI.Utils.getWSXAxisTitleByID(wId), titleX = BI.Utils.getWSLeftYAxisTitleByID(wId);
+        var titleLY =  BI.Utils.getWSLeftYAxisTitleByID(wId), titleX = BI.Utils.getWSXAxisTitleByID(wId);
         if(titleLY === ""){
             BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
                 if(BI.Utils.isDimensionUsable(dId)){

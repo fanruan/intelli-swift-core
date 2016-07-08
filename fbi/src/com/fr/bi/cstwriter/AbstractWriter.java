@@ -15,8 +15,8 @@ import java.lang.reflect.Field;
  */
 public abstract class AbstractWriter {
 
-    public void write(String path, String suffix, Class[] cls) throws Exception{
-        writeFile(new File(path), suffix, cls);
+    public void write(File file,  String suffix, Class[] cls) throws Exception{
+        writeFile(file, suffix, cls);
     }
 
     private void writeFile(File f, String suf, Class[] cls) throws Exception{
