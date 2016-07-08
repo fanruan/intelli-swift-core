@@ -13,7 +13,6 @@ import java.io.File;
  */
 public class DownloadUtilsTest extends TestCase {
     /**
-     *
      */
     public void testDownload() {
         String folderName = "DownloadUtilsTest";
