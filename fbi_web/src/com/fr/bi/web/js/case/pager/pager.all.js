@@ -19,7 +19,6 @@ BI.AllPagger = BI.inherit(BI.Widget, {
     _init: function () {
         BI.AllPagger.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.currentPage = o.curr;
         this.editor = BI.createWidget({
             type: "bi.small_text_editor",
             cls: "pager-editor",
@@ -73,22 +72,20 @@ BI.AllPagger = BI.inherit(BI.Widget, {
         });
 
         this.editor.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            self.pager.setValue(self.editor.getValue());
+            self.pager.setValue(BI.parseInt(self.editor.getValue()));
+            self.fireEvent(BI.AllPagger.EVENT_CHANGE);
         });
         this.pager.on(BI.Pager.EVENT_CHANGE, function () {
-
+            self.fireEvent(BI.AllPagger.EVENT_CHANGE);
         });
         this.pager.on(BI.Pager.EVENT_AFTER_POPULATE, function () {
             self.editor.setValue(self.pager.getCurrentPage());
-            if (self.getCurrentPage() !== self.pager.getCurrentPage()) {
-                self.currentPage = self.pager.getCurrentPage();
-                self.fireEvent(BI.AllPagger.EVENT_CHANGE);
-            }
         });
 
         this.allPages = BI.createWidget({
             type: "bi.label",
             width: 30,
+            title: o.pages,
             text: "/" + o.pages
         });
 
@@ -102,6 +99,7 @@ BI.AllPagger = BI.inherit(BI.Widget, {
 
     setAllPages: function (v) {
         this.allPages.setText("/" + v);
+        this.allPages.setTitle(v);
         this.pager.setAllPages(v);
     },
 
@@ -110,7 +108,7 @@ BI.AllPagger = BI.inherit(BI.Widget, {
     },
 
     getCurrentPage: function () {
-        return this.currentPage;
+        return this.pager.getCurrentPage();
     },
 
     hasPrev: function () {
