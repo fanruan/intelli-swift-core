@@ -56,7 +56,8 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
                 range: BI.extend(nextButton.getValue().range , {
                     min: value.range.max,
                     closemin: !value.range.closemax
-                })
+                }),
+                color: nextButton.getValue().color
             });
         }
     },
@@ -146,10 +147,6 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
         this.buttons = this.buttongroup.getAllButtons();
         this._sendEventForButton(this.buttons);
         this._checkButtonEnable();
-    },
-
-    populate: function (items) {
-        this.createItems(items)
     },
 
     setValue: function (v) {
