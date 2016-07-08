@@ -142,11 +142,12 @@ public class BIUserTableRelationManager implements Release {
     public void finishGenerateCubes(Set<BITableRelation> connectionSet) {
         synchronized (oldAnalyserHandler) {
             oldAnalyserHandler.clear();
-            analysisTableRelationShipService.clear();
             for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
                 try {
-                    oldAnalyserHandler.addRelation(relation);
+                    oldAnalyserHandler.addRelation((BITableRelation) relation.clone());
                 } catch (BIRelationDuplicateException e) {
+                    BILogger.getLogger().error(e.getMessage());
+                } catch (CloneNotSupportedException e) {
                     BILogger.getLogger().error(e.getMessage());
                 }
             }
@@ -157,6 +158,7 @@ public class BIUserTableRelationManager implements Release {
 //                    BILogger.getLogger().error(e.getMessage());
 //                }
 //            }
+            analysisTableRelationShipService.clear();
             analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
             for (BITableRelation relation : connectionSet) {
                 analysisTableRelationShipService.addBITableRelation(relation);
