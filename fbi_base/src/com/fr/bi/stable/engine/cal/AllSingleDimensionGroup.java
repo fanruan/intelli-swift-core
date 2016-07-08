@@ -99,10 +99,11 @@ public class AllSingleDimensionGroup {
 				@Override
 				public boolean actionPerformed(int row) {
 					CubeValueEntryNode entryNote = CubeValueEntryNode.fromParent(getter.getEntryByRow(row));
+					GroupValueIndex currentIndex = adapter.get().AND(entryNote.getGvi());
+					entryNote.setGvi(currentIndex);
 					children[indexadp.get()] = entryNote;
 					indexadp.set(indexadp.get() + 1);
-					GroupValueIndex currentIndex = adapter.get().AND(entryNote.getGvi());
-					if(deal != null){
+					if(deal != null  && !currentIndex.isAllEmpty()){
 						deal.dealWithNode(currentIndex, entryNote);
 					}
 					adapter.set(adapter.get().andnot(currentIndex));
@@ -127,9 +128,10 @@ public class AllSingleDimensionGroup {
 				@Override
 				public boolean actionPerformed(int row) {
 					CubeValueEntryNode entryNote = CubeValueEntryNode.fromParent(getter.getEntryByRow(row));
-					sortBuilder.putSortItem(entryNote);
 					GroupValueIndex currentIndex = adapter.get().AND(entryNote.getGvi());
-					if(deal != null){
+					entryNote.setGvi(currentIndex);
+					sortBuilder.putSortItem(entryNote);
+					if(deal != null && !currentIndex.isAllEmpty()){
 						deal.dealWithNode(currentIndex, entryNote);
 					}
 					adapter.set(adapter.get().andnot(currentIndex));
@@ -139,10 +141,10 @@ public class AllSingleDimensionGroup {
 		}
 		CubeValueEntrySort sort = sortBuilder.build();
 		if(asc) {
-			snParent.setChildren((CubeValueEntryNode[]) sort.getSortedASC());
+			snParent.setChildren(sort.getSortedASC());
 		}
 		else {
-			snParent.setChildren((CubeValueEntryNode[]) sort.getSortedDESC());
+			snParent.setChildren(sort.getSortedDESC());
 		}
 	}
 

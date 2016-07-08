@@ -406,9 +406,19 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected ISingleDimensionGroup createSingleDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
         ISingleDimensionGroup sg;
         if ((ComparatorUtils.equals(root.getTableKey(), BIBusinessTable.createEmptyTable()) && deep > 0)) {
-            sg = ng.createNoneTargetSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, getCKGvigetter(gv, deep), useRealData);
+            if(true){
+                sg = ng.createNoneTargetAllCalSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, getCKGvigetter(gv, deep), useRealData);
+            }
+            else {
+                sg = ng.createNoneTargetSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, getCKGvigetter(gv, deep), useRealData);
+            }
         } else {
-            sg = ng.createSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
+            if(true){
+                sg = ng.createAllCalSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
+            }
+            else {
+                sg = ng.createSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
+            }
         }
         return sg;
     }
@@ -416,9 +426,19 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
         ISingleDimensionGroup sg;
         if ((ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0)) {
-            sg = ng.createNoneTargetSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], data, deep, getCKGvigetter(data, deep), useRealData);
+            if(true){
+                sg = ng.createNoneTargetAllCalSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, getCKGvigetter(data, deep), useRealData);
+            }
+            else {
+                sg = ng.createNoneTargetSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], data, deep, getCKGvigetter(data, deep), useRealData);
+            }
         } else {
-            sg = ng.createSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], data, deep, useRealData);
+            if(true){
+                sg = ng.createAllCalSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, useRealData);
+            }
+            else {
+                sg = ng.createSingleDimensionGroup(deep == 0 ? null : cks, parentColumnCksIndex[deep], cks[deep], data, deep, useRealData);
+            }
         }
         return sg;
     }

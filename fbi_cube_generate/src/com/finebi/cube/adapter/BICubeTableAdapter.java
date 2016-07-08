@@ -9,7 +9,10 @@ import com.finebi.cube.calculator.bidouble.MinCalculator;
 import com.finebi.cube.calculator.bidouble.SumCalculator;
 import com.finebi.cube.calculator.biint.GroupSizeCalculator;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeIndexException;
+import com.finebi.cube.exception.BICubeRelationAbsentException;
+import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
@@ -307,7 +310,18 @@ public class BICubeTableAdapter implements ICubeTableService {
     public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
         CubeColumnReaderService columnReaderService = getColumnReader(key);
         checkFieldPathIndex(key, relationList, columnReaderService);
-        return new BICubeValueEntryGetter(columnReaderService, relationList);
+        if(relationList == null || relationList.size() == 0){
+            return new BICubeValueEntryGetter(columnReaderService, relationList, null);
+        }
+        BITableSourceRelation startRelation = relationList.get(0);
+        BIKey keyRelation = getColumnIndex(startRelation.getPrimaryField().getFieldName());
+        CubeRelationEntityGetterService getterService = null;
+        try {
+            getterService = getTableReader(keyRelation).getRelationIndexGetter(BICubePathUtils.convert(relationList));
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+        return new BICubeValueEntryGetter(columnReaderService, relationList, getterService);
     }
 
     @Override

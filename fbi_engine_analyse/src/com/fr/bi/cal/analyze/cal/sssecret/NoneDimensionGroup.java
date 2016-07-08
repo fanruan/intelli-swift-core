@@ -13,6 +13,7 @@ import com.fr.bi.common.inter.Release;
 import com.fr.bi.field.dimension.calculator.CombinationDateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.CombinationDimensionCalculator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.report.key.SummaryCalculator;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -98,10 +99,13 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
 
 
     public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, boolean useRealData) {
+        //TODO 考虑此处是否需要全部计算
+//        if(false){
+//            return createAllCalSingleDimensionGroup(pck, pckindex, ck, data, ckIndex, useRealData);
+//        }
         if (ck instanceof CombinationDimensionCalculator || ck instanceof CombinationDateDimensionCalculator) {
             return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
         }
-//        return new AllCalSingleDimensionGroup(tableKey, pck, node.getGroupValueIndex(), loader, false);
         return SingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
     }
 
@@ -110,11 +114,22 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     }
 
     public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
+        //TODO 考虑此处是否需要全部计算
+//        if(false){
+//            return createNoneTargetAllCalSingleDimensionGroup(pck, pckindex, ck, data, ckIndex, gvi, useRealData);
+//        }
         if (ck instanceof CombinationDimensionCalculator || ck instanceof CombinationDateDimensionCalculator) {
             return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, gvi, loader, useRealData);
         }
-//        return new AllCalSingleDimensionGroup(tableKey, pck, gvi, loader, false);
         return SingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, gvi, loader, useRealData);
+    }
+
+    public ISingleDimensionGroup createAllCalSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, boolean useRealData) {
+        return AllCalSingleDimensionGroup.createInstance(tableKey, pck, pckindex, (node == null)? new RoaringGroupValueIndex() : node.getGroupValueIndex(), data, ckIndex, loader, true);
+    }
+
+    public ISingleDimensionGroup createNoneTargetAllCalSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
+        return AllCalSingleDimensionGroup.createInstance(tableKey, pck, pckindex, gvi, data, ckIndex, loader, true);
     }
 
 
