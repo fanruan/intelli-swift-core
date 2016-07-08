@@ -142,6 +142,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         op.clickvalue = this.clickValue;
         op.page = this.pageOperator;
         op.status = this.status;
+        op.real_data = true;
+        if(this.status === BICst.WIDGET_STATUS.DETAIL) {
+            op.real_data = BI.Utils.isShowWidgetRealDataByID(this.wId) || false;
+        }
         return op;
     },
 
