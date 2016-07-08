@@ -200,6 +200,8 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
+                        item[this.constants.CordonPos][0].disabled = true;
+                        BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                         return item;
                 }
                 item[this.constants.CordonPos][0].cls = "";
