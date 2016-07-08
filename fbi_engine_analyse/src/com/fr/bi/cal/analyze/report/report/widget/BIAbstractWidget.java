@@ -45,9 +45,18 @@ public abstract class BIAbstractWidget implements BIWidget {
     private TargetFilter filter;
     private long initTime;
     private long userId;
+    private boolean realData;
 
     public long getUserId() {
         return userId;
+    }
+
+    public boolean isRealData() {
+        return realData;
+    }
+
+    public void setRealData(boolean realData) {
+        this.realData = realData;
     }
 
     private UnitRectangle getBlockBounds() {
@@ -131,7 +140,9 @@ public abstract class BIAbstractWidget implements BIWidget {
         }
         if (jo.has("init_time")) {
             initTime = jo.getLong("init_time");
-
+        }
+        if(jo.has("real_data")) {
+            realData = jo.optBoolean("real_data", true);
         }
         this.userId = userId;
     }
