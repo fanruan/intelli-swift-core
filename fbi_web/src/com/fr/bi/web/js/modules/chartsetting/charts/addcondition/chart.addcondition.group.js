@@ -118,7 +118,7 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
 
     _removeCondition : function (id) {
         var allConditions = this.buttongroup.getAllButtons();
-        var index = 0;
+        var index = -1;
 
         BI.some(allConditions , function ( i , con ) {
             if(con.getValue().cid === id) {
