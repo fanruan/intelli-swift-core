@@ -26,7 +26,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         var self = this;
         this.operatorIndex = 0;
         this.saveDebounce = BI.debounce(function (widgets, dims, layoutType) {
-            var records = Data.SharingPool.get("records") || [];
+            var records = Data.SharingPool.cat("records") || new BI.Queue(30);
             records.splice(self.operatorIndex + 1);
             records.push({
                 dimensions: dims,
@@ -34,7 +34,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                 layoutType: layoutType
             });
             Data.SharingPool.put("records", records);
-            self.operatorIndex = records.length - 1;
+            self.operatorIndex = records.size() - 1;
         }, 100);
     },
 
@@ -94,7 +94,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
 
     _undoRedoOperator: function (isUndo) {
         isUndo === true ? this.operatorIndex-- : this.operatorIndex++;
-        var ob = Data.SharingPool.get("records")[this.operatorIndex];
+        var ob = Data.SharingPool.cat("records").getElementByIndex(this.operatorIndex);
         this.isUndoRedoSet = true;
         Data.SharingPool.put("dimensions", ob.dimensions);
         Data.SharingPool.put("widgets", ob.widgets);
