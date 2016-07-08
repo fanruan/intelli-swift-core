@@ -19,7 +19,7 @@ BI.DimensionTreePopup = BI.inherit(BI.Pane, {
         var self = this, o = this.options;
 
         this.tree = BI.createWidget({
-            type: 'bi.multilayer_single_level_tree',
+            type: 'bi.multi_layer_single_empty_level_tree',
             expander: {
                 isDefaultInit: true
             },
