@@ -257,7 +257,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
 
     getValue: function(){
         return {
-            chart_color: this.colorChooser.getValue(),
+            theme_color: this.colorChooser.getValue(),
             auto_custom: this.styleRadio.getValue()[0],
             map_styles: this.conditions.getValue(),
             transfer_filter: this.transferFilter.isSelected(),
@@ -267,7 +267,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
     },
 
     setValue: function(v){
-        this.colorChooser.setValue(v.chart_color);
+        this.colorChooser.setValue(v.theme_color);
         this.styleRadio.setValue(v.auto_custom);
         this.conditions.setValue(v.map_styles);
         this.transferFilter.setSelected(v.transfer_filter);

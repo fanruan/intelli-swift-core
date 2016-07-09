@@ -69,7 +69,8 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
             type: "bi.label",
             width: 20,
             height: o.height,
-            value: v.curr
+            value: v.curr,
+            title: v.curr
         });
         this.vpager = BI.createWidget({
             type: "bi.pager",
@@ -129,7 +130,8 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
             type: "bi.label",
             width: 20,
             height: o.height,
-            value: h.curr
+            value: h.curr,
+            title: h.curr
         });
         this.hpager = BI.createWidget({
             type: "bi.pager",
@@ -192,10 +194,14 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
 
     setVPage: function (v) {
         this.vpager.setValue(v);
+        this.vlabel.setValue(v);
+        this.vlabel.setTitle(v);
     },
 
     setHPage: function (v) {
         this.hpager.setValue(v);
+        this.hlabel.setValue(v);
+        this.hlabel.setTitle(v);
     },
 
     hasVNext: function () {

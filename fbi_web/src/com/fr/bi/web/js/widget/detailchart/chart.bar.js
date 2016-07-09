@@ -16,7 +16,7 @@ BI.BarChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        MINLIMIT: 1e-3,
+        MINLIMIT: 1e-6,
         LEGEND_HEIGHT: 80
     },
 
@@ -106,13 +106,14 @@ BI.BarChart = BI.inherit(BI.Widget, {
             delete config.zoom.zoomType;
         }
 
+        //分类轴
         config.yAxis = this.yAxis;
-        config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
+        this.config.show_left_y_axis_title === true && (config.yAxis[0].title.text = this.config.left_y_axis_title);
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
-
         config.yAxis[0].labelRotation = this.config.text_direction;
+
+        //值轴
         config.xAxis[0].formatter = formatTickInXYaxis(this.config.x_axis_style, this.constants.X_AXIS);
         formatNumberLevelInXaxis(this.config.x_axis_number_level);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);

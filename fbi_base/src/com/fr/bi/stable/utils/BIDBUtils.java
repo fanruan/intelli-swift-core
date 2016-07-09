@@ -342,6 +342,12 @@ public class BIDBUtils {
             if (item.containsKey("DECIMAL_DIGITS")) {
                 decimal_digits = (Integer) item.get("DECIMAL_DIGITS");
             }
+            if (!(dialect instanceof OracleDialect)) {
+                if (columnType == DBConstant.CLASS.DECIMAL) {
+                    decimal_digits = PersistentField.DEFALUTSCALE;
+                }
+            }
+
             dbTable.addColumn(new PersistentField(columnName, columnNameText, columnType, columnKey, columnSize, decimal_digits));
         }
         return dbTable;

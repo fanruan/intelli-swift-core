@@ -131,9 +131,6 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         switch (wType) {
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.COMPARE_BAR:
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -150,6 +147,19 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     el: items[this.constants.CordonPos][0],
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
+                break;
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+                items[this.constants.CordonPos][0].cls = "";
+                items[this.constants.CordonPos][0] = {
+                    el: items[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Vertical") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
@@ -178,8 +188,8 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                         items[this.constants.CordonPos][0].disabled = true;
+                        BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                         return addDependency();
                 }
                 items[this.constants.CordonPos][0].cls = "";
@@ -197,15 +207,6 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 break;
         }
 
-        switch (wType) {
-            case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                items[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
-                break;
-            default:
-                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
-                break;
-        }
         return addDependency();
 
         function addDependency() {
