@@ -7,6 +7,11 @@
  */
 BI.ReusePane = BI.inherit(BI.Widget, {
 
+    constants: {
+        CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.NUMBER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
+            BICst.WIDGET.QUARTER, BICst.WIDGET.TREE, BICst.WIDGET.YEAR, BICst.WIDGET.YMD, BICst.WIDGET.GENERAL_QUERY]
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.ReusePane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-reuse-pane",
@@ -164,19 +169,22 @@ BI.ReusePane = BI.inherit(BI.Widget, {
     _getWidgets: function (id, layer, callback) {
         var self = this, o = this.options;
         BI.Utils.getWidgetsByTemplateId(id, function(data){
-            var result = BI.map(data, function(wId, widget){
-                return {
-                    id: wId,
-                    pId: id,
-                    isParent: false,
-                    layer: layer,
-                    nodeType: BI.ReusePane.WIDGET,
+            var result = [];
+            BI.map(data, function(wId, widget){
+                if(!BI.contains(self.constants.CONTROL_TYPE, widget.type)){
+                    result.push({
+                        id: wId,
+                        pId: id,
+                        isParent: false,
+                        layer: layer,
+                        nodeType: BI.ReusePane.WIDGET,
 
-                    type: "bi.drag_widget_item",
-                    widget: widget,
-                    drag: o.drag,
-                    stop: o.stop,
-                    helper: o.helper
+                        type: "bi.drag_widget_item",
+                        widget: widget,
+                        drag: o.drag,
+                        stop: o.stop,
+                        helper: o.helper
+                    });
                 }
             });
             callback(result);
