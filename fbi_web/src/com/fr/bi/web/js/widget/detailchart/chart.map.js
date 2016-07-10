@@ -84,6 +84,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     config.rangeLegend.enabled = false;
                     break;
             }
+            config.rangeLegend.range.max = self.max;
            // config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
         }
 
