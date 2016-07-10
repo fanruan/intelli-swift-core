@@ -213,7 +213,6 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
 
                         return bands;
                     }
-                    break;
             }
         }
 
