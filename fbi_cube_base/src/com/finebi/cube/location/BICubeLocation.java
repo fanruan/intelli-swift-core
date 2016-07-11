@@ -25,8 +25,9 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
 
     public BICubeLocation(String baseLocation, String childLocation) throws URISyntaxException {
         BINonValueUtils.checkNull(baseLocation);
-        File file = new File(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation))));
-        this.baseLocation = file.toURI();
+        this.baseLocation = new URI(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation))));
+//        File file = new File(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation))));
+//        this.baseLocation = file.toURI();
         if (childLocation != null) {
             this.childLocation = new URI(BIStringUtils.cutStartSlash(replaceSlash(childLocation)));
         } else {
