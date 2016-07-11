@@ -15103,7 +15103,11 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextDimension(text, style, useHtml){
         text = pick(text, "");
         var div = document.createElement("div");
-        document.getElementById("container").appendChild(div);
+        var container = document.getElementById("container");
+        if(!container){
+            container = document.getElementsByTagName("body")[0]
+        }
+        container.appendChild(div);
 
         div.style.visibility = "hidden";
         div.style.whiteSpace = "nowrap";
@@ -15133,7 +15137,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var width = div.offsetWidth || 0;
         var height = div.offsetHeight || 0;
 
-        document.getElementById("container").removeChild(div);
+        container.removeChild(div);
 
         return {width:width, height:height};
     }
@@ -15141,7 +15145,11 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextWrapDimension(text, style, useHTML){
         text = pick(text, "");
         var div = document.createElement("div");
-        document.getElementById("container").appendChild(div);
+        var container = document.getElementById("container");
+        if(!container){
+            container = document.getElementsByTagName("body")[0]
+        }
+        container.appendChild(div);
 
         div.style.visibility = "hidden";
         div.style.whiteSpace = "normal";
@@ -15166,7 +15174,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var width = div.offsetWidth || 0;
         var height = div.offsetHeight || 0;
 
-        document.getElementById("container").removeChild(div);
+        container.removeChild(div);
 
         return {width:width, height:height};
     }
