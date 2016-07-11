@@ -31,7 +31,7 @@ Data.Utils = {
         });
         var drillcataDimId = getDrillDimensionId(getDrill()[cataDid]);
         var drillseriDimId = getDrillDimensionId(getDrill()[seriesDid]);
-        var cataGroup = widget.dimensions[cataDid].group;
+        var cataGroup = BI.isNull(widget.dimensions[cataDid]) ? null : widget.dimensions[cataDid].group;
         var seriesGroup = BI.isNull(widget.dimensions[seriesDid]) ? null : widget.dimensions[seriesDid].group;
         if(BI.isNotNull(drillcataDimId)){
             cataGroup = widget.dimensions[drillcataDimId].group;
