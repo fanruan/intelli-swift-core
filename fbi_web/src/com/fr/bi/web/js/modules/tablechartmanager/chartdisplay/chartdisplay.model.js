@@ -556,45 +556,54 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 callback(jsonData);
                 return;
             }
-            var data = self.parseChartData(jsonData.data);
-            var types = [];
-            var targetIds = self._getShowTarget();
-            var count = 0;
-            BI.each(data, function (idx, da) {
-                var t = [];
-                BI.each(da, function (id, d) {
-                    if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
-                        var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
-                        t.push(chart.type || BICst.WIDGET.AXIS);
-                    } else {
-                        t.push(type);
-                    }
-                    count++;
-                });
-                types.push(t);
+            //var data = self.parseChartData(jsonData.data);
+            //var types = [];
+            //var targetIds = self._getShowTarget();
+            //var count = 0;
+            //BI.each(data, function (idx, da) {
+            //    var t = [];
+            //    BI.each(da, function (id, d) {
+            //        if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
+            //            var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
+            //            t.push(chart.type || BICst.WIDGET.AXIS);
+            //        } else {
+            //            t.push(type);
+            //        }
+            //        count++;
+            //    });
+            //    types.push(t);
+            //});
+            //if(BI.isEmptyArray(types)){
+            //    types.push([type]);
+            //}
+            //BI.each(data, function(idx, item){
+            //    var i = BI.UUID();
+            //    var type = types[idx];
+            //    BI.each(item, function(id, it){
+            //        (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
+            //    });
+            //});
+            //if(type === BICst.WIDGET.MAP){
+            //    options.geo = {
+            //        data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
+            //        geoName: BICst.MAP_TYPE_NAME[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+            //    }
+            //}
+            //if(type === BICst.WIDGET.GIS_MAP){
+            //    options.geo = {
+            //        "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
+            //    };
+            //}
+            var opts = Data.Utils.getWidgetData(jsonData.data, {
+                type: BI.Utils.getWidgetTypeByID(o.wId),
+                sub_type: BI.Utils.getWidgetSubTypeByID(o.wId),
+                view: BI.Utils.getWidgetViewByID(o.wId),
+                clicked: BI.Utils.getClickedByID(o.wId),
+                settings: BI.Utils.getWidgetSettingsByID(o.wId),
+                dimensions: BI.Utils.getWidgetDimensionsByID(o.wId)
             });
-            if(BI.isEmptyArray(types)){
-                types.push([type]);
-            }
-            BI.each(data, function(idx, item){
-                var i = BI.UUID();
-                var type = types[idx];
-                BI.each(item, function(id, it){
-                    (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
-                });
-            });
-            if(type === BICst.WIDGET.MAP){
-                options.geo = {
-                    data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
-                    geoName: BICst.MAP_TYPE_NAME[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
-                }
-            }
-            if(type === BICst.WIDGET.GIS_MAP){
-                options.geo = {
-                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
-                };
-            }
-            callback(types, data, options);
+            callback(opts.types, opts.data, opts.options);
+            //callback(types, data, options);
         }, {
             expander: {
                 x: {
@@ -617,7 +626,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var dId = [], clicked = [];
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
-            case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:
                 dId = obj.targetIds;
                 clicked = [{
