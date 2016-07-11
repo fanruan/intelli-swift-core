@@ -26,25 +26,17 @@ BI.CustomTimeInterval = BI.inherit(BI.Widget, {
     getValue: function(){
         var timeRange = this.timeInterval.getValue();
         var start = timeRange.start, end = timeRange.end;
-        var result = {};
-        BI.isNull(start) ? result["start"] = null : result["start"] = Date.parseDateTime(start.year + "-" + (start.month + 1) + "-" + start.day, "%y-%x-%d").getTime();
-        BI.isNull(end) ? result["end"] = null : result["end"] = Date.parseDateTime(end.year + "-" + (end.month + 1) + "-" + end.day, "%y-%x-%d").getTime();
-        return result;
+        return {
+            startDetail: start,
+            endDetail: end
+        };
     },
 
     setValue: function(v){
-        var sString = v.start, eString = v.end;
+        var sString = v.startDetail, eString = v.endDetail;
         var value = {};
-        BI.isNull(sString) ? value["start"] = null : value["start"] = {
-            year: new Date(sString).getFullYear(),
-            month: new Date(sString).getMonth(),
-            day: new Date(sString).getDate()
-        };
-        BI.isNull(eString) ? value["end"] = null : value["end"] = {
-            year: new Date(eString).getFullYear(),
-            month: new Date(eString).getMonth(),
-            day: new Date(eString).getDate()
-        };
+        BI.isNull(sString) ? value["start"] = null : value["start"] = sString;
+        BI.isNull(eString) ? value["end"] = null : value["end"] = eString;
         this.timeInterval.setValue(value);
     }
 });
