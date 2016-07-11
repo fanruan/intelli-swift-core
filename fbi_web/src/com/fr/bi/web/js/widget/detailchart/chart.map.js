@@ -115,7 +115,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         }
 
         function getRangeStyle (styles , change , defaultColor) {
-            var range = [], color = null;
+            var range = [], color = null, defaultStyle = {};
             var conditionMax = null, conditionMin = null, max = null, min = null;
 
             BI.each(items , function (idx , item) {
@@ -131,9 +131,11 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
             switch (change) {
                 case BICst.SCALE_SETTING.AUTO:
-                    range.color = defaultColor;
-                    range.splitNumber = 2;
+                    //defaultStyle.color = defaultColor;
+                    //defaultStyle.splitNumber = 2;
+                    //return defaultStyle;
                     return range;
+                    break;
                 case BICst.SCALE_SETTING.CUSTOM:
                     if(styles.length !== 0) {
                         BI.each(styles, function (idx, style) {
@@ -166,8 +168,8 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
                         }
                     }
-
                     return range;
+                    break;
             }
         }
 
