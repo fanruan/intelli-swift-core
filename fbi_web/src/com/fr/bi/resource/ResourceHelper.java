@@ -2122,6 +2122,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.vertical.js",
+                "com/fr/bi/web/js/data/utils.js",
 
                 "com/fr/bi/web/js/case/case.js",
                 "com/fr/bi/web/js/case/layer/panel.js",

@@ -9,7 +9,6 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.BICubeManager;
-import com.fr.bi.conf.base.cube.BICubeConfManager;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;

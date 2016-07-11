@@ -45,22 +45,42 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             if(BI.contains(tableIds, all_fields[primaryId].table_id) || BI.contains(tableIds, all_fields[foreignId].table_id)){
                 norelationTables.remove(all_fields[primaryId].table_id);
                 norelationTables.remove(all_fields[foreignId].table_id);
-                items.push({
-                    primary: {
-                        region: all_fields[primaryId].table_id,
-                        regionText: self.model.getTableTranName(all_fields[primaryId].table_id),
-                        value: primaryId,
-                        text: self.model.getFieldTranName(primaryId),
-                        regionHandler: regionHandler
-                    },
-                    foreign: {
-                        region: all_fields[foreignId].table_id,
-                        regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
-                        value: foreignId,
-                        text: self.model.getFieldTranName(foreignId),
-                        regionHandler: regionHandler
-                    }
-                });
+                //自循环
+                if(all_fields[primaryId].table_id === all_fields[foreignId].table_id){
+                    items.push({
+                        primary: {
+                            region: all_fields[primaryId].table_id,
+                            regionText: self.model.getTableTranName(all_fields[primaryId].table_id),
+                            value: primaryId,
+                            text: self.model.getFieldTranName(primaryId),
+                            regionHandler: regionHandler
+                        },
+                        foreign: {
+                            region: BI.UUID(),
+                            regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
+                            value: foreignId,
+                            text: self.model.getFieldTranName(foreignId),
+                            regionHandler: regionHandler
+                        }
+                    });
+                }else{
+                    items.push({
+                        primary: {
+                            region: all_fields[primaryId].table_id,
+                            regionText: self.model.getTableTranName(all_fields[primaryId].table_id),
+                            value: primaryId,
+                            text: self.model.getFieldTranName(primaryId),
+                            regionHandler: regionHandler
+                        },
+                        foreign: {
+                            region: all_fields[foreignId].table_id,
+                            regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
+                            value: foreignId,
+                            text: self.model.getFieldTranName(foreignId),
+                            regionHandler: regionHandler
+                        }
+                    });
+                }
             }
         });
         BI.each(norelationTables, function(idx, tId){
