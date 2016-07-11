@@ -7247,11 +7247,18 @@
         },
 
         onAdd: function () {
-            this._renderer._initText(this);
-            this._reset();
+            var useHtml = this._data.dataLabels.useHtml;
+            if(useHtml){
+                this._text = document.createElement('div');
+                this._text.style.position = 'absolute';
+                this._text.style['pointer-events'] = 'none';
+                this.getPane().appendChild(this._text);
+            }else{
+                this._renderer._initText(this);
+                this._renderer._addText(this);
+            }
 
             var labelContent = this._data.labelContent;
-
             var centerX = 0, startY = -this._data.labelDim.height/2;
             var chartType = this._data.series.type;
             if(chartType == 'scatter' || chartType == 'pointMap'){
@@ -7271,17 +7278,38 @@
                 var labelDim = label.dim;
                 var labelText = label.text;
                 var labelStyle = label.style;
-                d3.select(this._text).append('tspan')
-                    .attr('x', centerX).attr('y', startY + labelDim.height/2)
-                    .attr('dy', '.32em').attr("text-anchor", "middle")
-                    .text(labelText);
 
-                VanUtils.setTextStyle(d3.select(this._text), labelStyle);
+                if(useHtml){
+                    var div = document.createElement('div')
+                    div.innerHTML = labelText;
+                    div.style.zIndex = 1001;
+                    div.style.position = 'absolute';
+                    div.style.left = -labelDim.x/2 + 'px';
+                    div.style.top = startY + 'px';
+                    div.style.overflow = 'hidden';
+                    div.style.whiteSpace = 'nowrap';
 
+                    for(var fontStyle in labelStyle){
+                        //ie789的color属性只能是16进制的值
+                        if(fontStyle == 'color'){
+                            div.style.color = ColorUtils.colorToHex(labelStyle.color);
+                        }else {
+                            div.style[fontStyle] = labelStyle[fontStyle];
+                        }
+                    }
+                    this._text.appendChild(div);
+                }else{
+                    d3.select(this._text).append('tspan')
+                        .attr('x', centerX).attr('y', startY + labelDim.height/2)
+                        .attr('dy', '.32em').attr("text-anchor", "middle")
+                        .text(labelText);
+
+                    VanUtils.setTextStyle(d3.select(this._text), labelStyle);
+                }
                 startY += (labelDim.height + 2);
             }
 
-            this._renderer._addText(this);
+            this._reset();
         },
 
         onRemove: function () {
@@ -7308,7 +7336,12 @@
 
         _update: function () {
             if (this._map) {
-                this._text.setAttribute("transform", 'translate(' + this._point.x + ',' + this._point.y + ')');
+                if(this._text.tagName.toLowerCase() == 'div'){
+                    this._text.style.left = this._point.x + 'px';
+                    this._text.style.top = this._point.y + 'px';
+                }else{
+                    this._text.setAttribute("transform", 'translate(' + this._point.x + ',' + this._point.y + ')');
+                }
             }
         }
     });
@@ -8307,6 +8340,8 @@
             } else {
                 path.setAttribute('fill', 'none');
             }
+
+            path.setAttribute('filter', options.filter ? options.filter : '');
         },
 
         _updatePoly: function (layer, closed) {
@@ -8427,6 +8462,9 @@
 
         _initContainer: function () {
             this._container = L.DomUtil.create('div', 'leaflet-vml-container');
+            this._container.style.top = '0px';
+            this._container.style.left = '0px';
+            this._container.style.position = 'absolute';
         },
 
         _update: function () {
@@ -10024,13 +10062,6 @@
             this._map
                 .fire('move', e)
                 .fire('drag', e);
-
-            //update vanchart position to avoid moving
-            if(this._map.vanchart){
-                var newPos = this._draggable._newPos;
-                var element = this._map.vanchart.render.getRenderRoot();
-                L.DomUtil.setPosition(element.node(), {x:-newPos.x, y:-newPos.y});
-            }
         },
 
         _onZoomEnd: function () {
