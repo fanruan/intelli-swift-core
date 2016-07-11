@@ -65,12 +65,6 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
 
     public CubeBuildStuffManager(BIUser biUser) {
         this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-        ICubeResourceRetrievalService retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        BICube cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        if (cube.getCubeVersion()!=0){
-            this.cubeConfiguration = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
-        }
-
         this.biUser = biUser;
         initialCubeStuff();
     }
