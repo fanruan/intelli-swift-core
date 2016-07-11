@@ -1,58 +1,61 @@
 
 package com.finebi.datasource.api.metamodel;
 
+import com.finebi.datasource.sql.criteria.internal.metamodel.MetamodelImpl;
+
 import java.util.Set;
 
 /**
  * Provides access to the metamodel of persistent
- * entities in the persistence unit. 
+ * entities in the persistence unit.
  *
+ * @author Connery
  * @since Advanced FineBI Analysis 1.0
  */
 public interface Metamodel {
 
-    /**
-     *  Return the metamodel entity type representing the entity.
-     *  @param cls  the type of the represented entity
-     *  @return the metamodel entity type
-     *  @throws IllegalArgumentException if not an entity
-     */
-    <X> EntityType<X> entity(Class<X> cls);
+
+    MetamodelImpl.Builder build();
 
     /**
-     *  Return the metamodel managed type representing the 
-     *  entity, mapped superclass, or embeddable class.
-     *  @param cls  the type of the represented managed class
-     *  @return the metamodel managed type
-     *  @throws IllegalArgumentException if not a managed class
+     * 当前的model不再可变
      */
-    <X> ManagedType<X> managedType(Class<X> cls);
-    
-    /**
-     *  Return the metamodel embeddable type representing the
-     *  embeddable class.
-     *  @param cls  the type of the represented embeddable class
-     *  @return the metamodel embeddable type
-     *  @throws IllegalArgumentException if not an embeddable class
-     */
-    <X> EmbeddableType<X> embeddable(Class<X> cls);
+    void close();
 
     /**
-     *  Return the metamodel managed types.
-     *  @return the metamodel managed types
+     * 判断当前的Model是否不可变
+     *
+     * @return
      */
-    Set<ManagedType<?>> getManagedTypes();
+    boolean isImmutable();
 
     /**
-     * Return the metamodel entity types.
-     * @return the metamodel entity types
+     * 返回保存的全部实体类型
+     *
+     * @return 保存的全部实体类型
      */
-    Set<EntityType<?>> getEntities();
+    Set<EntityType> getEntities();
+
 
     /**
-     * Return the metamodel embeddable types.  Returns empty set
-     * if there are no embeddable types.
-     * @return the metamodel embeddable types
+     * Access to an entity supporting Hibernate's entity-name feature
+     *
+     * @param entityName The entity-name
+     * @return The entity descriptor
      */
-    Set<EmbeddableType<?>> getEmbeddables();
+    EntityType entity(String entityName);
+
+
+    boolean contain(EntityType entityType);
+
+    boolean contain(String entityTypeName);
+
+    /**
+     * Get the names of all entities known to this Metamodel
+     *
+     * @return All of the entity names
+     */
+    String[] getAllEntityNames();
+
+
 }

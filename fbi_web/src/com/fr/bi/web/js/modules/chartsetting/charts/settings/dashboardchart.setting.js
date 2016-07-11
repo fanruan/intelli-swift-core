@@ -279,17 +279,16 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
     },
 
     _showPointer: function (pictureType) {
-        self = this;
         switch (pictureType) {
             case BICst.CHART_SHAPE.NORMAL:
             case BICst.CHART_SHAPE.HALF_DASHBOARD:
-                self.pointer.setEnable(true);
+                this.pointer.setEnable(true);
                 break;
             case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
             case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
             case BICst.CHART_SHAPE.VERTICAL_TUBE:
             case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
-                self.pointer.setEnable(false);
+                this.pointer.setEnable(false);
                 break;
         }
     },
@@ -299,7 +298,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.chartTypeGroup.setValue(BI.Utils.getWSChartDashboardTypeByID(wId));
         this.pointer.setValue(BI.Utils.getWSNumberOfPointerByID(wId));
-        this._showPointer(BI.Utils.getWSNumberOfPointerByID(wId));
+        this._showPointer(BI.Utils.getWSChartDashboardTypeByID(wId));
         this.scale.setValue(BI.Utils.getWSScaleByID(wId));
         this._doClickButton(BI.Utils.getWSScaleByID(wId));
         this.conditions.setValue(BI.Utils.getWSDashboardStylesByID(wId));

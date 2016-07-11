@@ -1,6 +1,5 @@
 package com.fr.bi.web.dezi;
 
-import com.finebi.cube.api.BICubeManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
@@ -65,7 +64,7 @@ public class BIWidgetSettingAction extends AbstractBIDeziAction {
             loader.releaseTableIndex(Thread.currentThread().getId());
             TempPathGenerator.removeTempPath(Thread.currentThread().getId());
         }
-        BICubeManager.getInstance().fetchCubeLoader(userId).releaseCurrentThread();
+        sessionIDInfor.getLoader().releaseCurrentThread();
         WebUtils.printAsJSON(res, jo);
     }
 

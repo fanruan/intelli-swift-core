@@ -2,42 +2,42 @@
 package com.finebi.datasource.api.metamodel;
 
 /**
- * Instances of the type <code>Bindable</code> represent object or attribute types 
- * that can be bound into a {@link com.finebi.analysis.api.criteria.Path Path}.
+ * 代表当前对象是可以绑定到Path的
  *
- * @param <T>  The type of the represented object or attribute
- *
+ * @author Connery
  * @since Advanced FineBI Analysis 1.0
- *
  */
 public interface Bindable<T> {
-	
-	public static enum BindableType { 
 
-	    /** Single-valued attribute type */
-	    SINGULAR_ATTRIBUTE, 
+    public static enum BindableType {
 
-	    /** Multi-valued attribute type */
-	    PLURAL_ATTRIBUTE, 
+        /**
+         * 单属性
+         */
+        SINGULAR_ATTRIBUTE,
 
-	    /** Entity type */
-	    ENTITY_TYPE
-	}
+        /**
+         * 多值属性,要去
+         */
+        PLURAL_ATTRIBUTE,
+
+        /**
+         * 实体属性
+         */
+        ENTITY_TYPE
+    }
 
     /**
-     *  Return the bindable type of the represented object.
-     *  @return bindable type
-     */	
+     * 返回邦定类型
+     *
+     * @return 绑定类型
+     */
     BindableType getBindableType();
-	
+
     /**
-     * Return the Java type of the represented object.
-     * If the bindable type of the object is <code>PLURAL_ATTRIBUTE</code>,
-     * the Java element type is returned. If the bindable type is
-     * <code>SINGULAR_ATTRIBUTE</code> or <code>ENTITY_TYPE</code>, 
-     * the Java type of the
-     * represented entity or attribute is returned.
-     * @return Java type
+     * 返回当前对象的类型
+     *
+     * @return Java类型
      */
     Class<T> getBindableJavaType();
 }

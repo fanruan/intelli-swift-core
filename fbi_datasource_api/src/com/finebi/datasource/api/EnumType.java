@@ -6,7 +6,7 @@ package com.finebi.datasource.api;
  * enumerated type specify how a persistent property or
  * field of an enumerated type should be persisted.
  * 
- * @since Java Persistence 1.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public enum EnumType {
     /** Persist enumerated type property or field as an integer. */

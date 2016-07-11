@@ -594,6 +594,15 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
                 };
             }
+            //var opts = Data.Utils.getWidgetData(jsonData.data, {
+            //    type: BI.Utils.getWidgetTypeByID(o.wId),
+            //    sub_type: BI.Utils.getWidgetSubTypeByID(o.wId),
+            //    view: BI.Utils.getWidgetViewByID(o.wId),
+            //    clicked: BI.Utils.getClickedByID(o.wId),
+            //    settings: BI.Utils.getWidgetSettingsByID(o.wId),
+            //    dimensions: BI.Utils.getWidgetDimensionsByID(o.wId)
+            //});
+            //callback(opts.types, opts.data, opts.options);
             callback(types, data, options);
         }, {
             expander: {
@@ -617,7 +626,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var dId = [], clicked = [];
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
-            case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:
                 dId = obj.targetIds;
                 clicked = [{

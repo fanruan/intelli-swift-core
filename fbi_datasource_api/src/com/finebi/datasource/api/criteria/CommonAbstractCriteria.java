@@ -1,6 +1,8 @@
 
 package com.finebi.datasource.api.criteria;
 
+import com.finebi.datasource.api.metamodel.EntityType;
+
 /**
  * The <code>CommonAbstractCriteria</code> interface defines functionality 
  * that is common to both top-level criteria queries and subqueries as 
@@ -24,6 +26,12 @@ public interface CommonAbstractCriteria {
      */
     <U> Subquery<U> subquery(Class<U> type);
 
+    /**
+     * Create a subquery of the query.
+     * @param type  the subquery result type
+     * @return subquery
+     */
+    <U> Subquery<U> subquery(EntityType<U> type);
     /**
      * Return the predicate that corresponds to the where clause
      * restriction(s), or null if no restrictions have been

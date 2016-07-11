@@ -22,16 +22,7 @@ import java.util.Set;
  */
 public interface AbstractQuery<T> extends CommonAbstractCriteria {
 
-    /**
-     * Create and add a query root corresponding to the given entity,
-     * forming a cartesian product with any existing roots.
-     *
-     * @param entityClass the entity class
-     * @return query root corresponding to the given entity
-     */
-    <X> Root<X> from(Class<X> entityClass);
 
-    <X> Root<X> from(PlainTable plainTable);
 
     /**
      * Create and add a query root corresponding to the given entity,
