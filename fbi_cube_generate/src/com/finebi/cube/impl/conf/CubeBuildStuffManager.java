@@ -85,7 +85,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
 
     @Override
     public ICubeConfiguration getCubeConfiguration() {
-        return BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+        return this.cubeConfiguration;
     }
 
     @Override
