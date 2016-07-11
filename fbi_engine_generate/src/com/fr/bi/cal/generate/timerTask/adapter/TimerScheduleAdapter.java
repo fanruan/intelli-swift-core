@@ -45,7 +45,7 @@ public class TimerScheduleAdapter {
         return scheduleList;
     }
 
-    private static BusinessTable tableCheck(long userId, String keys) {
+    public static BusinessTable tableCheck(long userId, String keys) {
         Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
         for (BusinessTable table : allTables) {
             if (table.getTableSource().getSourceID().equals(keys)) {

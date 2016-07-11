@@ -16,6 +16,8 @@ ul.CodeMirror-hints {
   background: #ff6600;
   opacity: 0.2;
   filter: alpha(opacity=20);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
   border-radius: 5px;
   border: 2px #8e8e8e;
   z-index: 1000000000;
