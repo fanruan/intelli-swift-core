@@ -1,10 +1,10 @@
 /**
  * 普通控件
  *
- * @class BI.Param2DateItem
+ * @class BI.Param3DateItem
  * @extends BI.Single
  */
-BI.Param2DateItem = BI.inherit(BI.Single, {
+BI.Param3DateItem = BI.inherit(BI.Single, {
     constants: {
         itemHeight: 20,
         itemWidth: 20,
@@ -13,9 +13,8 @@ BI.Param2DateItem = BI.inherit(BI.Single, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.Param2DateItem.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: 'bi-param2-date-item',
-            value: BI.Param2DateItem.YEAR_DAY,
+        return BI.extend(BI.Param3DateItem.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: 'bi-param3-date-item',
             width: 310,
             height: 20,
             selected: false,
@@ -24,7 +23,7 @@ BI.Param2DateItem = BI.inherit(BI.Single, {
     },
 
     _init: function () {
-        BI.Param2DateItem.superclass._init.apply(this, arguments);
+        BI.Param3DateItem.superclass._init.apply(this, arguments);
         var self = this, opts = this.options;
         this.radio = BI.createWidget({
             type: "bi.radio",
@@ -46,34 +45,15 @@ BI.Param2DateItem = BI.inherit(BI.Single, {
         this.firstEditor.on(BI.Controller.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
-        this.secondEditor = BI.createWidget({
-            type: 'bi.small_text_editor',
-            value: opts.defaultEditorValue,
-            validationChecker: function(v){
-                return BI.isNaturalNumber(v);
-            },
-            errorText: BI.i18nText("BI-Please_Input_Integer"),
-            width: this.constants.textWidth,
-            height: this.constants.itemHeight
-        });
-        this.secondEditor.on(BI.Controller.EVENT_CHANGE, function (v) {
-            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
-        });
+
         this.firstCombo = BI.createWidget({
             type: "bi.small_text_value_combo",
             width: this.constants.comboWidth,
             height: this.constants.itemHeight,
             items: BICst.BEFORE_AFTER_COMBO
         });
-        this.secondCombo = BI.createWidget({
-            type: "bi.small_text_value_combo",
-            width: this.constants.comboWidth,
-            height: this.constants.itemHeight,
-            items: BICst.BEFORE_AFTER_COMBO
-        });
+
         this.firstCombo.setValue(0);
-        this.secondCombo.setValue(0);
-        var textJson = this._getTextByDateType();
 
         BI.createWidget({
             type: 'bi.inline',
@@ -87,7 +67,7 @@ BI.Param2DateItem = BI.inherit(BI.Single, {
                 type: "bi.label",
                 textAlign: "center",
                 cls: 'param-label',
-                text: textJson.ftext,
+                text: BI.i18nText("BI-Year"),
                 width: this.constants.itemWidth,
                 height: this.constants.itemHeight
             }, this.firstCombo, {
@@ -98,34 +78,14 @@ BI.Param2DateItem = BI.inherit(BI.Single, {
                 width: this.constants.itemWidth,
                 height: this.constants.itemHeight
             }, {
-                el: this.secondCombo,
-                rgap: 5
-            }, this.secondEditor, {
                 type: "bi.label",
                 textAlign: "left",
                 cls: 'param-label',
-                text: textJson.stext,
+                text: BI.i18nText("BI-Multi_Date_Year_Begin"),
                 height: this.constants.itemHeight,
                 lgap: 5
             }]
         });
-    },
-
-    _getTextByDateType: function(){
-        switch (this.options.value) {
-            case BI.Param2DateItem.MONTH_WEEK:
-                return {ftext: BI.i18nText("BI-Month"), stext: BI.i18nText("BI-Week_Of_Week")};
-            case BI.Param2DateItem.MONTH_DAY:
-                return {ftext: BI.i18nText("BI-Month"), stext: BI.i18nText("BI-Day_De")};
-            case BI.Param2DateItem.YEAR_MONTH:
-                return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Month_De_Month")};
-            case BI.Param2DateItem.YEAR_DAY:
-                return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Day_De")};
-            case BI.Param2DateItem.YEAR_QUARTER:
-                return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Quarter_Of_Quarter")};
-            case BI.Param2DateItem.YEAR_WEEK:
-                return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Week_Of_Week")};
-        }
     },
 
     _assertValue: function(v){
@@ -133,8 +93,6 @@ BI.Param2DateItem = BI.inherit(BI.Single, {
         v = v || {};
         v.fvalue = v.fvalue || o.defaultEditorValue;
         v.foffset = v.foffset || 0;
-        v.svalue = v.svalue || o.defaultEditorValue;
-        v.soffset = v.soffset || 0;
         return v;
     },
 
@@ -146,16 +104,10 @@ BI.Param2DateItem = BI.inherit(BI.Single, {
         return this.radio.isSelected();
     },
 
-    getValue: function () {
-        return this.options.value;
-    },
-
-    getInputValue: function(){
+    getInputValue: function () {
         return {
             fvalue: this.firstEditor.getValue() || 0,
-            foffset: this.firstCombo.getValue()[0],
-            svalue: this.secondEditor.getValue() || 0,
-            soffset: this.secondCombo.getValue()[0]
+            foffset: this.firstCombo.getValue()[0]
         };
     },
 
@@ -163,25 +115,17 @@ BI.Param2DateItem = BI.inherit(BI.Single, {
         v = this._assertValue(v);
         this.firstEditor.setValue(v.fvalue);
         this.firstCombo.setValue([v.foffset]);
-        this.secondEditor.setValue(v.svalue);
-        this.secondCombo.setValue([v.soffset]);
+    },
+
+    getValue: function(){
+        return BICst.YEAR;
     },
 
     setEnable: function (b) {
         this.firstEditor.setEnable(!!b);
-        this.secondEditor.setEnable(!!b);
         this.firstCombo.setEnable(!!b);
-        this.secondCombo.setEnable(!!b);
     }
 });
 
-BI.Param2DateItem.EVENT_CHANGE = "EVENT_CHANGE";
-BI.extend(BI.Param2DateItem , {
-    YEAR_QUARTER: BICst.YEAR_QUARTER,
-    YEAR_MONTH: BICst.YEAR_MONTH,
-    YEAR_WEEK: BICst.YEAR_WEEK,
-    YEAR_DAY: BICst.YEAR_DAY,
-    MONTH_WEEK: BICst.MONTH_WEEK,
-    MONTH_DAY: BICst.MONTH_DAY
-});
-$.shortcut('bi.param2_date_item', BI.Param2DateItem);
+BI.Param3DateItem.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut('bi.param3_date_item', BI.Param3DateItem);

@@ -5,6 +5,11 @@
  */
 BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
 
+    constants: {
+        customSortPos : 2,
+        CordonPos: 2
+    },
+
     config : {
         ASCEND : BICst.DIMENSION_STRING_COMBO.ASCEND,
         DESCEND: BICst.DIMENSION_STRING_COMBO.DESCEND,
@@ -37,7 +42,8 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             }, {
                 text: BI.i18nText("BI-Custom_Sort_Dot"),
                 value: BICst.DIMENSION_STRING_COMBO.SORT_BY_CUSTOM,
-                cls: "dot-e-font"
+                cls: "dot-e-font",
+                warningTitle: BI.i18nText("BI-Same_Value_Group")
             }],
             [{
                 text: BI.i18nText("BI-Same_Value_A_Group"),
@@ -76,6 +82,48 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 disabled: true
             }]
         ]
+    },
+
+    _rebuildItems :function(){
+        var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
+        if(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP){
+        }else{
+            var group = this._assertGroup(BI.Utils.getDimensionGroupByID(o.dId));
+            var customSort = items[0][this.constants.customSortPos];
+            group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
+        }
+        switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId))) {
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
+                    BI.removeAt(items, this.constants.CordonPos);
+                }
+                break;
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+                items[this.constants.CordonPos][0].text = BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") +")";
+                if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
+                    BI.removeAt(items, this.constants.CordonPos);
+                }
+                break;
+            default:
+                BI.removeAt(items, this.constants.CordonPos);
+                break;
+
+        }
+        return items;
     },
 
     typeConfig: function(){

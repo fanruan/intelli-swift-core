@@ -21,8 +21,8 @@ BI.YearMonthParamPopupView = BI.inherit(BI.ParamPopupView, {
             type: "bi.param0_date_item",
             selected: true
         }, {
-            type: "bi.param1_date_item",
-            value: BI.Param1DateItem.YEAR_MONTH,
+            type: "bi.param2_date_item",
+            value: BI.Param2DateItem.YEAR_MONTH,
             disabled: true
         }]
     }
