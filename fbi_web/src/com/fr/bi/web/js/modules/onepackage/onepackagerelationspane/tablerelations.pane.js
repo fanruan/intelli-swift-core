@@ -49,14 +49,14 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                 if(all_fields[primaryId].table_id === all_fields[foreignId].table_id){
                     items.push({
                         primary: {
-                            region: BI.UUID(),
+                            region: all_fields[primaryId].table_id,
                             regionText: self.model.getTableTranName(all_fields[primaryId].table_id),
                             value: primaryId,
                             text: self.model.getFieldTranName(primaryId),
                             regionHandler: regionHandler
                         },
                         foreign: {
-                            region: all_fields[foreignId].table_id,
+                            region: BI.UUID(),
                             regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
                             value: foreignId,
                             text: self.model.getFieldTranName(foreignId),
