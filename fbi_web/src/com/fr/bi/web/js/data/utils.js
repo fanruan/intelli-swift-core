@@ -7,8 +7,8 @@ Data.Utils = {
      * @returns {{types: Array, data: [], options: {}}} 转化后的图表类型信息,对应的数据信息,配置信息
      */
     convertDataToChartData: function(data, widget, op){
-        var res = this.getWidgetData(data, widget, op);
-        return this.converDataForDetailChart(widget.type, res.data, res.options, res.types);
+        var res = this.convertDataToWidgetData(data, widget, op);
+        return this.convertWidgetDataToChartData(widget.type, res.data, res.options, res.types);
     },
 
     /**
@@ -17,7 +17,7 @@ Data.Utils = {
      * @param widget 组件信息
      * @returns {{types: Array, data: [], options: {}}} 转化后的图表类型信息,对应的数据信息,配置信息
      */
-    getWidgetData: function(data, widget, op){
+    convertDataToWidgetData: function(data, widget, op){
         var options = {};
         var type = widget.type;
         var dimsInfo = refreshDimsInfo();
@@ -674,7 +674,7 @@ Data.Utils = {
         }
     },
 
-    converDataForDetailChart: function(type, data, options, types){
+    convertWidgetDataToChartData: function(type, data, options, types){
         options || (options = {});
         var constants = ChartConstants();
         var config = {
