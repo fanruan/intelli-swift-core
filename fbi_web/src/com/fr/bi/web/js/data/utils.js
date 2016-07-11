@@ -151,7 +151,7 @@ Data.Utils = {
 
         function isDimensionByDimensionID(){
             var region = 0;
-            BI.some(widget.view, function (reg, view) {
+            BI.some(widget.view, function (reg, dId) {
                 if (view.contains(dId)) {
                     region = reg;
                     return true;
