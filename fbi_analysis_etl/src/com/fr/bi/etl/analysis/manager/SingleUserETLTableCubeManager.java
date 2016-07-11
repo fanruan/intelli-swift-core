@@ -79,6 +79,7 @@ public class SingleUserETLTableCubeManager implements Release {
 								long version = 0;
 								if (!tq.isEmpty()){
 									version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));
+									tq.releaseObject();
 								}
 								if(data.check(version)){
 									return;
@@ -112,6 +113,7 @@ public class SingleUserETLTableCubeManager implements Release {
             return false;
         } else {
             long version = tq.get().getTableIndex().getTableVersion(new IndexKey(StringUtils.EMPTY));
+            tq.releaseObject();
             return new UserETLUpdateTask(source).check(version);
         }
     }
