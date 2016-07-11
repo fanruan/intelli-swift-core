@@ -612,7 +612,6 @@ Data.Utils = {
             var dId = [], clicked = [];
             switch (widget.type) {
                 case BICst.WIDGET.BUBBLE:
-                case BICst.WIDGET.FORCE_BUBBLE:
                 case BICst.WIDGET.SCATTER:
                     dId = obj.targetIds;
                     clicked = [{
@@ -5781,7 +5780,7 @@ Data.Utils = {
             var result = [];
             var yAxisIndex = 0;
             BI.each(items, function (i, belongAxisItems) {
-                var combineItems = combineItems(types[i], belongAxisItems);
+                var combineItems = combineChildItems(types[i], belongAxisItems);
                 BI.each(combineItems, function (j, axisItems) {
                     if (BI.isArray(axisItems)) {
                         result = BI.concat(result, axisItems);
@@ -5799,7 +5798,7 @@ Data.Utils = {
             };
             return [result, config];
 
-            function combineItems(types, items){
+            function combineChildItems(types, items){
                 var calItems = BI.values(items);
                 return BI.map(calItems, function(idx, item){
                     return formatChildItem(types[idx], item);
