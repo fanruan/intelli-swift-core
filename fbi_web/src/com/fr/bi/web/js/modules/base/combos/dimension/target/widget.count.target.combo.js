@@ -111,7 +111,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var children = [];
         children.push({
             text: BI.i18nText("BI-Total_Row_Count"),
-            value: this.field_id,
+            value: BI.Utils.getCountFieldIDsOfTableID(tableId),
             cls: "dot-e-font"
         });
         BI.each(fieldIds, function(idx, fieldId){
