@@ -451,8 +451,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/filter/conf.filter.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/statistic/conf.groupandstatistic.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/union/conf.union.css",
+                "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/union/widget.union.previewtable.css",
+                "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/union/widget.union.previewtable.headercell.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/convert/conf.convert.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/join/conf.join.css",
+                "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/join/widget.join.previewtable.css",
+                "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/join/widget.join.previewtable.headercell.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/circle/conf.circle.css",
                 "com/fr/bi/web/css/conf/multirelation/conf.multirelation.css",
                 "com/fr/bi/web/css/conf/businesspackages/group/conf.packages.group.css",
@@ -1170,7 +1174,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/onepackage/etl/flowchart/widget.etltable.operator.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/flowchart/widget.etltables.pane.js",
 
+
                 //union
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.union.previewtable.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.union.previewtable.headercell.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.addunion.table.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.unionresult.header.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/union/widget.union.js",
@@ -1180,6 +1187,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.jointype.group.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.jointype.button.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.joinresult.header.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.join.previewtable.headercell.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.join.previewtable.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/join/widget.join.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/join/widget.join.model.js",
 

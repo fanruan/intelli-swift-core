@@ -52,9 +52,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         });
         var config = BI.ChartCombineFormatItemFactory.combineConfig();
         config.plotOptions.click = function () {
-            self.fireEvent(BI.CombineChart.EVENT_CHANGE, BI.extend(this.pointOption, {
-                category: this.category
-            }));
+            self.fireEvent(BI.CombineChart.EVENT_CHANGE, this.pointOption);
         };
         return [result, config];
     },

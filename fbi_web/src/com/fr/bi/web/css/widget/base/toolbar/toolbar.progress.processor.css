@@ -3,6 +3,8 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-progress-bar-processor {
   background: #009de3;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
   border-radius: 20px;
   overflow-x: hidden;
   overflow-y: hidden;

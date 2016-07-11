@@ -177,7 +177,7 @@ BI.JoinModel = BI.inherit(FR.OB, {
         return tables;
     },
 
-    getAllJoinFields: function () {
+    getDefaultJoinFields: function () {
         var self = this;
         var joinArray = [];
         //遍历所有表字段
@@ -191,6 +191,30 @@ BI.JoinModel = BI.inherit(FR.OB, {
             })
         });
         return joinArray;
+    },
+
+    getAllJoinFields: function () {
+        var allJoinFields = [];
+        allJoinFields = allJoinFields.concat(this.joinFields);
+        var allTableFields = this.getAllTableFields();
+        var fields1 = allTableFields[0], fields2 = allTableFields[1];
+        //先是合并的字段，然后加上两个表中未合并的
+        var noMergeFields = [], indexs1 = [], index2 = [];
+        BI.each(allJoinFields, function (i, fs) {
+            indexs1.push(fs[0]);
+            index2.push(fs[1]);
+        });
+        BI.each(fields1, function (i, field) {
+            if (!indexs1.contains(i)) {
+                noMergeFields.push([i, -1]);
+            }
+        });
+        BI.each(fields2, function (i, field) {
+            if (!index2.contains(i)) {
+                noMergeFields.push([-1, i]);
+            }
+        });
+        return allJoinFields.concat(noMergeFields);
     },
 
     getFieldInJoinArray: function (joinArray, field, col) {
@@ -284,7 +308,7 @@ BI.JoinModel = BI.inherit(FR.OB, {
 
     _initJoinFields: function () {
         var self = this;
-        var allJoinFields = self.getAllJoinFields();
+        var allJoinFields = self.getDefaultJoinFields();
         this.joinFields = [];
         BI.each(allJoinFields, function (i, ua) {
             var count = 0;

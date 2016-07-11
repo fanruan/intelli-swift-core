@@ -325,32 +325,40 @@ BI.Union = BI.inherit(BI.Widget, {
                         });
                         BI.Utils.getPreviewDataByTableAndFields(table, [], function(data){
                             count--;
-                            var item = self._createTableItems(data, i);
-                            var tableView = BI.createWidget({
-                                type: "bi.preview_table",
-                                items: item.items,
-                                header: item.header
+                            var oTable = BI.createWidget({
+                                type: "bi.union_preview_table",
+                                data: data,
+                                index: i,
+                                height: self.constants.PREVIEW_TABLE_HEIGHT
                             });
                             wrapper.addItems([{
                                 type: "bi.label",
                                 text: BI.isNotNull(table.table_name) ? table.table_name : self.model.getETLTableNameByTable(table),
                                 cls: "original-table-name",
                                 height: self.constants.PREVIEW_BUTTON_HEIGHT
-                            }, {
-                                el: {
-                                    type: "bi.vertical",
-                                    items: [tableView],
-                                    height: self.constants.PREVIEW_TABLE_HEIGHT
-                                }
-                            }]);
+                            }, oTable]);
                         });
                         self.originalTablesArea.addItem(wrapper);
                     });
                     self.resultTab.setSelect(self.constants.SHOW_TABLE);
                     BI.Utils.getPreviewDataByTableAndFields(self.model.getTableInfo(), [], function(data){
                         count--;
-                        var item = self._createResultTableItems(data);
-                        self.resultTable.populate(item.items, item.header);
+                        self.resultTable.empty();
+                        var rTable = BI.createWidget({
+                            type: "bi.union_preview_table",
+                            union_array: self.model.getUnionArray(),
+                            data: data
+                        });
+                        rTable.on(BI.UnionPreviewTable.EVENT_RENAME, function(namesArray){
+                            self.model.setUnionArray(namesArray);
+                        });
+                        self.resultTable.addItem({
+                            el: rTable,
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0
+                        })
                     })
                 });
                 return BI.createWidget({
@@ -382,7 +390,7 @@ BI.Union = BI.inherit(BI.Widget, {
                 });
             case this.constants.SHOW_TABLE:
                 return this.resultTable = BI.createWidget({
-                    type: "bi.preview_table"
+                    type: "bi.absolute"
                 });
         }
     },
@@ -419,62 +427,6 @@ BI.Union = BI.inherit(BI.Widget, {
                         text: isDate === true ? self._formatDate(v) : v,
                         height: "100%",
                         cls: "table-color" + index%5
-                    }]);
-                }
-            });
-        });
-        return {
-            header: [header],
-            items: items
-        }
-    },
-
-    _createResultTableItems: function(data){
-        var fields = data.fields, values = data.value, self = this;
-        var header = [], items = [], index = 0;
-        var unionArray = this.model.getUnionArray();
-        BI.each(fields, function(i, field){
-            header.push({
-                text: field,
-                height: "100%"
-            });
-        });
-
-        var fieldTypes = [];
-        BI.each(this.model.getAllFields(), function (i, fs) {
-            BI.each(fs, function (j, field) {
-                fieldTypes.push(field.field_type);
-            });
-        });
-
-        BI.each(values, function(i, value){
-            var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
-            var fieldArray = unionArray[i];
-            var tableCount = 0, tableIndex = 0;
-            BI.each(fieldArray, function(k, f){
-                if(k > 0 && f !== ""){
-                    tableCount ++;
-                    tableIndex = k-1;
-                }
-            });
-            //来自合并的表，或者单表
-            if(tableCount === 1){
-                index = tableIndex;
-            } else {
-                index = -1;
-            }
-            BI.each(value, function(j, v){
-                if(BI.isNotNull(items[j])){
-                    items[j].push({
-                        text: isDate === true ? self._formatDate(v) : v,
-                        height: "100%",
-                        cls: index === -1 ? "result-table" : "table-color" + index%5
-                    });
-                } else {
-                    items.push([{
-                        text: isDate === true ? self._formatDate(v) : v,
-                        height: "100%",
-                        cls: index === -1 ? "result-table" : "table-color" + index%5
                     }]);
                 }
             });

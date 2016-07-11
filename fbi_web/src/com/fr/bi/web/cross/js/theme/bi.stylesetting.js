@@ -38,20 +38,43 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
         });
 
         this.style = BI.createWidget({
-            type: "bi.text_value_combo",
-            cls: "style-setting-combo",
-            height: 25,
-            text: BI.i18nText('BI-Common'),
-            items: [{
-                text: BI.i18nText('BI-Common'), value: BICst.CHART_STYLE.STYLE_NORMAL
+            type: "bi.button_group",
+            items: BI.createItems([{
+                cls: "axis-chart-style-normal-icon style-setting-style-button",
+                value: BICst.CHART_STYLE.STYLE_NORMAL
             }, {
-                text: BI.i18nText('BI-Top_Down_Shade'), value: BICst.CHART_STYLE.STYLE_GRADUAL
+                cls: "axis-chart-style-gradual-icon style-setting-style-button",
+                value: BICst.CHART_STYLE.STYLE_GRADUAL
+            }], {
+                type: "bi.icon_button",
+                width: 40,
+                height: 30,
+                iconWidth: 24,
+                iconHeight: 24
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt"
             }]
         });
-        this.style.on(BI.TextValueCombo.EVENT_CHANGE, function () {
+        this.style.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self._save();
             self._preview();
         });
+        //this.style = BI.createWidget({
+        //    type: "bi.text_value_combo",
+        //    cls: "style-setting-combo",
+        //    height: 25,
+        //    text: BI.i18nText('BI-Common'),
+        //    items: [{
+        //        text: BI.i18nText('BI-Common'), value: BICst.CHART_STYLE.STYLE_NORMAL
+        //    }, {
+        //        text: BI.i18nText('BI-Top_Down_Shade'), value: BICst.CHART_STYLE.STYLE_GRADUAL
+        //    }]
+        //});
+        //this.style.on(BI.TextValueCombo.EVENT_CHANGE, function () {
+        //    self._save();
+        //    self._preview();
+        //});
         this.style.setValue(BICst.CHART_STYLE.STYLE_NORMAL);
 
         return BI.createWidget({
