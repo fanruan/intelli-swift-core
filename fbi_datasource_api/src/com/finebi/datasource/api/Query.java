@@ -10,7 +10,7 @@ import java.util.*;
  * @see StoredProcedureQuery
  * @see Parameter
  *
- * @since Java Persistence 1.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public interface Query {
 

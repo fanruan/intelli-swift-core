@@ -4,8 +4,8 @@ package com.finebi.datasource.api;
 /**
  * Thrown by the persistence provider when a transaction is required but is not
  * active.
- * 
- * @since Java Persistence 1.0
+ *
+ * @since Advanced FineBI Analysis 1.0
  */
 public class TransactionRequiredException extends RuntimeException {
 
