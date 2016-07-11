@@ -16,5 +16,5 @@ $(function () {
         }
     });
 
-    BICst.CONFIG.SHOW_DASHBOARD_TITLE = true;
+    // BICst.CONFIG.SHOW_DASHBOARD_TITLE = true;
 });
