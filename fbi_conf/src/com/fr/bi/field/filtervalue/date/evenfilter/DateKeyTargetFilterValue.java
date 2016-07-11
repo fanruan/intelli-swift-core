@@ -102,9 +102,9 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
         this.valueSet = new HashSet<BIDateValue>();
         if (jo.has("filter_value")) {
             valueJo = jo.getJSONObject("filter_value");
-            if(valueJo.has("type") && valueJo.has("values")){
-                this.valueSet.add(BIDateValueFactory.createDateValue(valueJo.getInt("type"), valueJo.getLong("values")));
-                this.group = valueJo.getInt("type");
+            if(valueJo.has("group") && valueJo.has("values")){
+                this.valueSet.add(BIDateValueFactory.createDateValue(valueJo.getInt("group"), valueJo.getLong("values")));
+                this.group = valueJo.getInt("group");
             }
         }
     }
