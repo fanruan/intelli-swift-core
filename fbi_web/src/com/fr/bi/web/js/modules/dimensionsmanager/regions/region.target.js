@@ -18,6 +18,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
     _init: function () {
         BI.TargetRegion.superclass._init.apply(this, arguments);
         var o = this.options, self = this;
+        this.containers = {};
         this.calculateAddButton = BI.createWidget({
             type: "bi.text_button",
             textHeight: 30,
@@ -68,28 +69,43 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         var self = this, o = this.options;
         options || (options = {});
         var dim = o.dimensionCreator(dId, this.options.regionType, options);
-        var container = BI.createWidget({
-            type: "bi.absolute",
-            cls: "target-container",
-            data: {
-                dId: dId
-            },
-            height: 25,
-            items: [{
-                el: dim,
-                left: 0,
-                top: 0,
-                right: 0,
-                bottom: 0
-            }]
-        });
-        return container;
+        if (this.containers[dId]) {
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.containers[dId],
+                items: [{
+                    el: dim,
+                    left: 0,
+                    top: 0,
+                    right: 0,
+                    bottom: 0
+                }]
+            });
+        } else {
+            var container = BI.createWidget({
+                type: "bi.absolute",
+                cls: "target-container",
+                data: {
+                    dId: dId
+                },
+                height: 25,
+                items: [{
+                    el: dim,
+                    left: 0,
+                    top: 0,
+                    right: 0,
+                    bottom: 0
+                }]
+            });
+            this.containers[dId] = container;
+        }
+        return this.containers[dId];
     },
 
     _setCalculateTarget: function (dId, options) {
         var o = this.options;
-         o.dimensionCreator(dId, this.options.regionType, options);
-       
+        o.dimensionCreator(dId, this.options.regionType, options);
+
     },
 
     getValue: function () {

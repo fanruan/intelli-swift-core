@@ -170,10 +170,10 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     _createDate: function (value) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
-            type: "bi.multidate_param_combo",
+            type: "bi.custom_multi_date_combo",
             width: this._constant.INPUT_WIDTH
         });
-        this.filterWidget.on(BI.MultiDateParamCombo.EVENT_CHANGE, function(){
+        this.filterWidget.on(BI.CustomMultiDateCombo.EVENT_CHANGE, function(){
             self._setNodeData({
                 filter_value : this.getValue()
             });
