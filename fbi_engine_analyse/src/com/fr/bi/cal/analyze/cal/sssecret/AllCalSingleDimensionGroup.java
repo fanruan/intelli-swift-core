@@ -185,7 +185,7 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
         if(node == null){
             return NoneDimensionGroup.NULL;
         }
-        return createDimensionGroup(tableKey, node.getGroupValueIndex(), getLoader());
+        return createDimensionGroup(tableKey, node.getGroupValueIndex(), getLoader(), true);
     }
 
     @Override

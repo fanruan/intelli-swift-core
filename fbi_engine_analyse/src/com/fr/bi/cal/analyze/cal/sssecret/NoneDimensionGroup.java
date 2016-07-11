@@ -43,6 +43,8 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
 
     protected volatile boolean isPageFinished = false;
 
+    private boolean needAllCalculate = false;
+
 
     protected NoneDimensionGroup() {
     }
@@ -57,10 +59,23 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
         initRoot(gvi);
     }
 
+    protected NoneDimensionGroup(BusinessTable tableKey, GroupValueIndex gvi, ICubeDataLoader loader, boolean needAllCalculate) {
+        this.tableKey = tableKey;
+        this.loader = loader;
+        this.needAllCalculate = needAllCalculate;
+        initRoot(gvi);
+    }
+
     public static NoneDimensionGroup createDimensionGroup(final BusinessTable tableKey, final GroupValueIndex gvi, final ICubeDataLoader loader) {
 
 
         return new NoneDimensionGroup(tableKey, gvi, loader);
+    }
+
+    public static NoneDimensionGroup createDimensionGroup(final BusinessTable tableKey, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean needAllCalculate) {
+
+
+        return new NoneDimensionGroup(tableKey, gvi, loader, needAllCalculate);
     }
 
     protected void initRoot(GroupValueIndex gvi) {
@@ -99,10 +114,14 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
 
 
     public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, boolean useRealData) {
-        //TODO 考虑此处是否需要全部计算
-//        if(false){
-//            return createAllCalSingleDimensionGroup(pck, pckindex, ck, data, ckIndex, useRealData);
-//        }
+        if(needAllCalculate){
+            System.out.println("**********************全部计算************************");
+            return AllCalSingleDimensionGroup.createInstance(tableKey, pck, pckindex, (node == null)? new RoaringGroupValueIndex() : node.getGroupValueIndex(), data, ckIndex, loader, true);
+        }
+        System.out.println("**********************非全部计算************************");
+        if(ckIndex == 0){
+            pck = null;
+        }
         if (ck instanceof CombinationDimensionCalculator || ck instanceof CombinationDateDimensionCalculator) {
             return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
         }
@@ -114,22 +133,18 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     }
 
     public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
-        //TODO 考虑此处是否需要全部计算
-//        if(false){
-//            return createNoneTargetAllCalSingleDimensionGroup(pck, pckindex, ck, data, ckIndex, gvi, useRealData);
-//        }
+        if(needAllCalculate){
+            System.out.println("**********************全部计算************************");
+            return AllCalSingleDimensionGroup.createInstance(tableKey, pck, pckindex, gvi, data, ckIndex, loader, true);
+        }
+        System.out.println("**********************非全部计算************************");
+        if(ckIndex == 0){
+            pck = null;
+        }
         if (ck instanceof CombinationDimensionCalculator || ck instanceof CombinationDateDimensionCalculator) {
             return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, gvi, loader, useRealData);
         }
         return SingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, gvi, loader, useRealData);
-    }
-
-    public ISingleDimensionGroup createAllCalSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, boolean useRealData) {
-        return AllCalSingleDimensionGroup.createInstance(tableKey, pck, pckindex, (node == null)? new RoaringGroupValueIndex() : node.getGroupValueIndex(), data, ckIndex, loader, true);
-    }
-
-    public ISingleDimensionGroup createNoneTargetAllCalSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
-        return AllCalSingleDimensionGroup.createInstance(tableKey, pck, pckindex, gvi, data, ckIndex, loader, true);
     }
 
 
@@ -168,5 +183,13 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
 
     public ICubeDataLoader getLoader() {
         return loader;
+    }
+
+    public boolean isNeedAllCalculate() {
+        return needAllCalculate;
+    }
+
+    public void setNeedAllCalculate(boolean needAllCalculate) {
+        this.needAllCalculate = needAllCalculate;
     }
 }
