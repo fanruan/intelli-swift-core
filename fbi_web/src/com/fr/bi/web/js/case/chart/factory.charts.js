@@ -5,6 +5,7 @@ BI.ChartCombineFormatItemFactory = {
             return BI.ChartCombineFormatItemFactory.formatItems(types[idx], item);
         });
     },
+
     formatItems: function(type, items){
         var item = {};
         switch (type) {

@@ -40,7 +40,12 @@ public class CubeRunner {
     public CubeRunner(long userId) {
         biUser = new BIUser(userId);
         init();
+        /*若发现cube需要更新的话,更新cube*/
+//        cubeInit();
     }
+
+//    private void cubeInit() {
+//    }
 
     public void envChanged() {
         synchronized (cubeThread) {

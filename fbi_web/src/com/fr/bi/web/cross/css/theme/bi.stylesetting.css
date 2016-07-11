@@ -1,3 +1,15 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 /****添加计算宽度的--运算符直接需要space****/
+.bi-fs-style-setting .style-setting-style-button {
+  border: 1px solid #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-fs-style-setting .style-setting-style-button:hover {
+  background: #f4f4f4;
+}
+.bi-fs-style-setting .style-setting-style-button.active {
+  border: 1px solid #178cdf;
+}

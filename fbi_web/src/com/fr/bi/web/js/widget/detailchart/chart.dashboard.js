@@ -18,7 +18,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-3,
+        MINLIMIT: 1e-6,
         ONE_POINTER: 1,
         MULTI_POINTER: 2,
         HALF_DASHBOARD: 9,
@@ -213,7 +213,6 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
 
                         return bands;
                     }
-                    break;
             }
         }
 

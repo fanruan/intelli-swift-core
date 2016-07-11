@@ -16,7 +16,7 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        MINLIMIT: 1e-3,
+        MINLIMIT: 1e-6,
         LEGEND_HEIGHT: 80
     },
 
@@ -117,43 +117,6 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
 
 
         return [items, config];
-
-        function formatTickInXYaxis(type, position){
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
-            }
-            if(position === self.constants.LEFT_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            if(position === self.constants.RIGHT_AXIS){
-                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
-        }
 
         function _calculateValueNiceDomain(minValue, maxValue){
 

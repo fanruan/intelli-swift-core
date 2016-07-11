@@ -67,6 +67,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
                 if (allDims.length > allUsableDims.length && allUsableDims.length > 0) {
                     this.showDrill = true;
                 }

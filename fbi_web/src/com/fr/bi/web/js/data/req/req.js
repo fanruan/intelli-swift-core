@@ -301,7 +301,7 @@ Data.Req = BIReq = {
                 // tableId: table.id
                 baseTableId: tableInfo.baseTable.id,
                 isETL: tableInfo.isETL,
-                ETLTableId: tableInfo.ETLTable.id
+                ETLTableId: tableInfo.ETLTable==undefined?"":tableInfo.ETLTable.id
             },
             function (res) {
                 callback(res);

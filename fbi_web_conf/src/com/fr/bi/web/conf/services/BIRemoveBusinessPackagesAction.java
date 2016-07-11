@@ -1,11 +1,13 @@
 package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.base.FRContext;
+import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
@@ -13,6 +15,7 @@ import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.stable.StringUtils;
+import com.fr.stable.bridge.StableFactory;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +45,8 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
         try {
             BICubeConfigureCenter.getPackageManager().persistData(userId);
             BIConfigureManagerCenter.getAuthorityManager().persistData(userId);
+            BICubeManager biCubeManager= StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
+            biCubeManager.resetCubeGenerationHour(userId);
         } catch (Exception e) {
             FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
         }

@@ -9,7 +9,9 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         WIDGET: 0,
         TEMPLATE: 1,
         FOLDER: 2,
-        CREATE_BY_ME_ID: "-1"
+        CREATE_BY_ME_ID: "-1",
+        CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.NUMBER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
+            BICst.WIDGET.QUARTER, BICst.WIDGET.TREE, BICst.WIDGET.YEAR, BICst.WIDGET.YMD, BICst.WIDGET.GENERAL_QUERY]
     },
 
     _defaultConfig: function () {
@@ -226,7 +228,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         var call = function (widgets) {
             var result = [];
             BI.each(widgets, function (wId, widget) {
-                if(!BI.Utils.isControlWidgetByWidgetId(wId)){
+                if(!BI.contains(self.constants.CONTROL_TYPE, widget.type)){
                     result.push({
                         id: wId,
                         pId: id,
