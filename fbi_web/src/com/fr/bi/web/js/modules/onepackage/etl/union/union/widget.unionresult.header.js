@@ -51,7 +51,7 @@ BI.UnionResultHeader = BI.inherit(BI.Widget, {
                 width: 100,
                 errorText: function (v) {
                     if (v === "") {
-                        return BI.i18nText("Field_Name_Cannot_Be_Null");
+                        return BI.i18nText("BI-Field_Name_Cannot_Be_Null");
                     }
                     return BI.i18nText("BI-Can_Not_Have_Rename_Fields");
                 },

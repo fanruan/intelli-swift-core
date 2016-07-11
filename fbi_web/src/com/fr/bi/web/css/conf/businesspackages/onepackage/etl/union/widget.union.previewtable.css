@@ -1,0 +1,24 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-union-preview-table .bi-preview-table-cell {
+  max-width: 1000px !important;
+}
+.bi-union-preview-table .result-table {
+  background: #d9f2fc;
+}
+.bi-union-preview-table .table-color0 {
+  background: #fef6df;
+}
+.bi-union-preview-table .table-color1 {
+  background: #daf3dc;
+}
+.bi-union-preview-table .table-color2 {
+  background: #d6f7f0;
+}
+.bi-union-preview-table .table-color3 {
+  background: #e8e6fe;
+}
+.bi-union-preview-table .table-color4 {
+  background: #fee9e9;
+}
