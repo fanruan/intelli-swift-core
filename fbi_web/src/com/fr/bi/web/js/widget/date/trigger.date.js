@@ -62,6 +62,18 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
             if (BI.isNotNull(value)) {
                 self.editor.setState(value);
             }
+
+            if (BI.isNotEmptyString(value)) {
+                var date = value.split("-");
+                self.stored_value = {
+                    type: BICst.MULTI_DATE_CALENDAR,
+                    value:{
+                        year: date[0] | 0,
+                        month: date[1] - 1,
+                        day: date[2] | 0
+                    }
+                };
+            }
             self.fireEvent(BI.DateTrigger.EVENT_CONFIRM);
         });
         this.editor.on(BI.SignEditor.EVENT_SPACE, function () {
@@ -284,15 +296,6 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
         return this.editor.getValue();
     },
     getValue: function () {
-        var dateStr = this.editor.getValue();
-        if (BI.isNotEmptyString(dateStr)) {
-            var date = dateStr.split("-");
-            return {
-                year: date[0] | 0,
-                month: date[1] - 1,
-                day: date[2] | 0
-            }
-        }
         return this.store_value;
     }
 
