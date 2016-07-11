@@ -17,7 +17,7 @@ BI.PieChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-3,
+        MINLIMIT: 1e-6,
         LEGEND_HEIGHT: 80
     },
 
@@ -85,13 +85,13 @@ BI.PieChart = BI.inherit(BI.Widget, {
 
         function formatChartPieStyle(){
             switch (self.config.chart_pie_type){
-                case BICst.CHART_STYLE.EQUAL_ARC_ROSE:
+                case BICst.CHART_SHAPE.EQUAL_ARC_ROSE:
                     config.plotOptions.roseType = "sameArc";
                     break;
-                case BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE:
+                case BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE:
                     config.plotOptions.roseType = "differentArc";
                     break;
-                case BICst.CHART_STYLE.NORMAL:
+                case BICst.CHART_SHAPE.NORMAL:
                 default:
                     delete config.plotOptions.roseType;
                     break;
@@ -103,6 +103,7 @@ BI.PieChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             chart_color: options.chart_color || [],

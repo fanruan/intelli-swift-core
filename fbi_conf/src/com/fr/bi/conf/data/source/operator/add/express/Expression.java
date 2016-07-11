@@ -13,7 +13,7 @@ import com.fr.json.JSONTransform;
  */
 public interface Expression extends JSONTransform , BICoreService {
 
-	public Object get(ICubeTableService ti, int row);
+	Object get(ICubeTableService ti, int row, int columnType);
 
 	
 }

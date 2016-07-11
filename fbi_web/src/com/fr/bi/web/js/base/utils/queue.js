@@ -15,6 +15,10 @@
             return this.array.contains(v);
         },
 
+        getElementByIndex: function(index) {
+            return this.array[index];
+        },
+
         push: function (v) {
             this.array.push(v);
             if (this.capacity && this.array.length > this.capacity) {
@@ -40,7 +44,15 @@
         remove: function (v) {
             this.array.remove(v);
         },
-
+        
+        splice: function() {
+            this.array.splice.apply(this.array, arguments);  
+        },
+        
+        slice: function() {
+            this.array.slice.apply(this.array, arguments);    
+        },
+        
         size: function () {
             return this.array.length;
         },

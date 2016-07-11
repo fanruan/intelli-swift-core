@@ -28,7 +28,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             element: vessel,
             items: [{
                 el: north,
-                height: this._const.toolbarHeight
+                height: BICst.CONFIG.SHOW_DASHBOARD_TITLE ? this._const.toolbarHeight : 0
             }, {
                 el: BI.createWidget(),
                 height: 1
@@ -213,6 +213,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.absolute",
+            invisible: !BICst.CONFIG.SHOW_DASHBOARD_TITLE,
             cls: "dashboard-toolbar",
             items: [{
                 el: this.undoButton,
@@ -232,14 +233,16 @@ BIDezi.PaneView = BI.inherit(BI.View, {
 
     _refreshButtons: function () {
         var operatorIndex = this.model.get("getOperatorIndex");
-        var records = Data.SharingPool.get("records") || [];
+        var records = Data.SharingPool.cat("records") || new BI.Queue(30);
         //模拟一下change的时候发生的事（坑爹的回调里做的事，没办法这边实时拿到）
+        //避免改对象
+        var imitationRecords = BI.makeArray(records.size(), "");
         if (!this.model.get("isUndoRedoSet")) {
-            records.splice(operatorIndex + 1);
-            records.push({});
-            operatorIndex = records.length - 1;
+            imitationRecords.splice(operatorIndex + 1);
+            imitationRecords.push("");
+            operatorIndex = imitationRecords.length - 1;
         }
-        var recordsSize = records.length;
+        var recordsSize = imitationRecords.length;
         if (operatorIndex === recordsSize - 1) {
             this.undoButton.setEnable(true);
             this.redoButton.setEnable(false);

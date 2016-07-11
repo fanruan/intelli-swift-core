@@ -57,6 +57,16 @@
             return Data.SharingPool.get("reg", "supportSimpleControl");
         },
 
+        getDefaultChartConfig: function () {
+            if (!this.defaultChartConfig) {
+                this.defaultChartConfig = Data.Req.reqGetChartPreStyle();
+                if(BI.isNull(this.defaultChartConfig.styleList)) {
+                    this.defaultChartConfig.styleList = [];
+                }
+            }
+            return this.defaultChartConfig;
+        },
+
         getAllGroupedPackagesTreeJSON: function () {
             var groups = Pool.groups, packages = Pool.packages;
             var packStructure = [], groupedPacks = [];
@@ -423,6 +433,10 @@
             return Data.SharingPool.get("widgets", wid, "sort_sequence") || [];
         },
 
+        isShowWidgetRealDataByID: function(wid) {
+            return Data.SharingPool.get("widgets", wid, "real_data");
+        },
+
         //获取指定widget的拷贝,拷贝信息只包含widget的自身信息，如维度指标及其相关属性
         //不包含widge间的信息,如widget间的联动什么的
         getWidgetCopyByID: function (wid) {
@@ -638,15 +652,47 @@
         },
 
         getWSChartColorByID: function (wid) {
+            var self = this;
+
+            function getDefaultColor() {
+                var defaultChartConfig = self.getDefaultChartConfig();
+                var type = defaultChartConfig.defaultColor;
+                if (BI.isKey(type)) {
+                    var finded = BI.find(defaultChartConfig.styleList, function (i, style) {
+                        return style.value === type;
+                    });
+                    if (finded) {
+                        return finded.colors;
+                    }
+                }
+                if (defaultChartConfig.styleList.length > 0) {
+                    return defaultChartConfig.styleList[0].colors;
+                }
+            }
+
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_color) ? ws.chart_color :
-                BICst.DEFAULT_CHART_SETTING.chart_color;
+            return ws.chart_color
+                || getDefaultColor()
+                || BICst.DEFAULT_CHART_SETTING.chart_color;
         },
 
         getWSChartStyleByID: function (wid) {
+            var self = this;
+
+            function getChartStyle() {
+                var defaultChartConfig = self.getDefaultChartConfig();
+                return defaultChartConfig.chartStyle;
+            }
+
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_style) ? ws.chart_style :
-                BICst.DEFAULT_CHART_SETTING.chart_style;
+            var chartStyle;
+            if (BI.isNotNull(ws.chart_style)) {
+                return ws.chart_style;
+            }
+            if (BI.isNotNull(chartStyle = getChartStyle())) {
+                return chartStyle;
+            }
+            return BICst.DEFAULT_CHART_SETTING.chart_style;
         },
 
         getWSChartLineTypeByID: function (wid) {
@@ -732,6 +778,25 @@
             return BI.isNotNull(ws.number_of_pointer) ? ws.number_of_pointer :
                 BICst.POINTER.ONE;
         },
+
+        getWSScaleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.auto_custom) ? ws.auto_custom :
+                BICst.SCALE_SETTING.AUTO
+        },
+
+        getWSDashboardStylesByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.style_conditions) ? ws.style_conditions :
+                BICst.DASHBOARD_STYLE_CONDITIONS
+        },
+
+        getWSMapStylesByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.map_styles) ? ws.map_styles :
+                BICst.MAP_STYLE_CONDITIONS
+        },
+
 
         getWSDashboardNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
@@ -1638,6 +1703,7 @@
             dimension.used = true;
             var widget = Data.SharingPool.get("widgets", wid);
             widget.page = -1;
+            widget.real_data = true;
             widget.dimensions = {};
             widget.dimensions[dId] = dimension;
             widget.view = {};
@@ -1821,7 +1887,7 @@
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {type: BICst.GROUP.M, values: month};
+                                fValue = {type: BICst.GROUP.M, values: month + 1};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1997,7 +2063,7 @@
 
             //钻取条件  对于交叉表，要考虑的不仅仅是used，还有行表头与列表头之间的钻取问题
             var drill = this.getDrillByID(wid);
-            if (BI.isNotNull(drill)) {
+            if (BI.isNotNull(drill) && widget.type !== BICst.WIDGET.MAP) {
                 BI.each(drill, function (drId, drArray) {
                     if (drArray.length === 0) {
                         return;
@@ -2129,6 +2195,7 @@
             });
 
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
+            widget.real_data = true;
             return widget;
         },
 
@@ -2189,7 +2256,7 @@
             var wWid = value.wId, se = value.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
-                if (BI.isNull(wWValue)) {
+                if (BI.isNull(wWValue) || BI.isEmptyObject(wWValue)) {
                     return;
                 }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {

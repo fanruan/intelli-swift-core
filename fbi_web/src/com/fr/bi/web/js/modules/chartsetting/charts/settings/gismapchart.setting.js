@@ -7,7 +7,8 @@ BI.GISMapSetting = BI.inherit(BI.Widget, {
     constant: {
         SINGLE_LINE_HEIGHT: 60,
         SIMPLE_H_GAP: 10,
-        SIMPLE_L_GAP: 2,
+        SIMPLE_H_LARGE_GAP: 10,
+        SIMPLE_L_GAP: 3,
         SIMPLE_H_LGAP: 5,
         CHECKBOX_WIDTH: 16,
         EDITOR_WIDTH: 80,
@@ -44,7 +45,7 @@ BI.GISMapSetting = BI.inherit(BI.Widget, {
 
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
@@ -62,7 +63,7 @@ BI.GISMapSetting = BI.inherit(BI.Widget, {
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: this.constant.SIMPLE_L_GAP
             }]
         });
 

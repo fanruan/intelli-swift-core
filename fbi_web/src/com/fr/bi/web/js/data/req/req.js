@@ -301,7 +301,7 @@ Data.Req = BIReq = {
                 // tableId: table.id
                 baseTableId: tableInfo.baseTable.id,
                 isETL: tableInfo.isETL,
-                ETLTableId: tableInfo.ETLTable.id
+                ETLTableId: tableInfo.ETLTable==undefined?"":tableInfo.ETLTable.id
             },
             function (res) {
                 callback(res);
@@ -327,5 +327,9 @@ Data.Req = BIReq = {
         }, function (res) {
             callback(res);
         })
+    },
+
+    reqGetChartPreStyle: function () {
+        return BI.requestSync('fr_bi_base', 'get_config_setting', null);
     }
 };

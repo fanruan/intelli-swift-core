@@ -83,7 +83,8 @@ public class BuildCubeTask implements CubeTask {
         Future<String> result = finishObserver.getOperationResult();
         try {
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-            BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuildStuff.getTableRelationSet());
+            BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(),cubeBuildStuff.getTableRelationSet());
+            BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
             BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
@@ -96,6 +97,7 @@ public class BuildCubeTask implements CubeTask {
             BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
         }
     }
+
 
     @Override
     public void run() {

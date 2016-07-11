@@ -248,7 +248,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
             masker: BICst.BODY_ELEMENT,
             text: BI.i18nText("BI-Loading")
         });
-        BI.Utils.getAllReportsData(function (data) {
+        BI.requestAsync("fr_bi", "get_all_reports_data", {}, function (data) {
             self.departs = data.departs;
             self.roles = data.roles;
             self.users = data.users;

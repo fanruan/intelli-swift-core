@@ -31,11 +31,13 @@ public class BIUserTableRelationManager implements Release {
      *
      */
     private static final long serialVersionUID = -4599513067350765988L;
-    private static final String XML_TAG = "ConnectionManager";
+    
     protected BITableRelationAnalysisService oldAnalyserHandler;
     protected BITableRelationAnalysisService currentAnalyserHandler;
     protected BIDisablePathsManager disablePathsManager;
     protected BITableRelationshipService tableRelationshipService;
+    protected BITableRelationshipService analysisTableRelationShipService;
+    protected Boolean analysisStatus = false;
     protected BIUser biUser;
 
     public BITableRelationshipService getTableRelationshipService() {
@@ -48,10 +50,16 @@ public class BIUserTableRelationManager implements Release {
         currentAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);
         disablePathsManager = new BIDisablePathsManager();
         tableRelationshipService = new BITableRelationshipManager(currentAnalyserHandler);
+        analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
     }
+
 
     public Set<BITableRelation> getAllTableRelation() {
         return currentAnalyserHandler.getRelationContainer().getContainer();
+    }
+
+    public Set<BITableRelation> getAllOldTableRelation() {
+        return oldAnalyserHandler.getRelationContainer().getContainer();
     }
 
 
@@ -62,7 +70,8 @@ public class BIUserTableRelationManager implements Release {
 
     @Override
     public void clear() {
-        oldAnalyserHandler.clear();
+        // TODO: 16/7/5 分析关联只显示可用关联需求需要保留之前生成过cube的关联
+//        oldAnalyserHandler.clear();
         currentAnalyserHandler.clear();
         tableRelationshipService.clear();
     }
@@ -74,6 +83,10 @@ public class BIUserTableRelationManager implements Release {
 
     public BITableContainer getCommonSeniorTables(BITablePair tablePair) throws BITableAbsentException {
         return tableRelationshipService.getCommonSeniorTables(tablePair);
+    }
+
+    public BITableContainer getAnalysisCommonSeniorTables(BITablePair tablePair) throws BITableAbsentException {
+        return analysisTableRelationShipService.getCommonSeniorTables(tablePair);
     }
 
 
@@ -128,13 +141,21 @@ public class BIUserTableRelationManager implements Release {
 
     public void finishGenerateCubes(Set<BITableRelation> connectionSet) {
         synchronized (oldAnalyserHandler) {
-//            oldAnalyserHandler.clear();
-            for (BITableRelation relation : connectionSet) {
+            oldAnalyserHandler.clear();
+            analysisTableRelationShipService.clear();
+            for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
                 try {
-                    oldAnalyserHandler.addRelation(relation);
+
+                    BITableRelation relationCopy = new BITableRelation(relation.getPrimaryTable().getID().getIdentityValue(), relation.getPrimaryField().getFieldName(),relation.getForeignTable().getID().getIdentityValue(),relation.getForeignField().getFieldName());
+                    oldAnalyserHandler.addRelation(relationCopy);
+
                 } catch (BIRelationDuplicateException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILogger.getLogger().error(e.getMessage());
                 }
+            }
+            analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
+            for (BITableRelation relation : connectionSet) {
+                analysisTableRelationShipService.addBITableRelation(relation);
             }
         }
     }
@@ -155,6 +176,22 @@ public class BIUserTableRelationManager implements Release {
         return tableRelationshipService.getAllPath(new BITablePair(primaryTable, juniorTable));
     }
 
+    public Set<BITableRelationPath> getAnalysisAllPath(BusinessTable juniorTable, BusinessTable primaryTable)
+            throws BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        return analysisTableRelationShipService.getAllPath(new BITablePair(primaryTable, juniorTable));
+    }
+
+    public Set<BITableRelationPath> getAnalysisAllAvailablePath(BusinessTable juniorTable, BusinessTable primaryTable) throws
+            BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        Set<BITableRelationPath> set = new HashSet<BITableRelationPath>();
+        for (BITableRelationPath path : getAnalysisAllPath(juniorTable, primaryTable)) {
+            if (!isPathDisable(path)) {
+                set.add(path);
+            }
+        }
+        return set;
+    }
+
 
     public Set<BITableRelationPath> getAllAvailablePath(BusinessTable juniorTable, BusinessTable primaryTable) throws
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
@@ -171,6 +208,17 @@ public class BIUserTableRelationManager implements Release {
             BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         Set<BITableRelationPath> set = new HashSet<BITableRelationPath>();
         for (BITableRelationPath path : getAllPath(juniorTable, primaryTable)) {
+            if (isPathDisable(path)) {
+                set.add(path);
+            }
+        }
+        return set;
+    }
+
+    public Set<BITableRelationPath> getAnalysisAllUnavailablePath(BusinessTable juniorTable, BusinessTable primaryTable) throws
+            BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
+        Set<BITableRelationPath> set = new HashSet<BITableRelationPath>();
+        for (BITableRelationPath path : getAnalysisAllPath(juniorTable, primaryTable)) {
             if (isPathDisable(path)) {
                 set.add(path);
             }

@@ -216,6 +216,7 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
 
     load: function () {
         var self = this, c = this._constant;
+        var needGenerateCube = self.model.get("needGenerateCube");
         var cubeEnd = self.model.get("cubeEnd");
         var relations = self.model.get("relations");
         var availableRelations = self.model.get("availableRelations");
@@ -224,7 +225,11 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
             return BI.Utils.getTableNameByFieldId4Conf(BI.lastObject(item[0]).foreignKey.field_id)
         });
         self.multiRelation.populate(relations, availableRelations);
-        self.cubeLabel.setValue(BI.i18nText("BI-Multi_Path_Use_Cur_Cube_Version") + ": " + cubeEnd);
+        if (needGenerateCube === BICst.MULTI_PATH_STATUS.NEED_GENERATE_CUBE) {
+            self.cubeLabel.setValue(BI.i18nText("BI-Generate_Cube_First"));
+        } else {
+            self.cubeLabel.setValue(BI.i18nText("BI-Multi_Path_Use_Cur_Cube_Version") + ": " + cubeEnd);
+        }
         BI.size(relations) > 0 ? this.tab.setSelect(c.HAS_MULTI_PATH) : this.tab.setSelect(c.NONE_MULTI_PATH);
     },
 

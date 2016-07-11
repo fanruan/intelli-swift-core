@@ -21,7 +21,6 @@ import com.fr.report.poly.TemplateBlock;
 public class ChartWidget extends BISummaryWidget {
 
     private BIChartSetting data;
-    private int useRealData = 0;
 
     public ChartWidget(BIChartSetting data) {
         this.data = data;
@@ -60,9 +59,6 @@ public class ChartWidget extends BISummaryWidget {
         return block;
     }
 
-    public boolean useRealData(){
-        return useRealData == 1;
-    }
 
     @Override
     public BIDimension[] getViewDimensions() {

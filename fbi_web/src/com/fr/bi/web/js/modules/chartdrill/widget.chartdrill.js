@@ -67,6 +67,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
                 if (allDims.length > allUsableDims.length && allUsableDims.length > 0) {
                     this.showDrill = true;
                 }
@@ -117,16 +118,27 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
 
         this.wrapper.empty();
         if (BI.isNotNull(classification)) {
+            var wType = BI.Utils.getWidgetTypeByID(wId);
+            var value = obj.x;
+            switch (wType) {
+                case BICst.WIDGET.BUBBLE:
+                case BICst.WIDGET.SCATTER:
+                    value = obj.seriesName;
+                    break;
+                default:
+                    value = obj.value || obj.x;
+                    break;
+            }
             var cDrill = BI.createWidget({
                 type: "bi.chart_drill_cell",
                 dId: classification,
-                value: obj.x
+                value: value
             });
             cDrill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
-                self._onClickDrill(classification, obj.value || obj.x);
+                self._onClickDrill(classification, value);
             });
             cDrill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function (drillId) {
-                self._onClickDrill(classification, obj.value || obj.x, drillId);
+                self._onClickDrill(classification, value, drillId);
             });
             this.wrapper.addItem(cDrill);
         }

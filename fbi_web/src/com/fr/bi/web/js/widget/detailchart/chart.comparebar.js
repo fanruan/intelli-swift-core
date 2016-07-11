@@ -16,7 +16,7 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        MINLIMIT: 1e-3,
+        MINLIMIT: 1e-6,
         LEGEND_HEIGHT: 80
     },
 
@@ -88,7 +88,10 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
             config.xAxis[0].showLabel = false;
         }
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        this.config.show_zoom === true && delete config.dataSheet;
+        if(this.config.show_zoom === true){
+            delete config.dataSheet;
+            delete config.zoom.zoomType;
+        }
         config.plotOptions.tooltip.formatter.valueFormat = "function(){if(this > 0){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];} else {return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}}";
 
         config.yAxis = this.yAxis;
@@ -277,6 +280,7 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",

@@ -90,6 +90,8 @@ BI.CubePath = BI.inherit(BI.Widget, {
             width: this.constants.BUTTON_WIDTH
         });
         cancelButton.on(BI.Button.EVENT_CHANGE, function () {
+            pathInput.setValue(self.path);
+            pathLabel.setText(self.path);
             pathLabel.setVisible(true);
             pathInput.setVisible(false);
             modifyButton.setText(BI.i18nText("BI-Modify"));

@@ -19,7 +19,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-3,
+        MINLIMIT: 1e-6,
         LEGEND_HEIGHT: 80
     },
 
@@ -35,10 +35,15 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         this.xAxis = [{
             type: "category",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: {
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                    "color": "#808080",
+                    "fontSize": "12px",
+                    "fontWeight": ""
+                }
             },
             labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
             },
             position: "bottom",
             gridLineWidth: 0
@@ -54,12 +59,12 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
-        switch (this.config.chart_legend){
+        switch (this.config.chart_legend) {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
@@ -78,12 +83,15 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        this.config.show_zoom === true && delete config.dataSheet;
+        if(this.config.show_zoom === true){
+            delete config.dataSheet;
+            delete config.zoom.zoomType;
+        }
         config.yAxis = this.yAxis;
 
 
-        BI.each(config.yAxis, function(idx, axis){
-            switch (axis.axisIndex){
+        BI.each(config.yAxis, function (idx, axis) {
+            switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed;
                     axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
@@ -112,7 +120,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
 
         return [items, config];
 
-        function formatChartStyle(){
+        function formatChartStyle() {
             switch (self.config.chart_style) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
@@ -122,23 +130,28 @@ BI.AxisChart = BI.inherit(BI.Widget, {
             }
         }
 
-        function formatCordon(){
-            BI.each(self.config.cordon, function(idx, cor){
-                if(idx === 0 && self.xAxis.length > 0){
+        function formatCordon() {
+            BI.each(self.config.cordon, function (idx, cor) {
+                if (idx === 0 && self.xAxis.length > 0) {
                     var magnify = calcMagnify(self.config.x_axis_number_level);
-                    self.xAxis[0].plotLines = BI.map(cor, function(i, t){
+                    self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": {
+                                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                    "color": "#808080",
+                                    "fontSize": "12px",
+                                    "fontWeight": ""
+                                },
                                 "text": t.text,
                                 "align": "top"
                             }
                         });
                     });
                 }
-                if(idx > 0 && self.yAxis.length >= idx){
+                if (idx > 0 && self.yAxis.length >= idx) {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
@@ -148,12 +161,17 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                             magnify = calcMagnify(self.config.right_y_axis_number_level);
                             break;
                     }
-                    self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                    self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": {
+                                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                    "color": "#808080",
+                                    "fontSize": "12px",
+                                    "fontWeight": ""
+                                },
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -163,27 +181,27 @@ BI.AxisChart = BI.inherit(BI.Widget, {
             })
         }
 
-        function formatNumberLevelInYaxis(type, position){
+        function formatNumberLevelInYaxis(type, position) {
             var magnify = calcMagnify(type);
-            if(magnify > 1){
-                BI.each(items, function(idx, item){
-                    BI.each(item.data, function(id, da){
+            if (magnify > 1) {
+                BI.each(items, function (idx, item) {
+                    BI.each(item.data, function (id, da) {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                            if (self.constants.MINLIMIT.sub(da.y) > 0) {
                                 da.y = 0;
                             }
                         }
                     })
                 })
             }
-            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }
         }
 
-        function calcMagnify(type){
+        function calcMagnify(type) {
             var magnify = 1;
             switch (type) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -203,7 +221,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
             return magnify;
         }
 
-        function getXYAxisUnit(numberLevelType, position){
+        function getXYAxisUnit(numberLevelType, position) {
             var unit = "";
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -219,19 +237,19 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     unit = BI.i18nText("BI-Yi");
                     break;
             }
-            if(position === self.constants.X_AXIS){
+            if (position === self.constants.X_AXIS) {
                 self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
-            if(position === self.constants.LEFT_AXIS){
+            if (position === self.constants.LEFT_AXIS) {
                 self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
-            if(position === self.constants.RIGHT_AXIS){
+            if (position === self.constants.RIGHT_AXIS) {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
         }
 
-        function formatTickInXYaxis(type, position){
+        function formatTickInXYaxis(type, position) {
             var formatter = '#.##';
             switch (type) {
                 case self.constants.NORMAL:
@@ -247,20 +265,20 @@ BI.AxisChart = BI.inherit(BI.Widget, {
                     formatter = '#0.00';
                     break;
             }
-            if(position === self.constants.LEFT_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
+            if (position === self.constants.LEFT_AXIS) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    if (type === self.constants.NORMAL) {
                         formatter = '#0%'
-                    }else{
+                    } else {
                         formatter += '%';
                     }
                 }
             }
-            if(position === self.constants.RIGHT_AXIS){
-                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
+            if (position === self.constants.RIGHT_AXIS) {
+                if (self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    if (type === self.constants.NORMAL) {
                         formatter = '#0%'
-                    }else{
+                    } else {
                         formatter += '%';
                     }
                 }
@@ -270,6 +288,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options, types) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",
@@ -284,7 +303,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
             left_y_axis_reversed: options.left_y_axis_reversed || false,
             right_y_axis_reversed: options.right_y_axis_reversed || false,
             left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
-            right_y_axis_number_level:  options.right_y_axis_number_level || c.NORMAL,
+            right_y_axis_number_level: options.right_y_axis_number_level || c.NORMAL,
             x_axis_unit: options.x_axis_unit || "",
             left_y_axis_unit: options.left_y_axis_unit || "",
             right_y_axis_unit: options.right_y_axis_unit || "",
@@ -300,17 +319,22 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         this.options.items = items;
 
         this.yAxis = [];
-        BI.each(types, function(idx, type){
-            if(BI.isEmptyArray(type)){
+        BI.each(types, function (idx, type) {
+            if (BI.isEmptyArray(type)) {
                 return;
             }
             var newYAxis = {
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: idx > 0 ? "right" : "left",
                 lineWidth: 1,
@@ -327,7 +351,7 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

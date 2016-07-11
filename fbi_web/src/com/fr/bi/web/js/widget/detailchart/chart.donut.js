@@ -17,7 +17,7 @@ BI.DonutChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-3,
+        MINLIMIT: 1e-6,
         LEGEND_HEIGHT: 80
     },
 
@@ -86,6 +86,7 @@ BI.DonutChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             chart_color: options.chart_color || [],

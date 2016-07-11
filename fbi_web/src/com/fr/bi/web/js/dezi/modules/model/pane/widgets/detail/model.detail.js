@@ -203,7 +203,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     //对比柱状/面积/条形图,范围面积,瀑布,气泡,力学,散点,漏斗这些指标区域是单选的
                     if(type === BICst.WIDGET.COMPARE_AXIS || type === BICst.WIDGET.COMPARE_AREA ||
                         type === BICst.WIDGET.COMPARE_BAR || type === BICst.WIDGET.RANGE_AREA || type === BICst.WIDGET.FALL_AXIS||
-                        type === BICst.WIDGET.BUBBLE || type === BICst.WIDGET.FORCE_BUBBLE ||
+                        type === BICst.WIDGET.BUBBLE || type === BICst.WIDGET.FORCE_BUBBLE || type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
                         type === BICst.WIDGET.SCATTER){
                         var preTar1Select = [], preTar2Select = [], preTar3Select = [];
                         BI.each(preDims, function (dId, dim) {
@@ -290,7 +290,6 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                 if (rType === BICst.REGION.TARGET1) {
                                     if(!preTar1Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar1Select) && BI.size(dims) !== BI.size(preDims)){
-                                            dims[dId].used = false;
                                         }else{
                                             tar1Change = true;
                                         }
@@ -365,7 +364,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 });
                 if(wType === BICst.WIDGET.COMPARE_AXIS || wType === BICst.WIDGET.COMPARE_AREA ||
                     wType === BICst.WIDGET.COMPARE_BAR || wType === BICst.WIDGET.RANGE_AREA || wType === BICst.WIDGET.FALL_AXIS||
-                    wType === BICst.WIDGET.BUBBLE || wType === BICst.WIDGET.FORCE_BUBBLE ||
+                    wType === BICst.WIDGET.BUBBLE || wType === BICst.WIDGET.FORCE_BUBBLE || wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
                     wType === BICst.WIDGET.SCATTER){
                     BI.each(view, function (region, dims) {
                         if (region >= BICst.REGION.TARGET1) {

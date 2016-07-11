@@ -5,6 +5,7 @@ BI.ChartCombineFormatItemFactory = {
             return BI.ChartCombineFormatItemFactory.formatItems(types[idx], item);
         });
     },
+
     formatItems: function(type, items){
         var item = {};
         switch (type) {
@@ -197,6 +198,15 @@ BI.ChartCombineFormatItemFactory = {
                         "enabled": true
                     }
                 }
+            },
+            dTools:{
+                enabled:'true',
+                style:{
+                    fontFamily: "Microsoft YaHei, Hiragino Sans GB W3",
+                    color: "#1a1a1a",
+                    fontSize: "12px"
+                },
+                backgroundColor:'white'
             },
             dataSheet: {
                 enabled: false,

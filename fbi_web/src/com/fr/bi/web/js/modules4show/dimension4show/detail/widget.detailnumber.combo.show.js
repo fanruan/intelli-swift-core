@@ -1,5 +1,5 @@
 /**
- * @class BI.DetailNumberDimensionCombo
+ * @class BI.DetailNumberDimensionComboShow
  * @extend BI.Widget
  * 明细表数值维度的combo
  */

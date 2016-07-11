@@ -41,8 +41,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     protected BISummaryTarget[] targets;
     @BICoreField
     protected BIDimension[] dimensions;
-
-    protected NameObject targetSort;
+    @BICoreField
+    protected TargetSort targetSort;
     @BICoreField
     protected Map<String, DimensionFilter> targetFilterMap = new LinkedHashMap<String, DimensionFilter>();
     @BICoreField
@@ -266,7 +266,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         if (jo.has("sort")) {
             JSONObject targetSort = (JSONObject) jo.get("sort");
             int sortType = targetSort.getInt("type");
-            this.targetSort = new NameObject(targetSort.getString("sort_target"), sortType);
+            this.targetSort = new TargetSort(targetSort.getString("sort_target"), sortType);
             if (sortType == BIReportConstant.SORT.NONE) {
                 this.targetSort = null;
             }
@@ -385,5 +385,19 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
 
     public int getMaxRow() {
         return this.maxRow;
+    }
+
+    private class TargetSort extends NameObject{
+        public TargetSort(String s, Object o) {
+            super(s, o);
+        }
+
+        @Override
+        public String toString() {
+            return "TargetSort{" +
+                    "name='" + getName() + '\'' +
+                    ", ob=" + getObject() +
+                    '}';
+        }
     }
 }

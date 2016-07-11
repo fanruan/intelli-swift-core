@@ -51,7 +51,7 @@ FS.THEME.config4navigation.onAfterInit = function () {
         top: 0,
         bottom: 0
     });
-    if(FS.config.isAdmin) {
+    if (FS.config.isAdmin) {
         var dataConfig = BI.createWidget({
             type: "bi.icon_text_item",
             cls: "data-config-font bi-data-config-button",
@@ -87,135 +87,136 @@ FS.Plugin.LookAndFeelSettings.push({
         return {
             title: BI.i18nText("BI-BI_Style"),
             content: {
-                type: 'tablepane',
-                colSize: [135, 260, 'fill'],
-                rowSize: [30, 30, 30, 'auto'],
-                width: 920,
-                vgap: 30,
-                items: [
-                    [
-                        {type: 'llabel', value: BI.i18nText('BI-Total_Style')},
-                        {
-                            type: 'fs.combo',
-                            widgetName: 'bi.theme',
-                            width: 260,
-                            height: 30,
-                            textField: 'text',
-                            valueField: 'value',
-                            items: [{
-                                text: "--", value: 0
-                            }, {
-                                text: BI.i18nText('BI-Top_Down_Shade'), value: 4
-                            }, {
-                                text: BI.i18nText('BI-Trans'), value: 5
-                            }, {
-                                text: BI.i18nText('BI-Plane_3D'), value: 1
-                            }, {
-                                text: BI.i18nText('BI-Gradient_Hl'), value: 2
-                            }],
-                            handler: function () {
-
-                                var view = FSCS.View;
-                                var pane = view.configPane;
-                                var jo = {};
-                                jo.chartStyle = pane.getWidgetByName('bi.chart.style').getValue();//图表形态
-                                jo.defaultStyle = pane.getWidgetByName("bi.theme").getValue();//整体风格
-                                jo.defaultColor = pane.getWidgetByName("bi.theme.chart").getValue();//图表配色
-                                console.log(jo);
-                                BI.requestAsync('fr_bi_base', 'set_config_setting', jo,
-                                    function (res) {
-                                        FR.Msg.toast(BI.i18nText("FS-Generic-Simple_Successfully"));
-                                    }
-                                );
-                            }
-
-                        }
-                        //{type:'fs.segment', items:[{text:'默认'},{text:'炫舞红'},{text:'青草绿'},{text:'深绿'}]}
-                    ],
-                    [
-                        {type: 'llabel', value: BI.i18nText('BI-Chart_Color')},
-                        {
-                            type: 'fs.combo',
-                            widgetName: 'bi.theme.chart',
-                            width: 260,
-                            height: 30,
-                            textField: 'text',
-                            valueField: 'value',
-                            items: [],
-                            handler: function () {
-                                var view = FSCS.View;
-                                var pane = view.configPane;
-                                var jo = {};
-                                jo.chartStyle = pane.getWidgetByName('bi.chart.style').getValue();//图表形态
-                                jo.defaultStyle = pane.getWidgetByName("bi.theme").getValue();//整体风格
-                                jo.defaultColor = pane.getWidgetByName("bi.theme.chart").getValue();//图表配色
-                                console.log(jo);
-                                BI.requestAsync('fr_bi_base', 'set_config_setting', jo,
-                                    function (res) {
-                                        FR.Msg.toast(BI.i18nText("FS-Generic-Simple_Successfully"));
-                                    }
-                                );
-                            }
-                        }
-                        //{type:'fs.segment', items:[{text:'清新'},{text:'狂野'},{text:'淡雅'}]}
-                    ],
-                    [
-                        {type: 'llabel', value: BI.i18nText('BI-Chart_Style')},
-                        {
-                            type: 'fs.segment', widgetName: 'bi.chart.style', items: [
-                            {text: '2D', value: 0},
-                            {text: '3D', value: 1}
-                        ], handler: function () {
-                            var view = FSCS.View;
-                            var pane = view.configPane;
-                            var jo = {};
-                            jo.chartStyle = pane.getWidgetByName('bi.chart.style').getValue();//图表形态
-                            jo.defaultStyle = pane.getWidgetByName("bi.theme").getValue();//整体风格
-                            jo.defaultColor = pane.getWidgetByName("bi.theme.chart").getValue();//图表配色
-                            BI.requestAsync('fr_bi_base', 'set_config_setting', jo,
-                                function (res) {
-                                    FR.Msg.toast(BI.i18nText("FS-Generic-Simple_Successfully"));
-                                }
-                            );
-                        }
-                        }
-                    ],
-                    [
-                        {type: 'llabel', value: BI.i18nText('BI-Pre_View')},
-                        {
-                            type: 'grid',
-                            columns: 2,
-                            rows: 2,
-                            width: 610,
-                            widths: ['300', '310'],
-                            heights: ['180', '190'],
-                            items: [
-                                {
-                                    column: 0,
-                                    row: 0,
-                                    el: $('<div style="width: 298px;height: 178px;float: left;border-radius: 2px;border: 1px solid">')
-                                },
-                                {
-                                    column: 1,
-                                    row: 0,
-                                    el: $('<div style="width: 298px;height: 178px;float: left;border-radius: 2px;border: 1px solid;margin-left: 10px">')
-                                },
-                                {
-                                    column: 0,
-                                    row: 1,
-                                    el: $('<div style="width: 298px;height: 178px;float: left;border-radius: 2px;border: 1px solid;margin-top: 10px">')
-                                },
-                                {
-                                    column: 1,
-                                    row: 1,
-                                    el: $('<div style="width: 298px;height: 178px;float: left;border-radius: 2px;border: 1px solid;margin: 10px 0 0 10px">')
-                                }
-                            ]
-
-                        }
-                        //$('<div>').css({background:'green', width:600, height : 400})
-                    ]
-                ]
+                type: "fs.style_setting",
+                //type: 'tablepane',
+                //colSize: [135, 260, 'fill'],
+                //rowSize: [30, 30, 30, 'auto'],
+                //width: 920,
+                //vgap: 30,
+                //items: [
+                //    [
+                //        {type: 'llabel', value: BI.i18nText('BI-Total_Style')},
+                //        {
+                //            type: 'bi.combo',
+                //            widgetName: 'bi.theme',
+                //            width: 260,
+                //            height: 30,
+                //            textField: 'text',
+                //            valueField: 'value',
+                //            items: [{
+                //                text: "--", value: 0
+                //            }, {
+                //                text: BI.i18nText('BI-Top_Down_Shade'), value: 4
+                //            }, {
+                //                text: BI.i18nText('BI-Trans'), value: 5
+                //            }, {
+                //                text: BI.i18nText('BI-Plane_3D'), value: 1
+                //            }, {
+                //                text: BI.i18nText('BI-Gradient_Hl'), value: 2
+                //            }],
+                //            handler: function () {
+                //
+                //                var view = FSCS.View;
+                //                var pane = view.configPane;
+                //                var jo = {};
+                //                jo.chartStyle = pane.getWidgetByName('bi.chart.style').getValue();//图表形态
+                //                jo.defaultStyle = pane.getWidgetByName("bi.theme").getValue();//整体风格
+                //                jo.defaultColor = pane.getWidgetByName("bi.theme.chart").getValue();//图表配色
+                //                console.log(jo);
+                //                BI.requestAsync('fr_bi_base', 'set_config_setting', jo,
+                //                    function (res) {
+                //                        FR.Msg.toast(BI.i18nText("FS-Generic-Simple_Successfully"));
+                //                    }
+                //                );
+                //            }
+                //
+                //        }
+                //        //{type:'fs.segment', items:[{text:'默认'},{text:'炫舞红'},{text:'青草绿'},{text:'深绿'}]}
+                //    ],
+                //    [
+                //        {type: 'llabel', value: BI.i18nText('BI-Chart_Color')},
+                //        {
+                //            type: 'fs.combo',
+                //            widgetName: 'bi.theme.chart',
+                //            width: 260,
+                //            height: 30,
+                //            textField: 'text',
+                //            valueField: 'value',
+                //            items: [],
+                //            handler: function () {
+                //                var view = FSCS.View;
+                //                var pane = view.configPane;
+                //                var jo = {};
+                //                jo.chartStyle = pane.getWidgetByName('bi.chart.style').getValue();//图表形态
+                //                jo.defaultStyle = pane.getWidgetByName("bi.theme").getValue();//整体风格
+                //                jo.defaultColor = pane.getWidgetByName("bi.theme.chart").getValue();//图表配色
+                //                console.log(jo);
+                //                BI.requestAsync('fr_bi_base', 'set_config_setting', jo,
+                //                    function (res) {
+                //                        FR.Msg.toast(BI.i18nText("FS-Generic-Simple_Successfully"));
+                //                    }
+                //                );
+                //            }
+                //        }
+                //        //{type:'fs.segment', items:[{text:'清新'},{text:'狂野'},{text:'淡雅'}]}
+                //    ],
+                //    [
+                //        {type: 'llabel', value: BI.i18nText('BI-Chart_Style')},
+                //        {
+                //            type: 'fs.segment', widgetName: 'bi.chart.style', items: [
+                //            {text: '2D', value: 0},
+                //            {text: '3D', value: 1}
+                //        ], handler: function () {
+                //            var view = FSCS.View;
+                //            var pane = view.configPane;
+                //            var jo = {};
+                //            jo.chartStyle = pane.getWidgetByName('bi.chart.style').getValue();//图表形态
+                //            jo.defaultStyle = pane.getWidgetByName("bi.theme").getValue();//整体风格
+                //            jo.defaultColor = pane.getWidgetByName("bi.theme.chart").getValue();//图表配色
+                //            BI.requestAsync('fr_bi_base', 'set_config_setting', jo,
+                //                function (res) {
+                //                    FR.Msg.toast(BI.i18nText("FS-Generic-Simple_Successfully"));
+                //                }
+                //            );
+                //        }
+                //        }
+                //    ],
+                //    [
+                //        {type: 'llabel', value: BI.i18nText('BI-Pre_View')},
+                //        {
+                //            type: 'grid',
+                //            columns: 2,
+                //            rows: 2,
+                //            width: 610,
+                //            widths: ['300', '310'],
+                //            heights: ['180', '190'],
+                //            items: [
+                //                {
+                //                    column: 0,
+                //                    row: 0,
+                //                    el: $('<div style="width: 298px;height: 178px;float: left;border-radius: 2px;border: 1px solid">')
+                //                },
+                //                {
+                //                    column: 1,
+                //                    row: 0,
+                //                    el: $('<div style="width: 298px;height: 178px;float: left;border-radius: 2px;border: 1px solid;margin-left: 10px">')
+                //                },
+                //                {
+                //                    column: 0,
+                //                    row: 1,
+                //                    el: $('<div style="width: 298px;height: 178px;float: left;border-radius: 2px;border: 1px solid;margin-top: 10px">')
+                //                },
+                //                {
+                //                    column: 1,
+                //                    row: 1,
+                //                    el: $('<div style="width: 298px;height: 178px;float: left;border-radius: 2px;border: 1px solid;margin: 10px 0 0 10px">')
+                //                }
+                //            ]
+                //
+                //        }
+                //        //$('<div>').css({background:'green', width:600, height : 400})
+                //    ]
+                //]
 
             }
         }
@@ -223,10 +224,10 @@ FS.Plugin.LookAndFeelSettings.push({
 
 
     action: function () {
-        this.data = BI.requestSync('fr_bi_base', 'get_config_setting', null);
-        this.getWidgetByName('bi.theme.chart').rebuild(this.data.styleList);
-        this.getWidgetByName('bi.theme').setValue(this.data.defaultStyle);
-        this.getWidgetByName('bi.chart.style').setValue(this.data.chartStyle);
-        this.getWidgetByName('bi.theme.chart').setValue(this.data.defaultColor);
+        //this.data = BI.requestSync('fr_bi_base', 'get_config_setting', null);
+        this.container.populate();
+        //this.getWidgetByName('bi.theme').setValue(this.data.defaultStyle);
+        //this.getWidgetByName('bi.chart.style').setValue(this.data.chartStyle);
+        //this.getWidgetByName('bi.theme.chart').setValue(this.data.defaultColor);
     }
 });

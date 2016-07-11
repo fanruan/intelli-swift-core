@@ -16,7 +16,6 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.dimension.dimension.BIStringDimension;
-import com.fr.bi.field.dimension.filter.general.GeneralANDDimensionFilter;
 import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
 import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTargetKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -157,7 +156,7 @@ public class DimensionGroupFilter {
     private List<DimensionFilter> getDimensionTraverseResultFilters(int deep) {
         List<DimensionFilter> filterList = new ArrayList<DimensionFilter>();
         DimensionFilter filter = rowDimension[deep].getFilter();
-        if (isNormalResultFilter(filter)) {
+        if (filter != null && isNormalResultFilter(filter)) {
             filterList.add(filter);
         }
         return AddTargetFilters(filterList, deep);
@@ -229,14 +228,7 @@ public class DimensionGroupFilter {
         if (isNotStringDimensionFilter(filter)) {
             return false;
         }
-        if (filter instanceof GeneralANDDimensionFilter) {
-            GeneralANDDimensionFilter resultFilter = (GeneralANDDimensionFilter) filter;
-            if (resultFilter.canCreateDirectFilter()) {
-                return true;
-            }
-        }
-        return false;
-
+        return filter.canCreateDirectFilter();
     }
 
     private Node[] nextNodes(SummaryDimensionGroup[] summaryDimensionGroups) {
@@ -290,14 +282,12 @@ public class DimensionGroupFilter {
                 if (!isStringDimension(rowDimension[deep])) {
                     continue;
                 }
-                if (rowDimension[deep].getFilter() instanceof GeneralANDDimensionFilter) {
-                    GeneralANDDimensionFilter resultFilter = (GeneralANDDimensionFilter) rowDimension[deep].getFilter();
-                    if (resultFilter.canCreateDirectFilter()) {
-                        DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
-                        BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BITable.BI_EMPTY_TABLE())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
-                        GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
-                        ret[i] = and(ret[i], filterIndex);
-                    }
+                DimensionFilter resultFilter =  rowDimension[deep].getFilter();
+                if (resultFilter != null && resultFilter.canCreateDirectFilter()) {
+                    DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
+                    BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BITable.BI_EMPTY_TABLE())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
+                    GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
+                    ret[i] = and(ret[i], filterIndex);
                 }
             }
         }

@@ -284,7 +284,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
 
     @Override
     public boolean canCreateFilterIndex() {
-        return true;
+        return false;
     }
 
 }

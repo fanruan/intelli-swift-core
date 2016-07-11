@@ -7,9 +7,6 @@
 .bi-table-field-info-search-result-pane .no-result-comment {
   color: #808080;
 }
-.bi-table-field-info-search-result-pane > div > div > table {
-  border-right: 1px solid #eaeaea;
-}
 .bi-table-field-info-search-result-pane > div > div > table > thead > tr > td {
   background: #f4f4f4;
 }
