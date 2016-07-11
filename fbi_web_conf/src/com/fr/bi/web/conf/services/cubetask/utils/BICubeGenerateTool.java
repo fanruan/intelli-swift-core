@@ -10,6 +10,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ITableKey;
@@ -32,12 +33,24 @@ public class BICubeGenerateTool {
     public static Set<BIBusinessTable> getTables4CubeGenerate(long userId) {
         Set<BIBusinessTable> newTables = new HashSet<BIBusinessTable>();
         for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
-//            if(!tableExisted(businessTable.getTableSource(),userId)||isETL(businessTable.getTableSource())) {
                 if(!tableExisted(businessTable.getTableSource(),userId)) {
                 newTables.add((BIBusinessTable) businessTable);
             }
         }
         return newTables;
+    }
+
+    /* 获取所有新增的relation*/
+    public static Set<BITableRelation> getRelations4CubeGenerate(long userId) {
+        Set<BITableRelation> allTableRelation = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
+        Set<BITableRelation> oldRelation = BICubeConfigureCenter.getTableRelationManager().getAnalysisAllTableRelation(userId);
+        Set<BITableRelation> newRealationSet=new HashSet<BITableRelation>();
+        for (BITableRelation relation : allTableRelation) {
+            if (!oldRelation.contains(relation)){
+                newRealationSet.add(relation);
+            }
+        }
+        return newRealationSet;
     }
 
     /* 获取所有新增业务包里面的table*/

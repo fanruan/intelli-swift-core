@@ -32,7 +32,7 @@ import java.util.*;
  * @since 4.0
  * kary 这个是真正意义上完整的全局更新，无论是否有数据，更新所有能更新的
  */
-public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
+public class CubeBuildStuffManager extends AbstractCubeBuildStuff implements Serializable  {
 
     /**
      *

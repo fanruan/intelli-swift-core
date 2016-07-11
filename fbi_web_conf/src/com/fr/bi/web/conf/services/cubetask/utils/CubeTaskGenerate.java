@@ -5,7 +5,9 @@ import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffManager;
+import com.finebi.cube.impl.conf.CubeBuildStuffManagerIncremental;
 import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -38,25 +40,26 @@ public class CubeTaskGenerate {
     public static boolean CubeBuild(long userId) {
         boolean taskAddResult = false;
         CubeBuildStuff cubeBuildStuff;
-        Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
-/*若有新增表，增量更新，否则进行全量*/
-        String messages = "Cube incremental update start! \n tables updated listed：\n";
-//        if (newTables.size() != 0) {
-//            for (BIBusinessTable table : newTables) {
-//                messages += table.getTableSource().getTableName() + "\n";
-//            }
-//            BILogger.getLogger().info(messages);
-//            cubeBuildStuff = new CubeBuildStuffManagerIncremental(newTables, userId);
-//        } else {
-//            BILogger.getLogger().info("Cube global update start");
-//            cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
-//        }
-        cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
+/*若有新增表或者新增关联，增量更新，否则进行全量*/
+        if (isIncremental(userId)) {
+            BILogger.getLogger().info("Cube incremental update start");
+            cubeBuildStuff = new CubeBuildStuffManagerIncremental(userId,BICubeGenerateTool.getTables4CubeGenerate(userId),BICubeGenerateTool.getRelations4CubeGenerate(userId));
+        } else {
+            BILogger.getLogger().info("Cube global update start");
+            cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
+        }
         if (preConditionsCheck(userId, cubeBuildStuff)) {
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
             taskAddResult = cubeManager.addTask(task, userId);
         }
         return taskAddResult;
+    }
+
+    private  static boolean isIncremental(long userId) {
+        Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
+        Set<BITableRelation> newRelationSet = BICubeGenerateTool.getRelations4CubeGenerate(userId);
+        boolean isIncremental = newTables.size() > 0 || newRelationSet.size() > 0;
+        return isIncremental;
     }
 
     private static boolean preConditionsCheck(long userId, CubeBuildStuff cubeBuildStuff) {

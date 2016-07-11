@@ -27,7 +27,8 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     private Set<CubeTableSource> allSingleSources;
     private Set<CubeTableSource> sources;
-    private Set<BIBusinessTable> newBiBusinessTableSet;
+    private Set<BIBusinessTable> newTables;
+    private Set<BITableRelation> newRelations;
     private ICubeConfiguration cubeConfiguration;
     private BIUser biUser;
     private Set<List<Set<CubeTableSource>>> dependTableResource;
@@ -36,11 +37,13 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
     private Set<BITableSourceRelationPath> biTableSourceRelationPathSet;
     private Set<BICubeGenerateRelationPath> cubeGenerateRelationPathSet;
     private Set<BICubeGenerateRelation> cubeGenerateRelationSet;
+    
 
-    public CubeBuildStuffManagerIncremental(Set<BIBusinessTable> newTables, long userId) {
+    public CubeBuildStuffManagerIncremental(long userId, Set<BIBusinessTable> newTables, Set<BITableRelation> newRelations) {
         this.biUser = new BIUser(userId);
         this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-        this.newBiBusinessTableSet = newTables;
+        this.newRelations=newRelations;
+        this.newTables=newTables;
         init();
         try {
             setSources();
@@ -49,8 +52,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
             calculateRelationDepends();
         } catch (BITableAbsentException e) {
             BILogger.getLogger().error(e.getMessage());
-        }
-    }
+        }    }
 
     private void setSources() {
         this.sources = new HashSet<CubeTableSource>();
@@ -69,10 +71,12 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
         this.tableRelationSet = new HashSet<BITableRelation>();
         biTableSourceRelationSet = new HashSet<BITableSourceRelation>();
         biTableSourceRelationPathSet = new HashSet<BITableSourceRelationPath>();
+        
     }
 
 
     private void calculateRelationDepends() {
+        
         CalculateDependTool cal = new CalculateDependManager();
         cal.setOriginal(this.getAllSingleSources());
         cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
@@ -90,7 +94,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     protected void setResourcesAndDepends() throws BITableAbsentException {
         Set<CubeTableSource> cubeTableSourceHashSet = new HashSet<CubeTableSource>();
-        for (BIBusinessTable biBusinessTable : newBiBusinessTableSet) {
+        for (BIBusinessTable biBusinessTable : newTables) {
             sources.add(biBusinessTable.getTableSource());
             cubeTableSourceHashSet.add(biBusinessTable.getTableSource());
             Set<BITableRelation> primaryRelations = getTableRelationManager().getPrimaryRelation(biUser.getUserId(), biBusinessTable).getContainer();
@@ -105,7 +109,7 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
 
     private void setRelationAndPath() {
         try {
-            Set<BITableRelationPath> allTablePath = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
+            Set<BITableRelationPath> allTablePath = getTableRelationManager().getAllTablePath(biUser.getUserId());
             for (BITableRelationPath biTableRelationPath : allTablePath) {
                 for (BITableRelation biTableRelation : tableRelationSet) {
                     if (biTableRelationPath.getAllRelations().contains(biTableRelation)) {

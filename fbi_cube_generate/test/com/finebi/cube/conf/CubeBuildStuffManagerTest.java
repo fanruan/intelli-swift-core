@@ -36,7 +36,7 @@ public class CubeBuildStuffManagerTest extends TestCase {
     }
 
     public void testIncremental() {
-        CubeBuildStuff cubeBuildStuffManager = new CubeBuildStuffManagerIncremental(null,-999);
+        CubeBuildStuff cubeBuildStuffManager = new CubeBuildStuffManagerIncremental(-999,null,null);
         assertTrue(cubeBuildStuffManager.getAllSingleSources().size() == 0);
         assertTrue(cubeBuildStuffManager.getDependTableResource().size() == 0);
         assertTrue(cubeBuildStuffManager.getBiTableSourceRelationPathSet().size() == 0);
