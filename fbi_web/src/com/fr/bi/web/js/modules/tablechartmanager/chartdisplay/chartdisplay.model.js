@@ -403,14 +403,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var o = this.options;
         switch (type) {
             case BICst.WIDGET.SCATTER:
-                if(this.targetIds < 2){
+                if(this.targetIds.length < 2){
                     return "";
                 }else{
                     return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) +":'+ this.x +'</div><div>(Y)"
                         + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div>'}";
                 }
             case BICst.WIDGET.BUBBLE:
-                if(this.targetIds < 3){
+                if(this.targetIds.length < 3){
                     return "";
                 }else{
                     return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) +":'+ this.x +'</div><div>(Y)"
@@ -547,6 +547,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var self = this, o = this.options;
         var options = {};
         this._refreshDimsInfo();
+        var realData = true;
+        if(o.status === BICst.WIDGET_STATUS.DETAIL) {
+            realData = BI.Utils.isShowWidgetRealDataByID(o.wId) || false;
+        }
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
             if(BI.isNotNull(jsonData.error)) {
                 callback(jsonData);
@@ -576,7 +580,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var i = BI.UUID();
                 var type = types[idx];
                 BI.each(item, function(id, it){
-                    type[id] === BICst.WIDGET.ACCUMULATE_AXIS && BI.extend(it, {stack: i});
+                    (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
                 });
             });
             if(type === BICst.WIDGET.MAP){
@@ -603,7 +607,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 }
             },
             page: -1,
-            status: this.options.status
+            real_data: realData
         });
     },
 
@@ -625,7 +629,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: obj.dId || this.dimIds[0],
-                    value: [obj.category]
+                    value: [obj.value || obj.x]
                 }];
                 break;
             case BICst.WIDGET.MAP:

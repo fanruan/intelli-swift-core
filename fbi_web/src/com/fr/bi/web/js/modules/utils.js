@@ -59,7 +59,10 @@
 
         getDefaultChartConfig: function () {
             if (!this.defaultChartConfig) {
-                this.defaultChartConfig = Data.Req.reqGetChartPreStyle()
+                this.defaultChartConfig = Data.Req.reqGetChartPreStyle();
+                if(BI.isNull(this.defaultChartConfig.styleList)) {
+                    this.defaultChartConfig.styleList = [];
+                }
             }
             return this.defaultChartConfig;
         },
@@ -1700,6 +1703,7 @@
             dimension.used = true;
             var widget = Data.SharingPool.get("widgets", wid);
             widget.page = -1;
+            widget.real_data = true;
             widget.dimensions = {};
             widget.dimensions[dId] = dimension;
             widget.view = {};
@@ -2191,15 +2195,11 @@
             });
 
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
+            widget.real_data = true;
             return widget;
         },
 
         getWidgetDataByID: function (wid, callback, options) {
-            var status = options.status;
-            options.real_time = true;
-            if(status === BICst.WIDGET_STATUS.DETAIL) {
-                options.real_time = this.isShowWidgetRealDataByID(wid) || false;
-            }
             Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
                 callback(data);
             });

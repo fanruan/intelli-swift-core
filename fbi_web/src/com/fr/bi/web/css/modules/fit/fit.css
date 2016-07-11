@@ -5,6 +5,8 @@
   border: 1px solid transparent;
 }
 .bi-fit .layout-combo:hover {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
   border-radius: 2px;
   border: 1px solid #d3d9dc;
   background: #ffffff;

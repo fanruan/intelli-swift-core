@@ -29,7 +29,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 type: "bi.page_table",
                 el: {
                     el: {
-                        pageSpace: 95,
                         el: {
                             el: {
                                 type: "bi.table_view"
@@ -133,7 +132,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
                 self.pager.setAllPages(Math.ceil(row / size));
                 self.pager.setValue(vPage);
-                self.table.attr("columnSize", self._getColumnSize([header]));
+                self.table.attr("columnSize", self._getColumnSize(header));
                 callback(items, [header]);
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);

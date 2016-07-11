@@ -4,7 +4,8 @@
 BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
     _defaultConfig: function(){
         return BI.extend(BI.ChartAddConditionItem.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-chart-add-condition-item"
+            baseCls: "bi-chart-add-condition-item",
+            color: ""
         })
     },
 

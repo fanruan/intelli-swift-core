@@ -18,7 +18,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-3,
+        MINLIMIT: 1e-6,
         ONE_POINTER: 1,
         MULTI_POINTER: 2,
         HALF_DASHBOARD: 9,
@@ -180,35 +180,39 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             });
 
             switch (change) {
+
                 case BICst.SCALE_SETTING.AUTO:
                     break;
                 case BICst.SCALE_SETTING.CUSTOM:
-                    BI.each(styles , function (idx , style) {
-                        bands.push({
-                            color: style.color,
-                            from: style.range.min,
-                            to: style.range.max
+                    if(styles.length === 0){
+                        return bands
+                    }else {
+                        BI.each(styles, function (idx, style) {
+                            bands.push({
+                                color: style.color,
+                                from: style.range.min,
+                                to: style.range.max
+                            });
+                            color = style.color;
+                            conditionMax = style.range.max
                         });
-                        color = style.color;
-                        conditionMax = style.range.max
-                    });
-                    min = BI.parseInt(styles[0].range.min);
-                    bands.push({
-                        color: "#808080",
-                        from: 0,
-                        to: min
-                    });
+                        min = BI.parseInt(styles[0].range.min);
+                        bands.push({
+                            color: "#808080",
+                            from: 0,
+                            to: min
+                        });
 
-                    var maxScale = _calculateValueNiceDomain(0 , max)[1];
+                        var maxScale = _calculateValueNiceDomain(0, max)[1];
 
-                    bands.push({
-                        color: color,
-                        from: conditionMax,
-                        to: maxScale
-                    });
+                        bands.push({
+                            color: color,
+                            from: conditionMax,
+                            to: maxScale
+                        });
 
-                    return bands;
-                    break;
+                        return bands;
+                    }
             }
         }
 
@@ -277,13 +281,15 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             }
         }else{
             var others = [];
-            BI.each(items[0][0].data, function(idx, da){
-                others.push({
-                    data: [{
-                        x: items[0][0].name,
-                        y: da.y
-                    }],
-                    name: da.x
+            BI.each(items[0], function(idx, item){
+                BI.each(item.data, function(id, da){
+                    others.push({
+                        data: [{
+                            x: item.name,
+                            y: da.y
+                        }],
+                        name: da.x
+                    })
                 })
             });
             return [others];

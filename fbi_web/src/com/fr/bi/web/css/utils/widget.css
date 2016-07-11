@@ -107,6 +107,8 @@ textarea::-webkit-scrollbar {
 }
 div::-webkit-scrollbar-thumb,
 textarea::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
   border-radius: 0;
   background-color: #e2e2e2;
 }

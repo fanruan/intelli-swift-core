@@ -31,7 +31,7 @@ public class BIUserTableRelationManager implements Release {
      *
      */
     private static final long serialVersionUID = -4599513067350765988L;
-    private static final String XML_TAG = "ConnectionManager";
+    
     protected BITableRelationAnalysisService oldAnalyserHandler;
     protected BITableRelationAnalysisService currentAnalyserHandler;
     protected BIDisablePathsManager disablePathsManager;
@@ -50,7 +50,7 @@ public class BIUserTableRelationManager implements Release {
         currentAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);
         disablePathsManager = new BIDisablePathsManager();
         tableRelationshipService = new BITableRelationshipManager(currentAnalyserHandler);
-        analysisTableRelationShipService = new BITableRelationshipManager(currentAnalyserHandler);
+        analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
     }
 
 
@@ -142,19 +142,27 @@ public class BIUserTableRelationManager implements Release {
     public void finishGenerateCubes(Set<BITableRelation> connectionSet) {
         synchronized (oldAnalyserHandler) {
             oldAnalyserHandler.clear();
-            analysisTableRelationShipService.clear();
-            for (BITableRelation relation : connectionSet) {
+            for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
                 try {
-                    oldAnalyserHandler.addRelation(relation);
+                    oldAnalyserHandler.addRelation((BITableRelation) relation.clone());
                 } catch (BIRelationDuplicateException e) {
+                    BILogger.getLogger().error(e.getMessage());
+                } catch (CloneNotSupportedException e) {
                     BILogger.getLogger().error(e.getMessage());
                 }
             }
+//            for (BITableRelation relation : connectionSet) {
+//                try {
+//                    oldAnalyserHandler.addRelation(relation);
+//                } catch (BIRelationDuplicateException e) {
+//                    BILogger.getLogger().error(e.getMessage());
+//                }
+//            }
+            analysisTableRelationShipService.clear();
             analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
             for (BITableRelation relation : connectionSet) {
                 analysisTableRelationShipService.addBITableRelation(relation);
             }
-
         }
     }
 

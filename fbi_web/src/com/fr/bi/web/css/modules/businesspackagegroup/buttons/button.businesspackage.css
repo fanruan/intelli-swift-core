@@ -14,12 +14,16 @@
   font-size: 16px;
   border: 1px solid #eaeaea;
   background-color: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
   border-radius: 2px;
 }
 .bi-business-package .rename-font-style {
   font-size: 16px;
   border: 1px solid #eaeaea;
   background-color: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
   border-radius: 2px;
 }
 .bi-business-package .editor-border {

@@ -2583,6 +2583,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/valuechooser/combo.valuechooser.js",
                 "com/fr/bi/web/js/components/bigvaluechooser/combo.bigvaluechooser.js",
 
+                //带空节点的层级树
+                "com/fr/bi/web/js/components/tree/leveltree.empty.js",
+                "com/fr/bi/web/js/components/tree/multilayerleveltree.empty.js",
 
                 //树选值
                 "com/fr/bi/web/js/components/treevaluechooser/combo.treevaluechooser.js",

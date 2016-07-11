@@ -93,7 +93,7 @@ public class CubeDetailExecutor extends SheetExecutor {
         if (session == null) {
             return;
         }
-        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
+        Paging paging = PagingFactory.createPaging(page == BIExcutorConstant.PAGINGTYPE.NONE ? page : BIExcutorConstant.PAGINGTYPE.GROUP100);
         paging.setCurrentPage(page);
 
         DetailExecutor exe = new DetailExecutor(widget, paging, session);

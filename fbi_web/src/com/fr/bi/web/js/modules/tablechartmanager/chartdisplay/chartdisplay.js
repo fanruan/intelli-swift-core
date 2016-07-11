@@ -299,7 +299,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     x_axis_style: BI.Utils.getWSXAxisStyleByID(o.wId),
                     right_y_axis_style: BI.Utils.getWSRightYAxisStyleByID(o.wId),
                     right_y_axis_second_style: BI.Utils.getWSRightYAxis2StyleByID(o.wId),
-                    left_y_axis_number_level: BI.Utils.getWSRightYAxisNumLevelByID(o.wId),
+                    left_y_axis_number_level: BI.Utils.getWSLeftYAxisNumLevelByID(o.wId),
                     number_of_pointer: BI.Utils.getWSNumberOfPointerByID(o.wId),
                     dashboard_number_level: BI.Utils.getWSDashboardNumLevelByID(o.wId),
                     x_axis_number_level: BI.Utils.getWSXAxisNumLevelByID(o.wId),
@@ -328,7 +328,10 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     show_grid_line: BI.Utils.getWSShowGridLineByID(o.wId),
                     show_zoom: BI.Utils.getWSShowZoomByID(o.wId),
                     style_conditions: BI.Utils.getWSDashboardStylesByID(o.wId),
-                    auto_custom: BI.Utils.getWSScaleByID(o.wId)
+                    auto_custom: BI.Utils.getWSScaleByID(o.wId),
+                    theme_color: BI.Utils.getWSThemeColorByID(o.wId),
+                    map_styles: BI.Utils.getWSMapStylesByID(o.wId),
+                    transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId)
                 }, options, {
                     cordon: self.model.getCordon(),
                     tooltip: self.model.getToolTip(type),

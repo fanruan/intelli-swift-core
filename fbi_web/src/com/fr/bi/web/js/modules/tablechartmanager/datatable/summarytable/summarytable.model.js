@@ -142,6 +142,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         op.clickvalue = this.clickValue;
         op.page = this.pageOperator;
         op.status = this.status;
+        op.real_data = true;
+        if(this.status === BICst.WIDGET_STATUS.DETAIL) {
+            op.real_data = BI.Utils.isShowWidgetRealDataByID(this.wId) || false;
+        }
         return op;
     },
 
@@ -614,7 +618,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     }
                 } else if (BI.isNotNull(item.isSum)) {
                     //合计
-                    item.text = BI.i18nText("BI-Summary_Values") + ":" + dName;
+                    item.text = BI.i18nText("BI-Summary_Values") + ":" + BI.Utils.getDimensionNameByID(item.dId);
                     item.cls = "cross-table-target-header";
                     self.header.push(item);
                 } else if (BI.isNotEmptyArray(item.values)) {

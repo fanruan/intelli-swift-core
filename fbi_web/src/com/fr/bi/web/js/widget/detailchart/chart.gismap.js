@@ -46,6 +46,7 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         delete config.legend;
         delete config.zoom;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.dataLabels.useHtml = true;
         config.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">'+ "' + this.name + ','" + "+ this.value +'</div>'; return a;}";
         config.plotOptions.tooltip.shared = true;
         config.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + (point.size || point.y) + '</div>');});return tip; }";

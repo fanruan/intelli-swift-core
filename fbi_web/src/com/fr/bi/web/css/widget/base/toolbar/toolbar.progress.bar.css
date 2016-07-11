@@ -3,5 +3,7 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-progress-bar-bar {
   background: #eaeaea;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
   border-radius: 20px;
 }
