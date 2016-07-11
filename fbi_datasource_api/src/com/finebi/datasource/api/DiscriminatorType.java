@@ -4,7 +4,7 @@ package com.finebi.datasource.api;
 /**
  * Defines supported types of the discriminator column. 
  *
- * @since Java Persistence 1.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public enum DiscriminatorType { 
 

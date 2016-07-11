@@ -70,7 +70,7 @@ public class BIUserTableRelationManager implements Release {
 
     @Override
     public void clear() {
-        // TODO: 16/7/5 åˆ†æå…³è”åªæ˜¾ç¤ºå¯ç”¨å…³è”éœ€æ±‚éœ€è¦ä¿ç•™ä¹‹å‰ç”Ÿæˆè¿‡cubeçš„å…³è”
+        // TODO: 16/7/5 ·ÖÎö¹ØÁªÖ»ÏÔÊ¾¿ÉÓÃ¹ØÁªĞèÇóĞèÒª±£ÁôÖ®Ç°Éú³É¹ıcubeµÄ¹ØÁª
 //        oldAnalyserHandler.clear();
         currentAnalyserHandler.clear();
         tableRelationshipService.clear();
@@ -145,6 +145,7 @@ public class BIUserTableRelationManager implements Release {
             for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
                 try {
                     oldAnalyserHandler.addRelation((BITableRelation) relation.clone());
+                    analysisTableRelationShipService.addBITableRelation(relation);
                 } catch (BIRelationDuplicateException e) {
                     BILogger.getLogger().error(e.getMessage());
                 } catch (CloneNotSupportedException e) {
@@ -176,10 +177,17 @@ public class BIUserTableRelationManager implements Release {
 
     }
 
+    public void analyStatus() {
+        analysieStatus = true;
+    }
+
+    public void confStatus() {
+        analysieStatus = false;
+    }
 
     public Set<BITableRelationPath> getAllPath(BusinessTable juniorTable, BusinessTable primaryTable)
             throws BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
-        return tableRelationshipService.getAllPath(new BITablePair(primaryTable, juniorTable));
+        return choseTableRelationshipService().getAllPath(new BITablePair(primaryTable, juniorTable));
     }
 
     public Set<BITableRelationPath> getAnalysisAllPath(BusinessTable juniorTable, BusinessTable primaryTable)
