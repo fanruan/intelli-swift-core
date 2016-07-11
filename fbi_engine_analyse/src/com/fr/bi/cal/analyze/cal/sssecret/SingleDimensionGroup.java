@@ -19,6 +19,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.cal.NodeResultDealer;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -26,7 +27,9 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.stable.structure.CubeValueEntryNode;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
+import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 
@@ -121,6 +124,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     public void turnOnExecutor() {
+        /*
         Iterator iterator = getIterator();
         if (iterator != null) {
             this.lazyExecutor.initial(this, iterator);
@@ -130,6 +134,22 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             gvi = GVIFactory.createAllEmptyIndexGVI();
             child.setGroupValueIndex(gvi);
             addRootChild(child);
+        }
+        */
+        NodeResultDealer dealer;
+        DimensionCalculator[] dc = new DimensionCalculator[1];
+        dc[0] = column;
+        boolean[] sortType = new boolean[dc.length];
+        for (int i = 0; i < dc.length; i++) {
+            sortType[i] = dc[i].getSortType() != BIReportConstant.SORT.DESC;
+        }
+        dealer = BIServerUtils.createAllCalDimensonDealer(dc, null, sortType, loader);
+        CubeValueEntryNode calRootNode = new CubeValueEntryNode();
+        dealer.dealWithNode(root.getGroupValueIndex(), calRootNode);
+        CubeValueEntryNode[] calChildNodes = calRootNode.getChildren();
+        for(CubeValueEntryNode calChildNode : calChildNodes){
+            NewRootNodeChild nrnc = new NewDiskBaseRootNodeChild(column, calChildNode.getT(), calChildNode.getGvi());
+            addNodeChild(nrnc);
         }
     }
 
@@ -365,7 +385,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     protected MemNode getMemNodeByWait(int row) {
-        waitExecutor(row);
+//        waitExecutor(row);
         MemNode child = getMemChild(row);
         if (child == null) {
             if (row == 0) {
