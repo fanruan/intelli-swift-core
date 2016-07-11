@@ -22,6 +22,7 @@ import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -84,8 +85,10 @@ public class BICubeConfManager {
             String userName = UserControl.getInstance().getUser(userId).getUsername();
             BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(loginField));
             BITableRelationPath firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userId, ck.getTableBelongTo(), field.getTableBelongTo());
-            List<BITableRelation> relations;
-            relations = firstPath.getAllRelations();
+            List<BITableRelation> relations = new ArrayList<BITableRelation>();
+            if(firstPath != null) {
+                relations = firstPath.getAllRelations();
+            }
             BIKey userNameIndex = new IndexKey(field.getFieldName());
             if (userNameIndex != null) {
                 final ConnectionRowGetter getter = DirectTableConnectionFactory.createConnectionRow(BIConfUtils.convert2TableSourceRelation(relations), loader);
