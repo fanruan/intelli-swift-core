@@ -57,7 +57,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
     },
 
     _rebuildItems :function(){
-        var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
+        var items = BI.DimensionNumberCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
         if(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP){
         }else{
             var group = this._assertGroup(BI.Utils.getDimensionGroupByID(o.dId));
@@ -117,7 +117,8 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             }, {
                 text: BI.i18nText("BI-Custom_Sort_Dot"),
                 value: BICst.DIMENSION_NUMBER_COMBO.SORT_BY_CUSTOM,
-                cls: "dot-e-font"
+                cls: "dot-e-font",
+                warningTitle: BI.i18nText("BI-Same_Value_Group")
             }],
             [{
                 text: BI.i18nText("BI-Same_Value_A_Group"),
