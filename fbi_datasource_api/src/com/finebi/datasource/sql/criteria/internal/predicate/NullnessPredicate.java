@@ -49,7 +49,7 @@ public class NullnessPredicate
 
     @Override
     public Object render(boolean isNegated, RenderingContext renderingContext) {
-        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getNullnessPredicateLiteralRender(this, "defaultTag");
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getNullnessPredicateRender(this, "defaultTag");
         if (isNegated) {
             renderExtended.negate();
         }

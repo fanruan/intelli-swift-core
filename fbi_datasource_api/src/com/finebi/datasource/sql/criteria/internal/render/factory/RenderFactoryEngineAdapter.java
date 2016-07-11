@@ -9,8 +9,7 @@ import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
 import com.finebi.datasource.sql.criteria.internal.path.RootImpl;
 import com.finebi.datasource.sql.criteria.internal.predicate.*;
 import com.finebi.datasource.sql.criteria.internal.render.RenderExtended;
-import com.finebi.datasource.sql.criteria.internal.render.engine.AbstractPathEngineRender;
-import com.finebi.datasource.sql.criteria.internal.render.engine.QueryStructureRenderFineEngine;
+import com.finebi.datasource.sql.criteria.internal.render.engine.*;
 
 /**
  * This class created on 2016/7/4.
@@ -60,7 +59,7 @@ public class RenderFactoryEngineAdapter implements RenderFactory {
 
     @Override
     public Object getLiteralExpressionLiteralRender(LiteralExpression literalExpression, String driverTag) {
-        return null;
+        return new LiteralExpressionEngineRender(literalExpression);
     }
 
     @Override
@@ -99,62 +98,62 @@ public class RenderFactoryEngineAdapter implements RenderFactory {
     }
 
     @Override
-    public Object getBetweenPredicateLiteralRender(BetweenPredicate betweenPredicate, String driverTag) {
+    public Object getBetweenPredicateRender(BetweenPredicate betweenPredicate, String driverTag) {
+        return new BetweenPredicateEngineRender(betweenPredicate);
+    }
+
+    @Override
+    public Object getComparisonPredicateRender(ComparisonPredicate comparisonPredicate, String driverTag) {
+        return new ComparisonPredicateFineEngineRender(comparisonPredicate);
+    }
+
+    @Override
+    public Object getBooleanAssertionPredicateRender(BooleanAssertionPredicate booleanAssertionPredicate, String driverTag) {
         return null;
     }
 
     @Override
-    public Object getComparisonPredicateLiteralRender(ComparisonPredicate comparisonPredicate, String driverTag) {
+    public Object getBooleanExpressionPredicateRender(BooleanExpressionPredicate booleanExpressionPredicate, String driverTag) {
         return null;
     }
 
     @Override
-    public Object getBooleanAssertionPredicateLiteralRender(BooleanAssertionPredicate booleanAssertionPredicate, String driverTag) {
+    public Object getBooleanStaticAssertionPredicateRender(BooleanStaticAssertionPredicate booleanStaticAssertionPredicate, String driverTag) {
         return null;
     }
 
     @Override
-    public Object getBooleanExpressionPredicateLiteralRender(BooleanExpressionPredicate booleanExpressionPredicate, String driverTag) {
+    public Object getCompoundPredicateRender(CompoundPredicate compoundPredicate, String driverTag) {
         return null;
     }
 
     @Override
-    public Object getBooleanStaticAssertionPredicateLiteralRender(BooleanStaticAssertionPredicate booleanStaticAssertionPredicate, String driverTag) {
+    public Object getExistsPredicateRender(ExistsPredicate existsPredicate, String driverTag) {
         return null;
     }
 
     @Override
-    public Object getCompoundPredicateLiteralRender(CompoundPredicate compoundPredicate, String driverTag) {
+    public Object getExplicitTruthValueCheckRender(ExplicitTruthValueCheck explicitTruthValueCheck, String driverTag) {
         return null;
     }
 
     @Override
-    public Object getExistsPredicateLiteralRender(ExistsPredicate existsPredicate, String driverTag) {
+    public Object getInPredicateRender(InPredicate inPredicate, String driverTag) {
+        return new InPredicateEngineRender(inPredicate);
+    }
+
+    @Override
+    public Object getLikePredicateRender(LikePredicate likePredicate, String driverTag) {
+        return new LikePredicateEngineRender(likePredicate);
+    }
+
+    @Override
+    public Object getNegatedPredicateRender(NegatedPredicateWrapper negatedPredicateWrapper, String driverTag) {
         return null;
     }
 
     @Override
-    public Object getExplicitTruthValueCheckLiteralRender(ExplicitTruthValueCheck explicitTruthValueCheck, String driverTag) {
-        return null;
-    }
-
-    @Override
-    public Object getInPredicateLiteralRender(InPredicate inPredicate, String driverTag) {
-        return null;
-    }
-
-    @Override
-    public Object getLikePredicateLiteralRender(LikePredicate likePredicate, String driverTag) {
-        return null;
-    }
-
-    @Override
-    public Object getNegatedPredicateLiteralRender(NegatedPredicateWrapper negatedPredicateWrapper, String driverTag) {
-        return null;
-    }
-
-    @Override
-    public Object getNullnessPredicateLiteralRender(NullnessPredicate nullnessPredicate, String driverTag) {
+    public Object getNullnessPredicateRender(NullnessPredicate nullnessPredicate, String driverTag) {
         return null;
     }
 

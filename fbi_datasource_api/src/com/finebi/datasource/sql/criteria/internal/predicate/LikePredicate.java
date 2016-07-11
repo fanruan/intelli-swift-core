@@ -104,7 +104,7 @@ public class LikePredicate extends AbstractSimplePredicate implements Serializab
 
     @Override
     public Object render(boolean isNegated, RenderingContext renderingContext) {
-        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getLikePredicateLiteralRender(this, "defaultTag");
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getLikePredicateRender(this, "defaultTag");
         if (isNegated) {
             renderExtended.negate();
         }

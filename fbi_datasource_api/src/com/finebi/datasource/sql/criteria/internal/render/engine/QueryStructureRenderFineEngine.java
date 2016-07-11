@@ -2,6 +2,7 @@ package com.finebi.datasource.sql.criteria.internal.render.engine;
 
 import com.finebi.datasource.api.criteria.Root;
 import com.finebi.datasource.sql.criteria.internal.QueryStructure;
+import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.path.AbstractPathImpl;
 import com.fr.fineengine.criterion.*;
@@ -53,10 +54,17 @@ public class QueryStructureRenderFineEngine extends BasicEngineRender<QueryStruc
         if (roots.size() == 1) {
             builder.setEntry(renderFrom(renderingContext));
             builder.setProjections(renderSelection(renderingContext));
+            List<Condition> conditions = new ArrayList<Condition>();
+            conditions.add(renderWhere(renderingContext));
+            builder.setConditions(conditions);
             builder.setSummaryInfo(renderSummaryInfo(renderingContext));
             return builder.build();
         }
         throw new UnsupportedOperationException();
+    }
+
+    private Condition renderWhere(RenderingContext renderingContext) {
+        return (Condition) ((Renderable) getDelegate().getRestriction()).render(renderingContext);
     }
 
     private SummaryInfo renderSummaryInfo(RenderingContext renderingContext) {
@@ -93,9 +101,6 @@ public class QueryStructureRenderFineEngine extends BasicEngineRender<QueryStruc
         return projections;
     }
 
-    private void renderWhere(RenderingContext renderingContext) {
-
-    }
 
     private ValueTypes covert(Class javaType) {
         if (Integer.class.isAssignableFrom(javaType)) {

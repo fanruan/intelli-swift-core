@@ -89,7 +89,7 @@ public class NegatedPredicateWrapper extends ExpressionImpl<Boolean> implements 
 
     @Override
     public Object render(boolean isNegated, RenderingContext renderingContext) {
-        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getNegatedPredicateLiteralRender(this, "defaultTag");
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getNegatedPredicateRender(this, "defaultTag");
         if (isNegated) {
             renderExtended.negate();
         }

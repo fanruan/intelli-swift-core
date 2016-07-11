@@ -66,7 +66,7 @@ public class BetweenPredicate<Y>
 
     @Override
     public Object render(boolean isNegated, RenderingContext renderingContext) {
-        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getBetweenPredicateLiteralRender(this, "defaultTag");
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getBetweenPredicateRender(this, "defaultTag");
         if (isNegated) {
             renderExtended.negate();
         }

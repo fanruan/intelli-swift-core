@@ -47,7 +47,7 @@ public class ExplicitTruthValueCheck
 
     @Override
     public Object render(boolean isNegated, RenderingContext renderingContext) {
-        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getExplicitTruthValueCheckLiteralRender(this, "defaultTag");
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getExplicitTruthValueCheckRender(this, "defaultTag");
         if (isNegated) {
             renderExtended.negate();
         }

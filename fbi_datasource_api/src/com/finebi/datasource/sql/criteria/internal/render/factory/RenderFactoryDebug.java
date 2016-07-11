@@ -43,62 +43,62 @@ public class RenderFactoryDebug implements RenderFactory<LiteralRender> {
     }
 
     @Override
-    public LiteralRender getBetweenPredicateLiteralRender(BetweenPredicate betweenPredicate, String driverTag) {
+    public LiteralRender getBetweenPredicateRender(BetweenPredicate betweenPredicate, String driverTag) {
         return new BetweenPredicateLiteralRender(betweenPredicate);
     }
 
     @Override
-    public LiteralRender getComparisonPredicateLiteralRender(ComparisonPredicate comparisonPredicate, String driverTag) {
+    public LiteralRender getComparisonPredicateRender(ComparisonPredicate comparisonPredicate, String driverTag) {
         return new ComparisonPredicateLiteralRender(comparisonPredicate);
     }
 
     @Override
-    public LiteralRender getBooleanAssertionPredicateLiteralRender(BooleanAssertionPredicate booleanAssertionPredicate, String driverTag) {
+    public LiteralRender getBooleanAssertionPredicateRender(BooleanAssertionPredicate booleanAssertionPredicate, String driverTag) {
         return new BooleanAssertionPredicateLiteralRender(booleanAssertionPredicate);
     }
 
     @Override
-    public LiteralRender getBooleanExpressionPredicateLiteralRender(BooleanExpressionPredicate booleanExpressionPredicate, String driverTag) {
+    public LiteralRender getBooleanExpressionPredicateRender(BooleanExpressionPredicate booleanExpressionPredicate, String driverTag) {
         return new BooleanExpressionPredicateLiteralRender(booleanExpressionPredicate);
     }
 
     @Override
-    public LiteralRender getBooleanStaticAssertionPredicateLiteralRender(BooleanStaticAssertionPredicate booleanStaticAssertionPredicate, String driverTag) {
+    public LiteralRender getBooleanStaticAssertionPredicateRender(BooleanStaticAssertionPredicate booleanStaticAssertionPredicate, String driverTag) {
         return new BooleanStaticAssertionPredicateLiteralRender(booleanStaticAssertionPredicate);
     }
 
     @Override
-    public LiteralRender getCompoundPredicateLiteralRender(CompoundPredicate compoundPredicate, String driverTag) {
+    public LiteralRender getCompoundPredicateRender(CompoundPredicate compoundPredicate, String driverTag) {
         return new CompoundPredicateLiteralRender(compoundPredicate);
     }
 
     @Override
-    public LiteralRender getExistsPredicateLiteralRender(ExistsPredicate existsPredicate, String driverTag) {
+    public LiteralRender getExistsPredicateRender(ExistsPredicate existsPredicate, String driverTag) {
         return new ExistsPredicateLiteralRender(existsPredicate);
     }
 
     @Override
-    public LiteralRender getExplicitTruthValueCheckLiteralRender(ExplicitTruthValueCheck explicitTruthValueCheck, String driverTag) {
+    public LiteralRender getExplicitTruthValueCheckRender(ExplicitTruthValueCheck explicitTruthValueCheck, String driverTag) {
         return new ExplicitTruthValueCheckLiteralRender(explicitTruthValueCheck);
     }
 
     @Override
-    public LiteralRender getInPredicateLiteralRender(InPredicate inPredicate, String driverTag) {
+    public LiteralRender getInPredicateRender(InPredicate inPredicate, String driverTag) {
         return new InPredicateLiteralRender(inPredicate);
     }
 
     @Override
-    public LiteralRender getLikePredicateLiteralRender(LikePredicate likePredicate, String driverTag) {
+    public LiteralRender getLikePredicateRender(LikePredicate likePredicate, String driverTag) {
         return new LikePredicateLiteralRender(likePredicate);
     }
 
     @Override
-    public LiteralRender getNegatedPredicateLiteralRender(NegatedPredicateWrapper negatedPredicateWrapper, String driverTag) {
+    public LiteralRender getNegatedPredicateRender(NegatedPredicateWrapper negatedPredicateWrapper, String driverTag) {
         return new NegatedPredicateLiteralRender(negatedPredicateWrapper);
     }
 
     @Override
-    public LiteralRender getNullnessPredicateLiteralRender(NullnessPredicate nullnessPredicate, String driverTag) {
+    public LiteralRender getNullnessPredicateRender(NullnessPredicate nullnessPredicate, String driverTag) {
         return new NullnessPredicateLiteralRender(nullnessPredicate);
     }
 

@@ -102,7 +102,7 @@ public class ComparisonPredicate
      * Defines the comparison operators.  We could also get away with
      * only 3 and use negation...
      */
-    public static enum ComparisonOperator {
+    public enum ComparisonOperator {
         EQUAL {
             public ComparisonOperator negated() {
                 return NOT_EQUAL;
@@ -166,7 +166,7 @@ public class ComparisonPredicate
 
     @Override
     public Object render(boolean isNegated, RenderingContext renderingContext) {
-        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getComparisonPredicateLiteralRender(this, "defaultTag");
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getComparisonPredicateRender(this, "defaultTag");
         if (isNegated) {
             renderExtended.negate();
         }

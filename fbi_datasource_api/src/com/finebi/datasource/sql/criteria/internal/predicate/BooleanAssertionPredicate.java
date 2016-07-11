@@ -49,7 +49,7 @@ public class BooleanAssertionPredicate
 
     @Override
     public Object render(boolean isNegated, RenderingContext renderingContext) {
-        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getBooleanAssertionPredicateLiteralRender(this, "defaultTag");
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getBooleanAssertionPredicateRender(this, "defaultTag");
         if (isNegated) {
             renderExtended.negate();
         }

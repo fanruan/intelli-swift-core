@@ -107,7 +107,7 @@ public class CompoundPredicate
 
     @Override
     public Object render(boolean isNegated, RenderingContext renderingContext) {
-        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getCompoundPredicateLiteralRender(this, "defaultTag");
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getCompoundPredicateRender(this, "defaultTag");
         if (isNegated) {
             renderExtended.negate();
         }

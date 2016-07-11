@@ -142,7 +142,7 @@ public class InPredicate<T>
 
     @Override
     public Object render(boolean isNegated, RenderingContext renderingContext) {
-        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getInPredicateLiteralRender(this, "defaultTag");
+        RenderExtended renderExtended = (RenderExtended) renderingContext.getRenderFactory().getInPredicateRender(this, "defaultTag");
         if (isNegated) {
             renderExtended.negate();
         }

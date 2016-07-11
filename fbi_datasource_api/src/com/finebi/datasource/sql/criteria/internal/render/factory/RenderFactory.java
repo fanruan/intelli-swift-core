@@ -28,30 +28,29 @@ public interface RenderFactory<R> {
 
     R getPathTypeExpressionRender(PathTypeExpression pathTypeExpression, String driverTag);
 
-    R getBetweenPredicateLiteralRender(BetweenPredicate betweenPredicate, String driverTag);
+    R getBetweenPredicateRender(BetweenPredicate betweenPredicate, String driverTag);
 
-    R getComparisonPredicateLiteralRender(ComparisonPredicate comparisonPredicate, String driverTag);
+    R getComparisonPredicateRender(ComparisonPredicate comparisonPredicate, String driverTag);
 
-    R getBooleanAssertionPredicateLiteralRender(BooleanAssertionPredicate booleanAssertionPredicate, String driverTag);
+    R getBooleanAssertionPredicateRender(BooleanAssertionPredicate booleanAssertionPredicate, String driverTag);
 
-    R getBooleanExpressionPredicateLiteralRender(BooleanExpressionPredicate booleanExpressionPredicate, String driverTag);
+    R getBooleanExpressionPredicateRender(BooleanExpressionPredicate booleanExpressionPredicate, String driverTag);
 
-    R getBooleanStaticAssertionPredicateLiteralRender(BooleanStaticAssertionPredicate booleanStaticAssertionPredicate, String driverTag);
+    R getBooleanStaticAssertionPredicateRender(BooleanStaticAssertionPredicate booleanStaticAssertionPredicate, String driverTag);
 
-    R getCompoundPredicateLiteralRender(CompoundPredicate compoundPredicate, String driverTag);
+    R getCompoundPredicateRender(CompoundPredicate compoundPredicate, String driverTag);
 
-    R getExistsPredicateLiteralRender(ExistsPredicate existsPredicate, String driverTag);
+    R getExistsPredicateRender(ExistsPredicate existsPredicate, String driverTag);
 
-    R getExplicitTruthValueCheckLiteralRender(ExplicitTruthValueCheck explicitTruthValueCheck, String driverTag);
+    R getExplicitTruthValueCheckRender(ExplicitTruthValueCheck explicitTruthValueCheck, String driverTag);
 
-    R getInPredicateLiteralRender(InPredicate inPredicate, String driverTag);
+    R getInPredicateRender(InPredicate inPredicate, String driverTag);
 
-    R getLikePredicateLiteralRender(LikePredicate likePredicate, String driverTag);
+    R getLikePredicateRender(LikePredicate likePredicate, String driverTag);
 
+    R getNegatedPredicateRender(NegatedPredicateWrapper negatedPredicateWrapper, String driverTag);
 
-    R getNegatedPredicateLiteralRender(NegatedPredicateWrapper negatedPredicateWrapper, String driverTag);
-
-    R getNullnessPredicateLiteralRender(NullnessPredicate nullnessPredicate, String driverTag);
+    R getNullnessPredicateRender(NullnessPredicate nullnessPredicate, String driverTag);
 
     R getCriteriaQueryLiteralRender(CriteriaQueryImpl criteriaQuery, String driverTag);
 
