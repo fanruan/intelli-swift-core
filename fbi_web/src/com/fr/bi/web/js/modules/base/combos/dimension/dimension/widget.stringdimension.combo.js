@@ -23,6 +23,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
         POSITION_BY_LAT: BICst.DIMENSION_STRING_COMBO.LAT
     },
 
+
     defaultItems: function () {
         return [
             [{
@@ -91,37 +92,6 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             var group = this._assertGroup(BI.Utils.getDimensionGroupByID(o.dId));
             var customSort = items[0][this.constants.customSortPos];
             group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
-        }
-        switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId))) {
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.ACCUMULATE_AXIS:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-            case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.FALL_AXIS:
-            case BICst.WIDGET.LINE:
-            case BICst.WIDGET.AREA:
-            case BICst.WIDGET.ACCUMULATE_AREA:
-            case BICst.WIDGET.COMPARE_AREA:
-            case BICst.WIDGET.RANGE_AREA:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-            case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
-                    BI.removeAt(items, this.constants.CordonPos);
-                }
-                break;
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.COMPARE_BAR:
-                items[this.constants.CordonPos][0].text = BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") +")";
-                if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
-                    BI.removeAt(items, this.constants.CordonPos);
-                }
-                break;
-            default:
-                BI.removeAt(items, this.constants.CordonPos);
-                break;
-
         }
         return items;
     },
