@@ -152,7 +152,7 @@ public class DimensionGroupFilter {
     private List<DimensionFilter> getDimensionTraverseResultFilters(int deep) {
         List<DimensionFilter> filterList = new ArrayList<DimensionFilter>();
         DimensionFilter filter = rowDimension[deep].getFilter();
-        if (isNormalResultFilter(filter)) {
+        if (filter != null && isNormalResultFilter(filter)) {
             filterList.add(filter);
         }
         return AddTargetFilters(filterList, deep);
