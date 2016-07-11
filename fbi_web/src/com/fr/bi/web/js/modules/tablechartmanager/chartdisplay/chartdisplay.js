@@ -286,7 +286,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 var dimensionIds = BI.Utils.getAllDimDimensionIDs(o.wId);
                 var lnglat = BI.Utils.getDimensionPositionByID(dimensionIds[0]);
 
-                var op = BI.extend({
+                var op = BI.extend(options, {
                     chart_color: BI.Utils.getWSChartColorByID(o.wId),
                     chart_style: BI.Utils.getWSChartStyleByID(o.wId),
                     chart_line_type: BI.Utils.getWSChartLineTypeByID(o.wId),
@@ -332,7 +332,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     theme_color: BI.Utils.getWSThemeColorByID(o.wId),
                     map_styles: BI.Utils.getWSMapStylesByID(o.wId),
                     transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId)
-                }, options, {
+                }, {
                     cordon: self.model.getCordon(),
                     tooltip: self.model.getToolTip(type),
                     lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
