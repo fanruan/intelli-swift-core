@@ -3,8 +3,6 @@ package com.finebi.datasource.api.criteria;
 
 
 import com.finebi.datasource.api.metamodel.Bindable;
-import com.finebi.datasource.api.metamodel.MapAttribute;
-import com.finebi.datasource.api.metamodel.PluralAttribute;
 import com.finebi.datasource.api.metamodel.SingularAttribute;
 
 /**
@@ -38,21 +36,7 @@ public interface Path<X> extends Expression<X> {
      */
     <Y> Path<Y> get(SingularAttribute<? super X, Y> attribute);
 
-    /**
-     *  Create a path corresponding to the referenced 
-     *  collection-valued attribute.
-     *  @param collection collection-valued attribute
-     *  @return expression corresponding to the referenced attribute
-     */
-    <E, C extends java.util.Collection<E>> Expression<C> get(PluralAttribute<X, C, E> collection);
 
-    /**
-     *  Create a path corresponding to the referenced 
-     *  map-valued attribute.
-     *  @param map map-valued attribute
-     *  @return expression corresponding to the referenced attribute
-     */
-    <K, V, M extends java.util.Map<K, V>> Expression<M> get(MapAttribute<X, K, V> map);
 
     /**
      *  Create an expression corresponding to the type of the path.
