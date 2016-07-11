@@ -403,14 +403,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var o = this.options;
         switch (type) {
             case BICst.WIDGET.SCATTER:
-                if(this.targetIds < 2){
+                if(this.targetIds.length < 2){
                     return "";
                 }else{
                     return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) +":'+ this.x +'</div><div>(Y)"
                         + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div>'}";
                 }
             case BICst.WIDGET.BUBBLE:
-                if(this.targetIds < 3){
+                if(this.targetIds.length < 3){
                     return "";
                 }else{
                     return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) +":'+ this.x +'</div><div>(Y)"
@@ -629,7 +629,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: obj.dId || this.dimIds[0],
-                    value: [obj.category]
+                    value: [obj.value || obj.x]
                 }];
                 break;
             case BICst.WIDGET.MAP:
