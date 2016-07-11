@@ -2273,7 +2273,7 @@ Data.Utils = {
                     case constants.LEFT_AXIS:
                         axis.reversed = config.left_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
-                        formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
                         axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -2283,7 +2283,7 @@ Data.Utils = {
                     case constants.RIGHT_AXIS:
                         axis.reversed = config.right_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
-                        formatNumberLevelInYaxis(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
                         axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -2293,7 +2293,7 @@ Data.Utils = {
                     case constants.RIGHT_AXIS_SECOND:
                         axis.reversed = config.right_y_axis_second_reversed;
                         axis.formatter = formatTickInXYaxis(config.right_y_axis_second_style, constants.RIGHT_AXIS_SECOND);
-                        formatNumberLevelInYaxis(config.right_y_axis_second_number_level, constants.RIGHT_AXIS_SECOND);
+                        formatNumberLevelInYaxis(config.right_y_axis_second_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.right_y_axis_second_number_level, constants.RIGHT_AXIS_SECOND);
                         axis.title.text = config.show_right_y_axis_second_title === true ? config.right_y_axis_second_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -3778,7 +3778,7 @@ Data.Utils = {
                     case constants.LEFT_AXIS:
                         axis.reversed = config.left_y_axis_reversed ? !axis.reversed : axis.reversed;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
-                        formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
                         axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -3787,7 +3787,7 @@ Data.Utils = {
                     case constants.RIGHT_AXIS:
                         axis.reversed = config.right_y_axis_reversed ? !axis.reversed : axis.reversed;
                         axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
-                        formatNumberLevelInYaxis(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
                         axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -4328,7 +4328,7 @@ Data.Utils = {
                     case constants.LEFT_AXIS:
                         axis.reversed = config.left_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
-                        formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
                         axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -4337,7 +4337,7 @@ Data.Utils = {
                     case constants.RIGHT_AXIS:
                         axis.reversed = config.right_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
-                        formatNumberLevelInYaxis(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
                         axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -4604,7 +4604,7 @@ Data.Utils = {
                     case constants.LEFT_AXIS:
                         axis.reversed = config.left_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
-                        formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
                         axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -4613,7 +4613,7 @@ Data.Utils = {
                     case constants.RIGHT_AXIS:
                         axis.reversed = config.right_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
-                        formatNumberLevelInYaxis(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
                         axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -5223,7 +5223,7 @@ Data.Utils = {
                     case constants.LEFT_AXIS:
                         axis.reversed = config.left_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
-                        formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
                         axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -5232,7 +5232,7 @@ Data.Utils = {
                     case constants.RIGHT_AXIS:
                         axis.reversed = config.right_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
-                        formatNumberLevelInYaxis(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
                         axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -5509,7 +5509,7 @@ Data.Utils = {
                     case constants.LEFT_AXIS:
                         axis.reversed = config.left_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
-                        formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
                         axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
@@ -5518,7 +5518,7 @@ Data.Utils = {
                     case constants.RIGHT_AXIS:
                         axis.reversed = config.right_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
-                        formatNumberLevelInYaxis(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
                         axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
