@@ -1,5 +1,29 @@
 //放置用户可以配置的常量
 
+BICst.CONFIG = {
+    SHOW_DASHBOARD_TITLE: true
+};
+
+//布局方式
+BICst.DASHBOARD_LAYOUT_ARRAY = [{
+    text: BI.i18nText("BI-Adaptive_Layout"), value: BICst.DASHBOARD_LAYOUT_ADAPT
+}, {
+    text: BI.i18nText("BI-Free_Layout"), value: BICst.DASHBOARD_LAYOUT_FREE
+}];
+
+//类型&数据/样式tab
+BICst.DETAIL_DATA_STYLE_TAB = [{
+    text: BI.i18nText("BI-Type_Data"), value: BICst.DETAIL_TAB_TYPE_DATA
+}, {
+    text: BI.i18nText("BI-Style"), value: BICst.DETAIL_TAB_STYLE
+}];
+
+//业务包字段/复用
+BICst.DETAIL_FIELD_REUSE_TAB = [{
+    text: BI.i18nText("BI-Package_Field"), value: BICst.DETAIL_PACKAGES_FIELD
+}, {
+    text: BI.i18nText("BI-Reuse_Field"), value: BICst.DETAIL_DIMENSION_REUSE
+}];
 //dashboard toolbar
 BICst.DASHBOARD_TOOLBAR = [{
     text: BI.i18nText('BI-Save_As'),
@@ -1110,7 +1134,7 @@ BICst.CHART_SCALE_SETTING = [{
     text: BI.i18nText("BI-Auto"),
     value: BICst.SCALE_SETTING.AUTO
 }, {
-    text:　BI.i18nText("BI-Custom"),
+    text: BI.i18nText("BI-Custom"),
     value: BICst.SCALE_SETTING.CUSTOM
 }];
 
@@ -1154,7 +1178,7 @@ BICst.DEFAULT_CHART_SETTING = {
     right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    number_of_pointer:BICst.POINTER.ONE,
+    number_of_pointer: BICst.POINTER.ONE,
     dashboard_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     x_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
@@ -1191,7 +1215,7 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         clasemax: false
     },
     color: "#65B3EE"
-} , {
+}, {
     range: {
         min: 100,
         max: 200,
@@ -1199,7 +1223,7 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         clasemax: false
     },
     color: "#95E1AA"
-} , {
+}, {
     range: {
         min: 200,
         max: 300,
@@ -1217,7 +1241,7 @@ BICst.MAP_STYLE_CONDITIONS = [{
         clasemax: false
     },
     color: "#09ABE9"
-} , {
+}, {
     range: {
         min: 100,
         max: 200,
@@ -1225,7 +1249,7 @@ BICst.MAP_STYLE_CONDITIONS = [{
         clasemax: false
     },
     color: "#09ABE9"
-} , {
+}, {
     range: {
         min: 200,
         max: 300,
@@ -1233,7 +1257,7 @@ BICst.MAP_STYLE_CONDITIONS = [{
         clasemax: true
     },
     color: "#09ABE9"
-} , {
+}, {
     range: {
         min: 300,
         max: 400,
@@ -1241,7 +1265,7 @@ BICst.MAP_STYLE_CONDITIONS = [{
         clasemax: true
     },
     color: "#09ABE9"
-} , {
+}, {
     range: {
         min: 400,
         max: 500,

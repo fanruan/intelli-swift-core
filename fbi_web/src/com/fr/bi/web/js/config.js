@@ -15,4 +15,6 @@ $(function () {
             return ob;
         }
     });
+
+    BICst.CONFIG.SHOW_DASHBOARD_TITLE = true;
 });
