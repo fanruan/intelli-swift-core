@@ -7,8 +7,8 @@ Data.Utils = {
      * @returns {{types: Array, data: [], options: {}}} 转化后的图表类型信息,对应的数据信息,配置信息
      */
     convertDataToChartData: function(data, widget, op){
-        var res = this.getWidgetData(data, widget, op);
-        return this.converDataForDetailChart(widget.type, res.data, res.options, res.types);
+        var res = this.convertDataToWidgetData(data, widget, op);
+        return this.convertWidgetDataToChartData(widget.type, res.data, res.options, res.types);
     },
 
     /**
@@ -17,7 +17,7 @@ Data.Utils = {
      * @param widget 组件信息
      * @returns {{types: Array, data: [], options: {}}} 转化后的图表类型信息,对应的数据信息,配置信息
      */
-    getWidgetData: function(data, widget, op){
+    convertDataToWidgetData: function(data, widget, op){
         var options = {};
         var type = widget.type;
         var dimsInfo = refreshDimsInfo();
@@ -89,52 +89,7 @@ Data.Utils = {
         return {
             types: types,
             data: data,
-            options: BI.extend({
-                chart_color: ws.chart_color,
-                chart_style: ws.chart_style,
-                chart_line_type: ws.chart_line_type,
-                chart_pie_type: ws.chart_pie_type,
-                chart_radar_type: ws.chart_radar_type,
-                chart_dashboard_type: ws.chart_dashboard_type,
-                chart_inner_radius: ws.chart_inner_radius,
-                chart_total_angle: ws.chart_total_angle,
-                left_y_axis_style: ws.left_y_axis_style,
-                x_axis_style: ws.x_axis_style,
-                right_y_axis_style: ws.right_y_axis_style,
-                right_y_axis_second_style: ws.right_y_axis_second_style,
-                left_y_axis_number_level: ws.left_y_axis_number_level,
-                number_of_pointer: ws.number_of_pointer,
-                dashboard_number_level: ws.dashboard_number_level,
-                x_axis_number_level: ws.x_axis_number_level,
-                right_y_axis_number_level: ws.right_y_axis_number_level,
-                right_y_axis_second_number_level: ws.right_y_axis_second_number_level,
-                left_y_axis_unit: ws.left_y_axis_unit,
-                dashboard_unit: ws.dashboard_unit,
-                x_axis_unit: ws.x_axis_unit,
-                right_y_axis_unit: ws.right_y_axis_unit,
-                right_y_axis_second_unit: ws.right_y_axis_second_unit,
-                show_left_y_axis_title: ws.show_left_y_axis_title,
-                show_right_y_axis_title: ws.show_right_y_axis_title,
-                show_right_y_axis_second_title: ws.show_right_y_axis_second_title,
-                left_y_axis_title: ws.left_y_axis_title,
-                right_y_axis_title: ws.right_y_axis_title,
-                right_y_axis_second_title: ws.right_y_axis_second_title,
-                left_y_axis_reversed: ws.left_y_axis_reversed,
-                right_y_axis_reversed: ws.right_y_axis_reversed,
-                right_y_axis_second_reversed: ws.right_y_axis_second_reversed,
-                show_x_axis_title: ws.show_x_axis_title,
-                x_axis_title: ws.x_axis_title,
-                text_direction: ws.text_direction,
-                chart_legend: ws.chart_legend,
-                show_data_label: ws.show_data_label,
-                show_data_table: ws.show_data_table,
-                show_grid_line: ws.show_data_table,
-                show_zoom: ws.show_zoom,
-                style_conditions: ws.style_conditions,
-                auto_custom: ws.auto_custom,
-                theme_color: ws.theme_color,
-                map_styles: ws.map_styles,
-                transfer_filter: ws.transfer_filter,
+            options: BI.extend(ws, {
                 click: click
             }, options, {
                 cordon: getCordon(),
@@ -612,7 +567,6 @@ Data.Utils = {
             var dId = [], clicked = [];
             switch (widget.type) {
                 case BICst.WIDGET.BUBBLE:
-                case BICst.WIDGET.FORCE_BUBBLE:
                 case BICst.WIDGET.SCATTER:
                     dId = obj.targetIds;
                     clicked = [{
@@ -720,7 +674,7 @@ Data.Utils = {
         }
     },
 
-    converDataForDetailChart: function(type, data, options, types){
+    convertWidgetDataToChartData: function(type, data, options, types){
         options || (options = {});
         var constants = ChartConstants();
         var config = {
@@ -5781,7 +5735,7 @@ Data.Utils = {
             var result = [];
             var yAxisIndex = 0;
             BI.each(items, function (i, belongAxisItems) {
-                var combineItems = combineItems(types[i], belongAxisItems);
+                var combineItems = combineChildItems(types[i], belongAxisItems);
                 BI.each(combineItems, function (j, axisItems) {
                     if (BI.isArray(axisItems)) {
                         result = BI.concat(result, axisItems);
@@ -5799,7 +5753,7 @@ Data.Utils = {
             };
             return [result, config];
 
-            function combineItems(types, items){
+            function combineChildItems(types, items){
                 var calItems = BI.values(items);
                 return BI.map(calItems, function(idx, item){
                     return formatChildItem(types[idx], item);
