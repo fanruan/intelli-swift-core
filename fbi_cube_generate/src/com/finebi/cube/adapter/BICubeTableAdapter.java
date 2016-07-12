@@ -30,6 +30,7 @@ import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.GeneralUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -304,7 +305,7 @@ public class BICubeTableAdapter implements ICubeTableService {
             int i = 0;
             while (iter.hasNext() && i < groupLimit) {
                 Map.Entry entry = (Map.Entry) iter.next();
-                m.put(entry.getKey(), entry.getValue());
+                m.put(GeneralUtils.objectToString(entry.getKey()), entry.getValue());
                 i++;
             }
             return m;
