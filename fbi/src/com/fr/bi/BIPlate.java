@@ -73,13 +73,11 @@ public class BIPlate extends AbstractFSPlate {
         BICubeManagerProvider markedObject = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
         loadMemoryData();
         /*若发现cube需要更新的话,更新cube*/
-        BICubeConfigureCenter.getPackageManager().startBuildingCube((UserControl.getInstance().getSuperManagerID()));
         BIConfigureManagerCenter.getLogManager().logStart(UserControl.getInstance().getSuperManagerID());
         if (CubeRunner.isIncremental(UserControl.getInstance().getSuperManagerID())) {
 //            if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
             markedObject.generateCubes();
         }
-        BICubeConfigureCenter.getPackageManager().startBuildingCube((UserControl.getInstance().getSuperManagerID()));
         BIConfigureManagerCenter.getLogManager().logEnd(UserControl.getInstance().getSuperManagerID());
         addBITableColumn4NewConnection();
     }

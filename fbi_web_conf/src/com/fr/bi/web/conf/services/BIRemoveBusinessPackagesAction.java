@@ -88,27 +88,10 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
     }
 
     private void saveUpdateSettings(String packageId, long userId) throws BIPackageAbsentException {
-//        Set tables = BICubeConfigureCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables();
-//        Map<String, UpdateSettingSource> updateSettings = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(userId);
-//        Map<String, UpdateSettingSource> newUpdateSettings = new HashMap<String, UpdateSettingSource>();
-//        for (String s : updateSettings.keySet()) {
-//            for (Object t : tables) {
-//                BusinessTable table = (BusinessTable) t;
-//                if (table.getID().equals(s)) {
-//                    break;
-//                }
-//                newUpdateSettings.put(s, updateSettings.get(s));
-//            }
-//        }
-//        BIConfigureManagerCenter.getUpdateFrequencyManager().clear(userId);
-//        for (String s : newUpdateSettings.keySet()) {
-//            BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(s, newUpdateSettings.get(s), userId);
-//        }
-//        BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
         Iterator tableIt = BICubeConfigureCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables().iterator();
         while (tableIt.hasNext()) {
             BusinessTable table = (BusinessTable) tableIt.next();
-            BIConfigureManagerCenter.getUpdateFrequencyManager().removeUpdateSetting(table.getID().getIdentity(),userId);
+            BIConfigureManagerCenter.getUpdateFrequencyManager().removeUpdateSetting(table.getTableSource().getSourceID(),userId);
         }
         BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
     }
