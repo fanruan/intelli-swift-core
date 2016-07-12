@@ -5,8 +5,13 @@ import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.*;
+import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -56,12 +61,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
      * 开发的时候封装一下即可，如果当时不封装，这个结构就镶嵌代码了，随着开发替换代价越高。
      */
     private Set<List<Set<CubeTableSource>>> dependTableResource;
-
-    public CubeBuildStuffManager(BIUser biUser, ICubeConfiguration cubeConfiguration) {
-        this.cubeConfiguration = cubeConfiguration;
-        this.biUser = biUser;
-        initialCubeStuff();
-    }
+    
 
     public CubeBuildStuffManager(BIUser biUser) {
         this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
@@ -85,7 +85,7 @@ public class CubeBuildStuffManager implements Serializable, CubeBuildStuff {
 
     @Override
     public ICubeConfiguration getCubeConfiguration() {
-        return BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+        return this.cubeConfiguration;
     }
 
     @Override
