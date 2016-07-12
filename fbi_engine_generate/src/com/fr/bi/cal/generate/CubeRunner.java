@@ -215,7 +215,7 @@ public class CubeRunner {
     /**
      * 检查cube路径
      *
-     * @return true或fals
+     * @return true或false
      */
     private boolean checkCubePath() {
         return BIFileUtils.checkDir(new File(BIPathUtils.createBasePath()));
