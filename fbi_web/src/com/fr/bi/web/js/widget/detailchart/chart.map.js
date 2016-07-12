@@ -134,7 +134,6 @@ BI.MapChart = BI.inherit(BI.Widget, {
                 case BICst.SCALE_SETTING.AUTO:
                     defaultStyle.color = defaultColor;
                     return defaultStyle;
-                    break;
                 case BICst.SCALE_SETTING.CUSTOM:
                     if(styles.length !== 0) {
                         BI.each(styles, function (idx, style) {
@@ -168,7 +167,6 @@ BI.MapChart = BI.inherit(BI.Widget, {
                         }
                     }
                     return range;
-                    break;
             }
         }
 
