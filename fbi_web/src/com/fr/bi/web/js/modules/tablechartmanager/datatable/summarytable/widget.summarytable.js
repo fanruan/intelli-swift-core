@@ -309,7 +309,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         self._populateComplexTable();
                         break;
                 }
-                self._populateTable();
+                self._refreshTable();
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate table: " + e);
                 self.errorPane.setVisible(true);
@@ -466,6 +466,16 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
         this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
+        this._afterTablePopulate();
+    },
+
+    _refreshTable: function() {
+        this.errorPane.setVisible(false);
+        this.table.attr("isNeedFreeze", this.model.isNeed2Freeze());
+        this.table.attr("freezeCols", this.model.getFreezeCols());
+        this.table.attr("mergeCols", this.model.getMergeCols());
+        this.table.attr("columnSize", this.model.getColumnSize());
+        this.table.refresh(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
         this._afterTablePopulate();
     },
 

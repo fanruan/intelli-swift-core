@@ -158,6 +158,11 @@ BI.StyleTable = BI.inherit(BI.Widget, {
         this.setStyleAndColor(this.options.style, color);
     },
 
+    refresh: function() {
+        this.table.refresh.apply(this.table, arguments);
+        this.setStyleAndColor(this.options.style, this.options.color);
+    },
+
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
         this.setStyleAndColor(this.options.style, this.options.color);
@@ -169,6 +174,9 @@ BI.StyleTable = BI.inherit(BI.Widget, {
     },
 
     setStyleAndColor: function (style, color) {
+        if(BI.isNull(style) || BI.isNull(color)) {
+            return;
+        }
         var $table = this.table.element;
         var $topLeft = $table.find(".scroll-top-left .table"), $topRight = $table.find(".scroll-top-right .table"),
             $bottomLeft = $table.find(".scroll-bottom-left .table"), $bottomRight = $table.find(".scroll-bottom-right .table"),
