@@ -218,6 +218,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         this.mergeCols = [];
         this.columnSize = BI.Utils.getWSColumnSizeByID(wId);
 
+        this.tree = new BI.Tree();
+        this.crossTree = new BI.Tree();
+
     },
 
     resetETree: function () {

@@ -17,8 +17,7 @@ BIShow.QueryView = BI.inherit(BI.View, {
         var queryButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Query"),
-            forceCenter: true,
-            height: 25
+            forceCenter: true
         });
         queryButton.on(BI.Button.EVENT_CHANGE, function(){
             //需要缓存一份所有控件的过滤条件到SharingPool中

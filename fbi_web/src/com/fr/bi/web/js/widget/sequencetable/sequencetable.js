@@ -209,6 +209,12 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         this.htape.resize();
         this.table.resize();
     },
+    
+    refresh: function () {
+        this.table.refresh.apply(this.table, arguments);
+        this.sequence.populate.apply(this.sequence, arguments);
+        this.sequence.setVerticalScroll(this.table.getVerticalScroll());
+    },
 
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);

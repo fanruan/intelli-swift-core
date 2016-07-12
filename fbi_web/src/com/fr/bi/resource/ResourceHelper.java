@@ -748,8 +748,8 @@ public class ResourceHelper {
                 //sql
                 "com/fr/bi/web/css/extend/sql/sql.edit.css",
 
-                "com/fr/bi/web/css/modules/datalink/widget.datalink.add.css/",
-                "com/fr/bi/web/css/modules/datalink/widget.datalink.schema.add.css/",
+                "com/fr/bi/web/css/modules/datalink/widget.datalink.add.css",
+                "com/fr/bi/web/css/modules/datalink/widget.datalink.schema.add.css",
 
                 "com/fr/bi/web/css/modules/cubepath/widget.cubepath.css",
                 "com/fr/bi/web/css/modules/cubepath/widget.cubepath.confirm.css",
