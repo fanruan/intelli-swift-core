@@ -2,6 +2,13 @@
  * Created by Fay on 2016/7/7.
  */
 BI.ImageSet = BI.inherit(BI.Widget, {
+    _defaultImg: [
+        "/WebReport/ReportServer?op=resource&resource=/com/fr/bi/web/images/icon1.png",
+        "/WebReport/ReportServer?op=resource&resource=/com/fr/bi/web/images/icon1.png"
+    ],
+
+    _img: [],
+
     _defaultConfig: function () {
         var conf = BI.ImageSet.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
@@ -9,11 +16,7 @@ BI.ImageSet = BI.inherit(BI.Widget, {
             defaultSelect: 1
         });
     },
-    _defaultImg: [
-        "/WebReport/ReportServer?op=resource&resource=/com/fr/bi/web/images/icon1.png",
-        "/WebReport/ReportServer?op=resource&resource=/com/fr/bi/web/images/icon1.png"
-    ],
-    _img: [],
+
     _init: function () {
         BI.ImageSet.superclass._init.apply(this, arguments);
         var o = this.options;
@@ -66,6 +69,7 @@ BI.ImageSet = BI.inherit(BI.Widget, {
             height: 130
         })
     },
+
     _createPanel: function (v) {
         switch (v) {
             case 1:
@@ -74,6 +78,7 @@ BI.ImageSet = BI.inherit(BI.Widget, {
                 return this._createPanelTwo();
         }
     },
+
     _createPanelOne: function () {
         var imgs = this._createDefaultImgs();
         return BI.createWidget({
@@ -83,6 +88,7 @@ BI.ImageSet = BI.inherit(BI.Widget, {
             lgap: 3
         })
     },
+
     _createPanelTwo: function () {
         var header = this._createHeader();
         var imgs = this._createImgs();
@@ -95,13 +101,13 @@ BI.ImageSet = BI.inherit(BI.Widget, {
             }]
         })
     },
+
     _createHeader: function () {
         var self = this;
         var headerLabel = BI.createWidget({
             type: "bi.label",
             text: "已添加"
         });
-
         var headerButton = BI.createWidget({
             type: "bi.button",
             cls: "mvc-button",
@@ -110,20 +116,16 @@ BI.ImageSet = BI.inherit(BI.Widget, {
             height: 26,
             hgap: 6
         });
-
         var image = BI.createWidget({
             type: "bi.multifile_editor",
             accept: "*.jpg;*.png;*.gif;"
         });
-
         headerButton.on(BI.Button.EVENT_CHANGE, function () {
             image.select();
         });
-
         image.on(BI.MultifileEditor.EVENT_CHANGE, function (data) {
             this.upload();
         });
-
         image.on(BI.MultifileEditor.EVENT_UPLOADED, function () {
             var files = this.getValue();
             var file = files[files.length - 1];
@@ -137,8 +139,7 @@ BI.ImageSet = BI.inherit(BI.Widget, {
                 }
             });
         });
-
-        this.header = BI.createWidget({
+        var header = BI.createWidget({
             type: "bi.center_adapt",
             cls: "image-set-header",
             items: [{
@@ -153,9 +154,9 @@ BI.ImageSet = BI.inherit(BI.Widget, {
             width: 400,
             height: 30
         });
-
-        return this.header;
+        return header;
     },
+
     _createDefaultImgs: function () {
         var resultImgs = [];
         BI.each(this._defaultImg, function (i, src) {
@@ -180,6 +181,7 @@ BI.ImageSet = BI.inherit(BI.Widget, {
             height: 105
         });
     },
+
     _createImgs: function () {
         var self = this,
             resultImgs = [];
@@ -225,13 +227,16 @@ BI.ImageSet = BI.inherit(BI.Widget, {
             height: 75
         });
     },
+
     _refresh: function () {
         this.empty();
         this._init();
     },
+
     setValue: function () {
 
     },
+
     getValue: function () {
         return this._img;
     }
