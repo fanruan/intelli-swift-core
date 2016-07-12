@@ -1102,7 +1102,7 @@ define('utils/ColorUtils',[],function(){
         for(var i = 0; i < count; i++){
             var tmpS = s * (1 - i / count);
             var tmpB = b + i * (1 - b) / count;
-            result.push(hsb2rgb(tmpS, h, tmpB));
+            result.push(toColor(hsb2rgb(h,tmpS,tmpB)));
         }
 
         return result;
@@ -13408,20 +13408,24 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
             if(this.vanchart.isZoomRefreshState()){
                 return;
             }
-            var cfg = this.componentOption, range = cfg.range;
+            var cfg = this.componentOption, range = cfg.range || {};
             var minMax = this.vanchart.getMinMaxFromSeries();
-            var minValue = minMax[0], maxValue = minMax[1];
+            var minValue = cfg.min, maxValue = cfg.max;
 
             //自动计算的情况区域段图例
-            if(!cfg.continuous && !range){
+            if(cfg.continuous && BaseUtils.hasNotDefined(minValue) && BaseUtils.hasNotDefined(maxValue)){
+                var para = this._calculateAutoMinMaxAndGap(minMax[0], minMax[1], range.color.length);
+                minValue = para[0], maxValue = para[1];
+            }else if(!cfg.continuous && !BaseUtils.isArray(range)){
                 //区域段图例
-                range = [];
-                var splitNumber = cfg.splitNumber || 5;
-                var color = cfg.color || 'blue';
+                var splitNumber = range.splitNumber || 5;
+                var color = range.color || 'blue';
                 var colors = ColorUtils.createColorsWithHsb(color, splitNumber);
-                var para = this._calculateAutoMinMaxAndGap(minValue, maxValue, splitNumber);
+                var para = this._calculateAutoMinMaxAndGap(minMax[0], minMax[1], splitNumber);
                 minValue = para[0];
                 var gap = para[2];
+
+                range = [];
                 for(var i = 0; i < splitNumber; i++) {
                     range.push({
                         from:BaseUtils.accAdd(minValue, BaseUtils.accMul(gap, (splitNumber - i - 1))),
@@ -13429,9 +13433,6 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
                         color:colors[i]
                     });
                 }
-            }else if(BaseUtils.isArray(range && range.color)){
-                var para = this._calculateAutoMinMaxAndGap(minValue, maxValue, range.color.length);
-                minValue = para[0], maxValue = para[1];
             }
 
             var self = this;
@@ -22538,13 +22539,24 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             series = series || this.vanchart.series;
             geo = geo || this.vanchart.getComponent(Constants.GEO_COMPONENT);
             layerIndex = layerIndex || 0;
-
-            var isLeafSeries = true;
+            var isLeafSeries = true, map = this;
             for(var i = series.length - 1; i >= 0; i--){
                 var sery = series[i];
                 for(var j = sery.points.length - 1; j >= 0; j--){
                     var point = sery.points[j];
-                    if(point.drillSeries && point.geo){
+                    if(point.drill){
+                        var drill = point.drill, drillSeries = [], drillGeo;
+                        drill.series.forEach(function(sery){
+                            sery.type = sery.type || map.option.chartType;
+                            drillSeries.push(new Series(map, sery));
+                        });
+                        map.option.geo = drill.geo;
+                        drillGeo = new Geo(this.vanchart, this.option, Constants.GEO_COMPONENT);
+                        drillSeries.originSeries = drill.series;
+
+                        point.drillSeries = drillSeries;
+                        point.geo = drillGeo;
+
                         isLeafSeries = false;
                         this.layerMap[layerIndex] = this.layerMap[layerIndex] || [];
                         this.layerMap[layerIndex].push({geo:geo, series:series, layerIndex:layerIndex});
@@ -22600,34 +22612,15 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             //todo 如何指定其他的值
             var value = BaseUtils.pick(pointOption.value, pointOption[1]);
 
-            var series, geo;
-            if(drill){
-                series = [];
-                var map = this;
-                drill.series.forEach(function(sery){
-                    sery.type = sery.type || map.option.chartType;
-                    series.push(new Series(map, sery));
-                });
-                this.option.geo = drill.geo;
-                geo = new Geo(this.vanchart, this.option, Constants.GEO_COMPONENT);
-
-                series.originSeries = drill.series;
-            }
-
             var style = this._getComputedMapStyle(queryList);
             style.fillColor = point.color;//todo fillColor,color属性重复
 
             BaseUtils.extend(point, {
                 drill:drill,
                 mapStyle:style,
-                drillSeries:series,
-                geo:geo,
                 value:value,
                 isNull:BaseUtils.hasNotDefined(value)
             });
-
-            point.series.validMap = point.series.validMap || {};
-            point.series.validMap[location] = true;
         },
 
         iconDataOfMap:function(series){
