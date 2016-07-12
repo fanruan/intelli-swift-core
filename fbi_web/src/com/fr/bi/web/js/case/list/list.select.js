@@ -60,11 +60,11 @@ BI.SelectList = BI.inherit(BI.Widget, {
         });
 
         this.list.on(BI.Controller.EVENT_CHANGE, function (type, value, obj) {
-            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
             if (type === BI.Events.CLICK) {
                 self._checkAllSelected();
                 self.fireEvent(BI.SelectList.EVENT_CHANGE, value, obj);
             }
+            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
         BI.createWidget(BI.extend({

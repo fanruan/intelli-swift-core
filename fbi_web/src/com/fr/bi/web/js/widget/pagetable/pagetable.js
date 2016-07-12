@@ -9,7 +9,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     _const: {
         scrollWidth: 18,
-        minScrollWidth: 150
+        minScrollWidth: 100
     },
 
     _defaultConfig: function () {
