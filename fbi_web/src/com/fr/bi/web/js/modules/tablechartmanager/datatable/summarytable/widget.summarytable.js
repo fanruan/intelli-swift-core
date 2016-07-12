@@ -534,6 +534,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table.resize();
     },
 
+    magnify: function(){
+
+    },
+
     empty: function () {
         BI.SummaryTable.superclass.empty.apply(this, arguments);
         if (BI.isNotNull(this.table)) {

@@ -1,6 +1,7 @@
 package com.fr.bi.stable.operation.group.group;
 
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.AbstractGroup;
@@ -29,6 +30,9 @@ public class CustomNumberGroup extends AbstractGroup {
         CubeLinkedHashMap newMap = new CubeLinkedHashMap();
         CubeLinkedHashMap ungroupMap = new CubeLinkedHashMap();
         GroupValueIndex[] newMapArray = new GroupValueIndex[groups.length];
+        for(int i = 0; i < newMapArray.length; i++){
+            newMapArray[i] = GVIFactory.createAllEmptyIndexGVI();
+        }
         Iterator iter = baseMap.iterator();
         List<String> groupNames = new ArrayList<String>();
         for (int i = 0; i < groups.length; i++) {
