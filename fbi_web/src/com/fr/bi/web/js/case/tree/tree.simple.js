@@ -80,9 +80,7 @@ BI.SimpleTreeView = BI.inherit(BI.Widget, {
             }
         });
 
-        this.tree.checkAll(false);
-        this.tree.updateValue(BI.makeObject(v.concat(selected)));
-        this.tree.refresh();
+        this.tree.setValue(BI.makeObject(v.concat(selected)));
     },
 
     _getValue: function () {
