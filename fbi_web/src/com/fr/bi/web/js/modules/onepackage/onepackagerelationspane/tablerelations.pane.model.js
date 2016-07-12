@@ -26,6 +26,14 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
         return this.tableIds;
     },
 
+    getFieldsByTableId: function(id){
+        return BI.pluck(this.tableData[id].fields[0], "id");
+    },
+
+    getFieldsMap: function(){
+        return this.table_map;
+    },
+
     getTableTranName: function (tId) {
         var tableNameText = "";
         if (BI.isNull(this.originalTableNames[tId])) {
@@ -61,11 +69,16 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
     },
 
     populate: function (items) {
+        var self = this;
         this.tableIds = BI.pluck(items.tableIds, "id");
         this.tableData = items.tableData;
         this.relations = items.relations;
         this.translations = items.translations;
         this.all_fields = items.all_fields;
+        this.table_map = {};
+        BI.each(this.tableIds, function(idx, tId){
+            self.table_map[tId] = BI.pluck(self.tableData[tId].fields[0], "id");
+        })
     }
 
 });

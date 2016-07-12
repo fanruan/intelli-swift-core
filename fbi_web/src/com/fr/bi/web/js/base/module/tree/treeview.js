@@ -39,7 +39,7 @@ BI.TreeView = BI.inherit(BI.Pane, {
 
     _createTree: function () {
         this.id = "bi-tree" + BI.UUID();
-        if(this.nodes) {
+        if (this.nodes) {
             this.nodes.destroy();
         }
         if (this.tree) {
@@ -445,8 +445,11 @@ BI.TreeView = BI.inherit(BI.Pane, {
         this.nodes && this.nodes.expandAll(flag);
     },
 
-    setValue: function (value) {
+    setValue: function (value, param) {
         this.options.paras.selected_values = value || {};
+        this.checkAll(false);
+        this.updateValue(value, param);
+        this.refresh();
     },
 
     updateValue: function (values, param) {
