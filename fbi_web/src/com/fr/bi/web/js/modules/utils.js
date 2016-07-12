@@ -1476,13 +1476,13 @@
                 }
                 //指标是否被维度排序使用
                 var sort = self.getDimensionSortByID(id) || {};
-                if(sort.sort_target === dId){
+                if (sort.sort_target === dId) {
                     result.push(id);
                 }
 
                 //指标是否被维度过滤使用
                 var filter_value = self.getDimensionFilterValueByID(id) || {};
-                if(checkFilter(filter_value)){
+                if (checkFilter(filter_value)) {
                     result.push(id);
                 }
             });
@@ -2052,44 +2052,59 @@
                 }
             }
 
-            function parseNumberFilter4Group(dId, value) {
+            function parseNumberFilter4Group(dId, v) {
+                var value = v[0];
                 var group = BI.Utils.getDimensionGroupByID(dId);
-                var details = group.details;
+                var groupValue = group.group_value, groupType = group.type;
                 var groupMap = {};
-                BI.each(details, function (i, detail) {
-                    groupMap[detail.value] = [];
-                    BI.each(detail.content, function (j, content) {
-                        groupMap[detail.value].push(content.value);
-                    });
-                });
-                var groupNames = BI.keys(groupMap), ungroupName = group.ungroup2OtherName;
-                if (group.ungroup2Other === 1) {
-                    groupNames.push(ungroupName);
-                }
-                // 对于drill和link 一般value的数组里只有一个值
-                var v = value[0];
-                if (groupNames.contains(v)) {
-                    if (v === ungroupName) {
-                        var vs = [];
-                        BI.each(groupMap, function (gk, gv) {
-                            gk !== v && (vs = vs.concat(gv));
-                        });
-                        return {
-                            filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
-                            filter_value: {type: BI.Selection.Multi, value: vs},
-                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
-                        }
+                if (groupType === BICst.GROUP.AUTO_GROUP) {
+                    //坑爹，要自己算分组名称出来
+                    var groupInterval = groupValue.group_interval, max = groupValue.max, min = groupValue.min;
+                    while (min < max) {
+                        var newMin = min + groupInterval;
+                        groupMap[min + "-" + newMin] = {
+                            min: min,
+                            max: newMin,
+                            closemin: true,
+                            closemax: newMin >= max
+                        };
+                        min = newMin;
                     }
                     return {
-                        filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
-                        filter_value: {type: BI.Selection.Multi, value: groupMap[v]},
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: groupMap[value],
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
-                    }
+                    };
                 }
-                return {
-                    filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
-                    filter_value: {type: BI.Selection.Multi, value: value},
-                    _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
+                var oMin, oMax;
+                BI.each(groupNodes, function (i, node) {
+                    i === 0 && (oMin = node.min);
+                    i === groupNodes.length - 1 && (oMax = node.max);
+                    groupMap[node.group_name] = {
+                        min: node.min,
+                        max: node.max,
+                        closemin: node.closemin,
+                        closemax: node.closemax
+                    }
+                });
+                if (BI.isNotNull(groupMap[value])) {
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: groupMap[value],
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
+                } else if(useOther === value) {
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+                        filter_value: {
+                            min: oMin,
+                            max: oMax,
+                            closemin: true,
+                            closemax: true
+                        },
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
                 }
             }
 
@@ -2100,32 +2115,7 @@
                     case BICst.TARGET_TYPE.STRING:
                         return parseStringFilter4Group(dId, v.value);
                     case BICst.TARGET_TYPE.NUMBER:
-                        var groupName = v.value[0];
-                        var group =
-                        var sIndex = value.indexOf("-");
-                        var filterValue = {};
-                        if (sIndex !== -1) {
-                            var min = BI.parseInt(value.slice(0, sIndex));
-                            var max = BI.parseInt(value.slice(sIndex + 1, value.length));
-                            filterValue = {
-                                min: min,
-                                max: max,
-                                closemin: true,
-                                closemax: false
-                            }
-                        } else {
-                            filterValue = {
-                                min: value,
-                                max: value,
-                                closemin: true,
-                                closemax: true
-                            }
-                        }
-                        return {
-                            filter_type:  BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                            filter_value: filterValue,
-                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(v.dId)}
-                        };
+                        return parseNumberFilter4Group(dId, v.value);
                     case BICst.TARGET_TYPE.DATE:
                         var dGroup = self.getDimensionGroupByID(dId);
                         var groupType = dGroup.type;
