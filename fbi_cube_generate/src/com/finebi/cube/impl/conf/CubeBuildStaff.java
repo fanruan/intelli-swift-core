@@ -1,7 +1,8 @@
 package com.finebi.cube.impl.conf;
 
-import com.finebi.cube.conf.*;
-import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.AbstractCubeBuild;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.*;
@@ -15,7 +16,6 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.*;
 
@@ -32,15 +32,11 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
      *
      */
     private static final long serialVersionUID = -2315016175890907748L;
-    private Set<IBusinessPackageGetterService> packs;
-    private Set<CubeTableSource> sources;
     private Set<CubeTableSource> allSingleSources;
 
-    private String rootPath;
     private Set<BITableSourceRelation> tableSourceRelationSet;
     private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private Set<BITableRelation> tableRelationSet;
-    private Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
     private Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap;
     private Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap;
     private BIUser biUser;
@@ -60,20 +56,6 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         super(biUser.getUserId());
         this.biUser = biUser;
         initialCubeStuff();
-    }
-
-    /**
-     * @return the packs
-     */
-    public Set<IBusinessPackageGetterService> getPacks() {
-        return packs;
-    }
-
-    /**
-     * @return sources
-     */
-    public Set<CubeTableSource> getSources() {
-        return sources;
     }
 
     @Override
@@ -101,17 +83,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         }
         return set;
     }
-
-    @Override
-    public Map<CubeTableSource, Long> getVersions() {
-        Set<CubeTableSource> allTable = getAllSingleSources();
-        Map<CubeTableSource, Long> result = new HashMap<CubeTableSource, Long>();
-        Long version = System.currentTimeMillis();
-        for (CubeTableSource table : allTable) {
-            result.put(table, version);
-        }
-        return result;
-    }
+    
 
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
         return this.cubeGenerateRelationPathSet;
@@ -159,36 +131,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         return set;
     }
 
-    private BITableSourceRelation convert(BITableRelation relation) {
-
-
-        CubeTableSource primaryTable = null;
-        CubeTableSource foreignTable = null;
-        try {
-            primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
-            foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
-        } catch (BIKeyAbsentException e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
-        ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
-        ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
-        if (primaryField == null || foreignField == null) {
-            throw new NullPointerException();
-        }
-        /**
-         * 设置成业务包里面的Table
-         * 原因：外部无法区分当前是getTableBelongTo获得的是什么Table。
-         * 所有这里同一设置成为业务包表。DBField和BIField没有彻底分开。
-         */
-        primaryField.setTableBelongTo(primaryTable);
-        foreignField.setTableBelongTo(foreignTable);
-        return new BITableSourceRelation(
-                primaryField,
-                foreignField,
-                primaryTable,
-                foreignTable
-        );
-    }
+    
 
 
     private Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> paths) {
@@ -234,37 +177,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         this.dependTableResource = dependTableResource;
     }
 
-    /**
-     * @param packs the packs to set
-     */
-    public void setPacks(Set<IBusinessPackageGetterService> packs, long userId) {
-        this.packs = packs;
-        this.sources = new HashSet<CubeTableSource>();
-        allBusinessTable = new HashSet<BIBusinessTable>();
-        for (IBusinessPackageGetterService pack : packs) {
-            Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
-            while (tIt.hasNext()) {
-                BIBusinessTable table = tIt.next();
-                allBusinessTable.add(table);
-                sources.add(table.getTableSource());
-            }
-        }
-        fullTableDBFields();
-    }
-
-    private void fullTableDBFields() {
-        Iterator<CubeTableSource> tableSourceIterator = sources.iterator();
-        while (tableSourceIterator.hasNext()) {
-            CubeTableSource tableSource = tableSourceIterator.next();
-            ICubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(sources);
-            Map<String, ICubeFieldSource> name2Field = new HashMap<String, ICubeFieldSource>();
-            for (int i = 0; i < BICubeFieldSources.length; i++) {
-                ICubeFieldSource field = BICubeFieldSources[i];
-                name2Field.put(field.getFieldName(), field);
-            }
-            tableDBFieldMaps.put(tableSource, name2Field);
-        }
-    }
+    
 
     private boolean isRelationValid(BITableRelation relation) {
         BusinessTable primaryTable = relation.getPrimaryTable();
@@ -311,8 +224,6 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
 
     public void initialCubeStuff() {
         try {
-            Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId());
-            setPacks(packs, biUser.getUserId());
             Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
@@ -322,7 +233,6 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
             Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
             setForeignKeyMap(foreignKeyMap);
             setRelationPaths(convertPaths(BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId())));
-            rootPath = BIPathUtils.createBasePath();
             calculateDepend();
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -344,41 +254,5 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
             }
         }
     }
-
-
-
-//    private List<Set<CubeTableSource>> map2List(Map<Integer, Set<CubeTableSource>> map) {
-//        List<Set<CubeTableSource>> tableList = new ArrayList<Set<CubeTableSource>>();
-//
-//        for (int i = 0; i < map.size(); i++) {
-//            tableList.add(map.get(i));
-//        }
-//        return tableList;
-//    }
-
-    /**
-     * TODO改变层级结构
-     *
-     * @param set
-     * @return
-     */
-    public static Set<CubeTableSource> set2Set(Set<List<Set<CubeTableSource>>> set) {
-        Set<CubeTableSource> result = new HashSet<CubeTableSource>();
-        Iterator<List<Set<CubeTableSource>>> outIterator = set.iterator();
-        while (outIterator.hasNext()) {
-            Iterator<Set<CubeTableSource>> middleIterator = outIterator.next().iterator();
-            while (middleIterator.hasNext()) {
-                result.addAll(middleIterator.next());
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public boolean preConditionsCheck(){
-        CubePreConditionsCheck check=new CubePreConditionsCheckManager();
-        boolean spaceCheck = check.HDSpaceCheck(new File(rootPath));
-        boolean connectionCheck = check.ConnectionCheck();
-        return spaceCheck&&connectionCheck;
-    }
+    
 }

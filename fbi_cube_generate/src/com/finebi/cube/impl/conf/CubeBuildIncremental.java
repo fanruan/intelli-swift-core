@@ -1,20 +1,20 @@
 package com.finebi.cube.impl.conf;
 
-import com.finebi.cube.conf.*;
-import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.AbstractCubeBuild;
+import com.finebi.cube.conf.CalculateDependTool;
+import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.stable.utils.file.BIPathUtils;
 
-import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager;
 
@@ -26,7 +26,6 @@ import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager
 public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild {
 
     private Set<CubeTableSource> allSingleSources;
-    private Set<CubeTableSource> sources;
     private Set<BIBusinessTable> newTables;
     private Set<BITableRelation> newRelations;
     private BIUser biUser;
@@ -45,24 +44,13 @@ public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild
         this.newTables=newTables;
         init();
         try {
-            setSources();
             setResourcesAndDepends();
             setRelationAndPath();
             calculateRelationDepends();
         } catch (BITableAbsentException e) {
             BILogger.getLogger().error(e.getMessage());
         }    }
-
-    private void setSources() {
-        this.sources = new HashSet<CubeTableSource>();
-        for (IBusinessPackageGetterService pack : BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId())) {
-            Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
-            while (tIt.hasNext()) {
-                BIBusinessTable table = tIt.next();
-                sources.add(table.getTableSource());
-            }
-        }
-    }
+    
 
     private void init() {
         this.sources = new HashSet<CubeTableSource>();
@@ -117,7 +105,7 @@ public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild
                 }
             }
             for (BITableRelation biTableRelation : this.tableRelationSet) {
-                BITableSourceRelation biTableSourceRelation = convertTableRelationToTableSourceRelation(biTableRelation);
+                BITableSourceRelation biTableSourceRelation = convert(biTableRelation);
                 biTableSourceRelationSet.add(biTableSourceRelation);
             }
 
@@ -128,53 +116,12 @@ public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild
         }
     }
 
-
-    private Set<CubeTableSource> set2Set(Set<List<Set<CubeTableSource>>> set) {
-        Set<CubeTableSource> result = new HashSet<CubeTableSource>();
-        Iterator<List<Set<CubeTableSource>>> outIterator = set.iterator();
-        while (outIterator.hasNext()) {
-            Iterator<Set<CubeTableSource>> middleIterator = outIterator.next().iterator();
-            while (middleIterator.hasNext()) {
-                result.addAll(middleIterator.next());
-            }
-        }
-        return result;
-    }
-
-
     
-
-    private BITableSourceRelation convertTableRelationToTableSourceRelation(BITableRelation biTableRelation) {
-        CubeTableSource primaryTable = biTableRelation.getPrimaryTable().getTableSource();
-        CubeTableSource foreignTable = biTableRelation.getForeignTable().getTableSource();
-        ICubeFieldSource primaryField = null;
-        ICubeFieldSource foreignField = null;
-        for (ICubeFieldSource iCubeFieldSource : primaryTable.getSelfFields(sources)) {
-            if (iCubeFieldSource.getFieldName().equals(biTableRelation.getPrimaryField().getFieldName())) {
-                primaryField = iCubeFieldSource;
-                break;
-            }
-        }
-        for (ICubeFieldSource iCubeFieldSource : foreignTable.getSelfFields(sources)) {
-            if (iCubeFieldSource.getFieldName().equals(biTableRelation.getForeignField().getFieldName())) {
-                foreignField = iCubeFieldSource;
-                break;
-            }
-        }
-        primaryField.setTableBelongTo(primaryTable);
-        foreignField.setTableBelongTo(foreignTable);
-        return new BITableSourceRelation(
-                primaryField,
-                foreignField,
-                primaryTable,
-                foreignTable
-        );
-    }
 
     private BITableSourceRelationPath convertBITableRelationPathToBITableSourceRelationPath(BITableRelationPath path) throws BITablePathConfusionException {
         BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
         for (BITableRelation biTableRelation : path.getAllRelations()) {
-            BITableSourceRelation biTableSourceRelation = convertTableRelationToTableSourceRelation(biTableRelation);
+            BITableSourceRelation biTableSourceRelation = convert(biTableRelation);
             tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
         }
         return tableSourceRelationPath;
@@ -195,10 +142,6 @@ public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild
         return this.biTableSourceRelationSet;
     }
 
-    @Override
-    public Set<CubeTableSource> getSources() {
-        return this.sources;
-    }
 
     @Override
     public Set<List<Set<CubeTableSource>>> getDependTableResource() {
@@ -210,17 +153,6 @@ public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild
         return this.tableRelationSet;
     }
 
-    @Override
-    public Map<CubeTableSource, Long> getVersions() {
-        Set<CubeTableSource> allTable = getAllSingleSources();
-        Map<CubeTableSource, Long> result = new HashMap<CubeTableSource, Long>();
-        Long version = System.currentTimeMillis();
-        for (CubeTableSource table : allTable) {
-            result.put(table, version);
-        }
-        return result;
-    }
-
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
         return this.cubeGenerateRelationPathSet;
     }
@@ -229,12 +161,5 @@ public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild
         return this.cubeGenerateRelationSet;
     }
 
-    @Override
-    public boolean preConditionsCheck(){
-        CubePreConditionsCheck check=new CubePreConditionsCheckManager();
-        File cubeFile=new File(BIPathUtils.createBasePath());
-        boolean spaceCheck = check.HDSpaceCheck(cubeFile);
-        boolean connectionCheck = check.ConnectionCheck();
-        return spaceCheck&&connectionCheck;
-    }
+    
 }
