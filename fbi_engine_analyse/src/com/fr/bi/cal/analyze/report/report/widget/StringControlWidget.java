@@ -127,6 +127,8 @@ public class StringControlWidget extends BISummaryWidget {
             while (it.hasNext()){
                 String str = it.next();
                 String strPinyin = BIPhoneticismUtils.getPingYin(str);
+                strPinyin = strPinyin.toLowerCase();
+                str = str.toUpperCase();
                 if(strPinyin.contains(keyword) || str.contains(keyword)){
                     if(!selectedValue.contains(str)){
                         if(ComparatorUtils.equals(keyword, str)){
