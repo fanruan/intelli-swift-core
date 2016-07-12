@@ -74,7 +74,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             return d || "";
         }
         var date = new Date(BI.parseInt(d));
-        return date.print("%Y/%X/%d")
+        return date.print("%Y-%X-%d")
     },
 
     _initStatus: function () {
