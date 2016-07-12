@@ -8,6 +8,18 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         CordonPos: 0
     },
     defaultItems: function () {
+        var o = this.options;
+        var fromText = BI.i18nText("BI-This_Target_From") + ": ";
+        var e = BI.Utils.getExpressionByDimensionID(o.dId);
+        var ids = e.ids;
+
+        BI.each(ids , function (idx , id){
+            var fieldID = BI.Utils.getFieldIDByDimensionID(id);
+            var fieldName = BI.Utils.getFieldNameByID(fieldID);
+            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldID));
+            fromText += tableName + "." + fieldName + "、"
+        });
+
         return [
             [{
                 text: BI.i18nText("BI-Style_Setting"),
@@ -65,6 +77,13 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 text: BI.i18nText("BI-Remove"),
                 value: BICst.CALCULATE_TARGET_COMBO.DELETE,
                 cls: "delete-h-font"
+            }],
+            [{
+                text: fromText,
+                tipType: "success",
+                value: BICst.TARGET_COMBO.INFO,
+                cls: "dimension-from-font",
+                disabled: true
             }]
         ];
     },
