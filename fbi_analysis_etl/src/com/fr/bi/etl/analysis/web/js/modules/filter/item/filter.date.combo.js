@@ -135,9 +135,9 @@ BI.ETLDateFilterCombo = BI.inherit(BI.Single, {
     },
 
     _setOBJValue: function (v) {
-        this.storeValue = v;
-        this.popup.setValue(v);
-        this.trigger.setValue(v);
+        this.storeValue = v.value;
+        this.popup.setValue(v.value);
+        this.trigger.setValue(v.value);
     },
 
     setValue: function (v) {
