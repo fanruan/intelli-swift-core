@@ -1664,13 +1664,6 @@
             return result;
         },
 
-        //保存上传的图片到文件下
-        saveUploadedImage: function (attachId, callback) {
-            Data.Req.reqSaveUploadImage(attachId, function (data) {
-                callback(data);
-            });
-        },
-
         /**
          * 数据相关
          */

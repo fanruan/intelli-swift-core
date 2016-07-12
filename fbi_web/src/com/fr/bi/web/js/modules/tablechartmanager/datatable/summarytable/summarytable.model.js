@@ -665,7 +665,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         type: "bi.target_body_normal_cell",
                         text: v,
                         dId: tId,
-                        cls: "summary-cell last"
+                        cls: "summary-cell last",
+                        clicked: [{}]
                     });
                 });
                 item.values = outerValues;
@@ -680,7 +681,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         type: "bi.target_body_normal_cell",
                         text: v,
                         dId: tId,
-                        cls: "summary-cell"
+                        cls: "summary-cell",
+                        clicked: [{}]
                     });
                 });
                 item.children.push({
@@ -794,7 +796,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                             type: "bi.target_body_normal_cell",
                             text: v,
                             dId: tId,
-                            cls: "summary-cell last"
+                            cls: "summary-cell last",
+                            clicked: [{}]
                         });
                     }
                 });
