@@ -40,9 +40,18 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         var regionHandler = function(){
             self.fireEvent(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, this.options.value);
         };
-        var allTableSet = [];
+        //var allTableSet = [];
+        var degrees = getTableIdsDegree(tableIds);
+        var calcDegree = {};
+        var distinctTableIds = [];
         BI.each(tableIds, function(idx, tId){
-            allTableSet.pushDistinct(tId);
+            calcDegree[tId] = 0;
+        });
+        BI.each(tableIds, function(idx, tId){
+            if(BI.contains(distinctTableIds, tId)){
+                return;
+            }
+            distinctTableIds.push(tId);
             var primFields = getFieldsInPrimKeyMap(fieldsMap[tId]);
             var foreFields = getFieldsInForeignMap(fieldsMap[tId]);
             if(BI.isEmptyArray(primFields) && BI.isEmptyArray(foreFields)){
@@ -54,57 +63,74 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                     }
                 });
             }else{
-                items =  BI.concat(items, getViewItemsByTableId(tId));
+                items =  BI.concat(items, getViewItemsByTableId(tId, []));
             }
         });
         return items;
 
-        function getViewItemsByTableId(tId){
+        function getTableIdsDegree(tableIds){
+            var degree = {};
+            BI.each(tableIds, function(idx, tId){
+                var count = 0;
+                var foreFields = getFieldsInForeignMap(fieldsMap[tId]);
+                BI.each(foreFields, function(idx, fieldId){
+                    if(BI.has(foreignKeyMap, fieldId)) {
+                        count++;
+                    }
+                });
+                degree[tId] = count;
+            });
+            return degree;
+        }
+
+        function getViewItemsByTableId(tId, visitSet){
             var rels = getRelationsByPrimaryId(tId);
             var items = [];
             BI.each(rels, function(idx, rel){
                 var primaryId = rel.primaryKey.field_id, foreignId = rel.foreignKey.field_id;
                 var foreignTableId = rel.foreignKey.table_id;
-                if(!BI.contains(allTableSet, foreignTableId)){
-                    allTableSet.push(foreignTableId);
-                    items = BI.concat(items, getViewItemsByTableId(foreignTableId));
-                }else{
-                    return;
-                }
                 //自循环
-                if(all_fields[primaryId].table_id === all_fields[foreignId].table_id){
-                    items.push({
-                        primary: {
-                            region: all_fields[primaryId].table_id,
-                            regionText: self.model.getTableTranName(all_fields[primaryId].table_id),
-                            value: primaryId,
-                            text: self.model.getFieldTranName(primaryId),
-                            regionHandler: regionHandler
-                        },
-                        foreign: {
-                            region: BI.UUID(),
-                            regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
-                            value: foreignId,
-                            text: self.model.getFieldTranName(foreignId)
-                        }
-                    });
-                }else{
-                    items.push({
-                        primary: {
-                            region: all_fields[primaryId].table_id,
-                            regionText: self.model.getTableTranName(all_fields[primaryId].table_id),
-                            value: primaryId,
-                            text: self.model.getFieldTranName(primaryId),
-                            regionHandler: regionHandler
-                        },
-                        foreign: {
-                            region: all_fields[foreignId].table_id,
-                            regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
-                            value: foreignId,
-                            text: self.model.getFieldTranName(foreignId),
-                            regionHandler: regionHandler
-                        }
-                    });
+                if(!BI.contains(visitSet, foreignTableId) && calcDegree[foreignTableId] !== degrees[foreignTableId]){
+                    if(all_fields[primaryId].table_id === all_fields[foreignId].table_id){
+                        items.push({
+                            primary: {
+                                region: all_fields[primaryId].table_id,
+                                regionText: self.model.getTableTranName(all_fields[primaryId].table_id),
+                                value: primaryId,
+                                text: self.model.getFieldTranName(primaryId),
+                                regionHandler: regionHandler
+                            },
+                            foreign: {
+                                region: BI.UUID(),
+                                regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
+                                value: foreignId,
+                                text: self.model.getFieldTranName(foreignId)
+                            }
+                        });
+                    }else{
+                        items.push({
+                            primary: {
+                                region: all_fields[primaryId].table_id,
+                                regionText: self.model.getTableTranName(all_fields[primaryId].table_id),
+                                value: primaryId,
+                                text: self.model.getFieldTranName(primaryId),
+                                regionHandler: regionHandler
+                            },
+                            foreign: {
+                                region: all_fields[foreignId].table_id,
+                                regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
+                                value: foreignId,
+                                text: self.model.getFieldTranName(foreignId),
+                                regionHandler: regionHandler
+                            }
+                        });
+                    }
+                }
+                var visittable = BI.concat(visitSet, [tId]);
+                if(!BI.contains(visittable, foreignTableId) && calcDegree[foreignTableId] !== degrees[foreignTableId]){
+                    calcDegree[foreignTableId]++;
+                    distinctTableIds.pushDistinct(foreignTableId);
+                    items = BI.concat(items, getViewItemsByTableId(foreignTableId, visittable));
                 }
             });
             return items;
