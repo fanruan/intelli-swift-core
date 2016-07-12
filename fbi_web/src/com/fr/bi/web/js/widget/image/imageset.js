@@ -2,10 +2,7 @@
  * Created by Fay on 2016/7/7.
  */
 BI.ImageSet = BI.inherit(BI.Widget, {
-    _defaultImg: [
-        "/WebReport/ReportServer?op=resource&resource=/com/fr/bi/web/images/icon1.png",
-        "/WebReport/ReportServer?op=resource&resource=/com/fr/bi/web/images/icon1.png"
-    ],
+    _defaultImg: [],
 
     _img: [],
 
@@ -20,16 +17,21 @@ BI.ImageSet = BI.inherit(BI.Widget, {
     _init: function () {
         BI.ImageSet.superclass._init.apply(this, arguments);
         var o = this.options;
-        this.tab = BI.createWidget({
+        this._createTab();
+        this.tabs.setSelect(o.defaultSelect);
+    },
+
+    _createTab: function () {
+        var tab = BI.createWidget({
             type: "bi.button_group",
             cls: "image-set-tab",
             items: [{
-                text: "预设图片",
+                text: BI.i18nText("BI-Default_Image"),
                 value: 1,
                 width: 50,
                 cls: "image-set-tab-item"
             }, {
-                text: "自定义图片",
+                text: BI.i18nText("BI-Custom_Image"),
                 value: 2,
                 width: 70,
                 cls: "image-set-tab-item"
@@ -52,16 +54,15 @@ BI.ImageSet = BI.inherit(BI.Widget, {
             direction: "custom",
             element: this.element,
             type: "bi.tab",
-            tab: this.tab,
+            tab: tab,
             cardCreator: BI.bind(this._createPanel, this)
         });
-        this.tabs.setSelect(o.defaultSelect);
 
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
             items: [{
-                el: this.tab,
+                el: tab,
                 left: 0,
                 top: 105
             }],
@@ -106,12 +107,12 @@ BI.ImageSet = BI.inherit(BI.Widget, {
         var self = this;
         var headerLabel = BI.createWidget({
             type: "bi.label",
-            text: "已添加"
+            text: BI.i18nText("BI-Added")
         });
         var headerButton = BI.createWidget({
             type: "bi.button",
             cls: "mvc-button",
-            text: "上传图片",
+            text: BI.i18nText("BI-Upload_Image"),
             width: 70,
             height: 26,
             hgap: 6
@@ -230,7 +231,7 @@ BI.ImageSet = BI.inherit(BI.Widget, {
 
     _refresh: function () {
         this.empty();
-        this._init();
+        this._createTab();
     },
 
     setValue: function () {
