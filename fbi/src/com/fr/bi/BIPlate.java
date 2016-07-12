@@ -5,6 +5,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
+import com.fr.bi.cal.generate.CubeRunner;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
@@ -71,9 +72,15 @@ public class BIPlate extends AbstractFSPlate {
         initOOMKillerForLinux();
         BICubeManagerProvider markedObject = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
         loadMemoryData();
-        if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
+        /*若发现cube需要更新的话,更新cube*/
+        BICubeConfigureCenter.getPackageManager().startBuildingCube((UserControl.getInstance().getSuperManagerID()));
+        BIConfigureManagerCenter.getLogManager().logStart(UserControl.getInstance().getSuperManagerID());
+        if (CubeRunner.isIncremental(UserControl.getInstance().getSuperManagerID())) {
+//            if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
             markedObject.generateCubes();
         }
+        BICubeConfigureCenter.getPackageManager().startBuildingCube((UserControl.getInstance().getSuperManagerID()));
+        BIConfigureManagerCenter.getLogManager().logEnd(UserControl.getInstance().getSuperManagerID());
         addBITableColumn4NewConnection();
     }
 
