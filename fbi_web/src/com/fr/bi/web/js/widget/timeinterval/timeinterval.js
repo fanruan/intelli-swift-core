@@ -114,6 +114,9 @@ BI.TimeInterval = BI.inherit(BI.Single, {
             BI.Bubbles.hide("error");
             var smallDate = self.left.getKey(), bigDate = self.right.getKey();
             if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
+                self._setTitle(BI.i18nText("BI-Time_Interval_Error_Text"));
+                self.element.addClass(self.constants.timeErrorCls);
+                self.fireEvent(BI.TimeInterval.EVENT_ERROR);
             }else{
                 self.fireEvent(BI.TimeInterval.EVENT_CHANGE);
             }

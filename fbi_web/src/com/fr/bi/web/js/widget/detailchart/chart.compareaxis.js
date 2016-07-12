@@ -98,7 +98,7 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed ? !axis.reversed : axis.reversed;
                     axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
-                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx);
                     axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -107,14 +107,14 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed ? !axis.reversed : axis.reversed;
                     axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
-                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx);
                     axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
                     break;
             }
-            var res = _calculateValueNiceDomain(0, self.maxes[axis.axisIndex]);
+            var res = _calculateValueNiceDomain(0, self.maxes[idx]);
             axis.max = res[1].mul(2);
             axis.min = res[0].mul(2);
             axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);

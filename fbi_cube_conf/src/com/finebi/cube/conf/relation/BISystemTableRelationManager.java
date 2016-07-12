@@ -248,11 +248,29 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
 
     @Override
     public BITableRelationPath getFirstPath(long userId, BusinessTable juniorTable, BusinessTable primaryTable) throws BITableUnreachableException {
+        try {
+            Set<BITableRelationPath> allPath = this.getAllPath(userId, juniorTable, primaryTable);
+            Iterator<BITableRelationPath> pathIterator = allPath.iterator();
+            while (pathIterator.hasNext()) {
+                return pathIterator.next();
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
         return null;
     }
 
     @Override
     public BITableRelationPath getFirstAvailablePath(long userId, BusinessTable primaryTable, BusinessTable juniorTable) throws BITableUnreachableException {
+        try {
+            Set<BITableRelationPath> availablePath = this.getAllAvailablePath(userId, primaryTable, juniorTable);
+            Iterator<BITableRelationPath> pathIterator = availablePath.iterator();
+            while (pathIterator.hasNext()) {
+                return pathIterator.next();
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
         return null;
     }
 

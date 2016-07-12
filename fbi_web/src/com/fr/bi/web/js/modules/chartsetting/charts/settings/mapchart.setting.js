@@ -231,15 +231,14 @@ BI.MapSetting = BI.inherit(BI.Widget, {
     },
 
     _doClickButton: function (v) {
-        var self = this;
         switch(v) {
             case BICst.SCALE_SETTING.AUTO:
-                self.addConditionButton.setVisible(false);
-                self.conditions.setVisible(false);
+                this.addConditionButton.setVisible(false);
+                this.conditions.setVisible(false);
                 break;
             case BICst.SCALE_SETTING.CUSTOM:
-                self.addConditionButton.setVisible(true);
-                self.conditions.setVisible(true);
+                this.addConditionButton.setVisible(true);
+                this.conditions.setVisible(true);
                 break;
         }
     },

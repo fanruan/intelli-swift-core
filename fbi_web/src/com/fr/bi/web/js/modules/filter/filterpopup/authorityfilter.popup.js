@@ -38,7 +38,7 @@ BI.AuthorityFilterPopup = BI.inherit(BI.BarPopoverSection, {
     },
 
     end: function(){
-        this.fireEvent(BI.AuthorityFilterPopup.EVENT_CHANGE, this.targetFilterPane.getValue()[0]);
+        this.fireEvent(BI.AuthorityFilterPopup.EVENT_CHANGE, this.targetFilterPane.getValue());
     }
 });
 

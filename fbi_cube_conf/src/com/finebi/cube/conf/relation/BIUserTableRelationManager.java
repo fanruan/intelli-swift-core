@@ -31,7 +31,7 @@ public class BIUserTableRelationManager implements Release {
      *
      */
     private static final long serialVersionUID = -4599513067350765988L;
-    
+
     protected BITableRelationAnalysisService oldAnalyserHandler;
     protected BITableRelationAnalysisService currentAnalyserHandler;
     protected BIDisablePathsManager disablePathsManager;
@@ -145,16 +145,14 @@ public class BIUserTableRelationManager implements Release {
             analysisTableRelationShipService.clear();
             for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
                 try {
-
-                    BITableRelation relationCopy = new BITableRelation(relation.getPrimaryTable().getID().getIdentityValue(), relation.getPrimaryField().getFieldName(),relation.getForeignTable().getID().getIdentityValue(),relation.getForeignField().getFieldName());
-                    oldAnalyserHandler.addRelation(relationCopy);
+                    oldAnalyserHandler.addRelation(relation);
 
                 } catch (BIRelationDuplicateException e) {
                     BILogger.getLogger().error(e.getMessage());
                 }
             }
             analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
-            for (BITableRelation relation : connectionSet) {
+            for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
                 analysisTableRelationShipService.addBITableRelation(relation);
             }
         }

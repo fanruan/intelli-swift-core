@@ -1,10 +1,10 @@
 /**
  * 普通控件
  *
- * @class BI.Param1DateItem
+ * @class BI.Param2DateItem
  * @extends BI.Single
  */
-BI.Param1DateItem = BI.inherit(BI.Single, {
+BI.Param2DateItem = BI.inherit(BI.Single, {
     constants: {
         itemHeight: 20,
         itemWidth: 20,
@@ -13,9 +13,9 @@ BI.Param1DateItem = BI.inherit(BI.Single, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.Param1DateItem.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.Param2DateItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: 'bi-param2-date-item',
-            value: BI.Param1DateItem.YEAR_DAY,
+            value: BI.Param2DateItem.YEAR_DAY,
             width: 310,
             height: 20,
             selected: false,
@@ -24,7 +24,7 @@ BI.Param1DateItem = BI.inherit(BI.Single, {
     },
 
     _init: function () {
-        BI.Param1DateItem.superclass._init.apply(this, arguments);
+        BI.Param2DateItem.superclass._init.apply(this, arguments);
         var self = this, opts = this.options;
         this.radio = BI.createWidget({
             type: "bi.radio",
@@ -113,18 +113,18 @@ BI.Param1DateItem = BI.inherit(BI.Single, {
 
     _getTextByDateType: function(){
         switch (this.options.value) {
-            case BI.Param1DateItem.MONTH_WEEK:
-                return {ftext: BI.i18nText("BI-Month"), stext: BI.i18nText("BI-Week")};
-            case BI.Param1DateItem.MONTH_DAY:
+            case BI.Param2DateItem.MONTH_WEEK:
+                return {ftext: BI.i18nText("BI-Month"), stext: BI.i18nText("BI-Week_Of_Week")};
+            case BI.Param2DateItem.MONTH_DAY:
                 return {ftext: BI.i18nText("BI-Month"), stext: BI.i18nText("BI-Day_De")};
-            case BI.Param1DateItem.YEAR_MONTH:
-                return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Month_Fen")};
-            case BI.Param1DateItem.YEAR_DAY:
+            case BI.Param2DateItem.YEAR_MONTH:
+                return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Month_De_Month")};
+            case BI.Param2DateItem.YEAR_DAY:
                 return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Day_De")};
-            case BI.Param1DateItem.YEAR_QUARTER:
-                return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Quarter")};
-            case BI.Param1DateItem.YEAR_WEEK:
-                return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Week")};
+            case BI.Param2DateItem.YEAR_QUARTER:
+                return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Quarter_Of_Quarter")};
+            case BI.Param2DateItem.YEAR_WEEK:
+                return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Week_Of_Week")};
         }
     },
 
@@ -175,8 +175,8 @@ BI.Param1DateItem = BI.inherit(BI.Single, {
     }
 });
 
-BI.Param1DateItem.EVENT_CHANGE = "EVENT_CHANGE";
-BI.extend(BI.Param1DateItem , {
+BI.Param2DateItem.EVENT_CHANGE = "EVENT_CHANGE";
+BI.extend(BI.Param2DateItem , {
     YEAR_QUARTER: BICst.YEAR_QUARTER,
     YEAR_MONTH: BICst.YEAR_MONTH,
     YEAR_WEEK: BICst.YEAR_WEEK,
@@ -184,4 +184,4 @@ BI.extend(BI.Param1DateItem , {
     MONTH_WEEK: BICst.MONTH_WEEK,
     MONTH_DAY: BICst.MONTH_DAY
 });
-$.shortcut('bi.param2_date_item', BI.Param1DateItem);
+$.shortcut('bi.param2_date_item', BI.Param2DateItem);

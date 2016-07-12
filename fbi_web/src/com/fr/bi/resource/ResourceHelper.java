@@ -1554,6 +1554,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/aspects/detailtable/aspect.detailtable.js",
 
                 "com/fr/bi/web/js/aspects/config.js",
+
+
+                //工程配置
+                "com/fr/bi/web/js/config.js"
         };
     }
 
@@ -2413,8 +2417,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/numericalinterval/numericalinterval.js",
 
                 //可以设置参数的下拉框
-                "com/fr/bi/web/js/widget/paramsettingcombo/param1.date.item.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/param0.date.item.js",
+                "com/fr/bi/web/js/widget/paramsettingcombo/param1.date.item.js",
+                "com/fr/bi/web/js/widget/paramsettingcombo/param2.date.item.js",
+                "com/fr/bi/web/js/widget/paramsettingcombo/param3.date.item.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/popup.param.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/rangevaluecombo/rangevaluecombo.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/yearcombo/combo.param.year.js",
@@ -2428,7 +2434,6 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/widget/paramsettingcombo/dateintervalcombo/combo.param.dateinterval.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/dateintervalcombo/popup.param.dateinterval.js",
-                "com/fr/bi/web/js/widget/paramsettingcombo/param2.date.item.js",
 
                 //下拉复选框
                 "com/fr/bi/web/js/widget/multiselect/trigger/button.checkselected.js",
@@ -2633,8 +2638,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/share/sharetome.js",
                 "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
 
-                //工程配置
-                "com/fr/bi/web/js/config.js"
         };
     }
 

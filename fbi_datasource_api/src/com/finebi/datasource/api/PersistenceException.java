@@ -10,7 +10,7 @@ package com.finebi.datasource.api;
  * the current transaction, if one is active and the persistence context has
  * been joined to it, to be marked for rollback.
  *
- * @since Java Persistence 1.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public class PersistenceException extends RuntimeException {
 

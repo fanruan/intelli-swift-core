@@ -1467,15 +1467,37 @@
                 return [];
             }
             var wId = this.getWidgetIDByDimensionID(dId);
-            var ids = this.getAllTargetDimensionIDs(wId);
+            var ids = this.getAllDimensionIDs(wId);
             var result = [];
             BI.each(ids, function (i, id) {
                 var tids = self.getExpressionValuesByDimensionID(id);
                 if (tids.contains(dId)) {
                     result.push(id);
                 }
+                //指标是否被维度排序使用
+                var sort = self.getDimensionSortByID(id) || {};
+                if(sort.sort_target === dId){
+                    result.push(id);
+                }
+
+                //指标是否被维度过滤使用
+                var filter_value = self.getDimensionFilterValueByID(id) || {};
+                if(checkFilter(filter_value)){
+                    result.push(id);
+                }
             });
             return result;
+
+            function checkFilter(filter) {
+                var filterType = filter.filter_type, filterValue = filter.filter_value;
+                if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+                    return BI.some(filterValue, function (i, value) {
+                        return checkFilter(value);
+                    });
+                } else {
+                    return filter.target_id === dId;
+                }
+            }
         },
 
 
@@ -2402,7 +2424,7 @@
                 filterValue = {};
             } else {
                 filterValue.values = parseComplexDate(filterValue);
-                filterValue.type = BICst.GROUP.YMD;
+                filterValue.group = BICst.GROUP.YMD;
             }
         }
         return filter;

@@ -101,11 +101,11 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         this.valueSet = new HashSet<BIDateValue>();
         if (jo.has("filter_value")) {
-            JSONObject filterValue = jo.getJSONObject("filter_value");
-            if(filterValue.has("type") && filterValue.has("values")){
-                this.valueSet.add(BIDateValueFactory.createDateValue(filterValue.getInt("type"), filterValue.getLong("values")));
+            valueJo = jo.getJSONObject("filter_value");
+            if(valueJo.has("group") && valueJo.has("values")){
+                this.valueSet.add(BIDateValueFactory.createDateValue(valueJo.getInt("group"), valueJo.getLong("values")));
+                this.group = valueJo.getInt("group");
             }
-            this.group = filterValue.getInt("type");
         }
     }
 
