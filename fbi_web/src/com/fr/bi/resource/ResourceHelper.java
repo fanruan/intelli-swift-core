@@ -1554,6 +1554,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/aspects/detailtable/aspect.detailtable.js",
 
                 "com/fr/bi/web/js/aspects/config.js",
+
+
+                //工程配置
+                "com/fr/bi/web/js/config.js"
         };
     }
 
@@ -2634,8 +2638,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/share/sharetome.js",
                 "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
 
-                //工程配置
-                "com/fr/bi/web/js/config.js"
         };
     }
 
