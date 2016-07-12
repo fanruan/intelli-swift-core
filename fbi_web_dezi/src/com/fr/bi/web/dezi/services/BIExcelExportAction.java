@@ -14,7 +14,6 @@ import com.fr.stable.StringUtils;
 import com.fr.web.Browser;
 import com.fr.web.core.ErrorHandlerHelper;
 import com.fr.web.core.SessionDealWith;
-import com.fr.web.core.reserve.ExportService;
 import com.fr.web.core.utils.ExportUtils;
 import com.fr.web.utils.WebUtils;
 
@@ -60,6 +59,7 @@ public class BIExcelExportAction extends AbstractBIDeziAction {
         if (resultBook != null) {
             export(req, res, sessionIDInfor, resultBook, fileName);
         }
+        sessionIDInfor.getLoader().releaseCurrentThread();
         //pony 先不删吧...强制转换抛错....
         //     sessionIDInfor.removeExcelWidget(((BIReport)(resultBook.getReport(0))).getWidgetName(0));
     }

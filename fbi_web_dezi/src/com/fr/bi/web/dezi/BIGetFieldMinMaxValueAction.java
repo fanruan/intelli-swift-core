@@ -1,15 +1,16 @@
 package com.fr.bi.web.dezi;
 
-import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
+import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
+import com.fr.web.core.ErrorHandlerHelper;
+import com.fr.web.core.SessionDealWith;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,8 +30,12 @@ public class BIGetFieldMinMaxValueAction extends AbstractBIDeziAction {
 
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
-        long userId = ServiceUtils.getCurrentUserID(req);
-        ICubeDataLoader loader = BICubeManager.getInstance().fetchCubeLoader(userId);
+        BISession session = (BISession) SessionDealWith.getSessionIDInfor(sessionID);
+        if (session == null) {
+            ErrorHandlerHelper.getErrorHandler().error(req, res, "Reportlet SessionID: \"" + sessionID + "\" time out.");
+            return;
+        }
+        ICubeDataLoader loader = session.getLoader();
         String fieldIdString = WebUtils.getHTTPRequestParameter(req, "id");
         BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldIdString));
         JSONObject jo = new JSONObject();
@@ -39,6 +44,7 @@ public class BIGetFieldMinMaxValueAction extends AbstractBIDeziAction {
             jo.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, ti != null ? ti.getMAXValue(loader.getFieldIndex(field)) : 0);
             jo.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, ti != null ? ti.getMINValue(loader.getFieldIndex(field)) : 0);
         }
+        loader.releaseCurrentThread();
         WebUtils.printAsJSON(res, jo);
     }
 }
