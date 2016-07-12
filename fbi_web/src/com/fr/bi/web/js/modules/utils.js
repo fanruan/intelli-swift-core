@@ -60,7 +60,7 @@
         getDefaultChartConfig: function () {
             if (!this.defaultChartConfig) {
                 this.defaultChartConfig = Data.Req.reqGetChartPreStyle();
-                if(BI.isNull(this.defaultChartConfig.styleList)) {
+                if (BI.isNull(this.defaultChartConfig.styleList)) {
                     this.defaultChartConfig.styleList = [];
                 }
             }
@@ -433,7 +433,7 @@
             return Data.SharingPool.get("widgets", wid, "sort_sequence") || [];
         },
 
-        isShowWidgetRealDataByID: function(wid) {
+        isShowWidgetRealDataByID: function (wid) {
             return Data.SharingPool.get("widgets", wid, "real_data");
         },
 
@@ -1476,13 +1476,13 @@
                 }
                 //指标是否被维度排序使用
                 var sort = self.getDimensionSortByID(id) || {};
-                if(sort.sort_target === dId){
+                if (sort.sort_target === dId) {
                     result.push(id);
                 }
 
                 //指标是否被维度过滤使用
                 var filter_value = self.getDimensionFilterValueByID(id) || {};
-                if(checkFilter(filter_value)){
+                if (checkFilter(filter_value)) {
                     result.push(id);
                 }
             });
@@ -1902,14 +1902,14 @@
                                 if (BI.isNumeric(year)) {
                                     filterValues.push({
                                         filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                                        filter_value: {type: BICst.GROUP.Y, values: year},
+                                        filter_value: {group: BICst.GROUP.Y, values: year},
                                         _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                     });
                                 }
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {type: BICst.GROUP.M, values: month + 1};
+                                fValue = {group: BICst.GROUP.M, values: month + 1};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1922,14 +1922,14 @@
                                 if (BI.isNumeric(year)) {
                                     filterValues.push({
                                         filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                                        filter_value: {type: BICst.GROUP.Y, values: year},
+                                        filter_value: {group: BICst.GROUP.Y, values: year},
                                         _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                     });
                                 }
                                 if (!BI.isNumeric(quarter)) {
                                     return;
                                 }
-                                fValue = {type: BICst.GROUP.S, values: quarter};
+                                fValue = {group: BICst.GROUP.S, values: quarter};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1938,7 +1938,7 @@
                                 break;
                             case BICst.WIDGET.YEAR:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
-                                fValue = {type: BICst.GROUP.Y, values: fValue};
+                                fValue = {group: BICst.GROUP.Y, values: fValue};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1947,7 +1947,7 @@
                                 break;
                             case BICst.WIDGET.YMD:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
-                                fValue = {type: BICst.GROUP.YMD, values: parseComplexDate(fValue)};
+                                fValue = {group: BICst.GROUP.YMD, values: parseComplexDate(fValue)};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -2052,6 +2052,62 @@
                 }
             }
 
+            function parseNumberFilter4Group(dId, v) {
+                var value = v[0];
+                var group = BI.Utils.getDimensionGroupByID(dId);
+                var groupValue = group.group_value, groupType = group.type;
+                var groupMap = {};
+                if (groupType === BICst.GROUP.AUTO_GROUP) {
+                    //坑爹，要自己算分组名称出来
+                    var groupInterval = groupValue.group_interval, max = groupValue.max, min = groupValue.min;
+                    while (min < max) {
+                        var newMin = min + groupInterval;
+                        groupMap[min + "-" + newMin] = {
+                            min: min,
+                            max: newMin,
+                            closemin: true,
+                            closemax: newMin >= max
+                        };
+                        min = newMin;
+                    }
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: groupMap[value],
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
+                }
+                var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
+                var oMin, oMax;
+                BI.each(groupNodes, function (i, node) {
+                    i === 0 && (oMin = node.min);
+                    i === groupNodes.length - 1 && (oMax = node.max);
+                    groupMap[node.group_name] = {
+                        min: node.min,
+                        max: node.max,
+                        closemin: node.closemin,
+                        closemax: node.closemax
+                    }
+                });
+                if (BI.isNotNull(groupMap[value])) {
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: groupMap[value],
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
+                } else if(useOther === value) {
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+                        filter_value: {
+                            min: oMin,
+                            max: oMax,
+                            closemin: true,
+                            closemax: true
+                        },
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
+                }
+            }
+
             function parseSimpleFilter(v) {
                 var dId = v.dId;
                 var dType = self.getDimensionTypeByID(dId);
@@ -2059,25 +2115,13 @@
                     case BICst.TARGET_TYPE.STRING:
                         return parseStringFilter4Group(dId, v.value);
                     case BICst.TARGET_TYPE.NUMBER:
-                        var value = v.value[0];
-                        var min = BI.parseInt(value.slice(0, value.indexOf("-")));
-                        var max = BI.parseInt(value.slice(value.indexOf("-") + 1, value.length));
-                        return {
-                            filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                            filter_value: {
-                                min: min,
-                                max: max,
-                                closemin: true,
-                                closemax: true
-                            },
-                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(v.dId)}
-                        };
+                        return parseNumberFilter4Group(dId, v.value);
                     case BICst.TARGET_TYPE.DATE:
                         var dGroup = self.getDimensionGroupByID(dId);
                         var groupType = dGroup.type;
                         return {
                             filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                            filter_value: {values: v.value[0], type: groupType},
+                            filter_value: {values: v.value[0], group: groupType},
                             _src: {field_id: BI.Utils.getFieldIDByDimensionID(v.dId)}
                         };
                 }

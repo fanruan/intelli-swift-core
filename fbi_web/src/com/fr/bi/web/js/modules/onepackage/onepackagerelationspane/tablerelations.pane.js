@@ -65,12 +65,6 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             BI.each(rels, function(idx, rel){
                 var primaryId = rel.primaryKey.field_id, foreignId = rel.foreignKey.field_id;
                 var foreignTableId = rel.foreignKey.table_id;
-                if(!BI.contains(allTableSet, foreignTableId)){
-                    allTableSet.push(foreignTableId);
-                    items = BI.concat(items, getViewItemsByTableId(foreignTableId));
-                }else{
-                    return;
-                }
                 //自循环
                 if(all_fields[primaryId].table_id === all_fields[foreignId].table_id){
                     items.push({
@@ -105,6 +99,10 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                             regionHandler: regionHandler
                         }
                     });
+                }
+                if(!BI.contains(allTableSet, foreignTableId)){
+                    allTableSet.push(foreignTableId);
+                    items = BI.concat(items, getViewItemsByTableId(foreignTableId));
                 }
             });
             return items;
