@@ -21,7 +21,7 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
             itemsCreator: BI.bind(this._itemsCreator, this),
             height: self._constants.SELECTOR_HEIGHT
         });
-        this.pane.on(BI.MultiSelectLoader.EVENT_CHANGE, function () {
+        this.pane.on(BI.Controller.EVENT_CHANGE, function () {
             self.setValue(self.pane.getValue());
             self.fireEvent(BI.ETLMultiValueChooserPane.EVENT_CONFIRM);
         })
