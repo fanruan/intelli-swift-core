@@ -21,6 +21,7 @@ import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager
 /**
  * Created by kary on 2016/6/8.
  * 表的增量更新，尽量减少依赖，最大化提升效率
+ * 逻辑如下:确定新增的table及relations,设置相关依赖
  */
 public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild {
 
@@ -74,7 +75,6 @@ public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild
 
 
     private void calculateRelationDepends() {
-        
         CalculateDependTool cal = new CalculateDependManager();
         cal.setOriginal(this.getAllSingleSources());
         cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
@@ -142,15 +142,7 @@ public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild
     }
 
 
-    private Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
-        Iterator<CubeTableSource> it = tableSources.iterator();
-        Set<List<Set<CubeTableSource>>> depends = new HashSet<List<Set<CubeTableSource>>>();
-        while (it.hasNext()) {
-            CubeTableSource tableSource = it.next();
-            depends.add(tableSource.createGenerateTablesList());
-        }
-        return depends;
-    }
+    
 
     private BITableSourceRelation convertTableRelationToTableSourceRelation(BITableRelation biTableRelation) {
         CubeTableSource primaryTable = biTableRelation.getPrimaryTable().getTableSource();

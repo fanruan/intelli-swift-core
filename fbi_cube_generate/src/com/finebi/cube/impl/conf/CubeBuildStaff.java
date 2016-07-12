@@ -346,24 +346,15 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
     }
 
 
-    private Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
-        Iterator<CubeTableSource> it = tableSources.iterator();
-        Set<List<Set<CubeTableSource>>> depends = new HashSet<List<Set<CubeTableSource>>>();
-        while (it.hasNext()) {
-            CubeTableSource tableSource = it.next();
-            depends.add(tableSource.createGenerateTablesList());
-        }
-        return depends;
-    }
 
-    private List<Set<CubeTableSource>> map2List(Map<Integer, Set<CubeTableSource>> map) {
-        List<Set<CubeTableSource>> tableList = new ArrayList<Set<CubeTableSource>>();
-
-        for (int i = 0; i < map.size(); i++) {
-            tableList.add(map.get(i));
-        }
-        return tableList;
-    }
+//    private List<Set<CubeTableSource>> map2List(Map<Integer, Set<CubeTableSource>> map) {
+//        List<Set<CubeTableSource>> tableList = new ArrayList<Set<CubeTableSource>>();
+//
+//        for (int i = 0; i < map.size(); i++) {
+//            tableList.add(map.get(i));
+//        }
+//        return tableList;
+//    }
 
     /**
      * TODO改变层级结构
