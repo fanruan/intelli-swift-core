@@ -65,7 +65,7 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
 
             if (BI.isNotEmptyString(value)) {
                 var date = value.split("-");
-                self.stored_value = {
+                self.store_value = {
                     type: BICst.MULTI_DATE_CALENDAR,
                     value:{
                         year: date[0] | 0,
