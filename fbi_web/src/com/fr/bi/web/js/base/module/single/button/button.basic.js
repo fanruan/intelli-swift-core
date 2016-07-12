@@ -199,7 +199,9 @@ BI.BasicButton = BI.inherit(BI.Single, {
         var o = this.options;
         if (this.isValid()) {
             o.handler.call(this, this.getValue(), this);
-            this.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.CLICK, this.getValue(), this);
+            var v = this.getValue();
+            this.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.CLICK, v, this);
+            this.fireEvent(BI.BasicButton.EVENT_CHANGE, v, this);
         }
     },
 
@@ -291,3 +293,4 @@ BI.BasicButton = BI.inherit(BI.Single, {
         BI.BasicButton.superclass.destroy.apply(this, arguments);
     }
 });
+BI.BasicButton.EVENT_CHANGE = "BasicButton.EVENT_CHANGE";

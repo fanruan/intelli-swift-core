@@ -19,6 +19,9 @@ BI.DimensionFilter = BI.inherit(BI.Widget, {
             itemCreator: function(item){
                 var t = BI.DimensionFilterItemFactory.createFilterItemByFilterType(item.value);
                 item.type = t.type;
+                if(BI.has(item, "target_id")){
+                    item.dId = item.target_id;
+                }
                 item.dId = item.dId || o.dId;
                 item.afterValueChange = function(){
                     self.fireEvent(BI.DimensionFilter.EVENT_CHANGE);

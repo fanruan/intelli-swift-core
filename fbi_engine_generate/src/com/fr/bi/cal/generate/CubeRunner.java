@@ -40,7 +40,12 @@ public class CubeRunner {
     public CubeRunner(long userId) {
         biUser = new BIUser(userId);
         init();
+        /*若发现cube需要更新的话,更新cube*/
+//        cubeInit();
     }
+
+//    private void cubeInit() {
+//    }
 
     public void envChanged() {
         synchronized (cubeThread) {
@@ -210,7 +215,7 @@ public class CubeRunner {
     /**
      * 检查cube路径
      *
-     * @return true或fals
+     * @return true或false
      */
     private boolean checkCubePath() {
         return BIFileUtils.checkDir(new File(BIPathUtils.createBasePath()));

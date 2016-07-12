@@ -30,10 +30,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     },
 
-    _formatDataForMap: function (data) {
+    _formatDataForMap: function (data, currentLayer) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
         var result = [];
+        currentLayer++;
         if (BI.has(data, "c")) {
             var obj = (data.c)[0];
             var view = BI.Utils.getWidgetViewByID(o.wId);
@@ -54,7 +55,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                 res = {
                                     x: item.n,
                                     y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
-                                    targetIds: [targetIds[idx]]
+                                    targetIds: [targetIds[idx]],
+                                    dId: self.dimIds[currentLayer - 1],
+                                    drillDid: self.dimIds[currentLayer]
                                 };
                         }
                     }else{
@@ -62,14 +65,17 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             x: item.n,
                             y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
                             targetIds: [targetIds[idx]],
-                            settings: BI.Utils.getDimensionSettingsByID(targetIds[idx])
+                            settings: BI.Utils.getDimensionSettingsByID(targetIds[idx]),
+                            dId: self.dimIds[currentLayer - 1],
+                            drillDid: self.dimIds[currentLayer]
                         };
                     }
                     if(BI.has(item, "c")){
                         res.drilldown = {};
-                        res.drilldown.series = self._formatDataForMap(item);
+                        res.drilldown.series = self._formatDataForMap(item, currentLayer);
                         res.drilldown.geo = {
-                            data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]]
+                            data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]],
+                            geoName: res.x
                         };
                     }
                     return res;
@@ -90,19 +96,20 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var targetIds = this._getShowTarget();
         if (BI.has(data, "t")) {
             var top = data.t, left = data.l;
-            return BI.map(top.c, function (id, tObj) {
+            var init = BI.map(top.c, function (id, tObj) {
                 var data = [];
                 BI.each(left.c, function (idx, obj) {
                     var x = obj.n;
-                    var value = obj.s.c[id].s[0];
-                    if(BI.isNotNull(value) || value !== ""){
-                        data.push({
-                            "x": x,
-                            "z": tObj.n,
-                            "y": obj.s.c[id].s[0],
-                            targetIds: [targetIds[0]]
-                        });
-                    }
+                    BI.each(obj.s.c[id].s, function(i, o){
+                        if(BI.isNotNull(o) && BI.isNotNull(x)){
+                            data.push({
+                                "x": x,
+                                "z": tObj.n,
+                                "y": o,
+                                targetIds: [targetIds[i]]
+                            });
+                        }
+                    });
                 });
                 var name = tObj.n;
                 var obj = {};
@@ -110,6 +117,19 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 obj.name = name;
                 return obj;
             });
+            var result = [];
+            var size = 0;
+            if(init.length > 0){
+                size = targetIds.length;
+            }
+            BI.each(BI.makeArray(size, null), function(idx, index){
+                var res = {data: [], name: BI.Utils.getDimensionNameByID(targetIds[idx])};
+                BI.each(init, function(id, obj){
+                    res.data.push(obj.data[idx]);
+                });
+                result.push(res);
+            });
+            return result;
         }
         if (BI.has(data, "c")) {
             var obj = (data.c)[0];
@@ -383,14 +403,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var o = this.options;
         switch (type) {
             case BICst.WIDGET.SCATTER:
-                if(this.targetIds < 2){
+                if(this.targetIds.length < 2){
                     return "";
                 }else{
                     return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) +":'+ this.x +'</div><div>(Y)"
                         + BI.Utils.getDimensionNameByID(this.targetIds[0]) +":'+ this.y +'</div>'}";
                 }
             case BICst.WIDGET.BUBBLE:
-                if(this.targetIds < 3){
+                if(this.targetIds.length < 3){
                     return "";
                 }else{
                     return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) +":'+ this.x +'</div><div>(Y)"
@@ -480,7 +500,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.SCATTER:
                 return this._formatDataForScatter(data);
             case BICst.WIDGET.MAP:
-                var da = this._formatDataForMap(data);
+                var da = this._formatDataForMap(data, 0);
                 return BI.isEmptyArray(da) ? da : [da];
             case BICst.WIDGET.GIS_MAP:
                 var da = this._formatDataForGISMap(data);
@@ -527,6 +547,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var self = this, o = this.options;
         var options = {};
         this._refreshDimsInfo();
+        var realData = true;
+        if(o.status === BICst.WIDGET_STATUS.DETAIL) {
+            realData = BI.Utils.isShowWidgetRealDataByID(o.wId) || false;
+        }
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
             if(BI.isNotNull(jsonData.error)) {
                 callback(jsonData);
@@ -556,17 +580,29 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var i = BI.UUID();
                 var type = types[idx];
                 BI.each(item, function(id, it){
-                    type[id] === BICst.WIDGET.ACCUMULATE_AXIS && BI.extend(it, {stack: i});
+                    (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
                 });
             });
             if(type === BICst.WIDGET.MAP){
-                options.geo = {data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]}
+                options.geo = {
+                    data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
+                    geoName: BICst.MAP_TYPE_NAME[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                }
             }
             if(type === BICst.WIDGET.GIS_MAP){
                 options.geo = {
                     "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
                 };
             }
+            //var opts = Data.Utils.getWidgetData(jsonData.data, {
+            //    type: BI.Utils.getWidgetTypeByID(o.wId),
+            //    sub_type: BI.Utils.getWidgetSubTypeByID(o.wId),
+            //    view: BI.Utils.getWidgetViewByID(o.wId),
+            //    clicked: BI.Utils.getClickedByID(o.wId),
+            //    settings: BI.Utils.getWidgetSettingsByID(o.wId),
+            //    dimensions: BI.Utils.getWidgetDimensionsByID(o.wId)
+            //});
+            //callback(opts.types, opts.data, opts.options);
             callback(types, data, options);
         }, {
             expander: {
@@ -579,7 +615,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     value: [[]]
                 }
             },
-            page: -1
+            page: -1,
+            real_data: realData
         });
     },
 
@@ -587,49 +624,39 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var o = this.options;
         this._refreshDimsInfo();
         var dId = [], clicked = [];
-        // var drill = BI.Utils.getDrillByID(o.wId);
-        // var drillId = this.cataDid;
-        // if(BI.isNotNull(drill[drillId])) {
-        //     var drillArr = drill[drillId] || [];
-        //     var drillOb = drill[drillId][drillArr.length - 1];
-        //     if(BI.isNotNull(drillOb)) {
-        //         drillId = drillOb.dId;
-        //     }
-        // }
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
-            case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.dimIds[0],
+                    dId: obj.dId || this.dimIds[0],
                     value: [obj.seriesName]
                 }];
                 break;
             case BICst.WIDGET.DASHBOARD:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.dimIds[0],
-                    value: [obj.category]
+                    dId: obj.dId || this.dimIds[0],
+                    value: [obj.value || obj.x]
                 }];
                 break;
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.dimIds[0],
+                    dId: obj.dId || this.dimIds[0],
                     value: [obj.x]
                 }];
                 break;
             default:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: this.dimIds[0],
+                    dId: obj.dId || this.dimIds[0],
                     value: [obj.value || obj.x]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
-                        dId: this.crossDimIds[0],
+                        dId: obj.dId || this.crossDimIds[0],
                         value: [obj.seriesName]
                     })
                 }

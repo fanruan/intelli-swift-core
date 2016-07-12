@@ -71,9 +71,13 @@ public class BIPlate extends AbstractFSPlate {
         initOOMKillerForLinux();
         BICubeManagerProvider markedObject = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
         loadMemoryData();
-        if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
+        /*若发现cube需要更新的话,更新cube*/
+        BIConfigureManagerCenter.getLogManager().logStart(UserControl.getInstance().getSuperManagerID());
+//        if (CubeRunner.isIncremental(UserControl.getInstance().getSuperManagerID())) {
+            if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
             markedObject.generateCubes();
         }
+        BIConfigureManagerCenter.getLogManager().logEnd(UserControl.getInstance().getSuperManagerID());
         addBITableColumn4NewConnection();
     }
 
@@ -213,16 +217,7 @@ public class BIPlate extends AbstractFSPlate {
     public String[] getPlateStyleFiles4WebClient() {
         return (String[]) ArrayUtils.addAll(ResourceHelper.getFoundationCss(), new String[]{
                 "/com/fr/bi/web/cross/css/bi.toolbar.add.css",
-                "/com/fr/bi/web/cross/css/bi.segment.css",
-                "/com/fr/bi/web/cross/css/bi.combo.css",
-                "/com/fr/bi/web/cross/css/bi.button.css",
-
-                "/com/fr/bi/web/cross/css/bi.button.css",
                 "/com/fr/bi/web/cross/css/bi.shared.table.css",
-                "/com/fr/bi/web/cross/css/bi.quarter.css",
-
-                "/com/fr/bi/web/cross/css/bi.label.css",
-                "/com/fr/bi/web/cross/css/bi.title.css",
 
                 "/com/fr/bi/web/cross/css/bi.extra.dialog.css",
                 "/com/fr/bi/web/cross/css/bi.edit.dialog.css",
@@ -233,6 +228,8 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/css/bi.template.list.css",
                 "/com/fr/bi/web/cross/css/bi.template.createdlist.css",
 
+                "/com/fr/bi/web/cross/css/theme/bi.chartpreview.css",
+                "/com/fr/bi/web/cross/css/theme/bi.stylesetting.css",
                 "/com/fr/bi/web/cross/css/theme/bi.theme.css",
 
                 "/com/fr/bi/web/cross/css/reporthangout/hangoutreport.plate.css",
@@ -254,19 +251,15 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",
                 "/com/fr/bi/web/cross/js/effect/allreports.js",
                 "/com/fr/bi/web/cross/js/bi.share.js",
+                "/com/fr/bi/web/cross/js/theme/bi.chartpreview.js",
+                "/com/fr/bi/web/cross/js/theme/bi.stylesetting.js",
                 "/com/fr/bi/web/cross/js/theme/bi.theme.js",
                 "/com/fr/bi/web/cross/js/theme/bi.widget.newanalysis.js",
                 "/com/fr/bi/web/cross/js/bi.toolbar.add.js",
                 "/com/fr/bi/web/cross/js/bi.directory.edit.js",
                 "/com/fr/bi/web/cross/js/reporthangout/hangoutreport.plate.js",
-                "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js",
-                "/com/fr/bi/web/cross/js/bi.extra.dialog.js",
-                "/com/fr/bi/web/cross/js/bi.segment.js",
-                "/com/fr/bi/web/cross/js/bi.combo.js",
-                "/com/fr/bi/web/cross/js/bi.button.js",
+                "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js"
 
-                "/com/fr/bi/web/cross/js/bi.label.js",
-                "/com/fr/bi/web/cross/js/bi.title.js"
         });
     }
 

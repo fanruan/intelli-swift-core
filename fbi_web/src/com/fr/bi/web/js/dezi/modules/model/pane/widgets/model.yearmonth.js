@@ -12,9 +12,7 @@ BIDezi.YearMonthWidgetModel = BI.inherit(BI.Model, {
 
     change: function (changed) {
         if (BI.has(changed, "detail")) {
-            this.set(this.get("detail"), {
-                notrefresh: true
-            });
+            this.set(this.get("detail"));
         }
         if (BI.has(changed, "value")) {
             this.tmp({
@@ -33,7 +31,6 @@ BIDezi.YearMonthWidgetModel = BI.inherit(BI.Model, {
     refresh: function () {
         this.tmp({
             detail: {
-                name: this.get("name"),
                 dimensions: this.get("dimensions"),
                 view: this.get("view"),
                 type: this.get("type"),

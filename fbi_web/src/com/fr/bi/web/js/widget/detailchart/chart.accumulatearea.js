@@ -16,7 +16,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        MINLIMIT: 1e-3,
+        MINLIMIT: 1e-6,
         LEGEND_HEIGHT: 80
     },
 
@@ -75,7 +75,10 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        this.config.show_zoom === true && delete config.dataSheet;
+        if(this.config.show_zoom === true){
+            delete config.dataSheet;
+            delete config.zoom.zoomType;
+        }
 
         config.yAxis = this.yAxis;
 
@@ -84,7 +87,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed;
                     axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
-                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx);
                     axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -93,7 +96,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed;
                     axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
-                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx);
                     axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -122,15 +125,15 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
 
         function formatChartLineStyle(){
             switch (self.config.chart_line_type) {
-                case BICst.CHART_STYLE.RIGHT_ANGLE:
+                case BICst.CHART_SHAPE.RIGHT_ANGLE:
                     config.plotOptions.curve = false;
                     config.plotOptions.step = true;
                     break;
-                case BICst.CHART_STYLE.CURVE:
+                case BICst.CHART_SHAPE.CURVE:
                     config.plotOptions.curve = true;
                     config.plotOptions.step = false;
                     break;
-                case BICst.CHART_STYLE.NORMAL:
+                case BICst.CHART_SHAPE.NORMAL:
                 default:
                     config.plotOptions.curve = false;
                     config.plotOptions.step = false;
@@ -298,6 +301,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",

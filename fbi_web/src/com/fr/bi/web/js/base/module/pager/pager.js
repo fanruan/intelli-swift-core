@@ -42,12 +42,12 @@ BI.Pager = BI.inherit(BI.Widget, {
     },
     _init: function () {
         BI.Pager.superclass._init.apply(this, arguments);
-        this.currPage = this.options.curr;
+        this.currPage = BI.result(this.options, "curr");
         this._populate();
     },
 
     populate: function () {
-        this.currPage = this.options.curr;
+        this.currPage = BI.result(this.options, "curr");
         this._populate();
     },
 
@@ -239,16 +239,15 @@ BI.Pager = BI.inherit(BI.Widget, {
     setValue: function (v) {
         var o = this.options;
         v = v | 0;
-        console.assert(BI.isNumber(v), "页码必须为数字");
         v = v < 1 ? 1 : v;
         if (o.pages === false) {
             var lastPage = BI.result(o, "lastPage"), firstPage = 1;
-            o.curr = v > lastPage ? lastPage : ((firstPage = BI.result(o, "firstPage")), (v < firstPage ? firstPage : v));
+            this.currPage = v > lastPage ? lastPage : ((firstPage = BI.result(o, "firstPage")), (v < firstPage ? firstPage : v));
         } else {
             v = v > o.pages ? o.pages : v;
-            o.curr = v;
+            this.currPage = v;
         }
-        this.populate();
+        this._populate();
     },
 
     getValue: function () {

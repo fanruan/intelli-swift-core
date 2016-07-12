@@ -24,16 +24,16 @@ BI.SelectTreeDataCombo = BI.inherit(BI.Widget, {
                 }, op);
                 BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
                     var hasNext = !!jsonData.hasNext, nodes = jsonData.items || [];
-                    if (op.times === 1) {
-                        if (nodes.length === 0) {
-                            jsonData.items = [{
-                                value: "(空)",
-                                text: "(空)",
-                                id: BI.UUID(),
-                                nocheck: true
-                            }]
-                        }
-                    }
+                    //if (op.times === 1) {
+                    //    if (nodes.length === 0) {
+                    //        jsonData.items = [{
+                    //            value: BI.i18nText("BI-(Empty)"),
+                    //            text: BI.i18nText("BI-(Empty)"),
+                    //            id: BI.UUID(),
+                    //            nocheck: true
+                    //        }]
+                    //    }
+                    //}
                     callback(jsonData);
                 }, {tree_options: data})
             }

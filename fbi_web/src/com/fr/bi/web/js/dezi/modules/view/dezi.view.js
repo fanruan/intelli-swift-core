@@ -20,6 +20,7 @@ BIDezi.View = BI.inherit(BI.View, {
         var subvessel = BI.createWidget();
         var saveAs = BI.createWidget({
             type: "bi.icon_text_item",
+            invisible: !BICst.CONFIG.SHOW_DASHBOARD_TITLE,
             cls: "toolbar-save-font save-as",
             text: BI.i18nText("BI-Save_As"),
             height: 30,
@@ -57,7 +58,8 @@ BIDezi.View = BI.inherit(BI.View, {
             BI.requestAsync("fr_bi", "add_report", {
                 reportName: data.report_name,
                 reportLocation: data.report_location,
-                popConfig: self.model.get("popConfig")
+                popConfig: self.model.get("popConfig"),
+                realTime: self.model.get("description")
             }, function(res, model){
                 if (BI.isNotNull(res) && BI.isNotNull(res.reportId)) {
                     BI.Msg.toast(BI.i18nText("BI-Save_As_Success"));

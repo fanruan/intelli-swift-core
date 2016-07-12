@@ -86,7 +86,7 @@ public class ResourceHelper {
         List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
-            JSONObject allPacks = BIModuleUtils.createPackJSON(userId, req.getLocale());
+            JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
             //管理员
             if (manageId == userId) {
                 packages = allPacks;
@@ -451,8 +451,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/filter/conf.filter.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/statistic/conf.groupandstatistic.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/union/conf.union.css",
+                "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/union/widget.union.previewtable.css",
+                "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/union/widget.union.previewtable.headercell.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/convert/conf.convert.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/join/conf.join.css",
+                "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/join/widget.join.previewtable.css",
+                "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/join/widget.join.previewtable.headercell.css",
                 "com/fr/bi/web/css/conf/businesspackages/onepackage/etl/circle/conf.circle.css",
                 "com/fr/bi/web/css/conf/multirelation/conf.multirelation.css",
                 "com/fr/bi/web/css/conf/businesspackages/group/conf.packages.group.css",
@@ -701,6 +705,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/widget.summarytable.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/combo/sortfilter.combo.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/tablechartmanager.css",
+                "com/fr/bi/web/css/modules/tablechartmanager/chartdisplay/chartdisplay.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/errorpane/tablechart.errorpane.css",
 
                 //自适应布局
@@ -1169,7 +1174,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/onepackage/etl/flowchart/widget.etltable.operator.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/flowchart/widget.etltables.pane.js",
 
+
                 //union
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.union.previewtable.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.union.previewtable.headercell.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.addunion.table.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.unionresult.header.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/union/widget.union.js",
@@ -1179,6 +1187,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.jointype.group.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.jointype.button.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.joinresult.header.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.join.previewtable.headercell.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.join.previewtable.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/join/widget.join.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/join/widget.join.model.js",
 
@@ -1303,7 +1313,6 @@ public class ResourceHelper {
                 //表格属性设置
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/combo.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/wrap.item.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.js",
@@ -1536,7 +1545,7 @@ public class ResourceHelper {
 
                 /**
                  * 切片
-                */
+                 */
 
                 //tablechartmanager
                 "com/fr/bi/web/js/aspects/tablechartmanager/aspect.tablechartmanager.js",
@@ -1545,6 +1554,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/aspects/detailtable/aspect.detailtable.js",
 
                 "com/fr/bi/web/js/aspects/config.js",
+
+
+                //工程配置
+                "com/fr/bi/web/js/config.js"
         };
     }
 
@@ -1576,9 +1589,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/tip/tip.bubble.css",
                 "com/fr/bi/web/css/base/single/tip/tip.toast.css",
                 "com/fr/bi/web/css/base/single/tip/tip.tooltip.css",
-                "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
-                "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
-                "com/fr/bi/web/css/base/third/leaflet.css",
+
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
                 "com/fr/bi/web/css/base/view/scrollview.css",
@@ -1859,7 +1870,7 @@ public class ResourceHelper {
 
                 /**
                  * components
-                */
+                 */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
@@ -1885,6 +1896,34 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/share/sharetome.css",
                 "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
 
+        };
+    }
+
+    public static String[] getThirdCss() {
+        return new String[]{
+                "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
+                "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
+                "com/fr/bi/web/css/base/third/leaflet.css",
+        };
+    }
+
+    public static String[] getThirdJs() {
+        return new String[]{
+                "com/fr/bi/web/js/third/jquery.mousewheel.js",
+                "com/fr/bi/web/js/third/jquery.mCustomScrollbar.js",
+                "com/fr/bi/web/js/third/jquery.ui.core.js",
+                "com/fr/bi/web/js/third/jquery.ui.widget.js",
+                "com/fr/bi/web/js/third/jquery.ui.mouse.js",
+                "com/fr/bi/web/js/third/jquery.ui.position.js",
+                "com/fr/bi/web/js/third/jquery.ui.resizable.js",
+                "com/fr/bi/web/js/third/jquery.ui.draggable.js",
+                "com/fr/bi/web/js/third/jquery.ui.droppable.js",
+                "com/fr/bi/web/js/third/jquery.ui.sortable.js",
+                "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/es5-sham.js",
+                "com/fr/bi/web/js/third/raphael.js",
+                "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/js/third/leaflet.js"
         };
     }
 
@@ -2088,23 +2127,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.vertical.js",
-
-                "com/fr/bi/web/js/third/jquery.mousewheel.js",
-                "com/fr/bi/web/js/third/jquery.mCustomScrollbar.js",
-                "com/fr/bi/web/js/third/jquery.ui.core.js",
-                "com/fr/bi/web/js/third/jquery.ui.widget.js",
-                "com/fr/bi/web/js/third/jquery.ui.mouse.js",
-                "com/fr/bi/web/js/third/jquery.ui.position.js",
-                "com/fr/bi/web/js/third/jquery.ui.button.js",
-                "com/fr/bi/web/js/third/jquery.ui.resizable.js",
-                "com/fr/bi/web/js/third/jquery.ui.draggable.js",
-                "com/fr/bi/web/js/third/jquery.ui.droppable.js",
-                "com/fr/bi/web/js/third/jquery.ui.sortable.js",
-                "com/fr/bi/web/js/third/jquery.ui.effect.js",
-                "com/fr/bi/web/js/third/d3.js",
-                "com/fr/bi/web/js/third/vancharts-all.js",
-                "com/fr/bi/web/js/third/leaflet.js",
-
+                "com/fr/bi/web/js/data/utils.js",
 
                 "com/fr/bi/web/js/case/case.js",
                 "com/fr/bi/web/js/case/layer/panel.js",
@@ -2205,7 +2228,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                */
+                 */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2259,7 +2282,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                */
+                 */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2276,6 +2299,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulateradar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.area.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.multiaxis.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",
@@ -2394,8 +2418,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/numericalinterval/numericalinterval.js",
 
                 //可以设置参数的下拉框
-                "com/fr/bi/web/js/widget/paramsettingcombo/param1.date.item.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/param0.date.item.js",
+                "com/fr/bi/web/js/widget/paramsettingcombo/param1.date.item.js",
+                "com/fr/bi/web/js/widget/paramsettingcombo/param2.date.item.js",
+                "com/fr/bi/web/js/widget/paramsettingcombo/param3.date.item.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/popup.param.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/rangevaluecombo/rangevaluecombo.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/yearcombo/combo.param.year.js",
@@ -2409,7 +2435,6 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/widget/paramsettingcombo/dateintervalcombo/combo.param.dateinterval.js",
                 "com/fr/bi/web/js/widget/paramsettingcombo/dateintervalcombo/popup.param.dateinterval.js",
-                "com/fr/bi/web/js/widget/paramsettingcombo/param2.date.item.js",
 
                 //下拉复选框
                 "com/fr/bi/web/js/widget/multiselect/trigger/button.checkselected.js",
@@ -2567,7 +2592,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                */
+                 */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 
@@ -2575,6 +2600,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/valuechooser/combo.valuechooser.js",
                 "com/fr/bi/web/js/components/bigvaluechooser/combo.bigvaluechooser.js",
 
+                //带空节点的层级树
+                "com/fr/bi/web/js/components/tree/leveltree.empty.js",
+                "com/fr/bi/web/js/components/tree/multilayerleveltree.empty.js",
 
                 //树选值
                 "com/fr/bi/web/js/components/treevaluechooser/combo.treevaluechooser.js",
@@ -2612,15 +2640,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/share/sharetome.js",
                 "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
 
-                //工程配置
-                "com/fr/bi/web/js/config.js"
         };
     }
 
     public static String[] getFoundationCss() {
         String[] base = getBaseCss();
-        String[] widget = getCommonCss();
-        return (String[]) ArrayUtils.addAll(base, widget);
+        String[] third = new String[]{
+                "com/fr/bi/web/css/base/third/leaflet.css",
+        };
+        return (String[]) ArrayUtils.addAll(third, base);
     }
 
     /**
@@ -2630,7 +2658,11 @@ public class ResourceHelper {
      */
     public static String[] getFoundationJs() {
         String[] base = getBaseJs();
-        String[] widget = getCommonJs();
-        return (String[]) ArrayUtils.addAll(base, widget);
+        String[] third = new String[]{
+                "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/js/third/leaflet.js",
+        };
+        return (String[]) ArrayUtils.addAll(third, base);
     }
 }

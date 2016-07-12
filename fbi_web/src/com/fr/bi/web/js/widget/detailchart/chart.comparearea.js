@@ -16,7 +16,7 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        MINLIMIT: 1e-3,
+        MINLIMIT: 1e-6,
         LEGEND_HEIGHT: 80
     },
 
@@ -76,7 +76,10 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        this.config.show_zoom === true && delete config.dataSheet;
+        if(this.config.show_zoom === true){
+            delete config.dataSheet;
+            delete config.zoom.zoomType;
+        }
         config.yAxis = this.yAxis;
 
         BI.each(config.yAxis, function(idx, axis){
@@ -84,7 +87,7 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed ? !axis.reversed : axis.reversed;
                     axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
-                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx);
                     axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -93,7 +96,7 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed ? !axis.reversed : axis.reversed;
                     axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
-                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx);
                     axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -114,43 +117,6 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
 
 
         return [items, config];
-
-        function formatTickInXYaxis(type, position){
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
-            }
-            if(position === self.constants.LEFT_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            if(position === self.constants.RIGHT_AXIS){
-                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
-        }
 
         function _calculateValueNiceDomain(minValue, maxValue){
 
@@ -238,15 +204,15 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
 
         function formatChartLineStyle(){
             switch (self.config.chart_line_type) {
-                case BICst.CHART_STYLE.RIGHT_ANGLE:
+                case BICst.CHART_SHAPE.RIGHT_ANGLE:
                     config.plotOptions.curve = false;
                     config.plotOptions.step = true;
                     break;
-                case BICst.CHART_STYLE.CURVE:
+                case BICst.CHART_SHAPE.CURVE:
                     config.plotOptions.curve = true;
                     config.plotOptions.step = false;
                     break;
-                case BICst.CHART_STYLE.NORMAL:
+                case BICst.CHART_SHAPE.NORMAL:
                 default:
                     config.plotOptions.curve = false;
                     config.plotOptions.step = false;
@@ -256,19 +222,24 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
 
         function formatNumberLevelInYaxis(type, position){
             var magnify = calcMagnify(type);
-            if(magnify > 1){
-                BI.each(items, function(idx, item){
-                    BI.each(item.data, function(id, da){
-                        if (position === item.yAxis) {
-                            da.y = da.y || 0;
-                            da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(da.y) > 0){
-                                da.y = 0;
-                            }
+            BI.each(items, function (idx, item) {
+                var max = null;
+                BI.each(item.data, function (id, da) {
+                    if (position === item.yAxis) {
+                        da.y = da.y || 0;
+                        da.y = da.y.div(magnify);
+                        if (self.constants.MINLIMIT.sub(da.y) > 0) {
+                            da.y = 0;
                         }
-                    })
-                })
-            }
+                    }
+                    if((BI.isNull(max) || da.y > max)){
+                        max = da.y;
+                    }
+                });
+                if(BI.isNotNull(max)){
+                    self.maxes.push(max);
+                }
+            });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }
@@ -364,25 +335,19 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
         var self = this;
         this.maxes = [];
         BI.each(items, function(idx, item){
-            var max = null;
             BI.each(item, function(id, it){
                 if(idx > 0){
                     BI.extend(it, {reversed: true, xAxis: 0});
                 }else{
                     BI.extend(it, {reversed: false, xAxis: 1});
                 }
-                BI.each(it.data, function(i, da){
-                    if((BI.isNull(max) || da.y > max)){
-                        max = da.y;
-                    }
-                })
             });
-            self.maxes.push(max);
         });
         return items;
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",

@@ -9,7 +9,9 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         WIDGET: 0,
         TEMPLATE: 1,
         FOLDER: 2,
-        CREATE_BY_ME_ID: "-1"
+        CREATE_BY_ME_ID: "-1",
+        CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.NUMBER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
+            BICst.WIDGET.QUARTER, BICst.WIDGET.TREE, BICst.WIDGET.YEAR, BICst.WIDGET.YMD, BICst.WIDGET.GENERAL_QUERY]
     },
 
     _defaultConfig: function () {
@@ -224,19 +226,22 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         var call = function (widgets) {
-            var result = BI.map(widgets, function (wId, widget) {
-                return {
-                    id: wId,
-                    pId: id,
-                    isParent: true,
-                    layer: layer,
-                    nodeType: self.constants.WIDGET,
+            var result = [];
+            BI.each(widgets, function (wId, widget) {
+                if(!BI.contains(self.constants.CONTROL_TYPE, widget.type)){
+                    result.push({
+                        id: wId,
+                        pId: id,
+                        isParent: true,
+                        layer: layer,
+                        nodeType: self.constants.WIDGET,
 
-                    type: "bi.multilayer_icon_arrow_node",
-                    text: widget.name,
-                    title: widget.name,
-                    value: wId,
-                    iconCls: self._getWidgetClass(widget.type)
+                        type: "bi.multilayer_icon_arrow_node",
+                        text: widget.name,
+                        title: widget.name,
+                        value: wId,
+                        iconCls: self._getWidgetClass(widget.type)
+                    });
                 }
             });
             callback(BI.sortBy(result, "text"));

@@ -282,7 +282,7 @@ BI.Table = BI.inherit(BI.Widget, {
             items: [this.scrollBottomRight]
         });
 
-        var headerHeight = o.header.length * ((o.headerRowSize || o.rowSize) + 1);
+        var headerHeight = o.header.length * ((o.headerRowSize || o.rowSize) + 1) + 1;
         var leftWidth = BI.sum(o.freezeCols, function (i, col) {
             return o.columnSize[col] > 1 ? o.columnSize[col] + 1 : o.columnSize[col];
         });
@@ -329,74 +329,80 @@ BI.Table = BI.inherit(BI.Widget, {
                 resizer = null;
             };
             var handle;
-            if (isRight) {
-                var options = {
-                    handles: "w",
-                    minWidth: 15,
-                    helper: "clone",
-                    start: function (event, ui) {
-                        createResizer(ui.size, ui.position);
-                        self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
-                    },
-                    resize: function (e, ui) {
-                        resizeResizer(ui.size, ui.position);
-                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
-                        e.stopPropagation();
-                        //return false;
-                    },
-                    stop: function (e, ui) {
-                        stopResizer();
-                        if (o.isResizeAdapt) {
-                            var increment = ui.size.width - (BI.sum(self.columnRight) + self.columnRight.length);
-                            o.columnSize[self.columnLeft.length] += increment;
-                        } else {
-                            self.setRegionColumnSize(["fill", ui.size.width]);
+            if (o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
+                if (isRight) {
+                    var options = {
+                        handles: "w",
+                        minWidth: 15,
+                        helper: "clone",
+                        start: function (event, ui) {
+                            createResizer(ui.size, ui.position);
+                            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
+                        },
+                        resize: function (e, ui) {
+                            resizeResizer(ui.size, ui.position);
+                            self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
+                            e.stopPropagation();
+                            //return false;
+                        },
+                        stop: function (e, ui) {
+                            stopResizer();
+                            if (o.isResizeAdapt) {
+                                var increment = ui.size.width - (BI.sum(self.columnRight) + self.columnRight.length);
+                                o.columnSize[self.columnLeft.length] += increment;
+                            } else {
+                                self.setRegionColumnSize(["fill", ui.size.width]);
+                            }
+                            self._resize();
+                            ui.element.css("left", "");
+                            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                         }
-                        self._resize();
-                        ui.element.css("left", "");
-                        self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
-                    }
-                };
-                self.bottomRight.element.resizable(options);
-                handle = $(".ui-resizable-handle", this.bottomRight.element).css("top", -1 * headerHeight);
-            } else {
-                var options = {
-                    handles: "e",
-                    minWidth: 15,
-                    helper: "clone",
-                    start: function (event, ui) {
-                        createResizer(ui.size, ui.position);
-                        self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
-                    },
-                    resize: function (e, ui) {
-                        resizeResizer(ui.size, ui.position);
-                        self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
-                        e.stopPropagation();
-                        //return false;
-                    },
-                    stop: function (e, ui) {
-                        stopResizer();
-                        if (o.isResizeAdapt) {
-                            var increment = ui.size.width - (BI.sum(self.columnLeft) + self.columnLeft.length);
-                            o.columnSize[self.columnLeft.length - 1] += increment;
-                        } else {
-                            self.setRegionColumnSize([ui.size.width, "fill"]);
+                    };
+                    self.bottomRight.element.resizable(options);
+                    handle = $(".ui-resizable-handle", this.bottomRight.element).css("top", -1 * headerHeight);
+                } else {
+                    var options = {
+                        handles: "e",
+                        minWidth: 15,
+                        helper: "clone",
+                        start: function (event, ui) {
+                            createResizer(ui.size, ui.position);
+                            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE);
+                        },
+                        resize: function (e, ui) {
+                            resizeResizer(ui.size, ui.position);
+                            self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE);
+                            e.stopPropagation();
+                            //return false;
+                        },
+                        stop: function (e, ui) {
+                            stopResizer();
+                            if (o.isResizeAdapt) {
+                                var increment = ui.size.width - (BI.sum(self.columnLeft) + self.columnLeft.length);
+                                o.columnSize[self.columnLeft.length - 1] += increment;
+                            } else {
+                                self.setRegionColumnSize([ui.size.width, "fill"]);
+                            }
+                            self._resize();
+                            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                         }
-                        self._resize();
-                        self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
-                    }
-                };
-                self.bottomLeft.element.resizable(options);
-                handle = $(".ui-resizable-handle", this.bottomLeft.element).css("top", -1 * headerHeight);
+                    };
+                    self.bottomLeft.element.resizable(options);
+                    handle = $(".ui-resizable-handle", this.bottomLeft.element).css("top", -1 * headerHeight);
+                }
             }
         }
 
+        var regionColumnSize = o.regionColumnSize;
+        if (o.freezeCols.length === 0 || o.freezeCols.length >= o.columnSize.length) {
+            regionColumnSize = isRight ? ['fill', 0] : [0, 'fill'];
+        }
         this.partitions = BI.createWidget(BI.extend({
             element: this.element
         }, BI.LogicFactory.createLogic("table", BI.extend({}, o.logic, {
             rows: 2,
             columns: 2,
-            columnSize: o.regionColumnSize || (isRight ? ['fill', leftWidth] : [leftWidth, 'fill']),
+            columnSize: regionColumnSize || (isRight ? ['fill', leftWidth] : [leftWidth, 'fill']),
             rowSize: [headerHeight, 'fill'],
             items: [[{
                 el: this.topLeft
@@ -797,8 +803,11 @@ BI.Table = BI.inherit(BI.Widget, {
             function mergeCol(i, j) {
                 if (columnSize[j]) {
                     var width = preRow[i].attr("width") | 0;
-                    if (width > 0 && columnSize[j]) {
+                    if (width > 1.05 && columnSize[j]) {
                         width = width + columnSize[j] + 1;
+                        if (j === columnSize.length - 1) {
+                            width--;
+                        }
                     } else {
                         width = width + columnSize[j]
                     }
@@ -815,6 +824,9 @@ BI.Table = BI.inherit(BI.Widget, {
 
             function createOneEl(r, c) {
                 var width = self._calculateWidth(columnSize[c]);
+                if (width > 1.05 && c === columnSize.length - 1) {
+                    width--;
+                }
                 var height = self._calculateHeight(rowSize);
                 var td = $("<td>").attr("height", height)
                     .attr("width", width).css({"width": width, "height": height, "position": "relative"})
@@ -1021,44 +1033,67 @@ BI.Table = BI.inherit(BI.Widget, {
             scrollable: false,
             items: [this.scrollContainer]
         });
-        var scrollTop;
+        var scrolling, scrollX;
         this.scrollContainer.element.mousewheel(function (event, delta, deltaX, deltaY) {
             var inf = self._getScrollOffsetAndDur(event);
             if (deltaY < 0 || deltaY > 0) {
                 var ele = self.scrollContainer.element;
-                if (scrollTop) {
-                    ele[0].scrollTop = scrollTop;
+                if (scrolling) {
+                    ele[0].scrollTop = scrolling;
                 }
-                scrollTop = ele[0].scrollTop - delta * inf.offset;
+
+                scrolling = ele[0].scrollTop - delta * inf.offset;
                 var stopPropagation = false;
                 var st = ele[0].scrollTop;
-                ele[0].scrollTop = scrollTop;
-                if (ele[0].scrollTop !== scrollTop) {
+                ele[0].scrollTop = scrolling;
+                if (ele[0].scrollTop !== st) {
                     stopPropagation = true;
                 }
                 ele[0].scrollTop = st;
-                self._animateScrollTo(ele, ele[0].scrollTop, scrollTop, inf.dur, "linear", {
+                self._animateScrollTo(ele, ele[0].scrollTop, scrolling, inf.dur, "linear", {
                     onStart: function () {
                     },
                     onUpdate: function (top) {
                         self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, top);
                     },
                     onComplete: function () {
-                        self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
-                        scrollTop = null;
+                        self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrolling);
+                        scrolling = null;
                     }
                 });
                 //var scrollTop = self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * offset;
                 //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
                 if (stopPropagation === true) {
                     event.stopPropagation();
-                    //return false;
+                    return false;
                 }
             }
         });
-        this.scrollContainer.element.scroll(function () {
-            // scrollTop = self.scrollContainer.element[0].scrollTop;
+
+        var scrollTop = 0, scrollLeft = 0;
+        this.scrollContainer.element.scroll(function (e) {
+            var change = false;
+            var scrollElement = self.scrollContainer.element;
+            if (scrollElement.scrollTop() != scrollTop) {
+                if (Math.abs(scrollElement.scrollTop() - scrollTop) > 0.1) {
+                    e.stopPropagation();
+                    change = true;
+                }
+                scrollTop = scrollElement.scrollTop();
+            }
+            if (scrollElement.scrollLeft() != scrollLeft) {
+                if (Math.abs(scrollElement.scrollLeft() - scrollLeft) > 0.1) {
+                    e.stopPropagation();
+                    change = true;
+                }
+                scrollLeft = scrollElement.scrollLeft();
+            }
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
+            if (change === true) {
+                e.stopPropagation();
+                //return false;
+            }
+            return false;
         });
         this._resize = function () {
             if (self.element.is(":visible")) {
@@ -1205,12 +1240,20 @@ BI.Table = BI.inherit(BI.Widget, {
                                         wid += items[i].__mergeCols.length - 1;
                                     }
                                     if (BI.isNumeric(wid)) {
-                                        items[i].attr("width", wid).css("width", wid);
+                                        if (i == BI.size(items) - 1) {
+                                            items[i].attr("width", wid - 1).css("width", wid - 1);
+                                        } else {
+                                            items[i].attr("width", wid).css("width", wid);
+                                        }
                                     } else {
                                         items[i].attr("width", "").css("width", "");
                                     }
                                 } else {
-                                    items[i].attr("width", w).css("width", w);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].attr("width", w).css("width", w);
+                                    }
                                 }
                             }
                         });
@@ -1288,7 +1331,6 @@ BI.Table = BI.inherit(BI.Widget, {
                 var leftWidth = BI.sum(o.freezeCols, function (i, col) {
                     return o.columnSize[col] > 1 ? o.columnSize[col] + 1 : o.columnSize[col];
                 });
-
                 this.partitions.attr("columnSize", isRight ? ['fill', leftWidth] : [leftWidth, 'fill']);
                 this.partitions.resize();
             }
@@ -1312,12 +1354,20 @@ BI.Table = BI.inherit(BI.Widget, {
                                     wid += items[i].__mergeCols.length - 1;
                                 }
                                 if (BI.isNumeric(wid)) {
-                                    items[i].attr("width", wid).css("width", wid);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].attr("width", w).css("width", w);
+                                    }
                                 } else {
                                     items[i].attr("width", "").css("width", "");
                                 }
                             } else {
-                                items[i].attr("width", w).css("width", w);
+                                if (i == BI.size(items) - 1) {
+                                    items[i].attr("width", w - 1).css("width", w - 1);
+                                } else {
+                                    items[i].attr("width", w).css("width", w);
+                                }
                             }
                         }
                     });
@@ -1335,12 +1385,20 @@ BI.Table = BI.inherit(BI.Widget, {
                                     wid += items[i].__mergeCols.length - 1;
                                 }
                                 if (BI.isNumeric(wid)) {
-                                    items[i].attr("width", wid).css("width", wid);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].attr("width", w).css("width", w);
+                                    }
                                 } else {
                                     items[i].attr("width", "").css("width", "");
                                 }
                             } else {
-                                items[i].attr("width", w).css("width", w);
+                                if (i == BI.size(items) - 1) {
+                                    items[i].attr("width", w - 1).css("width", w - 1);
+                                } else {
+                                    items[i].attr("width", w).css("width", w);
+                                }
                             }
                         }
                     });
@@ -1358,12 +1416,20 @@ BI.Table = BI.inherit(BI.Widget, {
                                     wid += items[i].__mergeCols.length - 1;
                                 }
                                 if (BI.isNumeric(wid)) {
-                                    items[i].attr("width", wid).css("width", wid);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].attr("width", w).css("width", w);
+                                    }
                                 } else {
                                     items[i].attr("width", "").css("width", "");
                                 }
                             } else {
-                                items[i].attr("width", w).css("width", w);
+                                if (i == BI.size(items) - 1) {
+                                    items[i].attr("width", w - 1).css("width", w - 1);
+                                } else {
+                                    items[i].attr("width", w).css("width", w);
+                                }
                             }
                         }
                     });
@@ -1475,7 +1541,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 }
             });
             var w = this._calculateWidth(BI.sum(o.columnSize));
-            if (w > 1) {
+            if (w > 1.05) {
                 w += o.columnSize.length;
             }
             this.tableContainer.element.width(w);
@@ -1487,10 +1553,10 @@ BI.Table = BI.inherit(BI.Widget, {
     },
 
     getCalculateColumnSize: function () {
-        var o = this.options;
+        var self = this, o = this.options;
         var columnSize = [];
         if (o.isNeedFreeze) {
-            if (this.bottomLeftBodyTds.length > 0) {
+            if (BI.size(this.bottomLeftBodyTds) > 0 || BI.size(this.bottomRightBodyTds) > 0) {
                 if (!BI.any(this.bottomLeftBodyTds, function (i, tds) {
                         if (!BI.any(tds, function (i, item) {
                                 if (item.__mergeCols.length > 1) {
@@ -1498,13 +1564,21 @@ BI.Table = BI.inherit(BI.Widget, {
                                 }
                             })) {
                             BI.each(tds, function (i, item) {
-                                columnSize.push(item.width() / item.__mergeCols.length);
+                                var width = item.width() / item.__mergeCols.length;
+                                if (i == BI.size(tds) - 1) {
+                                    width++;
+                                }
+                                columnSize.push(width);
                             });
                             return true;
                         }
                     })) {
                     BI.each(this.bottomLeftBodyTds[0], function (i, item) {
-                        columnSize.push(item.width() / item.__mergeCols.length);
+                        var width = item.width() / item.__mergeCols.length;
+                        if (i == BI.size(self.bottomLeftBodyTds[0]) - 1) {
+                            width++;
+                        }
+                        columnSize.push(width);
                     });
                 }
                 if (!BI.any(this.bottomRightBodyTds, function (i, tds) {
@@ -1514,13 +1588,21 @@ BI.Table = BI.inherit(BI.Widget, {
                                 }
                             })) {
                             BI.each(tds, function (i, item) {
-                                columnSize.push(item.width() / item.__mergeCols.length);
+                                var width = item.width() / item.__mergeCols.length;
+                                if (i == BI.size(tds) - 1) {
+                                    width++;
+                                }
+                                columnSize.push(width);
                             });
                             return true;
                         }
                     })) {
                     BI.each(this.bottomRightBodyTds[0], function (i, item) {
-                        columnSize.push(item.width() / item.__mergeCols.length);
+                        var width = item.width() / item.__mergeCols.length;
+                        if (i == BI.size(self.bottomRightBodyTds[0]) - 1) {
+                            width++;
+                        }
+                        columnSize.push(width);
                     });
                 }
                 return columnSize;
@@ -1532,13 +1614,21 @@ BI.Table = BI.inherit(BI.Widget, {
                             }
                         })) {
                         BI.each(tds, function (i, item) {
-                            columnSize.push(item.width() / item.__mergeCols.length);
+                            var width = item.width() / item.__mergeCols.length;
+                            if (i == BI.size(tds) - 1) {
+                                width++;
+                            }
+                            columnSize.push(width);
                         });
                         return true;
                     }
                 })) {
-                BI.each(this.topLeftBodyTds[this.topLeftBodyTds.length - 1], function (i, item) {
-                    columnSize.push(item.width() / item.__mergeCols.length);
+                BI.each(this.topLeftBodyTds[BI.size(this.topLeftBodyTds) - 1], function (i, item) {
+                    var width = item.width() / item.__mergeCols.length;
+                    if (i == BI.size(self.topLeftBodyTds[BI.size(self.topLeftBodyTds) - 1]).length - 1) {
+                        width++;
+                    }
+                    columnSize.push(width);
                 });
             }
             if (!BI.any(this.topRightBodyTds, function (i, tds) {
@@ -1548,18 +1638,30 @@ BI.Table = BI.inherit(BI.Widget, {
                             }
                         })) {
                         BI.each(tds, function (i, item) {
-                            columnSize.push(item.width() / item.__mergeCols.length);
+                            var width = item.width() / item.__mergeCols.length;
+                            if (i == BI.size(tds) - 1) {
+                                width++;
+                            }
+                            columnSize.push(width);
                         });
                         return true;
                     }
                 })) {
-                BI.each(this.topRightBodyTds[this.topRightBodyTds.length - 1], function (i, item) {
-                    columnSize.push(item.width() / item.__mergeCols.length);
+                BI.each(this.topRightBodyTds[BI.size(this.topRightBodyTds) - 1], function (i, item) {
+                    var width = item.width() / item.__mergeCols.length;
+                    if (i == BI.size(self.topRightBodyTds[BI.size(self.topRightBodyTds) - 1]).length - 1) {
+                        width++;
+                    }
+                    columnSize.push(width);
                 });
             }
         } else {
             BI.each(this.headerTds[BI.size(this.headerTds) - 1], function (i, item) {
-                columnSize.push(item.width() / item.__mergeCols.length);
+                var width = item.width() / item.__mergeCols.length;
+                if (i == BI.size(self.headerTds[BI.size(self.headerTds) - 1]).length - 1) {
+                    width++;
+                }
+                columnSize.push(width);
             });
         }
         return columnSize;
@@ -1614,12 +1716,20 @@ BI.Table = BI.inherit(BI.Widget, {
                                         wid += items[i].__mergeCols.length - 1;
                                     }
                                     if (BI.isNumeric(wid)) {
-                                        items[i].attr("width", wid).css("width", wid);
+                                        if (i == BI.size(items) - 1) {
+                                            items[i].attr("width", wid - 1).css("width", wid - 1);
+                                        } else {
+                                            items[i].attr("width", wid).css("width", wid);
+                                        }
                                     } else {
                                         items[i].attr("width", "").css("width", "");
                                     }
                                 } else {
-                                    items[i].attr("width", w).css("width", w);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].attr("width", w - 1).css("width", w - 1);
+                                    } else {
+                                        items[i].attr("width", w).css("width", w);
+                                    }
                                 }
                             }
                         });
@@ -1689,7 +1799,6 @@ BI.Table = BI.inherit(BI.Widget, {
                 var leftWidth = BI.sum(o.freezeCols, function (i, col) {
                     return o.columnSize[col] > 1 ? o.columnSize[col] + 1 : o.columnSize[col];
                 });
-
                 this.partitions.attr("columnSize", isRight ? ['fill', leftWidth] : [leftWidth, 'fill']);
                 this.partitions.resize();
             }
@@ -1714,12 +1823,20 @@ BI.Table = BI.inherit(BI.Widget, {
                                     wid += items[i].__mergeCols.length - 1;
                                 }
                                 if (BI.isNumeric(wid)) {
-                                    items[i].attr("width", wid).css("width", wid);
+                                    if (i == BI.size(items) - 1) {
+                                        items[i].element.attr("width", wid - 1).css("width", wid - 1);
+                                    } else {
+                                        items[i].element.attr("width", wid).css("width", wid);
+                                    }
                                 } else {
                                     items[i].attr("width", "").css("width", "");
                                 }
                             } else {
-                                items[i].attr("width", w).css("width", w);
+                                if (i == BI.size(items) - 1) {
+                                    items[i].attr("width", w - 1).css("width", w - 1);
+                                } else {
+                                    items[i].attr("width", w).css("width", w);
+                                }
                             }
                         }
                     });
@@ -1760,18 +1877,31 @@ BI.Table = BI.inherit(BI.Widget, {
                     });
                 }
             });
-            this.tableContainer.element.width(this._calculateWidth(BI.sum(o.columnSize) + o.columnSize.length));
+            var cW = this._calculateWidth(BI.sum(o.columnSize));
+            if (cW > 1.05) {
+                cW = cW + o.columnSize.length;
+            }
+            this.tableContainer.element.width(cW);
         }
     },
 
     setRegionColumnSize: function (columnSize) {
         var self = this, o = this.options;
         o.regionColumnSize = columnSize;
-        if (o.isNeedFreeze) {
-            this.partitions.attr("columnSize", columnSize);
-            this.partitions.resize();
+        if (o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
+            if (o.isNeedFreeze) {
+                this.partitions.attr("columnSize", columnSize);
+                this.partitions.resize();
+            } else {
+                this.tableContainer.element.width(columnSize[0]);
+            }
         } else {
-            this.tableContainer.element.width(columnSize[0]);
+            if (o.isNeedFreeze) {
+                this.partitions.attr("columnSize", this._isRightFreeze() ? ['fill', 0] : [0, 'fill']);
+                this.partitions.resize();
+            } else {
+                this.tableContainer.element.width(columnSize[0]);
+            }
         }
     },
 

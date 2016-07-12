@@ -356,32 +356,42 @@ BI.Join = BI.inherit(BI.Widget, {
                         });
                         BI.Utils.getPreviewDataByTableAndFields(table, [], function (data) {
                             count--;
-                            var item = self._createTableItems(data, i);
-                            var tableView = BI.createWidget({
-                                type: "bi.preview_table",
-                                items: item.items,
-                                header: item.header
+                            var oTable = BI.createWidget({
+                                type: "bi.join_preview_table",
+                                data: data,
+                                index: i,
+                                height: self.constants.PREVIEW_TABLE_HEIGHT
                             });
                             wrapper.addItems([{
                                 type: "bi.label",
                                 text: BI.isNotNull(table.table_name) ? table.table_name : self.model.getETLTableNameByTable(table),
                                 cls: "original-table-name",
                                 height: self.constants.PREVIEW_BUTTON_HEIGHT
-                            }, {
-                                el: {
-                                    type: "bi.vertical",
-                                    items: [tableView],
-                                    height: self.constants.PREVIEW_TABLE_HEIGHT
-                                }
-                            }]);
+                            }, oTable]);
                         });
                         self.originalTablesArea.addItem(wrapper);
                     });
                     self.resultTab.setSelect(self.constants.SHOW_TABLE);
                     BI.Utils.getPreviewDataByTableAndFields(self.model.getTableInfo(), [], function (data) {
                         count--;
-                        var item = self._createResultTableItems(data);
-                        self.resultTable.populate(item.items, item.header);
+                        self.resultTable.empty();
+                        var rTable = BI.createWidget({
+                            type: "bi.join_preview_table",
+                            join_fields: self.model.getAllJoinFields(),
+                            join_names: self.model.getJoinNames(),
+                            all_fields: self.model.getAllTableFields(),
+                            data: data
+                        });
+                        rTable.on(BI.JoinPreviewTable.EVENT_RENAME, function(namesArray){
+                            self.model.setJoinNames(namesArray);
+                        });
+                        self.resultTable.addItem({
+                            el: rTable,
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0
+                        })
                     })
                 });
                 return BI.createWidget({
@@ -397,10 +407,9 @@ BI.Join = BI.inherit(BI.Widget, {
         switch (v) {
             case this.constants.SHOW_HEADER:
                 this.joinResultHeader = BI.createWidget({
-                    type: "bi.join_result_header",
-                    mergeResult: this.model.getJoinNames()
+                    type: "bi.join_result_header"
                 });
-                this.joinResultHeader.populate(this.model.getJoinNames(), this.model.getJoinFieldsName());
+                this.joinResultHeader.populate(this.model.getAllJoinFields(), this.model.getJoinNames(), this.model.getAllTableFields());
                 this.joinResultHeader.on(BI.JoinResultHeader.EVENT_CHANGE, function (joinNames) {
                     self.model.setJoinNames(joinNames);
                 });
@@ -414,7 +423,7 @@ BI.Join = BI.inherit(BI.Widget, {
                 });
             case this.constants.SHOW_TABLE:
                 return this.resultTable = BI.createWidget({
-                    type: "bi.preview_table"
+                    type: "bi.absolute"
                 });
         }
     },
@@ -441,88 +450,9 @@ BI.Join = BI.inherit(BI.Widget, {
         }
         if (this.model.checkMergeFields()) {
             this.resultTab.setSelect(this.constants.SHOW_HEADER);
-            this.joinResultHeader.populate(this.model.getJoinNames(), this.model.getJoinFieldsName());
+            this.joinResultHeader.populate(this.model.getAllJoinFields(), this.model.getJoinNames(), this.model.getAllTableFields());
         } else {
             this.resultTab.setSelect(this.constants.SHOW_TIP);
-        }
-    },
-
-    _createTableItems: function (data, index) {
-        var self = this;
-        var fields = data.fields, values = data.value, fieldTypes = data.type;
-        var header = [], items = [];
-        BI.each(fields, function (i, field) {
-            header.push({
-                text: field,
-                height: "100%"
-            });
-        });
-
-        BI.each(values, function (i, value) {
-            var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
-            BI.each(value, function (j, v) {
-                if (BI.isNotNull(items[j])) {
-                    items[j].push({
-                        text: isDate === true ? self._formatDate(v) : v,
-                        height: "100%",
-                        cls: "table-color" + index % 5
-                    });
-                } else {
-                    items.push([{
-                        text: isDate === true ? self._formatDate(v) : v,
-                        height: "100%",
-                        cls: "table-color" + index % 5
-                    }]);
-                }
-            });
-        });
-        return {
-            header: [header],
-            items: items
-        }
-    },
-
-    _createResultTableItems: function (data) {
-        var fields = data.fields, values = data.value, self = this;
-        var header = [], items = [];
-        var joinNames = this.model.getJoinNames();
-        BI.each(fields, function (i, field) {
-            header.push({
-                text: field,
-                height: "100%"
-            });
-        });
-
-
-        var fieldTypes = [];
-        BI.each(this.model.getAllFields(), function (i, fs) {
-            BI.each(fs, function (j, field) {
-                fieldTypes.push(field.field_type);
-            });
-        });
-
-
-        BI.each(values, function (i, value) {
-            var isDate = fieldTypes[i] === BICst.COLUMN.DATE;
-            BI.each(value, function (j, v) {
-                if (BI.isNotNull(items[j])) {
-                    items[j].push({
-                        text: isDate === true ? self._formatDate(v) : v,
-                        height: "100%",
-                        cls: joinNames[i].isLeft === true ? "table-color0" : "table-color1"
-                    });
-                } else {
-                    items.push([{
-                        text: isDate === true ? self._formatDate(v) : v,
-                        height: "100%",
-                        cls: joinNames[i].isLeft === true ? "table-color0" : "table-color1"
-                    }]);
-                }
-            });
-        });
-        return {
-            header: [header],
-            items: items
         }
     },
 

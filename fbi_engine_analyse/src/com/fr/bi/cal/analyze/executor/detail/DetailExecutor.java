@@ -60,7 +60,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                     return x;
                 }
                 //row + 1 ? 不然覆盖掉了列名
-                fillOneLine(cells, (int) row.getRow(), row.getValues());
+                fillOneLine(cells, (int) row.getRow() + 1, row.getValues());
                 return false;
             }
         };
@@ -118,8 +118,10 @@ public class DetailExecutor extends AbstractDetailExecutor {
                     return x;
                 }
                 List list = new ArrayList();
-                for (Object ob : row.getValues()) {
-                    list.add(ob);
+                for (int i = 0; i < row.getValues().length; i++){
+                    if (viewDimension[i].isUsed()){
+                        list.add(row.getValues()[i]);
+                    }
                 }
                 data.add(list);
                 return false;

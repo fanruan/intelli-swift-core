@@ -120,7 +120,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
     _initRegionSize: function () {
         var o = this.options;
-        if (o.isNeedFreeze === true) {
+        if (o.isNeedFreeze === true && o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
             var regionColumnSize = this.table.getRegionColumnSize();
             var maxWidth = this.table.element.width();
             if (!regionColumnSize[0] || regionColumnSize[0] > maxWidth) {
@@ -227,7 +227,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
     _resizeRegion: function () {
         var o = this.options;
         var regionColumnSize = this.table.getCalculateRegionColumnSize();
-        if (o.isNeedFreeze === true) {
+        if (o.isNeedFreeze === true && o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
             var block = this._getBlockSize();
             var sumLeft = block.sumLeft, sumRight = block.sumRight;
             if (sumLeft < regionColumnSize[0] || regionColumnSize[0] >= (sumLeft + sumRight)) {
@@ -237,7 +237,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             if (regionColumnSize[0] < 15 || regionColumnSize[1] < 15) {
                 var freezeCols = o.freezeCols;
                 if (freezeCols.length > 0) {
-                    this.table.setRegionColumnSize([maxWidth * 1.0 / 3, "fill"]);
+                    this.table.setRegionColumnSize([(maxWidth / 3) | 0, "fill"]);
                 } else {
                     this.table.setRegionColumnSize([0, "fill"]);
                 }

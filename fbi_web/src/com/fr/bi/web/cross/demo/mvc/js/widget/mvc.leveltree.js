@@ -11,7 +11,7 @@ LevelTreeView = BI.inherit(BI.View, {
 
     _render: function(vessel){
         var tree = BI.createWidget({
-            type: "bi.level_tree",
+            type: "bi.empty_level_tree",
             chooseType: 0,
             items: [{
                 id: 1,
@@ -19,14 +19,20 @@ LevelTreeView = BI.inherit(BI.View, {
                 value: 1,
                 isParent: true
             }, {
+                id: 2,
                 text: "第二项",
-                value: 2
+                value: 2,
+                isParent: true
             }, {
                 id: 3,
                 text: "第三项",
                 value: 1,
                 isParent: true,
                 open: true
+            }, {
+                id: 4,
+                text: "第四项",
+                value: 1
             }, {
                 id: 11,
                 pId: 1,

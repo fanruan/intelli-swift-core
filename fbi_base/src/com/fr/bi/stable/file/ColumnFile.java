@@ -50,4 +50,6 @@ public interface ColumnFile<T> extends IndexFile {
     ICubeColumnIndexReader createGroupByType(BIKey key, List<BITableSourceRelation> relationList, SingleUserNIOReadManager manager);
 
     NIOReader createDetailNIOReader(SingleUserNIOReadManager manager);
+
+    int getPositionOfGroup(int row, SingleUserNIOReadManager manager);
 }

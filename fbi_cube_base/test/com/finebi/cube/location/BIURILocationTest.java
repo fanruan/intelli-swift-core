@@ -12,8 +12,8 @@ import junit.framework.TestCase;
 public class BIURILocationTest extends TestCase {
     public void testSlash() {
         try {
-            BICubeLocation location = new BICubeLocation("/test", "child");
-            assertEquals("/test/child", location.getAbsolutePath());
+            BICubeLocation location = new BICubeLocation("/te st", "child");
+            assertEquals("/te st/child", location.getAbsolutePath());
         } catch (Exception ignore) {
             BILogger.getLogger().error(ignore.getMessage(), ignore);
         }

@@ -1,11 +1,15 @@
 package com.fr.bi.web.conf.services.packs;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BICubeManagerProvider;
 import com.fr.base.FRContext;
+import com.fr.bi.cal.BICubeManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
+import com.fr.stable.bridge.StableFactory;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,11 +45,12 @@ public class BIUpdatePackageGroupAction extends
 
         JSONObject jo = new JSONObject(groupString);
         BICubeConfigureCenter.getPackageManager().parseGroupJSON(userId, jo);
+        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         try {
-            /**
-             * Todo 保存资源
-             */
-//            FRContext.getCurrentEnv().writeResource(BIConfigureDataManager.getBusiPackManager().getInstance(userId));
+            BICubeConfigureCenter.getPackageManager().persistData(userId);
+            BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+            BICubeManager biCubeManager= StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
+            biCubeManager.resetCubeGenerationHour(userId);
         } catch (Exception e) {
             FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
         }

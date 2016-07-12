@@ -7,7 +7,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         DETAIL_NORTH_HEIGHT: 40,
         DETAIL_TAB_HEIGHT: 40,
         DETAIL_WEST_WIDTH: 270,
-        DETAIL_DATA_STYLE_HEIGHT: 280,
+        DETAIL_DATA_STYLE_HEIGHT: 320,
         DETAIL_GAP_NORMAL: 10,
         DETAIL_PANE_HORIZONTAL_GAP: 10,
         DETAIL_TAB_WIDTH: 200
@@ -41,7 +41,8 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         if (BI.has(changed, "view") ||
             BI.has(changed, "dimensions") ||
             BI.has(changed, "sort") ||
-            BI.has(changed, "filter_value")) {
+            BI.has(changed, "filter_value") ||
+            BI.has(changed, "real_data")) {
             this.tableChartPopupulate();
         }
         if (BI.has(changed, "type") || BI.has(changed, "sub_type")) {
@@ -157,31 +158,34 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         this.tableChartTab.on(BI.TableChartManager.EVENT_CHANGE, function (obs) {
             self.model.set(obs);
         });
-        // var checkbox = BI.createWidget({
-        //     type: "bi.real_data_checkbox"
-        // });
+        var checkbox = BI.createWidget({
+            type: "bi.real_data_checkbox"
+        });
+        checkbox.on(BI.RealDataCheckbox.EVENT_CHANGE, function () {
+            self.model.set("real_data", this.isSelected());
+        });
+        checkbox.setSelected(this.model.get("real_data") || false);
 
-        var data_style_tab = BI.createWidget({
+        var tab = BI.createWidget({
             type: "bi.data_style_tab",
             wId: this.model.get("id"),
-            cardCreator: BI.bind(this._createTabs, this),
-            cls: "widget-top-wrapper"
+            cardCreator: BI.bind(this._createTabs, this)
         });
 
-        data_style_tab.on(BI.DataStyleTab.EVENT_CHANGE, function () {
+        tab.on(BI.DataStyleTab.EVENT_CHANGE, function () {
             if (this.getSelect() === BICst.DETAIL_TAB_STYLE) {
                 self.chartSetting.populate();
             }
         });
 
-        // var top = BI.createWidget({
-        //     type: "bi.vtape",
-        //     cls: "widget-top-wrapper",
-        //     items: [data_style_tab, {
-        //         el: checkbox,
-        //         height: this.constants.DETAIL_NORTH_HEIGHT
-        //     }]
-        // });
+        var top = BI.createWidget({
+            type: "bi.vtape",
+            cls: "widget-top-wrapper",
+            items: [tab, {
+                el: checkbox,
+                height: this.constants.DETAIL_NORTH_HEIGHT
+            }]
+        });
 
         return BI.createWidget({
             type: "bi.absolute",
@@ -191,7 +195,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
                     type: "bi.border",
                     items: {
                         north: {
-                            el: data_style_tab,
+                            el: top,
                             height: this.constants.DETAIL_DATA_STYLE_HEIGHT,
                             bottom: this.constants.DETAIL_GAP_NORMAL
                         },

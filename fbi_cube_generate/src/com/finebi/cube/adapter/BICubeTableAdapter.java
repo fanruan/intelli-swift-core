@@ -1,9 +1,9 @@
 package com.finebi.cube.adapter;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
-import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.calculator.bidouble.MaxCalculator;
 import com.finebi.cube.calculator.bidouble.MinCalculator;
 import com.finebi.cube.calculator.bidouble.SumCalculator;
@@ -18,6 +18,7 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -26,8 +27,10 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.GeneralUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -231,6 +234,11 @@ public class BICubeTableAdapter implements ICubeTableService {
     @Override
     public ICubeColumnIndexReader loadGroup(BIKey columnIndex, List<BITableSourceRelation> relationList) {
         CubeColumnReaderService columnReaderService = getColumnReader(columnIndex);
+        checkFieldPathIndex(columnIndex, relationList, columnReaderService);
+        return new BIColumnIndexReader(columnReaderService, relationList);
+    }
+
+    private void checkFieldPathIndex(BIKey columnIndex, List<BITableSourceRelation> relationList, CubeColumnReaderService columnReaderService) {
         if (relationList != null) {
             try {
                 BICubeTablePath path = BICubePathUtils.convert(relationList);
@@ -242,9 +250,7 @@ public class BICubeTableAdapter implements ICubeTableService {
                 throw BINonValueUtils.beyondControl(e);
             }
         }
-        return new BIColumnIndexReader(columnReaderService, relationList);
     }
-
 
     private CubeColumnReaderService buildColumnReader(BIKey biKey) {
         CubeColumnReaderService columnReaderService;
@@ -264,7 +270,7 @@ public class BICubeTableAdapter implements ICubeTableService {
         return columnReaderService;
     }
 
-    public CubeColumnReaderService getColumnReader(BIKey biKey) {
+    private CubeColumnReaderService getColumnReader(BIKey biKey) {
         if (columnReaderServiceMap.containsKey(biKey)) {
             return columnReaderServiceMap.get(biKey);
         } else {
@@ -292,7 +298,20 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public ICubeColumnIndexReader loadGroup(BIKey key, List<BITableSourceRelation> relationList, boolean useRealData, int groupLimit) {
-        return loadGroup(key, relationList);
+        ICubeColumnIndexReader loadAll = loadGroup(key, relationList);
+        if (!useRealData) {
+            CubeTreeMap m = new CubeTreeMap(BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC);
+            Iterator iter = loadAll.iterator();
+            int i = 0;
+            while (iter.hasNext() && i < groupLimit) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                m.put(GeneralUtils.objectToString(entry.getKey()), entry.getValue());
+                i++;
+            }
+            return m;
+        } else {
+            return loadAll;
+        }
     }
 
     @Override
@@ -301,22 +320,10 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     @Override
-    public GroupValueIndex getIndexByRow(BIKey key, int row) {
-        CubeColumnReaderService columnReaderService = null;
-
-        try {
-            columnReaderService = getColumnReader(key);
-            return columnReaderService.getIndexByRow(row);
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
-
-
-    }
-
-    @Override
-    public CubeValueEntry getEntryByRow(BIKey key, int row) {
-        return null;
+    public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
+        CubeColumnReaderService columnReaderService = getColumnReader(key);
+        checkFieldPathIndex(key, relationList, columnReaderService);
+        return new BICubeValueEntryGetter(columnReaderService, relationList);
     }
 
     @Override

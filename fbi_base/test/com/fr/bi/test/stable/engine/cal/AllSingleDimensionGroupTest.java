@@ -5,6 +5,8 @@ package com.fr.bi.test.stable.engine.cal;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.engine.cal.AllSingleDimensionGroup;
 import com.fr.bi.stable.engine.cal.ResultDealer;
@@ -16,12 +18,14 @@ import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.stable.core.UUID;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import junit.framework.TestCase;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -118,9 +122,26 @@ public class AllSingleDimensionGroupTest extends TestCase {
         }
 
         @Override
-        public GroupValueIndex getIndexByRow(BIKey key, int row) {
-            return map.get(values[row]);
+        public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
+            return new ICubeValueEntryGetter() {
+                @Override
+                public GroupValueIndex getIndexByRow(int row) {
+                    return map.get(values[row]);
+                }
+
+                @Override
+                public CubeValueEntry getEntryByRow(int row) {
+                    return null;
+                }
+
+                @Override
+                public int getGroupSize() {
+                    return 0;
+                }
+            };
         }
+
+
 
         @Override
         public double getSUMValue(GroupValueIndex gvi, BIKey summaryIndex) {

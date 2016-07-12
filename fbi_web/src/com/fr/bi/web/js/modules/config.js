@@ -1,5 +1,29 @@
 //放置用户可以配置的常量
 
+BICst.CONFIG = {
+    SHOW_DASHBOARD_TITLE: true
+};
+
+//布局方式
+BICst.DASHBOARD_LAYOUT_ARRAY = [{
+    text: BI.i18nText("BI-Adaptive_Layout"), value: BICst.DASHBOARD_LAYOUT_ADAPT
+}, {
+    text: BI.i18nText("BI-Free_Layout"), value: BICst.DASHBOARD_LAYOUT_FREE
+}];
+
+//类型&数据/样式tab
+BICst.DETAIL_DATA_STYLE_TAB = [{
+    text: BI.i18nText("BI-Type_Data"), value: BICst.DETAIL_TAB_TYPE_DATA
+}, {
+    text: BI.i18nText("BI-Style"), value: BICst.DETAIL_TAB_STYLE
+}];
+
+//业务包字段/复用
+BICst.DETAIL_FIELD_REUSE_TAB = [{
+    text: BI.i18nText("BI-Package_Field"), value: BICst.DETAIL_PACKAGES_FIELD
+}, {
+    text: BI.i18nText("BI-Reuse_Field"), value: BICst.DETAIL_DIMENSION_REUSE
+}];
 //dashboard toolbar
 BICst.DASHBOARD_TOOLBAR = [{
     text: BI.i18nText('BI-Save_As'),
@@ -354,7 +378,7 @@ BICst.TIME_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_WIDGET_EXPAND,
         text: BI.i18nText("BI-Detailed_Setting"),
-        cls: "dashboard-widget-combo-detail-set-font"
+        cls: "widget-combo-expand-font"
     }],
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
@@ -383,7 +407,7 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_WIDGET_EXPAND,
         text: BI.i18nText("BI-Detailed_Setting"),
-        cls: "dashboard-widget-combo-detail-set-font"
+        cls: "widget-combo-expand-font"
     }],
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
@@ -512,20 +536,20 @@ BICst.TARGET_FILTER_STRING_COMBO = [[{
 
 //target number
 BICst.TARGET_FILTER_NUMBER_COMBO = [[{
-    text: BI.i18nText("BI-Equal"),
-    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
-    cls: "dot-e-font"
-}, {
-    text: BI.i18nText("BI-Not_Equal_To"),
-    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
-    cls: "dot-e-font"
-}], [{
     text: BI.i18nText("BI-In"),
     value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
     value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
     cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
@@ -1044,82 +1068,82 @@ BICst.AXIS_STYLE_GROUP = [{
 //折线图和面积图线形
 BICst.LINE_CHART_STYLE_GROUP = [{
     cls: "line-chart-style-broken-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "line-chart-style-curve-icon",
-    value: BICst.CHART_STYLE.CURVE
+    value: BICst.CHART_SHAPE.CURVE
 }, {
     cls: "line-chart-style-vertical-icon",
-    value: BICst.CHART_STYLE.RIGHT_ANGLE
+    value: BICst.CHART_SHAPE.RIGHT_ANGLE
 }];
 
 BICst.AREA_CHART_STYLE_GROUP = [{
     cls: "area-chart-style-broken-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "area-chart-style-curve-icon",
-    value: BICst.CHART_STYLE.CURVE
+    value: BICst.CHART_SHAPE.CURVE
 }, {
     cls: "area-chart-style-vertical-icon",
-    value: BICst.CHART_STYLE.RIGHT_ANGLE
+    value: BICst.CHART_SHAPE.RIGHT_ANGLE
 }];
 
 //饼图类型
 BICst.PIE_CHART_STYLE_GROUP = [{
     cls: "pie-chart-style-normal-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "pie-chart-style-equal-arc-rose-icon",
-    value: BICst.CHART_STYLE.EQUAL_ARC_ROSE
+    value: BICst.CHART_SHAPE.EQUAL_ARC_ROSE
 }, {
     cls: "pie-chart-style-not-equal-arc-rose-icon",
-    value: BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE
+    value: BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE
 }];
 
 //雷达图类性
 BICst.RADAR_CHART_STYLE_GROUP = [{
     cls: "radar-chart-style-polygon-icon",
-    value: BICst.CHART_STYLE.POLYGON
+    value: BICst.CHART_SHAPE.POLYGON
 }, {
     cls: "radar-chart-style-circle-icon",
-    value: BICst.CHART_STYLE.CIRCLE
+    value: BICst.CHART_SHAPE.CIRCLE
 }];
 
 //仪表盘类型
 BICst.DASHBOARD_CHART_STYLE_GROUP = [{
     cls: "dashboard-chart-style-360-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "dashboard-chart-style-180-icon",
-    value: BICst.CHART_STYLE.HALF_DASHBOARD
+    value: BICst.CHART_SHAPE.HALF_DASHBOARD
 }, {
     cls: "dashboard-chart-style-percent-icon",
-    value: BICst.CHART_STYLE.PERCENT_DASHBOARD
+    value: BICst.CHART_SHAPE.PERCENT_DASHBOARD
 }, {
     cls: "dashboard-chart-style-percent-scale-slot-icon",
-    value: BICst.CHART_STYLE.PERCENT_SCALE_SLOT
+    value: BICst.CHART_SHAPE.PERCENT_SCALE_SLOT
 }, {
     cls: "dashboard-chart-style-vertical-tube-icon",
-    value: BICst.CHART_STYLE.VERTICAL_TUBE
+    value: BICst.CHART_SHAPE.VERTICAL_TUBE
 }, {
     cls: "dashboard-chart-style-horizontal-tube-icon",
-    value: BICst.CHART_STYLE.HORIZONTAL_TUBE
+    value: BICst.CHART_SHAPE.HORIZONTAL_TUBE
 }];
 
 BICst.CHART_SCALE_SETTING = [{
     text: BI.i18nText("BI-Auto"),
     value: BICst.SCALE_SETTING.AUTO
 }, {
-    text:　BI.i18nText("BI-Custom"),
+    text: BI.i18nText("BI-Custom"),
     value: BICst.SCALE_SETTING.CUSTOM
 }];
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
     text: "圆形",
-    value: BICst.CHART_STYLE.CIRCLE
+    value: BICst.CHART_SHAPE.CIRCLE
 }, {
     text: "多边形",
-    value: BICst.CHART_STYLE.POLYGON
+    value: BICst.CHART_SHAPE.POLYGON
 }];
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
@@ -1143,10 +1167,10 @@ BICst.DEFAULT_CHART_SETTING = {
     //图
     chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
     chart_style: BICst.CHART_STYLE.STYLE_NORMAL,
-    chart_line_type: BICst.CHART_STYLE.NORMAL,
-    chart_pie_type: BICst.CHART_STYLE.NORMAL,
-    chart_radar_type: BICst.CHART_STYLE.POLYGON,
-    chart_dashboard_type: BICst.CHART_STYLE.NORMAL,
+    chart_line_type: BICst.CHART_SHAPE.NORMAL,
+    chart_pie_type: BICst.CHART_SHAPE.NORMAL,
+    chart_radar_type: BICst.CHART_SHAPE.POLYGON,
+    chart_dashboard_type: BICst.CHART_SHAPE.NORMAL,
     chart_inner_radius: 0,
     chart_total_angle: BICst.PIE_ANGLES.TOTAL,
     left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
@@ -1154,7 +1178,7 @@ BICst.DEFAULT_CHART_SETTING = {
     right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    number_of_pointer:BICst.POINTER.ONE,
+    number_of_pointer: BICst.POINTER.ONE,
     dashboard_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     x_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
@@ -1182,6 +1206,74 @@ BICst.DEFAULT_CHART_SETTING = {
     show_grid_line: true,
     show_zoom: false
 };
+
+BICst.DASHBOARD_STYLE_CONDITIONS = [{
+    range: {
+        min: 0,
+        max: 100,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#65B3EE"
+}, {
+    range: {
+        min: 100,
+        max: 200,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#95E1AA"
+}, {
+    range: {
+        min: 200,
+        max: 300,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#F8D08E"
+}];
+
+BICst.MAP_STYLE_CONDITIONS = [{
+    range: {
+        min: 0,
+        max: 100,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#09ABE9"
+}, {
+    range: {
+        min: 100,
+        max: 200,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#09ABE9"
+}, {
+    range: {
+        min: 200,
+        max: 300,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#09ABE9"
+}, {
+    range: {
+        min: 300,
+        max: 400,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#09ABE9"
+}, {
+    range: {
+        min: 400,
+        max: 500,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#09ABE9"
+}];
 
 BICst.CAL_TARGET_TYPE = [{
     text: BI.i18nText("BI-Formula"),

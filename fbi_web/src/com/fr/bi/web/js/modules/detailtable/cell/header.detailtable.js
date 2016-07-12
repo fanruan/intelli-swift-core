@@ -29,24 +29,28 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
             name = name + "(" + st + ")";
         }
         BI.createWidget({
-            type: "bi.horizontal_adapt",
+            type: "bi.htape",
             element: this.element,
             items: [{
-                type: "bi.label",
-                text: name,
-                title: name,
-                cls: "header-cell-text",
-                whiteSpace: "nowrap",
-                textAlign: "left",
-                lgap: 5,
-                height: 25
+                el: {
+                    type: "bi.label",
+                    text: name,
+                    title: name,
+                    cls: "header-cell-text",
+                    whiteSpace: "nowrap",
+                    textAlign: "left",
+                    lgap: 5,
+                    height: 25
+                }
             }, {
-                type: "bi.default",
-                items: [combo],
-                width: 25,
-                height: 25
-            }],
-            columnSize: ["", 25]
+                el: {
+                    type: "bi.center_adapt",
+                    items: [combo],
+                    width: 25,
+                    height: 25
+                },
+                width: 25
+            }]
         });
     },
 

@@ -84,11 +84,10 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
             Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
-
+            JSONArray ja = new JSONArray();
             String primaryId = null;
             Set<BITableRelation> relations = entry.getValue().getContainer();
             for (BITableRelation relation : relations) {
-                JSONArray ja = new JSONArray();
                 primaryId = relation.getPrimaryField().getFieldID().getIdentityValue();
                 ja.put(relation.createJSON());
                 if (primaryId != null) {

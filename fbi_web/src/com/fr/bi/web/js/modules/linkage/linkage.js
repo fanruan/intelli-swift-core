@@ -46,7 +46,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
                 el: this.arrangement,
                 left: 141,
                 right: 0,
-                top: 30,
+                top: BICst.CONFIG.SHOW_DASHBOARD_TITLE ? 31 : 0,
                 bottom: 0
             }]
         });

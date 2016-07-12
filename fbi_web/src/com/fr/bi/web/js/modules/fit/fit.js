@@ -49,7 +49,7 @@ BI.Fit = BI.inherit(BI.Widget, {
         });
         this.layoutCombo.setValue(o.layoutType);
         this.layoutCombo.on(BI.TextValueCombo.EVENT_CHANGE, function (v) {
-            self.arrangement.setLayoutType(v);
+            self._changeLayoutType(v);
             self.fireEvent(BI.Fit.EVENT_CHANGE);
         });
 
@@ -69,6 +69,26 @@ BI.Fit = BI.inherit(BI.Widget, {
         });
     },
 
+    _changeLayoutType: function (layoutType) {
+        var self = this;
+        BI.each(this.store, function (i, wi) {
+            switch (layoutType) {
+                case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                    wi.element.draggable('option', 'helper', function () {
+                        var helper = self.arrangement.getHelper();
+                        return helper.element;
+                    });
+                    wi.element.draggable('option', 'cursorAt', {left: 0, top: 0});
+                    break;
+                case BI.Arrangement.LAYOUT_TYPE.FREE:
+                    wi.element.draggable('option', 'helper', 'original');
+                    wi.element.draggable('option', 'cursorAt', false);
+                    break;
+            }
+        });
+        this.arrangement.setLayoutType(layoutType);
+    },
+
     _createItem: function (id, size, position, info) {
         var self = this, o = this.options;
         id || (id = BI.UUID());
@@ -82,9 +102,9 @@ BI.Fit = BI.inherit(BI.Widget, {
                 },
                 id: id
             });
-            widget.getDraggable().element.draggable({
-                // cursor: "move",
-                cursorAt: {left: 0, top: 0},
+            widget.element.draggable({
+                //cursorAt: {left: 0, top: 0},
+                handle: ".fit-widget-drag-bar",
                 start: function (e, ui) {
                     self._startDrag(id, ui.position, e);
                 },
@@ -92,13 +112,35 @@ BI.Fit = BI.inherit(BI.Widget, {
                     self._drag(id, size || {}, ui.position);
                 },
                 stop: function (e, ui) {
-                    self._stopDrag(widget);
+                    self._stopDrag(id, ui.position, widget);
                 },
-                helper: function (e) {
-                    var helper = self.arrangement.getHelper();
-                    return helper.element;
-                }
+                //helper: function (e) {
+                //    var helper = self.arrangement.getHelper();
+                //    return helper.element;
+                //}
             });
+
+            widget.on(BI.BasicButton.EVENT_CHANGE, function () {
+                BI.Broadcasts.send(BICst.BROADCAST.WIDGET_SELECTED_PREFIX);
+            });
+
+            //widget.getDraggable().element.draggable({
+            //    // cursor: "move",
+            //    cursorAt: {left: 0, top: 0},
+            //    start: function (e, ui) {
+            //        self._startDrag(id, ui.position, e);
+            //    },
+            //    drag: function (e, ui) {
+            //        self._drag(id, size || {}, ui.position);
+            //    },
+            //    stop: function (e, ui) {
+            //        self._stopDrag(widget);
+            //    },
+            //    helper: function (e) {
+            //        var helper = self.arrangement.getHelper();
+            //        return helper.element;
+            //    }
+            //});
         }
         return widget;
     },
@@ -109,10 +151,6 @@ BI.Fit = BI.inherit(BI.Widget, {
                 this.flag = this.arrangement.deleteRegion(id);
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
-                this.diff = {
-                    width: e.offsetX,
-                    height: e.offsetY
-                };
                 break;
         }
     },
@@ -131,15 +169,15 @@ BI.Fit = BI.inherit(BI.Widget, {
                 }
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
-                this.arrangement.setRegionPosition(id, {
-                    left: position.left - this.diff.width,
-                    top: position.top - this.diff.height
-                });
+                //this.arrangement.setRegionPosition(id, {
+                //    left: position.left < 0 ? 0 : position.left,
+                //    top: position.top < 0 ? 0 : position.top
+                //});
                 break;
         }
     },
 
-    _stopDrag: function (widget) {
+    _stopDrag: function (id, position, widget) {
         var flag = false;
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
@@ -150,6 +188,10 @@ BI.Fit = BI.inherit(BI.Widget, {
                 }
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
+                });
                 flag = true;
                 break;
         }
@@ -336,6 +378,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 height: bounds.height
             });
         });
+        this._changeLayoutType(layoutType);
         this.setLayoutType(layoutType);
         this.arrangement.populate(result);
     },

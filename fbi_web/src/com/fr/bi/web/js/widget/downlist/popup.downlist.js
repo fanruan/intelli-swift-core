@@ -86,7 +86,7 @@ BI.DownListPopup = BI.inherit(BI.Pane, {
                     item.cls = "down-list-group";
                     item.trigger = "hover";
                     item.isNeedAdjustWidth = false;
-                    item.el.title = item.el.text;
+                    item.el.title = item.el.title || item.el.text;
                     item.el.type = "bi.down_list_group_item";
                     item.el.logic = {
                         dynamic: true
@@ -111,7 +111,7 @@ BI.DownListPopup = BI.inherit(BI.Pane, {
                         self.singleValues.push(child.value);
                         child.type = "bi.down_list_item";
                         child.extraCls = " child-down-list-item";
-                        child.title = child.text;
+                        child.title = child.title || child.text;
                         child.textRgap = 10;
                         child.isNeedAdjustWidth = false;
                         child.logic = {
@@ -124,7 +124,7 @@ BI.DownListPopup = BI.inherit(BI.Pane, {
                     })
                 } else {
                     item.type = "bi.down_list_item";
-                    item.title = item.text;
+                    item.title = item.title || item.text;
                     item.textRgap = 10;
                     item.isNeedAdjustWidth = false;
                     item.logic = {

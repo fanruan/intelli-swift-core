@@ -12,6 +12,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.connection.DirectTableConnectionFactory;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -21,6 +22,7 @@ import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +33,8 @@ public class BICubeConfManager {
     private String loginField;
 
     private long packageLastModify;
+
+    private BIReportConstant.MULTI_PATH_STATUS multiPathCubeStatus;
 
     public String getCubePath() {
         return cubePath;
@@ -56,6 +60,14 @@ public class BICubeConfManager {
         this.packageLastModify = packageLastModify;
     }
 
+    public BIReportConstant.MULTI_PATH_STATUS getMultiPathCubeStatus() {
+        return multiPathCubeStatus;
+    }
+
+    public void setMultiPathCubeStatus(BIReportConstant.MULTI_PATH_STATUS multiPathCubeStatus) {
+        this.multiPathCubeStatus = multiPathCubeStatus;
+    }
+
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         if (cubePath != null) {
@@ -67,14 +79,16 @@ public class BICubeConfManager {
         return jo;
     }
 
-    public Object getFieldValue(BusinessField ck,long userId) {
+    public Object getFieldValue(BusinessField ck, long userId) {
         try {
             ICubeDataLoader loader = BICubeManager.getInstance().fetchCubeLoader(userId);
             String userName = UserControl.getInstance().getUser(userId).getUsername();
             BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(loginField));
-            BITableRelationPath firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userId, ck.getTableBelongTo(),field.getTableBelongTo());
-            List<BITableRelation> relations;
-            relations = firstPath.getAllRelations();
+            BITableRelationPath firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userId, ck.getTableBelongTo(), field.getTableBelongTo());
+            List<BITableRelation> relations = new ArrayList<BITableRelation>();
+            if(firstPath != null) {
+                relations = firstPath.getAllRelations();
+            }
             BIKey userNameIndex = new IndexKey(field.getFieldName());
             if (userNameIndex != null) {
                 final ConnectionRowGetter getter = DirectTableConnectionFactory.createConnectionRow(BIConfUtils.convert2TableSourceRelation(relations), loader);
@@ -90,7 +104,7 @@ public class BICubeConfManager {
                             return true;
                         }
                     });
-                    if (o.value != -1) {
+                    if (o.value != null) {
                         ICubeTableService cti = loader.getTableIndex(ck.getTableBelongTo().getTableSource());
                         return cti.getColumnDetailReader(cti.getColumnIndex(ck.getFieldName())).getValue(o.value);
                     }

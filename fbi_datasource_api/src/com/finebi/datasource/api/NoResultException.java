@@ -12,7 +12,7 @@ package com.finebi.datasource.api;
  * @see Query#getSingleResult()
  * @see TypedQuery#getSingleResult()
  * 
- * @since Java Persistence 1.0
+ * @since Advanced FineBI Analysis 1.0
  */
 public class NoResultException extends RuntimeException {
 

@@ -40,9 +40,9 @@ public class BIFieldPathIndexTest extends BICubeTestBase {
             CubeColumnReaderService getterService = cube.getCubeColumn(BITableKeyUtils.convert(BIMemoryDataSourceFactory.generateTableA()), BIColumnKey.covertColumnKey(new BICubeFieldSource(BITableSourceTestTool.getDBTableSourceA(), "gender", DBConstant.CLASS.STRING, 6)));
 
             CubeRelationEntityGetterService relationEntityGetterService = getterService.getRelationIndexGetter(BICubePathTestTool.getABC());
-            assertEquals(relationEntityGetterService.getBitmapIndex(getterService.getPositionOfGroup("girl")), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 7}));
-            assertEquals(relationEntityGetterService.getBitmapIndex(getterService.getPositionOfGroup(".dr")), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{4, 6}));
-            assertEquals(relationEntityGetterService.getBitmapIndex(getterService.getPositionOfGroup("boy")), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
+            assertEquals(relationEntityGetterService.getBitmapIndex(getterService.getPositionOfGroupByGroupValue("girl")), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 7}));
+            assertEquals(relationEntityGetterService.getBitmapIndex(getterService.getPositionOfGroupByGroupValue(".dr")), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{4, 6}));
+            assertEquals(relationEntityGetterService.getBitmapIndex(getterService.getPositionOfGroupByGroupValue("boy")), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
 
             assertEquals(relationEntityGetterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0, 2, 3, 5}));
 

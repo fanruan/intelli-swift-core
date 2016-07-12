@@ -18,8 +18,6 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.data.number.NumberGroupInfo;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.fs.base.entity.User;
-import com.fr.fs.control.UserControl;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -56,8 +54,7 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         if (this.column != null && BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(user.getUserId()).getAnylysisUserInfo() != null) {
             try {
-                User frUser = UserControl.getInstance().getUser(user.getUserId());
-                Object fieldValue = BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(user.getUserId()).getAnylysisUserInfo().getFieldValue(frUser.getUsername(), column, loader);
+                Object fieldValue = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(column, user.getUserId());
                 if (fieldValue != null) {
                     V = (Double) fieldValue;
                 }

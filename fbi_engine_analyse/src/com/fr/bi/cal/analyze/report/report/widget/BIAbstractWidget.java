@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
@@ -14,6 +15,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -45,9 +47,18 @@ public abstract class BIAbstractWidget implements BIWidget {
     private TargetFilter filter;
     private long initTime;
     private long userId;
+    private boolean realData = true;
 
     public long getUserId() {
         return userId;
+    }
+
+    public boolean isRealData() {
+        return realData;
+    }
+
+    public void setRealData(boolean realData) {
+        this.realData = realData;
     }
 
     private UnitRectangle getBlockBounds() {
@@ -131,7 +142,9 @@ public abstract class BIAbstractWidget implements BIWidget {
         }
         if (jo.has("init_time")) {
             initTime = jo.getLong("init_time");
-
+        }
+        if (jo.has("real_data")) {
+            realData = jo.optBoolean("real_data", true);
         }
         this.userId = userId;
     }
@@ -147,11 +160,14 @@ public abstract class BIAbstractWidget implements BIWidget {
     }
 
     public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
+        if (row.length == 0) {
+            row = new DimensionCalculator[]{new NoneDimensionCalculator(targetKey.getFields().get(0), new ArrayList<BITableSourceRelation>())};
+        }
         GroupValueIndex gvi = loader.getTableIndex(targetKey.getTableSource()).getAllShowIndex();
         //非管理员用户需要考虑到对于权限的过滤条件
-        if(userId != UserControl.getInstance().getSuperManagerID()) {
+        if (userId != UserControl.getInstance().getSuperManagerID()) {
             List<TargetFilter> filters = getAuthFilter(userId);
-            for(int i = 0; i < filters.size(); i++) {
+            for (int i = 0; i < filters.size(); i++) {
                 for (int j = 0; j < row.length; j++) {
                     gvi = GVIUtils.AND(gvi, filters.get(i).createFilterIndex(row[j], targetKey, loader, userId));
                 }
@@ -165,15 +181,20 @@ public abstract class BIAbstractWidget implements BIWidget {
         return gvi;
     }
 
-    private List<TargetFilter> getAuthFilter(long userId){
+    private List<TargetFilter> getAuthFilter(long userId) {
         List<TargetFilter> filters = new ArrayList<TargetFilter>();
         List<BIPackageID> authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
-        for(int i = 0 ; i < authPacks.size(); i ++) {
+        for (int i = 0; i < authPacks.size(); i++) {
             List<BIPackageAuthority> packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), userId);
-            for(int j = 0; j < packAuths.size(); j++) {
+            for (int j = 0; j < packAuths.size(); j++) {
                 BIPackageAuthority auth = packAuths.get(j);
-                if(auth.getFilter() != null) {
-                    filters.add(auth.getFilter());
+                if (auth.getFilter() != null) {
+                    try {
+                        TargetFilter filter = TargetFilterFactory.parseFilter(auth.getFilter(), userId);
+                        filters.add(filter);
+                    } catch (Exception e) {
+                        BILogger.getLogger().error(e.getMessage(), e);
+                    }
                 }
             }
         }

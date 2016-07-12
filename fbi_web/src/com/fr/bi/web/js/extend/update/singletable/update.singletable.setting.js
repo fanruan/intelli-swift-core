@@ -74,7 +74,6 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
             //效果:保存(新增)该表所在业务包的所有操作并更新对应cube
             handler: function () {
-                console.log(self.model.currentTable.id);
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
                 var tableInfo = {};
@@ -86,11 +85,6 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     tableInfo.ETLTable = self.model.currentTable;
                 }
                 self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, tableInfo);
-                // if (self.model.options.currentTable.connection_name=="__FR_BI_ETL__"){
-                //     tableInfo.isETL=true;
-                //     self.model.table.id=self.model.currentTable.id
-                // }
-                //     self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE,self.model.table);
                 self._createCheckInterval();
             }
         });

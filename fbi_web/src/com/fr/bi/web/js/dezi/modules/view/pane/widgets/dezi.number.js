@@ -55,6 +55,11 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
                 self.tools.setVisible(false);
             }
         });
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        });
     },
 
     _buildWidgetTitle: function () {
@@ -187,12 +192,11 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
     },
 
     change: function (changed, prev, context, options) {
-        if (options.notrefresh === true) {
-            return;
-        }
         if (BI.has(changed, "bounds")) {
             this._refreshLayout();
         }
+
+
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }

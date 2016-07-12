@@ -848,6 +848,15 @@
   content: "\e60c";
   color: #1a1a1a;
 }
+.hyper-link-font .b-font:before {
+  content: "\e688";
+  color: #808080;
+}
+.hyper-link-font.native .b-font:before,
+.hyper-link-font.disabled .b-font:before {
+  content: "\e688";
+  color: #808080;
+}
 .filter-font .b-font:before {
   content: "\e60f";
   color: #808080;
@@ -1930,6 +1939,15 @@
 .chart-reuse-font.native .b-font:before,
 .chart-reuse-font.disabled .b-font:before {
   content: "\e60b";
+  color: #808080;
+}
+.chart-date-normal-font .b-font:before {
+  content: "\e61b";
+  color: #808080;
+}
+.chart-date-normal-font.native .b-font:before,
+.chart-date-normal-font.disabled .b-font:before {
+  content: "\e61b";
   color: #808080;
 }
 .less-font .b-font:before {

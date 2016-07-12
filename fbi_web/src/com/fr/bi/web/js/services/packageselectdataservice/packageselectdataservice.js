@@ -376,7 +376,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         id: BI.UUID(),
                         pId: tableId,
                         type: "bi.excel_view",
-                        items: items
+                        tableId: tableId
                     });
                 }
             }
@@ -497,7 +497,13 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     },
 
     _isSelfCircleTable: function (tableId) {
-        return BI.Utils.getPathsFromTableAToTableB(tableId, tableId).length > 0;
+        var paths = BI.Utils.getPathsFromTableAToTableB(tableId, tableId)
+        if(paths.length === 0){
+            return false;
+        }
+        return !BI.find(paths, function(idx, path){
+            return path.length > 1;
+        });
     },
 
     /**

@@ -8,7 +8,7 @@ BI.ETLDateFilterCombo = BI.inherit(BI.Single, {
     },
     _defaultConfig: function () {
         return BI.extend(BI.ETLDateFilterCombo.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-date-combo",
+            baseCls: "bi-etl-date-combo",
             height: 30
         });
     },
@@ -77,7 +77,6 @@ BI.ETLDateFilterCombo = BI.inherit(BI.Single, {
         this.combo = BI.createWidget({
             type: "bi.combo",
             toggle: false,
-            element: this.element,
             isNeedAdjustHeight: false,
             isNeedAdjustWidth: false,
             el: this.trigger,
@@ -91,6 +90,35 @@ BI.ETLDateFilterCombo = BI.inherit(BI.Single, {
             self.popup.setValue(self.storeValue);
             self.fireEvent(BI.ETLDateFilterCombo.EVENT_BEFORE_POPUPVIEW);
         });
+        var triggerBtn = BI.createWidget({
+            type: "bi.trigger_icon_button",
+            cls: "bi-trigger-date-button chart-date-normal-font",
+            width: 30,
+            height: 23
+        });
+        triggerBtn.on(BI.TriggerIconButton.EVENT_CHANGE, function () {
+            if (self.combo.isViewVisible()) {
+                self.combo.hideView();
+            } else {
+                self.combo.showView();
+            }
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.combo,
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0
+            }, {
+                el: triggerBtn,
+                top: 0,
+                left: 0
+            }]
+        })
     },
 
     _convertTime : function (v) {
@@ -107,9 +135,9 @@ BI.ETLDateFilterCombo = BI.inherit(BI.Single, {
     },
 
     _setOBJValue: function (v) {
-        this.storeValue = v;
-        this.popup.setValue(v);
-        this.trigger.setValue(v);
+        this.storeValue = v.value;
+        this.popup.setValue(v.value);
+        this.trigger.setValue(v.value);
     },
 
     setValue: function (v) {

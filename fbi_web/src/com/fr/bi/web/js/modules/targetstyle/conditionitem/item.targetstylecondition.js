@@ -33,7 +33,7 @@ BI.TargetStyleConditionItem = BI.inherit(BI.Widget, {
 
         this.colorChooser.setValue(color);
 
-        this.delete = BI.createWidget({
+        this.deleteIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: "data-link-remove-font",
             width: 30,
@@ -43,18 +43,18 @@ BI.TargetStyleConditionItem = BI.inherit(BI.Widget, {
             }
         });
 
-        this.delete.setVisible(false);
+        this.deleteIcon.setVisible(false);
 
         this.element.hover(function () {
-           self.delete.setVisible(true);
+            self.deleteIcon.setVisible(true);
         }, function () {
-            self.delete.setVisible(false);
+            self.deleteIcon.setVisible(false);
         });
 
         BI.createWidget({
             type: "bi.left",
             element: this.element,
-            items: [this.numberRange, this.colorChooser, this.delete],
+            items: [this.numberRange, this.colorChooser, this.deleteIcon],
             hgap: 5
         })
     },

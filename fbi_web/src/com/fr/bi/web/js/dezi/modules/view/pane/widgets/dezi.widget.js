@@ -99,6 +99,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             self.widget.attr("items")[3].top = 0;
             self.widget.resize();
         });
+
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        });
     },
 
     _buildWidgetTitle: function () {
@@ -139,7 +145,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     _onClickChart: function (obj) {
-        this.chartDrill.populate(obj);
+        if (BI.has(obj, "clicked")) {
+            this.model.set(obj);
+        } else {
+            this.chartDrill.populate(obj);
+        }
     },
 
     _createTools: function () {

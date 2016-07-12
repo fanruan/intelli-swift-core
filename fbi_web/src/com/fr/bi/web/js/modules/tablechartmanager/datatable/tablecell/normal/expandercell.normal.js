@@ -37,7 +37,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         //日期的需要format
         var text = o.text;
         var dGroup = BI.Utils.getDimensionGroupByID(o.dId);
-        if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
+        if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD && BI.isNumeric(text)) {
             var date = new Date(BI.parseInt(text));
             text = date.print("%Y-%X-%d");
         }

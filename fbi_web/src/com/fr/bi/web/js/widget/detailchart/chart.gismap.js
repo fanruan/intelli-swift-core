@@ -16,7 +16,9 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        STYLE_NORMAL: 21
+        STYLE_NORMAL: 21,
+        LNG_FIRST: 3,
+        LAT_FIRST: 4
     },
 
     _defaultConfig: function () {
@@ -44,10 +46,10 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         delete config.legend;
         delete config.zoom;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.plotOptions.dataLabels.formatter = function() {
-            return this.name + "," + this.value;
-        };
+        config.plotOptions.dataLabels.useHtml = true;
+        config.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">'+ "' + this.name + ','" + "+ this.value +'</div>'; return a;}";
         config.plotOptions.tooltip.shared = true;
+        config.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + (point.size || point.y) + '</div>');});return tip; }";
         config.geo = {
             "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
         };
@@ -69,33 +71,54 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
 
     },
 
-    _formatItems: function(items){
-        //BI.each(items, function(idx, item){
-        //    BI.each(item, function(id, it){
-        //        BI.each(it.data, function(i, da){
-        //            da.lnglat = da.x.split(",");
-        //            da.value = da.y;
-        //            da.name = da.z || "";
-        //        })
-        //    })
-        //});
-        //return items;
-        return [[{
-            data: [{
-                lnglat:[120.304319,31.552968],
-                name: "帆软",
-                value: 10000
-            }],
-            name: "合同金额"
-        }]]
+    _checkLngLatValid: function(lnglat){
+        if(lnglat.length < 2){
+            return false;
+        }
+        return lnglat[0] <= 180 && lnglat[0] >= -180 && lnglat[1] <= 90 && lnglat[1] >= -90;
+    },
 
+    _formatItems: function(items){
+        var self = this;
+        var results = [];
+        BI.each(items, function(idx, item){
+            var result = [];
+            BI.each(item, function(id, it){
+                var res = [];
+                BI.each(it.data, function(i, da){
+                    var lnglat = da.x.split(",");
+                    if(self.config.lnglat === self.constants.LAT_FIRST){
+                        var lng = lnglat[1];
+                        lnglat[1] = lnglat[0];
+                        lnglat[0] = lng;
+                    }
+                    da.lnglat = lnglat;
+                    da.value = da.y;
+                    da.name = BI.isNotNull(da.z) ? da.z : da.lnglat;
+                    if(self._checkLngLatValid(da.lnglat)){
+                        res.push(da);
+                    }
+                });
+                if(BI.isNotEmptyArray(res)){
+                    result.push(BI.extend(it, {
+                        data: res
+                    }));
+                }
+            });
+            if(BI.isNotEmptyArray(result)){
+                results.push(result);
+            }
+        });
+        return results;
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false
+            show_data_label: options.show_data_label || false,
+            lnglat: options.lnglat || c.LNG_FIRST
         };
         this.options.items = items;
 

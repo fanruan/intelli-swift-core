@@ -44,6 +44,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
+        config.plotOptions.color = BI.isArray(this.config.theme_color) ? this.config.theme_color : [this.config.theme_color];
         var formatterArray = [];
         BI.backEach(items, function(idx, item){
             if(BI.has(item, "settings")){
@@ -61,6 +62,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         config.plotOptions.dataLabels.formatter.valueFormat = function(){
             return window.FR ? FR.contentFormat(arguments[0], formatterArray[0]) : arguments[0];
         };
+
         config.geo = this.config.geo;
         config.chartType = "areaMap";
         delete config.xAxis;
@@ -82,8 +84,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     config.rangeLegend.enabled = false;
                     break;
             }
-            config.rangeLegend.range.max = self.max;
-
+            //config.rangeLegend.range.max = self.max;
+            config.rangeLegend.continuous = false;
+            config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
         }
 
         function formatToolTipAndDataLabel(format, numberLevel){
@@ -111,6 +114,91 @@ BI.MapChart = BI.inherit(BI.Widget, {
             }
             return formatter;
         }
+
+        function getRangeStyle (styles , change , defaultColor) {
+            var range = [], color = null, defaultStyle = {};
+            var conditionMax = null, conditionMin = null, max = null, min = null;
+
+            BI.each(items , function (idx , item) {
+                BI.each(item.data , function (id , it) {
+                    if(BI.isNull(min) || min > it.y) {
+                        min = it.y
+                    }
+                    if(BI.isNull(max) || max < it.y) {
+                        max = it.y
+                    }
+                })
+            });
+
+            switch (change) {
+                case BICst.SCALE_SETTING.AUTO:
+                    defaultStyle.color = defaultColor;
+                    return defaultStyle;
+                case BICst.SCALE_SETTING.CUSTOM:
+                    if(styles.length !== 0) {
+                        BI.each(styles, function (idx, style) {
+                            range.push({
+                                color: style.color,
+                                from: style.range.min,
+                                to: style.range.max
+                            });
+                            color = style.color;
+                            conditionMax = style.range.max
+                        });
+
+                        conditionMin = BI.parseInt(styles[0].range.min);
+                        if (conditionMin !== 0) {
+                            range.push({
+                                color: "#808080",
+                                from: 0,
+                                to: conditionMin
+                            });
+                        }
+
+                        var maxScale = _calculateValueNiceDomain(0, max)[1];
+
+                        if (conditionMax < maxScale) {
+                            range.push({
+                                color: color,
+                                from: conditionMax,
+                                to: maxScale
+                            });
+
+                        }
+                    }
+                    return range;
+            }
+        }
+
+        function _calculateValueNiceDomain(minValue, maxValue){
+
+            minValue = Math.min(0, minValue);
+
+            var tickInterval = _linearTickInterval(minValue, maxValue);
+
+            return _linearNiceDomain(minValue, maxValue, tickInterval);
+        }
+
+        function _linearTickInterval(minValue, maxValue, m){
+
+            m = m || 5;
+            var span = maxValue - minValue;
+            var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
+            var err = m / span * step;
+
+            if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
+
+            return step;
+        }
+
+        function _linearNiceDomain(minValue, maxValue, tickInterval){
+
+            minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
+
+            maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
+
+            return [minValue, maxValue];
+        }
     },
 
     _formatDrillItems: function(items){
@@ -134,11 +222,15 @@ BI.MapChart = BI.inherit(BI.Widget, {
     _formatItems: function(items){
         var self = this, c = this.constants;
         this.max = null;
+        this.min = null;
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
                     if((BI.isNull(self.max) || da.y > self.max) && id === 0){
                         self.max = da.y;
+                    }
+                    if((BI.isNull(self.min) || da.y < self.min) && id === 0){
+                        self.min = da.y;
                     }
                     if(BI.has(it, "type") && it.type == "bubble"){
                         da.name = da.x;
@@ -157,12 +249,16 @@ BI.MapChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, options) {
+        options || (options = {});
         var self = this, c = this.constants;
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA]},
-            tooltip: options.tooltip || ""
+            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], geoName: BI.i18nText("BI-China")},
+            tooltip: options.tooltip || "",
+            theme_color: options.theme_color,
+            map_styles: options.map_styles,
+            auto_custom: options.auto_custom
         };
         this.options.items = items;
 

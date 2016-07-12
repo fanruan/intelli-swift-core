@@ -529,5 +529,25 @@ public class BIReportConstant {
 
     }
 
+    public enum MULTI_PATH_STATUS {
+        NEED_GENERATE_CUBE(0),
+        NOT_NEED_GENERATE_CUBE(1);
+
+        private int status;
+
+        MULTI_PATH_STATUS(int status) {
+            this.status = status;
+        }
+
+        public int getStatus() {
+            return this.status;
+        }
+
+        @Override
+        public String toString(){
+            return String.valueOf(this.status);
+        }
+    }
+
 
 }

@@ -51,6 +51,11 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
                 self.del.setVisible(false);
             }
         });
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!vessel.parent().parent().parent().hasClass("selected")) {
+                self.del.setVisible(false);
+            }
+        });
 
         BI.createWidget({
             type: "bi.absolute",
