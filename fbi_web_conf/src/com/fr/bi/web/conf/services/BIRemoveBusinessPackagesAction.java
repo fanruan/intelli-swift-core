@@ -20,9 +20,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
@@ -82,12 +80,37 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
             for (int i = 0; i < removeList.size(); i++) {
                 BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, removeList.get(i));
             }
-
-
+            saveUpdateSettings(packageId, userId);
             BICubeConfigureCenter.getPackageManager().removePackage(userId, new BIPackageID(packageId));
         } catch (BIPackageAbsentException e) {
 
         }
+    }
+
+    private void saveUpdateSettings(String packageId, long userId) throws BIPackageAbsentException {
+//        Set tables = BICubeConfigureCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables();
+//        Map<String, UpdateSettingSource> updateSettings = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(userId);
+//        Map<String, UpdateSettingSource> newUpdateSettings = new HashMap<String, UpdateSettingSource>();
+//        for (String s : updateSettings.keySet()) {
+//            for (Object t : tables) {
+//                BusinessTable table = (BusinessTable) t;
+//                if (table.getID().equals(s)) {
+//                    break;
+//                }
+//                newUpdateSettings.put(s, updateSettings.get(s));
+//            }
+//        }
+//        BIConfigureManagerCenter.getUpdateFrequencyManager().clear(userId);
+//        for (String s : newUpdateSettings.keySet()) {
+//            BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(s, newUpdateSettings.get(s), userId);
+//        }
+//        BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
+        Iterator tableIt = BICubeConfigureCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables().iterator();
+        while (tableIt.hasNext()) {
+            BusinessTable table = (BusinessTable) tableIt.next();
+            BIConfigureManagerCenter.getUpdateFrequencyManager().removeUpdateSetting(table.getID().getIdentity(),userId);
+        }
+        BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
     }
 
     private void addToRemoveList(IRelationContainer primaryContainer, List<BITableRelation> removeList) throws BIRelationAbsentException, BITableAbsentException {

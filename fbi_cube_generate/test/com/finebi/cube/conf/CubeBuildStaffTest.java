@@ -2,9 +2,9 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.conf.relation.BISystemTableRelationManager;
 import com.finebi.cube.conf.relation.BISystemTableRelationManager4Test;
-import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.impl.conf.CubeBuildIncremental;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
+import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.impl.conf.CubeBuildTableSource;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
