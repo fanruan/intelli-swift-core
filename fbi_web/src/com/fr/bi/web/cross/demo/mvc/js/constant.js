@@ -389,6 +389,8 @@ var _JS = [
 
     "detail/mvc.uploadimage.js",
 
+    "detail/mvc.imageset.js",
+
     "detail/mvc.webpage.js",
 
     "detail/mvc.arrangement.droppable.js",
@@ -604,6 +606,7 @@ var _Routes = {
     "/sequence_table2": "SequenceTable2View",
     "/upload_image": "UploadImageView",
     "/web_page": "WebPageView",
+    "/image_set": "ImageSetView",
 
     "/arrangement_droppable": "ArrangementDroppableView",
     "/arrangement": "ArrangementView",
@@ -1399,6 +1402,10 @@ _Models.detail = [{
         pId: 28,
         text: "bi.web_page",
         value: "web_page"
+    },{
+        pId: 28,
+        text: "bi.image_set",
+        value: "image_set"
     },{
         pId: 29,
         text: "bi.arrangement_droppable",

@@ -1785,6 +1785,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/image/button/upload.css",
                 "com/fr/bi/web/css/widget/image/button/href/image.button.href.css",
                 "com/fr/bi/web/css/widget/image/button/size/image.button.size.css",
+                "com/fr/bi/web/css/widget/image/imageset.css",
 
                 //可选下拉树
                 "com/fr/bi/web/css/widget/selecttree/combo.select.tree.css",
@@ -2546,6 +2547,7 @@ public class ResourceHelper {
 
                 //图片组件
                 "com/fr/bi/web/js/widget/image/uploadimage.js",
+                "com/fr/bi/web/js/widget/image/imageset.js",
                 "com/fr/bi/web/js/widget/image/button/size/image.button.size.js",
                 "com/fr/bi/web/js/widget/image/button/size/image.button.size.combo.js",
                 "com/fr/bi/web/js/widget/image/button/size/radio/image.button.size.radio.js",
