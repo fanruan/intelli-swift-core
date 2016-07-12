@@ -60,7 +60,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                     return x;
                 }
                 //row + 1 ? 不然覆盖掉了列名
-                fillOneLine(cells, (int) row.getRow(), row.getValues());
+                fillOneLine(cells, (int) row.getRow() + 1, row.getValues());
                 return false;
             }
         };
