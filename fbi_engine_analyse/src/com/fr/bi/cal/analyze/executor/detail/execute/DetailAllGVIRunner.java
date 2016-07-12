@@ -65,8 +65,7 @@ public class DetailAllGVIRunner extends AbstractGVIRunner {
 
     private void actionPerform(TableRowTraversal action, TreeSet<BIRowValue> set) {
         Iterator<BIRowValue> it = set.iterator();
-        //应该从0 开始 因为row要从1开始（考虑表头）
-        int index = 0;
+        int index = -1;
         while (it.hasNext()) {
             index++;
             BIRowValue value = it.next();

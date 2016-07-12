@@ -2424,7 +2424,7 @@
                 filterValue = {};
             } else {
                 filterValue.values = parseComplexDate(filterValue);
-                filterValue.type = BICst.GROUP.YMD;
+                filterValue.group = BICst.GROUP.YMD;
             }
         }
         return filter;
