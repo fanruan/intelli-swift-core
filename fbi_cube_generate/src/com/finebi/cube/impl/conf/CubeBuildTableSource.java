@@ -3,7 +3,7 @@ package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -12,16 +12,16 @@ import java.util.*;
 
 /**
  * Created by wuk on 16/6/1.
- * 看了下usage，貌似唯一被用到的地方就是自己写的单元测试……
+ * 主要用于实时报表的生成
  */
-public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
+public class CubeBuildTableSource implements CubeBuild {
 
     private Set<CubeTableSource> allSingleSources;
     private ICubeConfiguration cubeConfiguration;
     private BIUser biUser;
     Set<List<Set<CubeTableSource>>> dependTableResource;
 
-    public CubeBuildStuffManagerTableSource(CubeTableSource cubeTableSource, ICubeConfiguration cubeConfiguration, long userId) {
+    public CubeBuildTableSource(CubeTableSource cubeTableSource, ICubeConfiguration cubeConfiguration, long userId) {
         this.biUser = new BIUser(userId);
         this.cubeConfiguration = cubeConfiguration;
         Set<CubeTableSource> sourceSet = new HashSet<CubeTableSource>();
@@ -35,7 +35,7 @@ public class CubeBuildStuffManagerTableSource implements CubeBuildStuff {
 
     }
 
-    public CubeBuildStuffManagerTableSource(CubeTableSource cubeTableSource, long userId) {
+    public CubeBuildTableSource(CubeTableSource cubeTableSource, long userId) {
         this.biUser = new BIUser(userId);
         this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         Set<CubeTableSource> sourceSet = new HashSet<CubeTableSource>();

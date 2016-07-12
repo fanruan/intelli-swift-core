@@ -1,6 +1,5 @@
 package com.finebi.cube.impl.conf;
 
-import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -23,13 +22,12 @@ import static com.finebi.cube.conf.BICubeConfigureCenter.getTableRelationManager
  * Created by kary on 2016/6/8.
  * 表的增量更新，尽量减少依赖，最大化提升效率
  */
-public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
+public class CubeBuildIncremental extends AbstractCubeBuild implements CubeBuild {
 
     private Set<CubeTableSource> allSingleSources;
     private Set<CubeTableSource> sources;
     private Set<BIBusinessTable> newTables;
     private Set<BITableRelation> newRelations;
-    private ICubeConfiguration cubeConfiguration;
     private BIUser biUser;
     private Set<List<Set<CubeTableSource>>> dependTableResource;
     private Set<BITableRelation> tableRelationSet;
@@ -39,9 +37,9 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
     private Set<BICubeGenerateRelation> cubeGenerateRelationSet;
     
 
-    public CubeBuildStuffManagerIncremental(long userId, Set<BIBusinessTable> newTables, Set<BITableRelation> newRelations) {
+    public CubeBuildIncremental(long userId, Set<BIBusinessTable> newTables, Set<BITableRelation> newRelations) {
+        super(userId);
         this.biUser = new BIUser(userId);
-        this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         this.newRelations=newRelations;
         this.newTables=newTables;
         init();
@@ -213,11 +211,6 @@ public class CubeBuildStuffManagerIncremental implements CubeBuildStuff {
     @Override
     public Set<List<Set<CubeTableSource>>> getDependTableResource() {
         return dependTableResource;
-    }
-
-    @Override
-    public ICubeConfiguration getCubeConfiguration() {
-        return cubeConfiguration;
     }
 
     @Override

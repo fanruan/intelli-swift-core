@@ -1,12 +1,12 @@
 package com.fr.bi.web.conf.services.cubetask.utils;
 
 import com.finebi.cube.conf.BICubeManagerProvider;
-import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.impl.conf.CubeBuildStuffManager;
-import com.finebi.cube.impl.conf.CubeBuildStuffManagerIncremental;
-import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
+import com.finebi.cube.impl.conf.CubeBuildIncremental;
+import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
@@ -25,31 +25,31 @@ public class CubeTaskGenerate {
 
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
-    public static boolean CubeBuild(long userId, BITableID biTableID) {
-        CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable(new BIBusinessTable(biTableID), userId);
-        boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
+    public static boolean CubeBuildSingleTable(long userId, BITableID biTableID) {
+        CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(biTableID), userId);
+        boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
     }
 
-    public static boolean CubeBuild(long userId, BITableID ETLTableId, BITableID baseTableId) {
-        CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable(new BIBusinessTable(ETLTableId), userId);
-        boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
+    public static boolean CubeBuildETL(long userId, BITableID ETLTableId, BITableID baseTableId) {
+        CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(ETLTableId), userId);
+        boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
     }
 
-    public static boolean CubeBuild(long userId) {
+    public static boolean CubeBuildStaff(long userId) {
         boolean taskAddResult = false;
-        CubeBuildStuff cubeBuildStuff;
+        CubeBuild cubeBuild;
 /*若有新增表或者新增关联，增量更新，否则进行全量*/
         if (isIncremental(userId)) {
             BILogger.getLogger().info("Cube incremental update start");
-            cubeBuildStuff = new CubeBuildStuffManagerIncremental(userId,BICubeGenerateTool.getTables4CubeGenerate(userId),BICubeGenerateTool.getRelations4CubeGenerate(userId));
+            cubeBuild = new CubeBuildIncremental(userId,BICubeGenerateTool.getTables4CubeGenerate(userId),BICubeGenerateTool.getRelations4CubeGenerate(userId));
         } else {
             BILogger.getLogger().info("Cube global update start");
-            cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
+            cubeBuild = new CubeBuildStaff(new BIUser(userId));
         }
-        if (preConditionsCheck(userId, cubeBuildStuff)) {
-            CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
+        if (preConditionsCheck(userId, cubeBuild)) {
+            CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
             taskAddResult = cubeManager.addTask(task, userId);
         }
         return taskAddResult;
@@ -62,8 +62,8 @@ public class CubeTaskGenerate {
         return isIncremental;
     }
 
-    private static boolean preConditionsCheck(long userId, CubeBuildStuff cubeBuildStuff) {
-        boolean conditionsMeet = cubeBuildStuff.preConditionsCheck();
+    private static boolean preConditionsCheck(long userId, CubeBuild cubeBuild) {
+        boolean conditionsMeet = cubeBuild.preConditionsCheck();
         if (!conditionsMeet) {
             String errorMessage = "preConditions check failed! Please check the available HD space and data connections";
             BILogger.getLogger().error(errorMessage);

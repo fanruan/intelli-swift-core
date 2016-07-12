@@ -30,12 +30,12 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         BIConfigureManagerCenter.getLogManager().logStart(userId);
         boolean cubeBuild;
         if (StringUtils.isEmpty(baseTableId)) {
-            cubeBuild = CubeTaskGenerate.CubeBuild(userId);
+            cubeBuild = CubeTaskGenerate.CubeBuildStaff(userId);
         } else {
             if (isETL) {
-                cubeBuild = CubeTaskGenerate.CubeBuild(userId, new BITableID(ELTTableId), new BITableID(baseTableId));
+                cubeBuild = CubeTaskGenerate.CubeBuildETL(userId, new BITableID(ELTTableId), new BITableID(baseTableId));
             } else {
-                cubeBuild = CubeTaskGenerate.CubeBuild(userId, new BITableID(baseTableId));
+                cubeBuild = CubeTaskGenerate.CubeBuildSingleTable(userId, new BITableID(baseTableId));
             }
         }
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();

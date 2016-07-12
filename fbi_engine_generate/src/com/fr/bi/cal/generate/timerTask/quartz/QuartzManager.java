@@ -23,7 +23,7 @@ public class QuartzManager {
         jobDetail.getJobDataMap().put("jobName", schedule.getJobName());
         jobDetail.getJobDataMap().put("time", schedule.getTimeSchedule());
         jobDetail.getJobDataMap().put("sourceName", schedule.getSourceName());
-        jobDetail.getJobDataMap().put("CubeBuildStuff", schedule.getCubeBuildStuff());
+        jobDetail.getJobDataMap().put("CubeBuild", schedule.getCubeBuild());
         jobDetail.getJobDataMap().put("userId", schedule.getUserId());
         //触发器
         CronTrigger trigger =
