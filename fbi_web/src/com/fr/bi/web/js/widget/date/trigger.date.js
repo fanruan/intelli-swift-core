@@ -296,7 +296,7 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
         return this.editor.getValue();
     },
     getValue: function () {
-        return this.stored_value;
+        return this.store_value;
     }
 
 });
