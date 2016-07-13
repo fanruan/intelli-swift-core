@@ -9,6 +9,7 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.structure.table.CompoundCubeTableReader;
+import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -22,7 +23,7 @@ public class BICube implements Cube {
     private ICubeResourceRetrievalService resourceRetrievalService;
     private ICubeResourceDiscovery discovery;
     private BICubeVersion cubeVersion;
-    private static String CUBE_PROPERTY = "property";
+    private static String CUBE_PROPERTY = CubeConstant.CUBE_PROPERTY;
 
     public BICube(ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         this.resourceRetrievalService = resourceRetrievalService;

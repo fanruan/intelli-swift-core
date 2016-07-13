@@ -42,7 +42,6 @@ public class BackUpUtils {
         for (File f : currentFolder.listFiles(FILTER)) {
             BIFileUtils.copyFile(f.getName(), currentFolder, targetFolder);
         }
-
         backupBIReport(currentFolder, targetFolder);
     }
 

@@ -51,5 +51,4 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
         return jo;
     }
 
-
 }

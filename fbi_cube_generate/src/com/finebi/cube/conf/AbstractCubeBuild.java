@@ -3,6 +3,7 @@ package com.finebi.cube.conf;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.impl.conf.CalculateDependManager;
 import com.finebi.cube.impl.conf.CubePreConditionsCheckManager;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -23,9 +24,11 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     protected Set<CubeTableSource> sources = new HashSet<CubeTableSource>();
     private Set allBusinessTable = new HashSet<BIBusinessTable>();
     protected Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
+    protected CalculateDependTool calculateDependTool;
     public AbstractCubeBuild(long userId) {
         this.userId=userId;
         allBusinessTable = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
+        calculateDependTool=new CalculateDependManager();
         setSources();
         fullTableDBFields();
     }

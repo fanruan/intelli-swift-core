@@ -1,10 +1,10 @@
-package com.fr.bi.web.conf.services.cubetask.utils;
+package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.impl.conf.CubeBuildIncremental;
+import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.finebi.cube.relation.BITableRelation;
@@ -15,6 +15,7 @@ import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.web.conf.services.utils.BICubeGenerateUtils;
 
 import java.util.Set;
 
@@ -41,9 +42,9 @@ public class CubeTaskGenerate {
         boolean taskAddResult = false;
         CubeBuild cubeBuild;
 /*若有新增表或者新增关联，增量更新，否则进行全量*/
-        if (isIncremental(userId)) {
+        if (isPart(userId)) {
             BILogger.getLogger().info("Cube incremental update start");
-            cubeBuild = new CubeBuildIncremental(userId,BICubeGenerateTool.getTables4CubeGenerate(userId),BICubeGenerateTool.getRelations4CubeGenerate(userId));
+            cubeBuild = new CubeBuildByPart(userId, BICubeGenerateUtils.getTables4CubeGenerate(userId), BICubeGenerateUtils.getRelations4CubeGenerate(userId));
         } else {
             BILogger.getLogger().info("Cube global update start");
             cubeBuild = new CubeBuildStaff(new BIUser(userId));
@@ -55,11 +56,11 @@ public class CubeTaskGenerate {
         return taskAddResult;
     }
 
-    private  static boolean isIncremental(long userId) {
-        Set<BIBusinessTable> newTables = BICubeGenerateTool.getTables4CubeGenerate(userId);
-        Set<BITableRelation> newRelationSet = BICubeGenerateTool.getRelations4CubeGenerate(userId);
-        boolean isIncremental = newTables.size() > 0 || newRelationSet.size() > 0;
-        return isIncremental;
+    private  static boolean isPart(long userId) {
+        Set<BIBusinessTable> newTables = BICubeGenerateUtils.getTables4CubeGenerate(userId);
+        Set<BITableRelation> newRelationSet = BICubeGenerateUtils.getRelations4CubeGenerate(userId);
+        boolean isPart = newTables.size() > 0 || newRelationSet.size() > 0;
+        return isPart;
     }
 
     private static boolean preConditionsCheck(long userId, CubeBuild cubeBuild) {

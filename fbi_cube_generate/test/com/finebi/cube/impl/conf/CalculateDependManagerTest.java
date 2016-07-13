@@ -1,7 +1,10 @@
 package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.conf.CalculateDependTool;
-import com.finebi.cube.relation.*;
+import com.finebi.cube.relation.BICubeGenerateRelation;
+import com.finebi.cube.relation.BICubeGenerateRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.BITableSourceRelationTestTool;
@@ -27,9 +30,9 @@ public class CalculateDependManagerTest extends TestCase {
 
 
     public void testRelation() {
-        addTableABC();
+        Set<CubeTableSource> tableABC = addTableABC();
         BITableSourceRelation biTableSourceRelation = BITableSourceRelationTestTool.getMemoryBC();
-        BICubeGenerateRelation biTableSourceRelation4CubeGenerate = calculateDependManager4Test.calRelations(biTableSourceRelation);
+        BICubeGenerateRelation biTableSourceRelation4CubeGenerate = calculateDependManager4Test.calRelations(biTableSourceRelation,tableABC);
         assertTrue(biTableSourceRelation4CubeGenerate.getDependTableSourceSet().contains((BIMemoryDataSourceFactory.generateTableC())));
         assertTrue(biTableSourceRelation4CubeGenerate.getDependTableSourceSet().contains((BIMemoryDataSourceFactory.generateTableB())));
     }
@@ -45,15 +48,15 @@ public class CalculateDependManagerTest extends TestCase {
     }
 
     /*假设A表已经生成*/
-    public void testRelation4Incremental() {
-        addTableC();
+    public void testRelation4Part() {
+        Set<CubeTableSource> tableC = addTableC();
         BITableSourceRelation biTableSourceRelation = BITableSourceRelationTestTool.getMemoryBC();
-        BICubeGenerateRelation biTableSourceRelation4CubeGenerate = calculateDependManager4Test.calRelations(biTableSourceRelation);
+        BICubeGenerateRelation biTableSourceRelation4CubeGenerate = calculateDependManager4Test.calRelations(biTableSourceRelation,tableC);
         assertTrue(biTableSourceRelation4CubeGenerate.getDependTableSourceSet().contains((BIMemoryDataSourceFactory.generateTableC())));
         assertTrue(biTableSourceRelation4CubeGenerate.getDependTableSourceSet().size() == 1);
     }
 
-    public void testRelationPathIncremental() {
+    public void testRelationPath4Part() {
         addTableC();
         BITableSourceRelationPath abcPath = BITableSourceRelationPathTestTool.getABCPath();
         Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
@@ -76,19 +79,18 @@ public class CalculateDependManagerTest extends TestCase {
         }
     }
 
-    private void addTableC() {
+    private Set<CubeTableSource> addTableC() {
         Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
         cubeTableSourceSet.add(BIMemoryDataSourceFactory.generateTableC());
-        calculateDependManager4Test.setOriginal(cubeTableSourceSet);
+        return cubeTableSourceSet;
     }
 
-    private void addTableABC() {
+    private Set<CubeTableSource> addTableABC() {
         Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
         cubeTableSourceSet.add(BIMemoryDataSourceFactory.generateTableA());
         cubeTableSourceSet.add(BIMemoryDataSourceFactory.generateTableB());
         cubeTableSourceSet.add(BIMemoryDataSourceFactory.generateTableC());
-        calculateDependManager4Test.setOriginal(cubeTableSourceSet);
-
+        return cubeTableSourceSet;
     }
     
 }
