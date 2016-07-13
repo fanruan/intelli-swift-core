@@ -44,7 +44,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
-        config.plotOptions.color = BI.isArray(this.config.theme_color) ? this.config.theme_color : [this.config.theme_color];
+        //config.plotOptions.color = BI.isArray(this.config.theme_color) ? this.config.theme_color : [this.config.theme_color];
         var formatterArray = [];
         BI.backEach(items, function(idx, item){
             if(BI.has(item, "settings")){
@@ -84,8 +84,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     config.rangeLegend.enabled = false;
                     break;
             }
-            config.rangeLegend.range.max = self.max;
-           // config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
+            //config.rangeLegend.range.max = self.max;
+            config.rangeLegend.continuous = false;
+            config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
         }
 
         function formatToolTipAndDataLabel(format, numberLevel){
@@ -131,11 +132,8 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
             switch (change) {
                 case BICst.SCALE_SETTING.AUTO:
-                    //defaultStyle.color = defaultColor;
-                    //defaultStyle.splitNumber = 2;
-                    //return defaultStyle;
-                    return range;
-                    break;
+                    defaultStyle.color = defaultColor;
+                    return defaultStyle;
                 case BICst.SCALE_SETTING.CUSTOM:
                     if(styles.length !== 0) {
                         BI.each(styles, function (idx, style) {
@@ -169,7 +167,6 @@ BI.MapChart = BI.inherit(BI.Widget, {
                         }
                     }
                     return range;
-                    break;
             }
         }
 

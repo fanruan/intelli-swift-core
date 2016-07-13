@@ -2851,7 +2851,7 @@ Data.Utils = {
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
-            if(config.dataSheet.enabled === true){
+            if(configs.dataSheet.enabled === true){
                 configs.xAxis[0].showLabel = false;
             }
             configs.zoom.zoomTool.visible = config.show_zoom;
@@ -3081,7 +3081,7 @@ Data.Utils = {
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
-            if (config.dataSheet.enabled === true) {
+            if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
             configs.zoom.zoomTool.visible = config.show_zoom;
@@ -3510,7 +3510,7 @@ Data.Utils = {
             configs.legend.enabled = false;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
-            if(config.dataSheet.enabled === true){
+            if(configs.dataSheet.enabled === true){
                 configs.xAxis[0].showLabel = false;
             }
             configs.zoom.zoomTool.visible = config.show_zoom;

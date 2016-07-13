@@ -46,14 +46,17 @@ BI.ConfFilterValueChooserCombo = BI.inherit(BI.Widget, {
     _itemsCreator: function (options, callback) {
         var self = this, o = this.options;
         if (!this.items) {
+            this.items = [];
             BI.Utils.getConfDataByField(o.table, o.fieldName, {
                 type: BICst.REQ_DATA_TYPE.REQ_GET_ALL_DATA
             }, function (items) {
-                self.items = BI.map(items, function (i, v) {
-                    return {
-                        text: v,
-                        value: v,
-                        title: v
+                BI.each(items, function (i, v) {
+                    if(BI.isNotNull(v)){
+                        self.items.push({
+                            text: v,
+                            value: v,
+                            title: v
+                        });
                     }
                 });
                 call();

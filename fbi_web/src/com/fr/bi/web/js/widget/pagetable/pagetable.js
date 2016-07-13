@@ -9,7 +9,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     _const: {
         scrollWidth: 18,
-        minScrollWidth: 150
+        minScrollWidth: 100
     },
 
     _defaultConfig: function () {
@@ -309,7 +309,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 }, function (items, header, crossItems, crossHeader) {
                     BI.isNotNull(vpage) && self.setVPage(vpage);
                     BI.isNotNull(hpage) && self.setHPage(hpage);
-                    self._populate.apply(self, arguments);
+                    self.refresh.apply(self, arguments);
                     self._loaded();
                 });
             });
@@ -529,7 +529,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         this.table.hideSequence();
     },
 
-    _populate: function () {
+    refresh: function () {
         this.table.populate.apply(this.table, arguments);
         this._dealWithPager();
     },
@@ -538,7 +538,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         this._assertPager();
         this.pager.populate();
         this._adjustPager();
-        this._populate.apply(this, arguments);
+        this.refresh.apply(this, arguments);
     },
 
     destroy: function () {

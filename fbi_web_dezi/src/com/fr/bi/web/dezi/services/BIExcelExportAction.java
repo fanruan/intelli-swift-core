@@ -58,6 +58,7 @@ public class BIExcelExportAction extends AbstractBIDeziAction {
         if (resultBook != null) {
             export(req, res, resultBook, t);
         }
+        sessionIDInfor.getLoader().releaseCurrentThread();
         //pony 先不删吧...强制转换抛错....
         //     sessionIDInfor.removeExcelWidget(((BIReport)(resultBook.getReport(0))).getWidgetName(0));
     }

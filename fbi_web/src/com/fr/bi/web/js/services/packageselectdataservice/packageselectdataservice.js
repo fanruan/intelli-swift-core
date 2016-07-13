@@ -497,7 +497,13 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     },
 
     _isSelfCircleTable: function (tableId) {
-        return BI.Utils.getPathsFromTableAToTableB(tableId, tableId).length === 1;
+        var paths = BI.Utils.getPathsFromTableAToTableB(tableId, tableId)
+        if(paths.length === 0){
+            return false;
+        }
+        return !BI.find(paths, function(idx, path){
+            return path.length > 1;
+        });
     },
 
     /**

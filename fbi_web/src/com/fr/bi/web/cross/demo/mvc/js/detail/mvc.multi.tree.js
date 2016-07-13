@@ -57,6 +57,15 @@ MultiTreeView = BI.inherit(BI.View, {
             }, {
                 el: label,
                 tgap: 200
+            }, {
+                el: {
+                    type: "bi.button",
+                    width: 200,
+                    height: 30,
+                    handler: function(){
+                        combo.setValue();
+                    }
+                }
             }],
             vgap: 20,
             hgap: 50
