@@ -41,7 +41,8 @@ public class BICubeConfiguration implements ICubeConfiguration {
     @Override
     public URI getRootURI() {
         try {
-            return URI.create(new BICubeLocation(BIConfigurePathUtils.createBasePath(), buildPath()).getAbsolutePath());
+            File file = new File(new BICubeLocation(BIConfigurePathUtils.createBasePath(), buildPath()).getAbsolutePath());
+            return URI.create(file.toURI().getRawPath());
         } catch (URISyntaxException e) {
             throw BINonValueUtils.beyondControl(e);
         }
