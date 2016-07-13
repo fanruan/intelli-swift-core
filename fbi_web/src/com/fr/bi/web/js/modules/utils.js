@@ -1664,13 +1664,6 @@
             return result;
         },
 
-        //保存上传的图片到文件下
-        saveUploadedImage: function (attachId, callback) {
-            Data.Req.reqSaveUploadImage(attachId, function (data) {
-                callback(data);
-            });
-        },
-
         /**
          * 数据相关
          */
@@ -2057,6 +2050,21 @@
                 var group = BI.Utils.getDimensionGroupByID(dId);
                 var groupValue = group.group_value, groupType = group.type;
                 var groupMap = {};
+                if(BI.isNull(groupValue) && BI.isNull(groupType)) {
+                    //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
+                    var sIndex = value.indexOf("-");
+                    var min = value.slice(0, sIndex), max = value.slice(sIndex + 1);
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: {
+                            min: min,
+                            max: max,
+                            closemin: true,
+                            closemax: false
+                        },
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    }
+                }
                 if (groupType === BICst.GROUP.AUTO_GROUP) {
                     //坑爹，要自己算分组名称出来
                     var groupInterval = groupValue.group_interval, max = groupValue.max, min = groupValue.min;

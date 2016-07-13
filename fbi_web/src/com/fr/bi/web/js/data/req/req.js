@@ -321,14 +321,6 @@ Data.Req = BIReq = {
         });
     },
 
-    reqSaveUploadImage: function (attachId, callback) {
-        BI.requestAsync("fr_bi_dezi", "save_upload_image", {
-            attach_id: attachId
-        }, function (res) {
-            callback(res);
-        })
-    },
-
     reqGetChartPreStyle: function () {
         return BI.requestSync('fr_bi_base', 'get_config_setting', null);
     }

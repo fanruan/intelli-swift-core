@@ -44,7 +44,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
-        config.plotOptions.color = BI.isArray(this.config.theme_color) ? this.config.theme_color : [this.config.theme_color];
+        //config.plotOptions.color = BI.isArray(this.config.theme_color) ? this.config.theme_color : [this.config.theme_color];
         var formatterArray = [];
         BI.backEach(items, function(idx, item){
             if(BI.has(item, "settings")){

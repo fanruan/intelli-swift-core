@@ -2,19 +2,19 @@
  * Created by Young's on 2016/4/7.
  */
 BI.LinkageFilterItem = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.LinkageFilterItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-linkage-filter-item"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.LinkageFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var tId = o.tId, linkFilter = o.filter;
         var wId = BI.Utils.getWidgetIDByDimensionID(tId);
         var items = [];
-        BI.each(linkFilter, function(i, value){
+        BI.each(linkFilter, function (i, value) {
             items.push(self._createSingleLinkageFilter(value.dId, value.value[0]));
         });
         var wrapper = BI.createWidget({
@@ -49,7 +49,7 @@ BI.LinkageFilterItem = BI.inherit(BI.Widget, {
         return date.print("%Y-%X-%d")
     },
 
-    _createSingleLinkageFilter: function(dId, value){
+    _createSingleLinkageFilter: function (dId, value) {
         var tId = this.options.tId;
         var onRemoveFilter = this.options.onRemoveFilter;
         var text = value;
@@ -64,7 +64,7 @@ BI.LinkageFilterItem = BI.inherit(BI.Widget, {
             width: 20,
             height: 30
         });
-        removeButton.on(BI.IconButton.EVENT_CHANGE, function(){
+        removeButton.on(BI.IconButton.EVENT_CHANGE, function () {
             onRemoveFilter(tId, dId);
         });
         return {
