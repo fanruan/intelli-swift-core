@@ -18,6 +18,8 @@ BI.IconArrowNode = BI.inherit(BI.NodeButton, {
             pId: "",
             open: false,
             height: 25,
+            iconHeight: 13,
+            iconWidth: 13,
             iconCls: ""
         })
     },
@@ -35,7 +37,9 @@ BI.IconArrowNode = BI.inherit(BI.NodeButton, {
             cls: o.iconCls,
             width: 23,
             items: [{
-                type: "bi.icon"
+                type: "bi.icon",
+                height: o.iconHeight,
+                width: o.iconWidth
             }]
         });
 

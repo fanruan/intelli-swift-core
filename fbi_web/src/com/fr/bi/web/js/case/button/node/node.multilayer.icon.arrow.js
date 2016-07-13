@@ -8,6 +8,8 @@ BI.MultiLayerIconArrowNode = BI.inherit(BI.NodeButton, {
             pId: "",
             open: false,
             height: 25,
+            iconHeight: 13,
+            iconWidth: 13,
             iconCls: ""
         })
     },
@@ -24,6 +26,8 @@ BI.MultiLayerIconArrowNode = BI.inherit(BI.NodeButton, {
             pId: o.pId,
             open: o.open,
             height: o.height,
+            iconHeight: o.iconHeight,
+            iconWidth: o.iconWidth,
             hgap: o.hgap,
             text: o.text,
             value: o.value,
