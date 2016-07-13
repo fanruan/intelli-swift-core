@@ -8,18 +8,6 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         CordonPos: 0
     },
     defaultItems: function () {
-        var o = this.options;
-        var fromText = BI.i18nText("BI-This_Target_From") + ": ";
-        var e = BI.Utils.getExpressionByDimensionID(o.dId);
-        var ids = e.ids;
-
-        BI.each(ids , function (idx , id){
-            var fieldID = BI.Utils.getFieldIDByDimensionID(id);
-            var fieldName = BI.Utils.getFieldNameByID(fieldID);
-            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldID));
-            fromText += tableName + "." + fieldName + "、"
-        });
-
         return [
             [{
                 text: BI.i18nText("BI-Style_Setting"),
@@ -79,7 +67,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 cls: "delete-h-font"
             }],
             [{
-                text: fromText,
+                text: BI.i18nText("BI-This_Target_From") + ": ",
                 tipType: "success",
                 value: BICst.TARGET_COMBO.INFO,
                 cls: "dimension-from-font",
@@ -104,6 +92,22 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
+
+        var e = BI.Utils.getExpressionByDimensionID(o.dId);
+        var ids = e.ids;
+        BI.each(ids , function (idx , id){
+            var fieldID = BI.Utils.getFieldIDByDimensionID(id);
+            var fieldName = BI.Utils.getFieldNameByID(fieldID);
+            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldID));
+            var fromText = tableName + "." + fieldName;
+            item[item.length-1].push({
+                text: fromText,
+                tipType: "success",
+                value: BICst.TARGET_COMBO.INFO,
+                disabled: true
+            })
+        });
+
         switch (wType) {
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
