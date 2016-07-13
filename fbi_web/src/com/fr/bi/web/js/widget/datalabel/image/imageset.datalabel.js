@@ -1,13 +1,14 @@
 /**
+ * 数据标签中的图片上传预览
  * Created by Fay on 2016/7/7.
  */
-BI.ImageSet = BI.inherit(BI.Widget, {
+BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     _defaultImg: [],
 
     _img: [],
 
     _defaultConfig: function () {
-        var conf = BI.ImageSet.superclass._defaultConfig.apply(this, arguments);
+        var conf = BI.DataLabelImageSet.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
             baseCls: "bi-image-set",
             defaultSelect: 1
@@ -15,7 +16,7 @@ BI.ImageSet = BI.inherit(BI.Widget, {
     },
 
     _init: function () {
-        BI.ImageSet.superclass._init.apply(this, arguments);
+        BI.DataLabelImageSet.superclass._init.apply(this, arguments);
         var o = this.options;
         this._createTab();
         this.tabs.setSelect(o.defaultSelect);
@@ -50,7 +51,6 @@ BI.ImageSet = BI.inherit(BI.Widget, {
             }]
         });
         this.tabs = BI.createWidget({
-            cls: "mvc-border",
             direction: "custom",
             element: this.element,
             type: "bi.tab",
@@ -111,7 +111,6 @@ BI.ImageSet = BI.inherit(BI.Widget, {
         });
         var headerButton = BI.createWidget({
             type: "bi.button",
-            cls: "mvc-button",
             text: BI.i18nText("BI-Upload_Image"),
             width: 70,
             height: 26,
@@ -243,5 +242,5 @@ BI.ImageSet = BI.inherit(BI.Widget, {
     }
 });
 
-BI.ImageSet.EVENT_CHANGE = "BI.ImageSet.EVENT_CHANGE";
-$.shortcut("bi.image_set", BI.ImageSet);
+BI.DataLabelImageSet.EVENT_CHANGE = "BI.DataLabelImageSet.EVENT_CHANGE";
+$.shortcut("bi.data_label_image_set", BI.DataLabelImageSet);

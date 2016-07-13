@@ -391,7 +391,7 @@ var _JS = [
 
     "detail/mvc.uploadimage.js",
 
-    "detail/mvc.imageset.js",
+    "detail/mvc.datalabel.js",
 
     "detail/mvc.webpage.js",
 
@@ -609,7 +609,7 @@ var _Routes = {
     "/sequence_table2": "SequenceTable2View",
     "/upload_image": "UploadImageView",
     "/web_page": "WebPageView",
-    "/image_set": "ImageSetView",
+    "/data_label": "DataLabelView",
 
     "/arrangement_droppable": "ArrangementDroppableView",
     "/arrangement": "ArrangementView",
@@ -1411,8 +1411,8 @@ _Models.detail = [{
         value: "web_page"
     },{
         pId: 28,
-        text: "bi.image_set",
-        value: "image_set"
+        text: "bi.data_label",
+        value: "data_label"
     },{
         pId: 29,
         text: "bi.arrangement_droppable",

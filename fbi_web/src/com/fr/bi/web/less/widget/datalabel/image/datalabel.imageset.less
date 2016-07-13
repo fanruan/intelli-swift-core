@@ -1,0 +1,28 @@
+@import "../../../bibase";
+
+.image-set-tab {
+  border-top: 1px solid @color-bi-border-normal;
+}
+
+.image-set-tab-item {
+  &:hover{
+    color: @color-bi-text-highlight;
+  }
+  &.active {
+    color: @color-bi-text-highlight;
+  }
+  color: @color-bi-text-black;
+}
+
+.image-set-delete.close-font {
+  .b-font {
+    &:before {
+      background-color: @color-bi-background-delete;
+      color: @color-bi-text-black;
+    }
+  }
+}
+
+.image-set-header {
+  border-bottom: 1px solid @color-bi-border-normal;
+}

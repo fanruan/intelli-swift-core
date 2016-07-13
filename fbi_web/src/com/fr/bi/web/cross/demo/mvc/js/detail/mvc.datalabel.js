@@ -1,12 +1,15 @@
-ImageSetView = FR.extend(BI.View,{
+/**
+ * Created by Fay on 2016/7/13.
+ */
+DataLabelView = FR.extend(BI.View,{
     _defaultConfig: function () {
-        return BI.extend(ImageSetView.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(DataLabelView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-mvc-layout"
         })
     },
 
     _init: function () {
-        ImageSetView.superclass._init.apply(this, arguments);
+        DataLabelView.superclass._init.apply(this, arguments);
     },
 
     _render: function (vessel) {
@@ -20,11 +23,11 @@ ImageSetView = FR.extend(BI.View,{
             vgap:60,
             items:[{
                 el: BI.createWidget({
-                    type: "bi.image_set"
+                    type: "bi.data_label"
                 })
             }]
         });
     }
 });
 
-ImageSetModel = BI.inherit(BI.Model, {});
+DataLabelModel = BI.inherit(BI.Model, {});

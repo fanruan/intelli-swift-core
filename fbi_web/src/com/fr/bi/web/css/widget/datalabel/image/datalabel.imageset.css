@@ -4,12 +4,15 @@
 .image-set-tab {
   border-top: 1px solid #d4dadd;
 }
-.image-set-tab-item:hover,
-.image-set-tab-item:active,
+.image-set-tab-item {
+  color: #1a1a1a;
+}
+.image-set-tab-item:hover {
+  color: #009de3;
+}
 .image-set-tab-item.active {
   color: #009de3;
 }
-.image-set-delete,
 .image-set-delete.close-font .b-font:before {
   background-color: #e85050;
   color: #1a1a1a;
