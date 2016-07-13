@@ -139,11 +139,11 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
         var search = [];
         BI.each(fields, function (i, field) {
             var fid = field.id;
-            var fieldName = BI.Utils.getFieldNameByID(fid);
-            search.push({
+            var fieldName = field.text || BI.Utils.getFieldNameByID(fid);
+            search.push(BI.extend({
                 id: fid,
                 text: fieldName
-            })
+            }, field));
         });
         var result = BI.Func.getSearchResult(search, keyword);
         fields = result.matched.concat(result.finded);
