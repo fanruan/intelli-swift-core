@@ -199,11 +199,11 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         switch (sort.type){
             case BICst.SORT.ASC:
                 sortValue.value = this.typeConfig().ASCEND;
-                sortValue.childValue = sort.sort_target;
+                sortValue.childValue = sort.sort_target || o.dId;
                 break;
             case BICst.SORT.DESC:
                 sortValue.value = this.typeConfig().DESCEND;
-                sortValue.childValue = sort.sort_target;
+                sortValue.childValue = sort.sort_target  || o.dId;
                 break;
             case BICst.SORT.NONE:
                 sortValue.value = this.typeConfig().NOT_SORT;

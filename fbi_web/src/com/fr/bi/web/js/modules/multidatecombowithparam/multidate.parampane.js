@@ -16,38 +16,34 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
     _init: function () {
         BI.MultiDateParamPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.stored_value = [];
+
         this.tree = BI.createWidget({
-            type: "bi.select_data_tree",
-            el: {
-                el: {
-                    chooseType: BI.ButtonGroup.CHOOSE_TYPE_SINGLE
-                }
-            },
-            itemsCreator: function(op, populate){
-                if (!op.node) {
-                    populate(self._getDateWidgetStructure());
-                    self.tree.setValue(self.stored_value);
-                    return;
-                }
-                if (BI.isNotNull(op.node.isParent)) {
-                    populate(self._getStartEndStructureByWidgetId(op.node.id));
-                    self.tree.setValue(self.stored_value);
-                }
-            }
+            type: "bi.single_tree_combo",
+            items: self._getDateWidgetStructure(),
+            width: 200
         });
 
-        this.tree.on(BI.SelectDataTree.EVENT_CHANGE, function () {
-            self.stored_value = self.tree.getValue();
-            self.fireEvent(BI.MultiDateParamPane.EVENT_CHANGE, self.tree.getValue());
+        this.yearParam = BI.createWidget({
+            type: "bi.param_item"
         });
-
-        this.tree.populate();
 
         BI.createWidget({
             type: "bi.vertical",
+            hgap: 10,
             element: this.element,
-            items: [this.tree]
+            items: [{
+                type: "bi.center_adapt",
+                height: 30,
+                items: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Relative")
+                }, this.tree, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-De")
+                }],
+                tgap:5,
+                bgap: 50
+            }, this.yearParam]
         })
     },
 
@@ -56,56 +52,60 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
         var targetWidgetIds = BI.filter(BI.Utils.getAllWidgetIDs(), function(i, id){
             return BI.contains(targetWidgetType, BI.Utils.getWidgetTypeByID(id));
         });
-        var widgetItems = BI.map(targetWidgetIds, function(idx, w){
+        var widgetItems = [];
+        BI.each(targetWidgetIds, function(idx, w){
             var wType = BI.Utils.getWidgetTypeByID(w);
-            return {
+            widgetItems.push({
                 id: w,
-                type: wType === BICst.WIDGET.DATE ? "bi.triangle_group_node" : "bi.select_date_widget_level0_item",
                 text: BI.Utils.getWidgetNameByID(w),
                 title: BI.Utils.getWidgetNameByID(w),
                 value: w,
                 isParent: wType === BICst.WIDGET.DATE,
                 open: false
+            });
+            if(wType === BICst.WIDGET.DATE){
+                widgetItems.push({
+                    id: BI.UUID(),
+                    pId: w,
+                    text: BI.i18nText("BI-Start_Time"),
+                    title: BI.i18nText("BI-Start_Time"),
+                    value: {
+                        wId: w,
+                        startOrEnd: BI.MultiDateParamPane.start
+                    }
+                });
+                widgetItems.push({
+                    id: BI.UUID(),
+                    pId: w,
+                    text: BI.i18nText("BI-End_Time"),
+                    title: BI.i18nText("BI-End_Time"),
+                    value: {
+                        wId: w,
+                        startOrEnd: BI.MultiDateParamPane.end
+                    }
+                });
             }
         });
         return BI.sortBy(widgetItems, "text");
     },
 
-    _getStartEndStructureByWidgetId: function (wid) {
-        var fieldStructure = [];
-        fieldStructure.push({
-            id: BI.UUID(),
-            pId: wid,
-            type: "bi.select_date_widget_level1_item",
-            text: BI.i18nText("BI-Start_Time"),
-            title: BI.i18nText("BI-Start_Time"),
-            value: {
-                wId: wid,
-                startOrEnd: BI.MultiDateParamPane.start
-            }
-        });
-        fieldStructure.push({
-            id: BI.UUID(),
-            pId: wid,
-            type: "bi.select_date_widget_level1_item",
-            text: BI.i18nText("BI-End_Time"),
-            title: BI.i18nText("BI-End_Time"),
-            value: {
-                wId: wid,
-                startOrEnd: BI.MultiDateParamPane.end
-            }
-        });
-        return fieldStructure;
+    _assertValue: function(v){
+        v = v || {};
+        v.widgetInfo = v.widgetInfo || {};
+        return v;
     },
 
     setValue: function (v) {
-        v = BI.isArray(v) ? v : [v];
-        this.stored_value = v;
-        this.tree.setValue(this.stored_value);
+        v = this._assertValue(v);
+        this.tree.setValue([v.widgetInfo]);
+        this.yearParam.setValue(v.offset);
     },
 
     getValue: function () {
-        return this.stored_value;
+        return {
+            widgetInfo: this.tree.getValue(),
+            offset: this.yearParam.getValue()
+        };
     }
 });
 BI.extend(BI.MultiDateParamPane, {
