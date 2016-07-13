@@ -2,13 +2,13 @@
  * Created by Young's on 2016/5/19.
  */
 BI.LoginInfoCombo = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.LoginInfoCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-login-info-combo"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.LoginInfoCombo.superclass._init.apply(this, arguments);
         var self = this;
         this.combo = BI.createWidget({
@@ -16,21 +16,21 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
             element: this.element
         });
         this._beforeLoginComboPopup();
-        this.combo.on(BI.SingleTreeCombo.EVENT_BEFORE_POPUPVIEW, function(){
+        this.combo.on(BI.SingleTreeCombo.EVENT_BEFORE_POPUPVIEW, function () {
             self._beforeLoginComboPopup();
         });
-        this.combo.on(BI.SingleTreeCombo.EVENT_CHANGE, function(){
+        this.combo.on(BI.SingleTreeCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.LoginInfoCombo.EVENT_CHANGE);
         });
     },
 
-    _beforeLoginComboPopup: function(){
+    _beforeLoginComboPopup: function () {
         var self = this, o = this.options;
         var loginField = BI.Utils.getAuthorityLoginField();
         var tableId = BI.Utils.getTableIdByFieldId4Conf(loginField);
         var fieldType = o.field_type;
         var items = [];
-        if(fieldType === BICst.COLUMN.STRING) {
+        if (fieldType === BICst.COLUMN.STRING) {
             items.push({
                 text: BI.i18nText("BI-System_Username"),
                 id: -1,
@@ -38,19 +38,19 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
             });
         }
         //可能设置了，但是这个字段又已经不存在了
-        if(BI.isNotNull(loginField) && BI.isNotNull(tableId)) {
+        if (BI.isNotNull(loginField) && BI.isNotNull(tableId)) {
             var primaryFields = this._getPrimaryFieldsByFieldId(loginField);
             primaryFields.splice(0, 0, loginField);
             var comboValue = this.combo.getValue();
-            BI.each(primaryFields, function(i, fieldId){
+            BI.each(primaryFields, function (i, fieldId) {
                 var tableName = BI.Utils.getTableNameByFieldId4Conf(fieldId);
                 var tableId = BI.Utils.getTableIdByFieldId4Conf(fieldId);
                 var fields = self._getAllFieldsByTableId(tableId);
 
                 var parentOpen = false;
                 var singleItem = [];
-                BI.each(fields, function(j, field){
-                    if(field.field_type === fieldType) {
+                BI.each(fields, function (j, field) {
+                    if (field.field_type === fieldType) {
                         singleItem.push({
                             id: field.id,
                             pId: tableId,
@@ -61,7 +61,7 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
                         comboValue.contains(field.id) && (parentOpen = true);
                     }
                 });
-                if(singleItem.length > 0) {
+                if (singleItem.length > 0) {
                     singleItem.push({
                         id: tableId,
                         isParent: true,
@@ -71,7 +71,7 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
                 }
                 items = items.concat(singleItem);
             });
-            if(items.length === 0) {
+            if (items.length === 0) {
                 items.push({
                     text: BI.i18nText("BI-Null"),
                     disabled: true
@@ -84,24 +84,28 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
         this.combo.populate(items);
     },
 
-    _getAllFieldsByTableId: function(tableId) {
+    _getAllFieldsByTableId: function (tableId) {
         var fields = [], allFields = Data.SharingPool.get("fields");
-        BI.each(allFields, function(i, field){
-            if(field.table_id === tableId) {
+        BI.each(allFields, function (i, field) {
+            if (field.table_id === tableId) {
                 fields.push(field);
             }
         });
         return fields;
     },
 
-    _getPrimaryFieldsByFieldId: function(fieldId){
+    _getPrimaryFieldsByFieldId: function (fieldId) {
         var self = this;
-        var relations = Data.SharingPool.get("relations");
-        var translations = Data.SharingPool.get("translations");
-        var primaryFields = [];
+        var relations = Data.SharingPool.cat("relations");
+        var translations = Data.SharingPool.cat("translations");
+        var fields = Data.SharingPool.cat("fields");
+        var primaryFields = [], tableId = "";
+        if (BI.isNotNull(fields[fieldId])) {
+            tableId = fields[fieldId].table_id;
+        }
         var connectionSet = relations.connectionSet;
-        BI.each(connectionSet, function(i, cs){
-            if(cs.foreignKey.field_id === fieldId) {
+        BI.each(connectionSet, function (i, cs) {
+            if (cs.foreignKey.table_id === tableId) {
                 primaryFields.push(cs.primaryKey.field_id);
                 primaryFields = primaryFields.concat(self._getPrimaryFieldsByFieldId(cs.primaryKey.field_id));
             }
@@ -109,11 +113,11 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
         return primaryFields;
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.combo.setValue(v);
     },
-    
-    getValue: function(){
+
+    getValue: function () {
         return this.combo.getValue()[0];
     }
 });
