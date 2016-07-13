@@ -33,6 +33,13 @@ BI.Linkage = BI.inherit(BI.Widget, {
         this.store = {};
         this.linkages = {};
 
+        var offset = $(".fit-dashboard").offset();
+        var left = offset.left, top = offset.top;
+        var right = $("body").width() - $(".fit-dashboard").width() - left,
+            bottom = $("body").height() - $(".fit-dashboard").height() - top;
+        right = right < 0 ? 0 : right;
+        bottom = bottom < 0 ? 0 : bottom;
+
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -44,10 +51,10 @@ BI.Linkage = BI.inherit(BI.Widget, {
                 bottom: 0
             }, {
                 el: this.arrangement,
-                left: 141,
-                right: 0,
-                top: BICst.CONFIG.SHOW_DASHBOARD_TITLE ? 31 : 0,
-                bottom: 0
+                left: left,
+                right: right,
+                top: top,
+                bottom: bottom
             }]
         });
 
