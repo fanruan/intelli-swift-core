@@ -34,12 +34,14 @@ BIShow.WidgetView = BI.inherit(BI.View, {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
+            self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
             self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
+            self._refreshTableAndFilter();
         });
     },
 
@@ -204,7 +206,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         });
         excel.on(BI.IconButton.EVENT_CHANGE, function () {
             window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-            + window.encodeURIComponent(self.model.get("name")));
+                + window.encodeURIComponent(self.model.get("name")));
         });
 
         this.tools = BI.createWidget({
@@ -304,7 +306,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             BI.has(changed, "linkages")) {
             this._refreshTableAndFilter();
         }
-        if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
         if (BI.has(changed, "type")) {
