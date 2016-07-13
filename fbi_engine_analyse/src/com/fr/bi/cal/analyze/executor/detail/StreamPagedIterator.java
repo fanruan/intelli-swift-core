@@ -25,15 +25,19 @@ public class StreamPagedIterator implements Iterator<CellElement> {
         }
         if(queue.isEmpty()) {
             synchronized (this) {
-                synchronized (queue) {
-                    if (queue.isEmpty() && (!isEnd)) {
-                        try {
-                            this.wait();
-                        } catch (Exception e) {
-                        }
+                while (isRealEmpty() && (!isEnd)) {
+                    try {
+                        this.wait();
+                    } catch (Exception e) {
                     }
                 }
             }
+        }
+    }
+
+    private boolean isRealEmpty() {
+        synchronized (queue){
+            return queue.isEmpty();
         }
     }
 
@@ -41,24 +45,13 @@ public class StreamPagedIterator implements Iterator<CellElement> {
     @Override
     public boolean hasNext() {
         waitFor();
-        return (!isEnd) || (!queue.isEmpty());
+        return (!isEnd) || (!isRealEmpty());
     }
 
     @Override
     public CellElement next() {
         synchronized (queue) {
-            try {
-                return queue.poll();
-            } catch (Exception e) {
-                return null;
-            } finally {
-                if(queue.isEmpty()){
-                    synchronized (this) {
-                        this.notify();
-                    }
-                }
-            }
-
+            return queue.poll();
         }
     }
 
