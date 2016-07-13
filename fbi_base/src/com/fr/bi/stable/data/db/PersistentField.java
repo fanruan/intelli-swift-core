@@ -59,8 +59,10 @@ public class PersistentField implements IPersistentField {
     public PersistentField(String columnName, int type) {
         this(columnName, columnName, type, DEFALUTCOLUMN_SIZE, DEFALUTSCALE);
     }
-
-    public PersistentField() {
+    public PersistentField(String columnName, int type, int column_size,int scale) {
+        this(columnName, columnName, type, column_size, scale);
+    }
+        public PersistentField() {
     }
 
     public int getColumnSize() {

@@ -63,9 +63,6 @@ BI.QuarterCombo = BI.inherit(BI.Widget, {
                 el: this.popup
             }
         });
-        this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
-            self.setValue(self.storeValue);
-        });
     },
 
     setValue: function (v) {

@@ -41,9 +41,11 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             items: BI.createItems([{
                 cls: "axis-chart-style-normal-icon style-setting-style-button",
+                title: BI.i18nText("BI-Common"),
                 value: BICst.CHART_STYLE.STYLE_NORMAL
             }, {
                 cls: "axis-chart-style-gradual-icon style-setting-style-button",
+                title: BI.i18nText("BI-Top_Down_Shade"),
                 value: BICst.CHART_STYLE.STYLE_GRADUAL
             }], {
                 type: "bi.icon_button",

@@ -27,6 +27,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.lru.FIFOHashMap;
+import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
@@ -455,6 +456,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                     firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
                 } catch (BITableUnreachableException e) {
                     continue;
+                }
+                if(ComparatorUtils.equals(ck.getField().getTableBelongTo(),ckp.getField().getTableBelongTo())){
+                    firstPath = new BITableRelationPath();
                 }
                 if (firstPath == null) {
                     continue;
