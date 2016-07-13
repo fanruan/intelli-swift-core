@@ -2,6 +2,7 @@ package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.FRContext;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
@@ -12,8 +13,6 @@ import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -76,10 +75,11 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
         for (int i = 0; i < tables.length; i++) {
             IPersistentTable ptalbe = tables[i];
             int size = ptalbe.getField(idFieldName).getColumnSize();
-            int columnType = ptalbe.getField(idFieldName).getBIType();
+//            int columnType = ptalbe.getField(idFieldName).getBIType();
             while (it.hasNext()) {
                 Map.Entry<String, Integer> entry = it.next();
-                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
+//                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
+                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), ptalbe.getField(idFieldName).getSqlType(), size, ptalbe.getField(idFieldName).getScale()));
             }
         }
         return persistentTable;
