@@ -6,10 +6,15 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CalculateDependManager;
 import com.finebi.cube.impl.conf.CubePreConditionsCheckManager;
 import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.exception.BITablePathConfusionException;
+import com.fr.bi.stable.exception.BITableRelationConfusionException;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -23,14 +28,26 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     private long userId;
     protected Set<CubeTableSource> sources = new HashSet<CubeTableSource>();
     private Set allBusinessTable = new HashSet<BIBusinessTable>();
+    protected Set<BITableRelationPath> allRelationPathSet = new HashSet<BITableRelationPath>();
     protected Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
     protected CalculateDependTool calculateDependTool;
     public AbstractCubeBuild(long userId) {
         this.userId=userId;
-        allBusinessTable = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
-        calculateDependTool=new CalculateDependManager();
+        init(userId);
         setSources();
         fullTableDBFields();
+    }
+
+    private void init(long userId) {
+        allBusinessTable = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
+        calculateDependTool = new CalculateDependManager();
+        try {
+            allRelationPathSet = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
+        } catch (BITableRelationConfusionException e) {
+            BILogger.getLogger().error(e.getMessage());
+        } catch (BITablePathConfusionException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
     }
 
     @Override
@@ -105,7 +122,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
     }
 
-    protected BITableSourceRelation convert(BITableRelation relation) {
+    protected BITableSourceRelation convertRelation(BITableRelation relation) {
 
 
         CubeTableSource primaryTable;
@@ -130,5 +147,13 @@ public abstract class AbstractCubeBuild implements CubeBuild {
                 foreignTable
         );
     }
-    
+
+    protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {
+        BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
+        for (BITableRelation biTableRelation : path.getAllRelations()) {
+            BITableSourceRelation biTableSourceRelation = convertRelation(biTableRelation);
+            tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
+        }
+        return tableSourceRelationPath;
+    } 
 }

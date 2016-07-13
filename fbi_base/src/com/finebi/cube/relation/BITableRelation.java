@@ -26,10 +26,6 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
                 BIFactoryHelper.getObject(BusinessField.class, foreignKeyTableID, foreignKeyFieldName));
     }
 
-//    BusinessField generateField(String keyTableID, String keyFieldName) {
-//        return BIFactoryHelper.getObject(BusinessField.class, keyTableID, keyFieldName);
-//    }
-
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         throw new UnsupportedOperationException("parseJson禁用");
@@ -51,4 +47,22 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
         return jo;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof BITableRelation)) {
+            return false;
+        }
+        BITableRelation o1 = (BITableRelation) o;
+        return o1==this;
+    }
+
+    @Override
+    public int hashCode() {
+        try {
+            return this.createJSON().hashCode();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

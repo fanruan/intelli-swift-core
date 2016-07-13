@@ -217,9 +217,9 @@ public class CubeRunner {
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
             BIFileUtils.moveFile(advancedConf.getRootURI().toString(), tempConf.getRootURI().toString());
-            BICubeLocation advancedLocation = new BICubeLocation(advancedConf.getRootURI().toString(), CubeConstant.CUBE_PROPERTY);
-            BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(advancedLocation);
-            BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(advancedLocation);
+//            BICubeLocation advancedLocation = new BICubeLocation(advancedConf.getRootURI().toString(), CubeConstant.CUBE_PROPERTY);
+//            BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(advancedLocation);
+//            BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(advancedLocation);
         } catch (URISyntaxException e) {
             BILogger.getLogger().error(e.getMessage());
         } catch (BIBuildReaderException e) {

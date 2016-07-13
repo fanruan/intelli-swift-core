@@ -120,7 +120,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
         for (BITableRelation relation : connectionSet) {
             try {
-                set.add(convert(relation));
+                set.add(convertRelation(relation));
             } catch (NullPointerException e) {
                 BILogger.getLogger().error(e.getMessage(), e);
                 continue;
@@ -159,7 +159,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
         try {
             for (BITableRelation relation : path.getAllRelations()) {
-                tableSourceRelationPath.addRelationAtTail(convert(relation));
+                tableSourceRelationPath.addRelationAtTail(convertRelation(relation));
             }
         } catch (BITablePathConfusionException e) {
             throw BINonValueUtils.beyondControl(e);
