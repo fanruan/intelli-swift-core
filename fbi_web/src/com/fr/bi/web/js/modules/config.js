@@ -881,7 +881,7 @@ BICst.AUTHORITY_FILTER_NUMBER_COMBO = [[{
         value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE
     },
     children: [{
-        text: BI.i18nText("BI-Field_Value"),
+        text: BI.i18nText("BI-Interval_Value"),
         value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
         cls: "dot-e-font"
     }, {
@@ -895,7 +895,7 @@ BICst.AUTHORITY_FILTER_NUMBER_COMBO = [[{
         value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE
     },
     children: [{
-        text: BI.i18nText("BI-Field_Value"),
+        text: BI.i18nText("BI-Interval_Value"),
         value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
         cls: "dot-e-font"
     }, {

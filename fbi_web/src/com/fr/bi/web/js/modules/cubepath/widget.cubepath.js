@@ -31,8 +31,9 @@ BI.CubePath = BI.inherit(BI.Widget, {
         });
         var pathInput = BI.createWidget({
             type: "bi.sign_editor",
+            cls: "cube-editor",
             text: o.path,
-            height: this.constants.BUTTON_HEIGHT,
+            height: this.constants.BUTTON_HEIGHT - 2,
             width: this.constants.PATH_WIDTH
         });
         pathInput.on(BI.SignEditor.EVENT_CHANGE, function(){
