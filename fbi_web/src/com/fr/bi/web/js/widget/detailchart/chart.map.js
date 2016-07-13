@@ -64,6 +64,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
         };
 
         config.geo = this.config.geo;
+        if(this.config.initDrillPath.length > 1){
+            config.initDrillPath = this.config.initDrillPath;
+        }
         config.chartType = "areaMap";
         delete config.xAxis;
         delete config.yAxis;
@@ -84,7 +87,6 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     config.rangeLegend.enabled = false;
                     break;
             }
-            //config.rangeLegend.range.max = self.max;
             config.rangeLegend.continuous = false;
             config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
         }
@@ -254,7 +256,8 @@ BI.MapChart = BI.inherit(BI.Widget, {
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], geoName: BI.i18nText("BI-China")},
+            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
+            initDrillPath: options.initDrillPath || [],
             tooltip: options.tooltip || "",
             theme_color: options.theme_color,
             map_styles: options.map_styles,

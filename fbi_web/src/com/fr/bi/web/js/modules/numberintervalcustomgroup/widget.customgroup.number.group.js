@@ -131,6 +131,7 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
         };
         if (this.buttons.length === 0) {
             BI.extend(item, {
+                id: BI.UUID(),
                 min: 0,
                 max: this.constants.initialMax,
                 closemin: true,
@@ -143,6 +144,7 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
                 closemax: false
             }));
             BI.extend(item, {
+                id: BI.UUID(),
                 min: BI.parseInt(beforeValue.max),
                 max: BI.parseInt(beforeValue.max) + this.constants.initialMax,
                 closemin: !beforeValue.closemax,

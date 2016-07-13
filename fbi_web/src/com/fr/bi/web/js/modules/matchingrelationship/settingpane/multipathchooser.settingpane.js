@@ -110,24 +110,27 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
                         uuidMap[foreignId] = regionId;
                     }
                     p.push({
-                        region: regionId,
+                        region: BI.UUID(),
+                        //region: regionId,
                         regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                         text: BI.Utils.getFieldNameByID(foreignId),
                         value: foreignId
                     });
                 }else{
                     p.push({
-                        region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
+                        region: BI.UUID(),
+                        regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                         text: BI.Utils.getFieldNameByID(foreignId),
                         value: foreignId
                     });
                 }
                 if (id === 0) {
                     p.push({
-                        region: BI.Utils.getTableNameByID(ptId),
+                        //region: BI.Utils.getTableNameByID(ptId),
+                        region: BI.UUID(),
                         regionText: BI.Utils.getTableNameByID(ptId),
                         text: BI.Utils.getFieldNameByID(items.dimensionFieldId),
-                        value: items.dimensionFieldId
+                        value: primaryId
                     });
                 }
             });
