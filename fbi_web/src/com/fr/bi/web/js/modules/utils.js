@@ -1467,37 +1467,15 @@
                 return [];
             }
             var wId = this.getWidgetIDByDimensionID(dId);
-            var ids = this.getAllDimensionIDs(wId);
+            var ids = this.getAllTargetDimensionIDs(wId);
             var result = [];
             BI.each(ids, function (i, id) {
                 var tids = self.getExpressionValuesByDimensionID(id);
                 if (tids.contains(dId)) {
                     result.push(id);
                 }
-                //指标是否被维度排序使用
-                var sort = self.getDimensionSortByID(id) || {};
-                if (sort.sort_target === dId) {
-                    result.push(id);
-                }
-
-                //指标是否被维度过滤使用
-                var filter_value = self.getDimensionFilterValueByID(id) || {};
-                if (checkFilter(filter_value)) {
-                    result.push(id);
-                }
             });
             return result;
-
-            function checkFilter(filter) {
-                var filterType = filter.filter_type, filterValue = filter.filter_value;
-                if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
-                    return BI.some(filterValue, function (i, value) {
-                        return checkFilter(value);
-                    });
-                } else {
-                    return filter.target_id === dId;
-                }
-            }
         },
 
 
@@ -1570,16 +1548,39 @@
             }
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
-            if (this.getPathsFromTableAToTableB(tableA, tableB).length != 0) {
-                return this.getPathsFromTableAToTableB(tableA, tableB);
+            var path = this.getPathsFromTableAToTableB(tableA, tableB);
+            if(tableA === tableB){
+                if(isSelfCircle(path) && checkPathAvailable(path, from)){
+                    return path;
+                }else{
+                    return [[{
+                        primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
+                        foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
+                    }]]
+                }
             }
-            if (tableA === tableB) {
-                return [[{
-                    primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
-                    foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
-                }]]
+            return path;
+
+            //是自循环还是循环路径
+            function isSelfCircle(paths){
+                if(path.length === 0){
+                    return false;
+                }
+                var result = BI.find(paths, function(idx, path){
+                    return path.length > 1;
+                });
+                return BI.isNull(result);
             }
-            return this.getPathsFromTableAToTableB(tableA, tableB);
+
+            //对自循环表检测路径合法依据：路径中的a个关联中是否存在外键为primKey
+            function checkPathAvailable(paths, primKey){
+                var result = BI.find(paths, function(idx, path){
+                    return BI.find(path, function(id, relation){
+                        return self.getForeignIdFromRelation(relation) === primKey;
+                    });
+                });
+                return BI.isNull(result);
+            }
         },
 
         getCommonPrimaryTablesByTableIDs: function (tableIds) {

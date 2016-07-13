@@ -90,6 +90,7 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
 
     _createRegionPathsByItems: function(items){
         var self = this;
+        var FinalId = BI.UUID();
         var uuidMap = {}; //管理一下各条路径上的uuid
         this.options.dimensionFieldId = items.dimensionFieldId;
         var ptId = BI.Utils.getTableIdByFieldID(items.dimensionFieldId);
@@ -110,6 +111,7 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
                         uuidMap[foreignId] = regionId;
                     }
                     p.push({
+                        //region: BI.UUID(),
                         region: regionId,
                         regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                         text: BI.Utils.getFieldNameByID(foreignId),
@@ -118,6 +120,7 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
                 }else{
                     p.push({
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
+                        regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                         text: BI.Utils.getFieldNameByID(foreignId),
                         value: foreignId
                     });
@@ -125,9 +128,10 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
                 if (id === 0) {
                     p.push({
                         region: BI.Utils.getTableNameByID(ptId),
+                        //region: BI.UUID(),
                         regionText: BI.Utils.getTableNameByID(ptId),
                         text: BI.Utils.getFieldNameByID(items.dimensionFieldId),
-                        value: items.dimensionFieldId
+                        value: FinalId
                     });
                 }
             });
