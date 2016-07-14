@@ -1450,6 +1450,13 @@
                     return "drag-combine-mult-icon";
                 case BICst.WIDGET.FUNNEL:
                     return "drag-funnel-icon";
+                case BICst.WIDGET.IMAGE:
+                    return "drag-image-icon";
+                case BICst.WIDGET.WEB:
+                    return "drag-web-icon";
+                case BICst.WIDGET.CONTENT:
+                    return "drag-input-icon";
+
             }
         },
 
@@ -2004,14 +2011,15 @@
                 var details = group.details;
                 var groupMap = {};
                 BI.each(details, function (i, detail) {
-                    groupMap[detail.value] = [];
+                    groupMap[detail.id] = [];
                     BI.each(detail.content, function (j, content) {
-                        groupMap[detail.value].push(content.value);
+                        groupMap[detail.id].push(content.value);
                     });
                 });
                 var groupNames = BI.keys(groupMap), ungroupName = group.ungroup2OtherName;
-                if (group.ungroup2Other === 1) {
-                    groupNames.push(ungroupName);
+                if (group.ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
+                    // groupNames.push(ungroupName);
+                    groupNames.push(BICst.UNGROUP_TO_OTHER);
                 }
                 // 对于drill和link 一般value的数组里只有一个值
                 var v = value[0];
@@ -2084,7 +2092,7 @@
                 BI.each(groupNodes, function (i, node) {
                     i === 0 && (oMin = node.min);
                     i === groupNodes.length - 1 && (oMax = node.max);
-                    groupMap[node.group_name] = {
+                    groupMap[node.id] = {
                         min: node.min,
                         max: node.max,
                         closemin: node.closemin,

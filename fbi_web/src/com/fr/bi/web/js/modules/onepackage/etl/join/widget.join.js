@@ -226,7 +226,19 @@ BI.Join = BI.inherit(BI.Widget, {
                 },
                 tables: self.model.getAllTables()
             };
-            self.fireEvent(BI.Join.EVENT_SAVE, data);
+            var mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: self.element,
+                text: BI.i18nText("BI-Loading")
+            });
+            BI.Utils.getTablesDetailInfoByTables([data], function (sourceTables) {
+                mask.destroy();
+                var table = sourceTables[0];
+                if(BI.isNotNull(table)) {
+                    data.fields = table.fields;
+                }
+                self.fireEvent(BI.Join.EVENT_SAVE, data);
+            });
         });
 
         return BI.createWidget({
