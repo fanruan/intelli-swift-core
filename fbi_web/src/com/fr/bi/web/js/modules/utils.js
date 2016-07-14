@@ -58,13 +58,7 @@
         },
 
         getDefaultChartConfig: function () {
-            if (!this.defaultChartConfig) {
-                this.defaultChartConfig = Data.Req.reqGetChartPreStyle();
-                if (BI.isNull(this.defaultChartConfig.styleList)) {
-                    this.defaultChartConfig.styleList = [];
-                }
-            }
-            return this.defaultChartConfig;
+            return Data.BufferPool.getDefaultChartConfig();
         },
 
         getAllGroupedPackagesTreeJSON: function () {
