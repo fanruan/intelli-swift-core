@@ -59,7 +59,9 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
                 id: w,
                 text: BI.Utils.getWidgetNameByID(w),
                 title: BI.Utils.getWidgetNameByID(w),
-                value: w,
+                value: {
+                    wId: w
+                },
                 isParent: wType === BICst.WIDGET.DATE,
                 open: false
             });
@@ -67,8 +69,8 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
                 widgetItems.push({
                     id: BI.UUID(),
                     pId: w,
-                    text: BI.i18nText("BI-Start_Time"),
-                    title: BI.i18nText("BI-Start_Time"),
+                    text: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-Start_Time"),
+                    title: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-Start_Time"),
                     value: {
                         wId: w,
                         startOrEnd: BI.MultiDateParamPane.start
@@ -77,8 +79,8 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
                 widgetItems.push({
                     id: BI.UUID(),
                     pId: w,
-                    text: BI.i18nText("BI-End_Time"),
-                    title: BI.i18nText("BI-End_Time"),
+                    text: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-End_Time"),
+                    title: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-End_Time"),
                     value: {
                         wId: w,
                         startOrEnd: BI.MultiDateParamPane.end
@@ -103,7 +105,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            widgetInfo: this.tree.getValue(),
+            widgetInfo: this.tree.getValue()[0],
             offset: this.yearParam.getValue()
         };
     }
