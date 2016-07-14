@@ -163,33 +163,33 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             });
         if (!finded) {
             finded = direction.contains("bottom") && BI.some(bottoms, function (i, region) {
-                if (self._isEqual(target.top + target.height, region.top) && self._isEqual(region.left, target.left) && self._isEqual(region.width, target.width)) {
-                    var clone = BI.clone(region);
-                    clone.top = region.top - target.height;
-                    clone.height = region.height + target.height;
-                    result.push(clone);
-                    return true;
-                }
-            });
-            if (!finded) {
-                finded = direction.contains("left") && BI.some(lefts, function (i, region) {
-                    if (self._isEqual(region.left + region.width, target.left) && self._isEqual(region.top, target.top) && self._isEqual(region.height, target.height)) {
+                    if (self._isEqual(target.top + target.height, region.top) && self._isEqual(region.left, target.left) && self._isEqual(region.width, target.width)) {
                         var clone = BI.clone(region);
-                        clone.width = region.width + target.width;
+                        clone.top = region.top - target.height;
+                        clone.height = region.height + target.height;
                         result.push(clone);
                         return true;
                     }
                 });
-                if (!finded) {
-                    finded = direction.contains("right") && BI.some(rights, function (i, region) {
-                        if (self._isEqual(target.left + target.width, region.left) && self._isEqual(region.top, target.top) && self._isEqual(region.height, target.height)) {
+            if (!finded) {
+                finded = direction.contains("left") && BI.some(lefts, function (i, region) {
+                        if (self._isEqual(region.left + region.width, target.left) && self._isEqual(region.top, target.top) && self._isEqual(region.height, target.height)) {
                             var clone = BI.clone(region);
-                            clone.left = region.left - target.width;
                             clone.width = region.width + target.width;
                             result.push(clone);
                             return true;
                         }
                     });
+                if (!finded) {
+                    finded = direction.contains("right") && BI.some(rights, function (i, region) {
+                            if (self._isEqual(target.left + target.width, region.left) && self._isEqual(region.top, target.top) && self._isEqual(region.height, target.height)) {
+                                var clone = BI.clone(region);
+                                clone.left = region.left - target.width;
+                                clone.width = region.width + target.width;
+                                result.push(clone);
+                                return true;
+                            }
+                        });
                     if (!finded) {
                         var findTopRegions = [], findBottomRegions = [];
                         direction.contains("top") && BI.each(tops, function (i, region) {
@@ -323,39 +323,39 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             });
         if (!finded) {
             finded = direction.contains("bottom") && BI.some(bottoms, function (i, region) {
-                if (self._isEqual(target.top + target.height, region.top)
-                    && ((self._isMoreThanEqual(region.left, target.left) && self._isLessThan(region.left, target.left + target.width))
-                    || (self._isMoreThan(region.left + region.width, target.left) && self._isLessThanEqual(region.left + region.width, target.left + target.width))
-                    || (self._isLessThan(region.left, target.left) && self._isMoreThan(region.left + region.width, target.left + target.width)))) {
-                    var clone = BI.clone(region);
-                    clone.top = region.top - target.height;
-                    clone.height = region.height + target.height;
-                    result.push(clone);
-                }
-            });
-            if (!finded) {
-                finded = direction.contains("left") && BI.some(lefts, function (i, region) {
-                    if (self._isEqual(region.left + region.width, target.left)
-                        && ((self._isMoreThanEqual(region.top, target.top) && self._isLessThan(region.top, target.top + target.height))
-                        || (self._isMoreThan(region.top + region.height, target.top) && self._isLessThanEqual(region.top + region.height, target.top + target.height))
-                        || (self._isLessThan(region.top, target.top) && self._isMoreThan(region.top + region.height, target.top + target.height)))) {
+                    if (self._isEqual(target.top + target.height, region.top)
+                        && ((self._isMoreThanEqual(region.left, target.left) && self._isLessThan(region.left, target.left + target.width))
+                        || (self._isMoreThan(region.left + region.width, target.left) && self._isLessThanEqual(region.left + region.width, target.left + target.width))
+                        || (self._isLessThan(region.left, target.left) && self._isMoreThan(region.left + region.width, target.left + target.width)))) {
                         var clone = BI.clone(region);
-                        clone.width = region.width + target.width;
+                        clone.top = region.top - target.height;
+                        clone.height = region.height + target.height;
                         result.push(clone);
                     }
                 });
-                if (!finded) {
-                    finded = direction.contains("right") && BI.some(rights, function (i, region) {
-                        if (self._isEqual(target.left + target.width, region.left)
+            if (!finded) {
+                finded = direction.contains("left") && BI.some(lefts, function (i, region) {
+                        if (self._isEqual(region.left + region.width, target.left)
                             && ((self._isMoreThanEqual(region.top, target.top) && self._isLessThan(region.top, target.top + target.height))
                             || (self._isMoreThan(region.top + region.height, target.top) && self._isLessThanEqual(region.top + region.height, target.top + target.height))
                             || (self._isLessThan(region.top, target.top) && self._isMoreThan(region.top + region.height, target.top + target.height)))) {
                             var clone = BI.clone(region);
-                            clone.left = region.left - target.width;
                             clone.width = region.width + target.width;
                             result.push(clone);
                         }
                     });
+                if (!finded) {
+                    finded = direction.contains("right") && BI.some(rights, function (i, region) {
+                            if (self._isEqual(target.left + target.width, region.left)
+                                && ((self._isMoreThanEqual(region.top, target.top) && self._isLessThan(region.top, target.top + target.height))
+                                || (self._isMoreThan(region.top + region.height, target.top) && self._isLessThanEqual(region.top + region.height, target.top + target.height))
+                                || (self._isLessThan(region.top, target.top) && self._isMoreThan(region.top + region.height, target.top + target.height)))) {
+                                var clone = BI.clone(region);
+                                clone.left = region.left - target.width;
+                                clone.width = region.width + target.width;
+                                result.push(clone);
+                            }
+                        });
                 }
             }
         }
@@ -2236,6 +2236,54 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 this._applyRegion();
                 break;
         }
+    },
+
+    setContainerSize: function (size) {
+        var self = this, o = this.options;
+        var occupied = this._getRegionOccupied();
+        switch (o.layoutType) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                if (this._isArrangeFine()) {
+                    var width = size.width, height = size.height;
+                    var regions = this._cloneRegion();
+                    BI.each(regions, function (i, region) {
+                        region.width = region.width / occupied.width * width;
+                        region.height = region.height / occupied.height * height;
+                    });
+                    BI.each(regions, function (id, region) {
+                        var lefts = self.locations[id].left;
+                        var tops = self.locations[id].top;
+                        var maxRegion;
+                        if (lefts.length > 0) {
+                            var ids = self._getRegionNames(lefts);
+                            var rs = self._getRegionsByNames(ids);
+                            maxRegion = self._getRegionOccupied(rs);
+                            region.left = maxRegion.left + maxRegion.width / occupied.width * width;
+                        } else {
+                            region.left = 0;
+                        }
+                        if (tops.length > 0) {
+                            var ids = self._getRegionNames(tops);
+                            var rs = self._getRegionsByNames(ids);
+                            maxRegion = self._getRegionOccupied(rs);
+                            region.top = maxRegion.top + maxRegion.height / occupied.height * height;
+                        }
+                        if (tops.length === 0) {
+                            region.top = 0;
+                        }
+                    });
+                    if (this._test(regions)) {
+                        this._modifyRegion(regions);
+                        this._applyRegion();
+                    }
+                } else {
+                    this.relayout();
+                }
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+        }
+        this.resize();
     },
 
     resize: function () {

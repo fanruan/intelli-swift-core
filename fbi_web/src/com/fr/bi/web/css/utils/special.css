@@ -34,11 +34,17 @@ ul.CodeMirror-hints {
 .ui-resizable-s {
   bottom: 0;
 }
-.ui-resizable-s:hover {
+.ui-resizable > .ui-resizable-s:hover {
   border-bottom: 1px solid #009de3;
 }
-.ui-resizable-e:hover {
+.ui-resizable > .ui-resizable-e:hover {
   border-right: 1px solid #009de3;
+}
+.ui-resizable.ui-resizable-disabled > .ui-resizable-s:hover {
+  border: none;
+}
+.ui-resizable.ui-resizable-disabled > .ui-resizable-e:hover {
+  border: none;
 }
 .ui-resizable-se {
   background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag_helper.png') no-repeat center center;
