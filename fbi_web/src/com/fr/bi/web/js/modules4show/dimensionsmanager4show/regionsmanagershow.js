@@ -1,6 +1,6 @@
 /**
  * 区域管理器
- * Created by wuk on 16/4/14.
+ * Created by kary on 16/4/14.
  * Created by GUY on 2016/3/17.
  * @class BI.RegionsManagerShow
  * @extends BI.Widget

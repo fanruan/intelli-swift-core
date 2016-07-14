@@ -19,6 +19,9 @@ BI.NumberIntervalCustomGroupItem = BI.inherit(BI.Single,{
             group_name:"",
             min:0,
             max:0,
+            groupNameChecker: function(){
+                return true;
+            },
             closemin:true,
             closemax:false
         });
@@ -29,9 +32,13 @@ BI.NumberIntervalCustomGroupItem = BI.inherit(BI.Single,{
 
         var self = this,o = this.options;
 
+        this.id = o.id || BI.UUID();
+
         this.editor = BI.createWidget({
-            type:"bi.text_editor",
+            type: "bi.sign_editor",
+            cls: "group-name",
             value: o.group_name,
+            validationChecker: o.groupNameChecker,
             hgap: this.constants.hgap
         });
 

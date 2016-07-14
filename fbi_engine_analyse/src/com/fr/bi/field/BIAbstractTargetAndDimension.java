@@ -148,4 +148,11 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         return used;
     }
 
+    @Override
+    public void refreshColumn() {
+        if (column != null){
+            column = BIModuleUtils.getBusinessFieldById(column.getFieldID());
+        }
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.fr.bi.stable.structure.object;
 
+import com.fr.bi.stable.structure.CubeValueEntryNode;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -61,14 +63,18 @@ public class CubeValueEntrySort {
         return new CubeValueEntryIterator(entrys, false);
     }
 
-    public CubeValueEntry[] getSortedASC(){
-        return entrys;
+    public CubeValueEntryNode[] getSortedASC(){
+        CubeValueEntryNode[] asc = new CubeValueEntryNode[entrys.length];
+        for (int i = 0; i < entrys.length; i++) {
+            asc[i] = (CubeValueEntryNode) entrys[i];
+        }
+        return asc;
     }
 
-    public CubeValueEntry[] getSortedDESC(){
-        CubeValueEntry[] desc = new CubeValueEntry[entrys.length];
+    public CubeValueEntryNode[] getSortedDESC(){
+        CubeValueEntryNode[] desc = new CubeValueEntryNode[entrys.length];
         for (int i = 0; i < entrys.length; i++) {
-            desc[entrys.length - 1 - i] = entrys[i];
+            desc[entrys.length - 1 - i] = (CubeValueEntryNode) entrys[i];
         }
         return desc;
     }

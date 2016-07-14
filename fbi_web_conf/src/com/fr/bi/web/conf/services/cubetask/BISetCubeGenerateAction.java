@@ -4,7 +4,6 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
-import com.fr.bi.web.conf.services.cubetask.utils.CubeTaskGenerate;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -30,12 +29,12 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         BIConfigureManagerCenter.getLogManager().logStart(userId);
         boolean cubeBuild;
         if (StringUtils.isEmpty(baseTableId)) {
-            cubeBuild = CubeTaskGenerate.CubeBuild(userId);
+            cubeBuild = CubeTaskGenerate.CubeBuildStaff(userId);
         } else {
             if (isETL) {
-                cubeBuild = CubeTaskGenerate.CubeBuild(userId, new BITableID(ELTTableId), new BITableID(baseTableId));
+                cubeBuild = CubeTaskGenerate.CubeBuildETL(userId, new BITableID(ELTTableId), new BITableID(baseTableId));
             } else {
-                cubeBuild = CubeTaskGenerate.CubeBuild(userId, new BITableID(baseTableId));
+                cubeBuild = CubeTaskGenerate.CubeBuildSingleTable(userId, new BITableID(baseTableId));
             }
         }
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();

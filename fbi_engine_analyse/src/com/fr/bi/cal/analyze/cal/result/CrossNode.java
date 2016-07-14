@@ -57,6 +57,7 @@ public class CrossNode implements BICrossNode {
     @Override
     public void setSummaryValue(Object key, Object value) {
         if (value != null) {
+            value = ((Number)value).doubleValue();
             summaryValue.put(key, value);
         }
     }

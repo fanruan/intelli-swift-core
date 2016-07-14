@@ -42,6 +42,14 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
             source.getSourceUsedAnalysisETLSource(set);
             set.add(source);
         }
+        set.add(this);
+    }
+
+    @Override
+    public void refreshWidget() {
+        for (AnalysisCubeTableSource source : getParents()){
+            source.refreshWidget();
+        }
     }
 
     @Override
@@ -106,7 +114,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
                     for (AnalysisCubeTableSource parent : getParents()){
                         parents.add(parent.createUserTableSource(userId));
                     }
-                    source = new UserETLTableSource(getETLOperators(), parents, userId, fieldList);
+                    source = new UserETLTableSource(this, parents, userId);
                     userBaseTableMap.put(userId, source);
                 } else {
                     source = tmp;

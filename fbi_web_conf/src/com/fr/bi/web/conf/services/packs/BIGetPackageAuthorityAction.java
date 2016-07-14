@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * Created by wuk on 16/4/26.
+ * Created by kary on 16/4/26.
  */
 public class BIGetPackageAuthorityAction extends AbstractBIConfigureAction {
     @Override

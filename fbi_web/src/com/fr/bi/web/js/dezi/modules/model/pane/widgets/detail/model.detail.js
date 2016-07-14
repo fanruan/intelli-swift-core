@@ -28,6 +28,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
     splice: function (old, key1, key2) {
         var self = this;
         if (key1 === "dimensions") {
+            var isTarget = false;
             var views = this.get("view"), dimensions = this.get("dimensions");
             BI.each(views, function (region, arr) {
                 if ((region === BICst.REGION.DIMENSION1 || region === BICst.REGION.DIMENSION2) && arr.contains(key2)) {
@@ -35,12 +36,23 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     self.set("clicked", linkageValues);
                 }
                 BI.remove(arr, function (i, id) {
-                    return key2 == id
+                    if(key2 == id){
+                        isTarget = true;
+                        return true;
+                    }
                 })
             });
             BI.each(dimensions, function (i, dimension) {
                 if (BI.isNotNull(dimension.dimension_map)) {
                     delete dimension.dimension_map[key2];
+                }
+                if(isTarget === true){
+                    checkFilter(dimension.filter_value);
+                    if(BI.has(dimension, "sort") && BI.has(dimension.sort, "sort_target") && dimension.sort.sort_target === key2){
+                        dimension.sort = {
+                            type: BICst.SORT.ASC
+                        };
+                    }
                 }
             });
             var allIds = BI.keys(dimensions);
@@ -55,6 +67,24 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
             //全局维度增删事件
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
+        }
+
+        function checkFilter(filter) {
+            if(BI.isNull(filter)){
+                return;
+            }
+            var filterType = filter.filter_type, filterValue = filter.filter_value;
+            if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+                BI.each(filterValue, function (i, value) {
+                    checkFilter(value);
+                });
+                return;
+            }
+            if(filter.target_id === key2){
+                filter.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
+                delete filter.target_id;
+                delete filter.filter_value;
+            }
         }
     },
 

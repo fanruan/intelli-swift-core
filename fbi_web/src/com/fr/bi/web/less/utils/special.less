@@ -41,12 +41,23 @@ ul.CodeMirror-hints {
   bottom: 0;
 }
 
-.ui-resizable-s:hover {
-  border-bottom: 1px solid @color-bi-background-highlight;
-}
+.ui-resizable {
+  & > .ui-resizable-s:hover {
+    border-bottom: 1px solid @color-bi-background-highlight;
+  }
 
-.ui-resizable-e:hover {
-  border-right: 1px solid @color-bi-background-highlight;
+  & > .ui-resizable-e:hover {
+    border-right: 1px solid @color-bi-background-highlight;
+  }
+  &.ui-resizable-disabled {
+    & > .ui-resizable-s:hover {
+      border: none;
+    }
+
+    & > .ui-resizable-e:hover {
+      border: none;
+    }
+  }
 }
 
 .ui-resizable-se {

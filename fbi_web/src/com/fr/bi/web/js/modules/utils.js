@@ -2336,25 +2336,34 @@
             return parseComplexDateCommon(v);
         }
         function parseComplexDateForParam(value) {
-            var wWid = value.wId, se = value.startOrEnd;
+            var widgetInfo = value.widgetInfo, offset = value.offset;
+            if(BI.isNull(widgetInfo) || BI.isNull(offset)){
+                return;
+            }
+            var paramdate = new Date();
+            var wWid = widgetInfo.wId, se = widgetInfo.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
                 if (BI.isNull(wWValue) || BI.isEmptyObject(wWValue)) {
                     return;
                 }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
-                    return parseComplexDateCommon(wWValue.start);
+                    paramdate = parseComplexDateCommon(wWValue.start);
                 } else {
-                    return parseComplexDateCommon(wWValue.end);
+                    paramdate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
-                return parseComplexDateCommon(BI.Utils.getWidgetValueByID(value));
+                if(BI.isNull(widgetInfo.wId)){
+                    return;
+                }
+                paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
+            return parseComplexDateCommon(offset, new Date(paramdate));
         }
 
-        function parseComplexDateCommon(v) {
+        function parseComplexDateCommon(v, consultedDate) {
             var type = v.type, value = v.value;
-            var date = new Date();
+            var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
             var tool = new BI.MultiDateParamTrigger();
             if (BI.isNull(type) && BI.isNotNull(v.year)) {
