@@ -570,15 +570,8 @@ Data.Utils = {
                 case BICst.WIDGET.SCATTER:
                     dId = obj.targetIds;
                     clicked = [{
-                        dId: obj.dId || dimIds[0],
+                        dId: obj.dId || this.dimIds[0],
                         value: [obj.seriesName]
-                    }];
-                    break;
-                case BICst.WIDGET.DASHBOARD:
-                    dId = obj.targetIds;
-                    clicked = [{
-                        dId: obj.dId || dimIds[0],
-                        value: [obj.category]
                     }];
                     break;
                 case BICst.WIDGET.MAP:
@@ -723,10 +716,10 @@ Data.Utils = {
             x_axis_number_level: options.x_axis_number_level || constants.NORMAL,
             tooltip: options.tooltip || "",
             geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
-            theme_color: options.theme_color,
+            theme_color: options.theme_color || "#65bce7",
             map_styles: options.map_styles,
-            auto_custom: options.auto_custom,
-            initDrillPath: options.initDrillPath,
+            auto_custom: BI.isNull(options.map_styles) ? false : options.auto_custom,
+            initDrillPath: options.initDrillPath || [],
             lnglat: options.lnglat || constants.LNG_FIRST,
             click: options.click
         };
@@ -1299,13 +1292,13 @@ Data.Utils = {
         function formatConfigForMap(configs, items){
             formatRangeLegend();
             delete configs.legend;
-            configs.plotOptions.dataLabels.enabled = this.config.show_data_label;
+            configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.tooltip.shared = true;
-            configs.plotOptions.color = BI.isArray(config.theme_color) ? config.theme_color : [config.theme_color];
+            //config.plotOptions.color = BI.isArray(config.theme_color) ? config.theme_color : [config.theme_color];
             var formatterArray = [];
             BI.backEach(items, function(idx, item){
                 if(BI.has(item, "settings")){
-                    formatterArray.push(formatToolTipAndDataLabel(item.settings.format || constants.NORMAL, item.settings.num_level || constants.NORMAL));
+                    formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || constants.NORMAL));
                 }
             });
             configs.plotOptions.tooltip.formatter = function(){
@@ -1346,8 +1339,8 @@ Data.Utils = {
                         configs.rangeLegend.enabled = false;
                         break;
                 }
-                configs.rangeLegend.range.max = max;
-                // config.rangeLegend.range = getRangeStyle(config.map_styles , config.auto_custom , config.theme_color);
+                configs.rangeLegend.continuous = false;
+                configs.rangeLegend.range = getRangeStyle(config.map_styles , config.auto_custom , config.theme_color);
             }
 
             function formatToolTipAndDataLabel(format, numberLevel){
@@ -1377,7 +1370,7 @@ Data.Utils = {
             }
 
             function getRangeStyle (styles , change , defaultColor) {
-                var range = [], color = null;
+                var range = [], color = null, defaultStyle = {};
                 var conditionMax = null, conditionMin = null, max = null, min = null;
 
                 BI.each(items , function (idx , item) {
@@ -1393,9 +1386,8 @@ Data.Utils = {
 
                 switch (change) {
                     case BICst.SCALE_SETTING.AUTO:
-                        range.color = defaultColor;
-                        range.splitNumber = 2;
-                        return range;
+                        defaultStyle.color = defaultColor;
+                        return defaultStyle;
                     case BICst.SCALE_SETTING.CUSTOM:
                         if(styles.length !== 0) {
                             BI.each(styles, function (idx, style) {
@@ -1428,7 +1420,6 @@ Data.Utils = {
 
                             }
                         }
-
                         return range;
                 }
             }
@@ -3780,7 +3771,7 @@ Data.Utils = {
             BI.each(configs.yAxis, function(idx, axis){
                 switch (axis.axisIndex){
                     case constants.LEFT_AXIS:
-                        axis.reversed = config.left_y_axis_reversed ? !axis.reversed : axis.reversed;
+                        axis.reversed = true;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
                         formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
@@ -3789,7 +3780,7 @@ Data.Utils = {
                         axis.title.rotation = constants.ROTATION;
                         break;
                     case constants.RIGHT_AXIS:
-                        axis.reversed = config.right_y_axis_reversed ? !axis.reversed : axis.reversed;
+                        axis.reversed = false;
                         axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
                         formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
@@ -3928,9 +3919,9 @@ Data.Utils = {
                             if (constants.MINLIMIT.sub(da.y) > 0) {
                                 da.y = 0;
                             }
-                        }
-                        if((BI.isNull(max) || da.y > max)){
-                            max = da.y;
+                            if((BI.isNull(max) || da.y > max)){
+                                max = da.y;
+                            }
                         }
                     });
                     if(BI.isNotNull(max)){

@@ -53,6 +53,12 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.DashboardChart.EVENT_CHANGE, obj);
         });
+        this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
+            var tmp = obj.x;
+            obj.x = obj.y;
+            obj.y = tmp;
+            self.fireEvent(BI.BarChart.EVENT_CHANGE, obj);
+        });
     },
 
     _formatConfig: function(config, items){
