@@ -1139,11 +1139,13 @@ BICst.CHART_SCALE_SETTING = [{
 }];
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
-    text: "圆形",
-    value: BICst.CHART_SHAPE.CIRCLE
+    text: BI.i18nText("BI-Bubble_Without_Shadow"),
+    cls: "bubble-style-button bubble-no-projector",
+    value: BICst.CHART_SHAPE.NO_PROJECTOR
 }, {
-    text: "多边形",
-    value: BICst.CHART_SHAPE.POLYGON
+    text: BI.i18nText("BI-Bubble_With_Shadow"),
+    cls: "bubble-style-button bubble-with-projector",
+    value: BICst.CHART_SHAPE.PROJECTOR
 }];
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
@@ -1446,6 +1448,17 @@ BICst.DATA_LINK_MANAGE = {
         }]
     }
 };
+
+BICst.BUBBLE_DISPLAY_RULES = [{
+    text: BI.i18nText("BI-Dimension_Color_Setting"),
+    value: BICst.DISPLAY_RULES.DIMENSION
+}, {
+    text: BI.i18nText("BI-Bubble_Fixed_Color"),
+    value: BICst.DISPLAY_RULES.FIXED
+}, {
+    text: BI.i18nText("BI-Bubble_Gradient"),
+    value: BICst.DISPLAY_RULES.GRADIENT
+}];
 
 BICst.TARGET_STYLE_FORMAT = [{
     text: BI.i18nText("BI-Normal"),
