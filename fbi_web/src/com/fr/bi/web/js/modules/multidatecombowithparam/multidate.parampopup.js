@@ -382,7 +382,7 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
             case BICst.MULTI_DATE_DAY_CARD:
                 return this.day.getValue();
             case BICst.MULTI_DATE_PARAM_CARD:
-                return {type: BICst.MULTI_DATE_PARAM, value: this.param.getValue()[0]};
+                return {type: BICst.MULTI_DATE_PARAM, value: this.param.getValue()};
         }
     }
 });
