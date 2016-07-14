@@ -2665,4 +2665,10 @@ public class ResourceHelper {
         };
         return (String[]) ArrayUtils.addAll(third, base);
     }
+
+    public static String[] getMobileJs(){
+        return new String[] {
+
+        };
+    }
 }

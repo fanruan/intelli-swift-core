@@ -1549,10 +1549,10 @@
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
-            if(tableA === tableB){
-                if(isSelfCircle(path) && checkPathAvailable(path, from)){
+            if (tableA === tableB) {
+                if (isSelfCircle(path) && checkPathAvailable(path, from)) {
                     return path;
-                }else{
+                } else {
                     return [[{
                         primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
                         foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
@@ -1562,20 +1562,20 @@
             return path;
 
             //是自循环还是循环路径
-            function isSelfCircle(paths){
-                if(path.length === 0){
+            function isSelfCircle(paths) {
+                if (path.length === 0) {
                     return false;
                 }
-                var result = BI.find(paths, function(idx, path){
+                var result = BI.find(paths, function (idx, path) {
                     return path.length > 1;
                 });
                 return BI.isNull(result);
             }
 
             //对自循环表检测路径合法依据：路径中的a个关联中是否存在外键为primKey
-            function checkPathAvailable(paths, primKey){
-                var result = BI.find(paths, function(idx, path){
-                    return BI.find(path, function(id, relation){
+            function checkPathAvailable(paths, primKey) {
+                var result = BI.find(paths, function (idx, path) {
+                    return BI.find(path, function (id, relation) {
                         return self.getForeignIdFromRelation(relation) === primKey;
                     });
                 });
@@ -2051,7 +2051,7 @@
                 var group = BI.Utils.getDimensionGroupByID(dId);
                 var groupValue = group.group_value, groupType = group.type;
                 var groupMap = {};
-                if(BI.isNull(groupValue) && BI.isNull(groupType)) {
+                if (BI.isNull(groupValue) && BI.isNull(groupType)) {
                     //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
                     var sIndex = value.indexOf("-");
                     var min = value.slice(0, sIndex), max = value.slice(sIndex + 1);
@@ -2103,7 +2103,7 @@
                         filter_value: groupMap[value],
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
-                } else if(useOther === value) {
+                } else if (useOther === value) {
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
                         filter_value: {
@@ -2329,7 +2329,7 @@
         }
         function parseComplexDateForParam(value) {
             var widgetInfo = value.widgetInfo, offset = value.offset;
-            if(BI.isNull(widgetInfo) || BI.isNull(offset)){
+            if (BI.isNull(widgetInfo) || BI.isNull(offset)) {
                 return;
             }
             var paramdate = new Date();
@@ -2345,7 +2345,7 @@
                     paramdate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
-                if(BI.isNull(widgetInfo.wId)){
+                if (BI.isNull(widgetInfo.wId)) {
                     return;
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
