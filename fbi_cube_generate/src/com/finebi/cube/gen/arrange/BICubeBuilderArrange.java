@@ -3,6 +3,7 @@ package com.finebi.cube.gen.arrange;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
+import com.finebi.cube.gen.oper.BISourceDataAllTransport;
 import com.finebi.cube.gen.oper.BISourceDataTransport;
 import com.finebi.cube.gen.sub.BIBuildCubeSubscriber;
 import com.finebi.cube.impl.pubsub.BISubscribeID;
@@ -28,7 +29,7 @@ public class BICubeBuilderArrange {
         while (it.hasNext()) {
             try {
                 CubeTableSource tableSource = it.next();
-                BISourceDataTransport dataTransport = new BISourceDataTransport(cube, tableSource, tableSourceSet, null, 1);
+                BISourceDataTransport dataTransport = new BISourceDataAllTransport(cube, tableSource, tableSourceSet, null, 1);
                 BIBuildCubeSubscriber subscriber = new BIBuildCubeSubscriber(new BISubscribeID(tableSource.getSourceID()), dataTransport);
                 subscriber.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
             } catch (BITopicAbsentException e) {

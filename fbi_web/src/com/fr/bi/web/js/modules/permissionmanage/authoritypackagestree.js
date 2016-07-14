@@ -1,7 +1,7 @@
 /**
  * 可以单选多选切换的树
  *用于权限管理中业务包的显示
- * Created by wuk on 16/4/20.
+ * Created by kary on 16/4/20.
  * @class BI.AuthorityPackagesTree
  * @extends BI.Widget
  */

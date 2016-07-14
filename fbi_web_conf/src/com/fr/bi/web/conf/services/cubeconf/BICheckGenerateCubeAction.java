@@ -7,7 +7,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
-import com.fr.bi.web.conf.services.cubetask.utils.BICubeGenerateTool;
+import com.fr.bi.web.conf.services.utils.BICubeGenerateUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -26,7 +26,7 @@ public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
         long userId = ServiceUtils.getCurrentUserID(req);
         CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableJson), userId);
         JSONObject jo = new JSONObject();
-        boolean tableExisted = BICubeGenerateTool.tableExisted(source, userId);
+        boolean tableExisted = BICubeGenerateUtils.tableExisted(source, userId);
         if (tableExisted) {
             ICubeDataLoader dataLoader = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId));
             ICubeTableService tableService = dataLoader.getTableIndex(source);

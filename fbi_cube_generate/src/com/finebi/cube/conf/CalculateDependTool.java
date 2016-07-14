@@ -13,10 +13,9 @@ import java.util.Set;
  * 为relation和path计算依赖
  */
 public interface CalculateDependTool {
-    BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation);
+    BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation,Set<CubeTableSource> cubeTableSources);
 
     BICubeGenerateRelationPath calRelationPath(BITableSourceRelationPath biTableSourceRelationPathSet, Set<BITableSourceRelation> tableRelationSet);
 
-    void setOriginal(Set<CubeTableSource> cubeTableSources);
 }
 
