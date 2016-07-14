@@ -141,7 +141,7 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
                 items.push({
                     type:"bi.number_custom_group_item",
                     id: BI.UUID(),
-                    group_name:current + "~" + (current + this.space),
+                    group_name:current + "-" + (current + this.space),
                     height:this.constants.intervalHeight,
                     min:current,
                     max:current + this.space,
@@ -154,7 +154,7 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
                 items.push({
                     type:"bi.number_custom_group_item",
                     id: BI.UUID(),
-                    group_name:current + "~" + this.max,
+                    group_name:current + "-" + this.max,
                     height:this.constants.intervalHeight,
                     min:current,
                     max:this.max,
