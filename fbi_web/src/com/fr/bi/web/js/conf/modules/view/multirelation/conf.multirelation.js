@@ -228,7 +228,7 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
         if (needGenerateCube === BICst.MULTI_PATH_STATUS.NEED_GENERATE_CUBE) {
             self.cubeLabel.setValue(BI.i18nText("BI-Generate_Cube_First"));
         } else {
-            self.cubeLabel.setValue(BI.i18nText("BI-Multi_Path_Use_Cur_Cube_Version") + ": " + cubeEnd);
+            self.cubeLabel.setValue(BI.i18nText("BI-Multi_Path_Use_Cur_Cube_Version") + ": " + new Date(cubeEnd).print("%Y-%X-%d,%H:%M:%S"));
         }
         BI.size(relations) > 0 ? this.tab.setSelect(c.HAS_MULTI_PATH) : this.tab.setSelect(c.NONE_MULTI_PATH);
     },

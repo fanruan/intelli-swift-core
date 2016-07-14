@@ -388,5 +388,5 @@ BI.Fit = BI.inherit(BI.Widget, {
         BI.Fit.superclass.destroy.apply(this, arguments);
     }
 });
-BI.Fit.EVENT_CHANGE = "Fit.EVENT_CHANGE";
+BI.Fit.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.fit', BI.Fit);

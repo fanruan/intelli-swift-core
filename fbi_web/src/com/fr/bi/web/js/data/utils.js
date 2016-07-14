@@ -69,7 +69,7 @@ Data.Utils = {
         if (type === BICst.WIDGET.MAP) {
             options.geo = {
                 data: BICst.MAP_PATH[widget.sub_type] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
-                geoName: BICst.MAP_TYPE_NAME[widget.sub_type] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                name: BICst.MAP_TYPE_NAME[widget.sub_type] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
             }
         }
         if (type === BICst.WIDGET.GIS_MAP) {
@@ -486,7 +486,7 @@ Data.Utils = {
                             res.drilldown.series = formatDataForMap(item, currentLayer);
                             res.drilldown.geo = {
                                 data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]],
-                                geoName: res.x
+                                name: res.x
                             };
                         }
                         return res;
@@ -722,10 +722,11 @@ Data.Utils = {
             x_axis_style: options.x_axis_style || constants.NORMAL,
             x_axis_number_level: options.x_axis_number_level || constants.NORMAL,
             tooltip: options.tooltip || "",
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], geoName: BI.i18nText("BI-China")},
+            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
             theme_color: options.theme_color,
             map_styles: options.map_styles,
             auto_custom: options.auto_custom,
+            initDrillPath: options.initDrillPath,
             lnglat: options.lnglat || constants.LNG_FIRST,
             click: options.click
         };
@@ -1320,6 +1321,9 @@ Data.Utils = {
             };
 
             configs.geo = config.geo;
+            if(config.initDrillPath.length > 1){
+                configs.initDrillPath = config.initDrillPath;
+            }
             configs.chartType = "areaMap";
             delete configs.xAxis;
             delete configs.yAxis;
