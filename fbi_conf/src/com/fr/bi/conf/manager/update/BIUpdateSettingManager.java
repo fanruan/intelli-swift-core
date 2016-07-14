@@ -46,9 +46,14 @@ public class BIUpdateSettingManager extends BISystemDataManager<SingleUserBIUpda
     public void removeUpdateSetting(String sourceTableId, long userId) {
         getUpdateSettingManager(userId).removeUpdateSetting(sourceTableId);
     }
-    @Override
+    
+
     public Map<String, UpdateSettingSource> getUpdateSettings(long userId) {
         return getUpdateSettingManager(userId).getUpdateSettings();
+    }
+
+    public UpdateSettingSource getSingleUpdateSetting(long userId, String sourceId) {
+        return null;
     }
 
     @Override
