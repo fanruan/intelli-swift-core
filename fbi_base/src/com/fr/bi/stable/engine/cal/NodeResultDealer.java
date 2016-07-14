@@ -8,5 +8,5 @@ import com.fr.bi.stable.structure.CubeValueEntryNode;
  * Created by loy on 16/6/28.
  */
 public interface NodeResultDealer {
-    void dealWithNode(ICubeTableService ti, GroupValueIndex currentIndex, CubeValueEntryNode node);
+    void dealWithNode(GroupValueIndex currentIndex, CubeValueEntryNode node);
 }
