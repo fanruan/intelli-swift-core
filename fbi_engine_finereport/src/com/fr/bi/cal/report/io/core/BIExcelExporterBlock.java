@@ -136,7 +136,7 @@ public class BIExcelExporterBlock implements ResultReport, ResultElementCase {
 
     @Override
     public Iterator cellIterator() {
-        return new ExcelCellIterator(getElementCase(), column, row, width, height);
+        return getElementCase().intersect(column, row, width, height);
     }
 
     @Override
