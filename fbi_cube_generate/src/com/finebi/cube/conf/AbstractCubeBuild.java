@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.*;
 
 /**
- * Created by wuk on 16/7/11.
+ * Created by kary on 16/7/11.
  */
 public abstract class AbstractCubeBuild implements CubeBuild {
     private long userId;

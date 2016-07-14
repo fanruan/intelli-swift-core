@@ -16,7 +16,7 @@ import com.fr.general.ComparatorUtils;
 import java.util.*;
 
 /**
- * Created by wuk on 16/5/30.
+ * Created by kary on 16/5/30.
  */
 public class CubeBuildSingleTable implements CubeBuild {
 

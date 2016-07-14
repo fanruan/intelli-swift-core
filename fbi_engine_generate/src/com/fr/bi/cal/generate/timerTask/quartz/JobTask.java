@@ -15,7 +15,7 @@ import com.fr.third.org.quartz.JobExecutionException;
 import java.util.Date;
 
 /**
- * Created by wuk on 16/6/29.
+ * Created by kary on 16/6/29.
  */
 
 public class JobTask implements Job {

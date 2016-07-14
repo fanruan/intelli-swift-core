@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by wuk on 16/7/13.
+ * Created by kary on 16/7/13.
  */
 public class CubeUpdateUtils {
     private static boolean forceCheck=false;

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by wuk on 16/6/1.
+ * Created by kary on 16/6/1.
  * 主要用于实时报表的生成
  */
 public class CubeBuildTableSource extends AbstractCubeBuild implements CubeBuild {

@@ -41,7 +41,7 @@ import java.util.concurrent.Future;
  * @author Connery
  * @since 4.0
  * <p/>
- * edit by wuk
+ * edit by kary
  */
 public class BuildCubeTask implements CubeTask {
 

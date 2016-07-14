@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by wuk on 16/6/8.
+ * Created by kary on 16/6/8.
  * 为cube提供部分计算方法
  */
 public class BICubeGenerateUtils {

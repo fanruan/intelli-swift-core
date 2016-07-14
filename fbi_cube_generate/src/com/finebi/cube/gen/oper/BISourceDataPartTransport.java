@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by wuk on 16/7/13.
+ * Created by kary on 16/7/13.
  */
 public class BISourceDataPartTransport extends BISourceDataTransport{
     public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {

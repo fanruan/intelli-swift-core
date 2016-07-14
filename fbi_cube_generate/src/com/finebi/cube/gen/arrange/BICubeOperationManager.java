@@ -21,7 +21,9 @@ import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -391,9 +393,24 @@ public class BICubeOperationManager {
     }
 
     protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version) {
-        BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(UserControl.getInstance().getSuperManagerID()
-        );
-        return new BISourceDataTransport(cube, tableSource, allSources, parent, version);
+        Map<String, UpdateSettingSource> updateSettings = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(UserControl.getInstance().getSuperManagerID());
+        for (String keys : updateSettings.keySet()) {
+            if (keys.equals(tableSource.getSourceID())) {
+                switch (updateSettings.get(keys).getUpdateType()) {
+                    case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL: {
+                        return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+                    }
+                    case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
+                        return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version);
+                    }
+                    case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
+                        return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
+                    }
+                }
+
+            }
+        }
+        return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
     }
 
     protected BITablePathIndexBuilder getTablePathBuilder(Cube cube, BITableSourceRelationPath tablePath) {

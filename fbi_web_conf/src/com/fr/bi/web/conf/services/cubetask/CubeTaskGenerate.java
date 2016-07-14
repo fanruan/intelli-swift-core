@@ -20,7 +20,7 @@ import com.fr.bi.web.conf.services.utils.BICubeGenerateUtils;
 import java.util.Set;
 
 /**
- * Created by wuk on 16/5/30.
+ * Created by kary on 16/5/30.
  */
 public class CubeTaskGenerate {
 
