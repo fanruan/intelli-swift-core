@@ -99,7 +99,9 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
                             value: finded.pId,
                             isParent: true,
                             open: !isInvalid,
-                            disabled: isInvalid
+                            disabled: isInvalid,
+                            title: translations[finded.pId],
+                            warningTitle:  BI.i18nText("BI-Already_Relation_With_Current_Table")
                         });
                         map[finded.pId] = true;
                     }
@@ -150,7 +152,8 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
                     isParent: true,
                     open: false,
                     disabled:self.allRelationTables.contains(id) || id === tableId,
-                    title: self.allRelationTables.contains(id) ? BI.i18nText("BI-Already_Relation_With_Current_Table") : translations[id]
+                    title: translations[id],
+                    warningTitle:  BI.i18nText("BI-Already_Relation_With_Current_Table")
                 });
             });
         } else {
@@ -164,7 +167,8 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
                     isParent: true,
                     open: false,
                     disabled: self.allRelationTables.contains(id) || id === tableId,
-                    title: self.allRelationTables.contains(id) ? BI.i18nText("BI-Already_Relation_With_Current_Table") : translations[id]
+                    title: translations[id],
+                    warningTitle:  BI.i18nText("BI-Already_Relation_With_Current_Table")
                 });
             });
         }

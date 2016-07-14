@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
@@ -10,16 +11,19 @@ import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
+import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.ExportConstants;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,7 +36,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     private final static int MEMORY_LIMIT = 3000;
 
-    private HashSet<Table> tables = new HashSet<Table>();
+    private final static int EXCEL_ROW_MODE_VALUE = ExportConstants.MAX_ROWS_2007 - 1;
 
     public DetailExecutor(BIDetailWidget widget,
                           //前台传过来的从1开始;
@@ -43,32 +47,53 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
 
+
+    public DetailCellIterator createCellIterator4Excel() {
+        final GroupValueIndex gvi = createDetailViewGvi();
+        int count = gvi.getRowsCountWithData();
+        paging.setTotalSize(count);
+        final DetailCellIterator iter = new DetailCellIterator(widget.getViewDimensions().length, count + 1);
+        new Thread() {
+            public void run() {
+                try {
+                    final FinalInt start = new FinalInt();
+                    List<CBCell> cells = createCellTitle(CellConstant.CBCELL.TARGETTITLE_Y);
+                    Iterator<CBCell> it = cells.iterator();
+                    while(it.hasNext()) {
+                        iter.getIteratorByPage(start.value).addCell(it.next());
+                    }
+                    TableRowTraversal action = new TableRowTraversal() {
+                        @Override
+                        public boolean actionPerformed(BIRowValue row) {
+                            int currentRow = (int) row.getRow() + 1;
+                            int newRow = currentRow & EXCEL_ROW_MODE_VALUE;
+                            if(newRow == 0) {
+                                iter.getIteratorByPage(start.value).finish();
+                                start.value++;
+                            }
+                            //row + 1 ? 不然覆盖掉了列名
+                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), currentRow);
+                            return false;
+                        }
+                    };
+                    travel(action, gvi);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    iter.finish();
+                }
+            }
+        }.start();
+
+
+
+        return iter;
+    }
+
+
     @Override
     public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
-
-        GroupValueIndex gvi = createDetailViewGvi();
-        final CBCell[][] cells = createCells(gvi);
-        if (cells == null) {
-            return new CBCell[][]{new CBCell[0]};
-        }
-
-        TableRowTraversal action = new TableRowTraversal() {
-            @Override
-            public boolean actionPerformed(BIRowValue row) {
-                Boolean x = checkPage(row);
-                if (x != null) {
-                    return x;
-                }
-                //row + 1 ? 不然覆盖掉了列名
-                fillOneLine(cells, (int) row.getRow() + 1, row.getValues());
-                return false;
-            }
-        };
-        travel(action, gvi);
-        if (widget.isOrder() == 1) {
-            createAllNumberCellElement(cells, paging.getCurrentPage());
-        }
-        return cells;
+        return  null;
     }
 
     @Override

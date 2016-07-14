@@ -1,12 +1,10 @@
 @import "../../bibase";
 
 .bi-custom-sort-item {
-  & {
-    border: 1px solid;
-    border-color: @color-bi-border-normal;
-    & .bi-button-mask{
-      .opacity(0.03)
-    }
+  border: 1px solid @color-bi-border-normal;
+  .border-radius(2px);
+  & .bi-button-mask {
+    .opacity(0.03)
   }
 }
 

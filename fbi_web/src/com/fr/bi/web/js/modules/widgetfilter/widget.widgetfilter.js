@@ -94,7 +94,7 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
                     }
                 } else {
                     var text = self.model.getControlWidgetValueTextByID(cwid);
-                    if (BI.isNotNull(text)) {
+                    if (BI.isNotNull(text) && text !== "") {
                         items.push({
                             type: "bi.control_filter_item",
                             wId: cwid,

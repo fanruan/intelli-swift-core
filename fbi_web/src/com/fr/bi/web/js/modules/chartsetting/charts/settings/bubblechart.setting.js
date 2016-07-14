@@ -32,6 +32,18 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         BI.BubbleChartSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
+        this.rulesDisplay = BI.createWidget({
+            type: "bi.segment",
+            whiteSpace: "normal",
+            height: 40,
+            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            items: BICst.BUBBLE_DISPLAY_RULES
+        });
+
+        this.rulesDisplay.on(BI.Segment.EVENT_CHANGE, function () {
+
+        });
+
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
             width: 130
@@ -42,19 +54,21 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
-        this.chartTypeGroup = BI.createWidget({
+        this.bubbleStyleGroup = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.BUBBLE_CHART_STYLE_GROUP, {
-                type: "bi.text_button",
-                extraCls: "table-style-font",
-                width: this.constant.BUTTON_WIDTH,
-                height: this.constant.BUTTON_HEIGHT
+                type: "bi.icon_button",
+                width: 40,
+                height: 40,
+                iconWidth: 24,
+                iconHeight: 24
             }),
             layouts: [{
                 type: "bi.left"
             }]
         });
-        this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+
+        this.bubbleStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
@@ -66,6 +80,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Sheet_Style"),
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
@@ -74,12 +89,34 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
+                    text: BI.i18nText("BI-Display_Rules"),
+                    cls: "attr-name"
+                },  {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.rulesDisplay]
+                    },
+                   lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
                     text: BI.i18nText("BI-Chart_Color"),
-                    cls: "attr-names"
+                    cls: "attr-names",
+                    lgap: 15
                 }, {
                     el: {
                         type: "bi.center_adapt",
                         items: [this.colorSelect]
+                    },
+                    lgap: this.constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Total_Style"),
+                    cls: "attr-names",
+                    lgap: 15
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.bubbleStyleGroup]
                     },
                     lgap: this.constant.SIMPLE_H_GAP
                 }], {
@@ -210,7 +247,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 height: "100%",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
                 lgap: this.constant.SIMPLE_H_LGAP,
                 text: BI.i18nText("BI-Left_Value_Axis"),
