@@ -35,11 +35,21 @@ BI.MapSetting = BI.inherit(BI.Widget, {
         //主题颜色
         this.colorChooser = BI.createWidget({
             type: "bi.color_chooser",
-            width: this.constant.BUTTON_HEIGHT,
+            width:  this.constant.BUTTON_HEIGHT,
             height: this.constant.BUTTON_HEIGHT
         });
 
-        this.colorChooser.on(BI.ColorChooser.EVENT_CHANGE , function () {
+        this.colorChooser.on(BI.ColorChooser.EVENT_CHANGE, function() {
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
+        });
+
+        this.bubbleColorChooser = BI.createWidget({
+            type: "bi.color_chooser",
+            width:  this.constant.BUTTON_HEIGHT,
+            height: this.constant.BUTTON_HEIGHT
+        });
+
+        this.bubbleColorChooser.on(BI.ColorChooser.EVENT_CHANGE, function() {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
@@ -62,9 +72,17 @@ BI.MapSetting = BI.inherit(BI.Widget, {
                     text: BI.i18nText("BI-Theme_Color"),
                     lgap: this.constant.SIMPLE_H_GAP,
                     cls: "attr-names"
-                } , {
+                }, {
                     type: "bi.center_adapt",
                     items: [this.colorChooser]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Bubble_Color"),
+                    lgap: this.constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.bubbleColorChooser]
                 }] , {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -246,6 +264,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
     populate: function(){
         var wId = this.options.wId;
         this.colorChooser.setValue(BI.Utils.getWSThemeColorByID(wId));
+        this.bubbleColorChooser.setValue(BI.Utils.getWSMapBubbleColorByID(wId));
         this.styleRadio.setValue(BI.Utils.getWSScaleByID(wId));
         this._doClickButton(BI.Utils.getWSScaleByID(wId));
         this.conditions.setValue(BI.Utils.getWSMapStylesByID(wId));
@@ -257,6 +276,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
     getValue: function(){
         return {
             theme_color: this.colorChooser.getValue(),
+            map_bubble_color: this.bubbleColorChooser.getValue(),
             auto_custom: this.styleRadio.getValue()[0],
             map_styles: this.conditions.getValue(),
             transfer_filter: this.transferFilter.isSelected(),
@@ -267,6 +287,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
 
     setValue: function(v){
         this.colorChooser.setValue(v.theme_color);
+        this.bubbleColorChooser.setValue(v.map_bubble_color);
         this.styleRadio.setValue(v.auto_custom);
         this.conditions.setValue(v.map_styles);
         this.transferFilter.setSelected(v.transfer_filter);

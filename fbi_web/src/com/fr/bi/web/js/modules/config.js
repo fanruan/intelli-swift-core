@@ -1206,7 +1206,9 @@ BICst.DEFAULT_CHART_SETTING = {
     show_data_label: false,
     show_data_table: false,
     show_grid_line: true,
-    show_zoom: false
+    show_zoom: false,
+    bubble_display: BICst.DISPLAY_RULES.DIMENSION,
+    bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR
 };
 
 BICst.DASHBOARD_STYLE_CONDITIONS = [{
