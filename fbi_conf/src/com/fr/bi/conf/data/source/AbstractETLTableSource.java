@@ -346,6 +346,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
             return set;
         }
         helper.add(this);
+        set.add(this);
         for (CubeTableSource source : getParents()){
             source.getSourceUsedBaseSource(set, helper);
         }

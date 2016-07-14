@@ -27,6 +27,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @BICoreField
     protected DimensionFilter filter;
+    @BICoreField
     protected ISort sort = new NoSort();
     @BICoreField
     protected IGroup group = new NoGroup();

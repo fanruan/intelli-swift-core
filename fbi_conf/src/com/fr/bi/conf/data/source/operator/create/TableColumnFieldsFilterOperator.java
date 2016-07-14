@@ -2,7 +2,10 @@ package com.fr.bi.conf.data.source.operator.create;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.BICoreService;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.field.target.filter.general.GeneralANDFilter;
@@ -116,7 +119,7 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
         }
     }
 
-    private class FilterItem implements JSONTransform {
+    private class FilterItem implements JSONTransform, BICoreService {
         @BICoreField
         private List<TargetFilter> filter;
         @BICoreField
@@ -172,6 +175,11 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
                 }
             }
             return false;
+        }
+
+        @Override
+        public BICore fetchObjectCore() {
+            return new BICoreGenerator(this).fetchObjectCore();
         }
     }
 

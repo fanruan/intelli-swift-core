@@ -44,6 +44,11 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
+    public void refreshWidget() {
+
+    }
+
+    @Override
     public IPersistentTable getPersistentTable() {
         return  new PersistentTable(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }

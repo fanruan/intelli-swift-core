@@ -1,6 +1,7 @@
 package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
@@ -47,4 +48,7 @@ public class SingleUserAnalysisBusiPackManager{
         return pack.getAnylysis().getAllPackages();
     }
 
+    public Set<BusinessTable> getAllTables(){
+        return pack.getAllTables();
+    }
 }
