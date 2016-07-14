@@ -43,7 +43,7 @@ public class CalculateDependManagerTest extends TestCase {
         Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
         relations.add(BITableSourceRelationTestTool.getMemoryBC());
         BICubeGenerateRelationPath biTableRelationPath4CubeGenerate = calculateDependManager4Test.calRelationPath(abcPath, relations);
-        assertTrue(biTableRelationPath4CubeGenerate.getDependRelationPathSet().size() == 2);
+        assertTrue(biTableRelationPath4CubeGenerate.getDependRelationPathSet().size() == 1);
         assertTrue(biTableRelationPath4CubeGenerate.getBiTableSourceRelationPath().getSourceID().equals(BITableSourceRelationPathTestTool.getABCPath().getSourceID()));
     }
 
@@ -73,7 +73,6 @@ public class CalculateDependManagerTest extends TestCase {
             pathCopy.copyFrom(biTableRelationPath4CubeGenerate.getBiTableSourceRelationPath());
             pathCopy.removeLastRelation();
             assertTrue(ids.contains(new BITableSourceRelationPath(abcPath.getLastRelation()).getSourceID()));
-            assertTrue(ids.contains(pathCopy.getSourceID()));
         } catch (BITablePathEmptyException e) {
             assertFalse(true);
         }

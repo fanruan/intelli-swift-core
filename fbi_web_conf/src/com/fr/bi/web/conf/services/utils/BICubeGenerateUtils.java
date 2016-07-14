@@ -14,6 +14,8 @@ import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ITableKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.exception.BIRelationAbsentException;
+import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.HashSet;
@@ -38,20 +40,17 @@ public class BICubeGenerateUtils {
 
     /* 获取所有新增的relation*/
     public static Set<BITableRelation> getRelations4CubeGenerate(long userId) {
-        Set<BITableRelation> allTableRelation = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
-        Set<BITableRelation> oldRelation = BICubeConfigureCenter.getTableRelationManager().getAnalysisAllTableRelation(userId);
+        Set<BITableRelation> currentRelations = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
         Set<BITableRelation> newRelationSet = new HashSet<BITableRelation>();
-        for (BITableRelation relation : allTableRelation) {
-            for (BITableRelation oldTableRelation : oldRelation) {
-                try {
-                    if (oldTableRelation.createJSON().toString().equals(relation.createJSON().toString())) {
-                        newRelationSet.add(relation);
-                        break;
-                    }
-                } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage());
+        for (BITableRelation relation : currentRelations) {
+            try {
+                if (!BICubeConfigureCenter.getTableRelationManager().isRelationGenerated(userId,relation)) {
+                    newRelationSet.add(relation);
                 }
-
+            } catch (BITableAbsentException e) {
+                BILogger.getLogger().error(e.getMessage());;
+            } catch (BIRelationAbsentException e) {
+                BILogger.getLogger().error(e.getMessage());;
             }
         }
         return newRelationSet;

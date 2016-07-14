@@ -47,22 +47,22 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
         return jo;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof BITableRelation)) {
-            return false;
-        }
-        BITableRelation o1 = (BITableRelation) o;
-        return o1==this;
-    }
-
-    @Override
-    public int hashCode() {
-        try {
-            return this.createJSON().hashCode();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (!(o instanceof BITableRelation)) {
+//            return false;
+//        }
+//        BITableRelation o1 = (BITableRelation) o;
+//        return o1==this;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        try {
+//            return this.createJSON().hashCode();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return 0;
+//    }
 }
