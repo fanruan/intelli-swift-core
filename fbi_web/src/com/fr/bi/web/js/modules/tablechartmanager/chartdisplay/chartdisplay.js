@@ -331,7 +331,10 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                     auto_custom: BI.Utils.getWSScaleByID(o.wId),
                     theme_color: BI.Utils.getWSThemeColorByID(o.wId),
                     map_styles: BI.Utils.getWSMapStylesByID(o.wId),
-                    transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId)
+                    transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId),
+                    map_bubble_color: BI.Utils.getWSMapBubbleColorByID(o.wId),
+                    rules_display: BI.Utils.getWSShowRulesByID(o.wId),
+                    bubble_style: BI.Utils.getWSBubbleStyleByID(o.wId)
                 }, {
                     cordon: self.model.getCordon(),
                     tooltip: self.model.getToolTip(type),

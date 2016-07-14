@@ -495,6 +495,8 @@ BICst.TARGET_STYLE = {
     }
 };
 
+//
+
 //仪表盘自动样式
 BICst.DASHBOARD_CHART_STYLE_AUTO = {
         FIRST: {
