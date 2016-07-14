@@ -33,10 +33,11 @@ BI.SelectTextTrigger = BI.inherit(BI.Trigger, {
         vals = BI.isArray(vals) ? vals : [vals];
         var result = [];
         BI.each(this.options.items, function (i, item) {
-            if (vals.contains(item.value)) {
+            if (BI.deepContains(vals, item.value)) {
                 result.push(item.text || item.value);
             }
         });
+
         if (result.length > 0) {
             this.trigger.element.removeClass("bi-water-mark");
             this.trigger.setText(result.join(","));

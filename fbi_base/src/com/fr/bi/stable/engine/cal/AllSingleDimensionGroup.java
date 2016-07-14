@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.bi.stable.engine.cal;
 
@@ -9,6 +9,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
+import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.CubeValueEntryNode;
 import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.bi.stable.structure.object.CubeValueEntrySort;
@@ -19,25 +20,25 @@ import java.util.Set;
 
 /**
  * @author Daniel
- * 全部计算的
+ *         全部计算的
  */
 public class AllSingleDimensionGroup {
-	
-	private static class FinalAdapter<T> {
-		T t;
-		
-		FinalAdapter(T t){
-			set(t);
-		}
-		
-		T get(){
-			return t;
-		}
-		
-		void set(T t){
-			this.t = t;
-		}
-	}
+
+    private static class FinalAdapter<T> {
+        T t;
+
+        FinalAdapter(T t) {
+            set(t);
+        }
+
+        T get() {
+            return t;
+        }
+
+        void set(T t) {
+            this.t = t;
+        }
+    }
 
 	/**
 	 * 通过遍历index获取index里面分组的所有值的index，此种情况下取值是无序的
@@ -52,7 +53,7 @@ public class AllSingleDimensionGroup {
         final ICubeValueEntryGetter getter = ti.getValueEntryGetter(key, new ArrayList<BITableSourceRelation>());
 		while(!adapter.get().isAllEmpty()){
 			adapter.get().BrokenableTraversal(new BrokenTraversalAction() {
-
+				
 				@Override
 				public boolean actionPerformed(int row) {
 					GroupValueIndex gvi = getter.getIndexByRow(row);
@@ -85,23 +86,25 @@ public class AllSingleDimensionGroup {
         return set;
     }
 
-	public static void run(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final NodeResultDealer deal, final CubeValueEntryNode snParent){
+	public static void run(GroupValueIndex parentIndex, final ICubeTableService ti, final DimensionCalculator dc, final NodeResultDealer deal, final CubeValueEntryNode snParent){
 		GroupValueIndex currentIndex = parentIndex.clone();
 		final FinalAdapter<GroupValueIndex> adapter = new FinalAdapter<GroupValueIndex>(currentIndex);
-		final CubeValueEntryNode[] children = new CubeValueEntryNode[ti.loadGroup(key).sizeOfGroup()];
+        final BIKey key = dc.createKey();
+        final ICubeValueEntryGetter getter = ti.getValueEntryGetter(key, dc.getRelationList());
+		final CubeValueEntryNode[] children = new CubeValueEntryNode[getter.getGroupSize()];
 		final FinalAdapter<Integer> indexadp = new FinalAdapter<Integer>(0);
-        final ICubeValueEntryGetter getter = ti.getValueEntryGetter(key, new ArrayList<BITableSourceRelation>());
 		while(!adapter.get().isAllEmpty()){
 			adapter.get().BrokenableTraversal(new BrokenTraversalAction() {
 
 				@Override
 				public boolean actionPerformed(int row) {
 					CubeValueEntryNode entryNote = CubeValueEntryNode.fromParent(getter.getEntryByRow(row));
+					GroupValueIndex currentIndex = adapter.get().AND(entryNote.getGvi());
+					entryNote.setGvi(currentIndex);
 					children[indexadp.get()] = entryNote;
 					indexadp.set(indexadp.get() + 1);
-					GroupValueIndex currentIndex = adapter.get().AND(entryNote.getGvi());
-					if(deal != null){
-						deal.dealWithNode(ti, currentIndex, entryNote);
+					if(deal != null  && !currentIndex.isAllEmpty()){
+						deal.dealWithNode(currentIndex, entryNote);
 					}
 					adapter.set(adapter.get().andnot(currentIndex));
 					return true;
@@ -113,21 +116,23 @@ public class AllSingleDimensionGroup {
 		snParent.setChildren(childrenWithoutNull);
 	}
 	
-	public static void runWithSort(GroupValueIndex parentIndex, final ICubeTableService ti, final BIKey key, final NodeResultDealer deal, final CubeValueEntryNode snParent, boolean asc){
+	public static void runWithSort(GroupValueIndex parentIndex, final ICubeTableService ti, final DimensionCalculator dc, final NodeResultDealer deal, final CubeValueEntryNode snParent, boolean asc){
 		GroupValueIndex currentIndex = parentIndex.clone();
 		final FinalAdapter<GroupValueIndex> adapter = new FinalAdapter<GroupValueIndex>(currentIndex);
+        final BIKey key = dc.createKey();
+        final ICubeValueEntryGetter getter = ti.getValueEntryGetter(key, dc.getRelationList());
 		final CubeValueEntrySort.CubeValueEntrySortBuilder sortBuilder = CubeValueEntrySort.getBuilder(ti.loadGroup(key).sizeOfGroup());
-        final ICubeValueEntryGetter getter = ti.getValueEntryGetter(key, new ArrayList<BITableSourceRelation>());
-        while(!adapter.get().isAllEmpty()){
+		while(!adapter.get().isAllEmpty()){
 			adapter.get().BrokenableTraversal(new BrokenTraversalAction() {
 				
 				@Override
 				public boolean actionPerformed(int row) {
 					CubeValueEntryNode entryNote = CubeValueEntryNode.fromParent(getter.getEntryByRow(row));
-					sortBuilder.putSortItem(entryNote);
 					GroupValueIndex currentIndex = adapter.get().AND(entryNote.getGvi());
-					if(deal != null){
-						deal.dealWithNode(ti, currentIndex, entryNote);
+					entryNote.setGvi(currentIndex);
+					sortBuilder.putSortItem(entryNote);
+					if(deal != null && !currentIndex.isAllEmpty()){
+						deal.dealWithNode(currentIndex, entryNote);
 					}
 					adapter.set(adapter.get().andnot(currentIndex));
 					return true;
@@ -136,10 +141,10 @@ public class AllSingleDimensionGroup {
 		}
 		CubeValueEntrySort sort = sortBuilder.build();
 		if(asc) {
-			snParent.setChildren((CubeValueEntryNode[]) sort.getSortedASC());
+			snParent.setChildren(sort.getSortedASC());
 		}
 		else {
-			snParent.setChildren((CubeValueEntryNode[]) sort.getSortedDESC());
+			snParent.setChildren(sort.getSortedDESC());
 		}
 	}
 

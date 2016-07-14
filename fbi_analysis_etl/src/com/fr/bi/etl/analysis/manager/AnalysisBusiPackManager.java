@@ -281,7 +281,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public Set<BusinessTable> getAllTables(long userId) {
-        return null;
+        return getUserAnalysisBusiPackManager(userId).getAllTables();
     }
 
     @Override

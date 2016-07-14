@@ -1,11 +1,13 @@
 package com.fr.bi.stable.utils;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.cal.*;
+import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
@@ -78,14 +80,14 @@ public class BIServerUtils {
      * @param lastDealer
      * @return
      */
-    public static NodeResultDealer createAllCalDimensonDealer(BIKey[] dimension, NodeResultDealer lastDealer, boolean[] dimensionSortIsAsc) {
+    public static NodeResultDealer createAllCalDimensonDealer(DimensionCalculator[] dcs, NodeResultDealer lastDealer, boolean[] dimensionSortIsAsc, ICubeDataLoader loader) {
         SortDimensionCalculatorDealer dealer = null;
         SortDimensionCalculatorDealer tempDealer = null;
-        if(dimension != null && dimensionSortIsAsc != null && dimension.length == dimensionSortIsAsc.length) {
-            for (int i = 0; i < dimension.length; i++) {
-                BIKey key = dimension[i];
+        if(dcs != null && dimensionSortIsAsc != null && dcs.length == dimensionSortIsAsc.length) {
+            for (int i = 0; i < dcs.length; i++) {
+                DimensionCalculator dc = dcs[i];
                 boolean asc = dimensionSortIsAsc[i];
-                SortDimensionCalculatorDealer dimensionDealer = new SortDimensionCalculatorDealer(key, asc);
+                SortDimensionCalculatorDealer dimensionDealer = new SortDimensionCalculatorDealer(dc, asc, loader.getTableIndex(dc.getField().getTableBelongTo().getTableSource()));
                 if (dealer == null) {
                     dealer = dimensionDealer;
                 }
@@ -103,13 +105,13 @@ public class BIServerUtils {
         }
     }
 
-    public static NodeResultDealer createAllCalDimensonDealer(BIKey[] dimension, NodeResultDealer lastDealer) {
+    public static NodeResultDealer createAllCalDimensonDealer(DimensionCalculator[] dcs, NodeResultDealer lastDealer, ICubeDataLoader loader) {
         NoneSortDimensionCalculatorDealer dealer = null;
         NoneSortDimensionCalculatorDealer tempDealer = null;
-        if(dimension != null) {
-            for (int i = 0; i < dimension.length; i++) {
-                BIKey key = dimension[i];
-                NoneSortDimensionCalculatorDealer dimensionDealer = new NoneSortDimensionCalculatorDealer(key);
+        if(dcs != null) {
+            for (int i = 0; i < dcs.length; i++) {
+                DimensionCalculator dc = dcs[i];
+                NoneSortDimensionCalculatorDealer dimensionDealer = new NoneSortDimensionCalculatorDealer(dc, loader.getTableIndex(dc.getField().getTableBelongTo().getTableSource()));
                 if (dealer == null) {
                     dealer = dimensionDealer;
                 }

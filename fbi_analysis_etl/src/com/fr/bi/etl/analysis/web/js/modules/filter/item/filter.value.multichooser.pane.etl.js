@@ -14,14 +14,14 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
     _init: function () {
         BI.ETLMultiValueChooserPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.storeValue = {};
+        this.storeValue = {type : BI.Selection.Multi};
         this.pane = BI.createWidget({
             type: 'bi.multi_select_loader',
             el: {},
             itemsCreator: BI.bind(this._itemsCreator, this),
             height: self._constants.SELECTOR_HEIGHT
         });
-        this.pane.on(BI.Controller.EVENT_CHANGE, function () {
+        this.pane.on(BI.MultiSelectLoader.EVENT_CHANGE, function () {
             self.setValue(self.pane.getValue());
             self.fireEvent(BI.ETLMultiValueChooserPane.EVENT_CONFIRM);
         })
@@ -94,9 +94,36 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
         return this.storeValue;
     },
 
-    setValue: function (v) {
-        this.storeValue = v;
-        this.pane.setValue(v)
+    _adjustValue : function (v) {
+        var self = this;
+        var map = this._makeMap(this.storeValue.value);
+        var value, assist;
+        if (v.type === self.storeValue.type){
+            value = v.value;
+            assist = v.assist;
+        } else {
+            value = v.assist;
+            assist = v.value;
+        }
+        BI.each(value, function (i, v) {
+            if (!map[v]) {
+                map[v] = true;
+            }
+        });
+        BI.each(assist, function (i, v) {
+            delete map[v];
+        });
+        self.storeValue.value = BI.keys(map);
+
+    },
+
+    _makeMap: function (values) {
+        return BI.makeObject(values || [], true);
+    },
+
+    setValue: function (value) {
+        this._adjustValue(value);
+        this.pane.setValue(this.storeValue)
     }
 });
 

@@ -24,11 +24,13 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     private long userId;
     @BICoreField
     private List<AnalysisETLSourceField> fieldList;
+    private AnalysisETLTableSource parent;
 
-    public UserETLTableSource(List<IETLOperator> operators, List<UserCubeTableSource> parents, long userId, List<AnalysisETLSourceField> fieldList) {
-        super(operators, parents);
+    public UserETLTableSource(AnalysisETLTableSource parent,  List<UserCubeTableSource> parents, long userId) {
+        super(parent.getETLOperators(), parents);
+        this.parent = parent;
         this.userId = userId;
-        this.fieldList = fieldList;
+        this.fieldList = parent.getFieldsList();
     }
 
     @Override
@@ -90,16 +92,34 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
 
 
     @Override
-    public boolean containsIDParentsWithMD5(String md5) {
+    public boolean containsIDParentsWithMD5(String md5, long userId) {
         for (UserCubeTableSource source : getParents()){
             if (ComparatorUtils.equals(md5, source.fetchObjectCore().getID().getIdentityValue())){
                 return true;
             }
-            if (source.containsIDParentsWithMD5(md5)){
+            if (source.containsIDParentsWithMD5(md5, userId)){
                 return true;
             }
         }
-        return false;
+        return ComparatorUtils.equals(md5, fetchObjectCore().getIDValue());
+    }
+
+    @Override
+    public AnalysisCubeTableSource getAnalysisCubeTableSource() {
+        return parent;
+    }
+
+    @Override
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
+        if(helper.contains(parent)){
+            return set;
+        }
+        helper.add(parent);
+        set.add(parent);
+        for (CubeTableSource source : getParents()){
+            source.getSourceUsedBaseSource(set, helper);
+        }
+        return set;
     }
 
     @Override
@@ -107,9 +127,17 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
         if(set.contains(this)){
             return;
         }
-        for (AnalysisCubeTableSource source : getParents()){
+        for (UserCubeTableSource source : getParents()){
             source.getSourceUsedAnalysisETLSource(set);
             set.add(source);
+        }
+        set.add(this);
+    }
+
+    @Override
+    public void refreshWidget() {
+        for (AnalysisCubeTableSource source : getParents()){
+            source.refreshWidget();
         }
     }
 

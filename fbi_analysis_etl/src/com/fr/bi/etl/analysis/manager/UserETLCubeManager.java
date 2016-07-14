@@ -13,6 +13,7 @@ import com.fr.bi.etl.analysis.data.UserETLTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.file.XMLFileManager;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
 import com.fr.stable.StringUtils;
@@ -52,16 +53,30 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 	}
 	
 
-    public void invokeUpdate(String md5){
+    public void invokeUpdate(String md5, long userId){
         synchronized (threadMap) {
-            for (SingleUserETLTableCubeManager manager : threadMap.values()){
-                if(manager.getSource() != null && manager.getSource().containsIDParentsWithMD5(md5)){
+            for (Entry<String, SingleUserETLTableCubeManager> entry : threadMap.entrySet()){
+                if (ComparatorUtils.equals(entry.getKey(), md5)){
+                    continue;
+                }
+                SingleUserETLTableCubeManager manager = entry.getValue();
+                if(manager.getSource() != null && manager.getSource().containsIDParentsWithMD5(md5, userId)){
                     manager.addTask();
                 }
             }
         }
     }
-	@Override
+
+    @Override
+    public void refresh() {
+        synchronized (threadMap){
+            for ( SingleUserETLTableCubeManager manager : threadMap.values()){
+                manager.getSource().refreshWidget();
+            }
+        }
+    }
+
+    @Override
 	public ICubeTableService getTableIndex(AnalysisCubeTableSource source, BIUser user){
 		return createManager(source, user).getTableIndex();
 	}

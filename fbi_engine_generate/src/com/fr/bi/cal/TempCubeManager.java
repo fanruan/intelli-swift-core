@@ -2,7 +2,7 @@ package com.fr.bi.cal;
 
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.impl.conf.CubeBuildStuffManagerTableSource;
+import com.finebi.cube.impl.conf.CubeBuildTableSource;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
@@ -25,9 +25,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TempCubeManager implements Release {
 
     private static Map<TempCubeTask, TempCubeManager> cubeMap = new ConcurrentHashMap<TempCubeTask, TempCubeManager>();
-    private CubeBuildStuffManagerTableSource cubeBuildTool;
-    private CubeBuildStuffManagerTableSource cubeBuildToolGenerating;
-    private Queue<CubeBuildStuffManagerTableSource> generater;
+    private CubeBuildTableSource cubeBuildTool;
+    private CubeBuildTableSource cubeBuildToolGenerating;
+    private Queue<CubeBuildTableSource> generater;
     private TempCubeTask task;
     private CubeThread cubeThread;
     private Release release;
@@ -39,7 +39,7 @@ public class TempCubeManager implements Release {
     public TempCubeManager(TempCubeTask task) {
         this.task = task;
         this.cubeThread = new CubeThread();
-        this.generater = new ConcurrentLinkedQueue<CubeBuildStuffManagerTableSource>();
+        this.generater = new ConcurrentLinkedQueue<CubeBuildTableSource>();
         this.cubeThread.start();
     }
 
@@ -67,18 +67,18 @@ public class TempCubeManager implements Release {
         }
     }
 
-    public CubeBuildStuffManagerTableSource getCubeBuildTool() {
+    public CubeBuildTableSource getCubeBuildTool() {
         if (cubeBuildTool == null) {
             cubeBuildTool = cubeBuildToolGenerating;
         }
         return cubeBuildTool;
     }
 
-    public CubeBuildStuffManagerTableSource getCubeBuildToolGenerating() {
+    public CubeBuildTableSource getCubeBuildToolGenerating() {
         return cubeBuildToolGenerating;
     }
 
-    public boolean addLoader(CubeBuildStuffManagerTableSource cubeBuildTool, Release release) {
+    public boolean addLoader(CubeBuildTableSource cubeBuildTool, Release release) {
         this.generater.add(cubeBuildTool);
         synchronized (cubeThread) {
             this.cubeBuildToolGenerating = cubeBuildTool;

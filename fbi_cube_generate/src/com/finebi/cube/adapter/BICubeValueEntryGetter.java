@@ -24,12 +24,12 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
     private ICubeIndexDataGetterService indexDataGetterService;
     private CubeRelationEntityGetterService reverseRowGetter;
 
-    public BICubeValueEntryGetter(CubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
+    public BICubeValueEntryGetter(CubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList, CubeRelationEntityGetterService reverseRowGetter) {
         this.columnReaderService = columnReaderService;
+        this.reverseRowGetter = reverseRowGetter;
         if (isRelationIndex(relationList)) {
             try {
-                reverseRowGetter = columnReaderService.getRelationIndexGetter(BICubePathUtils.convert(relationList));
-                indexDataGetterService = reverseRowGetter;
+                indexDataGetterService = columnReaderService.getRelationIndexGetter(BICubePathUtils.convert(relationList));
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl(e);
             }
