@@ -22,4 +22,6 @@ public class ResourceConstants {
 
     public static final String DEFAULT_DATA_JS = "data.js";
     public static final String DEFAULT_FORMULA_JS = "formula.js";
+
+    public static final String DEFAULT_MOBILE_JS = "mobile.js";
 }
