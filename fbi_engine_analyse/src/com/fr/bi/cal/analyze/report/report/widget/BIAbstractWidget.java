@@ -13,6 +13,7 @@ import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
@@ -93,6 +94,16 @@ public abstract class BIAbstractWidget implements BIWidget {
         ws.addBlock(this.createTemplateBlock((BISession) session));
         wb.addReport(ws);
         return wb;
+    }
+
+    @Override
+    public void refreshColumns() {
+        for (BITargetAndDimension td : getTargets()){
+            td.refreshColumn();
+        }
+        for (BITargetAndDimension td : getDimensions()){
+            td.refreshColumn();
+        }
     }
 
     /**

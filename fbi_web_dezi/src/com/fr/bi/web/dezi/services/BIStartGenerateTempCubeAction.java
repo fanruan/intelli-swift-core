@@ -1,7 +1,7 @@
 package com.fr.bi.web.dezi.services;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.impl.conf.CubeBuildStuffManagerTableSource;
+import com.finebi.cube.impl.conf.CubeBuildTableSource;
 import com.finebi.cube.location.BICubeLocation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.TempCubeManager;
@@ -56,7 +56,7 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
             }
         });
 
-        CubeBuildStuffManagerTableSource cubeBuildStuff = new CubeBuildStuffManagerTableSource(source, new ICubeConfiguration() {
+        CubeBuildTableSource cubeBuildStuff = new CubeBuildTableSource(source, new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
                 return URI.create(cubePath);

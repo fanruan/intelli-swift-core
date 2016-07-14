@@ -1,5 +1,6 @@
 package com.fr.bi.web.service.action;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.Constants;
@@ -16,6 +17,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/4/7.
@@ -49,6 +51,15 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         }
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
         BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
+        Set<BusinessTable> businessTables =  BIAnalysisETLManagerCenter.getBusiPackManager().getAllTables(userId);
+        if (businessTables != null){
+            for (BusinessTable t : businessTables){
+                AnalysisCubeTableSource s = (AnalysisCubeTableSource) BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(t);
+                s.refreshWidget();
+                t.setSource(s);
+            }
+        }
+        BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
         BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         JSONObject result = new JSONObject();

@@ -1,6 +1,6 @@
 package com.fr.bi.cal;
 
-import com.finebi.cube.impl.conf.CubeBuildStuffManager;
+import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.CubeRunner;
 import com.fr.bi.cal.generate.TimerRunner;
@@ -50,7 +50,7 @@ public class SingleUserCubeManager {
         runner.generateCubes();
     }
 
-    public CubeBuildStuffManager getGeneratingObject() {
+    public CubeBuildStaff getGeneratingObject() {
         return runner.getCubeGeneratingObjects();
     }
 

@@ -4,7 +4,7 @@ import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
 /**
- * Created by wuk on 16/5/9.
+ * Created by kary on 16/5/9.
  */
 public class BIPackageAuthority implements JSONTransform {
     private int roleId;

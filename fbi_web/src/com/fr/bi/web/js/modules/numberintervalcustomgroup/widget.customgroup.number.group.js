@@ -106,6 +106,21 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
         }
     },
 
+    _groupNameChecker: function (v) {
+        var self = this;
+        var nameCount = 0;
+        BI.some(self.buttons, function (i, button) {
+            var val = button.getValue();
+            if (v === val.group_name) {
+                nameCount++;
+            }
+            if(nameCount > 1){
+                return true;
+            }
+        });
+        return nameCount === 1;
+    },
+
     _checkButtonEnable: function () {
         BI.each(this.buttons, function (idx, button) {
             if (idx !== 0) {
@@ -115,17 +130,21 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
+        var self = this;
         this.options.items = items || [];
-        this.buttongroup.populate(items);
+        this.buttongroup.populate(BI.createItems(items, {
+            groupNameChecker: BI.bind(self._groupNameChecker, self)
+        }));
         this.buttons = this.buttongroup.getAllButtons();
         this._setEventForButton(this.buttons);
         this._checkButtonEnable();
     },
 
     addItem: function () {
-        var o = this.options;
+        var self = this, o = this.options;
         var item = {
             type: "bi.number_custom_group_item",
+            groupNameChecker: BI.bind(this._groupNameChecker, this),
             group_name: BI.i18nText("BI-Grouping") + (this.buttons.length + 1),
             height: this.constants.itemHeight
         };

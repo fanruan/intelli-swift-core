@@ -3,26 +3,30 @@ package com.fr.bi.etl.analysis.data;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.general.ComparatorUtils;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/24.
  */
 public class UserBaseTableSource extends AnalysisBaseTableSource implements UserCubeTableSource {
-    private GroupValueIndex filter;
     private UserWidget userWidget;
     @BICoreField
     private long userId;
-    public UserBaseTableSource(BIWidget widget, int etlType, long userId, List<AnalysisETLSourceField> fieldList, String name, String id) {
-        super(widget, etlType,  fieldList, name, id);
+    private AnalysisBaseTableSource parent;
+    public UserBaseTableSource(AnalysisBaseTableSource parent, long userId) {
+        super(parent.widget, parent.etlType,  parent.fieldList, parent.name, parent.widgetTableId);
         this.userId = userId;
-        this.userWidget = new UserWidget(widget, userId);
+        this.parent = parent;
+        this.userWidget = new UserWidget(parent.widget, userId);
     }
 
 
@@ -37,11 +41,21 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
 
 
     @Override
-    public boolean containsIDParentsWithMD5(String md5) {
-        return false;
+    public boolean containsIDParentsWithMD5(String md5, long userId) {
+        Set<AnalysisCubeTableSource> set = new HashSet<AnalysisCubeTableSource>();
+        getSourceUsedAnalysisETLSource(set);
+        for (AnalysisCubeTableSource source : set){
+            if (ComparatorUtils.equals(source.createUserTableSource(userId).fetchObjectCore().getIDValue(), md5)){
+                return true;
+            }
+        }
+        return ComparatorUtils.equals(this.fetchObjectCore().getIDValue(), md5);
     }
 
-
+    @Override
+    public AnalysisCubeTableSource getAnalysisCubeTableSource() {
+        return parent;
+    }
 
     @Override
     public int getType() {
@@ -65,7 +79,28 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
         }
         return total;
     }
-
+    /**
+     * @return
+     */
+    @Override
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
+        if(helper.contains(parent)){
+            return set;
+        }
+        helper.add(parent);
+        set.add(parent);
+        for (BITargetAndDimension dim : widget.getViewDimensions()){
+            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
+                dim.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
+            }
+        }
+        for (BITargetAndDimension target : widget.getViewTargets()){
+            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null){
+                target.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
+            }
+        }
+        return set;
+    }
 
     @Override
     public UserCubeTableSource createUserTableSource(long userId) {

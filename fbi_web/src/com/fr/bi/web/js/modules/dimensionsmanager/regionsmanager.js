@@ -71,8 +71,8 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.COMPARE_AXIS:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
-                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Value_Axis_One"), BICst.REGION.TARGET1);
-                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Value_Axis_Two"), BICst.REGION.TARGET2);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Positive_Value_Axis"), BICst.REGION.TARGET1);
+                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Negative_Value_Axis"), BICst.REGION.TARGET2);
                 break;
             case BICst.WIDGET.COMPARE_AREA:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
