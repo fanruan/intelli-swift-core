@@ -32,6 +32,9 @@
 }
 .bi-charts-setting .bubble-style-button {
   font-size: 22px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
 }
 .bi-charts-setting .bubble-style-button:hover {
   background-color: #d4dadd;
