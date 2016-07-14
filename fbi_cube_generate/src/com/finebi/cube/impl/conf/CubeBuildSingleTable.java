@@ -3,7 +3,7 @@ package com.finebi.cube.impl.conf;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * Created by wuk on 16/5/30.
  */
-public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
+public class CubeBuildSingleTable implements CubeBuild {
 
     private Set<IBusinessPackageGetterService> packs;
     private Set<CubeTableSource> sources;
@@ -27,13 +27,13 @@ public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
     private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private BIUser biUser;
 
-    public CubeBuildStuffManagerSingleTable(BusinessTable businessTable, ICubeConfiguration cubeConfiguration, long userId) {
+    public CubeBuildSingleTable(BusinessTable businessTable, ICubeConfiguration cubeConfiguration, long userId) {
         this.biUser = new BIUser(userId);
         this.cubeConfiguration = cubeConfiguration;
         init(businessTable);
     }
 
-    public CubeBuildStuffManagerSingleTable(BusinessTable businessTable, long userId) {
+    public CubeBuildSingleTable(BusinessTable businessTable, long userId) {
         this.biUser = new BIUser(userId);
         this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         init(businessTable);
@@ -138,6 +138,11 @@ public class CubeBuildStuffManagerSingleTable implements CubeBuildStuff {
 
     @Override
     public boolean preConditionsCheck() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleTable() {
         return true;
     }
 

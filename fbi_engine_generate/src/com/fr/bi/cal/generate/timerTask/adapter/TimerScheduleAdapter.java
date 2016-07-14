@@ -1,10 +1,10 @@
 package com.fr.bi.cal.generate.timerTask.adapter;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.impl.conf.CubeBuildStuffManager;
-import com.finebi.cube.impl.conf.CubeBuildStuffManagerSingleTable;
+import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
 import com.fr.bi.conf.manager.update.source.TimeFrequency;
@@ -29,14 +29,14 @@ public class TimerScheduleAdapter {
             for (TimeFrequency frequency : settingSource.getTimeList()) {
                 String scheduleTime = BIDateUtils.getScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
                 if (isGlobalUpdate) {
-                    CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManager(new BIUser(userId));
-                    TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuildStuff, keys,userId);
+                    CubeBuild cubeBuild = new CubeBuildStaff(new BIUser(userId));
+                    TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuild, keys,userId);
                     scheduleList.add(taskSchedule);
                 } else {
                     BusinessTable table = tableCheck(userId, keys);
                     if (table != null) {
-                        CubeBuildStuff cubeBuildStuff = new CubeBuildStuffManagerSingleTable(table, userId);
-                        TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuildStuff, keys,userId);
+                        CubeBuild cubeBuild = new CubeBuildSingleTable(table, userId);
+                        TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuild, keys,userId);
                         scheduleList.add(taskSchedule);
                     }
                 }

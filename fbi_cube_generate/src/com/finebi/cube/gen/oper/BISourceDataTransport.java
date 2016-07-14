@@ -89,7 +89,7 @@ public class BISourceDataTransport extends BIProcessor {
         tableEntityService.clear();
     }
 
-    private void recordTableInfo() {
+    protected void recordTableInfo() {
         ICubeFieldSource[] columns = getFieldsArray();
         List<ICubeFieldSource> columnList = new ArrayList<ICubeFieldSource>();
         for (ICubeFieldSource col : columns) {

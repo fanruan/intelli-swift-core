@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Created by wuk on 16/5/30.
  */
-public interface CubeBuildStuff {
+public interface CubeBuild {
 
 
     Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet();
@@ -35,4 +35,6 @@ public interface CubeBuildStuff {
     Set<BICubeGenerateRelation> getCubeGenerateRelationSet();
 
     boolean preConditionsCheck();
+    
+    boolean isSingleTable();
 }
