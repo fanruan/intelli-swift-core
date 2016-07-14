@@ -101,6 +101,12 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         return result;
     }
 
+    @Override
+    public boolean isSingleTable() {
+        return false;
+    }
+
+
     public void setSources() {
         for (Object biBusinessTable : allBusinessTable) {
             BusinessTable table = (BusinessTable) biBusinessTable;
@@ -155,5 +161,6 @@ public abstract class AbstractCubeBuild implements CubeBuild {
             tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
         }
         return tableSourceRelationPath;
-    } 
+    }
+
 }

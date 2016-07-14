@@ -35,4 +35,6 @@ public interface CubeBuild {
     Set<BICubeGenerateRelation> getCubeGenerateRelationSet();
 
     boolean preConditionsCheck();
+    
+    boolean isSingleTable();
 }

@@ -9,7 +9,10 @@ import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by wuk on 16/6/1.
@@ -109,6 +112,11 @@ public class CubeBuildTableSource extends AbstractCubeBuild implements CubeBuild
 
     @Override
     public boolean preConditionsCheck() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleTable() {
         return true;
     }
 }

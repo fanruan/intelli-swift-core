@@ -141,6 +141,11 @@ public class CubeBuildSingleTable implements CubeBuild {
         return true;
     }
 
+    @Override
+    public boolean isSingleTable() {
+        return true;
+    }
+
     public void setDependTableResource(Set<List<Set<CubeTableSource>>> dependTableResource) {
         this.dependTableResource = dependTableResource;
     }

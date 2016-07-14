@@ -9,8 +9,6 @@ import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
 import com.finebi.cube.gen.arrange.BICubeOperationManager;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
-import com.finebi.cube.impl.conf.CubeBuildByPart;
-import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageTopic;
 import com.finebi.cube.impl.operate.BIOperationID;
@@ -85,7 +83,7 @@ public class BuildCubeTask implements CubeTask {
         Future<String> result = finishObserver.getOperationResult();
         try {
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-            if(cubeBuild instanceof CubeBuildStaff || cubeBuild instanceof CubeBuildByPart) {
+            if (!cubeBuild.isSingleTable()){
                 BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
                 BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
             }
