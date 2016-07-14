@@ -1054,63 +1054,63 @@
   color: #808080;
 }
 .row-pre-page-h-font .b-font:before {
-  content: "\e697";
+  content: "\e6be";
   color: #1a1a1a;
 }
 .row-pre-page-h-font:hover .b-font:before,
 .row-pre-page-h-font:focus .b-font:before,
 .row-pre-page-h-font.hover .b-font:before {
-  content: "\e697";
+  content: "\e6be";
   color: #1a1a1a;
 }
 .row-pre-page-h-font.native .b-font:before,
 .row-pre-page-h-font.disabled .b-font:before {
-  content: "\e697";
+  content: "\e6be";
   color: #1a1a1a;
 }
 .row-next-page-h-font .b-font:before {
-  content: "\e698";
+  content: "\e6bd";
   color: #1a1a1a;
 }
 .row-next-page-h-font:hover .b-font:before,
 .row-next-page-h-font:focus .b-font:before,
 .row-next-page-h-font.hover .b-font:before {
-  content: "\e698";
+  content: "\e6bd";
   color: #1a1a1a;
 }
 .row-next-page-h-font.native .b-font:before,
 .row-next-page-h-font.disabled .b-font:before {
-  content: "\e698";
+  content: "\e6bd";
   color: #1a1a1a;
 }
 .column-pre-page-h-font .b-font:before {
-  content: "\e699";
+  content: "\e6bc";
   color: #1a1a1a;
 }
 .column-pre-page-h-font:hover .b-font:before,
 .column-pre-page-h-font:focus .b-font:before,
 .column-pre-page-h-font.hover .b-font:before {
-  content: "\e699";
+  content: "\e6bc";
   color: #1a1a1a;
 }
 .column-pre-page-h-font.native .b-font:before,
 .column-pre-page-h-font.disabled .b-font:before {
-  content: "\e699";
+  content: "\e6bc";
   color: #1a1a1a;
 }
 .column-next-page-h-font .b-font:before {
-  content: "\e696";
+  content: "\e6bb";
   color: #1a1a1a;
 }
 .column-next-page-h-font:hover .b-font:before,
 .column-next-page-h-font:focus .b-font:before,
 .column-next-page-h-font.hover .b-font:before {
-  content: "\e696";
+  content: "\e6bb";
   color: #1a1a1a;
 }
 .column-next-page-h-font.native .b-font:before,
 .column-next-page-h-font.disabled .b-font:before {
-  content: "\e696";
+  content: "\e6bb";
   color: #1a1a1a;
 }
 .trigger-triangle-font .b-font:before {
