@@ -247,21 +247,39 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     //clicked 中的值，如果是分组名使用分组对应的id
     _parseClickedValue4Group: function (v, dId) {
         var group = BI.Utils.getDimensionGroupByID(dId);
+        var fieldType = BI.Utils.getFieldTypeByDimensionID(dId);
         var clicked = v;
+        
         if (BI.isNotNull(group)) {
-            var details = group.details,
-                ungroup2Other = group.ungroup2Other,
-                ungroup2OtherName = group.ungroup2OtherName;
-            if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
-                ungroup2OtherName === v) {
-                clicked = BICst.UNGROUP_TO_OTHER;
-            }
-            BI.some(details, function (i, detail) {
-                if (detail.value === v) {
-                    clicked = detail.id;
-                    return true;
+            if(fieldType === BICst.COLUMN.STRING) {
+                var details = group.details,
+                    ungroup2Other = group.ungroup2Other,
+                    ungroup2OtherName = group.ungroup2OtherName;
+                if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
+                    ungroup2OtherName === v) {
+                    clicked = BICst.UNGROUP_TO_OTHER;
                 }
-            });
+                BI.some(details, function (i, detail) {
+                    if (detail.value === v) {
+                        clicked = detail.id;
+                        return true;
+                    }
+                });
+            } else if(fieldType === BICst.COLUMN.NUMBER) {
+                var groupValue = group.group_value, groupType = group.type;
+                if(groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
+                    var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
+                    if(useOther === v) {
+                        clicked = BICst.UNGROUP_TO_OTHER;
+                    }
+                    BI.some(groupNodes, function (i, node) {
+                        if(node.group_name === v) {
+                            clicked = node.id;
+                            return true;
+                        }
+                    });
+                }
+            }
         }
         return clicked;
     },

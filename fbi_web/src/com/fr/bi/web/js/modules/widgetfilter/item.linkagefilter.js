@@ -49,10 +49,49 @@ BI.LinkageFilterItem = BI.inherit(BI.Widget, {
         return date.print("%Y-%X-%d")
     },
 
+    _parseClicked4Group: function (dId, v) {
+        var group = BI.Utils.getDimensionGroupByID(dId);
+        var fieldType = BI.Utils.getFieldTypeByDimensionID(dId);
+        var clicked = v;
+
+        if (BI.isNotNull(group)) {
+            if(fieldType === BICst.COLUMN.STRING) {
+                var details = group.details,
+                    ungroup2Other = group.ungroup2Other,
+                    ungroup2OtherName = group.ungroup2OtherName;
+                if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
+                    ungroup2OtherName === v) {
+                    clicked = BICst.UNGROUP_TO_OTHER;
+                }
+                BI.some(details, function (i, detail) {
+                    if (detail.value === v) {
+                        clicked = detail.id;
+                        return true;
+                    }
+                });
+            } else if(fieldType === BICst.COLUMN.NUMBER) {
+                var groupValue = group.group_value, groupType = group.type;
+                if(groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
+                    var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
+                    if(useOther === v) {
+                        clicked = BICst.UNGROUP_TO_OTHER;
+                    }
+                    BI.some(groupNodes, function (i, node) {
+                        if(node.group_name === v) {
+                            clicked = node.id;
+                            return true;
+                        }
+                    });
+                }
+            }
+        }
+        return clicked;
+    },
+
     _createSingleLinkageFilter: function (dId, value) {
         var tId = this.options.tId;
         var onRemoveFilter = this.options.onRemoveFilter;
-        var text = value;
+        var text = this._parseClicked4Group(dId, value);
         //日期需要format
         if (BI.Utils.getFieldTypeByDimensionID(dId) === BICst.COLUMN.DATE &&
             BI.Utils.getDimensionGroupByID(dId).type === BICst.GROUP.YMD) {

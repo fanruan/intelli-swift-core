@@ -2098,7 +2098,7 @@
                 BI.each(groupNodes, function (i, node) {
                     i === 0 && (oMin = node.min);
                     i === groupNodes.length - 1 && (oMax = node.max);
-                    groupMap[node.group_name] = {
+                    groupMap[node.id] = {
                         min: node.min,
                         max: node.max,
                         closemin: node.closemin,
