@@ -35,6 +35,7 @@ public class Service4BIReport implements Service {
             new BIGetAllUserInfoAction(),
             new BIGetUserListOperation(),
             new BIGetReportAndFolderAction(),
+            new BIGetReportAndFolder4ReuseAction(),
             new BIAddReportAction(),
             new BIGetShare2MeReportListAction(),
             new BIShareTemplateSaveAction(),
@@ -42,7 +43,6 @@ public class Service4BIReport implements Service {
             new BIMoveTemplateSaveAction(),
             new BITemplateFolderRenameAction(),
             new BITemplateFolderDeleteAction(),
-            new BIGetMyReportAndFolderAction(),
             new BIInitDeziPaneAction(),
             new BIGetWidgetFromTemplateAction(),
 

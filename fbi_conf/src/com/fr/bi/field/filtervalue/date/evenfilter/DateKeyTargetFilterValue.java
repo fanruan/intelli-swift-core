@@ -2,19 +2,23 @@ package com.fr.bi.field.filtervalue.date.evenfilter;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
 import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
+import com.fr.bi.stable.exception.BITableUnreachableException;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -60,7 +64,20 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
         if (valueSet == null || valueSet.isEmpty()) {
             return getGroupValueIndexWhenNull(target, loader);
         }
-        ICubeColumnIndexReader getter = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), group), dimension.getRelationList());
+        BITableRelationPath firstPath = null;
+        try {
+            firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userId, target, dimension.getField().getTableBelongTo());
+        } catch (BITableUnreachableException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        if (ComparatorUtils.equals(dimension.getField().getTableBelongTo(), target)) {
+            firstPath = new BITableRelationPath();
+        }
+        if (firstPath == null) {
+            return null;
+        }
+
+        ICubeColumnIndexReader getter = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), group), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
         Iterator<BIDateValue> it = valueSet.iterator();
         GroupValueIndex gvi = null;
         while (it.hasNext()) {
@@ -102,7 +119,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
         this.valueSet = new HashSet<BIDateValue>();
         if (jo.has("filter_value")) {
             valueJo = jo.getJSONObject("filter_value");
-            if(valueJo.has("group") && valueJo.has("values")){
+            if (valueJo.has("group") && valueJo.has("values")) {
                 this.valueSet.add(BIDateValueFactory.createDateValue(valueJo.getInt("group"), valueJo.getLong("values")));
                 this.group = valueJo.getInt("group");
             }
@@ -204,11 +221,11 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
         return result;
     }
 
-	@Override
-	public boolean isMatchValue(Long v) {
-		if(v == null){
+    @Override
+    public boolean isMatchValue(Long v) {
+        if (v == null) {
 
-		}
-		return false;
-	}
+        }
+        return false;
+    }
 }

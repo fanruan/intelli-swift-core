@@ -58,13 +58,7 @@
         },
 
         getDefaultChartConfig: function () {
-            if (!this.defaultChartConfig) {
-                this.defaultChartConfig = Data.Req.reqGetChartPreStyle();
-                if (BI.isNull(this.defaultChartConfig.styleList)) {
-                    this.defaultChartConfig.styleList = [];
-                }
-            }
-            return this.defaultChartConfig;
+            return Data.BufferPool.getDefaultChartConfig();
         },
 
         getAllGroupedPackagesTreeJSON: function () {
@@ -1456,6 +1450,13 @@
                     return "drag-combine-mult-icon";
                 case BICst.WIDGET.FUNNEL:
                     return "drag-funnel-icon";
+                case BICst.WIDGET.IMAGE:
+                    return "drag-image-icon";
+                case BICst.WIDGET.WEB:
+                    return "drag-web-icon";
+                case BICst.WIDGET.CONTENT:
+                    return "drag-input-icon";
+
             }
         },
 
@@ -1549,10 +1550,10 @@
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
-            if(tableA === tableB){
-                if(isSelfCircle(path) && checkPathAvailable(path, from)){
+            if (tableA === tableB) {
+                if (isSelfCircle(path) && checkPathAvailable(path, from)) {
                     return path;
-                }else{
+                } else {
                     return [[{
                         primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
                         foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
@@ -1562,20 +1563,20 @@
             return path;
 
             //是自循环还是循环路径
-            function isSelfCircle(paths){
-                if(path.length === 0){
+            function isSelfCircle(paths) {
+                if (path.length === 0) {
                     return false;
                 }
-                var result = BI.find(paths, function(idx, path){
+                var result = BI.find(paths, function (idx, path) {
                     return path.length > 1;
                 });
                 return BI.isNull(result);
             }
 
             //对自循环表检测路径合法依据：路径中的a个关联中是否存在外键为primKey
-            function checkPathAvailable(paths, primKey){
-                var result = BI.find(paths, function(idx, path){
-                    return BI.find(path, function(id, relation){
+            function checkPathAvailable(paths, primKey) {
+                var result = BI.find(paths, function (idx, path) {
+                    return BI.find(path, function (id, relation) {
                         return self.getForeignIdFromRelation(relation) === primKey;
                     });
                 });
@@ -2010,14 +2011,15 @@
                 var details = group.details;
                 var groupMap = {};
                 BI.each(details, function (i, detail) {
-                    groupMap[detail.value] = [];
+                    groupMap[detail.id] = [];
                     BI.each(detail.content, function (j, content) {
-                        groupMap[detail.value].push(content.value);
+                        groupMap[detail.id].push(content.value);
                     });
                 });
                 var groupNames = BI.keys(groupMap), ungroupName = group.ungroup2OtherName;
-                if (group.ungroup2Other === 1) {
-                    groupNames.push(ungroupName);
+                if (group.ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
+                    // groupNames.push(ungroupName);
+                    groupNames.push(BICst.UNGROUP_TO_OTHER);
                 }
                 // 对于drill和link 一般value的数组里只有一个值
                 var v = value[0];
@@ -2051,7 +2053,7 @@
                 var group = BI.Utils.getDimensionGroupByID(dId);
                 var groupValue = group.group_value, groupType = group.type;
                 var groupMap = {};
-                if(BI.isNull(groupValue) && BI.isNull(groupType)) {
+                if (BI.isNull(groupValue) && BI.isNull(groupType)) {
                     //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
                     var sIndex = value.indexOf("-");
                     var min = value.slice(0, sIndex), max = value.slice(sIndex + 1);
@@ -2090,7 +2092,7 @@
                 BI.each(groupNodes, function (i, node) {
                     i === 0 && (oMin = node.min);
                     i === groupNodes.length - 1 && (oMax = node.max);
-                    groupMap[node.group_name] = {
+                    groupMap[node.id] = {
                         min: node.min,
                         max: node.max,
                         closemin: node.closemin,
@@ -2103,7 +2105,7 @@
                         filter_value: groupMap[value],
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
-                } else if(useOther === value) {
+                } else if (useOther === value) {
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
                         filter_value: {
@@ -2329,7 +2331,7 @@
         }
         function parseComplexDateForParam(value) {
             var widgetInfo = value.widgetInfo, offset = value.offset;
-            if(BI.isNull(widgetInfo) || BI.isNull(offset)){
+            if (BI.isNull(widgetInfo) || BI.isNull(offset)) {
                 return;
             }
             var paramdate = new Date();
@@ -2345,7 +2347,7 @@
                     paramdate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
-                if(BI.isNull(widgetInfo.wId)){
+                if (BI.isNull(widgetInfo.wId)) {
                     return;
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));

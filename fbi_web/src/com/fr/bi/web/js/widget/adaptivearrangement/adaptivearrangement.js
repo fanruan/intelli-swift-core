@@ -18,6 +18,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             baseCls: "bi-adaptive-arrangement",
             resizable: true,
             isNeedReLayout: true,
+            isNeedResizeContainer: true,
             layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
             items: []
         });
@@ -33,6 +34,23 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             layoutType: o.layoutType,
             items: o.items
         });
+        if (o.isNeedResizeContainer) {
+            this.arrangement.container.element.resizable({
+                handles: "s",
+                minWidth: 100,
+                minHeight: 20,
+                helper: "bi-resizer",
+                autoHide: true,
+                resize: function (e, ui) {
+
+                },
+                stop: function (e, ui) {
+                    self.arrangement.setContainerSize(ui.size);
+                    self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
+                }
+            });
+            this.setLayoutType(this.getLayoutType());
+        }
         this.zIndex = 0;
         BI.each(o.items, function (i, item) {
             self._initResizable(item.el);
@@ -341,7 +359,23 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
     },
 
     setLayoutType: function (type) {
+        var self = this;
         this.arrangement.setLayoutType(type);
+        try {
+            //BI.nextTick(function () {
+            switch (type){
+                case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                    $(">.ui-resizable-s", self.arrangement.container.element).css("zIndex", "");
+                    break;
+                case BI.Arrangement.LAYOUT_TYPE.FREE:
+                    $(">.ui-resizable-s", self.arrangement.container.element).css("zIndex", "-1");
+                    break;
+            }
+            self.arrangement.container.element.resizable("option", "disabled", type === BI.Arrangement.LAYOUT_TYPE.FREE);
+            //});
+        } catch (e) {
+
+        }
     },
 
     getLayoutType: function () {

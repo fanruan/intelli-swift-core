@@ -235,7 +235,7 @@ Data.Req = BIReq = {
     },
 
     reqAllTemplates: function (callback) {
-        BI.requestAsync('fr_bi', 'get_folder_report_list', {}, function (items) {
+        BI.requestAsync('fr_bi', 'get_folder_report_list_4_reuse', {}, function (items) {
             callback(items);
         })
     },
