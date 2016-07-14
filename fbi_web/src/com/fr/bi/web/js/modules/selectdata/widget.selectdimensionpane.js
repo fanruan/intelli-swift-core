@@ -23,57 +23,67 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
     _getWidgetClass: function (type) {
         switch (type) {
             case BICst.WIDGET.TABLE:
-                return "chart-table-font";
-            case BICst.WIDGET.BAR:
-                return "chart-bar-font";
-            case BICst.WIDGET.ACCUMULATE_BAR:
-                return "chart-accumulate-bar-font";
-            case BICst.WIDGET.PIE:
-                return "chart-pie-font";
-            case BICst.WIDGET.AXIS:
-                return "chart-axis-font";
-            case BICst.WIDGET.DASHBOARD:
-                return "chart-dashboard-font";
-            case BICst.WIDGET.MAP:
-                return "chart-map-font";
-            case BICst.WIDGET.DETAIL:
-                return "chart-detail-font";
-            case BICst.WIDGET.BUBBLE:
-                return "chart-bubble-font";
-            case BICst.WIDGET.SCATTER:
-                return "chart-scatter-font";
-            case BICst.WIDGET.RADAR:
-                return "chart-radar-font";
-            case BICst.WIDGET.STRING:
-                return "chart-string-font";
-            case BICst.WIDGET.NUMBER:
-                return "chart-number-font";
-            case BICst.WIDGET.DATE:
-                return "chart-date-font";
-            case BICst.WIDGET.YEAR:
-                return "chart-year-font";
-            case BICst.WIDGET.QUARTER:
-                return "chart-quarter-font";
-            case BICst.WIDGET.MONTH:
-                return "chart-month-font";
-            case BICst.WIDGET.TREE:
-                return "chart-tree-font";
-            case BICst.WIDGET.QUERY:
-                return "chart-query-font";
-            case BICst.WIDGET.RESET:
-                return "chart-reset-font";
+                return "drag-group-icon";
             case BICst.WIDGET.CROSS_TABLE:
-                return "chart-table-font";
+                return "drag-cross-icon";
             case BICst.WIDGET.COMPLEX_TABLE:
-                return "chart-table-font";
-            case BICst.WIDGET.CONTENT:
-                return "chart-content-font";
-            case BICst.WIDGET.IMAGE:
-                return "chart-image-font";
-            case BICst.WIDGET.YMD:
-                return "chart-ymd-font";
-            case BICst.WIDGET.WEB:
-                return "chart-web-font";
+                return "drag-complex-icon";
+            case BICst.WIDGET.DETAIL:
+                return "drag-detail-icon";
+            case BICst.WIDGET.AXIS:
+                return "drag-axis-icon";
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+                return "drag-axis-accu-icon";
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                return "drag-axis-percent-accu-icon";
+            case BICst.WIDGET.COMPARE_AXIS:
+                return "drag-axis-compare-icon";
+            case BICst.WIDGET.FALL_AXIS:
+                return "drag-axis-fall-icon";
+            case BICst.WIDGET.BAR:
+                return "drag-bar-icon";
+            case BICst.WIDGET.ACCUMULATE_BAR:
+                return "drag-bar-accu-icon";
+            case BICst.WIDGET.COMPARE_BAR:
+                return "drag-bar-compare-icon";
+            case BICst.WIDGET.PIE:
+                return "drag-pie-icon";
+            case BICst.WIDGET.MAP:
+                return "drag-map-china-icon";
+            case BICst.WIDGET.GIS_MAP:
+                return "drag-map-gis-icon";
+            case BICst.WIDGET.DASHBOARD:
+                return "drag-dashboard-icon";
+            case BICst.WIDGET.DONUT:
+                return "drag-donut-icon";
+            case BICst.WIDGET.BUBBLE:
+                return "drag-bubble-icon";
+            case BICst.WIDGET.FORCE_BUBBLE:
+                return "drag-bubble-force-icon";
+            case BICst.WIDGET.SCATTER:
+                return "drag-scatter-icon";
+            case BICst.WIDGET.RADAR:
+                return "drag-radar-icon";
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                return "drag-radar-accu-icon";
+            case BICst.WIDGET.LINE:
+                return "drag-line-icon";
+            case BICst.WIDGET.AREA:
+                return "drag-area-icon";
+            case BICst.WIDGET.ACCUMULATE_AREA:
+                return "drag-area-accu-icon";
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                return "drag-area-percent-accu-icon";
+            case BICst.WIDGET.COMPARE_AREA:
+                return "drag-area-compare-icon";
+            case BICst.WIDGET.RANGE_AREA:
+                return "drag-area-range-icon";
+            case BICst.WIDGET.COMBINE_CHART:
+                return "drag-combine-icon";
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                return "drag-combine-mult-icon";
+            case BICst.WIDGET.FUNNEL:
+                return "drag-funnel-icon";
         }
     },
 
@@ -240,7 +250,9 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         text: widget.name,
                         title: widget.name,
                         value: wId,
-                        iconCls: self._getWidgetClass(widget.type)
+                        iconCls: self._getWidgetClass(widget.type),
+                        iconHeight: 25,
+                        iconWidth: 25
                     });
                 }
             });

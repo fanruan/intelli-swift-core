@@ -118,7 +118,10 @@ BI.NumberIntervalCustomGroupItem = BI.inherit(BI.Single,{
     },
 
     getValue:function(){
-        return BI.extend({group_name:this.editor.getValue()},this._filterValue());
+        return BI.extend({
+            group_name:this.editor.getValue(),
+            id: this.id
+        },this._filterValue());
     },
 
     _filterValue:function(){
@@ -142,6 +145,7 @@ BI.NumberIntervalCustomGroupItem = BI.inherit(BI.Single,{
             min:ob.min,
             max:ob.max
         });
+        this.id = ob.id;
     },
 
     destroy:function(){

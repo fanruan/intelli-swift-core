@@ -42,7 +42,9 @@ public class BIDBUtils {
      *
      * @param biType bi类型
      * @return 数据库类型
+     * 该方法现在弃用
      */
+    @Deprecated
     public static int biTypeToSql(int biType) {
         switch (biType) {
             case DBConstant.COLUMN.NUMBER:

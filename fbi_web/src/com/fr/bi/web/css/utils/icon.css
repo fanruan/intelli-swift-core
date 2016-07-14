@@ -1598,3 +1598,33 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/dots.png');
   _background: none;
 }
+.bubble-no-projector .x-icon,
+.bubble-no-projector:hover .x-icon,
+.bubble-no-projector:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/bubble_no_projector.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/bubble_no_projector.png');
+  _background: none;
+}
+.bubble-no-projector.native .x-icon,
+.bubble-no-projector.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/bubble_no_projector.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/bubble_no_projector.png');
+  _background: none;
+}
+.bubble-with-projector .x-icon,
+.bubble-with-projector:hover .x-icon,
+.bubble-with-projector:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/bubble_projector.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/bubble_projector.png');
+  _background: none;
+}
+.bubble-with-projector.native .x-icon,
+.bubble-with-projector.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/bubble_projector.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/bubble_projector.png');
+  _background: none;
+}

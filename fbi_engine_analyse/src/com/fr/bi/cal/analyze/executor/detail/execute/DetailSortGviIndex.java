@@ -59,13 +59,13 @@ public class DetailSortGviIndex {
         if (filterGvi.getRowsCountWithData() == 0) {
             return null;
         }
+        allSort = true;
         if (getters.length == 0) {
             return filterGvi;
         }
         if (getters[0] == null) {
             return filterGvi;
         }
-        allSort = true;
         for (int i = 0; i < iters.length; i++) {
             //少于剩下的行数就直接返回，迭代器当前列移位
             if (filterGvi.getRowsCountWithData() <= leftCount) {
