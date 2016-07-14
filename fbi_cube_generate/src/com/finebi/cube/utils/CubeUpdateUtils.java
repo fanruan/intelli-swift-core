@@ -1,4 +1,4 @@
-package com.fr.bi.cal.generate.timerTask.utils;
+package com.finebi.cube.utils;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by kary on 16/7/13.
+ * Created by kary on 16/7/14.
  */
 public class CubeUpdateUtils {
     private static boolean forceCheck=false;
@@ -71,6 +71,7 @@ public class CubeUpdateUtils {
     }
 
     public static void setForceCheck(boolean forceCheck) {
-        CubeUpdateUtils.forceCheck = forceCheck;
+        com.finebi.cube.utils.CubeUpdateUtils.forceCheck = forceCheck;
     }
+
 }

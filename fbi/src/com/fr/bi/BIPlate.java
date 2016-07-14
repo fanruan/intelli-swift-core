@@ -5,7 +5,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
-import com.fr.bi.cal.generate.timerTask.utils.CubeUpdateUtils;
+import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
