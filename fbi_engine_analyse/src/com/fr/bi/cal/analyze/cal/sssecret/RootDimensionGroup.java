@@ -14,6 +14,7 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
+import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
 import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
@@ -22,6 +23,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.key.date.BIDateValue;
+import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.exception.BITableUnreachableException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -438,12 +440,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 v = v.getParent();
                 continue;
             }
-            if (ckp instanceof DateDimensionCalculator && ckp.getGroup().getType() == BIReportConstant.GROUP.YMD) {
+            if (ckp instanceof DateDimensionCalculator) {
                 Set<BIDateValue> currentSet = new HashSet<BIDateValue>();
-                currentSet.add((BIDateValue) value);
+                currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
                 DateKeyTargetFilterValue dktf = new DateKeyTargetFilterValue(((DateDimensionCalculator) ckp).getGroupDate(), currentSet);
                 GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
-                gvi = gvi.AND(pgvi);
+                if (pgvi != null) {
+                    gvi = gvi.AND(pgvi);
+                }
             } else if (ckp instanceof StringDimensionCalculator) {
                 if (value == BIBaseConstant.EMPTY_NODE_DATA) {
                     v = v.getParent();
@@ -457,7 +461,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 } catch (BITableUnreachableException e) {
                     continue;
                 }
-                if(ComparatorUtils.equals(ck.getField().getTableBelongTo(),ckp.getField().getTableBelongTo())){
+                if (ComparatorUtils.equals(ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo())) {
                     firstPath = new BITableRelationPath();
                 }
                 if (firstPath == null) {
@@ -466,7 +470,10 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
+            }else if(ckp instanceof NumberDimensionCalculator){
+
             }
+
             v = v.getParent();
         }
         return gvi;
