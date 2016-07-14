@@ -114,6 +114,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
     }
 
+
     private void fullTableDBFields() {
         Iterator<CubeTableSource> tableSourceIterator = sources.iterator();
         while (tableSourceIterator.hasNext()) {
@@ -129,8 +130,6 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     }
 
     protected BITableSourceRelation convertRelation(BITableRelation relation) {
-
-
         CubeTableSource primaryTable;
         CubeTableSource foreignTable;
         try {
@@ -141,17 +140,27 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
         ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
-        if (primaryField == null || foreignField == null) {
-            throw new NullPointerException();
+        if (!isRelationValid(relation)) {
+            return null;
         }
-        primaryField.setTableBelongTo(primaryTable);
-        foreignField.setTableBelongTo(foreignTable);
-        return new BITableSourceRelation(
-                primaryField,
-                foreignField,
-                primaryTable,
-                foreignTable
-        );
+        if (null != primaryField && null != foreignField && null != primaryTable && null != foreignTable) {
+            BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
+                    primaryField,
+                    foreignField,
+                    primaryTable,
+                    foreignTable
+            );
+            primaryField.setTableBelongTo(primaryTable);
+            foreignField.setTableBelongTo(foreignTable);
+            return biTableSourceRelation;
+        }
+        return null;
+    }
+
+    protected boolean isRelationValid(BITableRelation relation) {
+        BusinessTable primaryTable = relation.getPrimaryTable();
+        BusinessTable foreignTable = relation.getForeignTable();
+        return allBusinessTable.contains(primaryTable) && allBusinessTable.contains(foreignTable);
     }
 
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {
