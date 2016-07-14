@@ -20,12 +20,14 @@ BI.SegmentButton = BI.inherit(BI.BasicButton, {
     _init:function() {
         BI.SegmentButton.superclass._init.apply(this, arguments);
         var opts = this.options, self = this;
-        if (BI.isNumber(opts.height)) {
-            this.element.css({lineHeight : (opts.height - 2) + 'px'});
-        }
+        //if (BI.isNumber(opts.height) && BI.isNull(opts.lineHeight)) {
+        //    this.element.css({lineHeight : (opts.height - 2) + 'px'});
+        //}
         this.text = BI.createWidget({
             type: "bi.label",
             element: this.element,
+            height: opts.height-2,
+            whiteSpace: opts.whiteSpace,
             text: opts.text,
             value: opts.value,
             hgap: opts.hgap

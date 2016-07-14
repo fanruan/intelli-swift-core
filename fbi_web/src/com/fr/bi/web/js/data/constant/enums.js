@@ -408,7 +408,9 @@ BICst.CHART_SHAPE = {
     VERTICAL_TUBE: 12,      //竖起来的试管型仪表盘
     HORIZONTAL_TUBE: 13,//横过来的试管型仪表盘
     BAIDU: 14,           //百度地图
-    GOOGLE: 15          //谷歌地图
+    GOOGLE: 15,          //谷歌地图
+    NO_PROJECTOR: 16,    //没有投影的气泡
+    PROJECTOR: 17       //有投影的气泡
 };
 
 BICst.CHART_STYLE = {
@@ -516,6 +518,13 @@ BICst.DASHBOARD_CHART_STYLE_AUTO = {
 BICst.POINTER = {
     ONE: 1,
     SOME: 2
+};
+
+//普通气泡图显示规则
+BICst.DISPLAY_RULES = {
+    DIMENSION: 1,
+    FIXED: 2,
+    GRADIENT: 3
 };
 
 //钻取

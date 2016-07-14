@@ -1,20 +1,19 @@
 package com.fr.bi.cal.analyze.cal.detail;
 
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
+import com.fr.bi.cal.analyze.executor.detail.StreamCellCase;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.cal.report.engine.CBCellCase;
 import com.fr.bi.cal.report.report.poly.BIPolyAnalyECBlock;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.general.DateUtils;
 import com.fr.report.block.ResultBlock;
-import com.fr.report.cell.cellattr.CellGUIAttr;
 import com.fr.report.core.reserve.ExecuteParameterMapNameSpace;
 import com.fr.report.core.sheet.SheetExecutor;
 import com.fr.report.elementcase.TemplateElementCase;
@@ -41,7 +40,7 @@ public class CubeDetailExecutor extends SheetExecutor {
     private TemplateElementCase elementCase;
     private BIDetailWidget widget;
     private Calculator cal;
-    private CBCell[][] cbcells;
+    private DetailCellIterator iter;
     private Report report;
     private BISession session;
     // page from 1 ~ max
@@ -97,7 +96,7 @@ public class CubeDetailExecutor extends SheetExecutor {
         paging.setCurrentPage(page);
 
         DetailExecutor exe = new DetailExecutor(widget, paging, session);
-        cbcells = exe.createCellElement();
+        iter = exe.createCellIterator4Excel();
     }
 
     /**
@@ -116,19 +115,7 @@ public class CubeDetailExecutor extends SheetExecutor {
             // 直接抛Runtime的
             throw new RuntimeException(e);
         }
-        block.setCellCase(new CBCellCase(cbcells));
-        for (CBCell[] cells : cbcells) {
-            for (int j = 0, length = cells.length; j < length; j++) {
-                if (cells[j] != null) {
-                    CellGUIAttr attr = cells[j].getCellGUIAttr();
-                    if (attr != null && attr.isShowAsHTML()) {
-                        continue;
-                    }
-                }
-                block.shrinkTOFitColumnWidthForCellElement(cells[j]);
-            }
-        }
-        BILogger.getLogger().info(DateUtils.timeCostFrom(startTime) + " beb time");
+        block.setCellCase(new StreamCellCase(iter));
         release();
         return block;
     }
@@ -147,7 +134,6 @@ public class CubeDetailExecutor extends SheetExecutor {
         elementCase = null;
         widget = null;
         cal = null;
-        cbcells = null;
         report = null;
     }
 
@@ -162,7 +148,7 @@ public class CubeDetailExecutor extends SheetExecutor {
             // 直接抛Runtime的
             throw new RuntimeException(e);
         }
-        sheet.setCellCase(new CBCellCase(cbcells));
+        sheet.setCellCase(new StreamCellCase(iter));
 
         return sheet;
     }

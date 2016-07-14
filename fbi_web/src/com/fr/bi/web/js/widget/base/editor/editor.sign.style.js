@@ -66,7 +66,7 @@ BI.SignStyleEditor = BI.inherit(BI.Single, {
         this.tipText = BI.createWidget({
             type: "bi.text_button",
             cls: "sign-style-editor-tip",
-            textAlign: "left",
+            textAlign: "right",
             rgap: 4,
             height: o.height,
             text: o.text,
