@@ -9,9 +9,11 @@ import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.exception.BIBuildReaderException;
 import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
+import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.location.BICubeLocation;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.cal.generate.timerTask.utils.CubeUpdateUtils;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
@@ -162,10 +164,10 @@ public class CubeRunner {
 
     private void generateCube() {
         setStatue(Status.LOADED);
-        CubeBuild cubeBuild = new CubeBuildStaff(new BIUser((biUser.getUserId())));
+//        CubeBuild cubeBuild = new CubeBuildStaff(new BIUser((biUser.getUserId())));
+        CubeBuild cubeBuild = new CubeBuildByPart(biUser.getUserId(), CubeUpdateUtils.getTables4CubeGenerate(biUser.getUserId()), CubeUpdateUtils.getRelations4CubeGenerate(biUser.getUserId()));
         CubeTask task = new BuildCubeTask(biUser, cubeBuild);
         CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
-
     }
 
     private void start() {
