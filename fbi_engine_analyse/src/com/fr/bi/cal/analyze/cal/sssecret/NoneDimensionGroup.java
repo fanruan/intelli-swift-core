@@ -116,7 +116,7 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, boolean useRealData) {
         if(needAllCalculate){
 //            System.out.println("**********************全部计算************************");
-            return AllCalSingleDimensionGroup.createInstance(tableKey, pck, pckindex, (node == null)? new RoaringGroupValueIndex() : node.getGroupValueIndex(), data, ckIndex, loader, true);
+            return AllCalSingleDimensionGroup.createInstance(tableKey, pck, (node == null)? new RoaringGroupValueIndex() : node.getGroupValueIndex(), loader, true);
         }
 //        System.out.println("**********************非全部计算************************");
         if(ckIndex == 0){
@@ -135,7 +135,7 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
         if(needAllCalculate){
 //            System.out.println("**********************全部计算************************");
-            return AllCalSingleDimensionGroup.createInstance(tableKey, pck, pckindex, gvi, data, ckIndex, loader, true);
+            return AllCalSingleDimensionGroup.createInstance(tableKey, pck, gvi, loader, true);
         }
 //        System.out.println("**********************非全部计算************************");
         if(ckIndex == 0){

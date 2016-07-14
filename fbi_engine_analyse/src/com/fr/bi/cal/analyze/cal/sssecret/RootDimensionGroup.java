@@ -409,7 +409,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if ((ComparatorUtils.equals(root.getTableKey(), BIBusinessTable.createEmptyTable()) && deep > 0)) {
             sg = ng.createNoneTargetSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, getCKGvigetter(gv, deep), useRealData);
         } else {
-            sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
+            if(deep > 0 && singleDimensionGroupCache != null && (singleDimensionGroupCache instanceof AllCalSingleDimensionGroup)){
+                sg = AllCalSingleDimensionGroup.createInstanceWithCache((AllCalSingleDimensionGroup) singleDimensionGroupCache, ng.getRoot().getGroupValueIndex(), deep);
+            }
+            else {
+                sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
+            }
         }
         return sg;
     }
@@ -419,7 +424,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if ((ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0)) {
             sg = ng.createNoneTargetSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, getCKGvigetter(data, deep), useRealData);
         } else {
-            sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, useRealData);
+            if(deep > 0 && singleDimensionGroupCache != null && (singleDimensionGroupCache instanceof AllCalSingleDimensionGroup)){
+                sg = AllCalSingleDimensionGroup.createInstanceWithCache((AllCalSingleDimensionGroup) singleDimensionGroupCache, ng.getRoot().getGroupValueIndex(), deep);
+            }
+            else {
+                sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, useRealData);
+            }
         }
         return sg;
     }
@@ -561,7 +571,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     protected GroupConnectionValue createGroupConnectionValue(ISingleDimensionGroup sg, int deep, int row, NoneDimensionGroup nds) {
-        GroupConnectionValue ngv = new GroupConnectionValue(cks[deep], sg.getChildData(row), sg.getRoot().getComparator(), nds);
+        GroupConnectionValue ngv = new GroupConnectionValue(cks[deep], sg.getChildData(row), sg.getChildNode(row).getComparator(), nds);
         ngv.setGroupRow(row);
         if (sg instanceof ReverseSingleDimensionGroup) {
             ngv.setComparator(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);

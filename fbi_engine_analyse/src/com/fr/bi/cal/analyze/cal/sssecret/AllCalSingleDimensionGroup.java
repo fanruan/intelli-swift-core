@@ -25,15 +25,18 @@ import java.util.Arrays;
  */
 public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements ISingleDimensionGroup {
 
-    private static AllCalSingleDimensionGroup allCal;
-
     protected volatile AllCalNode root;
 
     protected transient DimensionCalculator[] pcolumns;
 
     private boolean doSort;
 
-    public AllCalSingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns,  GroupValueIndex gvi, ICubeDataLoader loader, boolean doSort) {
+    //just for test
+    public AllCalSingleDimensionGroup(AllCalNode root) {
+        this.root = root;
+    }
+
+    public AllCalSingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, GroupValueIndex gvi, ICubeDataLoader loader, boolean doSort) {
         this.tableKey = tableKey;
         this.loader = loader;
         this.pcolumns = pcolumns;
@@ -42,11 +45,10 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
         if (isTurnOnWhenInit()) {
             turnOnExecutor();
         }
-        allCal = this;
     }
 
-    public AllCalSingleDimensionGroup(int[] colindex){
-        AllCalSingleDimensionGroup rootNode = allCal;
+    public AllCalSingleDimensionGroup(AllCalSingleDimensionGroup cache, int[] colindex){
+        AllCalSingleDimensionGroup rootNode = cache;
         this.tableKey = rootNode.tableKey;
         this.loader = rootNode.loader;
         this.pcolumns = rootNode.pcolumns;
@@ -61,60 +63,22 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
         this.root = (AllCalNode)n;
     }
 
-    public static AllCalSingleDimensionGroup createInstance(BusinessTable tableKey, DimensionCalculator[] pcolumns, int[] pckindex, GroupValueIndex gvi, Object[] data, int ckIndex, ICubeDataLoader loader, boolean doSort) {
-//        int[] empty = new int[pckindex.length];
-//        Arrays.fill(empty, -1);
-//        if(!Arrays.equals(empty, pckindex)){
-//            return new AllCalSingleDimensionGroup(pckindex);
-//        }
-
-        if (allCal != null && loader == null) {
-            int[] empty = new int[pckindex.length];
-            Arrays.fill(empty, -1);
-            return new AllCalSingleDimensionGroup(empty);
-        }
-        if (checkShouldCalculateAll(tableKey, pcolumns, gvi, data, ckIndex, loader)) {
-            return new AllCalSingleDimensionGroup(tableKey, pcolumns, gvi, loader, doSort);
-        }
-        int[] colindex = new int[ckIndex];
-        Arrays.fill(colindex, -1);
-        int[] cp = colindex.clone();
-        //TODO 指标筛选操作需要优化
-        findGviInChildren(colindex, 0, allCal.root, gvi);
-        if(Arrays.equals(colindex, cp)){
-            return new AllCalSingleDimensionGroup(tableKey, pcolumns, gvi, loader, doSort);
-        }
-        return new AllCalSingleDimensionGroup(colindex);
+    public static AllCalSingleDimensionGroup createInstance(BusinessTable tableKey, DimensionCalculator[] pcolumns, GroupValueIndex gvi, ICubeDataLoader loader, boolean doSort) {
+        //TODO 指标筛选操作考虑是否可以优化
+        return new AllCalSingleDimensionGroup(tableKey, pcolumns, gvi, loader, doSort);
     }
 
-    private static boolean checkShouldCalculateAll(BusinessTable tableKey, DimensionCalculator[] pcolumns,  GroupValueIndex gvi, Object[] data, int ckIndex, ICubeDataLoader loader){
-        if(allCal == null){
-            return true;
+    public static AllCalSingleDimensionGroup createInstanceWithCache(AllCalSingleDimensionGroup cache, GroupValueIndex gvi, int deep){
+        int[] dimIndex = new int[deep];
+        if(findGviInChildren(dimIndex, 0, cache.getRoot(), gvi)){
+            return new AllCalSingleDimensionGroup(cache, dimIndex);
         }
-        if(ckIndex == 0){
-            return true;
-        }
-        if(allCal.tableKey != tableKey){
-            return true;
-        }
-        return false;
+        return null;
     }
 
     private static boolean findGviInChildren(int[] index, int deep, Node p, GroupValueIndex gvi){
         for (int i = 0; i < p.getChildLength(); i++){
             Node child = p.getChild(i);
-//            if(child.getGroupValueIndex().equals(gvi)){
-//                index[deep] = i;
-//                return true;
-//            }
-//            else if(child.getChilds() != null && child.getChilds().size() > 0){
-//                if(deep + 1 < index.length) {
-//                    boolean r = findGviInChildren(index, deep + 1, child, gvi);
-//                    if (r) {
-//                        return true;
-//                    }
-//                }
-//            }
 
             index[deep] = i;
             if(deep + 1 == index.length){
@@ -123,7 +87,7 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
                 }
             }
             else if(child.getChilds() != null && child.getChilds().size() > 0){
-                if(deep + 1 < index.length) {
+                if(deep + 1 < index.length && (child.getGroupValueIndex().AND(gvi).equals(gvi))) {
                     boolean r = findGviInChildren(index, deep + 1, child, gvi);
                     if (r) {
                         return true;

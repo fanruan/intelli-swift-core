@@ -325,16 +325,15 @@ public class BICubeTableAdapter implements ICubeTableService {
     public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
         CubeColumnReaderService columnReaderService = getColumnReader(key);
         checkFieldPathIndex(key, relationList, columnReaderService);
-        if(relationList == null || relationList.size() == 0){
-            return new BICubeValueEntryGetter(columnReaderService, relationList, null);
-        }
-        BITableSourceRelation startRelation = relationList.get(0);
-        BIKey keyRelation = getColumnIndex(startRelation.getPrimaryField().getFieldName());
         CubeRelationEntityGetterService getterService = null;
-        try {
-            getterService = getTableReader(keyRelation).getRelationIndexGetter(BICubePathUtils.convert(relationList));
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
+        if(relationList != null && relationList.size() > 0){
+            BITableSourceRelation startRelation = relationList.get(0);
+            BIKey keyRelation = getColumnIndex(startRelation.getPrimaryField().getFieldName());
+            try {
+                getterService = getTableReader(keyRelation).getRelationIndexGetter(BICubePathUtils.convert(relationList));
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e);
+            }
         }
         return new BICubeValueEntryGetter(columnReaderService, relationList, getterService);
     }

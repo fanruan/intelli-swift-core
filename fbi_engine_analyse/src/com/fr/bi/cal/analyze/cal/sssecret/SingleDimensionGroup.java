@@ -371,7 +371,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     protected NewDiskBaseRootNodeChild getChildByWait(int row) {
-        waitExecutor(row);
+//        waitExecutor(row);
         NewDiskBaseRootNodeChild child = getChild(row);
         if (child == null) {
             if (row == 0) {
