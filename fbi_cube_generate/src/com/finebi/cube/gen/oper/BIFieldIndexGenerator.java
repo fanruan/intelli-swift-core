@@ -93,6 +93,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         Iterator<Map.Entry<T, IntList>> group2rowNumberIt = group2rowNumber.entrySet().iterator();
         int groupPosition = 0;
         columnEntityService.recordSizeOfGroup(group2rowNumber.size());
+        Integer[] positionOfGroup = new Integer[(int)rowCount];
         while (group2rowNumberIt.hasNext()) {
             Map.Entry<T, IntList> entry = group2rowNumberIt.next();
             T groupValue = entry.getKey();
@@ -100,21 +101,27 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             columnEntityService.addGroupValue(groupPosition, groupValue);
             GroupValueIndex groupValueIndex = buildGroupValueIndex(groupRowNumbers);
             columnEntityService.addGroupIndex(groupPosition, groupValueIndex);
-            buildPositionOfGroup(groupPosition, groupValueIndex);
+            initPositionOfGroup(positionOfGroup, groupPosition, groupValueIndex);
             groupPosition++;
         }
         GroupValueIndex nullIndex = buildGroupValueIndex(nullRowNumbers);
-        buildPositionOfGroup(null, nullIndex);
+        buildPositionOfGroup(positionOfGroup);
         columnEntityService.addNULLIndex(0, nullIndex);
     }
 
-    private void buildPositionOfGroup(final Integer groupPosition, GroupValueIndex groupValueIndex) {
+    private void initPositionOfGroup(final Integer[] position, final Integer groupPosition, GroupValueIndex groupValueIndex) {
         groupValueIndex.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                columnEntityService.addPositionOfGroup(row, groupPosition);
+                position[row] = groupPosition;
             }
         });
+    }
+
+    private void buildPositionOfGroup(Integer[] position) {
+        for (int i = 0; i < position.length; i ++){
+            columnEntityService.addPositionOfGroup(i, position[i]);
+        }
     }
 
     private GroupValueIndex buildGroupValueIndex(IntList groupRowNumbers) {
