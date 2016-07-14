@@ -16,7 +16,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        STYLE_NORMAL: 21
+        STYLE_NORMAL: 21,
+        theme_color: "#65bce7",
+        auto_custom: 1
     },
 
     _defaultConfig: function () {
@@ -259,10 +261,10 @@ BI.MapChart = BI.inherit(BI.Widget, {
             geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
             initDrillPath: options.initDrillPath || [],
             tooltip: options.tooltip || "",
-            theme_color: options.theme_color,
-            map_styles: options.map_styles,
-            auto_custom: options.auto_custom,
-            bubble_color: options.map_bubble_color
+            theme_color: options.theme_color || c.theme_color,
+            map_styles: options.map_styles || [],
+            auto_custom: options.auto_custom || c.auto_custom,
+            bubble_color: options.map_bubble_color || c.theme_color
         };
         this.options.items = items;
 
