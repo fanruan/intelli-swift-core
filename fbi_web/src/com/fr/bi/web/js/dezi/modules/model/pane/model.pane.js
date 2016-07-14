@@ -47,6 +47,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         if (this.has("dashboard")) {
             var dashboard = this.get("dashboard");
             var widgets = this.get("widgets");
+            var newWidgets = {};
             var layoutType = dashboard.layoutType;
             var regions = dashboard.regions;
             BI.each(regions, function (i, region) {
@@ -56,10 +57,11 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                         top: region.top,
                         width: region.width,
                         height: region.height
-                    }
+                    };
+                    newWidgets[region.id] = widgets[region.id];
                 }
             });
-            this.set({"widgets": widgets, layoutType: layoutType});
+            this.set({"widgets": newWidgets, layoutType: layoutType});
             return true;
         }
         if (this.has("addWidget")) {
@@ -72,7 +74,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                 widgets[wId].name = self._generateWidgetName(widgets[wId].name);
                 widgets[wId].init_time = new Date().getTime();
                 //添加查询按钮的时候在此保存一下当前的查询条件
-                if(info.type === BICst.WIDGET.QUERY) {
+                if (info.type === BICst.WIDGET.QUERY) {
                     Data.SharingPool.put("control_filters", BI.Utils.getControlCalculations());
                 }
             }
