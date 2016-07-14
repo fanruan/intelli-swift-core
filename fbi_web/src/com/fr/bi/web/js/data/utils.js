@@ -85,7 +85,7 @@ Data.Utils = {
         var click = function(obj){
             op.click(obj);
         };
-        var ws = widget.settings;
+        var ws = widget.settings || {};
         return {
             types: types,
             data: data,
