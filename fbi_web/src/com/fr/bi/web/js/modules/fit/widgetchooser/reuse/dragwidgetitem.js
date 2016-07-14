@@ -6,8 +6,8 @@
 BI.DragWidgetitem = BI.inherit(BI.Single, {
 
     constants: {
-        iconWidth: 24,
-        iconHeight: 24
+        iconWidth: 16,
+        iconHeight: 16
     },
 
     _defaultConfig: function () {
@@ -84,6 +84,12 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 return "drag-combine-mult-icon";
             case BICst.WIDGET.FUNNEL:
                 return "drag-funnel-icon";
+            case BICst.WIDGET.IMAGE:
+                return "drag-image-icon";
+            case BICst.WIDGET.WEB:
+                return "drag-web-icon";
+            case BICst.WIDGET.CONTENT:
+                return "drag-input-icon";
         }
     },
 
