@@ -96,10 +96,12 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         });
 
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
+            self._adjustSequence();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_INIT, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
+            self._adjustSequence();
             self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
         });
 
@@ -110,31 +112,34 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+            self._adjustSequence();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+            self._adjustSequence();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
             self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
 
+        this.sequenceContainer = BI.createWidget({
+            type: "bi.vtape",
+            cls: "sequence-table-wrapper",
+            items: [{
+                el: this.sequence
+            }, {
+                el: {
+                    type: "bi.layout",
+                    cls: "sequence-table-scroll"
+                },
+                height: 18
+            }]
+        });
         this.htape = BI.createWidget({
             type: "bi.htape",
             element: this.element,
             items: [{
-                el: {
-                    type: "bi.vtape",
-                    cls: "sequence-table-wrapper",
-                    items: [{
-                        el: this.sequence
-                    }, {
-                        el: {
-                            type: "bi.layout",
-                            cls: "sequence-table-scroll"
-                        },
-                        height: 18
-                    }]
-                },
+                el: this.sequenceContainer,
                 width: 0
             }, {
                 el: this.table
@@ -142,9 +147,32 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         })
     },
 
+    _hideChecker: function () {
+        var o = this.options;
+        return !this.table.hasLeftHorizontalScroll()
+            && !this.table.hasRightHorizontalScroll()
+            && o.hideHorizontalScrollChecker();
+    },
+
+    _adjustSequence: function () {
+        var self = this;
+        BI.delay(function () {
+            var checker = self._hideChecker();
+            var items = self.sequenceContainer.attr("items");
+            if (checker === true) {
+                items[1].height = 0;
+            } else {
+                items[1].height = 18;
+            }
+            self.sequenceContainer.attr("items", items);
+            self.sequenceContainer.resize();
+        }, 30);
+    },
+
     resize: function () {
         this.table.resize();
         this.sequence.setVerticalScroll(this.table.getVerticalScroll());
+        this._adjustSequence();
     },
 
     setColumnSize: function (size) {
@@ -200,6 +228,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         this.htape.attr("items", items);
         this.htape.resize();
         this.table.resize();
+        this._adjustSequence();
     },
 
     hideSequence: function () {
@@ -209,17 +238,19 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         this.htape.resize();
         this.table.resize();
     },
-    
+
     refresh: function () {
         this.table.refresh.apply(this.table, arguments);
         this.sequence.populate.apply(this.sequence, arguments);
         this.sequence.setVerticalScroll(this.table.getVerticalScroll());
+        this._adjustSequence();
     },
 
     populate: function (items) {
         this.table.populate.apply(this.table, arguments);
         this.sequence.populate.apply(this.sequence, arguments);
         this.sequence.setVerticalScroll(this.table.getVerticalScroll());
+        this._adjustSequence();
     },
 
     destroy: function () {

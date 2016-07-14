@@ -149,6 +149,22 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
                 self.dimensionsMap[newType][dId] = dimensions[dId];
             });
         });
+        if(newType === BICst.WIDGET.PIE || newType === BICst.WIDGET.DONUT || newType === BICst.WIDGET.DASHBOARD){
+            var selecttargetCount = 0;
+            BI.any(self.viewMap[newType][BICst.REGION.TARGET1], function(idx, dId){
+                if(self.dimensionsMap[newType][dId].used === true){
+                    selecttargetCount++;
+                }
+                if(selecttargetCount > 1){
+                    return true;
+                }
+            });
+            if(selecttargetCount > 1){
+                BI.each(self.viewMap[newType][BICst.REGION.DIMENSION1], function(idx, dId){
+                    self.dimensionsMap[newType][dId].used = false;
+                });
+            }
+        }
         var oldDims = self.dimensionsMap[newType];
         BI.each(oldDims, function(id, dim){
             if(BI.isNull(dimensions[id])){

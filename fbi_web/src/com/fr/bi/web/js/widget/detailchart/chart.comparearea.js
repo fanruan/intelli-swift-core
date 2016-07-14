@@ -85,7 +85,7 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
         BI.each(config.yAxis, function(idx, axis){
             switch (axis.axisIndex){
                 case self.constants.LEFT_AXIS:
-                    axis.reversed = self.config.left_y_axis_reversed ? !axis.reversed : axis.reversed;
+                    axis.reversed = false;
                     axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
                     formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx);
                     axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
@@ -94,7 +94,7 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
                     axis.title.rotation = self.constants.ROTATION;
                     break;
                 case self.constants.RIGHT_AXIS:
-                    axis.reversed = self.config.right_y_axis_reversed ? !axis.reversed : axis.reversed;
+                    axis.reversed = true;
                     axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
                     formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx);
                     axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);

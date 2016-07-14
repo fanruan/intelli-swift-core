@@ -37,11 +37,11 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
     @BICoreField
     protected BIWidget widget;
-    private int etlType;
+    protected int etlType;
     @BICoreField
-    private List<AnalysisETLSourceField> fieldList;
-    private String name;
-    private String widgetTableId;
+    protected List<AnalysisETLSourceField> fieldList;
+    protected String name;
+    protected String widgetTableId;
     public BIWidget getWidget() {
         return widget;
     }
@@ -141,7 +141,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             synchronized (userBaseTableMap){
                 UserCubeTableSource tmp = userBaseTableMap.get(userId);
                 if (tmp == null){
-                    source = new UserBaseTableSource(widget, etlType, userId, fieldList, name, widgetTableId);
+                    source = new UserBaseTableSource(this, userId);
                     userBaseTableMap.put(userId, source);
                 } else {
                     source = tmp;
@@ -178,6 +178,11 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             }
         }
         set.add(this);
+    }
+
+    @Override
+    public void refreshWidget() {
+        widget.refreshColumns();
     }
 
     @Override

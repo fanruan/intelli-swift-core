@@ -68,7 +68,11 @@ public class DimensionGroupFilter {
         iterators = getNodeIterators(mergerInfoList);
         sortedTrees = new SortedTree[mergerInfoList.size()];
         LoaderUtils.setAllExpander(mergerInfoList);
-
+        if(this.mergerInfoList != null){
+            for (MergerInfo m : this.mergerInfoList){
+                m.setHasTraverseResultFilter(hasTraverseResultFilter());
+            }
+        }
     }
 
     private NodeDimensionIterator[] getNodeIterators(List<MergerInfo> mergerInfoList) {

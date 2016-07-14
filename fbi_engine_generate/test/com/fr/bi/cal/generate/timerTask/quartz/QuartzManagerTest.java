@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 /**
- * Created by wuk on 16/6/30.
+ * Created by kary on 16/6/30.
  */
 public class QuartzManagerTest extends TestCase {
     public void testBasic() {

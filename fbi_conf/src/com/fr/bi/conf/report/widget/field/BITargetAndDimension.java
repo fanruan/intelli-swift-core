@@ -45,4 +45,6 @@ public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider, BI
     BusinessField createColumnKey();
 
     boolean isUsed();
+
+    void refreshColumn();
 }

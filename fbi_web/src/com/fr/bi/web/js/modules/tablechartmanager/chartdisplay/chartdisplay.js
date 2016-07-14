@@ -28,19 +28,8 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         this.tab = BI.createWidget({
             type: "bi.tab",
             cls: "chart-tab",
-            cardCreator: BI.bind(this._createTabs, this)
-        });
-
-        BI.createWidget({
-            type: "bi.absolute",
             element: this.element,
-            items: [{
-                el: this.tab,
-                top: 10,
-                bottom: 0,
-                left: 0,
-                right: 0
-            }]
+            cardCreator: BI.bind(this._createTabs, this)
         });
 
         this.errorPane = BI.createWidget({

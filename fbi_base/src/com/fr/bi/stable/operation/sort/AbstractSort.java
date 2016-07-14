@@ -1,5 +1,9 @@
 package com.fr.bi.stable.operation.sort;
 
+import com.fr.bi.base.BICore;
+import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.BICoreService;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.CustomComparator;
 import com.finebi.cube.api.ICubeColumnIndexReader;
@@ -15,9 +19,10 @@ import java.util.Map;
 /**
  * Created by GUY on 2015/4/9.
  */
-public abstract class AbstractSort implements ISort {
-
+public abstract class AbstractSort implements ISort, BICoreService {
+    @BICoreField
     protected String[] reg;
+    @BICoreField
     private int sortType = BIReportConstant.SORT.NONE;
 
     @Override
@@ -82,5 +87,10 @@ public abstract class AbstractSort implements ISort {
         result = 31 * result + sortType;
         result = 31 * result + (reg != null ? Arrays.hashCode(reg) : 0);
         return result;
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        return new BICoreGenerator(this).fetchObjectCore();
     }
 }

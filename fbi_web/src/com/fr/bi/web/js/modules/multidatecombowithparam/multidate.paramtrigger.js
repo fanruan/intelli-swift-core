@@ -158,9 +158,12 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
         if (BI.isNotNull(v)) {
             if(BI.has(v, "value")){
                 type = v.type, value = v.value;
-                var name = BI.Utils.getWidgetNameByID(value.wId || value);
-                if(BI.isNull(name) && type === BICst.MULTI_DATE_PARAM){
-                    return;
+                if(BI.has(v.value, "widgetInfo")){
+                    var widgetInfo = value.widgetInfo;
+                    var name = BI.Utils.getWidgetNameByID(widgetInfo.wId);
+                    if(BI.isNull(name) && type === BICst.MULTI_DATE_PARAM){
+                        return;
+                    }
                 }
                 this.stored_value = v;
             }else{
@@ -175,8 +178,17 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
             self._setChangeIconVisible(true);
         };
         var _setInnerValueForParam = function(){
-            var name = BI.Utils.getWidgetNameByID(value.wId || value);
-            var showText = BI.isNull(value.wId) ? name : name + BI.i18nText("BI-De") + (value.startOrEnd ? BI.i18nText("BI-End_Time") : BI.i18nText("BI-Start_Time"));
+            var widgetInfo = value.widgetInfo;
+            var name = BI.Utils.getWidgetNameByID(widgetInfo.wId);
+            var showText = BI.isNull(widgetInfo.wId) ? name : BI.i18nText("BI-Relative") + name + BI.i18nText("BI-De") + (widgetInfo.startOrEnd ? BI.i18nText("BI-End_Time") : BI.i18nText("BI-Start_Time")) + BI.i18nText("BI-De");
+            switch(value.offset.type){
+                case BICst.MULTI_DATE_YEAR_PREV:
+                    showText += value.offset.value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_YEAR_PREV];
+                    break;
+                case BICst.MULTI_DATE_YEAR_BEGIN:
+                    showText += BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_YEAR_BEGIN];
+                    break;
+            }
             self.editor.setState(showText);
             self.editor.setValue(showText);
             self.setTitle(showText);

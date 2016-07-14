@@ -1,10 +1,12 @@
 package com.fr.bi.etl.analysis.conf;
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.json.JSONObject;
 
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/15.
@@ -36,5 +38,10 @@ public class AnalysisPackManager{
 
     public JSONObject createJSON(Locale locale) throws Exception {
         return set.createJSON(locale);
+    }
+
+
+    public Set<BusinessTable> getAllTables(){
+        return set.getAllTables();
     }
 }
