@@ -67,6 +67,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
         return source;
     }
 
+
     public String getDescribe() {
         return describe;
     }
