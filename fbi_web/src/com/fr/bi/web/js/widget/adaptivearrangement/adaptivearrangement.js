@@ -39,11 +39,13 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                 handles: "s",
                 minWidth: 100,
                 minHeight: 20,
+                helper: "bi-resizer",
                 autoHide: true,
                 resize: function (e, ui) {
-                    self.arrangement.setContainerSize(ui.size);
+
                 },
                 stop: function (e, ui) {
+                    self.arrangement.setContainerSize(ui.size);
                     self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
                 }
             });
