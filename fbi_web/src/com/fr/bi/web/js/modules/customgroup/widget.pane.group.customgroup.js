@@ -149,6 +149,8 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
                 var fieldItem = {};
                 fieldItem.value = fieldName;
                 groupItem.content.push(fieldItem);
+                groupItem.id = groupID;
+
             })
             expanderItems.push(groupItem);
         })
