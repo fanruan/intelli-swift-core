@@ -48,9 +48,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     getWidgetId: function () {
         return this.wId;
     },
-    
-    getStatus: function() {
-        return this.status;  
+
+    getStatus: function () {
+        return this.status;
     },
 
     isNeed2Freeze: function () {
@@ -143,7 +143,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         op.page = this.pageOperator;
         op.status = this.status;
         op.real_data = true;
-        if(this.status === BICst.WIDGET_STATUS.DETAIL) {
+        if (this.status === BICst.WIDGET_STATUS.DETAIL) {
             op.real_data = BI.Utils.isShowWidgetRealDataByID(this.wId) || false;
         }
         return op;
@@ -244,6 +244,28 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         return result;
     },
 
+    //clicked 中的值，如果是分组名使用分组对应的id
+    _parseClickedValue4Group: function (v, dId) {
+        var group = BI.Utils.getDimensionGroupByID(dId);
+        var clicked = v;
+        if (BI.isNotNull(group)) {
+            var details = group.details,
+                ungroup2Other = group.ungroup2Other,
+                ungroup2OtherName = group.ungroup2OtherName;
+            if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
+                ungroup2OtherName === v) {
+                clicked = BICst.UNGROUP_TO_OTHER;
+            }
+            BI.some(details, function (i, detail) {
+                if (detail.value === v) {
+                    clicked = detail.id;
+                    return true;
+                }
+            });
+        }
+        return clicked;
+    },
+
     /**
      * 表items
      */
@@ -262,9 +284,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             var pValues = [];
             var tempLayer = currentLayer, tempNodeId = nodeId;
             while (tempLayer > 0) {
+                var pv = self.tree.search(tempNodeId).get("name"), dId = self.dimIds[tempLayer - 1];
                 pValues.push({
-                    value: [self.tree.search(tempNodeId).get("name")],
-                    dId: self.dimIds[tempLayer - 1]
+                    value: [self._parseClickedValue4Group(pv, dId)],
+                    dId: dId
                 });
                 tempNodeId = self.tree.search(tempNodeId).getParent().get("id");
                 tempLayer--;
@@ -744,24 +767,24 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     if (BI.isNotNull(crossItem.dId)) {
                         if (BI.isNotEmptyArray(crossItem.values)) {
                             BI.each(crossItem.values, function (j, v) {
-                                tempPV = pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]);
+                                tempPV = pv.concat([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]);
                             });
                             //显示列汇总的时候需要构造汇总
                         } else {
-                            tempPV = pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]);
+                            tempPV = pv.concat([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]);
                         }
                     }
                     parseCrossItem2Array(crossItem.children, pValues, tempPV);
                     //汇总
                     if (BI.isNotEmptyArray(crossItem.values)) {
                         BI.each(crossItem.values, function (j, v) {
-                            pValues.push([{dId: crossItem.dId, value: [crossItem.text]}]);
+                            pValues.push([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]);
                         });
                     }
                 } else if (BI.isNotNull(crossItem.dId)) {
                     if (BI.isNotEmptyArray(crossItem.values)) {
                         BI.each(crossItem.values, function (j, v) {
-                            pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
+                            pValues.push(pv.concat([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]));
                         });
                     } else {
                         // pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
@@ -1002,20 +1025,21 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         }
     },
 
-    _setOtherAttrs4OnlyCross: function() {
+    _setOtherAttrs4OnlyCross: function () {
         var self = this;
         this.columnSize = [""];
         this.freezeCols = [];
         this.mergeCols = [0];
         function parseSizeOfCrossItems(items) {
-            BI.each(items, function(i, item) {
-                if(BI.isNotNull(item.children)) {
+            BI.each(items, function (i, item) {
+                if (BI.isNotNull(item.children)) {
                     parseSizeOfCrossItems(item.children);
                 } else {
                     self.columnSize.push("");
                 }
             });
         }
+
         parseSizeOfCrossItems(this.crossItems);
 
     },

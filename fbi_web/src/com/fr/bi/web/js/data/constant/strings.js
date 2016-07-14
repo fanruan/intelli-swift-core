@@ -15,6 +15,8 @@ BICst.LOGIN_INFO_POPOVER = "__login_info_popover__";
 BICst.BODY_ELEMENT = "body";
 BICst.LINKAGE = "__linkage__";
 
+BICst.UNGROUP_TO_OTHER = "__ungroup_to_other__";
+
 //data link type
 BICst.DATA_LINK = {
     DATA_SOURCE: "__data_link_data_source__",

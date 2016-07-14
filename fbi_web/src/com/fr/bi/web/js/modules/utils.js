@@ -2017,14 +2017,15 @@
                 var details = group.details;
                 var groupMap = {};
                 BI.each(details, function (i, detail) {
-                    groupMap[detail.value] = [];
+                    groupMap[detail.id] = [];
                     BI.each(detail.content, function (j, content) {
-                        groupMap[detail.value].push(content.value);
+                        groupMap[detail.id].push(content.value);
                     });
                 });
                 var groupNames = BI.keys(groupMap), ungroupName = group.ungroup2OtherName;
-                if (group.ungroup2Other === 1) {
-                    groupNames.push(ungroupName);
+                if (group.ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
+                    // groupNames.push(ungroupName);
+                    groupNames.push(BICst.UNGROUP_TO_OTHER);
                 }
                 // 对于drill和link 一般value的数组里只有一个值
                 var v = value[0];
