@@ -1093,6 +1093,7 @@ public class ResourceHelper {
                 //带参数的复杂日期模块
                 "com/fr/bi/web/js/modules/multidatecombowithparam/item/item.level0.js",
                 "com/fr/bi/web/js/modules/multidatecombowithparam/item/item.level1.js",
+                "com/fr/bi/web/js/modules/multidatecombowithparam/item/item.param.js",
                 "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.parampane.js",
                 "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.parampopup.js",
                 "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.paramtrigger.js",
@@ -1321,6 +1322,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/widget.chartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/charts.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/bubblechart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/multiaxischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/percentchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/lineareachart.setting.js",

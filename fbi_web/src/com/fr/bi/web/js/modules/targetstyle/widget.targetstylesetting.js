@@ -65,6 +65,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         this.numLevel.setValue(styleSettings.num_level);
         this.numLevel.on(BI.Segment.EVENT_CHANGE, function(){
             BI.isNotNull(self.mark) && self.mark.setLevel(this.getValue()[0]);
+            self.conditions.setNumLevel(this.getValue()[0]);
         });
 
         this.unit = BI.createWidget({
@@ -117,7 +118,8 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
 
         this.conditions = BI.createWidget({
             type: "bi.target_condition_style_setting",
-            conditions: styleSettings.conditions
+            conditions: styleSettings.conditions,
+            numLevel: styleSettings.num_level
         });
 
         BI.createWidget({

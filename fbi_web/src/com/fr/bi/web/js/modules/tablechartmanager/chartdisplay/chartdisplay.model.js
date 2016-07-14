@@ -75,7 +75,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         res.drilldown.series = self._formatDataForMap(item, currentLayer);
                         res.drilldown.geo = {
                             data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]],
-                            geoName: res.x
+                            name: res.x
                         };
                     }
                     return res;
@@ -586,8 +586,19 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             if(type === BICst.WIDGET.MAP){
                 options.geo = {
                     data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
-                    geoName: BICst.MAP_TYPE_NAME[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
-                }
+                    name: BICst.MAP_TYPE_NAME[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                };
+
+                //var subType = BI.Utils.getWidgetSubTypeByID(o.wId) || BICst.MAP_TYPE.CHINA;
+                //options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
+                //var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];
+                //BI.each(drill, function(idx, dri){
+                //    options.initDrillPath.push(dri.values[0].value[0]);
+                //});
+                //options.geo = {
+                //    data: BICst.MAP_PATH[subType],
+                //    name: BICst.MAP_TYPE_NAME[subType] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                //}
             }
             if(type === BICst.WIDGET.GIS_MAP){
                 options.geo = {

@@ -19,7 +19,7 @@ import com.fr.stable.xml.XMLableReader;
 import java.util.*;
 
 /**
- * Created by wuk on 16/5/17.
+ * Created by kary on 16/5/17.
  */
 public class BINationDataSourceTool extends AbstractCubeTableSource{
     public String sourceID;

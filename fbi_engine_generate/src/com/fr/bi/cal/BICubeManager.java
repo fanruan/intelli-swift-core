@@ -2,7 +2,7 @@ package com.fr.bi.cal;
 
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.impl.conf.CubeBuildStuffManager;
+import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.fr.bi.base.provider.AllUserTravel;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
@@ -40,7 +40,7 @@ public class BICubeManager implements BICubeManagerProvider {
 
 
     @Override
-    public CubeBuildStuffManager getGeneratingObject(long userId) {
+    public CubeBuildStaff getGeneratingObject(long userId) {
         return getCubeManager(userId).getGeneratingObject();
     }
 
