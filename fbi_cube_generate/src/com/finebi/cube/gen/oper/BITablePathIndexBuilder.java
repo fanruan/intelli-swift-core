@@ -70,15 +70,16 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 frontRelationPathReader = buildFrontRelationPathReader();
                 targetPathEntity = buildTargetRelationPathWriter();
                 final GroupValueIndex appearPrimaryValue = GVIFactory.createAllEmptyIndexGVI();
+                Integer[] reverse = new Integer[getJuniorTableRowCount()];
                 for (int row = 0; row < primaryRowCount; row++) {
                     GroupValueIndex frontGroupValueIndex = frontRelationPathReader.getBitmapIndex(row);
                     GroupValueIndex resultGroupValueIndex = getTableLinkedOrGVI(frontGroupValueIndex, lastRelationEntity);
                     appearPrimaryValue.or(resultGroupValueIndex);
                     targetPathEntity.addRelationIndex(row, resultGroupValueIndex);
-                    buildReverseIndex(targetPathEntity, row, resultGroupValueIndex);
+                    initReverseIndex(reverse, row, resultGroupValueIndex);
                 }
-                GroupValueIndex nullIndex = appearPrimaryValue.NOT(getJuniorTableRowCount());
-                buildReverseIndex(targetPathEntity, null, nullIndex);
+                GroupValueIndex nullIndex = appearPrimaryValue.NOT(reverse.length);
+                buildReverseIndex(targetPathEntity, reverse);
                 targetPathEntity.addRelationNULLIndex(0, nullIndex);
                 long costTime = System.currentTimeMillis() - t;
                 biLogManager.infoRelation(getRelationColumnKeyInfo(), costTime, UserControl.getInstance().getSuperManagerID());
@@ -100,13 +101,19 @@ public class BITablePathIndexBuilder extends BIProcessor {
         }
     }
 
-    private void buildReverseIndex(final ICubeRelationEntityService tableRelation, final Integer row, GroupValueIndex gvi) {
+    private void initReverseIndex(final Integer[] index, final Integer row, GroupValueIndex gvi) {
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndex) {
-                tableRelation.addReverseIndex(rowIndex, row);
+                index[rowIndex] = row;
             }
         });
+    }
+
+    private void buildReverseIndex(ICubeRelationEntityService tableRelation, Integer[] index) {
+        for (int i = 0; i < index.length; i ++){
+            tableRelation.addReverseIndex(i, index[i]);
+        }
     }
 
     public static GroupValueIndex getTableLinkedOrGVI(GroupValueIndex currentIndex, final ICubeIndexDataGetterService reader) {

@@ -152,6 +152,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
              * 主表的行数
              */
             int primaryRowCount = primaryTable.getRowCount();
+            Integer[] reverse = new Integer[foreignTable.getRowCount()];
             for (int row = 0; row < primaryRowCount; row++) {
                 /**
                  * 关联主字段的value值
@@ -172,10 +173,10 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 }
                 appearPrimaryValue.or(foreignGroupValueIndex);
                 tableRelation.addRelationIndex(row, foreignGroupValueIndex);
-                buildReverseIndex(tableRelation, row, foreignGroupValueIndex);
+                initReverseIndex(reverse, row, foreignGroupValueIndex);
             }
             GroupValueIndex nullIndex =  appearPrimaryValue.NOT(foreignTable.getRowCount());
-            buildReverseIndex(tableRelation, null,  nullIndex);
+            buildReverseIndex(tableRelation,reverse);
             tableRelation.addRelationNULLIndex(0, nullIndex);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -200,13 +201,19 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
     }
 
-    private void buildReverseIndex(final ICubeRelationEntityService tableRelation, final Integer row, GroupValueIndex gvi) {
+    private void initReverseIndex(final Integer[] index, final Integer row, GroupValueIndex gvi) {
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndex) {
-                tableRelation.addReverseIndex(rowIndex, row);
+                index[rowIndex] = row;
             }
         });
+    }
+
+    private void buildReverseIndex(ICubeRelationEntityService tableRelation, Integer[] index) {
+        for (int i = 0; i < index.length; i ++){
+            tableRelation.addReverseIndex(i, index[i]);
+        }
     }
 
 }
