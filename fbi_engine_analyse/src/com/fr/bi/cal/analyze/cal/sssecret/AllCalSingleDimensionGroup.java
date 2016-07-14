@@ -2,10 +2,13 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.result.AllCalNode;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.store.GroupKey;
+import com.fr.bi.cal.analyze.cal.store.UserRightColumnKey;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.cal.NodeResultDealer;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -13,24 +16,29 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.CubeValueEntryNode;
 import com.fr.bi.stable.utils.BIServerUtils;
+import com.fr.general.ComparatorUtils;
+
+import java.util.Arrays;
 
 /**
  * Created by loy on 16/6/22.
  */
 public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements ISingleDimensionGroup {
 
-    protected TargetCalculator calculator;
     protected volatile AllCalNode root;
 
     protected transient DimensionCalculator[] pcolumns;
 
-    private ICubeTableService cubeTableService;
     private boolean doSort;
 
-    public AllCalSingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns,  GroupValueIndex gvi, ICubeDataLoader loader, boolean doSort) {
+    //just for test
+    public AllCalSingleDimensionGroup(AllCalNode root) {
+        this.root = root;
+    }
+
+    public AllCalSingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, GroupValueIndex gvi, ICubeDataLoader loader, boolean doSort) {
         this.tableKey = tableKey;
         this.loader = loader;
-        this.cubeTableService = loader.getTableIndex(tableKey.getTableSource());
         this.pcolumns = pcolumns;
         this.doSort = doSort;
         this.initRoot(gvi);
@@ -39,26 +47,76 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
         }
     }
 
+    public AllCalSingleDimensionGroup(AllCalSingleDimensionGroup cache, int[] colindex){
+        AllCalSingleDimensionGroup rootNode = cache;
+        this.tableKey = rootNode.tableKey;
+        this.loader = rootNode.loader;
+        this.pcolumns = rootNode.pcolumns;
+        this.doSort = rootNode.doSort;
+        Node n = rootNode.root;
+        for (int idx : colindex){
+            if(idx == -1){
+                break;
+            }
+            n = n.getChild(idx);
+        }
+        this.root = (AllCalNode)n;
+    }
+
+    public static AllCalSingleDimensionGroup createInstance(BusinessTable tableKey, DimensionCalculator[] pcolumns, GroupValueIndex gvi, ICubeDataLoader loader, boolean doSort) {
+        //TODO 指标筛选操作考虑是否可以优化
+        return new AllCalSingleDimensionGroup(tableKey, pcolumns, gvi, loader, doSort);
+    }
+
+    public static AllCalSingleDimensionGroup createInstanceWithCache(AllCalSingleDimensionGroup cache, GroupValueIndex gvi, int deep){
+        int[] dimIndex = new int[deep];
+        if(findGviInChildren(dimIndex, 0, cache.getRoot(), gvi)){
+            return new AllCalSingleDimensionGroup(cache, dimIndex);
+        }
+        return null;
+    }
+
+    private static boolean findGviInChildren(int[] index, int deep, Node p, GroupValueIndex gvi){
+        for (int i = 0; i < p.getChildLength(); i++){
+            Node child = p.getChild(i);
+
+            index[deep] = i;
+            if(deep + 1 == index.length){
+                if(child.getGroupValueIndex().equals(gvi)){
+                    return true;
+                }
+            }
+            else if(child.getChilds() != null && child.getChilds().size() > 0){
+                if(deep + 1 < index.length && (child.getGroupValueIndex().AND(gvi).equals(gvi))) {
+                    boolean r = findGviInChildren(index, deep + 1, child, gvi);
+                    if (r) {
+                        return true;
+                    }
+                }
+            }
+        }
+        index[deep] = -1;
+        return false;
+    }
+
     protected boolean isTurnOnWhenInit() {
         return true;
     }
 
     public void turnOnExecutor() {
-        BIKey[] keys = new BIKey[pcolumns.length];
         NodeResultDealer dealer;
         if(doSort) {
             boolean[] sortType = new boolean[pcolumns.length];
             for (int i = 0; i < pcolumns.length; i++) {
-                keys[i] = pcolumns[i].createKey();
                 sortType[i] = pcolumns[i].getSortType() != BIReportConstant.SORT.DESC;
             }
-            dealer = BIServerUtils.createAllCalDimensonDealer(keys, null, sortType);
+            dealer = BIServerUtils.createAllCalDimensonDealer(pcolumns, null, sortType, loader);
         }
         else{
-            dealer = BIServerUtils.createAllCalDimensonDealer(keys, null);
+            dealer = BIServerUtils.createAllCalDimensonDealer(pcolumns, null, loader);
         }
         CubeValueEntryNode calRootNode = new CubeValueEntryNode();
-        dealer.dealWithNode(cubeTableService, root.getGroupValueIndex(), calRootNode);
+        dealer.dealWithNode(root.getGroupValueIndex(), calRootNode);
         copyNode(calRootNode, root, 0);
     }
 
@@ -88,17 +146,26 @@ public class AllCalSingleDimensionGroup extends NoneDimensionGroup implements IS
     @Override
     public NoneDimensionGroup getChildDimensionGroup(int row) {
         AllCalNode node = (AllCalNode) root.getChild(row);
-        return createDimensionGroup(tableKey, node.getGroupValueIndex(), getLoader());
+        if(node == null){
+            return NoneDimensionGroup.NULL;
+        }
+        return createDimensionGroup(tableKey, node.getGroupValueIndex(), getLoader(), true);
     }
 
     @Override
     public Object getChildData(int row) {
+        if(row > root.getChildLength() - 1){
+            throw GroupOutOfBoundsException.create(-1);
+        }
         AllCalNode node = (AllCalNode) root.getChild(row);
         return node.getData();
     }
 
     @Override
     public String getChildShowName(int row) {
+        if(row > root.getChildLength() - 1){
+            throw GroupOutOfBoundsException.create(-1);
+        }
         AllCalNode node = (AllCalNode) root.getChild(row);
         return node.getShowValue();
     }

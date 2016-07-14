@@ -83,7 +83,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         if (BI.isNull(this.interval)) {
             this.interval = setInterval(function () {
                 self.refreshLog();
-            }, 300);
+            }, 5000);
             return;
         }
         BI.Utils.getCubeLog(function (data) {

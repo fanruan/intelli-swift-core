@@ -72,10 +72,12 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     break;
                 case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                     config.plotOptions.style = "ring";
+                    config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
                 case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                     config.plotOptions.style = "slot";
+                    config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
                     break;
                 case BICst.CHART_SHAPE.HORIZONTAL_TUBE:

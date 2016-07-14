@@ -13,6 +13,7 @@ import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BICubeColumnEntity;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
 
 import java.util.Comparator;
 
