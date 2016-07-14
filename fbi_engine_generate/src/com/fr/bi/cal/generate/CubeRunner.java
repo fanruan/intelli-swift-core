@@ -165,7 +165,7 @@ public class CubeRunner {
     private void generateCube() {
         setStatue(Status.LOADED);
 //        CubeBuild cubeBuild = new CubeBuildStaff(new BIUser((biUser.getUserId())));
-        CubeBuild cubeBuild = new CubeBuildByPart(biUser.getUserId(), CubeUpdateUtils.getTables4CubeGenerate(biUser.getUserId()), CubeUpdateUtils.getRelations4CubeGenerate(biUser.getUserId()));
+        CubeBuild cubeBuild = new CubeBuildByPart(biUser.getUserId(), CubeUpdateUtils.getNewTables(biUser.getUserId()), CubeUpdateUtils.getNewRelations(biUser.getUserId()));
         CubeTask task = new BuildCubeTask(biUser, cubeBuild);
         CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
     }
