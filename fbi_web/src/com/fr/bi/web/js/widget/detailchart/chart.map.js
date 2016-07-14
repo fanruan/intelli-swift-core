@@ -168,8 +168,12 @@ BI.MapChart = BI.inherit(BI.Widget, {
                             });
 
                         }
+                        return range;
+                    } else {
+                        defaultStyle.color = defaultColor;
+                        return defaultStyle;
                     }
-                    return range;
+
             }
         }
 
