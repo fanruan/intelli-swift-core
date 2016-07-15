@@ -12,6 +12,7 @@ BI.DataLabel = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DataLabel.superclass._init.apply(this, arguments);
+        var self = this;
         var addButton = BI.createWidget({
             type: "bi.button",
             text: "添加条件",
@@ -32,6 +33,21 @@ BI.DataLabel = BI.inherit(BI.Widget, {
             element: this.element,
             height: 400
         })
+        // this.conditions = BI.createWidget({
+        //     type: "bi.data_label_condition_group"
+        // });
+        //
+        // BI.createWidget({
+        //     type: "bi.vertical",
+        //     element: this.element,
+        //     items: [{
+        //         type: "bi.right",
+        //         items: [addButton],
+        //         rgap: 8
+        //     },this.conditions],
+        //     width:500,
+        //     height:500
+        // })
     },
 
     _createTab: function () {
@@ -120,6 +136,14 @@ BI.DataLabel = BI.inherit(BI.Widget, {
             }],
             width: 550,
             height: 130
+            }
+        );
+    },
+    _createCondition: function () {
+        return BI.createWidget({
+            type: "bi.data_label_condition",
+            width: 500,
+            height: 40
         })
     }
 });

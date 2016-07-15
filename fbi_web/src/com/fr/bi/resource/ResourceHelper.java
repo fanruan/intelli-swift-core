@@ -2586,6 +2586,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/datalabel/datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/texttoolbar.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/font.chooser.texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/group.condition.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/item.condition.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/image/imageset.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/barchart/barchart.datalabel.js",
 
