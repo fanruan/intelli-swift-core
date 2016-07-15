@@ -47,7 +47,8 @@ BI.ChartSettingSelectColorCombo = BI.inherit(BI.Widget, {
         if (defaultChartConfig.styleList.length > 0) {
             BI.each(defaultChartConfig.styleList, function (i, config) {
                 items.push({
-                    text: config.value,
+                    header: config.value,
+                    text: config.colors.slice(0, 5),
                     value: config.colors
                 })
             });

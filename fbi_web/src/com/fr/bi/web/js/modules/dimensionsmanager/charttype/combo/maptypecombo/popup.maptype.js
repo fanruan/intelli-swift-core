@@ -66,8 +66,8 @@ BI.MapTypePopup = BI.inherit(BI.Pane, {
             items.push(BI.extend({
                 type: "bi.multilayer_icon_tree_leaf_item",
                 height: 30,
-                iconHeight: 24,
-                iconWidth: 24,
+                iconHeight: 16,
+                iconWidth: 16,
                 layer: 1,
                 id: BI.UUID(),
                 pId: 1,
