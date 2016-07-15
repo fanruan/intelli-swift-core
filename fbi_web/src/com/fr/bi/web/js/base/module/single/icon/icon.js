@@ -13,6 +13,7 @@ BI.Icon = BI.inherit(BI.Single, {
     },
     _init: function () {
         BI.Icon.superclass._init.apply(this, arguments);
+        this.element.css("background-size", "contain");
     }
 });
 

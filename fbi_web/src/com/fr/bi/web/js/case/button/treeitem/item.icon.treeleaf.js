@@ -6,8 +6,8 @@ BI.IconTreeLeafItem = BI.inherit(BI.BasicButton, {
                 dynamic: false
             },
             height: 25,
-            iconWidth: 12,
-            iconHeight: 14,
+            iconWidth: 16,
+            iconHeight: 16,
             iconCls: ""
         })
     },

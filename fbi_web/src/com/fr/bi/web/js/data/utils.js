@@ -85,7 +85,7 @@ Data.Utils = {
         var click = function(obj){
             op.click(obj);
         };
-        var ws = widget.settings;
+        var ws = widget.settings || {};
         return {
             types: types,
             data: data,
@@ -570,15 +570,8 @@ Data.Utils = {
                 case BICst.WIDGET.SCATTER:
                     dId = obj.targetIds;
                     clicked = [{
-                        dId: obj.dId || dimIds[0],
+                        dId: obj.dId || this.dimIds[0],
                         value: [obj.seriesName]
-                    }];
-                    break;
-                case BICst.WIDGET.DASHBOARD:
-                    dId = obj.targetIds;
-                    clicked = [{
-                        dId: obj.dId || dimIds[0],
-                        value: [obj.category]
                     }];
                     break;
                 case BICst.WIDGET.MAP:
@@ -723,10 +716,10 @@ Data.Utils = {
             x_axis_number_level: options.x_axis_number_level || constants.NORMAL,
             tooltip: options.tooltip || "",
             geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
-            theme_color: options.theme_color,
+            theme_color: options.theme_color || "#65bce7",
             map_styles: options.map_styles,
-            auto_custom: options.auto_custom,
-            initDrillPath: options.initDrillPath,
+            auto_custom: BI.isNull(options.map_styles) ? false : options.auto_custom,
+            initDrillPath: options.initDrillPath || [],
             lnglat: options.lnglat || constants.LNG_FIRST,
             click: options.click
         };
@@ -1299,13 +1292,13 @@ Data.Utils = {
         function formatConfigForMap(configs, items){
             formatRangeLegend();
             delete configs.legend;
-            configs.plotOptions.dataLabels.enabled = this.config.show_data_label;
+            configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.tooltip.shared = true;
-            configs.plotOptions.color = BI.isArray(config.theme_color) ? config.theme_color : [config.theme_color];
+            //config.plotOptions.color = BI.isArray(config.theme_color) ? config.theme_color : [config.theme_color];
             var formatterArray = [];
             BI.backEach(items, function(idx, item){
                 if(BI.has(item, "settings")){
-                    formatterArray.push(formatToolTipAndDataLabel(item.settings.format || constants.NORMAL, item.settings.num_level || constants.NORMAL));
+                    formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || constants.NORMAL));
                 }
             });
             configs.plotOptions.tooltip.formatter = function(){
@@ -1346,8 +1339,8 @@ Data.Utils = {
                         configs.rangeLegend.enabled = false;
                         break;
                 }
-                configs.rangeLegend.range.max = max;
-                // config.rangeLegend.range = getRangeStyle(config.map_styles , config.auto_custom , config.theme_color);
+                configs.rangeLegend.continuous = false;
+                configs.rangeLegend.range = getRangeStyle(config.map_styles , config.auto_custom , config.theme_color);
             }
 
             function formatToolTipAndDataLabel(format, numberLevel){
@@ -1377,7 +1370,7 @@ Data.Utils = {
             }
 
             function getRangeStyle (styles , change , defaultColor) {
-                var range = [], color = null;
+                var range = [], color = null, defaultStyle = {};
                 var conditionMax = null, conditionMin = null, max = null, min = null;
 
                 BI.each(items , function (idx , item) {
@@ -1393,9 +1386,8 @@ Data.Utils = {
 
                 switch (change) {
                     case BICst.SCALE_SETTING.AUTO:
-                        range.color = defaultColor;
-                        range.splitNumber = 2;
-                        return range;
+                        defaultStyle.color = defaultColor;
+                        return defaultStyle;
                     case BICst.SCALE_SETTING.CUSTOM:
                         if(styles.length !== 0) {
                             BI.each(styles, function (idx, style) {
@@ -1428,7 +1420,6 @@ Data.Utils = {
 
                             }
                         }
-
                         return range;
                 }
             }
@@ -2646,16 +2637,16 @@ Data.Utils = {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
-            configs.yAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
+            configs.yAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
             configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.yAxis[0].title.rotation = constants.ROTATION;
 
             configs.yAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].formatter = formatTickInXYaxis(config.x_axis_style, constants.X_AXIS);
-            formatNumberLevelInXaxis(config.x_axis_number_level);
-            configs.xAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS);
+            formatNumberLevelInXaxis(config.left_y_axis_number_level);
+            configs.xAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "bar";
@@ -2676,7 +2667,7 @@ Data.Utils = {
             function formatCordon(){
                 BI.each(config.cordon, function(idx, cor){
                     if(idx === 0 && xAxis.length > 0){
-                        var magnify = calcMagnify(config.x_axis_number_level);
+                        var magnify = calcMagnify(config.left_y_axis_number_level);
                         xAxis[0].plotLines = BI.map(cor, function(i, t){
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
@@ -2693,7 +2684,7 @@ Data.Utils = {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
-                                magnify = calcMagnify(config.left_y_axis_number_level);
+                                magnify = calcMagnify(config.x_axis_number_level);
                                 break;
                             case constants.RIGHT_AXIS:
                                 magnify = calcMagnify(config.right_y_axis_number_level);
@@ -2769,10 +2760,10 @@ Data.Utils = {
                         break;
                 }
                 if(position === constants.X_AXIS){
-                    config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
+                    config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
                 if(position === constants.LEFT_AXIS){
-                    config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
+                    config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
                 if(position === constants.RIGHT_AXIS){
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
@@ -2797,7 +2788,7 @@ Data.Utils = {
                         break;
                 }
                 if(position === constants.X_AXIS){
-                    if(config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                         if(type === constants.NORMAL){
                             formatter = '#0%'
                         }else{
@@ -2866,16 +2857,16 @@ Data.Utils = {
             configs.plotOptions.tooltip.formatter.valueFormat = "function(){if(this > 0){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];} else {return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}}";
 
 
-            configs.yAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
+            configs.yAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
             configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.yAxis[0].title.rotation = constants.ROTATION;
 
             configs.yAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].formatter = formatTickInXYaxis(config.x_axis_style, constants.X_AXIS);
-            formatNumberLevelInXaxis(config.x_axis_number_level);
-            configs.xAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS);
+            formatNumberLevelInXaxis(config.left_y_axis_number_level);
+            configs.xAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "bar";
@@ -2896,7 +2887,7 @@ Data.Utils = {
             function formatCordon(){
                 BI.each(config.cordon, function(idx, cor){
                     if(idx === 0 && xAxis.length > 0){
-                        var magnify = calcMagnify(config.x_axis_number_level);
+                        var magnify = calcMagnify(config.left_y_axis_number_level);
                         xAxis[0].plotLines = BI.map(cor, function(i, t){
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
@@ -2913,7 +2904,7 @@ Data.Utils = {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
-                                magnify = calcMagnify(config.left_y_axis_number_level);
+                                magnify = calcMagnify(config.x_axis_number_level);
                                 break;
                             case constants.RIGHT_AXIS:
                                 magnify = calcMagnify(config.right_y_axis_number_level);
@@ -2989,10 +2980,10 @@ Data.Utils = {
                         break;
                 }
                 if(position === constants.X_AXIS){
-                    config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
+                    config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
                 if(position === constants.LEFT_AXIS){
-                    config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
+                    config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
                 if(position === constants.RIGHT_AXIS){
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
@@ -3017,7 +3008,7 @@ Data.Utils = {
                         break;
                 }
                 if(position === constants.X_AXIS){
-                    if(config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                         if(type === constants.NORMAL){
                             formatter = '#0%'
                         }else{
@@ -3026,7 +3017,7 @@ Data.Utils = {
                         return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "').substring(1) : arguments[0].substring(1);}"
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (FR.contentFormat(arguments[0], '" + formatter + "') + '').substring(1) : (arguments[0] + '').substring(1);}"
             }
         }
 
@@ -3096,16 +3087,16 @@ Data.Utils = {
 
             //分类轴
 
-            configs.show_left_y_axis_title === true && (configs.yAxis[0].title.text = config.left_y_axis_title);
+            configs.show_left_y_axis_title === true && (configs.yAxis[0].title.text = config.x_axis_title);
             configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.yAxis[0].title.rotation = constants.ROTATION;
             configs.yAxis[0].labelRotation = config.text_direction;
 
             //值轴
-            configs.xAxis[0].formatter = formatTickInXYaxis(config.x_axis_style, constants.X_AXIS);
-            formatNumberLevelInXaxis(config.x_axis_number_level);
-            configs.xAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS);
+            formatNumberLevelInXaxis(config.left_y_axis_number_level);
+            configs.xAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "bar";
@@ -3126,7 +3117,7 @@ Data.Utils = {
             function formatCordon() {
                 BI.each(config.cordon, function (idx, cor) {
                     if (idx === 0 && xAxis.length > 0) {
-                        var magnify = calcMagnify(config.x_axis_number_level);
+                        var magnify = calcMagnify(config.left_y_axis_number_level);
                         xAxis[0].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
@@ -3148,7 +3139,7 @@ Data.Utils = {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
-                                magnify = calcMagnify(config.left_y_axis_number_level);
+                                magnify = calcMagnify(config.x_axis_number_level);
                                 break;
                             case constants.RIGHT_AXIS:
                                 magnify = calcMagnify(config.right_y_axis_number_level);
@@ -3229,10 +3220,10 @@ Data.Utils = {
                         break;
                 }
                 if (position === constants.X_AXIS) {
-                    config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
+                    config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
                 if (position === constants.LEFT_AXIS) {
-                    config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
+                    config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
                 if (position === constants.RIGHT_AXIS) {
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
@@ -3257,7 +3248,7 @@ Data.Utils = {
                         break;
                 }
                 if (position === constants.X_AXIS) {
-                    if (config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                         if (type === constants.NORMAL) {
                             formatter = '#0%'
                         } else {
@@ -3780,7 +3771,7 @@ Data.Utils = {
             BI.each(configs.yAxis, function(idx, axis){
                 switch (axis.axisIndex){
                     case constants.LEFT_AXIS:
-                        axis.reversed = config.left_y_axis_reversed ? !axis.reversed : axis.reversed;
+                        axis.reversed = true;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
                         formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
@@ -3789,7 +3780,7 @@ Data.Utils = {
                         axis.title.rotation = constants.ROTATION;
                         break;
                     case constants.RIGHT_AXIS:
-                        axis.reversed = config.right_y_axis_reversed ? !axis.reversed : axis.reversed;
+                        axis.reversed = false;
                         axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
                         formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
@@ -3928,9 +3919,9 @@ Data.Utils = {
                             if (constants.MINLIMIT.sub(da.y) > 0) {
                                 da.y = 0;
                             }
-                        }
-                        if((BI.isNull(max) || da.y > max)){
-                            max = da.y;
+                            if((BI.isNull(max) || da.y > max)){
+                                max = da.y;
+                            }
                         }
                     });
                     if(BI.isNotNull(max)){

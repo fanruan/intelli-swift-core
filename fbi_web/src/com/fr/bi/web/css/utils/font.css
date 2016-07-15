@@ -2340,12 +2340,12 @@
   color: #1a1a1a;
 }
 .img-upload-font .b-font:before {
-  content: "\e68a";
+  content: "\e6ba";
   color: #009de3;
 }
 .img-upload-font.native .b-font:before,
 .img-upload-font.disabled .b-font:before {
-  content: "\e68a";
+  content: "\e6ba";
   color: #009de3;
 }
 .img-size-font .b-font:before {

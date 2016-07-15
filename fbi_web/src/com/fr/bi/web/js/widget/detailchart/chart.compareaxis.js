@@ -120,7 +120,7 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
             axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
         });
 
-        config.xAxis[0].title.text = this.config.x_axis_title;
+        config.xAxis[0].title.text = this.config.left_y_axis_title;
         config.xAxis[0].labelRotation = this.config.text_direction;
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? config.xAxis[0].title.text : "";
         config.xAxis[0].title.align = "center";
@@ -142,7 +142,7 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
         function formatCordon(){
             BI.each(self.config.cordon, function(idx, cor){
                 if(idx === 0 && self.xAxis.length > 0){
-                    var magnify = calcMagnify(self.config.x_axis_number_level);
+                    var magnify = calcMagnify(self.config.left_y_axis_number_level);
                     self.xAxis[0].plotLines = BI.map(cor, function(i, t){
                         return BI.extend(t, {
                             value: t.value.div(magnify),
@@ -263,10 +263,10 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
                     break;
             }
             if(position === self.constants.X_AXIS){
-                self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
+                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
             if(position === self.constants.LEFT_AXIS){
-                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
+                self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
             if(position === self.constants.RIGHT_AXIS){
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
@@ -291,7 +291,7 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
                     break;
             }
             if(position === self.constants.LEFT_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if(self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                     if(type === self.constants.NORMAL){
                         formatter = '#0%'
                     }else{

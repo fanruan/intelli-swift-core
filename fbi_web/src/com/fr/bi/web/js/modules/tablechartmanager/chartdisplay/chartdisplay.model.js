@@ -375,6 +375,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var data = [{
                     x: BI.Utils.getDimensionNameByID(targetIds[0]),
                     y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
+                    seriesName: item.n,
                     targetIds: [targetIds[0]]
                 }];
                 var obj = {};
@@ -391,6 +392,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 return {
                     x: BI.Utils.getDimensionNameByID(targetIds[idx]),
                     y: (BI.isFinite(value) ? value : 0),
+                    seriesName: BI.Utils.getDimensionNameByID(targetIds[idx]),
                     targetIds: [targetIds[idx]]
                 };
             });
@@ -638,17 +640,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
-                dId = obj.targetIds;
-                clicked = [{
-                    dId: obj.dId || this.dimIds[0],
-                    value: [obj.seriesName]
-                }];
-                break;
             case BICst.WIDGET.DASHBOARD:
                 dId = obj.targetIds;
                 clicked = [{
                     dId: obj.dId || this.dimIds[0],
-                    value: [obj.value || obj.x]
+                    value: [obj.seriesName]
                 }];
                 break;
             case BICst.WIDGET.MAP:

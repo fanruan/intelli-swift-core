@@ -16,7 +16,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        STYLE_NORMAL: 21
+        STYLE_NORMAL: 21,
+        theme_color: "#65bce7",
+        auto_custom: 1
     },
 
     _defaultConfig: function () {
@@ -44,6 +46,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
+        config.plotOptions.bubble.color = this.config.bubble_color;
         //config.plotOptions.color = BI.isArray(this.config.theme_color) ? this.config.theme_color : [this.config.theme_color];
         var formatterArray = [];
         BI.backEach(items, function(idx, item){
@@ -83,8 +86,8 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     config.rangeLegend.position = "right";
                     break;
                 case BICst.CHART_LEGENDS.NOT_SHOW:
-                default:
-                    config.rangeLegend.enabled = false;
+                    config.rangeLegend.enabled = true;
+                    config.rangeLegend.visible = false;
                     break;
             }
             config.rangeLegend.continuous = false;
@@ -167,22 +170,23 @@ BI.MapChart = BI.inherit(BI.Widget, {
                             });
 
                         }
+                        return range;
+                    } else {
+                        defaultStyle.color = defaultColor;
+                        return defaultStyle;
                     }
-                    return range;
+
             }
         }
 
         function _calculateValueNiceDomain(minValue, maxValue){
-
             minValue = Math.min(0, minValue);
-
             var tickInterval = _linearTickInterval(minValue, maxValue);
 
             return _linearNiceDomain(minValue, maxValue, tickInterval);
         }
 
         function _linearTickInterval(minValue, maxValue, m){
-
             m = m || 5;
             var span = maxValue - minValue;
             var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
@@ -194,9 +198,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         }
 
         function _linearNiceDomain(minValue, maxValue, tickInterval){
-
             minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
-
             maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
 
             return [minValue, maxValue];
@@ -259,9 +261,10 @@ BI.MapChart = BI.inherit(BI.Widget, {
             geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
             initDrillPath: options.initDrillPath || [],
             tooltip: options.tooltip || "",
-            theme_color: options.theme_color,
-            map_styles: options.map_styles,
-            auto_custom: options.auto_custom
+            theme_color: options.theme_color || c.theme_color,
+            map_styles: options.map_styles || [],
+            auto_custom: options.auto_custom || c.auto_custom,
+            bubble_color: options.map_bubble_color || c.theme_color
         };
         this.options.items = items;
 
