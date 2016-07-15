@@ -23,13 +23,15 @@ BI.ExcelFieldSetTable = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Field_Name"),
                 cls: "table-header",
                 textAlign: "left",
-                lgap: 10
+                lgap: 10,
+                height: 25
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Field_Type"),
                 cls: "table-header",
                 textAlign: "left",
-                lgap: 10
+                lgap: 10,
+                height: 25
             }]],
             items: this._createTableItems(fields)
         })
