@@ -15,7 +15,7 @@ public class SQLRegUtils {
     private static final String Comma = ",";
 
     /**
-     * 四个空格
+     * 四个空格tab
      */
     private static final String FourSpace = "    ";
 

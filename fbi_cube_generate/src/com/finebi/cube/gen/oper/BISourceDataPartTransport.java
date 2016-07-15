@@ -61,6 +61,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
             fieldList.get(i).setTableBelongTo(tableSource);
             cubeFieldSources[i] = fieldList.get(i);
         }
+        //写这样写,确认无误后修改
         DBTableSource source = (DBTableSource) this.tableSource;
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());

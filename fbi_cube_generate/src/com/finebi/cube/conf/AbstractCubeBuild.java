@@ -108,10 +108,8 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
 
     public void setSources() {
-        System.out.println("sourceTable listed should be updated");
         for (Object biBusinessTable : allBusinessTable) {
             BusinessTable table = (BusinessTable) biBusinessTable;
-            System.out.println(table.getTableSource().fetchObjectCore()); 
             sources.add(table.getTableSource());
         }
     }
