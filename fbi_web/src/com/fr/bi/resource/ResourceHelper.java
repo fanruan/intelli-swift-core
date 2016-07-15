@@ -2580,6 +2580,8 @@ public class ResourceHelper {
                 //web组件
                 "com/fr/bi/web/js/widget/web/web.js",
                 "com/fr/bi/web/js/widget/datalabel/datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/group.condition.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/item.condition.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/image/imageset.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/barchart/barchart.datalabel.js",
 
