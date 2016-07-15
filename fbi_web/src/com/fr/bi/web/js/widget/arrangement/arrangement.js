@@ -503,6 +503,14 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     //获取占有的最大Region
     _getRegionOccupied: function (regions) {
         var self = this, o = this.options;
+        if (BI.size(regions || this.regions) <= 0) {
+            return {
+                left: 0,
+                top: 0,
+                width: 0,
+                height: 0
+            }
+        }
         var minLeft = BI.MAX, maxLeft = BI.MIN, minTop = BI.MAX, maxTop = BI.MIN;
         BI.each(regions || this.regions, function (id, region) {
             minLeft = Math.min(minLeft, region.left);
@@ -2248,11 +2256,12 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     var regions = this._cloneRegion();
                     BI.each(regions, function (i, region) {
                         region.width = region.width / occupied.width * width;
-                        region.height = region.height / occupied.height * height;
+                        //region.height = region.height / occupied.height * height;
                     });
                     BI.each(regions, function (id, region) {
                         var lefts = self.locations[id].left;
                         var tops = self.locations[id].top;
+                        var bottoms = self.locations[id].bottom;
                         var maxRegion;
                         if (lefts.length > 0) {
                             var ids = self._getRegionNames(lefts);
@@ -2262,15 +2271,18 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                         } else {
                             region.left = 0;
                         }
-                        if (tops.length > 0) {
-                            var ids = self._getRegionNames(tops);
-                            var rs = self._getRegionsByNames(ids);
-                            maxRegion = self._getRegionOccupied(rs);
-                            region.top = maxRegion.top + maxRegion.height / occupied.height * height;
+                        if (bottoms.length === 0) {
+                            region.height = height - region.top;
                         }
-                        if (tops.length === 0) {
-                            region.top = 0;
-                        }
+                        //if (tops.length > 0) {
+                        //    var ids = self._getRegionNames(tops);
+                        //    var rs = self._getRegionsByNames(ids);
+                        //    maxRegion = self._getRegionOccupied(rs);
+                        //    region.top = maxRegion.top + maxRegion.height / occupied.height * height;
+                        //}
+                        //if (tops.length === 0) {
+                        //    region.top = 0;
+                        //}
                     });
                     if (this._test(regions)) {
                         this._modifyRegion(regions);
@@ -2295,13 +2307,14 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     var regions = this._cloneRegion();
                     BI.each(regions, function (i, region) {
                         region.width = region.width / occupied.width * width;
-                        if (isHeightAdjust) {
-                            region.height = region.height / occupied.height * height;
-                        }
+                        //if (isHeightAdjust) {
+                        //    region.height = region.height / occupied.height * height;
+                        //}
                     });
                     BI.each(regions, function (id, region) {
                         var lefts = self.locations[id].left;
                         var tops = self.locations[id].top;
+                        var bottoms = self.locations[id].bottom;
                         var maxRegion;
                         if (lefts.length > 0) {
                             var ids = self._getRegionNames(lefts);
@@ -2311,12 +2324,15 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                         } else {
                             region.left = 0;
                         }
-                        if (isHeightAdjust && tops.length > 0) {
-                            var ids = self._getRegionNames(tops);
-                            var rs = self._getRegionsByNames(ids);
-                            maxRegion = self._getRegionOccupied(rs);
-                            region.top = maxRegion.top + maxRegion.height / occupied.height * height;
+                        if (isHeightAdjust && bottoms.length === 0) {
+                            region.height = height - region.top;
                         }
+                        //if (isHeightAdjust && tops.length > 0) {
+                        //    var ids = self._getRegionNames(tops);
+                        //    var rs = self._getRegionsByNames(ids);
+                        //    maxRegion = self._getRegionOccupied(rs);
+                        //    region.top = maxRegion.top + maxRegion.height / occupied.height * height;
+                        //}
                         if (tops.length === 0) {
                             region.top = 0;
                         }
@@ -2355,7 +2371,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                             top: row * h,
                             left: col * w,
                             width: w,
-                            height: h
+                            height: 380
                         });
                         if (!store[row]) {
                             store[row] = {};
@@ -2375,6 +2391,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     }
                     if (this._test(clone)) {
                         this._populate(clone);
+                        this.resize();
                     }
                 } else {
                     this.resize();
