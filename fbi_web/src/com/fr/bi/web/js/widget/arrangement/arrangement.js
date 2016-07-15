@@ -2276,8 +2276,6 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                         this._modifyRegion(regions);
                         this._applyRegion();
                     }
-                } else {
-                    this.relayout();
                 }
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
