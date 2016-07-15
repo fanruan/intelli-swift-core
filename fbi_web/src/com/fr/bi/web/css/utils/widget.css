@@ -78,6 +78,7 @@ a:focus {
 input,
 textarea {
   margin: 0;
+  padding: 0;
   outline: none;
   border: 1px solid #cccccc;
 }
