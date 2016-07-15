@@ -231,9 +231,9 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
                         if (self.constants.MINLIMIT.sub(da.y) > 0) {
                             da.y = 0;
                         }
-                    }
-                    if((BI.isNull(max) || da.y > max)){
-                        max = da.y;
+                        if ((BI.isNull(max) || da.y > max)) {
+                            max = da.y;
+                        }
                     }
                 });
                 if(BI.isNotNull(max)){

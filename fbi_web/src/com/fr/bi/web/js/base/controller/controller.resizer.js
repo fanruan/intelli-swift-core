@@ -13,11 +13,11 @@ BI.ResizeController = BI.inherit(BI.Controller, {
         BI.ResizeController.superclass._init.apply(this, arguments);
         var self = this;
         this.resizerManger = {};
-        var fn = BI.throttle(function (ev) {
+        var fn = BI.debounce(function (ev) {
             //if (BI.isWindow(ev.target)) {
             self._resize(ev);
             //}
-        }, 30, {leading: false});
+        }, 30);
         $(window).resize(fn);
     },
 

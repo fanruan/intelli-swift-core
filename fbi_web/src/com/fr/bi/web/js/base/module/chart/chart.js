@@ -25,12 +25,12 @@ BI.Chart = BI.inherit(BI.Pane, {
             if (self.element.is(":visible") && self.vanCharts) {
                 self.vanCharts.resize();
             }
-        }, 0);
+        }, 30);
         BI.Resizers.add(this.getName(), function (e) {
             if (BI.isWindow(e.target) && self.element.is(":visible")) {
                 var newW = self.element.width(), newH = self.element.height();
                 if (newW > 0 && newH > 0 && (width !== newW || height !== newH)) {
-                    self.vanCharts.resize();
+                    self._resizer();
                     width = newW;
                     height = newH;
                 }
@@ -39,17 +39,17 @@ BI.Chart = BI.inherit(BI.Pane, {
     },
 
     _setData: function () {
-        this.vanCharts.setData(this.config);
+        this.vanCharts && this.vanCharts.setData(this.config);
     },
 
     resize: function () {
         if (this.element.is(":visible") && this.isSetOptions === true) {
-            this.vanCharts && this._resizer();
+            this._resizer();
         }
     },
 
     magnify: function () {
-        this.vanCharts.charts[0].refreshRestore();
+        this.vanCharts && this.vanCharts.charts[0] && this.vanCharts.charts[0].refreshRestore();
     },
 
     populate: function (items, options) {
@@ -68,7 +68,7 @@ BI.Chart = BI.inherit(BI.Pane, {
         var init = function () {
             if (self.element.is(":visible")) {
                 self.vanCharts = VanCharts.init(self.element[0]);
-                BI.delay(setOptions, 1);
+                BI.nextTick(setOptions);
                 self.isInit = true;
             }
         };

@@ -17,7 +17,7 @@ BI.ChartSettingSelectColorTrigger = BI.inherit(BI.Trigger, {
     _init: function () {
         BI.ChartSettingSelectColorTrigger.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var colorBlocks = BI.map(o.value, function(idx, v){
+        var colorBlocks = BI.map(o.text, function(idx, v){
             var a = BI.createWidget({
                 type: "bi.layout"
             });
@@ -70,7 +70,7 @@ BI.ChartSettingSelectColorTrigger = BI.inherit(BI.Trigger, {
         var result = [];
         BI.each(this.options.items, function (i, item) {
             if (BI.isEqual(item.value, vals)) {
-                result = BI.map(item.value, function(idx, v){
+                result = BI.map(item.text, function(idx, v){
                     var a = BI.createWidget({
                         type: "bi.layout"
                     });

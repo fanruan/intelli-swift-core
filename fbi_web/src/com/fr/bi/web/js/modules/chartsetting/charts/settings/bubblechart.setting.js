@@ -41,7 +41,34 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.rulesDisplay.on(BI.Segment.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
 
+        this.fixedConditions = BI.createWidget({
+
+        });
+
+        this.gradientConditions = BI.createWidget({
+
+        });
+
+        this.addConditionButton = BI.createWidget({
+            type: "bi.button",
+            text: BI.i18nText("BI-Add_Condition"),
+            height: this.constant.BUTTON_HEIGHT
+        });
+
+        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function() {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.conditions = BI.createWidget({
+            type: "bi.chart_add_condition_group",
+            width: "100%"
+        });
+
+        this.conditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function() {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
         this.colorSelect = BI.createWidget({
@@ -461,7 +488,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                         type: "bi.label",
                         text: "px"
                     }],
-                    hgap: 3 
+                    hgap: 3
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
@@ -526,6 +553,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         })
     },
 
+
+
     populate: function(){
         var wId = this.options.wId;
         var view = BI.Utils.getWidgetViewByID(wId);
@@ -548,6 +577,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 return false;
             });
         }
+        this.rulesDisplay.setValue(BI.Utils.getWSShowRulesByID(wId));
+        this.bubbleStyleGroup.setValue(BI.Utils.getWSBubbleStyleByID(wId));
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
@@ -570,6 +601,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
     getValue: function(){
         return {
+            rules_display: this.rulesDisplay.getValue()[0],
+            bubble_style: this.bubbleStyleGroup.getValue()[0],
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
@@ -589,6 +622,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
     },
 
     setValue: function(v){
+        this.rulesDisplay.setValue(v.rules_display);
+        this.bubbleStyleGroup.setValue(v.bubble_style);
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
