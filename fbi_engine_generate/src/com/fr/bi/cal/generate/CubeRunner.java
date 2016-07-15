@@ -196,7 +196,7 @@ public class CubeRunner {
             //暂时cube不做备份了,太吃空间了
             BIFileUtils.delete(new File(advancedConf.getRootURI().toString()));
             BIFileUtils.moveFile(tempConf.getRootURI().toString(), advancedConf.getRootURI().toString());
-            BICubeLocation advancedLocation = new BICubeLocation(advancedConf.getRootURI().toString(), CubeConstant.CUBE_PROPERTY);
+            BICubeLocation advancedLocation = new BICubeLocation(advancedConf.getRootURI().getPath(), CubeConstant.CUBE_PROPERTY);
             BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(advancedLocation);
             BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(advancedLocation);
         } catch (URISyntaxException e) {
@@ -217,18 +217,11 @@ public class CubeRunner {
         try {
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-            BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            BIFileUtils.moveFile(advancedConf.getRootURI().toString(), tempConf.getRootURI().toString());
-//            BICubeLocation advancedLocation = new BICubeLocation(advancedConf.getRootURI().toString(), CubeConstant.CUBE_PROPERTY);
+            BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
+            BICubeLocation advancedLocation = new BICubeLocation(advancedConf.getRootURI().getPath(), CubeConstant.CUBE_PROPERTY);
 //            BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(advancedLocation);
 //            BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(advancedLocation);
         } catch (URISyntaxException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (BIBuildReaderException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (IllegalCubeResourceLocationException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (BIBuildWriterException e) {
             BILogger.getLogger().error(e.getMessage());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());

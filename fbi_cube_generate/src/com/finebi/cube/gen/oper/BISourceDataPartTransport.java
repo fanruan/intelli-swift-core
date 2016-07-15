@@ -63,8 +63,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
         }
         DBTableSource source = (DBTableSource) this.tableSource;
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
-        long oldCount=0L;
-        
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
         source.setUpdateSettingSource(tableUpdateSetting);
         return source.read4Part(new Traversal<BIDataValue>() {
