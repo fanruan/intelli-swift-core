@@ -124,7 +124,6 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     public void turnOnExecutor() {
-        /*
         Iterator iterator = getIterator();
         if (iterator != null) {
             this.lazyExecutor.initial(this, iterator);
@@ -134,22 +133,6 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             gvi = GVIFactory.createAllEmptyIndexGVI();
             child.setGroupValueIndex(gvi);
             addRootChild(child);
-        }
-        */
-        NodeResultDealer dealer;
-        DimensionCalculator[] dc = new DimensionCalculator[1];
-        dc[0] = column;
-        boolean[] sortType = new boolean[dc.length];
-        for (int i = 0; i < dc.length; i++) {
-            sortType[i] = dc[i].getSortType() != BIReportConstant.SORT.DESC;
-        }
-        dealer = BIServerUtils.createAllCalDimensonDealer(dc, null, sortType, loader);
-        CubeValueEntryNode calRootNode = new CubeValueEntryNode();
-        dealer.dealWithNode(root.getGroupValueIndex(), calRootNode);
-        CubeValueEntryNode[] calChildNodes = calRootNode.getChildren();
-        for(CubeValueEntryNode calChildNode : calChildNodes){
-            NewRootNodeChild nrnc = new NewDiskBaseRootNodeChild(column, calChildNode.getT(), calChildNode.getGvi());
-            addNodeChild(nrnc);
         }
     }
 
@@ -371,7 +354,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     protected NewDiskBaseRootNodeChild getChildByWait(int row) {
-//        waitExecutor(row);
+        waitExecutor(row);
         NewDiskBaseRootNodeChild child = getChild(row);
         if (child == null) {
             if (row == 0) {
@@ -385,7 +368,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     protected MemNode getMemNodeByWait(int row) {
-//        waitExecutor(row);
+        waitExecutor(row);
         MemNode child = getMemChild(row);
         if (child == null) {
             if (row == 0) {
