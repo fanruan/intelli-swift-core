@@ -28,8 +28,8 @@ BI.ExcelFieldTypeItem = BI.inherit(BI.BasicButton, {
         this.checkMark = BI.createWidget({
             type: "bi.icon_button",
             cls: "item-check-font",
-            width: 30,
-            height: 30
+            width: 25,
+            height: 25
         });
         BI.createWidget({
             type: "bi.left",
@@ -37,8 +37,8 @@ BI.ExcelFieldTypeItem = BI.inherit(BI.BasicButton, {
             items: [this.checkMark, {
                 type: "bi.icon_button",
                 cls: iconCls,
-                width: 30,
-                height: 30
+                width: 25,
+                height: 25
             }]
         });
     },
