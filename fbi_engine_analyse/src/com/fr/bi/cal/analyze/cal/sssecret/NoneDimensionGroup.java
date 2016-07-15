@@ -12,6 +12,7 @@ import com.fr.bi.cal.analyze.exception.TooManySummaryException;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.field.dimension.calculator.CombinationDateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.CombinationDimensionCalculator;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.report.key.SummaryCalculator;
@@ -114,7 +115,7 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
 
 
     public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, boolean useRealData) {
-        if(needAllCalculate){
+        if(judgeNeedAllCal(needAllCalculate, pck)){
 //            System.out.println("**********************全部计算************************");
             return AllCalSingleDimensionGroup.createInstance(tableKey, pck, (node == null)? new RoaringGroupValueIndex() : node.getGroupValueIndex(), loader, true);
         }
@@ -133,7 +134,7 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     }
 
     public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
-        if(needAllCalculate){
+        if(judgeNeedAllCal(needAllCalculate, pck)){
 //            System.out.println("**********************全部计算************************");
             return AllCalSingleDimensionGroup.createInstance(tableKey, pck, gvi, loader, true);
         }
@@ -191,5 +192,25 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
 
     public void setNeedAllCalculate(boolean needAllCalculate) {
         this.needAllCalculate = needAllCalculate;
+    }
+
+    /**
+     * 过滤掉自定义分组,自定义排序
+     * @param needAllCal
+     * @param dcs
+     * @return
+     */
+    private boolean judgeNeedAllCal(boolean needAllCal, DimensionCalculator[] dcs){
+        if(!needAllCal){
+            return false;
+        }
+        for (DimensionCalculator d : dcs){
+            if(d.getSortType() == BIReportConstant.SORT.CUSTOM
+                    || d.getGroup().getType() == BIReportConstant.GROUP.CUSTOM_GROUP
+                    || d.getGroup().getType() == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP){
+                return false;
+            }
+        }
+        return true;
     }
 }

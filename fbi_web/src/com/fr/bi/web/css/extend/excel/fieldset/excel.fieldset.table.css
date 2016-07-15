@@ -8,10 +8,6 @@
 .bi-excel-field-set-table > div > div > table .table-header {
   font-size: 14px;
 }
-.bi-excel-field-set-table > div > div > table .normal-field {
-  font-size: 14px;
-}
 .bi-excel-field-set-table > div > div > table .new-field {
-  font-size: 14px;
   color: #009de3;
 }
