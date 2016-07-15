@@ -20,6 +20,7 @@ import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
+import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -189,8 +190,11 @@ public class DBTableSource extends AbstractTableSource {
             return rowCount;
         }
         try {
-            SQL=""
-            String where;
+            SQLRegUtils regUtils=new SQLRegUtils(SQL);
+            if (!regUtils.isSql()){
+                BILogger.getLogger().error("SQL syntax error");
+            }
+            String where=regUtils.getConditions();
             rowCount = BICubeDBUtils.runSQL(BIDBUtils.getSQLStatementByConditions(dbName, tableName,where), fields, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue v) {

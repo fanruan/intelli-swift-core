@@ -13,7 +13,9 @@ import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.core.db.dml.Table;
-import com.fr.data.impl.*;
+import com.fr.data.impl.DBTableData;
+import com.fr.data.impl.EmbeddedTableData;
+import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.data.pool.DBCPConnectionPoolAttr;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
@@ -23,7 +25,6 @@ import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
 
 import java.sql.*;
-import java.sql.Connection;
 import java.util.*;
 import java.util.Date;
 
@@ -57,7 +58,7 @@ public class BIDBUtils {
 
         }
     }
-
+    
     public static int classTypeToSql(int classType) {
         switch (classType) {
             case DBConstant.CLASS.INTEGER: {

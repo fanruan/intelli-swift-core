@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by wuk on 16/7/15.
+ * Created by kary on 16/7/15.
  */
 public class SQLRegUtils {
     /**
@@ -259,8 +259,7 @@ public class SQLRegUtils {
         List<String> sqlList=new ArrayList<String>();
 
         // 无法解析则原样返回
-        if(cols==null && tables==null && conditions==null && groupCols==null && orderCols==null ){
-            sqlList.add(sql);
+        if (cols == null || tables == null) {
             return sqlList;
         }
 
@@ -321,6 +320,9 @@ public class SQLRegUtils {
         return sqlList;
     }
 
+    public boolean isSql() {
+        return cols != null && tables != null;
+    }
     /**
      * 设置是否单行显示表，字段，条件等
      * @param isSingleLine
@@ -329,29 +331,39 @@ public class SQLRegUtils {
         SQLRegUtils.isSingleLine = isSingleLine;
     }
 
-    /**
-     * 测试
-     * @param args
-     */
-    public static void main(String[] args){
-        List<String> ls=new ArrayList<String>();
-        ls.add("select * from dual");
-        ls.add("SELECT * frOm dual");
-        ls.add("Select C1,c2 From tb");
-        ls.add("select c1,c2 from tb");
-        ls.add("select count(*) from t1");
-        ls.add("select c1,c2,c3 from t1 where condi1=1 ");
-        ls.add("Select c1,c2,c3 From t1 Where condi1=1 ");
-        ls.add("select c1,c2,c3 from t1,t2 where condi3=3 or condi4=5 order   by o1,o2");
-        ls.add("Select c1,c2,c3 from t1,t2 Where condi3=3 or condi4=5 Order   by o1,o2");
-        ls.add("select c1,c2,c3 from t1,t2,t3 where condi1=5 and condi6=6 or condi7=7 group  by g1,g2");
-        ls.add("Select c1,c2,c3 From t1,t2,t3 Where condi1=5 and condi6=6 or condi7=7 Group  by g1,g2");
-        ls.add("Select c1,c2,c3 From t1,t2,t3 Where condi1=5 and condi6=6 or condi7=7 Group  by g1,g2,g3 order  by g2,g3");
-
-        for(String sql:ls){
-            System.out.println(new SQLRegUtils(sql));
-            System.out.println(sql);
-        }
+    public static String getComma() {
+        return Comma;
     }
+
+    public static String getFourSpace() {
+        return FourSpace;
+    }
+
+    public static boolean isSingleLine() {
+        return isSingleLine;
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public String getCols() {
+        return cols;
+    }
+
+    public String getTables() {
+        return tables;
+    }
+
+    public String getConditions() {
+        return conditions;
+    }
+
+    public String getGroupCols() {
+        return groupCols;
+    }
+
+    public String getOrderCols() {
+        return orderCols;
     }
 }

@@ -76,6 +76,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
                     e.printStackTrace();
                 }
             }
-        }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube),tableUpdateSetting,oldCount,sortRemovedList);
+        }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube),tableUpdateSetting,tableEntityService.getRowCount(),sortRemovedList);
     }
 }
