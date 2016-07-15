@@ -57,11 +57,11 @@
         },
 
         getConnectionName: function (callback) {
-            var self = this, cache = Buffer["CONNECTION_NAME"];
-            if (BI.isNotNull(cache)) {
-                callback(cache);
-                return;
-            }
+            // var self = this, cache = Buffer["CONNECTION_NAME"];
+            // if (BI.isNotNull(cache)) {
+            //     callback(cache);
+            //     return;
+            // }
             BIReq.reqConnectionName(function (res) {
                 Buffer["CONNECTION_NAME"] = res;
                 callback(res);
