@@ -12,8 +12,18 @@ BI.DataLabelBarChart = BI.inherit(BI.Widget, {
     
     _init: function () {
         BI.DataLabelBarChart.superclass._init.apply(this, arguments);
+        var title = BI.createWidget({
+            type: "bi.label",
+            text: "预览"
+        });
         this.data = [[{
-            "data": [],
+            "data": [
+                {"x": "孙林", "y": 90},
+                {"x": "金士鹏", "y": 70},
+                {"x": "张珊", "y": 100},
+                {"x": "孙阳", "y": 30},
+                {"x": "袁成洁", "y": 10}
+            ],
             "name": "scores"
         }]];
         this.xAxis = [{type: "category"}];
@@ -22,22 +32,40 @@ BI.DataLabelBarChart = BI.inherit(BI.Widget, {
             width: 150,
             height: 130,
             xAxis: this.xAxis,
-            formatConfig: BI.bind(this._formatConfig, this),
-            element: this.element
+            formatConfig: BI.bind(this._formatConfig, this)
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            cls: "bi-data-label-bar-chart",
+            element: this.element,
+            items: [{
+                el: this.combineChart,
+                left: -5,
+                top: 10
+            },{
+                el: title,
+                left:20,
+                top: 5
+            }],
+            width: 150,
+            height: 130
         });
         this.combineChart.populate(this.data);
     },
 
     _formatConfig: function (config, items) {
-        console.log(config);
         config.legend.enabled = false;
+        config.legend.margin = 0;
         config.xAxis[0].showLabel = false;
+        config.xAxis[0].enableTick = false;
         config.yAxis[0].showLabel = false;
         config.yAxis[0].lineWidth = 0;
-        config.yAxis[0].min = 0;
-        config.yAxis[0].max = 100;
-        config.yAxis[0].tickInterval = 40;
-        config.drag = false;
+        config.yAxis[0].tickInterval = 25;
+        config.plotOptions.dataLabels.enabled = true;
+        config.plotOptions.dataLabels.align = "inside";
+        config.plotOptions.dataLabels.style = {
+            "color": "#ffffff"
+        };
         return [items, config];
     },
 

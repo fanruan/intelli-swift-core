@@ -1796,7 +1796,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/image/button/upload.css",
                 "com/fr/bi/web/css/widget/image/button/href/image.button.href.css",
                 "com/fr/bi/web/css/widget/image/button/size/image.button.size.css",
+
+                //数据标签
                 "com/fr/bi/web/css/widget/datalabel/image/datalabel.imageset.css",
+                "com/fr/bi/web/css/widget/datalabel/datalabel.texttoolbar.css",
+                "com/fr/bi/web/css/widget/datalabel/barchart/datalabel.barchart.css",
 
                 //可选下拉树
                 "com/fr/bi/web/css/widget/selecttree/combo.select.tree.css",
@@ -2580,6 +2584,8 @@ public class ResourceHelper {
                 //web组件
                 "com/fr/bi/web/js/widget/web/web.js",
                 "com/fr/bi/web/js/widget/datalabel/datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/font.chooser.texttoolbar.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/image/imageset.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/barchart/barchart.datalabel.js",
 
