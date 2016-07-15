@@ -13,9 +13,7 @@ import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.core.db.dml.Table;
-import com.fr.data.impl.DBTableData;
-import com.fr.data.impl.EmbeddedTableData;
-import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.data.impl.*;
 import com.fr.data.pool.DBCPConnectionPoolAttr;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
@@ -25,6 +23,7 @@ import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
 
 import java.sql.*;
+import java.sql.Connection;
 import java.util.*;
 import java.util.Date;
 
@@ -438,7 +437,7 @@ public class BIDBUtils {
 
 
     /**
-     * 统一放到runsql里面释放connection，减少创建次数，不能单独使用
+     * 统一放到runSql里面释放connection，减少创建次数，不能单独使用
      *
      * @param dbName
      * @param tableName
@@ -451,7 +450,6 @@ public class BIDBUtils {
             Connection conn = sql.getSqlConn();
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
             Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
-
             sql.setFrom(dialect.table2SQL(table));
 
         } catch (Throwable e) {
@@ -459,7 +457,21 @@ public class BIDBUtils {
         }
         return sql;
     }
+    public static SQLStatement getSQLStatementByConditions(String dbName, String tableName,String where) {
+        com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        SQLStatement sql = new SQLStatement(connection);
+        try {
+            Connection conn = sql.getSqlConn();
+            Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+            Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
+            sql.setFrom(dialect.table2SQL(table));
+            sql.setWhere(where);
 
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+        return sql;
+    }
     public static SQLStatement getDistinctSQLStatement(String dbName, String tableName, String fieldName) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         SqlSettedStatement sql = new SqlSettedStatement(connection);

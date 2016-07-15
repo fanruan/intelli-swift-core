@@ -9,6 +9,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -34,6 +35,7 @@ import com.fr.general.Inter;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
@@ -54,6 +56,7 @@ public class DBTableSource extends AbstractTableSource {
     protected String dbName;
     @BICoreField
     protected String tableName;
+    protected UpdateSettingSource updateSettingSource;
 
     public DBTableSource() {
         super();
@@ -77,6 +80,10 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public IPersistentTable reGetBiTable() {
         return super.reGetBiTable();
+    }
+
+    public void setUpdateSettingSource(UpdateSettingSource updateSettingSource) {
+        this.updateSettingSource = updateSettingSource;
     }
 
     public static void main(String[] args) {
@@ -167,6 +174,44 @@ public class DBTableSource extends AbstractTableSource {
         }
         return rowCount;
     }
+
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, ICubeDataLoader loader, UpdateSettingSource tableUpdateSetting, long oldCount, TreeSet<Integer> sortRemovedList) {
+        oldCount += dealWithInsert(traversal, fields, tableUpdateSetting.getPartAddSQL());
+//        oldCount = dealWithModify(oldCount, sortRemovedList);
+        return oldCount;
+    }
+
+    private long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL) {
+        long rowCount = 0;
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        long t = System.currentTimeMillis();
+        if (StringUtils.isEmpty(SQL)) {
+            return rowCount;
+        }
+        try {
+            SQL=""
+            String where;
+            rowCount = BICubeDBUtils.runSQL(BIDBUtils.getSQLStatementByConditions(dbName, tableName,where), fields, new Traversal<BIDataValue>() {
+                @Override
+                public void actionPerformed(BIDataValue v) {
+                    try {
+                        dealWithOneData(traversal, v);
+                    } catch (Exception e) {
+                        BILogger.getLogger().error(e.getMessage(), e);
+                    }
+                }
+            });
+            if (fields.length > 0) {
+                biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, UserControl.getInstance().getSuperManagerID());
+            }
+        } catch (Throwable e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        } finally {
+        }
+        return rowCount;
+    }
+    
 
     /**
      * 获取某个字段的distinct值
@@ -293,4 +338,6 @@ public class DBTableSource extends AbstractTableSource {
         writer.attr("dbName", dbName).attr("tableName", tableName);
         writer.end();
     }
+
+
 }

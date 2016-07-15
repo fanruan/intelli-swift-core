@@ -5,8 +5,12 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -16,6 +20,7 @@ import com.fr.stable.bridge.StableFactory;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by kary on 16/7/13.
@@ -56,8 +61,13 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
             fieldList.get(i).setTableBelongTo(tableSource);
             cubeFieldSources[i] = fieldList.get(i);
         }
-
-        return this.tableSource.read(new Traversal<BIDataValue>() {
+        DBTableSource source = (DBTableSource) this.tableSource;
+        TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+        long oldCount=0L;
+        
+        UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
+        source.setUpdateSettingSource(tableUpdateSetting);
+        return source.read4Part(new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
                 try {
@@ -66,6 +76,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
                     e.printStackTrace();
                 }
             }
-        }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube));
+        }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube),tableUpdateSetting,oldCount,sortRemovedList);
     }
 }
