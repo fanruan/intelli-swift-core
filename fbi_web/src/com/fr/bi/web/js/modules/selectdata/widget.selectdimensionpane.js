@@ -23,73 +23,73 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
     _getWidgetClass: function (type) {
         switch (type) {
             case BICst.WIDGET.TABLE:
-                return "drag-group-icon";
+                return "drag-group-small-icon";
             case BICst.WIDGET.CROSS_TABLE:
-                return "drag-cross-icon";
+                return "drag-cross-small-icon";
             case BICst.WIDGET.COMPLEX_TABLE:
-                return "drag-complex-icon";
+                return "drag-complex-small-icon";
             case BICst.WIDGET.DETAIL:
-                return "drag-detail-icon";
+                return "drag-detail-small-icon";
             case BICst.WIDGET.AXIS:
-                return "drag-axis-icon";
+                return "drag-axis-small-icon";
             case BICst.WIDGET.ACCUMULATE_AXIS:
-                return "drag-axis-accu-icon";
+                return "drag-axis-accu-small-icon";
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-                return "drag-axis-percent-accu-icon";
+                return "drag-axis-percent-accu-small-icon";
             case BICst.WIDGET.COMPARE_AXIS:
-                return "drag-axis-compare-icon";
+                return "drag-axis-compare-small-icon";
             case BICst.WIDGET.FALL_AXIS:
-                return "drag-axis-fall-icon";
+                return "drag-axis-fall-small-icon";
             case BICst.WIDGET.BAR:
-                return "drag-bar-icon";
+                return "drag-bar-small-icon";
             case BICst.WIDGET.ACCUMULATE_BAR:
-                return "drag-bar-accu-icon";
+                return "drag-bar-accu-small-icon";
             case BICst.WIDGET.COMPARE_BAR:
-                return "drag-bar-compare-icon";
+                return "drag-bar-compare-small-icon";
             case BICst.WIDGET.PIE:
-                return "drag-pie-icon";
+                return "drag-pie-small-icon";
             case BICst.WIDGET.MAP:
-                return "drag-map-china-icon";
+                return "drag-map-china-small-icon";
             case BICst.WIDGET.GIS_MAP:
-                return "drag-map-gis-icon";
+                return "drag-map-gis-small-icon";
             case BICst.WIDGET.DASHBOARD:
-                return "drag-dashboard-icon";
+                return "drag-dashboard-small-icon";
             case BICst.WIDGET.DONUT:
-                return "drag-donut-icon";
+                return "drag-donut-small-icon";
             case BICst.WIDGET.BUBBLE:
-                return "drag-bubble-icon";
+                return "drag-bubble-small-icon";
             case BICst.WIDGET.FORCE_BUBBLE:
-                return "drag-bubble-force-icon";
+                return "drag-bubble-force-small-icon";
             case BICst.WIDGET.SCATTER:
-                return "drag-scatter-icon";
+                return "drag-scatter-small-icon";
             case BICst.WIDGET.RADAR:
-                return "drag-radar-icon";
+                return "drag-radar-small-icon";
             case BICst.WIDGET.ACCUMULATE_RADAR:
-                return "drag-radar-accu-icon";
+                return "drag-radar-accu-small-icon";
             case BICst.WIDGET.LINE:
-                return "drag-line-icon";
+                return "drag-line-small-icon";
             case BICst.WIDGET.AREA:
-                return "drag-area-icon";
+                return "drag-area-small-icon";
             case BICst.WIDGET.ACCUMULATE_AREA:
-                return "drag-area-accu-icon";
+                return "drag-area-accu-small-icon";
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-                return "drag-area-percent-accu-icon";
+                return "drag-area-percent-accu-small-icon";
             case BICst.WIDGET.COMPARE_AREA:
-                return "drag-area-compare-icon";
+                return "drag-area-compare-small-icon";
             case BICst.WIDGET.RANGE_AREA:
-                return "drag-area-range-icon";
+                return "drag-area-range-small-icon";
             case BICst.WIDGET.COMBINE_CHART:
-                return "drag-combine-icon";
+                return "drag-combine-small-icon";
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                return "drag-combine-mult-icon";
+                return "drag-combine-mult-small-icon";
             case BICst.WIDGET.FUNNEL:
-                return "drag-funnel-icon";
+                return "drag-funnel-small-icon";
             case BICst.WIDGET.IMAGE:
-                return "drag-image-icon";
+                return "drag-image-small-icon";
             case BICst.WIDGET.WEB:
-                return "drag-web-icon";
+                return "drag-web-small-icon";
             case BICst.WIDGET.CONTENT:
-                return "drag-input-icon";
+                return "drag-input-small-icon";
         }
     },
 
