@@ -60,12 +60,12 @@ BI.LinkageFilterItem = BI.inherit(BI.Widget, {
                     ungroup2Other = group.ungroup2Other,
                     ungroup2OtherName = group.ungroup2OtherName;
                 if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
-                    ungroup2OtherName === v) {
-                    clicked = BICst.UNGROUP_TO_OTHER;
+                    v === BICst.UNGROUP_TO_OTHER) {
+                    clicked = ungroup2OtherName;
                 }
                 BI.some(details, function (i, detail) {
-                    if (detail.value === v) {
-                        clicked = detail.id;
+                    if (detail.id === v) {
+                        clicked = detail.value;
                         return true;
                     }
                 });
@@ -73,12 +73,12 @@ BI.LinkageFilterItem = BI.inherit(BI.Widget, {
                 var groupValue = group.group_value, groupType = group.type;
                 if(groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
                     var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
-                    if(useOther === v) {
-                        clicked = BICst.UNGROUP_TO_OTHER;
+                    if(v === BICst.UNGROUP_TO_OTHER) {
+                        clicked = useOther;
                     }
                     BI.some(groupNodes, function (i, node) {
-                        if(node.group_name === v) {
-                            clicked = node.id;
+                        if(node.id === v) {
+                            clicked = node.group_name;
                             return true;
                         }
                     });
