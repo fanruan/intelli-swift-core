@@ -108,8 +108,10 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
 
     public void setSources() {
+        System.out.println("sourceTable listed should be updated");
         for (Object biBusinessTable : allBusinessTable) {
             BusinessTable table = (BusinessTable) biBusinessTable;
+            System.out.println(table.getTableSource().fetchObjectCore()); 
             sources.add(table.getTableSource());
         }
     }
@@ -140,10 +142,10 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
         ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
-        if (!isRelationValid(relation)) {
+        boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
+        if (!isRelationValid(relation) || !isSourceRelationValid) {
             return null;
         }
-        if (null != primaryField && null != foreignField && null != primaryTable && null != foreignTable) {
             BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
                     primaryField,
                     foreignField,
@@ -154,8 +156,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
             foreignField.setTableBelongTo(foreignTable);
             return biTableSourceRelation;
         }
-        return null;
-    }
+
 
     protected boolean isRelationValid(BITableRelation relation) {
         BusinessTable primaryTable = relation.getPrimaryTable();
