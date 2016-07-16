@@ -393,24 +393,24 @@ public class BICubeOperationManager {
     }
 
     protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version) {
-        Map<String, UpdateSettingSource> updateSettings = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(UserControl.getInstance().getSuperManagerID());
-        for (String keys : updateSettings.keySet()) {
-            if (keys.equals(tableSource.getSourceID())) {
-                switch (updateSettings.get(keys).getUpdateType()) {
-                    case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL: {
-                        return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
-                    }
-                    case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
-                        return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version);
-                    }
-                    case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
-                        return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
-                    }
+        UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
+        if (null == tableUpdateSetting) {
+            return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+        } else {
+            switch (tableUpdateSetting.getUpdateType()) {
+                case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL: {
+                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                 }
-
+                case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
+                    return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version);
+                }
+                case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
+                    return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
+                }
+                default:
+                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
             }
         }
-        return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
     }
 
     protected BITablePathIndexBuilder getTablePathBuilder(Cube cube, BITableSourceRelationPath tablePath) {

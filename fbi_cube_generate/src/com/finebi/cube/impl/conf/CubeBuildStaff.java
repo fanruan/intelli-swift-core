@@ -4,7 +4,6 @@ import com.finebi.cube.conf.AbstractCubeBuild;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -120,7 +119,10 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
         for (BITableRelation relation : connectionSet) {
             try {
-                set.add(convertRelation(relation));
+                BITableSourceRelation tableSourceRelation = convertRelation(relation);
+                if (null!=tableSourceRelation) {
+                    set.add(tableSourceRelation);
+                }
             } catch (NullPointerException e) {
                 BILogger.getLogger().error(e.getMessage(), e);
                 continue;
@@ -137,7 +139,10 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         for (BITableRelationPath path : paths) {
 
             try {
-                set.add(convert(path));
+                BITableSourceRelationPath relationPath = convert(path);
+                if (null!=relationPath) {
+                    set.add(relationPath);
+                }
             } catch (Exception e) {
                 continue;
             }
@@ -177,11 +182,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
 
 
 
-    private boolean isRelationValid(BITableRelation relation) {
-        BusinessTable primaryTable = relation.getPrimaryTable();
-        BusinessTable foreignTable = relation.getForeignTable();
-        return allBusinessTable.contains(primaryTable) && allBusinessTable.contains(foreignTable);
-    }
+    
 
 
     /**

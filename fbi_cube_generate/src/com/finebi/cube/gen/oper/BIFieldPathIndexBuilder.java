@@ -26,6 +26,10 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
         this(cube, BIColumnKey.covertColumnKey(field), relationPath);
     }
 
+    public BIFieldPathIndexBuilder(Cube cube, ICubeFieldSource field, BICubeTablePath relationPath, String columnSubType) {
+        this(cube, BIColumnKey.covertColumnKey(field, columnSubType), relationPath);
+    }
+
     public BIFieldPathIndexBuilder(Cube cube, BIColumnKey columnKey, BICubeTablePath relationPath) {
         super(cube, relationPath);
         this.field = columnKey;
@@ -73,7 +77,6 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
             }
         }
     }
-
 
 
     private CubeColumnReaderService buildPrimaryColumnReader() throws BITablePathEmptyException, BICubeColumnAbsentException {

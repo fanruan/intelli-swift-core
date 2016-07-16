@@ -354,6 +354,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
     },
 
     _pagerNextChecker: function () {
+        this._assertPager();
         if (this.pager.hasNext
             && !this.pager.hasNext()) {
             return true;
@@ -366,6 +367,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
     },
 
     _pagerPrevChecker: function () {
+        this._assertPager();
         if (this.pager.hasPrev
             && !this.pager.hasPrev()) {
             return true;

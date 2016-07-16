@@ -9,10 +9,7 @@ import com.finebi.cube.calculator.bidouble.MinCalculator;
 import com.finebi.cube.calculator.bidouble.SumCalculator;
 import com.finebi.cube.calculator.biint.GroupSizeCalculator;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeIndexException;
-import com.finebi.cube.exception.BICubeRelationAbsentException;
-import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
@@ -21,6 +18,7 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -244,7 +242,12 @@ public class BICubeTableAdapter implements ICubeTableService {
             try {
                 BICubeTablePath path = BICubePathUtils.convert(relationList);
                 if (path.size() > 0 && !columnReaderService.existRelationPath(path)) {
-                    BIFieldPathIndexBuilder indexBuilder = new BIFieldPathIndexBuilder(cube, getDBField(columnIndex), path);
+                    BIFieldPathIndexBuilder indexBuilder;
+                    if (columnIndex instanceof IndexTypeKey) {
+                        indexBuilder = new BIFieldPathIndexBuilder(cube, getDBField(columnIndex), path, getColumnSubType(columnIndex));
+                    } else {
+                        indexBuilder = new BIFieldPathIndexBuilder(cube, getDBField(columnIndex), path);
+                    }
                     indexBuilder.mainTask(null);
                 }
             } catch (Exception e) {
@@ -252,6 +255,38 @@ public class BICubeTableAdapter implements ICubeTableService {
             }
         }
     }
+
+    private String getColumnSubType(BIKey biKey) {
+        int groupType = ((IndexTypeKey) biKey).getType();
+        String columnSubType;
+        switch (groupType) {
+            case BIReportConstant.GROUP.Y:
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR;
+                break;
+            case BIReportConstant.GROUP.M:
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_MONTH;
+                break;
+            case BIReportConstant.GROUP.S:
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_SEASON;
+                break;
+            case BIReportConstant.GROUP.W:
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_WEEK;
+                break;
+            case BIReportConstant.GROUP.YMD:
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY;
+                break;
+            case BIReportConstant.GROUP.MD:
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_DAY;
+                break;
+            case BIReportConstant.GROUP.YMDHMS:
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY;
+                break;
+            default:
+                throw BINonValueUtils.beyondControl();
+        }
+        return columnSubType;
+    }
+
 
     private CubeColumnReaderService buildColumnReader(BIKey biKey) {
         CubeColumnReaderService columnReaderService;
@@ -325,7 +360,7 @@ public class BICubeTableAdapter implements ICubeTableService {
         CubeColumnReaderService columnReaderService = getColumnReader(key);
         checkFieldPathIndex(key, relationList, columnReaderService);
         CubeRelationEntityGetterService getterService = null;
-        if(relationList != null && relationList.size() > 0){
+        if (relationList != null && relationList.size() > 0) {
             BITableSourceRelation startRelation = relationList.get(0);
             BIKey keyRelation = getColumnIndex(startRelation.getPrimaryField().getFieldName());
             try {

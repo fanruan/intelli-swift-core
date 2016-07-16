@@ -58,7 +58,7 @@ public class BIDBUtils {
 
         }
     }
-
+    
     public static int classTypeToSql(int classType) {
         switch (classType) {
             case DBConstant.CLASS.INTEGER: {
@@ -438,7 +438,7 @@ public class BIDBUtils {
 
 
     /**
-     * 统一放到runsql里面释放connection，减少创建次数，不能单独使用
+     * 统一放到runSql里面释放connection，减少创建次数，不能单独使用
      *
      * @param dbName
      * @param tableName
@@ -451,7 +451,6 @@ public class BIDBUtils {
             Connection conn = sql.getSqlConn();
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
             Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
-
             sql.setFrom(dialect.table2SQL(table));
 
         } catch (Throwable e) {
@@ -459,7 +458,21 @@ public class BIDBUtils {
         }
         return sql;
     }
+    public static SQLStatement getSQLStatementByConditions(String dbName, String tableName,String where) {
+        com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        SQLStatement sql = new SQLStatement(connection);
+        try {
+            Connection conn = sql.getSqlConn();
+            Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+            Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
+            sql.setFrom(dialect.table2SQL(table));
+            sql.setWhere(where);
 
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+        return sql;
+    }
     public static SQLStatement getDistinctSQLStatement(String dbName, String tableName, String fieldName) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         SqlSettedStatement sql = new SqlSettedStatement(connection);

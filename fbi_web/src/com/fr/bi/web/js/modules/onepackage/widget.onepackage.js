@@ -477,8 +477,16 @@ BI.OnePackage = BI.inherit(BI.Widget, {
     _onClickOneTable: function (id) {
         var self = this;
         BI.Layers.remove(this._constant.ETL_LAYER);
+        var type = "bi.etl";
+        var tableData= this.model.getTablesData()[id];
+        var connName = tableData.connection_name;
+        if(connName === BICst.CONNECTION.EXCEL_CONNECTION) {
+            type = "bi.etl_excel"
+        } else if(connName === BICst.CONNECTION.SQL_CONNECTION) {
+            type = "bi.etl_sql";
+        }
         var etl = BI.createWidget({
-            type: "bi.etl",
+            type: type,
             element: BI.Layers.create(this._constant.ETL_LAYER),
             id: id,
             table_data: this.model.getTablesData()[id],

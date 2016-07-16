@@ -20,6 +20,8 @@ public interface BIUpdateFrequencyManagerProvider {
 
     Map<String, UpdateSettingSource> getUpdateSettings(long userId);
 
+    UpdateSettingSource getTableUpdateSetting(String tableId,long userId);
+
     JSONObject createJSON(long userId) throws Exception;
 
     void clear(long userId);
