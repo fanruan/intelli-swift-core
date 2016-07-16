@@ -188,6 +188,11 @@ BI.Fit = BI.inherit(BI.Widget, {
                 }
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
                 this.arrangement.setRegionPosition(id, {
                     left: position.left < 0 ? 0 : position.left,
                     top: position.top < 0 ? 0 : position.top
