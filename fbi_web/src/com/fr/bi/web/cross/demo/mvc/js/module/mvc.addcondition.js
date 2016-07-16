@@ -31,6 +31,10 @@ AddConditionView = BI.inherit(BI.View, {
             height: 30
         });
 
+        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function() {
+           self.conditions.addItem()
+        });
+
         this.conditions = BI.createWidget({
             type: "bi.chart_add_condition_group"
         });
@@ -52,7 +56,7 @@ AddConditionView = BI.inherit(BI.View, {
                     lgap: 10
                 }
             } , {
-                height: 60,
+                height: 240,
                 el: {
                     type: "bi.vertical",
                     items: [this.conditions]
@@ -60,31 +64,10 @@ AddConditionView = BI.inherit(BI.View, {
             }]
         });
 
-        var intervalSetting = BI.createWidget({
-            type: "bi.horizontal_adapt",
-            cls: "single-line-setting",
-            columnSize: [80],
-            items: [{
-                type: "bi.label",
-                text: BI.i18nText("BI-Interval_Setting"),
-                height: 60,
-                textAlign: "left",
-                lgap: 10,
-                cls: "line-title"
-            } , {
-                type: "bi.left",
-                items: BI.createItems([{
-                    type: "bi.center_adapt",
-                    items: [interval]
-                }]),
-                lgap: 10
-            }]
-        });
-
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            items: [intervalSetting],
+            items: [interval],
             hgap: 10
         });
     }

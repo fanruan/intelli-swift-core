@@ -185,6 +185,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         return newSize;
     },
 
+    _getScrollOffset: function () {
+        return this.arrangement._getScrollOffset();
+    },
+
     getDirectRelativeRegions: function (name, direction) {
         return this.arrangement.getDirectRelativeRegions(name, direction);
     },
@@ -363,7 +367,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         this.arrangement.setLayoutType(type);
         try {
             //BI.nextTick(function () {
-            switch (type){
+            switch (type) {
                 case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                     $(">.ui-resizable-s", self.arrangement.container.element).css("zIndex", "");
                     break;

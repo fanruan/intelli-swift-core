@@ -289,6 +289,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
         this.colorChooser.setValue(v.theme_color);
         this.bubbleColorChooser.setValue(v.map_bubble_color);
         this.styleRadio.setValue(v.auto_custom);
+        this._doClickButton(v.auto_custom);
         this.conditions.setValue(v.map_styles);
         this.transferFilter.setSelected(v.transfer_filter);
         this.legend.setValue(v.chart_legend);
