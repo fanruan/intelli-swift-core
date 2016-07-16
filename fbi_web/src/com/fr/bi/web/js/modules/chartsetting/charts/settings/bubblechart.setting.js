@@ -40,12 +40,35 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             items: BICst.BUBBLE_DISPLAY_RULES
         });
 
-        this.rulesDisplay.on(BI.Segment.EVENT_CHANGE, function () {
+        this.rulesDisplay.on(BI.Segment.EVENT_CHANGE, function (v) {
+            self._colorSettingChange(v);
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
         this.fixedConditions = BI.createWidget({
+            type: "bi.chart_add_condition_group"
+        });
 
+        this.fixedConditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.colorSetting = BI.createWidget({
+            type: "bi.label",
+            cls: "attr-names",
+            textAlign: "left",
+            text: BI.i18nText("BI-Color_Setting"),
+            height: 20
+        });
+
+        this.fixedColorSetting = BI.createWidget({
+            type: "bi.left",
+            cls: "single-line-settings",
+            tgap: 10,
+            bgap: 10,
+            hgap: 5,
+            items: [this.colorSetting, this.fixedConditions],
+            width: "100%"
         });
 
         this.gradientConditions = BI.createWidget({
@@ -59,6 +82,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.addConditionButton.on(BI.Button.EVENT_CHANGE, function() {
+            self.fixedConditions.addItem();
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -79,6 +103,19 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.dimensionColor = BI.createWidget({
+            type: "bi.left",
+            items: BI.createItems([{
+                type: "bi.label",
+                text: BI.i18nText("BI-Color_Setting"),
+                cls: "attr-names"
+            }, {
+                type: "bi.center_adapt",
+                items: [this.colorSelect],
+                lgap: this.constant.SIMPLE_H_GAP
+            }])
         });
 
         this.bubbleStyleGroup = BI.createWidget({
@@ -125,16 +162,13 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                     },
                    lgap: this.constant.SIMPLE_H_GAP
                 }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Chart_Color"),
-                    cls: "attr-names",
+                    type: "bi.center_adapt",
+                    items: [this.dimensionColor],
                     lgap: 15
                 }, {
-                    el: {
-                        type: "bi.center_adapt",
-                        items: [this.colorSelect]
-                    },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    type: "bi.center_adapt",
+                    items: [this.addConditionButton],
+                    lgap: 15
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Total_Style"),
@@ -146,7 +180,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                         items: [this.bubbleStyleGroup]
                     },
                     lgap: this.constant.SIMPLE_H_GAP
-                }], {
+                }, this.fixedColorSetting], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 })
             }]
@@ -553,7 +587,22 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         })
     },
 
-
+    _colorSettingChange: function (v) {
+        switch(v) {
+            case BICst.DISPLAY_RULES.DIMENSION:
+                this.dimensionColor.setVisible(true);
+                this.addConditionButton.setVisible(false);
+                this.fixedColorSetting.setVisible(false);
+                break;
+            case BICst.DISPLAY_RULES.FIXED:
+                this.dimensionColor.setVisible(false);
+                this.addConditionButton.setVisible(true);
+                this.fixedColorSetting.setVisible(true);
+                break;
+            case BICst.DISPLAY_RULES.GRADIENT:
+                break;
+        }
+    },
 
     populate: function(){
         var wId = this.options.wId;
@@ -578,6 +627,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             });
         }
         this.rulesDisplay.setValue(BI.Utils.getWSShowRulesByID(wId));
+        this._colorSettingChange(BI.Utils.getWSShowRulesByID(wId));
         this.bubbleStyleGroup.setValue(BI.Utils.getWSBubbleStyleByID(wId));
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));

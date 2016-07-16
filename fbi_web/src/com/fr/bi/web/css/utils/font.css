@@ -2295,12 +2295,12 @@
   color: #1a1a1a;
 }
 .text-background-font .b-font:before {
-  content: "\e69b";
+  content: "\e696";
   color: #1a1a1a;
 }
 .text-background-font.native .b-font:before,
 .text-background-font.disabled .b-font:before {
-  content: "\e69b";
+  content: "\e696";
   color: #1a1a1a;
 }
 .text-color-underline-font .b-font:before {

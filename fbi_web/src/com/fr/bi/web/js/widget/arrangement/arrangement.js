@@ -2228,11 +2228,11 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
     setRegionPosition: function (name, position) {
         var self = this, o = this.options;
-        //var offset = this._getScrollOffset();
-        //position = {
-        //    left: position.left + offset.left,
-        //    top: position.top + offset.top
-        //};
+        var offset = this._getScrollOffset();
+        position = {
+            left: position.left + offset.left,
+            top: position.top + offset.top
+        };
         switch (o.layoutType) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 break;
@@ -2368,7 +2368,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     BI.each(clone, function (i, region) {
                         var row = Math.floor(i / 3), col = i % 3;
                         BI.extend(region, {
-                            top: row * h,
+                            top: row * 380,
                             left: col * w,
                             width: w,
                             height: 380

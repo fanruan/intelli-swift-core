@@ -28,8 +28,8 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
 
         this.colorChooser = BI.createWidget({
             type: "bi.color_chooser",
-            width: 30,
-            height: 30
+            width: 25,
+            height: 25
         });
 
         this.colorChooser.setValue(color);
@@ -60,15 +60,15 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
             type: "bi.left",
             element: this.element,
             items: [this.numberRange, this.colorChooser, this.deleteIcon],
-            hgap: 5
+            hgap: 5,
+            vgap: 2
         })
     },
 
     getValue: function(){
         return {
             range: this.numberRange.getValue(),
-            color: this.colorChooser.getValue(),
-            cid: this.options.cid
+            color: this.colorChooser.getValue()
         }
     },
 
