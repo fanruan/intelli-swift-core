@@ -420,8 +420,8 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
-        this.editTitleLY.setValue(titleX);
-        this.editTitleX.setValue(titleLY);
+        this.editTitleLY.setValue(titleLY);
+        this.editTitleX.setValue(titleX);
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
