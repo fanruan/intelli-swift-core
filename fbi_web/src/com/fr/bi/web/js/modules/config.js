@@ -310,24 +310,179 @@ BICst.DASHBOARD_WIDGETS = [[{
 }]];
 
 BICst.SVG_MAP_TYPE = [{
-    text: BI.i18nText("BI-World"),
-    title: BI.i18nText("BI-World"),
-    value: BICst.MAP_TYPE.WORLD,
-    cls: "drag-map-global-icon"
-}, {
     text: BI.i18nText("BI-China"),
     title: BI.i18nText("BI-China"),
     value: BICst.MAP_TYPE.CHINA,
     cls: "drag-map-china-icon"
 }, {
-    text: BI.i18nText("BI-JIANGSU"),
-    title: BI.i18nText("BI-JIANGSU"),
-    value: BICst.MAP_TYPE.JIANGSU,
+    text: BI.i18nText("BI-JIANGSUSHENG"),
+    title: BI.i18nText("BI-JIANGSUSHENG"),
+    value: BICst.MAP_TYPE.JIANGSUSHENG,
     cls: "drag-map-svg-icon"
 }, {
-    text: BI.i18nText("BI-SHANDONG"),
-    title: BI.i18nText("BI-SHANDONG"),
-    value: BICst.MAP_TYPE.SHANDONG,
+    text: BI.i18nText("BI-SHANDONGSHENG"),
+    title: BI.i18nText("BI-SHANDONGSHENG"),
+    value: BICst.MAP_TYPE.SHANDONGSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-TAIWANSHENG"),
+    title: BI.i18nText("BI-TAIWANSHENG"),
+    value: BICst.MAP_TYPE.TAIWANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-YUNNANSHENG"),
+    title: BI.i18nText("BI-YUNNANSHENG"),
+    value: BICst.MAP_TYPE.YUNNANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-JILINSHENG"),
+    title: BI.i18nText("BI-JILINSHENG"),
+    value: BICst.MAP_TYPE.JILINSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-SICHUANSHENG"),
+    title: BI.i18nText("BI-SICHUANSHENG"),
+    value: BICst.MAP_TYPE.SICHUANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-ANHUISHENG"),
+    title: BI.i18nText("BI-ANHUISHENG"),
+    value: BICst.MAP_TYPE.ANHUISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-SHANXISHENG"),
+    title: BI.i18nText("BI-SHANXISHENG"),
+    value: BICst.MAP_TYPE.SHANXISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-GUANGDONGSHENG"),
+    title: BI.i18nText("BI-GUANGDONGSHENG"),
+    value: BICst.MAP_TYPE.GUANGDONGSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-JIANGXISHENG"),
+    title: BI.i18nText("BI-JIANGXISHENG"),
+    value: BICst.MAP_TYPE.JIANGXISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HEBEISHENG"),
+    title: BI.i18nText("BI-HEBEISHENG"),
+    value: BICst.MAP_TYPE.HEBEISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HENANSHENG"),
+    title: BI.i18nText("BI-HENANSHENG"),
+    value: BICst.MAP_TYPE.HENANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-ZHEJIANGSHENG"),
+    title: BI.i18nText("BI-ZHEJIANGSHENG"),
+    value: BICst.MAP_TYPE.ZHEJIANGSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HAINANSHENG"),
+    title: BI.i18nText("BI-HAINANSHENG"),
+    value: BICst.MAP_TYPE.HAINANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HUBEISHENG"),
+    title: BI.i18nText("BI-HUBEISHENG"),
+    value: BICst.MAP_TYPE.HUBEISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HUNANSHENG"),
+    title: BI.i18nText("BI-HUNANSHENG"),
+    value: BICst.MAP_TYPE.HUNANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-GANSUSHENG"),
+    title: BI.i18nText("BI-GANSUSHENG"),
+    value: BICst.MAP_TYPE.GANSUSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-FUJIANSHENG"),
+    title: BI.i18nText("BI-FUJIANSHENG"),
+    value: BICst.MAP_TYPE.FUJIANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-GUIZHOUSHENG"),
+    title: BI.i18nText("BI-GUIZHOUSHENG"),
+    value: BICst.MAP_TYPE.GUIZHOUSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-LIAONINGSHENG"),
+    title: BI.i18nText("BI-LIAONINGSHENG"),
+    value: BICst.MAP_TYPE.LIAONINGSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-SHANXISHENG1"),
+    title: BI.i18nText("BI-SHANXISHENG1"),
+    value: BICst.MAP_TYPE.SHANXISHENG1,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-QINGHAISHENG"),
+    title: BI.i18nText("BI-QINGHAISHENG"),
+    value: BICst.MAP_TYPE.QINGHAISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HEILONGJIANGSHENG"),
+    title: BI.i18nText("BI-HEILONGJIANGSHENG"),
+    value: BICst.MAP_TYPE.HEILONGJIANGSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-BEIJINGSHI"),
+    title: BI.i18nText("BI-BEIJINGSHI"),
+    value: BICst.MAP_TYPE.BEIJINGSHI,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-TIANJINSHI"),
+    title: BI.i18nText("BI-TIANJINSHI"),
+    value: BICst.MAP_TYPE.TIANJINSHI,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-CHONGQINGSHI"),
+    title: BI.i18nText("BI-CHONGQINGSHI"),
+    value: BICst.MAP_TYPE.CHONGQINGSHI,
+    cls: "drag-map-china-icon"
+}, {
+    text: BI.i18nText("BI-SHANGHAISHI"),
+    title: BI.i18nText("BI-SHANGHAISHI"),
+    value: BICst.MAP_TYPE.SHANGHAISHI,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-NEIMENGGUZIZHIQU"),
+    title: BI.i18nText("BI-NEIMENGGUZIZHIQU"),
+    value: BICst.MAP_TYPE.NEIMENGGUZIZHIQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-GUANGXIZHUANGZUZIZHIQU"),
+    title: BI.i18nText("BI-GUANGXIZHUANGZUZIZHIQU"),
+    value: BICst.MAP_TYPE.GUANGXIZHUANGZUZIZHIQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-XICANGZIZHIQU"),
+    title: BI.i18nText("BI-XICANGZIZHIQU"),
+    value: BICst.MAP_TYPE.XICANGZIZHIQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-NINGXIAHUIZUZIZHIQU"),
+    title: BI.i18nText("BI-NINGXIAHUIZUZIZHIQU"),
+    value: BICst.MAP_TYPE.NINGXIAHUIZUZIZHIQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-XIANGGANGTEBIEXINGZHENGQU"),
+    title: BI.i18nText("BI-XIANGGANGTEBIEXINGZHENGQU"),
+    value: BICst.MAP_TYPE.XIANGGANGTEBIEXINGZHENGQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-XINJIANGWEIWUERZIZHIQU"),
+    title: BI.i18nText("BI-XINJIANGWEIWUERZIZHIQU"),
+    value: BICst.MAP_TYPE.XINJIANGWEIWUERZIZHIQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-AOMENTEBIEXINGZHENGQU"),
+    title: BI.i18nText("BI-AOMENTEBIEXINGZHENGQU"),
+    value: BICst.MAP_TYPE.AOMENTEBIEXINGZHENGQU,
     cls: "drag-map-svg-icon"
 }];
 

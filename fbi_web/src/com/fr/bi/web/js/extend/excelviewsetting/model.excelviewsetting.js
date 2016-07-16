@@ -69,6 +69,9 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
                             });
                         }
                     });
+                    if(BI.contains(BI.pluck(self.tables, "value"), pTableId)){
+                        return;
+                    }
                     self.tables.push({
                         value: pTableId,
                         tableName: self.translations[pTableId],
