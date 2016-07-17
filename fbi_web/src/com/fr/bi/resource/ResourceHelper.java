@@ -1984,6 +1984,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/linkedHashMap.js",
                 "com/fr/bi/web/js/base/utils/tree.js",
                 "com/fr/bi/web/js/base/utils/vector.js",
+                "com/fr/bi/web/js/base/utils/set.js",
                 "com/fr/bi/web/js/base/utils/lru.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
 
