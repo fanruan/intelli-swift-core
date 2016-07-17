@@ -1,13 +1,18 @@
 package com.finebi.cube.structure.table.property;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.input.ICubeIntegerReaderWrapper;
 import com.finebi.cube.data.input.ICubeLongReaderWrapper;
 import com.finebi.cube.data.input.ICubeStringReader;
+import com.finebi.cube.data.output.ICubeIntegerWriterWrapper;
 import com.finebi.cube.data.output.ICubeLongWriterWrapper;
 import com.finebi.cube.data.output.ICubeStringWriter;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.finebi.cube.structure.*;
+import com.finebi.cube.structure.BITableKey;
+import com.finebi.cube.structure.ICubeTablePropertyService;
+import com.finebi.cube.structure.ICubeVersion;
+import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.property.BICubeProperty;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
@@ -32,6 +37,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private static String TIMESTAMP_DATA = "timestamp";
     private static String SUPER_TABLES = "st";
 
+    private static String  REMOVED_LIST = "removedList";
+
     private List<ICubeFieldSource> tableFields = null;
     private List<ITableKey> parentTable = null;
 
@@ -50,6 +57,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private ICubeLongReaderWrapper timeStampReader;
 
     private ParentFieldProperty parentFieldProperty;
+    private ICubeIntegerWriterWrapper removeListWriter;
+    private ICubeIntegerReaderWrapper removeListReader;
 
     public BICubeTableProperty(ICubeResourceLocation currentLocation, ICubeResourceDiscovery discovery) {
         this.currentLocation = currentLocation.copy();
@@ -82,7 +91,12 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected boolean isRowCountReaderAvailable() {
         return rowCountReader != null;
     }
-
+    protected boolean isRemoveListReaderAvailable() {
+        return removeListReader != null;
+    }
+    protected boolean isRemoveListWriterAvailable() {
+        return removeListWriter != null;
+    }
     protected boolean isTimeStampWriterAvailable() {
         return timeStampWriter != null;
     }
@@ -138,6 +152,22 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     }
 
+    private void initialRemovedListWriter() throws Exception {
+        ICubeResourceLocation location = this.currentLocation.buildChildLocation(REMOVED_LIST);
+        location.setIntegerTypeWrapper();
+        location.setWriterSourceLocation();
+        removeListWriter = (ICubeIntegerWriterWrapper) discovery.getCubeWriter(location);
+
+    }
+
+    private void initialRemovedListReader() throws Exception {
+        ICubeResourceLocation location = this.currentLocation.buildChildLocation(REMOVED_LIST);
+        location.setLongTypeWrapper();
+        location.setReaderSourceLocation();
+        rowCountReader = (ICubeLongReaderWrapper) discovery.getCubeReader(location);
+
+    }
+    
     private void initialTimeStampReader() throws Exception {
         ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
         rowCountLocation.setLongTypeWrapper();
@@ -300,8 +330,29 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             }
         }
     }
+    public ICubeIntegerWriterWrapper getRemovedListWriter() {
+        try {
+            if (!isRemoveListWriterAvailable()) {
+                initialRemovedListWriter();
+            }
+            return removeListWriter;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
 
-    @Override
+    public ICubeIntegerReaderWrapper getRemovedListReader() {
+        try {
+            if (!isRemoveListReaderAvailable()) {
+                initialRemovedListReader();
+            }
+            return removeListReader;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+        @Override
     public void recordTableStructure(List<ICubeFieldSource> fields) {
         /**
          * 即便是空，也要记录是空数组0的长度。
@@ -330,8 +381,11 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         getRowCountWriter().recordSpecificValue(0, rowCount);
 
     }
-
     @Override
+    public void recordRemovedList(int position,int value) {
+        getRemovedListWriter().recordSpecificValue(position,value);
+    }
+        @Override
     public void recordLastTime() {
         recordLastTime(System.currentTimeMillis());
     }
@@ -366,7 +420,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
         return -1;
     }
-
+    
     @Override
     public Date getCubeLastTime() {
         try {

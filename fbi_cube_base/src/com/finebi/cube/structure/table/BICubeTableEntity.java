@@ -92,9 +92,9 @@ public class BICubeTableEntity implements CubeTableEntityService {
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
         Iterator<Integer> it = removedLine.iterator();
-        int row = 0;
+        int row = tableProperty.getRowCount();
         while (it.hasNext()) {
-            removedLineWriter.recordSpecificPositionValue(row++, it.next());
+            tableProperty.recordRemovedList(row++,it.next());
         }
     }
 

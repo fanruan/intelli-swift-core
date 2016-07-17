@@ -25,6 +25,8 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
 
     void recordRowCount(long rowCount);
 
+    void recordRemovedList(int position, int value);
+
     void recordLastTime();
 
     void recordParentsTable(List<ITableKey> parentTables);
