@@ -1575,32 +1575,20 @@
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
             if (tableA === tableB) {        //同一张表
-                if (isSelfCircle(path)) {      //是自循环表
-                    if(checkPathAvailable(path, from, to)){ //from和to中都不包含层级字段
-                        return path;
-                    }else{
-                        return getRelationOfselfCircle(from, to, path);
-                    }
+                if (isSelfCircle(path) && !checkPathAvailable(path, from, to)) {      //是自循环表且字段包含层级字段
+                    return [getRelationOfselfCircle(from, to, path)];
                 } else {
                     return [[{
                         primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
                         foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
                     }]]
                 }
-            }else{                          //不同表
-                if(hasSelfCircleInHeadOrTail(path)){     //路径中包含自循环表
-                    if(checkPathAvailable(path, from, to)){ //from和to中都不包含层级字段
-                        return path;
-                    }else{
-                        return getRelationOfselfCircle(from, to, path);
-                    }
-                }
             }
             return path;
 
             //获取自循环生成的层级所在的关联
             function getRelationOfselfCircle(from, to, paths){
-                return BI.filter(paths, function(idx, path){
+                return BI.find(paths, function(idx, path){
                     return BI.find(path, function (id, relation) {
                         var foreignId = self.getForeignIdFromRelation(relation);
                         return foreignId === from || foreignId === to;
