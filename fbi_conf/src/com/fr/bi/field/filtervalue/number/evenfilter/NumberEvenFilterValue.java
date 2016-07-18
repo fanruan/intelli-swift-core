@@ -198,7 +198,7 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
 
     @Override
     public boolean canCreateFilterIndex() {
-        return true;
+        return false;
     }
 
 
