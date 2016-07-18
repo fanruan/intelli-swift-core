@@ -116,7 +116,7 @@ public class UserETLUpdateTask implements CubeTask {
 
 	private long getBaseSourceVersion(CubeTableSource source){
         ICubeTableService service = CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(source);
-        return service == null ? -1 : service.getTableVersion(new IndexKey(StringUtils.EMPTY));
+        return service == null ? -1l : service.getTableVersion(new IndexKey(StringUtils.EMPTY));
 	}
 
 	public String getPath(){
