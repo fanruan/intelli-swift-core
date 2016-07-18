@@ -373,6 +373,10 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
+        return 0;
+    }
+    @Override
     public SourceFile getSourceFile() {
         return new SourceFile(fetchObjectCore().getID().getIdentityValue());
     }

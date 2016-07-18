@@ -11,13 +11,11 @@ import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
-import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -196,9 +194,6 @@ public class CubeRunner {
             //暂时cube不做备份了,太吃空间了
             BIFileUtils.delete(new File(advancedConf.getRootURI().toString()));
             BIFileUtils.moveFile(tempConf.getRootURI().toString(), advancedConf.getRootURI().toString());
-            BICubeLocation advancedLocation = new BICubeLocation(advancedConf.getRootURI().getPath(), CubeConstant.CUBE_PROPERTY);
-            BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(advancedLocation);
-            BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(advancedLocation);
         } catch (URISyntaxException e) {
             BILogger.getLogger().error(e.getMessage());
         } catch (BIBuildReaderException e) {
@@ -218,11 +213,6 @@ public class CubeRunner {
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
             BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
-            BICubeLocation advancedLocation = new BICubeLocation(advancedConf.getRootURI().getPath(), CubeConstant.CUBE_PROPERTY);
-//            BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(advancedLocation);
-//            BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(advancedLocation);
-        } catch (URISyntaxException e) {
-            BILogger.getLogger().error(e.getMessage());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }

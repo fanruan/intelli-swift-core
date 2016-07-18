@@ -22,6 +22,7 @@ import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -52,6 +53,7 @@ public class BuildCubeTask implements CubeTask {
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
     private String uuid;
+    private int updateTypes = DBConstant.SINGLE_TABLE_UPDATE.NEVER;
 
 
     public BuildCubeTask(BIUser biUser, CubeBuild cubeBuild) {
@@ -70,7 +72,10 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public CubeTaskType getTaskType() {
-        return CubeTaskType.BUILD;
+        if (cubeBuild.isSingleTable()) {
+            return CubeTaskType.SINGLE;
+        }
+        return CubeTaskType.ALL;
     }
 
     @Override
@@ -162,4 +167,5 @@ public class BuildCubeTask implements CubeTask {
     public boolean equals(Object obj) {
         return this.getUUID().equals(((BuildCubeTask) obj).getUUID());
     }
+
 }

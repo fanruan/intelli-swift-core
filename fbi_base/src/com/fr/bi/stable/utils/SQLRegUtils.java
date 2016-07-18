@@ -211,9 +211,6 @@ public class SQLRegUtils {
         }
 
         StringBuffer sb=new StringBuffer();
-        sb.append("原SQL为"+sql+"\n");
-        sb.append("解析后的SQL为\n");
-
 
         for(String str:getParsedSqlList()){
             sb.append(str);

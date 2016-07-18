@@ -215,6 +215,11 @@ public class ExcelTableSource extends AbstractTableSource {
     }
 
     @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
+        return 0;
+    }
+
+    @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
         jo.put("connection_name", DBConstant.CONNECTION.EXCEL_CONNECTION);

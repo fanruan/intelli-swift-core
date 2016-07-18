@@ -1,5 +1,6 @@
 package com.finebi.cube.gen.arrange;
 
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.*;
@@ -21,13 +22,17 @@ import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
+import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTask;
+import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.general.ComparatorUtils;
 
 import java.util.*;
 
@@ -394,8 +399,14 @@ public class BICubeOperationManager {
 
     protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version) {
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
-        if (null == tableUpdateSetting) {
+        CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
+/*若没有更新设置,按默认处理*/
+        if (null == tableUpdateSetting || ComparatorUtils.equals(0, cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).getCubeVersion())) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+        } 
+        /*全局更新时该表不更新*/
+        else if (currentTask.getTaskType() != CubeTaskType.SINGLE && tableUpdateSetting.getTogetherOrNever() == DBConstant.SINGLE_TABLE_UPDATE.NEVER) {
+            return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
         } else {
             switch (tableUpdateSetting.getUpdateType()) {
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL: {
