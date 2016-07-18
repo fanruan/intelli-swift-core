@@ -4,6 +4,7 @@
 package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
@@ -113,8 +114,9 @@ public class UserETLUpdateTask implements CubeTask {
 
 
 
-	private  long getBaseSourceVersion(CubeTableSource source){
-        return CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(source).getTableVersion(new IndexKey(StringUtils.EMPTY));
+	private long getBaseSourceVersion(CubeTableSource source){
+        ICubeTableService service = CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(source);
+        return service == null ? -1 : service.getTableVersion(new IndexKey(StringUtils.EMPTY));
 	}
 
 	public String getPath(){
