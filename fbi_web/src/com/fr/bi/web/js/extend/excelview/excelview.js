@@ -153,7 +153,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
         BI.each(items, function (i, row) {
             var r = [];
             BI.each(row, function (j, item) {
-                item.text === "" && (item.text = " ");
+                BI.isEmptyString(item.text) && (item.text = " ");
                 r.push(BI.extend(item.value ? {
                     type: "bi.excel_view_cell",
                     drag: draggable,
