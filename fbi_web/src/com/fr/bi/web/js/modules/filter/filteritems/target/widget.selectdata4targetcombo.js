@@ -12,7 +12,7 @@ BI.SelectFieldDataCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.SelectFieldDataCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-select-field-data-combo",
-            height: 30,
+            height: 28,
             field_id: ""
         });
     },

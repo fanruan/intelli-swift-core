@@ -4,8 +4,10 @@ import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
+import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.manager.*;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBottomNFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
@@ -20,6 +22,9 @@ import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.ResourceHelper;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -41,14 +46,21 @@ public class AnalysisETLModule extends AbstractModule {
         StableFactory.registerJavaScriptFiles(ETLResourcesHelper.DEFAULT_JS, ETLResourcesHelper.getDefaultJs());
         StableFactory.registerStyleFiles(ETLResourcesHelper.DEFAULT_CSS, ETLResourcesHelper.getDefaultCss());
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DEZI_CSS, ETLResourcesHelper.getDefaultCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, ETLResourcesHelper.getDefaultCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ETLResourcesHelper.getAnimateCss());
     }
 
     public void loadResources (Locale[] locales) {
         ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
-        ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
+        ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
         ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);
+    }
+
+    @Override
+    public Collection<BIPackageID> getAvailablePackID(long userId) {
+        List<BIPackageID> list = new ArrayList<BIPackageID>();
+        list.add(new BIPackageID(Constants.PACK_ID));
+        return list;
     }
 
     /**

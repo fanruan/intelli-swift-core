@@ -1,5 +1,29 @@
 //放置用户可以配置的常量
 
+BICst.CONFIG = {
+    SHOW_DASHBOARD_TITLE: true
+};
+
+//布局方式
+BICst.DASHBOARD_LAYOUT_ARRAY = [{
+    text: BI.i18nText("BI-Adaptive_Layout"), value: BICst.DASHBOARD_LAYOUT_ADAPT
+}, {
+    text: BI.i18nText("BI-Free_Layout"), value: BICst.DASHBOARD_LAYOUT_FREE
+}];
+
+//类型&数据/样式tab
+BICst.DETAIL_DATA_STYLE_TAB = [{
+    text: BI.i18nText("BI-Type_Data"), value: BICst.DETAIL_TAB_TYPE_DATA
+}, {
+    text: BI.i18nText("BI-Style"), value: BICst.DETAIL_TAB_STYLE
+}];
+
+//业务包字段/复用
+BICst.DETAIL_FIELD_REUSE_TAB = [{
+    text: BI.i18nText("BI-Package_Field"), value: BICst.DETAIL_PACKAGES_FIELD
+}, {
+    text: BI.i18nText("BI-Reuse_Field"), value: BICst.DETAIL_DIMENSION_REUSE
+}];
 //dashboard toolbar
 BICst.DASHBOARD_TOOLBAR = [{
     text: BI.i18nText('BI-Save_As'),
@@ -286,24 +310,179 @@ BICst.DASHBOARD_WIDGETS = [[{
 }]];
 
 BICst.SVG_MAP_TYPE = [{
-    text: BI.i18nText("BI-World"),
-    title: BI.i18nText("BI-World"),
-    value: BICst.MAP_TYPE.WORLD,
-    cls: "drag-map-global-icon"
-}, {
     text: BI.i18nText("BI-China"),
     title: BI.i18nText("BI-China"),
     value: BICst.MAP_TYPE.CHINA,
     cls: "drag-map-china-icon"
 }, {
-    text: BI.i18nText("BI-JIANGSU"),
-    title: BI.i18nText("BI-JIANGSU"),
-    value: BICst.MAP_TYPE.JIANGSU,
+    text: BI.i18nText("BI-JIANGSUSHENG"),
+    title: BI.i18nText("BI-JIANGSUSHENG"),
+    value: BICst.MAP_TYPE.JIANGSUSHENG,
     cls: "drag-map-svg-icon"
 }, {
-    text: BI.i18nText("BI-SHANDONG"),
-    title: BI.i18nText("BI-SHANDONG"),
-    value: BICst.MAP_TYPE.SHANDONG,
+    text: BI.i18nText("BI-SHANDONGSHENG"),
+    title: BI.i18nText("BI-SHANDONGSHENG"),
+    value: BICst.MAP_TYPE.SHANDONGSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-TAIWANSHENG"),
+    title: BI.i18nText("BI-TAIWANSHENG"),
+    value: BICst.MAP_TYPE.TAIWANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-YUNNANSHENG"),
+    title: BI.i18nText("BI-YUNNANSHENG"),
+    value: BICst.MAP_TYPE.YUNNANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-JILINSHENG"),
+    title: BI.i18nText("BI-JILINSHENG"),
+    value: BICst.MAP_TYPE.JILINSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-SICHUANSHENG"),
+    title: BI.i18nText("BI-SICHUANSHENG"),
+    value: BICst.MAP_TYPE.SICHUANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-ANHUISHENG"),
+    title: BI.i18nText("BI-ANHUISHENG"),
+    value: BICst.MAP_TYPE.ANHUISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-SHANXISHENG"),
+    title: BI.i18nText("BI-SHANXISHENG"),
+    value: BICst.MAP_TYPE.SHANXISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-GUANGDONGSHENG"),
+    title: BI.i18nText("BI-GUANGDONGSHENG"),
+    value: BICst.MAP_TYPE.GUANGDONGSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-JIANGXISHENG"),
+    title: BI.i18nText("BI-JIANGXISHENG"),
+    value: BICst.MAP_TYPE.JIANGXISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HEBEISHENG"),
+    title: BI.i18nText("BI-HEBEISHENG"),
+    value: BICst.MAP_TYPE.HEBEISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HENANSHENG"),
+    title: BI.i18nText("BI-HENANSHENG"),
+    value: BICst.MAP_TYPE.HENANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-ZHEJIANGSHENG"),
+    title: BI.i18nText("BI-ZHEJIANGSHENG"),
+    value: BICst.MAP_TYPE.ZHEJIANGSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HAINANSHENG"),
+    title: BI.i18nText("BI-HAINANSHENG"),
+    value: BICst.MAP_TYPE.HAINANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HUBEISHENG"),
+    title: BI.i18nText("BI-HUBEISHENG"),
+    value: BICst.MAP_TYPE.HUBEISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HUNANSHENG"),
+    title: BI.i18nText("BI-HUNANSHENG"),
+    value: BICst.MAP_TYPE.HUNANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-GANSUSHENG"),
+    title: BI.i18nText("BI-GANSUSHENG"),
+    value: BICst.MAP_TYPE.GANSUSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-FUJIANSHENG"),
+    title: BI.i18nText("BI-FUJIANSHENG"),
+    value: BICst.MAP_TYPE.FUJIANSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-GUIZHOUSHENG"),
+    title: BI.i18nText("BI-GUIZHOUSHENG"),
+    value: BICst.MAP_TYPE.GUIZHOUSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-LIAONINGSHENG"),
+    title: BI.i18nText("BI-LIAONINGSHENG"),
+    value: BICst.MAP_TYPE.LIAONINGSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-SHANXISHENG1"),
+    title: BI.i18nText("BI-SHANXISHENG1"),
+    value: BICst.MAP_TYPE.SHANXISHENG1,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-QINGHAISHENG"),
+    title: BI.i18nText("BI-QINGHAISHENG"),
+    value: BICst.MAP_TYPE.QINGHAISHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-HEILONGJIANGSHENG"),
+    title: BI.i18nText("BI-HEILONGJIANGSHENG"),
+    value: BICst.MAP_TYPE.HEILONGJIANGSHENG,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-BEIJINGSHI"),
+    title: BI.i18nText("BI-BEIJINGSHI"),
+    value: BICst.MAP_TYPE.BEIJINGSHI,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-TIANJINSHI"),
+    title: BI.i18nText("BI-TIANJINSHI"),
+    value: BICst.MAP_TYPE.TIANJINSHI,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-CHONGQINGSHI"),
+    title: BI.i18nText("BI-CHONGQINGSHI"),
+    value: BICst.MAP_TYPE.CHONGQINGSHI,
+    cls: "drag-map-china-icon"
+}, {
+    text: BI.i18nText("BI-SHANGHAISHI"),
+    title: BI.i18nText("BI-SHANGHAISHI"),
+    value: BICst.MAP_TYPE.SHANGHAISHI,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-NEIMENGGUZIZHIQU"),
+    title: BI.i18nText("BI-NEIMENGGUZIZHIQU"),
+    value: BICst.MAP_TYPE.NEIMENGGUZIZHIQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-GUANGXIZHUANGZUZIZHIQU"),
+    title: BI.i18nText("BI-GUANGXIZHUANGZUZIZHIQU"),
+    value: BICst.MAP_TYPE.GUANGXIZHUANGZUZIZHIQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-XICANGZIZHIQU"),
+    title: BI.i18nText("BI-XICANGZIZHIQU"),
+    value: BICst.MAP_TYPE.XICANGZIZHIQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-NINGXIAHUIZUZIZHIQU"),
+    title: BI.i18nText("BI-NINGXIAHUIZUZIZHIQU"),
+    value: BICst.MAP_TYPE.NINGXIAHUIZUZIZHIQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-XIANGGANGTEBIEXINGZHENGQU"),
+    title: BI.i18nText("BI-XIANGGANGTEBIEXINGZHENGQU"),
+    value: BICst.MAP_TYPE.XIANGGANGTEBIEXINGZHENGQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-XINJIANGWEIWUERZIZHIQU"),
+    title: BI.i18nText("BI-XINJIANGWEIWUERZIZHIQU"),
+    value: BICst.MAP_TYPE.XINJIANGWEIWUERZIZHIQU,
+    cls: "drag-map-svg-icon"
+}, {
+    text: BI.i18nText("BI-AOMENTEBIEXINGZHENGQU"),
+    title: BI.i18nText("BI-AOMENTEBIEXINGZHENGQU"),
+    value: BICst.MAP_TYPE.AOMENTEBIEXINGZHENGQU,
     cls: "drag-map-svg-icon"
 }];
 
@@ -354,7 +533,7 @@ BICst.TIME_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_WIDGET_EXPAND,
         text: BI.i18nText("BI-Detailed_Setting"),
-        cls: "dashboard-widget-combo-detail-set-font"
+        cls: "widget-combo-expand-font"
     }],
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
@@ -383,7 +562,7 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
     [{
         value: BICst.DASHBOARD_WIDGET_EXPAND,
         text: BI.i18nText("BI-Detailed_Setting"),
-        cls: "dashboard-widget-combo-detail-set-font"
+        cls: "widget-combo-expand-font"
     }],
     [{
         value: BICst.DASHBOARD_CONTROL_CLEAR,
@@ -414,16 +593,16 @@ BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [
         text: BI.i18nText("BI-Clear_Selected_Value"),
         cls: "widget-combo-clear-font"
     }],
-    [{
-        value: BICst.DASHBOARD_WIDGET_RENAME,
-        text: BI.i18nText("BI-Rename"),
-        cls: "widget-combo-rename-edit-font"
-    }],
-    [{
-        value: BICst.DASHBOARD_WIDGET_COPY,
-        text: BI.i18nText("BI-Copy"),
-        cls: "widget-combo-copy"
-    }],
+    // [{
+    //     value: BICst.DASHBOARD_WIDGET_RENAME,
+    //     text: BI.i18nText("BI-Rename"),
+    //     cls: "widget-combo-rename-edit-font"
+    // }],
+    // [{
+    //     value: BICst.DASHBOARD_WIDGET_COPY,
+    //     text: BI.i18nText("BI-Copy"),
+    //     cls: "widget-combo-copy"
+    // }],
     [{
         value: BICst.DASHBOARD_WIDGET_DELETE,
         text: BI.i18nText("BI-Delete_Control"),
@@ -512,20 +691,20 @@ BICst.TARGET_FILTER_STRING_COMBO = [[{
 
 //target number
 BICst.TARGET_FILTER_NUMBER_COMBO = [[{
-    text: BI.i18nText("BI-Equal"),
-    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
-    cls: "dot-e-font"
-}, {
-    text: BI.i18nText("BI-Not_Equal_To"),
-    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
-    cls: "dot-e-font"
-}], [{
     text: BI.i18nText("BI-In"),
     value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Not_In"),
     value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
     cls: "dot-e-font"
 }], [{
     text: BI.i18nText("BI-Is_Null"),
@@ -720,6 +899,33 @@ BICst.FILTER_DATE_COMBO = [[{
     cls: "dot-e-font"
 }]];
 
+//auth date
+BICst.AUTH_FILTER_DATE_COMBO = [[{
+    text: BI.i18nText("BI-In"),
+    value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.FILTER_DATE.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.FILTER_DATE.NOT_EQUAL_TO,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.FILTER_DATE.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.FILTER_DATE.NOT_NULL,
+    cls: "dot-e-font"
+}]];
+
 BICst.DATA_SETTING_FILTER_DATE_COMBO = [[{
     text: BI.i18nText("BI-In"),
     value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
@@ -830,7 +1036,7 @@ BICst.AUTHORITY_FILTER_NUMBER_COMBO = [[{
         value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE
     },
     children: [{
-        text: BI.i18nText("BI-Field_Value"),
+        text: BI.i18nText("BI-Interval_Value"),
         value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
         cls: "dot-e-font"
     }, {
@@ -844,7 +1050,7 @@ BICst.AUTHORITY_FILTER_NUMBER_COMBO = [[{
         value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE
     },
     children: [{
-        text: BI.i18nText("BI-Field_Value"),
+        text: BI.i18nText("BI-Interval_Value"),
         value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
         cls: "dot-e-font"
     }, {
@@ -1017,74 +1223,84 @@ BICst.AXIS_STYLE_GROUP = [{
 //折线图和面积图线形
 BICst.LINE_CHART_STYLE_GROUP = [{
     cls: "line-chart-style-broken-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "line-chart-style-curve-icon",
-    value: BICst.CHART_STYLE.CURVE
+    value: BICst.CHART_SHAPE.CURVE
 }, {
     cls: "line-chart-style-vertical-icon",
-    value: BICst.CHART_STYLE.RIGHT_ANGLE
+    value: BICst.CHART_SHAPE.RIGHT_ANGLE
 }];
 
 BICst.AREA_CHART_STYLE_GROUP = [{
     cls: "area-chart-style-broken-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "area-chart-style-curve-icon",
-    value: BICst.CHART_STYLE.CURVE
+    value: BICst.CHART_SHAPE.CURVE
 }, {
     cls: "area-chart-style-vertical-icon",
-    value: BICst.CHART_STYLE.RIGHT_ANGLE
+    value: BICst.CHART_SHAPE.RIGHT_ANGLE
 }];
 
 //饼图类型
 BICst.PIE_CHART_STYLE_GROUP = [{
     cls: "pie-chart-style-normal-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "pie-chart-style-equal-arc-rose-icon",
-    value: BICst.CHART_STYLE.EQUAL_ARC_ROSE
+    value: BICst.CHART_SHAPE.EQUAL_ARC_ROSE
 }, {
     cls: "pie-chart-style-not-equal-arc-rose-icon",
-    value: BICst.CHART_STYLE.NOT_EQUAL_ARC_ROSE
+    value: BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE
 }];
 
 //雷达图类性
 BICst.RADAR_CHART_STYLE_GROUP = [{
-    cls: "radar-chart-style-circle-icon",
-    value: BICst.CHART_STYLE.CIRCLE
-}, {
     cls: "radar-chart-style-polygon-icon",
-    value: BICst.CHART_STYLE.POLYGON
+    value: BICst.CHART_SHAPE.POLYGON
+}, {
+    cls: "radar-chart-style-circle-icon",
+    value: BICst.CHART_SHAPE.CIRCLE
 }];
 
 //仪表盘类型
 BICst.DASHBOARD_CHART_STYLE_GROUP = [{
     cls: "dashboard-chart-style-360-icon",
-    value: BICst.CHART_STYLE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "dashboard-chart-style-180-icon",
-    value: BICst.CHART_STYLE.HALF_DASHBOARD
+    value: BICst.CHART_SHAPE.HALF_DASHBOARD
 }, {
     cls: "dashboard-chart-style-percent-icon",
-    value: BICst.CHART_STYLE.PERCENT_DASHBOARD
+    value: BICst.CHART_SHAPE.PERCENT_DASHBOARD
 }, {
     cls: "dashboard-chart-style-percent-scale-slot-icon",
-    value: BICst.CHART_STYLE.PERCENT_SCALE_SLOT
+    value: BICst.CHART_SHAPE.PERCENT_SCALE_SLOT
 }, {
     cls: "dashboard-chart-style-vertical-tube-icon",
-    value: BICst.CHART_STYLE.VERTICAL_TUBE
+    value: BICst.CHART_SHAPE.VERTICAL_TUBE
 }, {
     cls: "dashboard-chart-style-horizontal-tube-icon",
-    value: BICst.CHART_STYLE.HORIZONTAL_TUBE
+    value: BICst.CHART_SHAPE.HORIZONTAL_TUBE
+}];
+
+BICst.CHART_SCALE_SETTING = [{
+    text: BI.i18nText("BI-Auto"),
+    value: BICst.SCALE_SETTING.AUTO
+}, {
+    text: BI.i18nText("BI-Custom"),
+    value: BICst.SCALE_SETTING.CUSTOM
 }];
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
-    text: "圆形",
-    value: BICst.CHART_STYLE.CIRCLE
+    text: BI.i18nText("BI-Bubble_Without_Shadow"),
+    cls: "bubble-style-button bubble-no-projector",
+    value: BICst.CHART_SHAPE.NO_PROJECTOR
 }, {
-    text: "多边形",
-    value: BICst.CHART_STYLE.POLYGON
+    text: BI.i18nText("BI-Bubble_With_Shadow"),
+    cls: "bubble-style-button bubble-with-projector",
+    value: BICst.CHART_SHAPE.PROJECTOR
 }];
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
@@ -1100,6 +1316,7 @@ BICst.DEFAULT_CHART_SETTING = {
     max_row: BICst.TABLE_MAX_ROW,
     max_col: BICst.TABLE_MAX_COL,
     freeze_dim: true,
+    freeze_first_column: false,
     transfer_filter: true,
     show_name: true,
     name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
@@ -1107,10 +1324,10 @@ BICst.DEFAULT_CHART_SETTING = {
     //图
     chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
     chart_style: BICst.CHART_STYLE.STYLE_NORMAL,
-    chart_line_type: BICst.CHART_STYLE.NORMAL,
-    chart_pie_type: BICst.CHART_STYLE.NORMAL,
-    chart_radar_type: BICst.CHART_STYLE.CIRCLE,
-    chart_dashboard_type: BICst.CHART_STYLE.NORMAL,
+    chart_line_type: BICst.CHART_SHAPE.NORMAL,
+    chart_pie_type: BICst.CHART_SHAPE.NORMAL,
+    chart_radar_type: BICst.CHART_SHAPE.POLYGON,
+    chart_dashboard_type: BICst.CHART_SHAPE.NORMAL,
     chart_inner_radius: 0,
     chart_total_angle: BICst.PIE_ANGLES.TOTAL,
     left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
@@ -1118,6 +1335,7 @@ BICst.DEFAULT_CHART_SETTING = {
     right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
     left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    number_of_pointer: BICst.POINTER.ONE,
     dashboard_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     x_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
     right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
@@ -1143,8 +1361,78 @@ BICst.DEFAULT_CHART_SETTING = {
     show_data_label: false,
     show_data_table: false,
     show_grid_line: true,
-    show_zoom: false
+    show_zoom: false,
+    bubble_display: BICst.DISPLAY_RULES.DIMENSION,
+    bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR
 };
+
+BICst.DASHBOARD_STYLE_CONDITIONS = [{
+    range: {
+        min: 0,
+        max: 100,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#65B3EE"
+}, {
+    range: {
+        min: 100,
+        max: 200,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#95E1AA"
+}, {
+    range: {
+        min: 200,
+        max: 300,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#F8D08E"
+}];
+
+BICst.MAP_STYLE_CONDITIONS = [{
+    range: {
+        min: 0,
+        max: 100,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#09ABE9"
+}, {
+    range: {
+        min: 100,
+        max: 200,
+        closemin: true,
+        clasemax: false
+    },
+    color: "#09ABE9"
+}, {
+    range: {
+        min: 200,
+        max: 300,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#09ABE9"
+}, {
+    range: {
+        min: 300,
+        max: 400,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#09ABE9"
+}, {
+    range: {
+        min: 400,
+        max: 500,
+        closemin: true,
+        clasemax: true
+    },
+    color: "#09ABE9"
+}];
 
 BICst.CAL_TARGET_TYPE = [{
     text: BI.i18nText("BI-Formula"),
@@ -1318,6 +1606,17 @@ BICst.DATA_LINK_MANAGE = {
     }
 };
 
+BICst.BUBBLE_DISPLAY_RULES = [{
+    text: BI.i18nText("BI-Dimension_Color_Setting"),
+    value: BICst.DISPLAY_RULES.DIMENSION
+}, {
+    text: BI.i18nText("BI-Bubble_Fixed_Color"),
+    value: BICst.DISPLAY_RULES.FIXED
+}, {
+    text: BI.i18nText("BI-Bubble_Gradient"),
+    value: BICst.DISPLAY_RULES.GRADIENT
+}];
+
 BICst.TARGET_STYLE_FORMAT = [{
     text: BI.i18nText("BI-Normal"),
     value: BICst.TARGET_STYLE.FORMAT.NORMAL
@@ -1347,6 +1646,39 @@ BICst.TARGET_STYLE_LEVEL = [{
 }, {
     text: "%",
     value: BICst.TARGET_STYLE.NUM_LEVEL.PERCENT
+}];
+
+BICst.TARGET_STYLE_LEVEL_SHORT = [{
+    text: BI.i18nText("BI-Normal"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
+}, {
+    text: "%",
+    value: BICst.TARGET_STYLE.NUM_LEVEL.PERCENT
+}];
+
+BICst.TARGET_STYLE_LEVEL = [{
+    text: BI.i18nText("BI-Count"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
+}, {
+    text: BI.i18nText("BI-Wan"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND
+}, {
+    text: BI.i18nText("BI-Million"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.MILLION
+}, {
+    text: BI.i18nText("BI-Yi"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.YI
+}, {
+    text: "%",
+    value: BICst.TARGET_STYLE.NUM_LEVEL.PERCENT
+}];
+
+BICst.POINTERS = [{
+    text: BI.i18nText("BI-One_pointer"),
+    value: BICst.POINTER.ONE
+}, {
+    text: BI.i18nText("BI-Some_pointers"),
+    value: BICst.POINTER.SOME
 }];
 
 BICst.PIE_TOTAL_ANGLE = [{

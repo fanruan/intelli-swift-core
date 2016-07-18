@@ -94,12 +94,12 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
 
-        if (min == Double.NEGATIVE_INFINITY) {
+        if (min != Double.NEGATIVE_INFINITY) {
             jo.put("min", this.min);
             jo.put("closemin", this.closemin);
         }
 
-        if (max == Double.POSITIVE_INFINITY) {
+        if (max != Double.POSITIVE_INFINITY) {
             jo.put("max", this.max);
             jo.put("closemax", this.closemax);
         }
@@ -155,7 +155,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
         if (dimension.getRelationList() == null) {
             return ti.getAllShowIndex();
         }
-        Iterator it = dimension.createValueMapIterator(target, loader);
+        Iterator it = dimension.createNoneSortNoneGroupValueMapGetter(target, loader).iterator();
         GroupValueIndex gvi = null;
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
@@ -284,7 +284,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
 
     @Override
     public boolean canCreateFilterIndex() {
-        return true;
+        return false;
     }
 
 }

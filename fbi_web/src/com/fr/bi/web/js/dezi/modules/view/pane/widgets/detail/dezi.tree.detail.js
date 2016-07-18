@@ -2,6 +2,7 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
 
     constants: {
         DETAIL_NORTH_HEIGHT: 40,
+        DETAIL_TAB_WIDTH: 100,
         DETAIL_TAB_HEIGHT: 40,
         DETAIL_WEST_WIDTH: 280,
         DETAIL_DATA_STYLE_HEIGHT: 240,
@@ -82,7 +83,7 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: BI.Utils.isRealTime() ? "bi.select_string_4_realtime" : "bi.tree_select_data",
+                    type: "bi.tree_select_data",
                     wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
@@ -102,10 +103,25 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
             cls: "widget-top-wrapper",
             items: [{
                 el: {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Data")
+                    type: "bi.button_group",
+                    items: BI.createItems([{
+                        text: BI.i18nText("BI-Data"),
+                        selected: true
+                    }], {
+                        type: "bi.line_segment_button",
+                        height: this.constants.DETAIL_TAB_HEIGHT
+                    }),
+                    height: this.constants.DETAIL_TAB_HEIGHT,
+                    layouts: [{
+                        type: "bi.absolute_center_adapt",
+                        items: [{
+                            type: "bi.center",
+                            width: this.constants.DETAIL_TAB_WIDTH,
+                            height: this.constants.DETAIL_TAB_HEIGHT
+                        }]
+                    }]
                 },
-                height: 30
+                height: this.constants.DETAIL_TAB_HEIGHT
             }, {
                 el: this._createRegion()
             }]
@@ -190,17 +206,10 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
     _createCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.multi_tree_combo",
-            itemsCreator: function (op, callback) {
-                var data = BI.extend({
-                    floors: BI.size(self.model.get("dimensions"))
-                }, op);
-                BI.Utils.getWidgetDataByID(self.model.get("id"), function (jsonData) {
-                    callback(jsonData);
-                }, {tree_options: data})
-            },
+            type: "bi.select_tree_data_combo",
+            wId: this.model.get("id")
         });
-        this.combo.on(BI.MultiTreeCombo.EVENT_CONFIRM, function () {
+        this.combo.on(BI.SelectTreeDataCombo.EVENT_CONFIRM, function () {
             self.model.set("value", self.combo.getValue());
         });
         return this.combo;

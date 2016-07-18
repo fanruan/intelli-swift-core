@@ -22,11 +22,34 @@ BI.CubeProgressBar = BI.inherit(BI.Widget, {
             height: 30
         });
 
+        this.tipLabel = BI.createWidget({
+            type: "bi.label",
+            cls: "temp-cube-generate-tip",
+            value: BI.i18nText("BI-Getting_Real_Time_Data"),
+            width: 600,
+            height: 30,
+            textAlign: "center"
+        });
+
         BI.createWidget({
             type: "bi.absolute_center_adapt",
             element: this.element,
-            items: [this.progressbar]
-        })
+            items: [{
+                el: {
+                    type: "bi.vertical",
+                    items: [this.progressbar,
+                        this.tipLabel],
+                    height: 60,
+                    width: 600
+                }
+            }]
+        });
+
+        // BI.createWidget({
+        //     type: "bi.absolute_center_adapt",
+        //     element: this.element,
+        //     items: [this.progressbar]
+        // })
     },
 
     _reqState: function () {
@@ -34,8 +57,10 @@ BI.CubeProgressBar = BI.inherit(BI.Widget, {
         BI.requestAsync("fr_bi_dezi", "get_temp_cube_generating_status", {}, function (state) {
             self.progressbar.setValue(state.percent);
             if (state.percent < 100) {
+                self.tipLabel.setVisible(true);
                 BI.delay(BI.bind(self._reqState, self), 300);
             } else {
+                self.tipLabel.setVisible(false);
                 BI.delay(function () {
                     self.fireEvent(BI.CubeProgressBar.EVENT_COMPLETE);
                 }, 1000);

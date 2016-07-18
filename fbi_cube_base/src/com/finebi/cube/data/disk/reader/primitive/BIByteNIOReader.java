@@ -1,6 +1,7 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
 import com.finebi.cube.data.input.primitive.ICubeByteReader;
+import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
@@ -31,15 +32,17 @@ public class BIByteNIOReader extends BIBasicNIOReader<Byte> implements ICubeByte
     }
 
     @Override
-    protected Byte getValue(Long page, int index) {
-        readWriteLock.readLock().lock();
-        try {
-            return byteBuffers.get(page).get(index);
-        } catch (IndexOutOfBoundsException ex) {
-             throw new IndexOutOfBoundsException(BIStringUtils.appendWithSpace("BI page value is:",
-                    page.toString(), "the index value is", Integer.valueOf(index).toString()));
-        } finally {
-            readWriteLock.readLock().unlock();
+    protected Byte getValue(Long page, int index) throws BIResourceInvalidException {
+        if(isValid) {
+            try {
+                return byteBuffers.get(page).get(index);
+            } catch (IndexOutOfBoundsException ex) {
+                throw new IndexOutOfBoundsException(BIStringUtils.appendWithSpace("BI page value is:",
+                        page.toString(), "the index value is", Integer.valueOf(index).toString()));
+            } finally {
+            }
+        } else {
+            throw new BIResourceInvalidException();
         }
     }
 

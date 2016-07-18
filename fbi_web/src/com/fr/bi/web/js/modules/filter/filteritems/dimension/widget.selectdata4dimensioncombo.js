@@ -12,7 +12,7 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.SelectDimensionDataCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-select-dimension-data-combo",
-            height: 30,
+            height: 28,
             dId: ""
         });
     },

@@ -3,6 +3,7 @@
  */
 package com.fr.bi.test.etloperatordealer;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondPeriodPercentResultDealer;
@@ -105,19 +106,29 @@ public class testCorresponperiodpercent extends TestCase {
         return result;
     }
 
-    private void methodWrapper(int rowCount, Double[] values, Integer[] groupColumns, final Double[] result) {
+    private void methodWrapper(int rowCount, final Double[] values, final Integer[] groupColumns, final Double[] result) {
         IMocksControl control = EasyMock.createControl();
         ICubeTableService ti = control.createMock(ICubeTableService.class);
         ti.getRowCount();
         EasyMock.expectLastCall().andReturn(rowCount).anyTimes();
         IndexKey key1 = new IndexKey("a");
         IndexKey key2 = new IndexKey("b");
-        for (int i = 0; i < rowCount; i++) {
-            ti.getRow(key1, i);
-            EasyMock.expectLastCall().andReturn(values[i]).anyTimes();
-            ti.getRow(key2, i);
-            EasyMock.expectLastCall().andReturn(groupColumns[i]).anyTimes();
-        }
+        ti.getColumnDetailReader(key1);
+        EasyMock.expectLastCall().andReturn(new ICubeColumnDetailGetter(){
+
+            @Override
+            public Object getValue(int row) {
+                return values[row];
+            }
+        }).anyTimes();
+        ti.getColumnDetailReader(key2);
+        EasyMock.expectLastCall().andReturn(new ICubeColumnDetailGetter(){
+
+            @Override
+            public Object getValue(int row) {
+                return groupColumns[row];
+            }
+        }).anyTimes();
         control.replay();
         Traversal<BIDataValue> t = new Traversal<BIDataValue>() {
             int i = 0;
@@ -134,7 +145,7 @@ public class testCorresponperiodpercent extends TestCase {
             con = CorrespondPeriodPercentResultDealer.class.getDeclaredConstructor(BIKey.class, Traversal.class, BIKey.class);
             con.setAccessible(true);
             dealer = con.newInstance(key1, t, key2);
-            dealer.dealWith(ti, gvi, 0);
+            dealer.dealWith(ti, gvi);
         } catch (Exception e) {
         }
     }

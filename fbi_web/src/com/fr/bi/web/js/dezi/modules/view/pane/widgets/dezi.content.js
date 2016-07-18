@@ -29,10 +29,10 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
 
         this.del = BI.createWidget({
             type: "bi.icon_button",
-            width: 32,
-            height: 32,
+            width: 24,
+            height: 24,
             invisible: true,
-            cls: "img-shutdown-font",
+            cls: "img-shutdown-font delete-button",
             title: BI.i18nText("BI-Delete")
         });
 
@@ -47,7 +47,14 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
         vessel.hover(function () {
             self.del.setVisible(true);
         }, function () {
-            self.del.setVisible(false);
+            if (!vessel.parent().parent().parent().hasClass("selected")) {
+                self.del.setVisible(false);
+            }
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!vessel.parent().parent().parent().hasClass("selected")) {
+                self.del.setVisible(false);
+            }
         });
 
         BI.createWidget({
@@ -61,8 +68,8 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
                 bottom: 0
             }, {
                 el: this.del,
-                right: 0,
-                top: 0
+                right: 4,
+                top: 8
             }]
         });
     },

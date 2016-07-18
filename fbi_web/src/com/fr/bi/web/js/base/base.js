@@ -81,20 +81,20 @@ if (!window.BI) {
             var el;
             options || (options = {});
             if (BI.isEmpty(item) && BI.isEmpty(options)) {
-                return BI.createWidget({
+                return BI.Plugin.getObject("bi.layout", BI.createWidget({
                     type: "bi.layout"
-                })
+                }));
             }
             if (BI.isWidget(item)) {
                 return item;
             }
             if (item && (item.type || options.type)) {
                 el = BI.extend({}, options, item);
-                return FR.createWidget(BI.Plugin.getWidget(el.type, el));
+                return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el)));
             }
             if (item && item.el && (item.el.type || options.type)) {
                 el = BI.extend({}, options, item.el);
-                return FR.createWidget(BI.Plugin.getWidget(el.type, el));
+                return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el)));
             }
             if (item && BI.isWidget(item.el)) {
                 return item.el;
@@ -104,7 +104,7 @@ if (!window.BI) {
 
         createWidgets: function (items, options) {
             if (!BI.isArray(items)) {
-                throw new Error("无法根据items创建组件�?")
+                throw new Error("无法根据items创建组件?")
             }
             return BI.map(BI.flatten(items), function (i, item) {
                 return BI.createWidget(item, BI.deepClone(options));

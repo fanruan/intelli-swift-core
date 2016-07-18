@@ -21,11 +21,16 @@ BI.Chart = BI.inherit(BI.Pane, {
         var width = 0;
         var height = 0;
 
-        BI.Resizers.add(this.getName(), function () {
-            if (self.element.is(":visible")) {
+        this._resizer = BI.debounce(function () {
+            if (self.element.is(":visible") && self.vanCharts) {
+                self.vanCharts.resize();
+            }
+        }, 30);
+        BI.Resizers.add(this.getName(), function (e) {
+            if (BI.isWindow(e.target) && self.element.is(":visible")) {
                 var newW = self.element.width(), newH = self.element.height();
-                if (width > 0 && height > 0 && (width !== newW || height !== newH)) {
-                    self.vanCharts.resize();
+                if (newW > 0 && newH > 0 && (width !== newW || height !== newH)) {
+                    self._resizer();
                     width = newW;
                     height = newH;
                 }
@@ -34,32 +39,36 @@ BI.Chart = BI.inherit(BI.Pane, {
     },
 
     _setData: function () {
-        this.vanCharts.setData(this.config);
+        this.vanCharts && this.vanCharts.setData(this.config);
     },
 
     resize: function () {
         if (this.element.is(":visible") && this.isSetOptions === true) {
-            this.vanCharts && this.vanCharts.resize();
+            this._resizer();
         }
+    },
+
+    magnify: function () {
+        this.vanCharts && this.vanCharts.charts[0] && this.vanCharts.charts[0].refreshRestore();
     },
 
     populate: function (items, options) {
         var self = this, o = this.options;
         o.items = items;
-        this.config = options;
+        this.config = options || {};
         this.config.series = o.items;
 
         var setOptions = function () {
             self.vanCharts.setOptions(self.config);
             self.isSetOptions = true;
-            if (self.wants2SetData === true) {
-                self._setData();
-            }
+            //if (self.wants2SetData === true) {
+            //    self._setData();
+            //}
         };
         var init = function () {
             if (self.element.is(":visible")) {
                 self.vanCharts = VanCharts.init(self.element[0]);
-                BI.delay(setOptions, 1);
+                BI.nextTick(setOptions);
                 self.isInit = true;
             }
         };

@@ -129,7 +129,8 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
     _createCenter: function(){
         var self = this;
         this.previewWrapper = BI.createWidget({
-            type: "bi.vertical"
+            type: "bi.preview_table",
+            rowSize: 25
         });
         this.previewTab = BI.createWidget({
             type: "bi.tab",
@@ -238,12 +239,7 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
             bottom: 0
         });
         this.previewTab.setSelect(this.constants.PREVIEW_PANE);
-        this.previewWrapper.empty();
-        this.previewWrapper.addItem({
-            type: "bi.preview_table",
-            header: this.model.getPreviewHeader(),
-            items: this.model.getPreviewItems()
-        });
+        this.previewWrapper.populate(this.model.getPreviewItems(), this.model.getPreviewHeader());
     },
 
     //获取excel信息

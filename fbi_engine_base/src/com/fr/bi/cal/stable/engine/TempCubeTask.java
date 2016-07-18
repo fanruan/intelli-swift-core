@@ -11,10 +11,12 @@ public class TempCubeTask {
 
     private long userId;
     private String md5;
+    private String tableId;
 
-    public TempCubeTask(String md5, long userId) {
+    public TempCubeTask(String md5, String tableId, long userId) {
         this.userId = userId;
         this.md5 = md5;
+        this.tableId = tableId;
     }
 
     public TempCubeTask(TempCubeTask task) {
@@ -64,6 +66,14 @@ public class TempCubeTask {
 
     public String getMd5() {
         return md5;
+    }
+
+    public String getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(String tableId) {
+        this.tableId = tableId;
     }
 
     public void setMd5(String md5) {

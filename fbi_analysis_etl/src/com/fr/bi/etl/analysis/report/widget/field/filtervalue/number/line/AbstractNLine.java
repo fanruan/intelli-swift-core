@@ -3,6 +3,7 @@
  */
 package com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.line;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -28,11 +29,12 @@ public abstract class AbstractNLine implements CalLineGetter {
 		if(gvi == null){
 			return null;
 		}
-		final NTree<Double> tree = getNTree(); 
+		final NTree<Double> tree = getNTree();
+        final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
 		gvi.Traversal(new SingleRowTraversalAction() {
 			@Override
 			public void actionPerformed(int data) {
-                Object ob = ti.getRow(key, data);
+                Object ob = getter.getValue(data);
 				if(ob != null){
                     Double v = ((Number)ob).doubleValue();
                     tree.add(v);

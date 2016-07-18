@@ -2,10 +2,10 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-share-to-me .reports-view-switcher .view-button {
-  background: #d4dadd;
+  background: #ffffff;
 }
 .bi-share-to-me .reports-view-switcher .view-button.active {
-  background: #ffffff;
+  background: #009de3;
 }
 .bi-share-to-me .empty-tip {
   font-size: 14px;

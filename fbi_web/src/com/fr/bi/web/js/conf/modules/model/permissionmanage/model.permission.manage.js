@@ -1,5 +1,5 @@
 /**
- * Created by wuk on 16/4/18.
+ * Created by kary on 16/4/18.
  */
 BIConf.PermissionManageModel = BI.inherit(BI.Model, {
 

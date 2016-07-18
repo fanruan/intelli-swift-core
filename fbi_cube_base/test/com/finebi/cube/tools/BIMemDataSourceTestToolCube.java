@@ -56,7 +56,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     }
 
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
         set.add(this);
         return set;
     }
@@ -724,6 +724,11 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     @Override
     public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         return 0;
+    }
+
+    @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
+        return -1;
     }
 
     @Override

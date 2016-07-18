@@ -3,6 +3,7 @@
  */
 package com.finebi.cube.calculator.bidouble;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -17,10 +18,11 @@ public class SumCalculator implements CubeDoubleDataCalculator {
 
     @Override
     public double calculate(final ICubeTableService tableGetterService, final BIKey key, GroupValueIndex range) {
+        final ICubeColumnDetailGetter getter = tableGetterService.getColumnDetailReader(key);
         CalculatorTraversalAction ss = new CalculatorTraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                Object value = tableGetterService.getRow(key, row);
+                Object value = getter.getValue(row);
                 if (value != null) {
                     double v = ((Number) value).doubleValue();
                     sum += v;

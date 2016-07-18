@@ -18,7 +18,9 @@ BI.ColorChooser = BI.inherit(BI.Widget, {
         BI.ColorChooser.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.trigger = BI.createWidget(BI.extend({
-            type: "bi.color_chooser_trigger"
+            type: "bi.color_chooser_trigger",
+            width: o.width,
+            height: o.height
         }, o.el));
         this.colorPicker = BI.createWidget({
             type: "bi.color_chooser_popup"

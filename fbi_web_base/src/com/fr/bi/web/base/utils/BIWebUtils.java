@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -198,16 +197,15 @@ public class BIWebUtils {
         map.put(ParameterConsts.SESSION_ID, sessionID);
         String isDebug = WebUtils.getHTTPRequestParameter(req, ParameterConsts.__ISDEBUG__);
         String edit = WebUtils.getHTTPRequestParameter(req, "edit");
+        String show = WebUtils.getHTTPRequestParameter(req, "show");
         map.put("userId", userId);
         map.put("edit", edit == null ? "null" : edit);
+        map.put("show", show == null ? "null" : show);
         map.put("createBy", node.getUserId());
         map.put("reportName", node.getReportName() != null ? node.getReportName() : "null");
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
-        Date cubeTime = BIConfigureManagerCenter.getLogManager().getConfigVersion(userId);
-        if(cubeTime != null) {
-            map.put("__version__", cubeTime.getTime() + userId);
-        }
+        map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + "" + userId);
         boolean isEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         isEdit = sessionIDInfo.setEdit(isEdit);
         if (!hasPrivilege(isEdit, userId, map) && !ComparatorUtils.equals(node.getDescription(), "fine_excel")) {

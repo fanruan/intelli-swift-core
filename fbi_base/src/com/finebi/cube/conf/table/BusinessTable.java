@@ -1,6 +1,5 @@
 package com.finebi.cube.conf.table;
 
-import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -35,6 +34,6 @@ public interface BusinessTable extends JSONTransform, Cloneable {
 
     void setFields(List<BusinessField> fields);
 
-    JSONObject createJSONWithFieldsInfo(ICubeDataLoader loader) throws Exception;
+    JSONObject createJSONWithFieldsInfo(long userId) throws Exception;
 
 }

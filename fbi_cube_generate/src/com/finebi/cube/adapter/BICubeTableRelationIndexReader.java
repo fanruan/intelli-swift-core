@@ -1,7 +1,8 @@
 package com.finebi.cube.adapter;
 
 import com.finebi.cube.exception.BICubeIndexException;
-import com.finebi.cube.structure.ICubeIndexDataGetterService;
+import com.finebi.cube.exception.BIResourceInvalidException;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -13,9 +14,9 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  * @since 4.0
  */
 public class BICubeTableRelationIndexReader implements ICubeTableIndexReader {
-    private ICubeIndexDataGetterService getterService;
+    private CubeRelationEntityGetterService getterService;
 
-    public BICubeTableRelationIndexReader(ICubeIndexDataGetterService getterService) {
+    public BICubeTableRelationIndexReader(CubeRelationEntityGetterService getterService) {
         this.getterService = getterService;
     }
 
@@ -24,6 +25,15 @@ public class BICubeTableRelationIndexReader implements ICubeTableIndexReader {
         try {
             return getterService.getBitmapIndex((int) row);
         } catch (BICubeIndexException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    @Override
+    public Integer getReverse(int row) {
+        try {
+            return getterService.getReverseIndex(row);
+        } catch (BIResourceInvalidException e) {
             throw BINonValueUtils.beyondControl(e);
         }
     }

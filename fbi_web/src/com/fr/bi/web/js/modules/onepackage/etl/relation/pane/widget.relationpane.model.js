@@ -52,7 +52,8 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
     getFieldNameByFieldId: function(fieldId) {
         var field = this.allFields[fieldId];
         if(BI.isNotNull(field)) {
-            return this.translations[field.field_id] || field.field_name;
+            var tranName = this.translations[fieldId];
+            return BI.isNotNull(tranName) ? (tranName + "(" + field.field_name + ")") : field.field_name;
         }
     },
 

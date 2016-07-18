@@ -17,7 +17,7 @@ BI.FolderCardViewItem = BI.inherit(BI.Single, {
         var o = this.options, self = this;
         var renameButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "rename-report-font tool-rename-icon",
+            cls: "report-rename-font tool-rename-icon",
             title: BI.i18nText("BI-Table_Rename"),
             iconWidth: 20,
             iconHeight: 20,

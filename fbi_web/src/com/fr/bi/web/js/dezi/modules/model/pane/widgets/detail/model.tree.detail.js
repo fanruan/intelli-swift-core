@@ -5,7 +5,6 @@ BIDezi.TreeDetailModel = BI.inherit(BI.Model, {
                 "10000": []
             },
             dimensions: {},
-            name: "",
             type: BICst.WIDGET.DETAIL,
             settings: {},
             target_relation: {}

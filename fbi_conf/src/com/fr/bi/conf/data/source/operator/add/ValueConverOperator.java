@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source.operator.add;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
@@ -7,7 +8,9 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DateUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.GeneralUtils;
@@ -74,8 +77,9 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
         int rowCount = ti.getRowCount();
         BIKey key = new IndexKey(field);
         int fieldType = ti.getColumns().get(key).getFieldType();
+        ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
         for (int row = 0; row < rowCount; row++) {
-            Object value = checkValueType(ti.getRow(key, row), fieldType);
+            Object value = checkValueType(getter.getValue(row), fieldType);
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
@@ -103,6 +107,17 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
             default:
                 return convertString(value.toString());
         }
+    }
+
+    @Override
+    protected int getSqlType(IPersistentTable[] tables) {
+        if (columnType == DBConstant.COLUMN.NUMBER){
+            int fieldSqlType = tables[0].getField(field).getSqlType();
+            if (fieldSqlType == java.sql.Types.DATE || fieldSqlType == java.sql.Types.BIGINT){
+                return java.sql.Types.BIGINT;
+            }
+        }
+        return BIDBUtils.biTypeToSql(columnType);
     }
 
     private Object convertString(String value) {

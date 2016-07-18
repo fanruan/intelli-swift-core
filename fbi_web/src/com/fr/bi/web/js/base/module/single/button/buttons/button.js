@@ -22,7 +22,17 @@
                 readonly: true,
                 iconClass: "",
                 level: 'common',
-                hgap: 10
+                textAlign: "center",
+                whiteSpace: "nowrap",
+                forceCenter: false,
+                textWidth: null,
+                textHeight: null,
+                hgap: 10,
+                vgap: 0,
+                tgap: 0,
+                bgap: 0,
+                lgap: 0,
+                rgap: 0
             })
         },
 
@@ -47,6 +57,11 @@
                     cls: "button-" + o.level + " " + o.iconClass,
                     element: this.element,
                     hgap: o.hgap,
+                    vgap: o.vgap,
+                    tgap: o.tgap,
+                    bgap: o.bgap,
+                    lgap: o.lgap,
+                    rgap: o.rgap,
                     items: [{
                         type: "bi.horizontal",
                         items: [this.icon, this.text]
@@ -56,7 +71,17 @@
                 this.text = BI.createWidget({
                     type: "bi.label",
                     cls: "button-" + o.level,
+                    textAlign: o.textAlign,
+                    whiteSpace: o.whiteSpace,
+                    forceCenter: o.forceCenter,
+                    textWidth: o.textWidth,
+                    textHeight: o.textHeight,
                     hgap: o.hgap,
+                    vgap: o.vgap,
+                    tgap: o.tgap,
+                    bgap: o.bgap,
+                    lgap: o.lgap,
+                    rgap: o.rgap,
                     element: this.element,
                     text: o.text,
                     value: o.value

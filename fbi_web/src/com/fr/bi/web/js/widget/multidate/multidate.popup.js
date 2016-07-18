@@ -12,7 +12,7 @@
             itemHeight: 30,
             triggerHeight: 24,
             buttonWidth: 90,
-            buttonHeight: 30,
+            buttonHeight: 25,
             cardHeight: 229,
             cardWidth: 270,
             popupHeight: 259,
@@ -213,7 +213,10 @@
             var self = this, date;
             var type, value;
             if (BI.isNotNull(v)) {
-                type = v.type, value = v.value;
+                type = v.type || BICst.MULTI_DATE_CALENDAR; value = v.value;
+                if(BI.isNull(value)){
+                    value = v;
+                }
             }
             switch (type) {
                 case BICst.MULTI_DATE_YEAR_PREV:
@@ -221,7 +224,7 @@
                 case BICst.MULTI_DATE_YEAR_BEGIN:
                 case BICst.MULTI_DATE_YEAR_END:
                     this.dateTab.setSelect(BICst.MULTI_DATE_YEAR_CARD);
-                    this.year.setValue(v);
+                    this.year.setValue(value);
                     self._setInnerValue(this.year);
                     date = this.year.getCalculationValue();
                     this.ymd.setValue({
@@ -235,7 +238,7 @@
                 case BICst.MULTI_DATE_QUARTER_BEGIN:
                 case BICst.MULTI_DATE_QUARTER_END:
                     this.dateTab.setSelect(BICst.MULTI_DATE_QUARTER_CARD);
-                    this.quarter.setValue(v);
+                    this.quarter.setValue(value);
                     self._setInnerValue(this.quarter);
                     date = this.quarter.getCalculationValue();
                     this.ymd.setValue({
@@ -249,7 +252,7 @@
                 case BICst.MULTI_DATE_MONTH_BEGIN:
                 case BICst.MULTI_DATE_MONTH_END:
                     this.dateTab.setSelect(BICst.MULTI_DATE_MONTH_CARD);
-                    this.month.setValue(v);
+                    this.month.setValue(value);
                     self._setInnerValue(this.month);
                     date = this.month.getCalculationValue();
                     this.ymd.setValue({
@@ -261,7 +264,7 @@
                 case BICst.MULTI_DATE_WEEK_PREV:
                 case BICst.MULTI_DATE_WEEK_AFTER:
                     this.dateTab.setSelect(BICst.MULTI_DATE_WEEK_CARD);
-                    this.week.setValue(v);
+                    this.week.setValue(value);
                     self._setInnerValue(this.week);
                     date = this.week.getCalculationValue();
                     this.ymd.setValue({
@@ -274,7 +277,7 @@
                 case BICst.MULTI_DATE_DAY_AFTER:
                 case BICst.MULTI_DATE_DAY_TODAY:
                     this.dateTab.setSelect(BICst.MULTI_DATE_DAY_CARD);
-                    this.day.setValue(v);
+                    this.day.setValue(value);
                     self._setInnerValue(this.day);
                     date = this.day.getCalculationValue();
                     this.ymd.setValue({
@@ -284,7 +287,7 @@
                     });
                     break;
                 default:
-                    if (BI.isNull(v)) {
+                    if (BI.isNull(value)) {
                         var date = new Date();
                         this.ymd.setValue({
                             year: date.getFullYear(),
@@ -299,7 +302,7 @@
                         this.dateTab.setSelect(BICst.MULTI_DATE_YMD_CARD);
                         this.textButton.setValue(BI.i18nText("BI-Multi_Date_Today"));
                     } else {
-                        this.ymd.setValue(v);
+                        this.ymd.setValue(value);
                         this.dateTab.setSelect(BICst.MULTI_DATE_YMD_CARD);
                         this.textButton.setValue(BI.i18nText("BI-Multi_Date_Today"));
                     }

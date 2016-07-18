@@ -35,8 +35,7 @@ BI.TreeValueChooserCombo = BI.inherit(BI.Widget, {
             height: o.height
         });
 
-        this.combo.on(BI.MultiSelectCombo.EVENT_CONFIRM, function () {
-            BI.Msg.toast(JSON.stringify(this.getValue()));
+        this.combo.on(BI.MultiTreeCombo.EVENT_CONFIRM, function () {
             self.fireEvent(BI.TreeValueChooserCombo.EVENT_CONFIRM);
         });
     },

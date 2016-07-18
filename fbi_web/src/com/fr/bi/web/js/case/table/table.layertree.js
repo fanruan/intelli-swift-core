@@ -9,7 +9,7 @@
 BI.LayerTreeTable = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.LayerTreeTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-table-tree",
+            baseCls: "bi-layer-tree-table",
             logic: { //冻结的页面布局逻辑
                 dynamic: false
             },
@@ -27,9 +27,9 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
             },
 
             columnSize: [],
-            headerRowSize: 37,
-            footerRowSize: 37,
-            rowSize: 37,
+            headerRowSize: 25,
+            footerRowSize: 25,
+            rowSize: 25,
 
             regionColumnSize: false,
 
@@ -63,6 +63,7 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
         });
         var newHeader = this._formatColumns(header);
         newHeader[0] = {
+            cls: "layer-tree-table-title",
             text: "行表头"
         };
         result.push(newHeader);
@@ -281,7 +282,7 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
                 value = this._formatColumns(value);
                 break;
             case "freezeCols":
-                value = [0];
+                value = value.length > 0 ? [0] : [];
                 break;
             case "mergeCols":
                 value = [0];

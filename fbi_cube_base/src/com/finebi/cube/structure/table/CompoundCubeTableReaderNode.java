@@ -7,11 +7,11 @@ import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.BICubeTablePath;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
-import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -33,20 +33,20 @@ import java.util.*;
  * @author Connery
  * @since 4.0
  */
-public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
+public class CompoundCubeTableReaderNode implements CubeTableEntityService {
 
-    private List<ICubeTableEntityService> currentLevelTables = new ArrayList<ICubeTableEntityService>();
-    private ICubeTableEntityService masterTable = null;
+    private List<CubeTableEntityService> currentLevelTables = new ArrayList<CubeTableEntityService>();
+    private CubeTableEntityService masterTable = null;
     protected ICubeResourceDiscovery discovery;
     protected ICubeResourceRetrievalService resourceRetrievalService;
-    protected Map<ICubeFieldSource, ICubeTableEntityService> fieldSource = new HashMap<ICubeFieldSource, ICubeTableEntityService>();
+    protected Map<ICubeFieldSource, CubeTableEntityService> fieldSource = new HashMap<ICubeFieldSource, CubeTableEntityService>();
     private List<ICubeFieldSource> currentLevelFields = new ArrayList<ICubeFieldSource>();
 
     public CompoundCubeTableReaderNode(List<ITableKey> tableKeys, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         this.resourceRetrievalService = resourceRetrievalService;
         this.discovery = discovery;
         for (ITableKey tableKey : tableKeys) {
-            ICubeTableEntityService tableEntityService = new CompoundCubeTableReader(tableKey, resourceRetrievalService, discovery);
+            CubeTableEntityService tableEntityService = new CompoundCubeTableReader(tableKey, resourceRetrievalService, discovery);
             if (masterTable == null) {
                 masterTable = tableEntityService;
             }
@@ -55,7 +55,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
         }
     }
 
-    private void initialFieldSource(ICubeTableEntityService tableEntityService) {
+    private void initialFieldSource(CubeTableEntityService tableEntityService) {
         if (tableEntityService.tableDataAvailable()) {
             for (ICubeFieldSource field : tableEntityService.getFieldInfo()) {
 
@@ -120,7 +120,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
     }
 
     @Override
-    public void copyDetailValue(ICubeTableEntityService cube, long rowCount) {
+    public void copyDetailValue(CubeTableEntityService cube, long rowCount) {
         throw new UnsupportedOperationException();
 
     }
@@ -134,7 +134,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
     @Override
     public Set<BIColumnKey> getCubeColumnInfo() {
         Set<BIColumnKey> result = new HashSet<BIColumnKey>();
-        for (ICubeTableEntityService tableEntityService : currentLevelTables) {
+        for (CubeTableEntityService tableEntityService : currentLevelTables) {
             for (BIColumnKey columnKey : tableEntityService.getCubeColumnInfo()) {
                 if (!result.contains(columnKey)) {
                     result.add(columnKey);
@@ -165,22 +165,22 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
     }
 
     @Override
-    public ICubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
+    public CubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
         return pickTableService(columnKey.getColumnName()).getColumnDataGetter(columnKey);
     }
 
     @Override
-    public ICubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
+    public CubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
         return pickTableService(columnName).getColumnDataGetter(columnName);
     }
 
-    private ICubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
+    private CubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
         ICubeFieldSource field = getSpecificColumn(fieldName);
         return fieldSource.get(field);
     }
 
     @Override
-    public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
+    public CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
         try {
             BIColumnKey columnKey = path.getFirstRelation().getPrimaryField();
             return pickTableService(columnKey.getColumnName()).getRelationIndexGetter(path);
@@ -196,7 +196,7 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
     @Override
     public void clear() {
-        for (ICubeTableEntityService table : currentLevelTables) {
+        for (CubeTableEntityService table : currentLevelTables) {
             table.clear();
         }
     }
@@ -233,8 +233,13 @@ public class CompoundCubeTableReaderNode implements ICubeTableEntityService {
 
     @Override
     public void setTableOwner(ITableKey owner) {
-        for (ICubeTableEntityService tableEntityService : currentLevelTables) {
+        for (CubeTableEntityService tableEntityService : currentLevelTables) {
             tableEntityService.setTableOwner(owner);
         }
+    }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return masterTable.isVersionAvailable();
     }
 }

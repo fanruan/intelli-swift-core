@@ -3,6 +3,7 @@
  */
 package com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.rowcal.CorrespondRowCalculatorOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -19,12 +20,13 @@ public class PeriodRowCalculatorOperator extends CorrespondRowCalculatorOperator
      *
      */
     private static final long serialVersionUID = 574637556670188056L;
-    private static final String XML_TAG="PeriodRowCalculatorOperator";
+    @BICoreField
+    private String XML_TAG="PeriodRowCalculatorOperator";
 
 
     @Override
-    protected ResultDealer createResultDealer(Traversal<BIDataValue> travel) {
-        return new CorrespondPeriodResultDealer(key, travel, periodKey);
+    protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
+        return new CorrespondPeriodResultDealer(key, travel, periodKey, startCol);
     }
 
     @Override

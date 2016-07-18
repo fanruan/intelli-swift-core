@@ -2,6 +2,8 @@ package com.fr.bi.field.dimension.filter;
 
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.dimension.filter.field.DimensionTargetValueFilter;
+import com.fr.bi.field.dimension.filter.field.EmptyDimensionTargetValueFilter;
+import com.fr.bi.field.dimension.filter.formula.EmptyFormulaFilter;
 import com.fr.bi.field.dimension.filter.formula.FormulaValueFilter;
 import com.fr.bi.field.dimension.filter.general.GeneralANDDimensionFilter;
 import com.fr.bi.field.dimension.filter.general.GeneralORDimensionFilter;
@@ -27,8 +29,10 @@ public class DimensionFilterFactory {
                     filter = new FormulaValueFilter();
                     break;
                 case BIReportConstant.FILTER_TYPE.EMPTY_FORMULA:
+                    filter = new EmptyFormulaFilter();
+                    break;
                 case BIReportConstant.FILTER_TYPE.EMPTY_CONDITION:
-                    filter = null;
+                    filter = new EmptyDimensionTargetValueFilter();
                     break;
                 default:
                     filter = new DimensionTargetValueFilter();

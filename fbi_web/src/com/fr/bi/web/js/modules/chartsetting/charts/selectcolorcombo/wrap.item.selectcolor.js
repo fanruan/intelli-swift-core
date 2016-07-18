@@ -9,6 +9,7 @@ BI.ChartSettingWrapSelectColorItem = BI.inherit(BI.Single, {
         return BI.extend(conf, {
             baseCls: (conf.baseCls || "") + " bi-chart-setting-wrap-select-color-item",
             text: "",
+            header: "",
             value: [],
             height: 50,
             width: 130
@@ -19,7 +20,8 @@ BI.ChartSettingWrapSelectColorItem = BI.inherit(BI.Single, {
         var self = this, o = this.options;
         this.item = BI.createWidget({
             type: "bi.chart_setting_select_color_item",
-            value: o.value
+            value: o.value,
+            text: o.text,
         });
         BI.createWidget({
             type: "bi.vtape",
@@ -28,7 +30,7 @@ BI.ChartSettingWrapSelectColorItem = BI.inherit(BI.Single, {
             items: [{
                 type: "bi.label",
                 textAlign: "left",
-                text: o.text,
+                text: o.header,
                 lgap: 3
             }, {
                 el: this.item,

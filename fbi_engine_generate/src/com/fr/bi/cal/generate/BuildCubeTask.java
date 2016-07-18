@@ -2,7 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BIDeliverFailureException;
 import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
@@ -22,6 +22,7 @@ import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -32,6 +33,7 @@ import com.fr.json.JSONObject;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Future;
 
 /**
@@ -40,42 +42,45 @@ import java.util.concurrent.Future;
  * @author Connery
  * @since 4.0
  * <p/>
- * edit by wuk
+ * edit by kary
  */
 public class BuildCubeTask implements CubeTask {
 
-    private CubeBuildStuff cubeBuildStuff;
+    private CubeBuild cubeBuild;
     private BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
+    private String uuid;
+    private int updateTypes = DBConstant.SINGLE_TABLE_UPDATE.NEVER;
 
 
-    public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
-        this.cubeBuildStuff = cubeBuildStuff;
+    public BuildCubeTask(BIUser biUser, CubeBuild cubeBuild) {
+        this.cubeBuild = cubeBuild;
         this.biUser = biUser;
-
-        cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
+        cubeConfiguration = cubeBuild.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        uuid="BUILD_CUBE"+ UUID.randomUUID();
     }
-
-
+    
     @Override
     public String getUUID() {
-        return "BUILD_CUBE";
+        return uuid;
     }
 
     @Override
     public CubeTaskType getTaskType() {
-        return CubeTaskType.BUILD;
+        if (cubeBuild.isSingleTable()) {
+            return CubeTaskType.SINGLE;
+        }
+        return CubeTaskType.ALL;
     }
 
     @Override
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
-        BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }
 
     @Override
@@ -83,7 +88,10 @@ public class BuildCubeTask implements CubeTask {
         Future<String> result = finishObserver.getOperationResult();
         try {
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-            BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuildStuff.getTableRelationSet());
+            if (!cubeBuild.isSingleTable()){
+                BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
+                BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
+            }
             BILogger.getLogger().info(result.get());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
@@ -97,25 +105,28 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
+    
+
+
     @Override
     public void run() {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-        BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSources());
+        BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuild.getSources());
         operationManager.initialWatcher();
         operationManager.subscribeStartMessage();
-        manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
-        manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
-        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getBiTableSourceRelationPathSet());
+        manager.registerDataSource(cubeBuild.getAllSingleSources());
+        manager.registerRelation(cubeBuild.getTableSourceRelationSet());
+        Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuild.getBiTableSourceRelationPathSet());
         manager.registerTableRelationPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
-        operationManager.setVersionMap(cubeBuildStuff.getVersions());
-        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
-        operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet());
-        operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet());
+        operationManager.setVersionMap(cubeBuild.getVersions());
+        operationManager.generateDataSource(cubeBuild.getDependTableResource());
+        operationManager.generateRelationBuilder(cubeBuild.getCubeGenerateRelationSet());
+        operationManager.generateTableRelationPath(cubeBuild.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
-            BIConfigureManagerCenter.getLogManager().reLationPathSet(cubeBuildStuff.getBiTableSourceRelationPathSet(), biUser.getUserId());
-            BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getAllSingleSources(), biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().reLationPathSet(cubeBuild.getBiTableSourceRelationPathSet(), biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuild.getAllSingleSources(), biUser.getUserId());
             router.deliverMessage(generateMessageDataSourceStart());
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);
@@ -136,7 +147,6 @@ public class BuildCubeTask implements CubeTask {
 
     public static IMessage generateMessageDataSourceStart() {
         return buildTopic(new BIMessageTopic(BICubeBuildTopicTag.START_BUILD_CUBE));
-
     }
 
     private static IMessage buildTopic(IMessageTopic topic) {
@@ -152,4 +162,10 @@ public class BuildCubeTask implements CubeTask {
     public JSONObject createJSON() throws Exception {
         return null;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.getUUID().equals(((BuildCubeTask) obj).getUUID());
+    }
+
 }

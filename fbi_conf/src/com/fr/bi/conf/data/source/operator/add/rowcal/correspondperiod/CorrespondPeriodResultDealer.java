@@ -3,8 +3,10 @@
  */
 package com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondPeriodPercentResultDealer;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.finebi.cube.api.ICubeTableService;
@@ -23,26 +25,31 @@ public class CorrespondPeriodResultDealer implements ResultDealer {
 	private BIKey key;
 	private BIKey periodKey;
 	private Traversal<BIDataValue> travel;
+	private int startCol;
 	
-	CorrespondPeriodResultDealer(BIKey key, Traversal<BIDataValue> travel,  BIKey periodKey){
+	CorrespondPeriodResultDealer(BIKey key, Traversal<BIDataValue> travel,  BIKey periodKey, int startCol){
 		this.key = key;
 		this.travel = travel;
 		this.periodKey = periodKey;
+		this.startCol = startCol;
 	}
 
 	@Override
-	public void dealWith(final ICubeTableService ti, GroupValueIndex gvi, final int startCol) {
+	public void dealWith(final ICubeTableService ti, GroupValueIndex gvi) {
 		final Map<Double, Object> map = new HashMap<Double, Object>();
+        final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(periodKey);
+        final ICubeColumnDetailGetter keyGetter = ti.getColumnDetailReader(CorrespondPeriodResultDealer.this.key);
 		gvi.Traversal(new SingleRowTraversalAction() {
 			@Override
 			public void actionPerformed(int row) {
-				Number v = (Number) ti.getRow(periodKey, row);
+				Number v = (Number) getter.getValue(row);
 				if(v == null){
 					return;
 				}
 				double key = v.doubleValue();
 				if(!map.containsKey(key)){
-					Object value = ti.getRow(CorrespondPeriodResultDealer.this.key, row);
+					Object value = keyGetter.getValue(row);
+                    value = value == null ? value : ((Number)value).doubleValue();
 					map.put(key, value);
 				}
 			}
@@ -50,7 +57,7 @@ public class CorrespondPeriodResultDealer implements ResultDealer {
 		gvi.Traversal(new SingleRowTraversalAction() {
 			@Override
 			public void actionPerformed(int row) {
-				Number v = (Number) ti.getRow(periodKey, row);
+				Number v = (Number) getter.getValue(row);
 				Object value = null;
 				if(v != null){
 					double key = v.doubleValue() - 1;

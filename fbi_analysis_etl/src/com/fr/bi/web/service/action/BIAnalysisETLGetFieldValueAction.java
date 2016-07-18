@@ -1,5 +1,6 @@
 package com.fr.bi.web.service.action;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.etl.analysis.Constants;
@@ -44,11 +45,14 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
         BIKey key = new IndexKey(field);
         int filedType = service.getColumns().get(key).getFieldType();
         Set set = new HashSet();
+        ICubeColumnDetailGetter getter = service.getColumnDetailReader(key);
         for (int i = 0; i < service.getRowCount() && set.size() < MAX_ROW; i ++){
-            set.add(service.getRow(key, i));
+            set.add(getter.getValue(i));
         }
         for (Object ob : set){
-            ja.put(getText(ob, filedType));
+            if (ob != null){
+                ja.put(getText(ob, filedType));
+            }
         }
         JSONObject result = new JSONObject();
         result.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
@@ -56,10 +60,10 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
     }
 
     private Object getText(Object ob, int fieldType) {
-        if (ob != null && fieldType == DBConstant.COLUMN.DATE){
+        if (fieldType == DBConstant.COLUMN.DATE){
             return DateUtils.format(new Date((Long)ob));
         }
-        return ob == null ? StringUtils.EMPTY : ob;
+        return ob;
     }
 
     @Override

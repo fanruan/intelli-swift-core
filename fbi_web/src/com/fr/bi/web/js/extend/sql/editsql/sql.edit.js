@@ -7,7 +7,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         SQL_EDIT_NORTH_HEIGHT: 40,
         SQL_EDIT_SOUTH_HEIGHT: 60,
         SQL_EDIT_WEST_WIDTH: 580,
-        SQL_EDIT_BUTTON_HEIGHT: 28,
+        SQL_EDIT_BUTTON_HEIGHT: 30,
         SQL_EDIT_BUTTON_GAP: 20,
         SQL_EDIT_NAME_WIDTH: 50,
         SQL_EDIT_GAP: 20,
@@ -65,6 +65,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         });
         this.connectionCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setDataLinkName(this.getValue()[0]);
+            self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
         });
         this.sqlEditor = BI.createWidget({
             type: "bi.code_editor",
@@ -74,9 +75,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         this.sqlEditor.on(BI.CodeEditor.EVENT_CHANGE, function(){
             var sql = this.getValue();
             self.model.setSQL(sql);
-            if(self.previewTab.getSelect() === self.constants.PREVIEW_PANE){
-                self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
-            }
+            self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
             self.saveButton.setEnable(BI.isNotEmptyString(sql));
             self.previewButton.setEnable(BI.isNotEmptyString(sql));
         });
@@ -107,7 +106,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                             cls: "server-set-north",
                             items: [{
                                 type: "bi.label",
-                                text: BI.i18nText("BI-Set_Server_Dataset"),
+                                text: BI.i18nText("BI-SQL_Data_Set"),
                                 height: this.constants.SQL_EDIT_NORTH_HEIGHT
                             }]
                         },
@@ -144,7 +143,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
     _createCenter: function(){
         var self = this;
         this.previewWrapper = BI.createWidget({
-            type: "bi.vertical"
+            type: "bi.preview_table"
         });
         this.previewTab = BI.createWidget({
             type: "bi.tab",
@@ -334,6 +333,11 @@ BI.EditSQL = BI.inherit(BI.Widget, {
 
     _getPreviewResult: function(){
         var self = this;
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: BICst.BODY_ELEMENT,
+            text: BI.i18nText("BI-Loading")
+        });
         BI.Utils.getServerSetPreviewBySql({
             data_link: self.model.getDataLinkName(),
             sql: BI.encrypt(self.model.getSQL(), "sh")
@@ -344,11 +348,11 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             } else {
                 self.previewTab.setSelect(self.constants.PREVIEW_ERROR);
             }
+            mask.destroy();
         });
     },
 
     _createPreviewTable: function(data){
-        this.previewWrapper.empty();
         var fieldNames = data.field_names, previewData = data.data;
         var header = [], items = [], columnSize = [];
         BI.each(fieldNames, function(i, field){
@@ -364,12 +368,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             });
             items.push(item);
         });
-        this.previewWrapper.addItem({
-            type: "bi.preview_table",
-            header: [header],
-            items: items,
-            columnSize: columnSize
-        });
+        this.previewWrapper.populate(items, [header]);
     },
 
     _populate: function(){

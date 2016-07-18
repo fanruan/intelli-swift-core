@@ -28,7 +28,8 @@ BI.CustomSortPane = BI.inherit(BI.Widget, {
                 layouts: [
                     {
                         type: "bi.vertical",
-                        vgap: 20
+                        vgap: 10,
+                        hgap: 5
                     }
                 ]
             },
@@ -92,8 +93,9 @@ BI.CustomSortPane = BI.inherit(BI.Widget, {
                     itemvalue: value
                 },
                 text: value,
-                height: 20,
-                value: value
+                value: value,
+                height: 25,
+                textHgap: 5
             }
         });
     },

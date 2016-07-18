@@ -84,12 +84,15 @@ public abstract class StringNFilterValue extends AbstractFilterValue<String> imp
      *
      * @param jo     json对象
      * @param userId 用户id
-     * @throws Exception 报错
      */
     @Override
-    public void parseJSON(JSONObject jo, long userId) throws Exception {
+    public void parseJSON(JSONObject jo, long userId){
         if (jo.has("filter_value")) {
-            this.N = jo.getInt("filter_value");
+            try{
+                this.N = jo.getInt("filter_value");
+            }catch (Exception e) {
+                this.N = 0;
+            }
         }
     }
 

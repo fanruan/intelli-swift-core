@@ -8,8 +8,8 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.rowcal.RowCalculatorOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.fr.json.JSONObject;
 
@@ -83,13 +83,13 @@ public class AllDataRowCalculatorOperator extends RowCalculatorOperator{
 	}
 
 	@Override
-	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel) {
+	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
 		AllDataCalculator cal = createCalculator(summaryType);
-		return new CalResultDealer(key, cal, travel);
+		return new CalResultDealer(key, cal, travel, startCol);
 	}
 
 	@Override
-	protected int getSqlType(){
+	protected int getSqlType(IPersistentTable[] tables){
 		return java.sql.Types.DOUBLE;
 	}
 }

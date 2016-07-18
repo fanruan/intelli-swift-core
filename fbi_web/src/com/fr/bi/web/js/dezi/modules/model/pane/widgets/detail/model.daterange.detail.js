@@ -4,7 +4,6 @@ BIDezi.DateRangeDetailModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.DateRangeDetailModel.superclass._defaultConfig.apply(this, arguments), {
             dimensions: {},
             view: {},
-            name: "",
             type: BICst.WIDGET.DATE,
             value: {}
         });

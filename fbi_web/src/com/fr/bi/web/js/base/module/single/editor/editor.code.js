@@ -96,7 +96,7 @@ BI.CodeEditor = BI.inherit(BI.Single, {
     },
 
     getValue: function () {
-        return this.editor.getValue(true, function (line) {
+        return this.editor.getValue("\n", function (line) {
             var rawText = line.text, value = line.text, num = 0;
             value.text = rawText;
             _.forEach(line.markedSpans, function (i, ms) {
@@ -113,10 +113,8 @@ BI.CodeEditor = BI.inherit(BI.Single, {
     },
 
     _analyzeContent: function (v) {
-        var regx = /\$[\{][^\}]*[\}]|\w*\w|\$\{[^\$\(\)\+\-\*\/)\$,]*\w\}|\$\{[^\$\(\)\+\-\*\/]*\w\}|\$\{[^\$\(\)\+\-\*\/]*[\u4e00-\u9fa5]\}|\w|(.)/g;
-        var result = v.match(regx);
-        return result;
-
+        var regx = /\$[\{][^\}]*[\}]|\w*\w|\$\{[^\$\(\)\+\-\*\/)\$,]*\w\}|\$\{[^\$\(\)\+\-\*\/]*\w\}|\$\{[^\$\(\)\+\-\*\/]*[\u4e00-\u9fa5]\}|\w|(.)|\n/g;
+        return v.match(regx);
     },
 
     setValue: function (v) {

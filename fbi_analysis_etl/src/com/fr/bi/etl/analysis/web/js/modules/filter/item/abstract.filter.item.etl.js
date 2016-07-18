@@ -104,6 +104,13 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
         return this.filterWidget;
     },
 
+    _createEmptyWidget: function () {
+        this.filterWidget = BI.createWidget({
+            type: "bi.layout"
+        });
+        return this.filterWidget;
+    },
+
     getValue: function () {
         return {
             field_name : this.options.field_name,

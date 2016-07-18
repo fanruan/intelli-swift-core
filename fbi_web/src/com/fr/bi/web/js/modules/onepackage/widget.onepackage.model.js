@@ -162,7 +162,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         this.excelViews[id] = data.excel_view;
         this.updateSettings = data.update_settings;
         //可能是新添加的
-        if(BI.isNull(this.tablesData[id])){
+        if (BI.isNull(this.tablesData[id])) {
             this.tables.push({id: id});
         }
         this.tablesData[id] = data;
@@ -172,16 +172,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     removeTable: function (tableId) {
         var self = this;
 
-        //删除表的转义
-        delete self.translations[tableId];
-        //删除表中字段转义
-        var allFieldsArray = self.tablesData[tableId].fields;
-        BI.each(allFieldsArray, function (i, fieldsArray) {
-            BI.each(fieldsArray, function (index, fieldObj) {
-                delete self.translations[fieldObj.id];
-            })
-        });
-
         delete this.tablesData[tableId];
         BI.some(this.getTables(), function (i, table) {
             if (table.id === tableId) {
@@ -189,21 +179,18 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 return true;
             }
         });
-        BI.each(this.allFields, function (id, field) {
-            if (field !== null && field.table_id === tableId) {
-                delete self.allFields[id];
-            }
-        });
 
 
         //删除相关关联
         var connectionSet = this.relations.connectionSet, primaryKeyMap = this.relations.primKeyMap, foreignKeyMap = this.relations.foreignKeyMap;
+        var resultConnectionSet = [];
         BI.each(connectionSet, function (i, keys) {
             var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
-            if (self.getTableIdByFieldId(primKey.field_id) === tableId || self.getTableIdByFieldId(foreignKey.field_id === tableId)) {
-                connectionSet.splice(i, 1);
+            if (!(self.getTableIdByFieldId(primKey.field_id) === tableId || self.getTableIdByFieldId(foreignKey.field_id) === tableId)) {
+                resultConnectionSet.push(connectionSet[i])
             }
         });
+        this.relations.connectionSet = resultConnectionSet;
         BI.each(primaryKeyMap, function (kId, maps) {
             if (self.getTableIdByFieldId(kId) === tableId) {
                 delete primaryKeyMap[kId];
@@ -212,7 +199,10 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     if (tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id)) {
                         primaryKeyMap[kId].splice(i, 1);
                     }
-                })
+                });
+                if (primaryKeyMap[kId].length === 0) {
+                    delete primaryKeyMap[kId];
+                }
             }
         });
         BI.each(foreignKeyMap, function (kId, maps) {
@@ -223,7 +213,16 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     if (tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id)) {
                         foreignKeyMap[kId].splice(i, 1);
                     }
-                })
+                });
+                if (foreignKeyMap[kId].length === 0) {
+                    delete foreignKeyMap[kId];
+                }
+            }
+        });
+
+        BI.each(this.allFields, function (id, field) {
+            if (field !== null && field.table_id === tableId) {
+                delete self.allFields[id];
             }
         });
         this._syncSharedPackages();
@@ -260,14 +259,8 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 //业务包表
                 var tableId = table.id;
                 //转义、关联都是用sharing pool中的，相当于复制一份
-                var translations = self.getTranslations();
+                self.translations[id] = self.createDistinctTableTranName(self.translations[tableId]);
                 var relations = self.getRelations();
-                BI.each(translations, function (tranId, name) {
-                    if (tranId === tableId || self.getTableIdByFieldId(tranId)) {
-                        var nId = id.replace(tableId, id);
-                        self.translations[nId] = tranId === tranId ? self.createDistinctTableTranName(name) : name
-                    }
-                });
                 var connectionSet = relations.connectionSet, primaryKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
                 BI.each(connectionSet, function (i, keys) {
                     var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
@@ -311,9 +304,18 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             masker: BICst.BODY_ELEMENT,
             text: BI.i18nText("BI-Loading")
         });
+
+        //读关联的时候去除来自于服务器的
+        var oTables = {}, nTables = {};
+        BI.each(oldTables, function(id, t) {
+            t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (oTables[id] = t);
+        });
+        BI.each(this.getTablesData(), function(id, t) {
+            t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (nTables[id] = t);
+        });
         var data = {
-            oldTables: oldTables,
-            newTables: this.getTablesData()
+            oldTables: oTables,
+            newTables: nTables
         };
         BI.Utils.getRelationAndTransByTables(data, function (res) {
             var relations = res.relations, translations = res.translations;

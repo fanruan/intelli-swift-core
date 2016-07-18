@@ -1,10 +1,10 @@
 package com.fr.bi.cal.stable.tableindex.index;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.tableindex.AbstractTableIndex;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
-import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.CalculatorTraversalAction;
@@ -44,24 +44,17 @@ public abstract class BaseTableIndex extends AbstractTableIndex {
         return getColumnIndex(field.getFieldName());
     }
 
-    @Override
-    public Object[] getRow(BIKey columnIndex, int[] rows) {
-        Object[] res = new Object[rows.length];
-        for (int i = 0, ilen = rows.length; i < ilen; i++) {
-            res[i] = getRow(columnIndex, rows[i]);
-        }
-        return res;
-    }
+
 
     @Override
     public double getMAXValue(GroupValueIndex gvi, BIKey summaryIndex) {
-        final DetailGetter list = getDetailGetter(summaryIndex);
+        final ICubeColumnDetailGetter list = getColumnDetailReader(summaryIndex);
         CalculatorTraversalAction ss = new CalculatorTraversalAction() {
             boolean firstValue = true;
 
             @Override
             public void actionPerformed(int row) {
-                Object v = list.getValueObject(row);
+                Object v = list.getValue(row);
                 if (v != null) {
                     double res = ((Number) v).doubleValue();
                     if (firstValue) {
@@ -92,13 +85,13 @@ public abstract class BaseTableIndex extends AbstractTableIndex {
 
     @Override
     public double getMINValue(GroupValueIndex gvi, BIKey summaryIndex) {
-        final DetailGetter list = getDetailGetter(summaryIndex);
+        final ICubeColumnDetailGetter list = getColumnDetailReader(summaryIndex);
         CalculatorTraversalAction ss = new CalculatorTraversalAction() {
             boolean firstValue = true;
 
             @Override
             public void actionPerformed(int row) {
-                Object v = list.getValueObject(row);
+                Object v = list.getValue(row);
                 if (v != null) {
                     double res = ((Number) v).doubleValue();
                     if (firstValue) {
@@ -129,11 +122,11 @@ public abstract class BaseTableIndex extends AbstractTableIndex {
 
     @Override
     public double getSUMValue(GroupValueIndex gvi, BIKey summaryIndex) {
-        final DetailGetter list = getDetailGetter(summaryIndex);
+        final ICubeColumnDetailGetter list = getColumnDetailReader(summaryIndex);
         CalculatorTraversalAction ss = new CalculatorTraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                Object v = list.getValueObject(row);
+                Object v = list.getValue(row);
                 if (v != null) {
                     double res = ((Number) v).doubleValue();
                     sum += res;
@@ -160,10 +153,11 @@ public abstract class BaseTableIndex extends AbstractTableIndex {
     @Override
     public double getDistinctCountValue(GroupValueIndex gvi, final BIKey distinct_field) {
         final Set<Object> resMap = new HashSet<Object>();
+        final ICubeColumnDetailGetter getter = getColumnDetailReader(distinct_field);
         SingleRowTraversalAction ss = new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                Object v = getRow(distinct_field, row);
+                Object v = getter.getValue(row);
                 //D:null值不做统计
                 if (v != null) {
                     resMap.add(v);
@@ -175,24 +169,7 @@ public abstract class BaseTableIndex extends AbstractTableIndex {
     }
 
     @Override
-    public Object getRow(BIKey key, int row) {
-        DetailGetter getter = getDetailGetter(key);
-        if (getter != null) {
-            return getter.getValue(row);
-        }
-        return null;
-    }
-
-    @Override
-    public Object getRowValue(BIKey key, int row) {
-        DetailGetter getter = getDetailGetter(key);
-        if (getter != null) {
-            return getter.getValueObject(row);
-        }
-        return null;
-    }
-
-    private DetailGetter getDetailGetter(BIKey key) {
+    public ICubeColumnDetailGetter getColumnDetailReader(BIKey key) {
         try {
             return cube.createDetailGetter(key, manager);
         } catch (Exception e) {

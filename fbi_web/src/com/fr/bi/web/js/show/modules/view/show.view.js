@@ -107,10 +107,12 @@ BIShow.View = BI.inherit(BI.View, {
             name: this.model.get("reportName")
         });
         saveAs.on(BI.ReportSaveAsFloatBox.EVENT_CHANGE, function (data) {
-            BI.requestAsync("fr_bi", "add_report", {
-                reportName: data.report_name,
-                reportLocation: data.report_location,
-                popConfig: self.model.get("popConfig")
+            BI.requestAsync("fr_bi", "report_save_as", {
+                report_id: self.model.get("reportId"),
+                report_name: data.report_name,
+                create_by: self.model.get("createBy"),
+                report_location: data.report_location,
+                real_time: self.model.get("description")
             }, function(res, model){
                 if (BI.isNotNull(res) && BI.isNotNull(res.reportId)) {
                     BI.Msg.toast(BI.i18nText("BI-Save_As_Success"));

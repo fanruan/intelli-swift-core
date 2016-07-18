@@ -76,7 +76,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
                 height: 40
             }, {
                 el: this.filterPane,
-                height: 92
+                height: 82
             }, {
                 el: BI.createWidget(),
                 height: 20
@@ -215,7 +215,9 @@ BI.AllReports = BI.inherit(BI.Widget, {
         var departs = [];
         BI.each(this.roles, function (i, role) {
             if (role.users.contains(userId)) {
-                departs.push(role.departmentid);
+                if(BI.isNotNull(role.departmentid)){
+                    departs.push(role.departmentid.toString());
+                }
             }
         });
         return departs;
@@ -246,7 +248,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
             masker: BICst.BODY_ELEMENT,
             text: BI.i18nText("BI-Loading")
         });
-        BI.Utils.getAllReportsData(function (data) {
+        BI.requestAsync("fr_bi", "get_all_reports_data", {}, function (data) {
             self.departs = data.departs;
             self.roles = data.roles;
             self.users = data.users;

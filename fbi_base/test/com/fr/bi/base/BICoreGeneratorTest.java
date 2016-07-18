@@ -67,4 +67,17 @@ public class BICoreGeneratorTest extends TestCase {
             BILogger.getLogger().error(ignore.getMessage(), ignore);
         }
     }
-}
+    public void testCoreValue() {
+        try {
+            BICore core= new BIBasicCore();
+            core.registerAttribute("BIdemo");
+            core.registerAttribute("银行_产品表");
+            System.out.println(core.getIDValue());
+            BICore core2= new BIBasicCore();
+            core2.registerAttribute("BIdemo");
+            core2.registerAttribute("银行_用户表");
+            System.out.println(core2.getIDValue());
+        } catch (Exception ignore) {
+            BILogger.getLogger().error(ignore.getMessage(), ignore);
+        }
+    }}

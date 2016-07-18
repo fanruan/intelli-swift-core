@@ -24,8 +24,15 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         BI.some(conditions, function (i, co) {
             var range = co.range;
             var min = BI.parseFloat(range.min), max = BI.parseFloat(range.max);
-            if ((range.closemin === true ? text >= min : text > min) &&
-                (range.closemax === true ? text <= max : text < max)) {
+            var minBoolean = true;
+            var maxBoolean = true;
+            if (BI.isNumeric(min)) {
+                minBoolean = (range.closemin === true ? text >= min : text > min);
+            }
+            if (BI.isNumeric(max)) {
+                maxBoolean = (range.closemax === true ? text <= max : text < max);
+            }
+            if (minBoolean && maxBoolean) {
                 color = co.color;
             }
         });
@@ -49,7 +56,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                     width: 16,
                     height: 16
                 }],
-                columnSize: ["", 30]
+                columnSize: ["", 25]
             });
         } else {
             BI.createWidget({
@@ -81,6 +88,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
 
     _parseFloatByDot: function (text, dot) {
         if (text === Infinity || text !== text) {
+            return text;
+        }
+        if (!BI.isNumeric(text)) {
             return text;
         }
         var num = BI.parseFloat(text);
@@ -150,15 +160,14 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         if (text === Infinity) {
             text = "N/0";
         }
-        if (text !== text) {
-            text = "0/0";
-        }
+
         if (BI.isEmptyArray(linkedWidgets)) {
             return BI.createWidget({
                 type: "bi.label",
                 text: text,
                 title: text,
-                height: 30,
+                height: 25,
+                cls: "target-cell-text",
                 textAlign: "left",
                 lgap: 5
             });
@@ -167,7 +176,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 type: "bi.text_button",
                 text: text,
                 title: text,
-                height: 30,
+                height: 25,
                 textAlign: "left",
                 cls: "target-linkage-label",
                 lgap: 5

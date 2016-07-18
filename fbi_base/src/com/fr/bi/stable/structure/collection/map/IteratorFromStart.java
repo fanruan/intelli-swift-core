@@ -43,7 +43,7 @@ public class IteratorFromStart implements Iterator<Map.Entry> {
     @Override
     public boolean hasNext() {
         if (iter != null){
-            return iter.hasNext() || entry != null;
+            return iter.hasNext() || (entry != null && first);
         }
         return false;
     }

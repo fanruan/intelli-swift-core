@@ -3,6 +3,7 @@ package com.fr.bi.etl.analysis.conf;
 
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.imp.BIPackageContainer;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.etl.analysis.Constants;
@@ -12,7 +13,9 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/23.
@@ -73,6 +76,12 @@ public class AnalysisETLPackageSet extends BIPackageContainer {
             jo.put(Constants.PACK_ID, pack);
         }
         return jo;
+    }
+
+    public Set<BusinessTable> getAllTables(){
+        Set<BusinessTable> result = new HashSet<BusinessTable>();
+        result.addAll(getPack().getBusinessTables());
+        return result;
     }
 
 }

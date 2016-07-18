@@ -191,6 +191,9 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         }
         switch (widgetType) {
             case BICst.WIDGET.STRING:
+                if(BI.isNull(widgetValue.value) || widgetValue.value.length === 0) {
+                    return text;
+                }
                 if(widgetValue.type === BI.Selection.Multi) {
                     text = BI.i18nText("BI-In") + " " +  widgetValue.value;
                 } else if(widgetValue.type === BI.Selection.All) {

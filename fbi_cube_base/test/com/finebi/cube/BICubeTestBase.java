@@ -36,7 +36,6 @@ public class BICubeTestBase extends TestCase {
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         tableEntity = (BICubeTableEntity) cube.getCubeTableWriter(BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()));
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());
-         biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
     }
 
     public void testVoid() {

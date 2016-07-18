@@ -33,9 +33,10 @@ public abstract class AbstractTableSource implements CubeTableSource {
     private static final long serialVersionUID = -8657998191260725924L;
     //表的唯一标识
     protected Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
-    protected PersistentTable dbTable;
     @BIIgnoreField
-    private BICore core;
+    protected transient PersistentTable dbTable;
+    @BIIgnoreField
+    private transient BICore core;
 
     protected AbstractTableSource() {
 
@@ -137,7 +138,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
             fieldValues.put(values);
             int count = Math.min(tableIndex.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
             for (int i = 0; i < count; i++) {
-                values.put(tableIndex.getRowValue(new IndexKey(column.getFieldName()), i));
+                values.put(tableIndex.getColumnDetailReader(new IndexKey(column.getFieldName())).getValue(i));
             }
         }
         return new JSONObject().put(BIJSONConstant.JSON_KEYS.FIELDS, allFieldNamesJo).put(BIJSONConstant.JSON_KEYS.VALUE, fieldValues).put(BIJSONConstant.JSON_KEYS.TYPE, fieldTypes);
@@ -173,7 +174,11 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
+        if(helper.contains(this)){
+            return set;
+        }
+        helper.add(this);
         set.add(this);
         return set;
     }
@@ -334,6 +339,10 @@ public abstract class AbstractTableSource implements CubeTableSource {
         return jo;
     }
 
+    public void parseJSON(JSONObject jo, long userId) throws Exception {
+
+    }
+
     @Override
     public void readXML(XMLableReader reader) {
         if (reader.isAttr()) {
@@ -363,6 +372,10 @@ public abstract class AbstractTableSource implements CubeTableSource {
         return map;
     }
 
+    @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
+        return 0;
+    }
     @Override
     public SourceFile getSourceFile() {
         return new SourceFile(fetchObjectCore().getID().getIdentityValue());

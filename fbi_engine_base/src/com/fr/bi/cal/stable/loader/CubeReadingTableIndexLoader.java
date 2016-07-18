@@ -1,6 +1,8 @@
 package com.fr.bi.cal.stable.loader;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.BIUser;
@@ -37,8 +39,12 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
     public CubeReadingTableIndexLoader(long userId) {
         user = new BIUser(userId);
         for (BIModule module : BIModuleManager.getModules()) {
+            ICubeDataLoaderCreator provider = module.getCubeDataLoaderCreator();
+            if(provider == null) {
+                continue;
+            }
             try {
-                childLoaderMap.put(module.getModuleName(), module.getCubeDataLoaderCreator().fetchCubeLoader(user));
+                childLoaderMap.put(module.getModuleName(), provider.fetchCubeLoader(user));
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
@@ -120,8 +126,9 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
             int count = Math.min(row, end) - start;
             int col = 0;
             for (BIKey key : ti.getColumns().keySet()) {
+                ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
                 for (int i = 0; i < count; i++) {
-                    cube.addDataValue(new BIDataValue(i, col, ti.getRow(key, i + count)));
+                    cube.addDataValue(new BIDataValue(i, col,getter.getValue(i + count)));
                 }
                 col++;
             }

@@ -17,8 +17,12 @@ BI.RealDataCheckbox = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.RealDataCheckbox.superclass._init.apply(this, arguments);
+        var self = this;
         this.checkbox = BI.createWidget({
             type: "bi.checkbox"
+        });
+        this.checkbox.on(BI.Checkbox.EVENT_CHANGE, function() {
+            self.fireEvent(BI.RealDataCheckbox.EVENT_CHANGE);
         });
         BI.createWidget({
             type: "bi.left",
@@ -48,6 +52,16 @@ BI.RealDataCheckbox = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Use_Real_Data_Info")
             }]
         })
+    },
+
+    isSelected: function(){
+        return this.checkbox.isSelected();
+    },
+
+    setSelected: function(v){
+        this.checkbox.setSelected(v);
     }
+
 });
+BI.RealDataCheckbox.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.real_data_checkbox", BI.RealDataCheckbox);

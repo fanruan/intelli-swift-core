@@ -174,6 +174,10 @@ public class BIBaseConstant {
         public final static String EXCEL_DATA_PATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "excel_data";
     }
 
+    public static final class UPLOAD_IMAGE {
+        public final static String IMAGE_PATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "images";
+    }
+
     public static final class CUBEINDEX {
 
 

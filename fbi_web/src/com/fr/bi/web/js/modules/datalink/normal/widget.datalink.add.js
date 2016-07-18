@@ -67,7 +67,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             type: "bi.editor_icon_check_combo",
             items: driverItems,
             width: 460,
-            height: 28
+            height: 30
         });
         var driver = BI.isEmptyString(self.model.getDriver()) ? driverItems[0].value : self.model.getDriver();
         driverCombo.setValue(driver);
@@ -81,7 +81,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
 
         //URL
         var urlInput = BI.createWidget({
-            type: "bi.sign_editor",
+            type: "bi.text_editor",
             value: this.model.getURL(),
             height: 28,
             width: 460,
@@ -92,14 +92,14 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
         var url = BI.isEmptyString(this.model.getURL()) ? BICst.DATA_LINK_MANAGE.URLS[driver] : this.model.getURL();
         urlInput.setValue(url);
         this.model.setURL(url);
-        urlInput.on(BI.SignEditor.EVENT_CHANGE, function(){
+        urlInput.on(BI.TextEditor.EVENT_CHANGE, function(){
             self.model.setURL(this.getValue());
         });
         var urlInputWrapper = this._createItemWrap("URL", urlInput);
 
         //用户名
         var userName = BI.createWidget({
-            type: "bi.sign_editor",
+            type: "bi.text_editor",
             value: this.model.getUser(),
             height: 28,
             width: 460,
@@ -107,7 +107,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             cls: "item-input",
             allowBlank: true
         });
-        userName.on(BI.SignEditor.EVENT_CHANGE, function(){
+        userName.on(BI.TextEditor.EVENT_CHANGE, function(){
             self.model.setUser(this.getValue());
         });
         var userNameWrapper = this._createItemWrap(BI.i18nText("BI-Username"), userName);
@@ -133,7 +133,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             type: "bi.label",
             text: BI.i18nText("BI-Code_Conversion"),
             textAlign: "left",
-            height: 28,
+            height: 30,
             width: "100%",
             cls: "data-link-code"
         });
@@ -143,11 +143,12 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             type: "bi.text_value_check_combo",
             items: BICst.DATA_LINK_MANAGE.CODES,
             width: 460,
-            height: 28
+            height: 30
         });
         oldCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setOriginalCharsetName(this.getValue());
         });
+        oldCodeCombo.setValue(this.model.getOriginalCharsetName() || "");
         var oldCode = this._createItemWrap(BI.i18nText("BI-Original_Code"), oldCodeCombo);
 
         //新编码
@@ -155,11 +156,12 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             type: "bi.text_value_check_combo",
             items: BICst.DATA_LINK_MANAGE.CODES,
             width: 460,
-            height: 28
+            height: 30
         });
         newCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
             self.model.setNewCharsetName(this.getValue());
         });
+        newCodeCombo.setValue(this.model.getNewCharsetName() || "");
         var newCode = this._createItemWrap(BI.i18nText("BI-New_Code"), newCodeCombo);
         BI.createWidget({
             type: "bi.vertical",

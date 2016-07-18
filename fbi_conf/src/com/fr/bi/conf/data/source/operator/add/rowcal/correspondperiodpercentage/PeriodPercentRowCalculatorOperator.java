@@ -3,6 +3,7 @@
  */
 package com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiod.PeriodRowCalculatorOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -20,11 +21,12 @@ public class PeriodPercentRowCalculatorOperator extends PeriodRowCalculatorOpera
 	 * 
 	 */
 	private static final long serialVersionUID = 574637556670188056L;
-	private static final String XML_TAG="PeriodPercentRowCalculatorOperator";
+    @BICoreField
+	private String XML_TAG="PeriodPercentRowCalculatorOperator";
 
 	@Override
-	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel) {
-		return new CorrespondPeriodPercentResultDealer(key, travel, periodKey);
+	protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
+		return new CorrespondPeriodPercentResultDealer(key, travel, periodKey, startCol);
 	}
 
 

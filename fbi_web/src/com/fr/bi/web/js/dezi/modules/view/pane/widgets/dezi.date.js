@@ -13,7 +13,7 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.DateWidgetView.superclass._init.apply(this, arguments);
         var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function(){
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
     },
@@ -23,7 +23,7 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
         var self = this;
         this._buildWidgetTitle();
         this._createTools();
-        
+
         this.combo = BI.createWidget({
             type: "bi.custom_multi_date_combo"
         });
@@ -48,9 +48,14 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
                 right: 10
             }]
         });
-        this.widget.element.hover(function(){
+        this.widget.element.hover(function () {
             self.tools.setVisible(true);
-        }, function(){
+        }, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
@@ -66,14 +71,14 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
                 cls: "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
-                validationChecker: function(v){
+                validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
             });
-            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function(){
+            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
             });
         } else {
@@ -81,14 +86,23 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
         }
     },
 
-    _createTools: function(){
+    _createTools: function () {
         var self = this;
-        this.tools = BI.createWidget({
+        var expand = BI.createWidget({
+            type: "bi.icon_button",
+            width: 16,
+            height: 16,
+            title: BI.i18nText("BI-Detailed_Setting"),
+            cls: "widget-combo-detail-font dashboard-title-detail"
+        });
+        expand.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._expandWidget();
+        });
+        var combo = BI.createWidget({
             type: "bi.widget_combo",
-            cls: "operator-region",
             wId: this.model.get("id")
         });
-        this.tools.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
+        combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:
                     self._expandWidget();
@@ -103,7 +117,7 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE:
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
+                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name") + "?", function (v) {
                         if (v === true) {
                             self.model.destroy();
                         }
@@ -111,10 +125,16 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
                     break;
             }
         });
+        this.tools = BI.createWidget({
+            type: "bi.left",
+            cls: "operator-region",
+            items: [expand, combo],
+            lgap: 10
+        });
         this.tools.setVisible(false);
     },
 
-    _refreshLayout: function(){
+    _refreshLayout: function () {
         var bounds = this.model.get("bounds");
         var height = bounds.height, width = bounds.width;
         var widgetName = this.model.get("name");
@@ -122,14 +142,14 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
         var minNameWidth = 30;      //默认editor的最小宽度
         var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
         // width =  5 + 10 + (4 + nameWidth + 4) + 10 + comboWidth + 10 + 5
-        if(height < 100) {
+        if (height < 100) {
             // this.widget.attr("items")[0].left = 10;
             // this.widget.attr("items")[0].right = "";
             this.widget.attr("items")[2].top = 10;
-            if(width < minComboWidth + minNameWidth + 48) {
+            if (width < minComboWidth + minNameWidth + 48) {
                 this.combo.setVisible(false);
                 this.widget.attr("items")[1].right = 10;
-            } else if(width < nameWidth + minComboWidth + 48) {
+            } else if (width < nameWidth + minComboWidth + 48) {
                 this.combo.setVisible(true);
                 this.widget.attr("items")[1].right = minComboWidth + 25;
                 this.widget.attr("items")[2].left = width - 15 - minComboWidth;
@@ -157,13 +177,13 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
             id: wId
         })
     },
-    
-    _resetValue: function(){
+
+    _resetValue: function () {
         this.model.set("value");
         this.refresh();
     },
 
-    splice: function(){
+    splice: function () {
         BI.Utils.broadcastAllWidgets2Refresh();
     },
 
@@ -171,11 +191,11 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
 
     },
 
-    change: function (changed) {
-        if(BI.has(changed, "bounds")) {
+    change: function (changed, prev, context, options) {
+        if (BI.has(changed, "bounds")) {
             this._refreshLayout();
         }
-        if(BI.has(changed, "value") || BI.has(changed, "dimensions")) {
+        if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
     },

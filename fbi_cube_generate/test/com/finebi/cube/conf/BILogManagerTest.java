@@ -1,6 +1,7 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.BITableSourceRelationTestTool;
@@ -54,10 +55,10 @@ public class BILogManagerTest extends TestCase {
                 biLogManager.infoRelation(getRelaionColumeKeyInfo(relation), 1000, -999);
             }
             biLogManager.cubeTableSourceSet(dataSourceSet, -999);
-
-            biLogManager.reLationPathSet(BITableSourceRelationPathTestTool.getRelationPathSetABC(), -999);
+            Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
+            pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
+            biLogManager.reLationPathSet(pathSet, -999);
             biLogManager.logEnd(-999);
-            biLogManager.logVersion(-999);
             JSONObject json = biLogManager.createJSON(-999);
             JSONArray tablesJa= (JSONArray) json.get("tables");
             JSONArray errTablesJa= (JSONArray) json.get("errors");

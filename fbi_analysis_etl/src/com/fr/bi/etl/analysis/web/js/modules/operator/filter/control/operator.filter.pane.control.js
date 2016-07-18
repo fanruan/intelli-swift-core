@@ -66,7 +66,7 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
     doCheck : function (widget, model) {
         var operator = model.get('operator');
         var items = operator.items;
-        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, BI.isNotNull(items) && items.length !== 0)
+        widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, BI.isNotNull(items) && items.length !== 0, BI.i18nText('BI-Value_Cannot_Be_Null'))
     },
 
     _check : function (widget, model) {

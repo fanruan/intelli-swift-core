@@ -14,7 +14,7 @@ BI.DimensionStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         COMBO_WIDTH: 130,
         FIELD_NAME_BUTTON_WIDTH: 90,
         TEXT_BUTTON_H_GAP: 10,
-        INPUT_WIDTH: 230,
+        INPUT_WIDTH: 200,
         DATA_TYPE_ERROR: "number-error"
     },
 
@@ -144,7 +144,7 @@ BI.DimensionStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             height: this._constant.BUTTON_HEIGHT
         });
 
-        this.filterWidget.on(BI.SelectFieldDataCombo.EVENT_CONFIRM, function () {
+        this.filterWidget.on(BI.SelectDimensionDataCombo.EVENT_CONFIRM, function () {
             self._setNodeData({
                 filter_value : this.getValue()
             });

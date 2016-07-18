@@ -62,6 +62,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         this.iconButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "filter-font",
+            title: BI.i18nText("BI-Modify_Filter_Conditions"),
             height: this.constants.DIMENSION_BUTTON_HEIGHT
         });
 
@@ -116,14 +117,26 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         if (wType === BICst.WIDGET.TABLE ||
             wType === BICst.WIDGET.CROSS_TABLE ||
             wType === BICst.WIDGET.COMPLEX_TABLE ||
-            wType === BICst.WIDGET.MAP ||
-            BI.parseInt(wType) >= BICst.MAP_TYPE.WORLD) {
+            wType === BICst.WIDGET.MAP) {
             this.usedCheck.setVisible(true);
             this.usedRadio.setVisible(false);
             return;
         }
         this.usedCheck.setVisible(false);
         this.usedRadio.setVisible(true);
+    },
+
+    _checkDimensionValid: function(){
+        var dimensionMap = this.model.get("dimension_map");
+        var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(this.model.get("id")));
+        var res = BI.find(tIds, function(idx, tId){
+            return !BI.has(dimensionMap, tId) && !BI.Utils.isCalculateTargetByDimensionID(tId);
+        });
+        if(BI.isNull(res)){
+            this.editor.element.removeClass("dimension-invalid");
+        }else{
+            this.editor.element.addClass("dimension-invalid");
+        }
     },
 
     _checkUsedEnable: function () {
@@ -173,6 +186,12 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
+                case BICst.DIMENSION_STRING_COMBO.LNG:
+                    self.model.set("position", {type: BICst.GIS_POSITION_TYPE.LNG_FIRST});
+                    break;
+                case BICst.DIMENSION_STRING_COMBO.LAT:
+                    self.model.set("position", {type: BICst.GIS_POSITION_TYPE.LAT_FIRST});
+                    break;
                 case BICst.DIMENSION_STRING_COMBO.ASCEND:
                     BIDezi.FloatBoxes.remove("customSort", self);
                     self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});
@@ -224,6 +243,12 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
+                case BICst.DIMENSION_NUMBER_COMBO.LNG:
+                    self.model.set("position", {type: BICst.GIS_POSITION_TYPE.LNG_FIRST});
+                    break;
+                case BICst.DIMENSION_NUMBER_COMBO.LAT:
+                    self.model.set("position", {type: BICst.GIS_POSITION_TYPE.LAT_FIRST});
+                    break;
                 case BICst.DIMENSION_NUMBER_COMBO.ASCEND:
                     self.model.set("sort", {type: BICst.SORT.ASC, sort_target: s});
                     break;
@@ -268,6 +293,12 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
+                case BICst.DIMENSION_DATE_COMBO.LNG:
+                    self.model.set("position", {type: BICst.GIS_POSITION_TYPE.LNG_FIRST});
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.LAT:
+                    self.model.set("position", {type: BICst.GIS_POSITION_TYPE.LAT_FIRST});
+                    break;
                 case BICst.DIMENSION_DATE_COMBO.DATE:
                     self.model.set("group", {type: BICst.GROUP.YMD});
                     break;
@@ -383,6 +414,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._checkUsedEnable();
+        this._checkDimensionValid();
         this.editor.setValue(this.model.get("name"));
         this.editor.setState(this.model.get("name"));
         var filterIconWidth = BI.isEmpty(this.model.get("filter_value")) ? 0 : this.constants.ICON_BUTTON_WIDTH;

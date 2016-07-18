@@ -7,6 +7,7 @@ import com.fr.bi.stable.exception.BIRelationDuplicateException;
 import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -246,6 +247,52 @@ public class BITableRelationManagerTest extends TestCase {
         }
     }
 
+    /*设置ABC，disable掉AB，查看AC是否可用*/
+    public void testAddDisablePathByPart() {
+        try {
+            manager.registerTableRelation(user.getUserId(), BITableRelationTestTool.getAaBa());
+            manager.registerTableRelation(user.getUserId(), BITableRelationTestTool.getBaCa());
+            Set<BITableRelationPath> relationSet = manager.getAllPath(user.getUserId()
+                    , BITableTestTool.getC()
+                    , BITableTestTool.getA()
+            );
+            assertEquals(relationSet.size(), 1);
+            BITableRelationPath A_B = new BITableRelationPath();
+            A_B.addRelationAtHead(BITableRelationTestTool.getAaBa());
+            /**
+             * 禁用路径AB
+             */
+            manager.addDisableRelations(user.getUserId(), A_B);
+            relationSet = manager.getAllAvailablePath(user.getUserId()
+                    , BITableTestTool.getB()
+                    , BITableTestTool.getA()
+            );
+            /**
+             * 可用路径不包含AB
+             */
+            assertEquals(relationSet.size(), 0);
+            /**
+             * 全部路径应该包含AC
+             */
+            relationSet = manager.getAllPath(user.getUserId()
+                    , BITableTestTool.getC()
+                    , BITableTestTool.getA()
+            );
+            assertEquals(relationSet.size(), 1);
+            relationSet = manager.getAllAvailablePath(user.getUserId()
+                    , BITableTestTool.getC()
+                    , BITableTestTool.getA()
+            );
+            /**
+             * 可用路径也不应该包含AC
+             */
+            assertEquals(relationSet.size(), 0);
+        } catch (Exception ignore) {
+            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            assertTrue(false);
+        }
+    }
+
     public void testGetAllTablesPath() {
         try {
             manager.registerTableRelation(user.getUserId(), BITableRelationTestTool.getAaBa());
@@ -258,6 +305,27 @@ public class BITableRelationManagerTest extends TestCase {
 
         } catch (Exception ignore) {
             BILogger.getLogger().error(ignore.getMessage(), ignore);
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * relation是否已经生成过cube
+     */
+    public void testIsRelationGenerated() {
+        try {
+            BITableRelation aaBa = BITableRelationTestTool.getAaBa();
+            BITableRelation aaCa = BITableRelationTestTool.getAaCa();
+            manager.registerTableRelation(user.getUserId(), aaBa);
+            manager.registerTableRelation(user.getUserId(), aaCa);
+            assertFalse(manager.isRelationGenerated(user.getUserId(),aaBa));
+            assertFalse(manager.isRelationGenerated(user.getUserId(),aaCa));
+            Set<BITableRelation> biTableRelationSet = new HashSet<BITableRelation>();
+            biTableRelationSet.add(aaBa);
+            manager.finishGenerateCubes(user.getUserId(), biTableRelationSet);
+            assertTrue(manager.isRelationGenerated(user.getUserId(),aaBa));
+            assertFalse(manager.isRelationGenerated(user.getUserId(),aaCa));
+        } catch (Exception ignore) {
             assertTrue(false);
         }
     }

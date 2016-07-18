@@ -39,7 +39,7 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                     items: [{
                         el: {
                             type: "bi.icon_button",
-                            cls: "file-font normal-mark",
+                            cls: (report.description === "true" ? "real-time-font" : "file-font") + " normal-mark",
                             iconWidth: 16,
                             iconHeight: 16
                         },
@@ -56,7 +56,7 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                             handler: function () {
                                 FS.tabPane.addItem({
                                     title: report.text,
-                                    src: FR.servletURL + report.buildUrl
+                                    src: FR.servletURL + report.buildUrl + "&show=_bi_show_"
                                 });
                             }
                         }
@@ -94,7 +94,7 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                         handler: function () {
                             FS.tabPane.addItem({
                                 title: report.text,
-                                src: FR.servletURL + report.buildUrl
+                                src: FR.servletURL + report.buildUrl + "&show=_bi_show_"
                             });
                         }
                     },

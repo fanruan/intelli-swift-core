@@ -3,14 +3,16 @@ package com.fr.bi.module;
 import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.datasource.BIDataSourceManager;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
 import com.finebi.cube.conf.relation.BISystemTableRelationManager;
+import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManager;
 import com.fr.base.FRContext;
-import com.fr.bi.DemoService;
 import com.fr.bi.cal.BICubeManager;
+import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.manager.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
@@ -54,6 +56,7 @@ import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 
 import java.sql.*;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -108,7 +111,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, new BISystemCubeConfManager());
         StableFactory.registerMarkedObject(UpdateFrequencyManager.XML_TAG, new UpdateFrequencyManager());
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
-
+        StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
 
     }
 
@@ -180,7 +183,6 @@ public class BICoreModule extends AbstractModule {
 //            }
             return null;
         } else {
-
             return new BISystemPackageConfigurationManager();
         }
 
@@ -329,7 +331,9 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registerResources() {
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, ResourceHelper.getThirdJs());
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, ResourceHelper.getBaseJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, ResourceHelper.getThirdCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, ResourceHelper.getBaseCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, ResourceHelper.getDataJS(), ResourceHelper.DataTransmitter);
@@ -338,7 +342,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ResourceHelper.getConfCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ResourceHelper.getDeziJs());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DEZI_CSS, ResourceHelper.getDeziCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, ResourceHelper.getDeziCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ResourceHelper.getShowJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ResourceHelper.getShowCss());
@@ -347,6 +351,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_MODULE_CSS, ResourceHelper.getCommonCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, ResourceHelper.getFormulaCollectionJS(), ResourceHelper.FormulaTransmitter);
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MOBILE_JS, ResourceHelper.getMobileJs());
     }
 
     public void loadResources (Locale[] locales) {
@@ -358,11 +363,16 @@ public class BICoreModule extends AbstractModule {
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_MODULE_JS);
         ResourceHelper.FormulaTransmitter.transmit(ResourceHelper.getFormulaCollectionJS());
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
-        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);
-        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DEZI_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_SHOW_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_MODULE_CSS);
+    }
+
+    @Override
+    public Collection<BIPackageID> getAvailablePackID(long userId) {
+        return BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
     }
 
     private void registerSystemManager() {
@@ -375,9 +385,7 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIReport(),
                 new Service4BIDezi(),
                 new Service4BIMobile(),
-                new Service4BIBase(),
-
-                new DemoService()
+                new Service4BIBase()
         };
     }
 

@@ -44,6 +44,11 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         var allDims = BI.Utils.getAllDimDimensionIDs(wId);
         var allUsableDims = BI.Utils.getAllUsableDimDimensionIDs(wId);
         switch (wType) {
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+                this.showDrill = false;
+                break;
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -62,6 +67,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
                 if (allDims.length > allUsableDims.length && allUsableDims.length > 0) {
                     this.showDrill = true;
                 }
@@ -112,16 +118,27 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
 
         this.wrapper.empty();
         if (BI.isNotNull(classification)) {
+            var wType = BI.Utils.getWidgetTypeByID(wId);
+            var value = obj.x;
+            switch (wType) {
+                case BICst.WIDGET.BUBBLE:
+                case BICst.WIDGET.SCATTER:
+                    value = obj.seriesName;
+                    break;
+                default:
+                    value = obj.value || obj.x;
+                    break;
+            }
             var cDrill = BI.createWidget({
                 type: "bi.chart_drill_cell",
                 dId: classification,
-                value: obj.x
+                value: value
             });
             cDrill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
-                self._onClickDrill(classification, obj.x);
+                self._onClickDrill(classification, value);
             });
             cDrill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function (drillId) {
-                self._onClickDrill(classification, obj.x, drillId);
+                self._onClickDrill(classification, value, drillId);
             });
             this.wrapper.addItem(cDrill);
         }
@@ -153,6 +170,8 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 this.buttonTop = 70;
             } else if (w >= 400) {
                 hgap = Math.ceil((w - 400) / 2);
+            } else if(w <= 200) {
+                this.buttonTop = 70;
             }
         }
         this.wrapper.setVisible(true);

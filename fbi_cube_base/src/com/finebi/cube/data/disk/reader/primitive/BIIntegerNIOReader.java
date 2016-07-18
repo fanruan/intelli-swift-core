@@ -1,6 +1,7 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
 import com.finebi.cube.data.input.primitive.ICubeIntegerReader;
+import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
 
 import java.io.File;
@@ -20,13 +21,15 @@ public class BIIntegerNIOReader extends BIBasicNIOReader<Integer> implements ICu
     }
 
     @Override
-    protected Integer getValue(Long page, int index) {
-        readWriteLock.readLock().lock();
-        try {
-            Integer result = intBuffers.get(page).get(index);
-            return !result.equals(Integer.MIN_VALUE) ? result : null;
-        } finally {
-            readWriteLock.readLock().unlock();
+    protected Integer getValue(Long page, int index) throws  BIResourceInvalidException{
+        if(isValid) {
+            try {
+                int result = intBuffers.get(page).get(index);
+                return result == Integer.MIN_VALUE ? null : result;
+            } finally {
+            }
+        } else {
+            throw new BIResourceInvalidException();
         }
     }
 

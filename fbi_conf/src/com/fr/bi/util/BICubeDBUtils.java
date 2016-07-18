@@ -1,21 +1,19 @@
 package com.fr.bi.util;
 
 import com.fr.base.FRContext;
-import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.dbdealer.*;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
-import com.fr.stable.bridge.StableFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
@@ -41,26 +39,13 @@ public class BICubeDBUtils {
         @SuppressWarnings("rawtypes")
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, columns);
         int ilen = dealers.length;
-//        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-//        long columnTime=System.currentTimeMillis();
         while (rs.next()) {
             for (int i = 0; i < ilen; i++) {
                 Object value = dealers[i].dealWithResultSet(rs);
                 traversal.actionPerformed(new BIDataValue(row, i, value));
             }
             row++;
-            /*每运行一千行为column存取一次log
-            * 所有column时间一致
-            * edit by wuk 此处取消，column现作为索引的容器*/
-//            if (row%1000==0&&null != columns[0].getTableBelongTo().getPersistentTable()){
-//                for (int i = 0; i < ilen; i++) {
-//                    biLogManager.infoColumn(columns[0].getTableBelongTo().getPersistentTable(), columns[i].getFieldName(), System.currentTimeMillis() - columnTime, -999);
-//                }
-//            }
         }
-//        for (int i = 0; i < ilen; i++) {
-//            biLogManager.infoColumn(columns[0].getTableBelongTo().getPersistentTable(), columns[i].getFieldName(), System.currentTimeMillis() - columnTime, -999);
-//        }
         return row;
     }
     @SuppressWarnings("rawtypes")
@@ -109,6 +94,10 @@ public class BICubeDBUtils {
         return runSQL(sql, columns, traversal, 0);
     }
 
+    public static long runSQL(SQLStatement sql, ICubeFieldSource[] columns, Traversal<BIDataValue> traversal, Long row) {
+        return runSQL(sql, columns, traversal, row.intValue());
+    }
+
     /**
      * 执行sql语句，获取数据
      *
@@ -120,7 +109,6 @@ public class BICubeDBUtils {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
             long t = System.currentTimeMillis();
             conn = sql.getSqlConn();
             String originalCharSetName = connection.getOriginalCharsetName();
@@ -189,5 +177,15 @@ public class BICubeDBUtils {
         return stmt;
     }
 
-
+    public static String getColumnName(com.fr.data.impl.Connection connection, SQLStatement statement, String sql) {
+        try {
+            java.sql.Connection conn = statement.getSqlConn();
+            Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+            ColumnInformation column = DBUtils.checkInColumnInformation(conn, dialect, sql)[0];
+            return column.getColumnName();
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return StringUtils.EMPTY;
+    }
 }

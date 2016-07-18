@@ -3,8 +3,8 @@ package com.finebi.cube.gen.oper;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.structure.ICube;
-import com.finebi.cube.structure.ICubeTableEntityGetterService;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.conf.log.BILogManager;
@@ -13,6 +13,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -38,10 +39,10 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
      */
     protected BIColumnKey targetColumnKey;
     protected ICubeColumnEntityService<T> columnEntityService;
-    protected ICube cube;
+    protected Cube cube;
     protected long rowCount;
 
-    public BIFieldIndexGenerator(ICube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
+    public BIFieldIndexGenerator(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         this.tableSource = tableSource;
         this.hostBICubeFieldSource = hostBICubeFieldSource;
         this.cube = cube;
@@ -50,7 +51,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     private void initial() {
         try {
-            ICubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
+            CubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
             rowCount = tableEntityService.getRowCount();
             tableEntityService.clear();
@@ -87,14 +88,12 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     public void buildTableIndex() {
-        if (hostBICubeFieldSource.getFieldName().equals("badd")) {
-            System.out.println("find");
-        }
         IntList nullRowNumbers = new IntList();
         Map<T, IntList> group2rowNumber = createTreeMap(nullRowNumbers);
         Iterator<Map.Entry<T, IntList>> group2rowNumberIt = group2rowNumber.entrySet().iterator();
         int groupPosition = 0;
         columnEntityService.recordSizeOfGroup(group2rowNumber.size());
+        Integer[] positionOfGroup = new Integer[(int)rowCount];
         while (group2rowNumberIt.hasNext()) {
             Map.Entry<T, IntList> entry = group2rowNumberIt.next();
             T groupValue = entry.getKey();
@@ -102,9 +101,27 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             columnEntityService.addGroupValue(groupPosition, groupValue);
             GroupValueIndex groupValueIndex = buildGroupValueIndex(groupRowNumbers);
             columnEntityService.addGroupIndex(groupPosition, groupValueIndex);
+            initPositionOfGroup(positionOfGroup, groupPosition, groupValueIndex);
             groupPosition++;
         }
-        columnEntityService.addNULLIndex(0, buildGroupValueIndex(nullRowNumbers));
+        GroupValueIndex nullIndex = buildGroupValueIndex(nullRowNumbers);
+        buildPositionOfGroup(positionOfGroup);
+        columnEntityService.addNULLIndex(0, nullIndex);
+    }
+
+    private void initPositionOfGroup(final Integer[] position, final Integer groupPosition, GroupValueIndex groupValueIndex) {
+        groupValueIndex.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                position[row] = groupPosition;
+            }
+        });
+    }
+
+    private void buildPositionOfGroup(Integer[] position) {
+        for (int i = 0; i < position.length; i ++){
+            columnEntityService.addPositionOfGroup(i, position[i]);
+        }
     }
 
     private GroupValueIndex buildGroupValueIndex(IntList groupRowNumbers) {

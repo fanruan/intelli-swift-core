@@ -23,7 +23,7 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
             }]
         });
         this.roles.on(BI.ButtonGroup.EVENT_CHANGE, function(){
-             saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
+             self.saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
         });
 
         this.searcher = BI.createWidget({
@@ -67,12 +67,12 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
             self.fireEvent(BI.BatchAddRoleSearcher.EVENT_CANCEL);
         });
         
-        var saveButton = BI.createWidget({
+        this.saveButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Sen_Confirm_Use_Selected_1", 0),
             height: 30
         });
-        saveButton.on(BI.Button.EVENT_CHANGE, function(){
+        this.saveButton.on(BI.Button.EVENT_CHANGE, function(){
             self.fireEvent(BI.BatchAddRoleSearcher.EVENT_SAVE, self.roles.getValue());
         });
         
@@ -114,7 +114,7 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
                             type: "bi.left_right_vertical_adapt",
                             items: {
                                 left: [cancelButton],
-                                right: [saveButton]
+                                right: [this.saveButton]
                             },
                             vgap: 10
 
@@ -196,6 +196,7 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
             });
         }
         this.selectedTree.initTree(treeItems);
+        this.saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.roles.getValue().length));
     }
 });
 BI.BatchAddRoleSearcher.EVENT_CANCEL = "EVENT_CANCEL";

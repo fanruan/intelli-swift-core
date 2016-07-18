@@ -41,10 +41,11 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         if (BI.has(changed, "view") ||
             BI.has(changed, "dimensions") ||
             BI.has(changed, "sort") ||
-            BI.has(changed, "filter_value")) {
+            BI.has(changed, "filter_value") ||
+            BI.has(changed, "real_data")) {
             this.tableChartPopupulate();
         }
-        if (BI.has(changed, "type")) {
+        if (BI.has(changed, "type") || BI.has(changed, "sub_type")) {
             this.tableChartPopupulate();
             this._refreshDimensions();
         }
@@ -127,7 +128,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
     _buildWest: function () {
         var self = this;
         var tab = BI.createWidget({
-            type: BI.Utils.isRealTime() ? "bi.detail_select_data_4_realtime" : "bi.detail_select_data",
+            type: "bi.detail_select_data",
             cls: "widget-select-data-pane",
             wId: this.model.get("id")
         });
@@ -160,14 +161,18 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         var checkbox = BI.createWidget({
             type: "bi.real_data_checkbox"
         });
+        checkbox.on(BI.RealDataCheckbox.EVENT_CHANGE, function () {
+            self.model.set("real_data", this.isSelected());
+        });
+        checkbox.setSelected(this.model.get("real_data") || false);
 
-        var data_style_tab = BI.createWidget({
+        var tab = BI.createWidget({
             type: "bi.data_style_tab",
             wId: this.model.get("id"),
             cardCreator: BI.bind(this._createTabs, this)
         });
 
-        data_style_tab.on(BI.DataStyleTab.EVENT_CHANGE, function () {
+        tab.on(BI.DataStyleTab.EVENT_CHANGE, function () {
             if (this.getSelect() === BICst.DETAIL_TAB_STYLE) {
                 self.chartSetting.populate();
             }
@@ -176,7 +181,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         var top = BI.createWidget({
             type: "bi.vtape",
             cls: "widget-top-wrapper",
-            items: [data_style_tab, {
+            items: [tab, {
                 el: checkbox,
                 height: this.constants.DETAIL_NORTH_HEIGHT
             }]

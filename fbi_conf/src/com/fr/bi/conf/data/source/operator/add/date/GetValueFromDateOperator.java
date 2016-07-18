@@ -1,14 +1,15 @@
 package com.fr.bi.conf.data.source.operator.add.date;
 
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.time.BIDateUtils;
@@ -78,10 +79,11 @@ public class GetValueFromDateOperator extends AbstractAddColumnOperator {
         DateGetter dg = getDateGetter(type);
         BIKey key = new IndexKey(field);
         BIDateUtils.checkDateFieldType(ti.getColumns(), key);
+        ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
         for (int row = 0; row < rowCount; row++) {
-            Object value = dg.get((Long)ti.getRow(key, row));
+            Integer value = dg.get((Long)getter.getValue(row));
             try {
-                travel.actionPerformed(new BIDataValue(row, startCol, value));
+                travel.actionPerformed(new BIDataValue(row, startCol, value == null ? value : value.longValue()));
             } catch (Exception e) {
                 BILogger.getLogger().error("incorrect formular");
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
@@ -129,7 +131,7 @@ public class GetValueFromDateOperator extends AbstractAddColumnOperator {
 	}
 	
 	@Override
-	protected int getSqlType(){
+	protected int getSqlType(IPersistentTable[] tables){
 		return java.sql.Types.INTEGER;
 	}
 }

@@ -47,7 +47,7 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
             Map.Entry entry = (Map.Entry) it.next();
             treeMap.put(entry.getKey(), entry.getValue());
         }
-        return getSortType() != BIReportConstant.SORT.DESC ? treeMap.iterator() : treeMap.previousIterator();
+        return getSortType() != BIReportConstant.SORT.NUMBER_DESC ? treeMap.iterator() : treeMap.previousIterator();
     }
 
     /**

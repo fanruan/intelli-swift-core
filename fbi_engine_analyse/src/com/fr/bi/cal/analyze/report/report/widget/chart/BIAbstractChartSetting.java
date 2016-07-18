@@ -98,7 +98,7 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
     public Node getCubeNode(ChartWidget widget, BIDimension[] dimensions,BISummaryTarget[] targets, BISession session) {
         BISummaryTarget[] summary = getUsedTargets(targets);
         BIDimension[] rows = getUsedDimensions(dimensions);
-        return CubeIndexLoader.getInstance(session.getUserId()).loadGroup(widget, summary, rows, dimensions, targets, -1, widget.useRealData(),  session);
+        return CubeIndexLoader.getInstance(session.getUserId()).loadGroup(widget, summary, rows, dimensions, targets, -1, widget.isRealData(),  session);
     }
 
 

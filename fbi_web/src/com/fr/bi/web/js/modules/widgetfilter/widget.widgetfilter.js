@@ -94,7 +94,7 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
                     }
                 } else {
                     var text = self.model.getControlWidgetValueTextByID(cwid);
-                    if (BI.isNotNull(text)) {
+                    if (BI.isNotNull(text) && text !== "") {
                         items.push({
                             type: "bi.control_filter_item",
                             wId: cwid,
@@ -109,6 +109,9 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
         //组件的联动条件
         var linkageFilters = BI.Utils.getLinkageValuesByID(wId);
         BI.each(linkageFilters, function (tId, linkFilter) {
+            if (BI.isEmptyObject(linkFilter[0])) {
+                return;
+            }
             items.push({
                 type: "bi.linkage_filter_item",
                 id: BI.UUID(),

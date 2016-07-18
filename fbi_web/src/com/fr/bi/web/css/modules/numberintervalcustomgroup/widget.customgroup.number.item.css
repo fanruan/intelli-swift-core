@@ -8,3 +8,6 @@
 .bi-number-custom-group-item .group-item-icon {
   font-size: 14px;
 }
+.bi-number-custom-group-item .group-name {
+  border: 1px solid #d4dadd;
+}

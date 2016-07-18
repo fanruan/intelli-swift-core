@@ -120,7 +120,7 @@ BI.SearcherView = BI.inherit(BI.Pane, {
         searchResult || (searchResult = []);
         matchResult || (matchResult = []);
         this.setTipVisible(searchResult.length + matchResult.length === 0);
-        this.spliter.setVisible(BI.isNotEmptyArray(matchResult));
+        this.spliter.setVisible(BI.isNotEmptyArray(matchResult) && BI.isNotEmptyArray(searchResult));
         this.matcher.populate(matchResult, keyword);
         this.searcher.populate(searchResult, keyword);
     },

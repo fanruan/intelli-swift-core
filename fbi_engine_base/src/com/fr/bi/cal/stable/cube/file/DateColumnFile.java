@@ -1,14 +1,16 @@
 package com.fr.bi.cal.stable.cube.file;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.ValueConverter;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.index.file.field.AbstractNIOCubeFile;
-import com.fr.bi.cal.stable.tableindex.detailgetter.DateDetailGetter;
+import com.fr.bi.cal.stable.tableindex.detailgetter.NormalDetailGetter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.data.key.date.BIDayValue;
-import com.fr.bi.stable.engine.index.getter.DetailGetter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.file.ColumnFile;
@@ -21,8 +23,6 @@ import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 
@@ -307,8 +307,8 @@ public class DateColumnFile implements ColumnFile<Long> {
     }
 
     @Override
-    public DetailGetter createDetailGetter(SingleUserNIOReadManager manager) {
-        return new DateDetailGetter(createDetailReader(manager));
+    public ICubeColumnDetailGetter createDetailGetter(SingleUserNIOReadManager manager) {
+        return new NormalDetailGetter(createDetailReader(manager));
     }
 
     /**
@@ -358,5 +358,10 @@ public class DateColumnFile implements ColumnFile<Long> {
     @Override
     public NIOReader createDetailNIOReader(SingleUserNIOReadManager manager) {
         return createBaseFile().createDetailNIOReader(manager);
+    }
+
+    @Override
+    public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
+        return 0;
     }
 }

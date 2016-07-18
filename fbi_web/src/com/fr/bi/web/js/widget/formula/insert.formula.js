@@ -13,7 +13,7 @@ BI.FormulaInsert = BI.inherit(BI.Widget, {
         retract: 1,
         more_function: 0,
         functionTypes: ["MATH", "DATETIME", "ARRAY", "TEXT", "LOGIC", "OTHER"],
-        abandonFunctions: ["ACOS", "ACOSH", "ASIN", "ASINH", "ATAN", "ATAN2", "ATANH", "BITNOT", "BITOPERATION", "CHAR", "CLASS", "CODE", "COMBIN", "CORREL", "COS", "COSH", "DATETONUMBER", "DEGREES", "GETKEY", "GETUSERDEPARTMENTS", "GETUSERJOBTITLES", "NVL", "ODD", "OR", "PI", "POWER", "PRODUCT", "PROPER", "RADIANS", "REGEXP", "REVERSE", "RemoteIP", "SIN", "SINH", "STARTWITH", "TAN", "TANH", "TESTCONNECTION", "TESTMACANDUUID", "TOBINARY", "TOHEX", "TOOCTAL", "TOIMAGE"]
+        abandonFunctions: ["ACOS", "ACOSH", "ASIN", "ASINH", "ATAN", "ATAN2", "ATANH", "BITNOT", "BITOPERATION", "CHAR", "CLASS", "CODE", "COMBIN", "CORREL", "COS", "COSH", "DATETONUMBER", "DEGREES", "GETKEY", "GETUSERDEPARTMENTS", "GETUSERJOBTITLES", "NVL", "ODD", "PI", "POWER", "PRODUCT", "PROPER", "RADIANS", "REGEXP", "REVERSE", "RemoteIP", "SIN", "SINH", "STARTWITH", "TAN", "TANH", "TESTCONNECTION", "TESTMACANDUUID", "TOBINARY", "TOHEX", "TOOCTAL", "TOIMAGE"]
     },
 
     _defaultConfig: function () {
@@ -204,10 +204,8 @@ BI.FormulaInsert = BI.inherit(BI.Widget, {
     },
 
     _analyzeContent: function (v) {
-        var regx = /\$[\{][^\}]*[\}]|\w*\w|\$\{[^\$\(\)\+\-\*\/)\$,]*\w\}|\$\{[^\$\(\)\+\-\*\/]*\w\}|\$\{[^\$\(\)\+\-\*\/]*[\u4e00-\u9fa5]\}|\w|(.)/g;
-        var result = v.match(regx);
-        return result;
-
+        var regx = /\$[\{][^\}]*[\}]|\w*\w|\$\{[^\$\(\)\+\-\*\/)\$,]*\w\}|\$\{[^\$\(\)\+\-\*\/]*\w\}|\$\{[^\$\(\)\+\-\*\/]*[\u4e00-\u9fa5]\}|\w|(.)|\n/g;
+        return v.match(regx);
     },
 
     _getFunctionType: function (functionType) {

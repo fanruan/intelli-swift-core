@@ -258,7 +258,7 @@ BI.View = BI.inherit(BI.V, {
         }
         BI.isKey(cardName) && BI.Layers.show(layout + this.cid);
         cardLayout.showCardByName(cardName, action, function () {
-            BI.isKey(cardName) && self._cards[cardName].populate(data, options.force);
+            BI.isKey(cardName) && self._cards[cardName].populate(data, options);
         });
         !BI.isKey(cardName) && BI.Layers.hide(layout + this.cid);
         return this._cards[cardName];
@@ -452,9 +452,10 @@ BI.View = BI.inherit(BI.V, {
         }, options));
     },
 
-    populate: function (modelData, force) {
+    populate: function (modelData, options) {
         var self = this;
-        if (force === true) {
+        options || (options = {});
+        if (options.force === true) {
             this.notify();
         }
         if (this._cardLayouts && this._cardLayouts[this.getName()]) {
@@ -469,11 +470,11 @@ BI.View = BI.inherit(BI.V, {
         if (this._F.length > 0) {
             throw new Error("");
         }
-        if (force === true) {
-            this.model.set(modelData).set({current: this.model.get("default")});
+        if (options.force === true) {
+            this.model.set(modelData, options).set({current: this.model.get("default")});
             return;
         }
-        if (force === false) {
+        if (options.force === false) {
             this.model.set(modelData);
             return;
         }
@@ -486,7 +487,7 @@ BI.View = BI.inherit(BI.V, {
         } else if (contains === false) {
             this.model.set(modelData);
         } else {
-            this.model.set(modelData).set({current: this.model.get("default")});
+            this.model.set(modelData, options).set({current: this.model.get("default")});
         }
     },
 

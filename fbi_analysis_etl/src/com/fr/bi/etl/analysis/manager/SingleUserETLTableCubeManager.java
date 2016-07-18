@@ -98,8 +98,9 @@ public class SingleUserETLTableCubeManager implements Release {
 				}
 			}
 		}
-
-		updateTask.add(new UserETLUpdateTask(source));
+		if(updateTask.size() < 2) {
+			updateTask.add(new UserETLUpdateTask(source));
+		}
 	}
 	
 	

@@ -66,7 +66,7 @@ BI.ReportHangoutPathChooser = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Path"),
+                    text: BI.i18nText("BI-Directory_Node"),
                     height: 30,
                     width: 90,
                     textAlign: "left",

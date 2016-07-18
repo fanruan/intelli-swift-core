@@ -21,7 +21,7 @@ BI.ChartType = BI.inherit(BI.Widget, {
             items: this._formatItems(BI.deepClone(BICst.DASHBOARD_WIDGETS[0])),
             layouts: [{
                 type: "bi.horizontal",
-                scrollx: false,
+                scrollx: true,
                 scrollable: false,
                 vgap: 3,
                 hgap: 3
@@ -39,8 +39,8 @@ BI.ChartType = BI.inherit(BI.Widget, {
             if (BI.isNotEmptyArray(item.children)) {
                 BI.each(item.children, function (i, child) {
                     child.iconClass = child.cls;
-                    child.iconWidth = 20;
-                    child.iconHeight = 20;
+                    child.iconWidth = 24;
+                    child.iconHeight = 24;
                 });
                 result.push(BI.extend({
                     type: "bi.icon_combo",

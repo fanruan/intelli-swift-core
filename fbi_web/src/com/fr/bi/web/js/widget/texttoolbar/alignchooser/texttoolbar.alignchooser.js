@@ -21,14 +21,14 @@ BI.TextToolbarAlignChooser = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             element: this.element,
             items: BI.createItems([{
-                cls: "bi-list-item-active text-align-left-font",
+                cls: "align-chooser-button text-align-left-font",
                 selected: true,
                 value: BI.TextToolbarAlignChooser.TEXT_ALIGN_LEFT
             }, {
-                cls: "bi-list-item-active text-align-center-font",
+                cls: "align-chooser-button text-align-center-font",
                 value: BI.TextToolbarAlignChooser.TEXT_ALIGN_CENTER
             }, {
-                cls: "bi-list-item-active text-align-right-font",
+                cls: "align-chooser-button text-align-right-font",
                 value: BI.TextToolbarAlignChooser.TEXT_ALIGN_RIGHT
             }], {
                 type: "bi.icon_button",

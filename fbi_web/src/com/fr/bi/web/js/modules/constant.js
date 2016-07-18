@@ -89,29 +89,9 @@ BICst.WIDGET.Heights[BICst.WIDGET.MONTH] = 110;
 BICst.WIDGET.Heights[BICst.WIDGET.YMD] = 110;
 BICst.WIDGET.Heights[BICst.WIDGET.TREE] = 110;
 BICst.WIDGET.Heights[BICst.WIDGET.GENERAL_QUERY] = 250;
-BICst.WIDGET.Heights[BICst.WIDGET.QUERY] = 60;
-BICst.WIDGET.Heights[BICst.WIDGET.RESET] = 60;
+BICst.WIDGET.Heights[BICst.WIDGET.QUERY] = 40;
+BICst.WIDGET.Heights[BICst.WIDGET.RESET] = 40;
 
-//布局方式
-BICst.DASHBOARD_LAYOUT_ARRAY = [{
-    text: BI.i18nText("BI-Adaptive_Layout"), value: BICst.DASHBOARD_LAYOUT_ADAPT
-}, {
-    text: BI.i18nText("BI-Free_Layout"), value: BICst.DASHBOARD_LAYOUT_FREE
-}];
-
-//类型&数据/样式tab
-BICst.DETAIL_DATA_STYLE_TAB = [{
-    text: BI.i18nText("BI-Type_Data"), value: BICst.DETAIL_TAB_TYPE_DATA
-}, {
-    text: BI.i18nText("BI-Style"), value: BICst.DETAIL_TAB_STYLE
-}];
-
-//业务包字段/复用
-BICst.DETAIL_FIELD_REUSE_TAB = [{
-    text: BI.i18nText("BI-Package_Field"), value: BICst.DETAIL_PACKAGES_FIELD
-}, {
-    text: BI.i18nText("BI-Reuse_Field"), value: BICst.DETAIL_DIMENSION_REUSE
-}];
 
 //etl pane card names (empty tip, only one tip, pane)
 BICst.CONF_ETL_DATA_SET_EMPTY_TIP = "data_set_empty_tip";

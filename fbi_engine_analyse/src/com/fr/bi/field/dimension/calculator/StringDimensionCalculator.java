@@ -10,10 +10,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.operation.sort.comp.CustomComparator;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -68,6 +65,8 @@ public class StringDimensionCalculator extends AbstractDimensionCalculator {
     }
 
     public Set createFilterValueSet(String value, ICubeDataLoader loader) {
-        return null;
+        Set set = new HashSet();
+        set.add(value);
+        return set;
     }
 }

@@ -1,28 +1,16 @@
 package com.fr.bi.conf.manager.userInfo;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
-import com.fr.bi.base.FinalInt;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.BICoreWrapper;
 import com.fr.bi.exception.BIAmountLimitUnmetException;
-import com.fr.bi.stable.connection.ConnectionRowGetter;
-import com.fr.bi.stable.connection.DirectTableConnectionFactory;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.exception.BITableUnreachableException;
-import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -32,7 +20,6 @@ import com.fr.stable.xml.XMLable;
 import com.fr.stable.xml.XMLableReader;
 
 import javax.activation.UnsupportedDataTypeException;
-import java.util.List;
 
 
 public class BILoginUserInfo implements XMLable, JSONTransform, BICoreService {
@@ -53,38 +40,6 @@ public class BILoginUserInfo implements XMLable, JSONTransform, BICoreService {
             BILogger.getLogger().error(e.getMessage(), e);
         }
         return BIBasicCore.EMPTY_CORE;
-    }
-
-    public Object getFieldValue(String userName, BusinessField ck, ICubeDataLoader loader) {
-        try {
-            BITableRelationPath firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(loader.getUserId(), ck.getTableBelongTo(), getTableKey());
-            List<BITableRelation> relations;
-            relations = firstPath.getAllRelations();
-            BIKey userNameIndex = getUserNameColumnIndex(loader);
-            if (userNameIndex != null) {
-                final ConnectionRowGetter getter = DirectTableConnectionFactory.createConnectionRow(BIConfUtils.convert2TableSourceRelation(relations), loader);
-                ICubeTableService ti = loader.getTableIndex(getTableKey().getTableSource());
-                GroupValueIndex gvi = ti.getIndexes(userNameIndex, new String[]{userName})[0];
-                final FinalInt o = new FinalInt();
-                if (gvi != null) {
-                    //只取一个值
-                    gvi.BrokenableTraversal(new BrokenTraversalAction() {
-                        @Override
-                        public boolean actionPerformed(int rowIndex) {
-                            o.value = getter.getConnectedRow(rowIndex);
-                            return true;
-                        }
-                    });
-                    if (o.value != -1) {
-                        ICubeTableService cti = loader.getTableIndex(ck.getTableBelongTo().getTableSource());
-                        return cti.getRow(cti.getColumnIndex(ck.getFieldName()), o.value);
-                    }
-                }
-            }
-        } catch (BITableUnreachableException e) {
-            //TODO 这个异常不应该就这么捕获什么都不做。
-        }
-        return null;
     }
 
     /**

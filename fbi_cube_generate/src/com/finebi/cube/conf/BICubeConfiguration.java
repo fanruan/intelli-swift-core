@@ -20,7 +20,7 @@ public class BICubeConfiguration implements ICubeConfiguration {
     private String range;
     private String cubeFolderName;
     private static String CUBE_FOLDER_NAME_DEFAULT = "Advanced";
-    private static String CUBE_TEMP_FOLDER_NAME = ".tcube";
+    private static String CUBE_TEMP_FOLDER_NAME = "tCube";
     private static String RANGE_DEFAULT = "default";
     public BICubeConfiguration(String range, String cubeFolderName) {
 
@@ -41,7 +41,8 @@ public class BICubeConfiguration implements ICubeConfiguration {
     @Override
     public URI getRootURI() {
         try {
-            return URI.create(new BICubeLocation(BIConfigurePathUtils.createBasePath(), buildPath()).getAbsolutePath());
+            File file = new File(new BICubeLocation(BIConfigurePathUtils.createBasePath(), buildPath()).getAbsolutePath());
+            return URI.create(file.toURI().getRawPath());
         } catch (URISyntaxException e) {
             throw BINonValueUtils.beyondControl(e);
         }

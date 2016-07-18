@@ -13,7 +13,8 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.LoginInfoSelectSingleField.superclass._init.apply(this, arguments);
-        var self = this, packageStructure = BI.Utils.getAllGroupedPackagesTree();
+        var self = this;
+
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.element,
@@ -22,84 +23,33 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
         BI.Utils.getAllPackages(function(packs){
             self.packs = packs;
             var ids = BI.Utils.getAllPackageIDs4Conf();
-            self.searcher.setPackage(ids[0]);
+            if(BI.isEmptyArray(ids)) {
+                ids = [BI.Utils.getCurrentPackageId4Conf()]
+            }
+            self.selectDataPane.setPackage(ids[0]);
             mask.destroy();
         });
-        this.searcher = BI.createWidget({
-            type: "bi.select_data_searcher",
+
+        this.selectDataPane = BI.createWidget({
+            type: "bi.package_select_data_service",
             element: this.element,
-            packages: packageStructure,
-            itemsCreator: function (op, populate) {
-                if (BI.isKey(op.searchType) && BI.isKey(op.keyword)) {
-                    self._getSearchResult(op.searchType, op.keyword, op.packageId, function (result) {
-                        populate(result.finded, result.matched);
-                    });
-                    return;
-                }
-                if (!op.node) {//根节点， 根据业务包找所有的表
-                    populate(self._getTablesStructureByPackId(op.packageId));
-                    return;
-                }
-                if (BI.isNotNull(op.node.isParent)) {
-                    populate(self._getFieldsStructureByTableId(op.node.id));
-                }
+            showRelativeTables: false,
+            showExcelView: false,
+            showDateGroup: false,
+            isDefaultInit: true,
+            packageCreator: function() {
+                return BI.Utils.getAllGroupedPackagesTree();
+            },
+            tablesCreator: function (packageId) {
+                return self._getTablesStructureByPackId(packageId);
+            },
+            fieldsCreator: function (tableId, isRelation) {
+                return self._getFieldsStructureByTableId(tableId);
             }
         });
-        this.searcher.on(BI.SelectDataSearcher.EVENT_CLICK_ITEM, function () {
+        this.selectDataPane.on(BI.PackageSelectDataService.EVENT_CLICK_ITEM, function(){
             self.fireEvent(BI.LoginInfoSelectSingleField.EVENT_CLICK_ITEM, arguments);
         });
-    },
-
-    _getSearchResult: function (type, keyword, packageId, callback) {
-        var self = this;
-        var searchResult = [], matchResult = [];
-        var translations = Data.SharingPool.get("translations");
-        //选择了所有数据
-        if (type & BI.SelectDataSearchSegment.SECTION_ALL) {
-            var packages = BI.Utils.getAllPackageIDs4Conf();
-        } else {
-            var packages = [packageId];
-        }
-        //选择了表
-        if (type & BI.SelectDataSearchSegment.SECTION_TABLE) {
-            var result = [];
-            BI.each(packages, function (i, pid) {
-                var items = self._getTablesStructureByPackId(pid);
-                result.push(BI.Func.getSearchResult(items, keyword));
-            });
-            BI.each(result, function (i, sch) {
-                searchResult = searchResult.concat(sch.finded);
-                matchResult = matchResult.concat(sch.matched);
-            })
-        } else {
-            var result = [], map = [];
-            BI.each(packages, function (i, pId) {
-                var tables = BI.Utils.getTableIDsOfPackageID4Conf(pId);
-                var items = [];
-                BI.each(tables, function (i, tid) {
-                    items = items.concat(self._getFieldsStructureByTableId(tid));
-                });
-                result.push(BI.Func.getSearchResult(items, keyword));
-            });
-            BI.each(result, function (i, sch) {
-                BI.each(sch.finded, function (j, finded) {
-                    if (!map[finded.pId]) {
-                        searchResult.push({
-                            id: finded.pId,
-                            type: "bi.select_data_level0_node",
-                            text: translations[finded.pId],
-                            value: finded.pId,
-                            isParent: true,
-                            open: true
-                        });
-                        map[finded.pId] = true;
-                    }
-                });
-                searchResult = searchResult.concat(sch.finded);
-                matchResult = matchResult.concat(sch.matched);
-            })
-        }
-        callback({finded: searchResult, matched: matchResult});
     },
 
     _getTablesStructureByPackId: function (pId) {

@@ -5,7 +5,7 @@ import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICubeIndexDataGetterService;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -22,13 +22,13 @@ import java.util.*;
  * @since 4.0
  */
 public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
-    protected ICubeColumnReaderService<T> columnReaderService;
+    protected CubeColumnReaderService<T> columnReaderService;
     private BICubeTablePath path;
     private ICubeIndexDataGetterService indexDataGetterService;
     private CSet<Map.Entry<T, GroupValueIndex>> ascSet = new CSet<Map.Entry<T, GroupValueIndex>>(true);
     private CSet<Map.Entry<T, GroupValueIndex>> descSet = new CSet<Map.Entry<T, GroupValueIndex>>(false);
 
-    public BIColumnIndexReader(ICubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
+    public BIColumnIndexReader(CubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
         this.columnReaderService = columnReaderService;
         if (isRelationIndex(relationList)) {
             path = BICubePathUtils.convert(relationList);
@@ -67,7 +67,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     private GroupValueIndex getNormalValueIndex(T groupValue) {
         try {
             if (groupValue != null) {
-                int position = columnReaderService.getPositionOfGroup(groupValue);
+                int position = columnReaderService.getPositionOfGroupByGroupValue(groupValue);
                 //todo lookup 抛出异常代替返回-1
                 if (position == -1) {
                     return GVIFactory.createAllEmptyIndexGVI();
@@ -199,7 +199,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         @Override
         public boolean contains(Object o) {
             try {
-                columnReaderService.getPositionOfGroup((T) o);
+                columnReaderService.getPositionOfGroupByGroupValue((T) o);
                 return true;
             } catch (BIResourceInvalidException e) {
                 return false;
@@ -279,10 +279,8 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         }
 
         public DIterator(T start) {
-            T[] keys = createKey(1);
-            keys[0] = start;
             try {
-                c_index = BIColumnIndexReader.this.size() - columnReaderService.getPositionOfGroup(start);
+                c_index = columnReaderService.getPositionOfGroupByGroupValue(start) + 1;
             } catch (BIResourceInvalidException e) {
                 e.printStackTrace();
             }
@@ -313,10 +311,8 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         }
 
         public CIterator(T start) {
-            T[] keys = createKey(1);
-            keys[0] = start;
             try {
-                c_index = columnReaderService.getPositionOfGroup(start);
+                c_index = columnReaderService.getPositionOfGroupByGroupValue(start);
             } catch (BIResourceInvalidException e) {
                 e.printStackTrace();
             }

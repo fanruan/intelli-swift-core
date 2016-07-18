@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BICore;
@@ -79,9 +80,13 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
             for (CubeTableSource p : getParents()) {
                 ICubeTableService ti = loader.getTableIndex(p, start, end);
                 List<PersistentField> fields = p.getPersistentTable().getFieldList();
+                List<ICubeColumnDetailGetter> getters = new ArrayList<ICubeColumnDetailGetter>();
+                for (PersistentField f : fields){
+                    getters.add(ti.getColumnDetailReader(new IndexKey(f.getFieldName())));
+                }
                 for (int i = 0; i < ti.getRowCount(); i++) {
-                    for (int j = 0; j < fields.size(); j++) {
-                        travel.actionPerformed(new BIDataValue(i, j, ti.getRow(new IndexKey(fields.get(j).getFieldName()), i)));
+                    for (int j = 0; j < getters.size(); j++) {
+                        travel.actionPerformed(new BIDataValue(i, j, getters.get(j).getValue(i)));
                     }
                 }
                 startCol += p.getPersistentTable().getFieldSize();
@@ -336,9 +341,14 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
 
      */
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
+        if(helper.contains(this)){
+            return set;
+        }
+        helper.add(this);
+        set.add(this);
         for (CubeTableSource source : getParents()){
-            source.getSourceUsedBaseSource(set);
+            source.getSourceUsedBaseSource(set, helper);
         }
         return set;
     }

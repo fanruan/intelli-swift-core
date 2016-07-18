@@ -15,7 +15,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 * {
-  font-family: "Open Sans", "Tahoma", "Hiragino Sans GB", "Microsoft YaHei";
+  font-family: "Microsoft YaHei", "Hiragino Sans GB W3";
 }
 html,
 body,
@@ -41,7 +41,6 @@ body {
   padding: 0;
   top: 0;
   left: 0;
-  font-family: Microsoft YaHei, STXihei, SimSun, sans-serif;
   background-repeat: repeat;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -50,7 +49,9 @@ body {
   -o-user-select: none;
   user-select: none;
   color: #1a1a1a;
-  font: normal 12px Microsoft YaHei, simson, arial, tahoma, verdana, helvetica;
+  font: normal 12px "Microsoft YaHei", "Hiragino Sans GB W3";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-decoration: none;
   -kthml-user-focus: normal;
   -moz-user-focus: normal;
@@ -77,6 +78,7 @@ a:focus {
 input,
 textarea {
   margin: 0;
+  padding: 0;
   outline: none;
   border: 1px solid #cccccc;
 }
@@ -106,6 +108,8 @@ textarea::-webkit-scrollbar {
 }
 div::-webkit-scrollbar-thumb,
 textarea::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
   border-radius: 0;
   background-color: #e2e2e2;
 }

@@ -28,7 +28,7 @@ BI.FieldSetTrigger = BI.inherit(BI.BasicButton, {
             },
             lhgap: 10,
             rhgap: 10,
-            height: 35
+            height: 25
         })
     },
 

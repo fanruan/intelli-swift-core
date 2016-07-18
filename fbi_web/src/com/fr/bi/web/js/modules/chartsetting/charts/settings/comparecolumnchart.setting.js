@@ -36,7 +36,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.Widget, {
             type: "bi.chart_setting_select_color_combo",
             width: 130
         });
-        this.colorSelect.populate(BICst.CHART_COLORS);
+        this.colorSelect.populate();
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
@@ -243,6 +243,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.Widget, {
             width: this.constant.EDITOR_WIDTH,
             height: this.constant.EDITOR_HEIGHT,
             cls: "unit-input",
+            allowBlank: false,
             value: "0",
             errorText: BI.i18nText("BI-Please_Enter_Number_From_To_To", -90, 90),
             validationChecker: function(v){

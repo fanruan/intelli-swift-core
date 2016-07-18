@@ -36,7 +36,7 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
                         return true;
                     }
                 });
-                if (found === false) {
+                if (found === false && BI.Utils.isWidgetExistByID(preLink.to)) {
                     BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + preLink.to, preLink.from);
                 }
             });
@@ -46,18 +46,26 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
         }
         if (BI.has(changed, "settings")) {
             this.refresh();
+            //联动传递过滤条件发生改变的时候，清一下联动到的组件
+            if (changed.settings.transfer_filter !== pre.settings.transfer_filter) {
+                BI.each(this.get("linkages"), function (i, link) {
+                    if (BI.Utils.isWidgetExistByID(link.to)) {
+                        BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from);
+                    }
+                });
+            }
         }
     },
 
     refresh: function () {
         this.tmp({
             detail: {
-                name: this.get("name"),
                 dimensions: this.get("dimensions"),
                 view: this.get("view"),
                 type: this.get("type"),
                 settings: this.get("settings"),
-                filter_value: this.get("filter_value")
+                filter_value: this.get("filter_value"),
+                real_data: this.get("real_data")
             }
         }, {
             silent: true

@@ -89,6 +89,9 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
                             currentTable:self.model.table,
                             update_setting: self.model.getUpdateSettingBySourceTableId(id)
                         });
+                        setting.on(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, function(obj){
+                            self.fireEvent(BI.UpdateTableData.EVENT_CUBE_SAVE,obj);
+                        });
                         self.settings[id] = setting;
                         return BI.createWidget({
                             type: "bi.absolute",

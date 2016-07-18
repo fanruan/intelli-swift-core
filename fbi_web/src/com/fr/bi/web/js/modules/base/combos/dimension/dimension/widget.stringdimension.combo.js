@@ -5,14 +5,24 @@
  */
 BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
 
+    constants: {
+        customSortPos : 2,
+        CordonPos: 2
+    },
+
     config : {
         ASCEND : BICst.DIMENSION_STRING_COMBO.ASCEND,
         DESCEND: BICst.DIMENSION_STRING_COMBO.DESCEND,
         NOT_SORT : BICst.DIMENSION_STRING_COMBO.NOT_SORT,
         SORT_BY_CUSTOM : BICst.DIMENSION_STRING_COMBO.SORT_BY_CUSTOM,
         GROUP_BY_VALUE : BICst.DIMENSION_STRING_COMBO.GROUP_BY_VALUE,
-        GROUP_BY_CUSTOM : BICst.DIMENSION_STRING_COMBO.GROUP_BY_CUSTOM
+        GROUP_BY_CUSTOM : BICst.DIMENSION_STRING_COMBO.GROUP_BY_CUSTOM,
+        POSITION_BY_ADDRESS: BICst.DIMENSION_STRING_COMBO.ADDRESS,
+        POSITION_BY_LNG_LAT: BICst.DIMENSION_STRING_COMBO.LNG_LAT,
+        POSITION_BY_LNG: BICst.DIMENSION_STRING_COMBO.LNG,
+        POSITION_BY_LAT: BICst.DIMENSION_STRING_COMBO.LAT
     },
+
 
     defaultItems: function () {
         return [
@@ -33,7 +43,8 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             }, {
                 text: BI.i18nText("BI-Custom_Sort_Dot"),
                 value: BICst.DIMENSION_STRING_COMBO.SORT_BY_CUSTOM,
-                cls: "dot-e-font"
+                cls: "dot-e-font",
+                warningTitle: BI.i18nText("BI-Same_Value_Group")
             }],
             [{
                 text: BI.i18nText("BI-Same_Value_A_Group"),
@@ -66,12 +77,23 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             }],
             [{
                 text: BI.i18nText("BI-Dimension_From"),
-                tipType: "warning",
+                tipType: "success",
                 value: BICst.DIMENSION_STRING_COMBO.INFO,
                 cls: "dimension-from-font",
                 disabled: true
             }]
         ]
+    },
+
+    _rebuildItems :function(){
+        var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
+        if(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP){
+        }else{
+            var group = this._assertGroup(BI.Utils.getDimensionGroupByID(o.dId));
+            var customSort = items[0][this.constants.customSortPos];
+            group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
+        }
+        return items;
     },
 
     typeConfig: function(){
@@ -102,6 +124,14 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             val.type = BICst.SORT.ASC;
         }
         val.sort_target || (val.sort_target = this.options.dId);
+        return val;
+    },
+
+    _assertAddress: function(val){
+        val || (val = {});
+        if(BI.isNull(val.type)){
+            val.type = BICst.GIS_POSITION_TYPE.LNG_FIRST
+        }
         return val;
     }
 });

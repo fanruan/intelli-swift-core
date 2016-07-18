@@ -24,7 +24,7 @@ BI.ETLExcel = BI.inherit(BI.ETL, {
         }
         var reUploadExcel = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Remodify_Excel"),
+            text: BI.i18nText("BI-Update_Excel"),
             width: 110,
             height: 26
         });
@@ -41,6 +41,9 @@ BI.ETLExcel = BI.inherit(BI.ETL, {
             });
             excelUpload.on(BI.ExcelUpload.EVENT_SAVE, function(data){
                 BI.Layers.remove(self._constant.EXCEL_LAYER);
+                if(BI.isNull(data.table_name) || data.table_name === "") {
+                    data.table_name = finalTable.table_name;
+                }
                 self.model.setFields(data.fields);
                 self.model.saveTableById(finalTable.id, data);
                 self._populate();
