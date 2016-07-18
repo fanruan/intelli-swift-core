@@ -11,7 +11,7 @@ BI.GlobalUpdateSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.GlobalUpdateSetting.superclass._init.apply(this, arguments);
         var self = this;
-        var globalUpdate = BI.Utils.getUpdateSettingByID(BICst.GLOBAL_UPDATE);
+        var globalUpdate = BI.Utils.getUpdateSettingByID(BICst.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
         var timeSettings = BI.isNotNull(globalUpdate) ? globalUpdate.time_list : [];
         var addTime = BI.createWidget({
             type: "bi.button",
