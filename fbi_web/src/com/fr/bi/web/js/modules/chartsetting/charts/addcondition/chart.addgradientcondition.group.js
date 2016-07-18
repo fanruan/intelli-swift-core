@@ -97,7 +97,10 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
         });
 
         this.buttonGroup.removeItemAt(index);
-        this._checkItems(this.buttons[index - 1].getValue());
+        this._checkButtonEnable();
+        if(index != 0) {
+            this._checkItems(this.buttons[index - 1].getValue());
+        }
         this.fireEvent(BI.ChartAddGradientConditionGroup.EVENT_CHANGE)
     },
 
@@ -120,6 +123,16 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
                 })
             }))
         }
+    },
+
+    _checkButtonEnable: function () {
+        BI.each(this.buttons , function (idx , button) {
+            if(idx !== 0) {
+                button.setSmallIntervalEnable(false);
+            } else {
+                button.setSmallIntervalEnable(true);
+            }
+        } )
     },
 
     getValue: function () {
