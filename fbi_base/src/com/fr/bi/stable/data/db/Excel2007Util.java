@@ -4,7 +4,6 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.stable.ColumnRow;
@@ -40,13 +39,12 @@ import java.util.regex.Pattern;
 public class Excel2007Util {
 
     public boolean isEmpty = false;
-    private boolean isFirstRow = true;
-    private boolean isSecondRow = false;
     private String[] columnNames = new String[0];
     private int[] columnTypes = new int[0];
     private int columnCount = 0;
     private List<Object> currentRowData = new ArrayList<Object>();
     private List<Object[]> rowDataList = new ArrayList<Object[]>();
+    private List<Object[]> tempRowDataList = new ArrayList<Object[]>();
     private Map<ColumnRow, ColumnRow> mergeCells = new HashMap<ColumnRow, ColumnRow>();
     private boolean preview = false;
     private boolean hasFormula = false;
@@ -65,11 +63,14 @@ public class Excel2007Util {
             this.xlsxPackage = OPCPackage.open(xlsxFile.getPath(), PackageAccess.READ);
         }
         processFirstSheet();
-        if (columnNames.length == 0) {
+        if (tempRowDataList.size() == 0) {
             processFirstSheetFromBI();
         }
-        //处理一下单元格合并
+        // 处理一下单元格合并
         mergeCell();
+
+        // 遍历一下所有的格子
+        dealWithSomething();
 
         //如果是首行含有空值
         for (int i = 0; i < columnNames.length; i++) {
@@ -117,25 +118,77 @@ public class Excel2007Util {
             ColumnRow s = m.getKey();
             ColumnRow e = m.getValue();
             //如果是横向合并
-            if (s.getRow() == e.getRow() && s.getRow() != 0) {
+            if (s.getRow() == e.getRow()) {
                 int mergedColCount = e.getColumn() - s.getColumn();
                 for (int i = 0; i < mergedColCount; i++) {
-                    Object[] tempArray = rowDataList.get(e.getRow() - 1);
-                    tempArray[e.getColumn() - i] = rowDataList.get(e.getRow() - 1)[e.getColumn() - i - 1];
-                    rowDataList.set(e.getRow() - 1, tempArray);
+                    Object[] tempArray = tempRowDataList.get(e.getRow());
+                    if (tempArray.length < s.getColumn() + 1 + mergedColCount) {
+                        Object[] newRow = new Object[s.getColumn() + 1 + mergedColCount];
+                        for (int k = 0; k < tempArray.length; k++) {
+                            newRow[k] = tempArray[k];
+                        }
+                        tempArray = newRow;
+                    }
+                    tempArray[e.getColumn() - i] = tempRowDataList.get(e.getRow())[s.getColumn()];
+                    tempRowDataList.set(e.getRow(), tempArray);
                 }
-            } else if (s.getRow() != 0) {
+            } else {
                 int mergedRowCount = e.getRow() - s.getRow();
                 for (int j = 0; j < mergedRowCount; j++) {
-                    Object[] tempArray = rowDataList.get(e.getRow() - j - 1);
-                    tempArray[e.getColumn()] = rowDataList.get(s.getRow() - 1)[e.getColumn()];
-                    rowDataList.set(e.getRow() - j - 1, tempArray);
+                    Object[] tempArray = tempRowDataList.get(e.getRow() - j);
+                    tempArray[e.getColumn()] = tempRowDataList.get(s.getRow())[e.getColumn()];
+                    tempRowDataList.set(e.getRow() - j, tempArray);
                 }
-            } else if (s.getRow() == 0) {
-                int mergedColCount = e.getColumn() - s.getColumn();
-                for (int i = 0; i < mergedColCount; i++) {
-                    columnNames[e.getColumn() - i] = columnNames[s.getColumn()];
+            }
+        }
+    }
+
+    private void dealWithSomething() {
+        for (int i = 0; i < tempRowDataList.size(); i++) {
+            Object[] oneRow = tempRowDataList.get(i);
+            currentRowData = new ArrayList<Object>();
+            //首行 确定字段名
+            if (i == 0) {
+                columnCount = oneRow.length;
+                columnNames = new String[columnCount];
+                for (int j = 0; j < oneRow.length; j++) {
+                    columnNames[j] = oneRow[j].toString();
                 }
+            } else if (i == 1) {
+                columnTypes = new int[columnCount];
+                for (int j = 0; j < columnCount; j++) {
+                    String v = StringUtils.EMPTY;
+                    if (oneRow.length - 1 > j) {
+                        v = oneRow[j].toString();
+                    }
+                    currentRowData.add(v);
+                    boolean dateType = false;
+                    try {
+                        Date date = DateUtils.string2Date(v, true);
+                        if (date != null) {
+                            dateType = true;
+                        }
+                    } catch (Exception e) {
+                        dateType = false;
+                    }
+                    if (v.matches("^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$")) {
+                        columnTypes[j] = DBConstant.COLUMN.NUMBER;
+                    } else if (dateType) {
+                        columnTypes[j] = DBConstant.COLUMN.DATE;
+                    } else {
+                        columnTypes[j] = DBConstant.COLUMN.STRING;
+                    }
+                }
+                rowDataList.add(currentRowData.toArray());
+            } else {
+                for (int j = 0; j < columnCount; j++) {
+                    String v = StringUtils.EMPTY;
+                    if (oneRow.length > j) {
+                        v = oneRow[j].toString();
+                    }
+                    currentRowData.add(v);
+                }
+                rowDataList.add(currentRowData.toArray());
             }
         }
     }
@@ -255,10 +308,9 @@ public class Excel2007Util {
                 this.formatString = null;
                 String cellType = attributes.getValue("t");
                 String cellStyleStr = attributes.getValue("s");
-                if ("b".equals(cellType)){
+                if ("b".equals(cellType)) {
                     nextDataType = xssfDataType.BOOL;
-                }
-                else if ("e".equals(cellType)) {
+                } else if ("e".equals(cellType)) {
                     nextDataType = xssfDataType.ERROR;
                 } else if ("inlineStr".equals(cellType)) {
                     nextDataType = xssfDataType.INLINESTR;
@@ -357,96 +409,6 @@ public class Excel2007Util {
             }
         }
 
-        public void processColumnType() {
-            if (isSecondRow) {
-                isSecondRow = false;
-                columnTypes = new int[columnCount];
-                for (int i = 0; i < columnCount; i++) {
-                    if (currentRowData.size() < columnCount) {
-                        for (int j = 0; j < columnCount - currentRowData.size(); j++) {
-                            currentRowData.add(StringUtils.EMPTY);
-                        }
-                    }
-                    String v = currentRowData.get(i).toString();
-                    boolean dateType = false;
-                    try {
-                        Date date = DateUtils.string2Date(v, true);
-                        if (date != null) {
-                            dateType = true;
-                        }
-                    } catch (Exception e) {
-                        dateType = false;
-                    }
-                    if (v.matches("^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$")) {
-                        columnTypes[i] = DBConstant.COLUMN.NUMBER;
-                    } else if (dateType) {
-                        columnTypes[i] = DBConstant.COLUMN.DATE;
-                    } else {
-                        columnTypes[i] = DBConstant.COLUMN.STRING;
-                    }
-                }
-            }
-        }
-
-        public void processColumnName() {
-            if (isFirstRow) {
-                isFirstRow = false;
-                isSecondRow = true;
-                columnNames = currentRowData.toArray(new String[columnCount]);
-                //处理字段重名
-                for (int i = 0; i < columnNames.length; i++) {
-                    int count = 1;
-                    for (int j = 0; j < columnNames.length; j++) {
-                        if (ComparatorUtils.equals(columnNames[i], columnNames[j]) && i != j) {
-                            columnNames[j] += count;
-                            count++;
-                        }
-                    }
-                }
-            }
-        }
-
-        public void processRow() {
-            if (isFirstRow) {
-                columnCount = tempData.size();
-                for (int i = 0; i < tempData.size(); i++) {
-                    try {
-                        currentRowData.add(tempData.get(i));
-                    } catch (Exception e) {
-                        currentRowData.add(StringUtils.EMPTY);
-                    }
-                }
-            } else {
-                for (int i = 0; i < columnCount; i++) {
-                    if (i < tempData.size()) {
-                        try {
-                            currentRowData.add(tempData.get(i));
-                        } catch (Exception e) {
-                            currentRowData.add(StringUtils.EMPTY);
-                        }
-                    } else {
-                        currentRowData.add(StringUtils.EMPTY);
-                    }
-                }
-            }
-
-            //从第二行来读取数据类型
-            processColumnType();
-
-            //添加非第一行到所有数据的List
-            if (!isFirstRow) {
-                rowDataList.add(currentRowData.toArray(new Object[columnCount]));
-            }
-
-            //第一行获取列名
-            processColumnName();
-
-            currentRowData = new ArrayList<Object>();
-            tempData = new ArrayList<String>();
-
-            lastColumnNumber = -1;
-        }
-
         @Override
         public void endElement(String uri, String localName, String name) throws SAXException {
             if (preview && rowDataList.size() > BIBaseConstant.PREVIEW_COUNT) {
@@ -456,7 +418,9 @@ public class Excel2007Util {
             if ("v".equals(name)) {
                 processElement();
             } else if ("row".equals(name)) {
-                processRow();
+//                processRow();
+                tempRowDataList.add(tempData.toArray());
+                tempData = new ArrayList<String>();
             }
 
         }
