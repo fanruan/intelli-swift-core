@@ -88,7 +88,7 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             var items = [];
             BI.each(rels, function(idx, rel){
                 var primaryId = rel.primaryKey.field_id, foreignId = rel.foreignKey.field_id;
-                var foreignTableId = rel.foreignKey.table_id;
+                var foreignTableId = all_fields[foreignId].table_id;
                 //自循环
                 if(!BI.contains(visitSet, foreignTableId) && calcDegree[foreignTableId] !== degrees[foreignTableId]){
                     if(all_fields[primaryId].table_id === all_fields[foreignId].table_id){
