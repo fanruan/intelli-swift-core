@@ -272,7 +272,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             }
         }
         if (jo.has("filter_value")) {
-            JSONObject targetFilter = (JSONObject) jo.get("filter_value");
+            JSONObject targetFilter = jo.getJSONObject("filter_value");
             Iterator it = targetFilter.keys();
             while (it.hasNext()) {
                 String key = it.next().toString();
@@ -387,7 +387,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         return this.maxRow;
     }
 
-    private class TargetSort extends NameObject{
+    private class TargetSort extends NameObject {
         public TargetSort(String s, Object o) {
             super(s, o);
         }
