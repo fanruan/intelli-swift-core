@@ -34,12 +34,12 @@ BI.SelectDataCombo = BI.inherit(BI.Widget, {
         });
     },
 
-    _itemsCreator: function(options, callback){
+    _itemsCreator: function (options, callback) {
         var o = this.options, self = this;
         var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId);
-        if(dimensions.length === 0){
+        if (dimensions.length === 0) {
             callback([]);
-        }else{
+        } else {
             BI.Utils.getWidgetDataByID(o.wId, function (data) {
                 if (options.type == BI.MultiSelectCombo.REQ_GET_ALL_DATA) {
                     callback({
@@ -61,7 +61,7 @@ BI.SelectDataCombo = BI.inherit(BI.Widget, {
 
     _createItemsByData: function (data) {
         var result = [];
-        BI.each(data.value, function(idx, value){
+        BI.each(data.value, function (idx, value) {
             result.push({
                 text: value,
                 value: value,
@@ -71,8 +71,8 @@ BI.SelectDataCombo = BI.inherit(BI.Widget, {
         return result;
     },
 
-    _assertValue: function(v){
-        if(BI.isEmpty(v)){
+    _assertValue: function (v) {
+        if (BI.isEmpty(v)) {
             return {
                 type: BI.Selection.Multi,
                 value: []
@@ -87,9 +87,7 @@ BI.SelectDataCombo = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        var values = this.combo.getValue();
-        delete values.assist;
-        return values;
+        return this.combo.getValue();
     },
 
     populate: function () {

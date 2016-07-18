@@ -1,4 +1,5 @@
 /**
+ * 渐变色条件添加
  * Created by GameJian on 2016/7/14.
  */
 BI.ChartAddGradientConditionItem = BI.inherit(BI.Widget, {
@@ -42,7 +43,7 @@ BI.ChartAddGradientConditionItem = BI.inherit(BI.Widget, {
             width: 25,
             height: 25,
             handler: function () {
-                o._removeCondition(o.cid)
+                o.removeCondition(o.cid)
             }
         });
 
@@ -50,7 +51,8 @@ BI.ChartAddGradientConditionItem = BI.inherit(BI.Widget, {
             type: "bi.left",
             element: this.element,
             items: [this.numberRange, this.gradientCombo, this.deleteIcon],
-            hgap: 3
+            hgap: 3,
+            vgap: 2
         });
 
     },
@@ -58,7 +60,8 @@ BI.ChartAddGradientConditionItem = BI.inherit(BI.Widget, {
     getValue: function () {
         return {
             range: this.numberRange.getValue(),
-            color_range: this.gradientCombo.getValue()
+            color_range: this.gradientCombo.getValue(),
+            cid: this.options.cid
         }
     },
 
