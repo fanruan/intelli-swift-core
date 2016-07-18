@@ -40,7 +40,12 @@ public class BIBusinessField implements BusinessField {
     private boolean canSetUsable = true;
     protected BusinessTable tableBelongTo;
 
-    public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize, boolean isUsable, boolean canSetUsable) {
+    /**
+     * 字段是否是自循环表展示字段
+     */
+    protected boolean isCircle;
+
+    public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize, boolean isUsable, boolean canSetUsable, boolean isCircle) {
         this.tableBelongTo = tableBelongTo;
         this.fieldName = fieldName;
         this.fieldID = fieldID;
@@ -49,6 +54,11 @@ public class BIBusinessField implements BusinessField {
         this.classType = classType;
         this.isUsable = isUsable;
         this.canSetUsable = canSetUsable;
+        this.isCircle = isCircle;
+    }
+
+    public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize, boolean isUsable, boolean canSetUsable) {
+        this(tableBelongTo, fieldID, fieldName, classType, fieldSize, isUsable, canSetUsable, false);
     }
 
     public BIBusinessField(String tableID, String fieldName) {
@@ -56,7 +66,7 @@ public class BIBusinessField implements BusinessField {
     }
 
     public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize) {
-        this(tableBelongTo, fieldID, fieldName, classType, fieldSize, true, true);
+        this(tableBelongTo, fieldID, fieldName, classType, fieldSize, true, true, false);
     }
 
     public BIBusinessField(String tableID, String fieldName, BIFieldID fieldID) {
@@ -81,11 +91,11 @@ public class BIBusinessField implements BusinessField {
     }
 
     public BIBusinessField(BusinessTable tableBelongTo, String fieldName) {
-        this(tableBelongTo, new BIFieldID(""), fieldName, 0, 0, true, true);
+        this(tableBelongTo, new BIFieldID(""), fieldName, 0, 0, true, true, false);
     }
 
     public BIBusinessField(BusinessTable tableBelongTo, String fieldName, BIFieldID fieldId) {
-        this(tableBelongTo, fieldId, fieldName, 0, 0, true, true);
+        this(tableBelongTo, fieldId, fieldName, 0, 0, true, true, false);
     }
 
     public void setFieldName(String fieldName) {
@@ -127,6 +137,14 @@ public class BIBusinessField implements BusinessField {
         return tableBelongTo;
     }
 
+    public boolean isCircle(){
+        return isCircle;
+    }
+
+    public void setCircle(boolean isCircle){
+        this.isCircle = isCircle;
+    }
+
     /**
      * 转成JSON
      *
@@ -158,6 +176,9 @@ public class BIBusinessField implements BusinessField {
         if (jo.has("is_enable")) {
             canSetUsable = jo.optBoolean("is_enable", true);
         }
+        if (jo.has("isCircle")){
+            isCircle = jo.optBoolean("isCircle", false);
+        }
     }
 
     /**
@@ -175,7 +196,8 @@ public class BIBusinessField implements BusinessField {
         jo.put("field_type", fieldType)
                 .put("field_size", fieldSize)
                 .put("is_usable", isUsable)
-                .put("is_enable", canSetUsable);
+                .put("is_enable", canSetUsable)
+                .put("isCircle", isCircle);
         return jo;
     }
 

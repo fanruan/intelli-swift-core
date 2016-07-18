@@ -51,11 +51,18 @@ BI.ETLModel = BI.inherit(FR.OB, {
         BI.each(fields, function (i, fs) {
             BI.each(fs, function (j, field) {
                 field.id = self._getCurrentFieldIdByFieldInfo(field);
+                field.isCircle = _getIsCircle(field);
                 self.allFields[field.id] = field;
             })
         });
         removeRelationsOfNotExistFields();
         this.fields = fields;
+
+        function _getIsCircle(field) {
+            var etl_value = self.allTables[0][0].etl_value;
+            return BI.has(etl_value, "showfields") && BI.contains(etl_value.showfields, field.field_name);
+        }
+
 
         function removeRelationsOfNotExistFields() {
             var preFieldIds = BI.pluck(BI.flatten(self.fields), "id");
