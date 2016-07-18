@@ -199,6 +199,7 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
                     String field_name = null;
                     int fieldSize = 0;
                     int classType = 0;
+                    boolean isCircle = false;
                     if (fieldJO.has("field_name")) {
                         field_name = fieldJO.getString("field_name");
                     }
@@ -225,9 +226,12 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
                     if (fieldJO.has("field_size")) {
                         fieldSize = fieldJO.getInt("field_size");
                     }
+                    if (fieldJO.has("isCircle")) {
+                        isCircle = fieldJO.getBoolean("isCircle");
+                    }
                     BIBusinessField field = new BIBusinessField(table, new BIFieldID(fieldJO.getString("id")),
                             field_name, classType,
-                            fieldSize, fieldJO.optBoolean("is_usable"), fieldJO.optBoolean("is_enable"));
+                            fieldSize, fieldJO.optBoolean("is_usable"), fieldJO.optBoolean("is_enable"), isCircle);
                     fields.add(field);
                 }
             } catch (Exception e) {

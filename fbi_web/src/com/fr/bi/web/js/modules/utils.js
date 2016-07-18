@@ -304,6 +304,12 @@
             }
         },
 
+        getFieldIsCircleByID: function (fieldId) {
+            if (BI.isNotNull(Pool.fields[fieldId])) {
+                return Pool.fields[fieldId].isCircle;
+            }
+        },
+
         getTableIdByFieldID: function (fieldId) {
             if (BI.isNotNull(Pool.fields[fieldId])) {
                 return Pool.fields[fieldId].table_id;
@@ -1568,9 +1574,13 @@
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
-            if (tableA === tableB) {
-                if (isSelfCircle(path) && checkPathAvailable(path, from)) {
-                    return path;
+            if (tableA === tableB) {        //同一张表
+                if (isSelfCircle(path)) {      //是自循环表
+                    if(checkPathAvailable(path, from, to)){ //from和to中都不包含层级字段
+                        return path;
+                    }else{
+                        return [getRelationOfselfCircle(from, to, path)];
+                    }
                 } else {
                     return [[{
                         primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
@@ -1579,6 +1589,16 @@
                 }
             }
             return path;
+
+            //获取自循环生成的层级所在的关联
+            function getRelationOfselfCircle(from, to, paths){
+                return BI.find(paths, function(idx, path){
+                    return BI.find(path, function (id, relation) {
+                        var foreignId = self.getForeignIdFromRelation(relation);
+                        return foreignId === from || foreignId === to;
+                    });
+                })
+            }
 
             //是自循环还是循环路径
             function isSelfCircle(paths) {
@@ -1592,10 +1612,11 @@
             }
 
             //对自循环表检测路径合法依据：路径中的a个关联中是否存在外键为primKey
-            function checkPathAvailable(paths, primKey) {
+            function checkPathAvailable(paths, primKey, foreign) {
                 var result = BI.find(paths, function (idx, path) {
                     return BI.find(path, function (id, relation) {
-                        return self.getForeignIdFromRelation(relation) === primKey;
+                        var foreignKey = self.getForeignIdFromRelation(relation);
+                        return foreignKey === primKey || foreignKey === foreign;
                     });
                 });
                 return BI.isNull(result);
