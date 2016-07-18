@@ -152,7 +152,7 @@ public abstract class AbstractTableIndex implements ICubeTableService {
 
     @Override
     public IntList getRemovedList() {
-        return null;
+        return removedList;
     }
 
     @Override
