@@ -21,11 +21,19 @@ BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
             width: 80
         });
 
+        this.formulaRecord.on(BI.TextButton.EVENT_CHANGE , function() {
+            self.fireEvent(BI.CustomScaleTrigger.EVENT_CHANGE)
+        });
+
         this.fomulaIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: "calculate-target-font view-button",
             height: 30,
             width: 30
+        });
+
+        this.fomulaIcon.on(BI.IconButton.EVENT_CHANGE , function() {
+            self.fireEvent(BI.CustomScaleTrigger.EVENT_CHANGE)
         });
 
         BI.createWidget({
@@ -36,4 +44,5 @@ BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
     }
 
 });
+BI.CustomScaleTrigger.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.custom_scale_trigger" , BI.CustomScaleTrigger);
