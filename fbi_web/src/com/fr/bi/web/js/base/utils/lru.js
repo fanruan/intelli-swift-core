@@ -1,7 +1,7 @@
 ;
 !(function () {
     BI.LRU = function (limit) {
-        this.size = 0
+        this.size = 0;
         this.limit = limit;
         this.head = this.tail = undefined;
         this._keymap = {};

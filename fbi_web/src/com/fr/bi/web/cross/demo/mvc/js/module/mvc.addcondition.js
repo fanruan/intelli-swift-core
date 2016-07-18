@@ -36,7 +36,7 @@ AddConditionView = BI.inherit(BI.View, {
         });
 
         this.conditions = BI.createWidget({
-            type: "bi.chart_add_condition_group"
+            type: "bi.chart_add_gradient_condition_group"
         });
 
         var interval = BI.createWidget({

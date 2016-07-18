@@ -60,7 +60,7 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
             type: "bi.left",
             element: this.element,
             items: [this.numberRange, this.colorChooser, this.deleteIcon],
-            hgap: 5,
+            hgap: 3,
             vgap: 2
         })
     },
@@ -68,7 +68,8 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
     getValue: function(){
         return {
             range: this.numberRange.getValue(),
-            color: this.colorChooser.getValue()
+            color: this.colorChooser.getValue(),
+            cid: this.options.cid
         }
     },
 
