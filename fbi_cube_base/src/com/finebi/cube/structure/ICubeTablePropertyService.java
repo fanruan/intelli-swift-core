@@ -6,6 +6,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 表的基本属性。
@@ -35,6 +36,8 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
 
     int getRowCount();
 
+    TreeSet<Integer> getRemovedList();
+
     Date getCubeLastTime();
 
 
@@ -49,5 +52,7 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
     Set<String> getFieldNamesFromParent();
 
     void forceRelease();
+    
+    boolean isRemovedListAvailable();
 
 }

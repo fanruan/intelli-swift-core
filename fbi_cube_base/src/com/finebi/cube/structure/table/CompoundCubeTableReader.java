@@ -162,6 +162,16 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
+    public TreeSet<Integer> getRemovedList() {
+        if (hostTable.isRemovedListAvailable()) {
+            return hostTable.getRemovedList();
+        } else {
+            return parentTable.getRemovedList();
+        }
+
+    }
+
+    @Override
     public ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
         for (ICubeFieldSource field : compoundFields) {
             if (ComparatorUtils.equals(field.getFieldName(), fieldName)) {
@@ -251,6 +261,12 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
         if (parentTable != null) {
             parentTable.setTableOwner(owner);
         }
+    }
+
+    @Override
+    public boolean isRemovedListAvailable() {
+        return hostTable.isRemovedListAvailable() || (isParentAvailable() && parentTable.isRemovedListAvailable());
+
     }
 
     @Override

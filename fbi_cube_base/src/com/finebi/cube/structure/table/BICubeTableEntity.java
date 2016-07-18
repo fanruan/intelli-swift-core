@@ -92,7 +92,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
         Iterator<Integer> it = removedLine.iterator();
-        int row = tableProperty.getRowCount();
+        int row = 0;
         while (it.hasNext()) {
             tableProperty.recordRemovedList(row++,it.next());
         }
@@ -168,6 +168,11 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
+    public TreeSet<Integer> getRemovedList() {
+        return tableProperty.getRemovedList();
+    }
+
+    @Override
     public Date getCubeLastTime() {
         return tableProperty.getCubeLastTime();
     }
@@ -234,6 +239,11 @@ public class BICubeTableEntity implements CubeTableEntityService {
     public void setTableOwner(ITableKey owner) {
         relationManager.setOwner(owner);
         columnManager.setOwner(owner);
+    }
+
+    @Override
+    public boolean isRemovedListAvailable() {
+        return tableProperty.isRemovedListAvailable();
     }
 
     @Override

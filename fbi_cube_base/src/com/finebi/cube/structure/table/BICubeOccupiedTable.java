@@ -100,6 +100,11 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
+    public TreeSet<Integer> getRemovedList() {
+        return null;
+    }
+
+    @Override
     public ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
         return null;
     }
@@ -161,6 +166,11 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     @Override
     public void setTableOwner(ITableKey owner) {
 
+    }
+
+    @Override
+    public boolean isRemovedListAvailable() {
+        return false;
     }
 
     @Override

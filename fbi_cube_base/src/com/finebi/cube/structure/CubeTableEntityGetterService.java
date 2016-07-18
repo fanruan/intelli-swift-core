@@ -11,6 +11,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Cube表的只读接口
@@ -38,6 +39,8 @@ public interface CubeTableEntityGetterService extends Release, ICubeVersion {
     Set<BIColumnKey> getCubeColumnInfo();
 
     int getRowCount();
+
+    TreeSet<Integer> getRemovedList();
 
     ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException;
 
