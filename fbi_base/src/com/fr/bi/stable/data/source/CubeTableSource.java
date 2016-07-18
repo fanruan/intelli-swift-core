@@ -13,13 +13,17 @@ import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by GUY on 2015/2/28.
  */
 public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
     BICore fetchObjectCore();
+
     IPersistentTable getPersistentTable();
 
     String getSourceID();
@@ -90,6 +94,7 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
 
     long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end);
 
+    long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount);
     /**
      * 获取某个字段的distinct值
      */
@@ -115,5 +120,6 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
 
     boolean isIndependent();
 
-    Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set);
+    Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper);
+
 }

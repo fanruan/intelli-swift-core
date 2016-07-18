@@ -26,4 +26,24 @@ public class BIDayValue implements BIDateValue<Long>{
     public BICore fetchObjectCore() {
         return new BICoreGenerator(this).fetchObjectCore();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BIDayValue that = (BIDayValue) o;
+
+        return value == that.value;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (value ^ (value >>> 32));
+    }
 }

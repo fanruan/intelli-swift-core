@@ -6,7 +6,7 @@ package com.fr.bi.resource;
 public class ResourceConstants {
 
     public static final String DEFAULT_DESIGN_JS = "dezi.js";
-    public static final String DEFAULT_DEZI_CSS = "dezi.css";
+    public static final String DEFAULT_DESIGN_CSS = "dezi.css";
 
     public static final String DEFAULT_SHOW_JS = "show.js";
     public static final String DEFAULT_SHOW_CSS = "show.css";
@@ -22,4 +22,6 @@ public class ResourceConstants {
 
     public static final String DEFAULT_DATA_JS = "data.js";
     public static final String DEFAULT_FORMULA_JS = "formula.js";
+
+    public static final String DEFAULT_MOBILE_JS = "mobile.js";
 }

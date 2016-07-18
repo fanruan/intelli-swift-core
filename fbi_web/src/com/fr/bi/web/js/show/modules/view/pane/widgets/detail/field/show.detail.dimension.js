@@ -220,7 +220,8 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
     _createFormulaCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
-            type: "bi.detail_formula_dimension_combo_show"
+            type: "bi.detail_formula_dimension_combo_show",
+            dId: this.model.get("id")
         });
         this.combo.on(BI.DetailFormulaDimensionComboShow.EVENT_CHANGE, function (v) {
             switch (v) {
@@ -276,7 +277,7 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
         BI.Popovers.create(id, popup).open(id);
     },
 
-    _buildHyperlinkPane: function(){
+    _buildHyperlinkPane: function () {
         var self = this, id = this.model.get("id");
         BI.Popovers.remove(id);
         var popup = BI.createWidget({

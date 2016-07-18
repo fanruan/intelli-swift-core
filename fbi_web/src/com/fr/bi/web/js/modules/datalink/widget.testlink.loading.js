@@ -112,7 +112,7 @@ BI.TestLinkLoadingMask = BI.inherit(BI.Widget, {
                 }]);
                 setTimeout(function(){
                     BI.Maskers.remove(self.maskId);
-                }, 3000);
+                }, 1500);
                 if(BI.isNotNull(data.schemas)){
                     self.fireEvent(BI.TestLinkLoadingMask.EVENT_SCHEMA_SUCCESS, data.schemas);
                 }

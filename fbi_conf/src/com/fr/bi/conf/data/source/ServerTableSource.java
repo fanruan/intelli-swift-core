@@ -12,6 +12,8 @@ import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.bi.util.BICubeDBUtils;
+import com.fr.data.core.db.dialect.Dialect;
+import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.impl.DBTableData;
 import com.fr.file.DatasourceManager;
 import com.fr.general.data.DataModel;
@@ -48,6 +50,12 @@ public class ServerTableSource extends DBTableSource {
                 return set;
             }
             SqlSettedStatement settedStatement = new SqlSettedStatement(((DBTableData) tableData).getDatabase());
+            try {
+                Dialect dialect = DialectFactory.generateDialect(settedStatement.getSqlConn(), settedStatement.getConn().getDriver());
+                fieldName = dialect.column2SQL(fieldName);
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
             settedStatement.setSql("SELECT distinct " + fieldName + " FROM " + "(" +((DBTableData) tableData).getQuery() + ") " + "t");
             BICubeDBUtils.runSQL(settedStatement, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
                 @Override
@@ -87,8 +95,8 @@ public class ServerTableSource extends DBTableSource {
         super();
     }
 
-    public ServerTableSource(String dbName, String tableName, String schema, String dbLink) {
-        super("__FR__BI__SERVER__", tableName);
+    public ServerTableSource(String tableName) {
+        super(DBConstant.CONNECTION.SERVER_CONNECTION, tableName);
     }
 
     @Override

@@ -3,15 +3,13 @@
  */
 package com.fr.bi.test.stable.engine.cal;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
+import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.engine.cal.AllSingleDimensionGroup;
 import com.fr.bi.stable.engine.cal.ResultDealer;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.TableIndexAdapter;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -20,11 +18,17 @@ import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.stable.core.UUID;
-
 import edu.emory.mathcs.backport.java.util.Arrays;
 import junit.framework.TestCase;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * @author Daniel
@@ -36,7 +40,7 @@ public class AllSingleDimensionGroupTest extends TestCase {
         BIKey[] key = new BIKey[12];
         Arrays.fill(key, new IndexKey(""));
         CalDealer dealer = new CalDealer();
-        AllSingleDimensionGroup.run(ti.getAllShowIndex(), ti, new IndexKey(""), BIServerUtils.createDimensonDealer(key, dealer), 0);
+        AllSingleDimensionGroup.run(ti.getAllShowIndex(), ti, new IndexKey(""), BIServerUtils.createDimensonDealer(key, dealer));
         assertEquals(dealer.resultMap, ti.resultMap);
     }
 
@@ -45,13 +49,14 @@ public class AllSingleDimensionGroupTest extends TestCase {
         private TreeMap<String, Double> resultMap = new TreeMap<String, Double>();
 
         @Override
-        public void dealWith(final ICubeTableService ti, GroupValueIndex currentIndex, int startCol) {
+        public void dealWith(final ICubeTableService ti, GroupValueIndex currentIndex) {
             final StringBuffer sb = new StringBuffer();
+            final ICubeColumnDetailGetter getter = ti.getColumnDetailReader(new IndexKey(""));
             currentIndex.BrokenableTraversal(new BrokenTraversalAction() {
 
                 @Override
                 public boolean actionPerformed(int row) {
-                    sb.append((String) ti.getRow(new IndexKey(""), row));
+                    sb.append((String) getter.getValue(row));
                     return true;
                 }
             });
@@ -106,12 +111,6 @@ public class AllSingleDimensionGroupTest extends TestCase {
                 assertEquals(result, getSUMValue(gvi, new IndexKey("")));
             }
         }
-
-        @Override
-        public Object getRow(BIKey key, int row) {
-            return values[row];
-        }
-
         @Override
         public int getRowCount() {
             return rowCount;
@@ -123,15 +122,42 @@ public class AllSingleDimensionGroupTest extends TestCase {
         }
 
         @Override
-        public GroupValueIndex getIndexByRow(BIKey key, int row) {
-            return map.get(values[row]);
+        public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
+            return new ICubeValueEntryGetter() {
+                @Override
+                public GroupValueIndex getIndexByRow(int row) {
+                    return map.get(values[row]);
+                }
+
+                @Override
+                public CubeValueEntry getEntryByRow(int row) {
+                    return null;
+                }
+
+                @Override
+                public int getGroupSize() {
+                    return 0;
+                }
+            };
         }
+
+
 
         @Override
         public double getSUMValue(GroupValueIndex gvi, BIKey summaryIndex) {
             SUM s = new SUM();
             gvi.Traversal(s);
             return s.get();
+        }
+
+        @Override
+        public ICubeColumnDetailGetter getColumnDetailReader(BIKey key) {
+            return new ICubeColumnDetailGetter() {
+                @Override
+                public Object getValue(int row) {
+                    return values[row];
+                }
+            };
         }
 
         private class SUM implements SingleRowTraversalAction {

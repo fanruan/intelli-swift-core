@@ -14,4 +14,11 @@ public class BIMandatedObjectTest extends TestCase {
         assertEquals(o.factory(), IFactoryService.CONF_XML);
         assertEquals(o.key(), "key");
     }
+
+
+    public void testInterfaceAnnotation() {
+        Class interaceImp = InterfaceAnnImp.class;
+
+        System.out.println("");
+    }
 }

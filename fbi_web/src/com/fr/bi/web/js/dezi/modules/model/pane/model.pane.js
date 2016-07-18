@@ -9,13 +9,13 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
     _static: function () {
         var self = this;
         return {
-            getOperatorIndex: function(){
+            getOperatorIndex: function () {
                 return self.operatorIndex;
             },
-            isUndoRedoSet: function(){
+            isUndoRedoSet: function () {
                 return self.isUndoRedoSet;
             },
-            setUndoRedoSet: function(v) {
+            setUndoRedoSet: function (v) {
                 self.isUndoRedoSet = v;
             }
         }
@@ -25,8 +25,8 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         BIDezi.PaneModel.superclass._init.apply(this, arguments);
         var self = this;
         this.operatorIndex = 0;
-        this.saveDebounce = BI.debounce(function(widgets, dims, layoutType){
-            var records = Data.SharingPool.get("records") || [];
+        this.saveDebounce = BI.debounce(function (widgets, dims, layoutType) {
+            var records = Data.SharingPool.cat("records") || new BI.Queue(30);
             records.splice(self.operatorIndex + 1);
             records.push({
                 dimensions: dims,
@@ -34,7 +34,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                 layoutType: layoutType
             });
             Data.SharingPool.put("records", records);
-            self.operatorIndex = records.length - 1;
+            self.operatorIndex = records.size() - 1;
         }, 100);
     },
 
@@ -47,6 +47,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         if (this.has("dashboard")) {
             var dashboard = this.get("dashboard");
             var widgets = this.get("widgets");
+            var newWidgets = {};
             var layoutType = dashboard.layoutType;
             var regions = dashboard.regions;
             BI.each(regions, function (i, region) {
@@ -56,10 +57,11 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                         top: region.top,
                         width: region.width,
                         height: region.height
-                    }
+                    };
+                    newWidgets[region.id] = widgets[region.id];
                 }
             });
-            this.set({"widgets": widgets, layoutType: layoutType});
+            this.set({"widgets": newWidgets, layoutType: layoutType});
             return true;
         }
         if (this.has("addWidget")) {
@@ -71,16 +73,20 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                 widgets[wId] = info;
                 widgets[wId].name = self._generateWidgetName(widgets[wId].name);
                 widgets[wId].init_time = new Date().getTime();
+                //添加查询按钮的时候在此保存一下当前的查询条件
+                if (info.type === BICst.WIDGET.QUERY) {
+                    Data.SharingPool.put("control_filters", BI.Utils.getControlCalculations());
+                }
             }
             this.set({"widgets": widgets});
             return true;
         }
-        if(this.has("undo")) {
+        if (this.has("undo")) {
             this.get("undo");
             this._undoRedoOperator(true);
             return true;
         }
-        if(this.has("redo")) {
+        if (this.has("redo")) {
             this.get("redo");
             this._undoRedoOperator(false);
             return true;
@@ -88,9 +94,9 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         return false;
     },
 
-    _undoRedoOperator: function(isUndo){
+    _undoRedoOperator: function (isUndo) {
         isUndo === true ? this.operatorIndex-- : this.operatorIndex++;
-        var ob = Data.SharingPool.get("records")[this.operatorIndex];
+        var ob = Data.SharingPool.cat("records").getElementByIndex(this.operatorIndex);
         this.isUndoRedoSet = true;
         Data.SharingPool.put("dimensions", ob.dimensions);
         Data.SharingPool.put("widgets", ob.widgets);
@@ -125,13 +131,24 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
 
     duplicate: function (copy, key1, key2) {
         this.refresh();
+        if (key1 === "widgets") {
+            BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX + key2);
+            //全局组件增删事件
+            BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX);
+        }
     },
 
-    change: function (changed) {
-        if(this.isUndoRedoSet === true) {
+    change: function (changed, pre) {
+        if (this.isUndoRedoSet === true) {
             return;
         }
         this.refresh();
+        if (BI.has(changed, "widgets")) {
+            if (BI.size(changed.widgets) !== BI.size(pre.widgets)) {
+                //全局组件增删事件
+                BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX);
+            }
+        }
     },
 
     refresh: function () {

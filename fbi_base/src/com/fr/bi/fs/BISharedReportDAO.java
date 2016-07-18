@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface BISharedReportDAO {
 
-    void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userids) throws Exception;
+    void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userids, boolean isReset) throws Exception;
 
     List<User> findUsersByReport(long reportId, long createBy) throws Exception;
 

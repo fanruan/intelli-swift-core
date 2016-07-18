@@ -14,4 +14,6 @@ BICst.BROADCAST = {
     SRC_PREFIX: "src_", //数据源(字段)增删事件 + srcId
 
     PACKAGE_PREFIX: "package_", //业务包增删事件 + wId || ""
+
+    WIDGET_SELECTED_PREFIX: "widget_selected_", //组件选中广播事件
 };

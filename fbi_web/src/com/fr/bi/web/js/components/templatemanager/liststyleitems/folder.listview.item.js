@@ -54,7 +54,7 @@ BI.FolderListViewItem = BI.inherit(BI.Single, {
 
         var renameIcon = BI.createWidget({
             type: "bi.icon_button",
-            cls: 'rename-font template-item-icon',
+            cls: 'report-rename-font template-item-icon',
             title: BI.i18nText("BI-Rename"),
             invisible: true,
             stopPropagation: true
@@ -65,7 +65,7 @@ BI.FolderListViewItem = BI.inherit(BI.Single, {
 
         var deleteIcon = BI.createWidget({
             type: "bi.icon_button",
-            cls: 'delete-template-font template-item-icon',
+            cls: 'remove-report-font template-item-icon',
             title: BI.i18nText("BI-Remove"),
             invisible: true,
             stopPropagation: true
@@ -143,7 +143,7 @@ BI.FolderListViewItem = BI.inherit(BI.Single, {
                     llgap: 20,
                     rrgap: 20
                 },
-                width: 260
+                width: 320
             }]
         });
     },

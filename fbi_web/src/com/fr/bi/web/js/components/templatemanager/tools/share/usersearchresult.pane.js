@@ -48,7 +48,7 @@ BI.UserSearchResultPane = BI.inherit(BI.Widget, {
         this.tree.populate(items, keyword);
         BI.delay(function(){
             self.tree.setValue(value || []);
-        }, 1000);
+        }, 100);
     }
 
 });

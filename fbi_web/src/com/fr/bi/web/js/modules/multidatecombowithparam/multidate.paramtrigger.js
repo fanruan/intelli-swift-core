@@ -14,7 +14,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
             extraCls: "bi-multidate-param-trigger",
             min: '1900-01-01', //最小日期
             max: '2099-12-31', //最大日期
-            height: 30
+            height: 24
         });
     },
     _init: function () {
@@ -27,6 +27,10 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
             validationChecker: function (v) {
                 var date = v.match(/\d+/g);
                 self._autoAppend(v, date);
+                var value = self.getValue();
+                if(BI.has(value, "type") && value.type === BICst.MULTI_DATE_PARAM){
+                    return true;
+                }
                 return self._dateCheck(v) && Date.checkLegal(v) && self._checkVoid({
                         year: date[0],
                         month: date[1],
@@ -58,6 +62,18 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
             var value = self.editor.getState();
             if (BI.isNotNull(value)) {
                 self.editor.setState(value);
+            }
+
+            if (BI.isNotEmptyString(value)) {
+                var date = value.split("-");
+                self.stored_value = {
+                    type: BICst.MULTI_DATE_CALENDAR,
+                    value:{
+                        year: date[0] | 0,
+                        month: date[1] - 1,
+                        day: date[2] | 0
+                    }
+                };
             }
             self.fireEvent(BI.MultiDateParamTrigger.EVENT_CONFIRM);
         });
@@ -142,9 +158,12 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
         if (BI.isNotNull(v)) {
             if(BI.has(v, "value")){
                 type = v.type, value = v.value;
-                var name = BI.Utils.getWidgetNameByID(value.wId || value);
-                if(BI.isNull(name) && type === BICst.MULTI_DATE_PARAM){
-                    return;
+                if(BI.has(v.value, "widgetInfo")){
+                    var widgetInfo = value.widgetInfo;
+                    var name = BI.Utils.getWidgetNameByID(widgetInfo.wId);
+                    if(BI.isNull(name) && type === BICst.MULTI_DATE_PARAM){
+                        return;
+                    }
                 }
                 this.stored_value = v;
             }else{
@@ -159,8 +178,17 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
             self._setChangeIconVisible(true);
         };
         var _setInnerValueForParam = function(){
-            var name = BI.Utils.getWidgetNameByID(value.wId || value);
-            var showText = BI.isNull(value.wId) ? name : name + BI.i18nText("BI-De") + (value.startOrEnd ? BI.i18nText("BI-End_Time") : BI.i18nText("BI-Start_Time"));
+            var widgetInfo = value.widgetInfo;
+            var name = BI.Utils.getWidgetNameByID(widgetInfo.wId);
+            var showText = BI.isNull(widgetInfo.wId) ? name : BI.i18nText("BI-Relative") + name + BI.i18nText("BI-De") + (widgetInfo.startOrEnd ? BI.i18nText("BI-End_Time") : BI.i18nText("BI-Start_Time")) + BI.i18nText("BI-De");
+            switch(value.offset.type){
+                case BICst.MULTI_DATE_YEAR_PREV:
+                    showText += value.offset.value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_YEAR_PREV];
+                    break;
+                case BICst.MULTI_DATE_YEAR_BEGIN:
+                    showText += BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_YEAR_BEGIN];
+                    break;
+            }
             self.editor.setState(showText);
             self.editor.setValue(showText);
             self.setTitle(showText);
@@ -323,16 +351,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
         return this.editor.getValue();
     },
     getValue: function () {
-        var dateStr = this.editor.getValue();
-        if (BI.isNotEmptyString(dateStr)) {
-            var date = dateStr.split("-");
-            return {
-                year: date[0] | 0,
-                month: date[1] - 1,
-                day: date[2] | 0
-            }
-        }
-        return this.store_value;
+        return this.stored_value;
     },
 
     _setChangeIconVisible: function (v) {

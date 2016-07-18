@@ -8,7 +8,6 @@
 BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
 
     constants: {
-        iconSize: 30,
         height: 14,
         rgap: 4,
         lgap: 4
@@ -34,6 +33,7 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
 
         this.searcher = BI.createWidget(o.searcher, {
             type: "bi.multi_select_searcher",
+            height: o.height,
             itemsCreator: o.itemsCreator,
             valueFormatter: o.valueFormatter,
             popup: {},
@@ -76,7 +76,6 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
 
         var wrapper = BI.createWidget({
             type: 'bi.htape',
-            height: this.constants.iconSize,
             element: this.element,
             items: [
                 {

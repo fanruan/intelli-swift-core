@@ -16,7 +16,8 @@ import com.fr.json.JSONObject;
  * 同期
  */
 public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCalculatorOperator {
-    private static final String XML_TAG="CorrespondMonthPeriodRowCalculatorOperator";
+    @BICoreField
+    private String XML_TAG="CorrespondMonthPeriodRowCalculatorOperator";
     @BICoreField
     private BIKey monthKey;
 
@@ -53,8 +54,8 @@ public class CorrespondMonthPeriodRowCalculatorOperator extends CorrespondRowCal
 
 
     @Override
-    protected ResultDealer createResultDealer(Traversal<BIDataValue> travel) {
-        return new CorrespondPeriodResultDealer(key, travel, periodKey);
+    protected ResultDealer createResultDealer(Traversal<BIDataValue> travel, int startCol) {
+        return new CorrespondPeriodResultDealer(key, travel, periodKey, startCol);
     }
 
     @Override

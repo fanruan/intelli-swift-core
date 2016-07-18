@@ -1,8 +1,8 @@
 package com.fr.bi.cal;
 
 import com.finebi.cube.conf.BICubeManagerProvider;
-import com.finebi.cube.impl.conf.CubeBuildStuffManager;
 import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.fr.bi.base.provider.AllUserTravel;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Daniel
  *         FIXME 功能代码质量严峻
+ *         亟待重构
  */
 public class BICubeManager implements BICubeManagerProvider {
 
@@ -32,14 +33,14 @@ public class BICubeManager implements BICubeManagerProvider {
         GeneralContext.addEnvChangedListener(new EnvChangedListener() {
             @Override
             public void envChanged() {
-             CubeGenerationManager.getCubeManager().envChanged();
+                CubeGenerationManager.getCubeManager().envChanged();
             }
         });
     }
 
 
     @Override
-    public CubeBuildStuffManager getGeneratingObject(long userId) {
+    public CubeBuildStaff getGeneratingObject(long userId) {
         return getCubeManager(userId).getGeneratingObject();
     }
 

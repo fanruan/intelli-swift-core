@@ -3,14 +3,16 @@
  */
 package com.fr.bi.stable.engine.index;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.GroupValueIndexArrayReader;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Date;
@@ -65,22 +67,12 @@ public class TableIndexAdapter implements ICubeTableService {
     }
 
     @Override
-    public Object getRowValue(BIKey columnIndex, int row) {
+    public ICubeColumnDetailGetter getColumnDetailReader(BIKey key) {
         throw NULL_EXCEPTION;
     }
 
     @Override
     public int getRowCount() {
-        throw NULL_EXCEPTION;
-    }
-
-    @Override
-    public Object[] getRow(BIKey columnIndex, int[] rows) {
-        throw NULL_EXCEPTION;
-    }
-
-    @Override
-    public Object getRow(BIKey columnIndex, int row) {
         throw NULL_EXCEPTION;
     }
 
@@ -130,6 +122,11 @@ public class TableIndexAdapter implements ICubeTableService {
     }
 
     @Override
+    public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
+        throw NULL_EXCEPTION;
+    }
+
+    @Override
     public double getDistinctCountValue(GroupValueIndex gvi,
                                         BIKey distinct_field) {
         throw NULL_EXCEPTION;
@@ -171,10 +168,6 @@ public class TableIndexAdapter implements ICubeTableService {
         throw NULL_EXCEPTION;
     }
 
-    @Override
-    public GroupValueIndex getIndexByRow(BIKey key, int row) {
-        throw NULL_EXCEPTION;
-    }
 
     @Override
     public boolean isDataAvailable() {

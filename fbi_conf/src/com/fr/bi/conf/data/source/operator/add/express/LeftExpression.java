@@ -8,8 +8,13 @@ import com.fr.bi.base.BICore;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.utils.DateUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONObject;
+
+import java.text.ParseException;
 
 /**
  * @author Daniel
@@ -21,6 +26,8 @@ public class LeftExpression implements Expression {
 	private boolean isUnitLeft = false;
 	@BICoreField
 	private Object value;
+    @BIIgnoreField
+    private transient Object tValue;
 
 	@Override
 	public void parseJSON(JSONObject jo) throws Exception {
@@ -50,8 +57,17 @@ public class LeftExpression implements Expression {
     }
 
 	@Override
-	public Object get(ICubeTableService ti, int row) {
-		return isUnitLeft ? value : null;
+	public Object get(ICubeTableService ti, int row, int columnType) {
+		return isUnitLeft ? getTransValue(columnType) : null;
 	}
-
+    private Object getTransValue(int columnType) {
+        if (tValue == null){
+            try {
+                tValue = columnType == DBConstant.COLUMN.DATE ? DateUtils.parse((String) value).getTime() : value;
+            } catch (ParseException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+        }
+        return tValue;
+    }
 }

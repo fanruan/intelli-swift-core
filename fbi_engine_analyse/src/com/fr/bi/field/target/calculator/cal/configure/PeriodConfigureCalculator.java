@@ -225,7 +225,20 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 }
                 Object value = getValueFromLast(way);
                 if (value != null) {
-                    cursor_node.setSummaryValue(createTargetKey(), value);
+                    if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
+                        Object key = getCalKey();
+                        String targetName = ((TargetGettingKey) key).getTargetName();
+                        BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
+                        double currentValue;
+                        if (targetKey instanceof AvgKey) {
+                            currentValue = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
+                        } else {
+                            currentValue = cursor_node.getSummaryValue(key).doubleValue();
+                        }
+                        cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
+                    } else {
+                        cursor_node.setSummaryValue(createTargetGettingKey(), value);
+                    }
                 }
                 cursor_node = cursor_node.getBottomSibling();
             }

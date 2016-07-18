@@ -17,28 +17,44 @@ BI.DimensionRegion = BI.inherit(BI.AbstractRegion, {
 
     _init: function () {
         BI.DimensionRegion.superclass._init.apply(this, arguments);
+        this.containers = {};
     },
 
     _createDimension: function (dId, options) {
         var self = this, o = this.options;
         options || (options = {});
         var dim = o.dimensionCreator(dId, this.options.regionType, options);
-        var container = BI.createWidget({
-            type: "bi.absolute",
-            cls: "dimension-container",
-            data: {
-                dId: dId
-            },
-            height: 25,
-            items: [{
-                el: dim,
-                left: 0,
-                top: 0,
-                right: 0,
-                bottom: 0
-            }]
-        });
-        return container;
+        if (this.containers[dId]) {
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.containers[dId],
+                items: [{
+                    el: dim,
+                    left: 0,
+                    top: 0,
+                    right: 0,
+                    bottom: 0
+                }]
+            });
+        } else {
+            var container = BI.createWidget({
+                type: "bi.absolute",
+                cls: "dimension-container",
+                data: {
+                    dId: dId
+                },
+                height: 25,
+                items: [{
+                    el: dim,
+                    left: 0,
+                    top: 0,
+                    right: 0,
+                    bottom: 0
+                }]
+            });
+            this.containers[dId] = container;
+        }
+        return this.containers[dId];
     },
 
     getValue: function () {

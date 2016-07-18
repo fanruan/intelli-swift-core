@@ -68,12 +68,6 @@ BI.ShareToMe = BI.inherit(BI.Widget, {
         //分用户
         var userMap = {};
         BI.each(reports, function (i, report) {
-            //管理员的realName...?
-            if (report.createBy === -999) {
-                BI.isNull(userMap["sa"]) && (userMap["sa"] = []);
-                userMap["sa"].push(report);
-                return;
-            }
             BI.isNull(userMap[report.userName]) && (userMap[report.userName] = []);
             userMap[report.userName].push(report);
         });

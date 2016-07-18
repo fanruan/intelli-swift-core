@@ -59,7 +59,7 @@ public class BICreateFieldsUnionAction extends AbstractBIConfigureAction {
         Set ids = source.getFieldDistinctNewestValues(idFieldName, BICubeManager.getInstance().fetchCubeLoader(userId), userId);
         Set lengthSet = getLengthSetFromID(ids);
         if (isFetchUnionLength) {
-            jo.put("size", lengthSet.size() == 1);
+            jo.put("size", String.valueOf(lengthSet.size()));
             return jo;
         }
         JSONArray lengthJa = new JSONArray();

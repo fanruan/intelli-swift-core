@@ -37,8 +37,8 @@
   border-radius: 2px;
 }
 .bi-all-reports .all-reports-view .view-button {
-  background: #d4dadd;
+  background: #ffffff;
 }
 .bi-all-reports .all-reports-view .view-button.active {
-  background: #ffffff;
+  background: #009de3;
 }

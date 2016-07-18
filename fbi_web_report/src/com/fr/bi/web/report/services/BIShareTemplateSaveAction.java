@@ -20,6 +20,7 @@ public class BIShareTemplateSaveAction extends ActionNoSessionCMD {
         long userId = ServiceUtils.getCurrentUserID(req);
         String templateIdsString = WebUtils.getHTTPRequestParameter(req, "reports");
         String userIdsString = WebUtils.getHTTPRequestParameter(req, "users");
+        boolean isEdit = WebUtils.getHTTPRequestBoolParameter(req, "edit_shared");
 
         templateIdsString = Decrypt.decrypt(templateIdsString, "neilsx");
         userIdsString = Decrypt.decrypt(userIdsString, "neilsx");
@@ -27,11 +28,11 @@ public class BIShareTemplateSaveAction extends ActionNoSessionCMD {
         JSONArray jaUserIds = new JSONArray(userIdsString);
         long[] templateIds = new long[jaTemplateIds.length()];
         long[] userIds = new long[jaUserIds.length()];
+        for (int i = 0, len = userIds.length; i < len; i++) {
+            userIds[i] = jaUserIds.getLong(i);
+        }
         for(int j = 0; j < templateIds.length; j++) {
-            for (int i = 0, len = userIds.length; i < len; i++) {
-                userIds[i] = jaUserIds.getLong(i);
-            }
-            UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).resetSharedByReportIdAndUsers(jaTemplateIds.getLong(j), userId, userIds);
+            UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).resetSharedByReportIdAndUsers(jaTemplateIds.getLong(j), userId, userIds, isEdit);
         }
     }
 

@@ -23,8 +23,11 @@ public class StringGroupInfo extends BIName implements JSONParser, Cloneable, Se
 
     private static final long serialVersionUID = 403105911284163156L;
 
+
     @BICoreField
     private String[] groupValue = new String[0];
+
+    private String id = StringUtils.EMPTY;
 
     /**
      * @param jo json对象
@@ -44,12 +47,17 @@ public class StringGroupInfo extends BIName implements JSONParser, Cloneable, Se
                 groupValue[i] = ob.getString("value");
             }
         }
+        if (jo.has("id")) {
+            this.id = jo.getString("id");
+        }
     }
 
     @Override
     public void writeXML(XMLPrintWriter writer) {
         writer.startTAG(XML_TAG);
         super.writeXML(writer);
+        writer.startTAG("id");
+        writer.attr("groupId", id);
         for (String s : groupValue) {
             writer.startTAG("value");
             writer.attr("v", s);
@@ -66,7 +74,13 @@ public class StringGroupInfo extends BIName implements JSONParser, Cloneable, Se
             @Override
             public void readXML(XMLableReader xmLableReader) {
                 if (xmLableReader.isChildNode()) {
-                    list.add(xmLableReader.getAttrAsString("v", StringUtils.EMPTY));
+                    if (ComparatorUtils.equals(xmLableReader.getTagName(), "value")) {
+                        list.add(xmLableReader.getAttrAsString("v", StringUtils.EMPTY));
+                    }
+                    if (ComparatorUtils.equals(xmLableReader.getTagName(), "id")) {
+                        id = xmLableReader.getAttrAsString("groupId", StringUtils.EMPTY);
+                    }
+
                 }
             }
         });
@@ -93,10 +107,11 @@ public class StringGroupInfo extends BIName implements JSONParser, Cloneable, Se
         JSONArray content = new JSONArray();
         for (int i = 0; i < groupValue.length; i++) {
             JSONObject value = new JSONObject();
-            value.put("value",groupValue[i]);
+            value.put("value", groupValue[i]);
             content.put(value);
         }
         jo.put("value", name);
+        jo.put("id", id);
         jo.put("content", content);
         return jo;
     }
@@ -142,5 +157,12 @@ public class StringGroupInfo extends BIName implements JSONParser, Cloneable, Se
             System.arraycopy(this.groupValue, 0, gi.groupValue, 0, this.groupValue.length);
         }
         return gi;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "StringGroupInfo{" +
+                "groupValue=" + Arrays.toString(groupValue) +
+                '}';
     }
 }

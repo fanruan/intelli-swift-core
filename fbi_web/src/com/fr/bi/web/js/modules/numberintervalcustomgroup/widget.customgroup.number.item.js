@@ -19,6 +19,9 @@ BI.NumberIntervalCustomGroupItem = BI.inherit(BI.Single,{
             group_name:"",
             min:0,
             max:0,
+            groupNameChecker: function(){
+                return true;
+            },
             closemin:true,
             closemax:false
         });
@@ -29,9 +32,13 @@ BI.NumberIntervalCustomGroupItem = BI.inherit(BI.Single,{
 
         var self = this,o = this.options;
 
+        this.id = o.id || BI.UUID();
+
         this.editor = BI.createWidget({
-            type:"bi.text_editor",
+            type: "bi.sign_editor",
+            cls: "group-name",
             value: o.group_name,
+            validationChecker: o.groupNameChecker,
             hgap: this.constants.hgap
         });
 
@@ -118,7 +125,10 @@ BI.NumberIntervalCustomGroupItem = BI.inherit(BI.Single,{
     },
 
     getValue:function(){
-        return BI.extend({group_name:this.editor.getValue()},this._filterValue());
+        return BI.extend({
+            group_name:this.editor.getValue(),
+            id: this.id
+        },this._filterValue());
     },
 
     _filterValue:function(){
@@ -142,6 +152,7 @@ BI.NumberIntervalCustomGroupItem = BI.inherit(BI.Single,{
             min:ob.min,
             max:ob.max
         });
+        this.id = ob.id;
     },
 
     destroy:function(){

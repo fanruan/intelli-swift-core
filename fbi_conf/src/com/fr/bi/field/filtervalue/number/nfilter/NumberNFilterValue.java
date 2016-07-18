@@ -76,9 +76,13 @@ public abstract class NumberNFilterValue extends AbstractFilterValue<Number> imp
      * @throws Exception 报错
      */
     @Override
-    public void parseJSON(JSONObject jo, long userId) throws Exception {
+    public void parseJSON(JSONObject jo, long userId){
         if (jo.has("filter_value")) {
-            this.n = jo.getInt("filter_value");
+            try{
+                this.n = jo.getInt("filter_value");
+            }catch (Exception e) {
+                this.n = 0;
+            }
         }
     }
 

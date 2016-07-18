@@ -1,6 +1,6 @@
 package com.fr.bi.cal;
 
-import com.finebi.cube.impl.conf.CubeBuildStuffManager;
+import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.CubeRunner;
 import com.fr.bi.cal.generate.TimerRunner;
@@ -21,7 +21,6 @@ public class SingleUserCubeManager {
      *
      */
     private static final long serialVersionUID = 6187369933206388925L;
-
     private CubeRunner runner;
     protected BIUser biUser;
     private TimerRunner timerRunner;
@@ -51,7 +50,7 @@ public class SingleUserCubeManager {
         runner.generateCubes();
     }
 
-    public CubeBuildStuffManager getGeneratingObject() {
+    public CubeBuildStaff getGeneratingObject() {
         return runner.getCubeGeneratingObjects();
     }
 
@@ -122,7 +121,7 @@ public class SingleUserCubeManager {
     }
 
     public void resetCubeGenerationHour() {
-        timerRunner.init();
+        timerRunner.reGenerateTimeTasks();
     }
 
     /**
@@ -150,6 +149,5 @@ public class SingleUserCubeManager {
         runner.envChanged();
         timerRunner.envChanged();
     }
-
 
 }

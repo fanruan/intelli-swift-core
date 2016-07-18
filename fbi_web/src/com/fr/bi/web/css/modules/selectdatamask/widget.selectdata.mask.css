@@ -8,11 +8,8 @@
 }
 .bi-select-data-with-mask .select-data-wrapper {
   border: 1px solid #d4dadd;
-}
-.bi-select-data-with-mask .select-data-wrapper .bi-select-single-relation-table-field {
   background: #ffffff;
 }
 .bi-select-data-with-mask .select-data-wrapper .select-data-button-group {
-  background: #ffffff;
   border-top: 1px solid #d4dadd;
 }

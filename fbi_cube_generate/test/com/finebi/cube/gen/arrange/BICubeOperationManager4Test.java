@@ -10,7 +10,7 @@ import com.finebi.cube.gen.subset.watcher.BIDataSourceBuildFinish4Test;
 import com.finebi.cube.gen.subset.watcher.BIPathBuildFinishWatcher4Test;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.structure.ICube;
+import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -24,33 +24,33 @@ import java.util.Set;
  * @since 4.0
  */
 public class BICubeOperationManager4Test extends BICubeOperationManager {
-    public BICubeOperationManager4Test(ICube cube, Set<CubeTableSource> originalTableSet) {
+    public BICubeOperationManager4Test(Cube cube, Set<CubeTableSource> originalTableSet) {
         super(cube, originalTableSet);
     }
 
     @Override
-    protected BIRelationIndexGenerator getRelationBuilder(ICube cube, BITableSourceRelation relation) {
+    protected BIRelationIndexGenerator getRelationBuilder(Cube cube, BITableSourceRelation relation) {
         return new BIRelationIndexBuilder4Test(cube, null);
     }
 
     @Override
-    protected BIFieldIndexGenerator getFieldIndexBuilder(ICube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
+    protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
         return new BIFieldIndexBuilder4Test(cube, tableSource, BICubeFieldSource, targetColumnKey);
     }
 
 
     @Override
-    protected BISourceDataTransport getDataTransportBuilder(ICube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version) {
+    protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version) {
         return new BISourceDataTransport4Test(cube, tableSource, allSources, parent);
     }
 
     @Override
-    protected BITablePathIndexBuilder getTablePathBuilder(ICube cube, BITableSourceRelationPath tablePath) {
+    protected BITablePathIndexBuilder getTablePathBuilder(Cube cube, BITableSourceRelationPath tablePath) {
         return new BITablePathIndexBuilder4Test(cube, null);
     }
 
     @Override
-    protected BIFieldPathIndexBuilder getFieldPathBuilder(ICube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {
+    protected BIFieldPathIndexBuilder getFieldPathBuilder(Cube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {
         return new BIFieldPathIndexBuilder4Test(cube, field, null);
     }
 

@@ -28,10 +28,14 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
         var dataLinks = [], packages = [], etl = [];
         //这边 value 拼了一下，不好
         BI.each(linkNames, function (i, name) {
+            var text = name;
+            if(name === BICst.CONNECTION.SERVER_CONNECTION) {
+                text = BI.i18nText("BI-Server_Data_Set");
+            }
             dataLinks.push({
-                text: name,
+                text: text,
                 value: BICst.DATA_LINK.DATA_SOURCE + name
-            })
+            });
         });
         if(BI.isNotNull(o.translations)) {
             BI.each(Data.SharingPool.get("packages"), function (id, pack) {

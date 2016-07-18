@@ -3,8 +3,8 @@
  */
 BI.TimeInterval = BI.inherit(BI.Single, {
     constants: {
-        height: 30,
-        width: 30,
+        height: 25,
+        width: 25,
         lgap: 15,
         offset: -15,
         timeErrorCls: "time-error",
@@ -71,9 +71,25 @@ BI.TimeInterval = BI.inherit(BI.Single, {
         combo.on(BI.MultiDateCombo.EVENT_ERROR, function () {
             self._clearTitle();
             self.element.removeClass(self.constants.timeErrorCls);
-            BI.Bubbles.hide("error");
             self.fireEvent(BI.TimeInterval.EVENT_ERROR);
         });
+
+        combo.on(BI.MultiDateCombo.EVENT_FOCUS, function(){
+            BI.Bubbles.hide("error");
+            var smallDate = self.left.getKey(), bigDate = self.right.getKey();
+            if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
+                self._setTitle(BI.i18nText("BI-Time_Interval_Error_Text"));
+                self.element.addClass(self.constants.timeErrorCls);
+                BI.Bubbles.show("error", BI.i18nText("BI-Time_Interval_Error_Text"), self, {
+                    offsetStyle: "center"
+                });
+                self.fireEvent(BI.TimeInterval.EVENT_ERROR);
+            } else {
+                self._clearTitle();
+                self.element.removeClass(self.constants.timeErrorCls);
+            }
+        });
+
         combo.on(BI.MultiDateCombo.EVENT_BEFORE_POPUPVIEW, function () {
             self.left.hidePopupView();
             self.right.hidePopupView();
@@ -91,28 +107,20 @@ BI.TimeInterval = BI.inherit(BI.Single, {
             } else {
                 self._clearTitle();
                 self.element.removeClass(self.constants.timeErrorCls);
-                self.fireEvent(BI.TimeInterval.EVENT_CHANGE);
             }
         });
 
         combo.on(BI.MultiDateCombo.EVENT_CONFIRM, function(){
             BI.Bubbles.hide("error");
-        });
-
-        combo.on(BI.MultiDateCombo.EVENT_VALID, function () {
-            BI.Bubbles.hide("error");
             var smallDate = self.left.getKey(), bigDate = self.right.getKey();
             if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
                 self._setTitle(BI.i18nText("BI-Time_Interval_Error_Text"));
                 self.element.addClass(self.constants.timeErrorCls);
-                BI.Bubbles.show("error", BI.i18nText("BI-Time_Interval_Error_Text"), self, {
-                    offsetStyle: "center"
-                });
                 self.fireEvent(BI.TimeInterval.EVENT_ERROR);
-            } else {
+            }else{
                 self._clearTitle();
                 self.element.removeClass(self.constants.timeErrorCls);
-                self.fireEvent(BI.TimeInterval.EVENT_VALID);
+                self.fireEvent(BI.TimeInterval.EVENT_CHANGE);
             }
         });
         return combo;

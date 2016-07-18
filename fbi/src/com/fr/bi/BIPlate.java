@@ -5,7 +5,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
-import com.finebi.cube.conf.datasource.BIDataSourceManager;
+import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
@@ -22,6 +22,11 @@ import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.data.core.db.DBUtils;
+import com.fr.data.core.db.dialect.Dialect;
+import com.fr.data.core.db.dialect.DialectFactory;
+import com.fr.data.core.db.tableObject.Column;
+import com.fr.data.core.db.tableObject.ColumnSize;
 import com.fr.data.dao.FieldColumnMapper;
 import com.fr.data.dao.MToMRelationFCMapper;
 import com.fr.data.dao.ObjectTableMapper;
@@ -32,6 +37,7 @@ import com.fr.fs.control.EntryPoolFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl.ColumnColumn;
 import com.fr.fs.dao.EntryDAO;
+import com.fr.fs.dao.FSDAOManager;
 import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.Inter;
@@ -40,14 +46,15 @@ import com.fr.stable.*;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.stable.plugin.PluginSimplify;
+import com.fr.web.core.db.PlatformDB;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.*;
 
 /**
  * BI模块启动时做的一些初始化工作，通过反射调用
@@ -57,7 +64,6 @@ public class BIPlate extends AbstractFSPlate {
     @Override
     public void initData() {
 //        SystemFactoryRegister.systemRegister();
-        registerDebug();
         initModules();
         super.initData();
         startModules();
@@ -66,17 +72,14 @@ public class BIPlate extends AbstractFSPlate {
         initOOMKillerForLinux();
         BICubeManagerProvider markedObject = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
         loadMemoryData();
-        if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
+        /*若发现cube需要更新的话,更新cube*/
+        BIConfigureManagerCenter.getLogManager().logStart(UserControl.getInstance().getSuperManagerID());
+        if (CubeUpdateUtils.cubeStatusCheck(UserControl.getInstance().getSuperManagerID())) {
+//            if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
             markedObject.generateCubes();
         }
-    }
-
-    private void registerDebug() {
-        try {
-            Class c = Class.forName("com.fr.bi.test.DebugUtils");
-            c.newInstance();
-        } catch (Throwable t) {
-        }
+        BIConfigureManagerCenter.getLogManager().logEnd(UserControl.getInstance().getSuperManagerID());
+        addBITableColumn4NewConnection();
     }
 
     public void loadMemoryData() {
@@ -118,6 +121,33 @@ public class BIPlate extends AbstractFSPlate {
         EntryPoolFactory.registerMobileEntryTableNames(new String[]{BIReportEntry.TABLE_NAME});
     }
 
+    private void addBITableColumn4NewConnection(){
+        Connection cn = null;
+        String tableName = BIReportEntry.TABLE_NAME;
+        try {
+            cn = PlatformDB.getDB().createConnection();
+            try{
+                cn.setAutoCommit(false);
+            }catch(Exception e){
+
+            }
+            Dialect dialect = DialectFactory.generateDialect(cn,PlatformDB.getDB().getDriver());
+            FSDAOManager.addTableColumn(cn, dialect,
+                    new Column("createBy", Types.BIGINT, new ColumnSize(10)), tableName);
+            cn.commit();
+        } catch (Exception e) {
+            if(cn != null) {
+                try {
+                    cn.rollback();
+                } catch (SQLException e1) {
+                    BILogger.getLogger().error(e1.getMessage(), e1);
+                }
+            }
+        } finally {
+            DBUtils.closeConnection(cn);
+        }
+    }
+
     private void initOOMKillerForLinux() {
         String os = System.getProperty("os.name");
         BILogger.getLogger().info("OS:" + os);
@@ -143,7 +173,9 @@ public class BIPlate extends AbstractFSPlate {
 
     private void initModules() {
         BIModuleManager.registModule(new BICoreModule());
-        for (Class c : BIClassUtils.getClasses("com.fr.bi.module")) {
+        Set<Class<?>> set =  BIClassUtils.getClasses("com.fr.bi.module");
+        set.addAll(BIClassUtils.getClasses("com.fr.bi.test.module"));
+        for (Class c : set) {
             if (BIModule.class.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers())) {
                 try {
                     BIModule module = (BIModule) c.newInstance();
@@ -174,7 +206,8 @@ public class BIPlate extends AbstractFSPlate {
 
     private void initPlugin() {
         try {
-            ExtraClassManager.getInstance().addDialectCreator(new DialectCreatorImpl(), PluginSimplify.create("bi", "bi.db.ads"));
+            ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "bi.db.ads"));
+            ExtraClassManager.getInstance().addHackActionCMD("fs_load", "fs_signin", "com.fr.bi.web.base.services.BISignInAction");
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
         }
@@ -185,16 +218,7 @@ public class BIPlate extends AbstractFSPlate {
     public String[] getPlateStyleFiles4WebClient() {
         return (String[]) ArrayUtils.addAll(ResourceHelper.getFoundationCss(), new String[]{
                 "/com/fr/bi/web/cross/css/bi.toolbar.add.css",
-                "/com/fr/bi/web/cross/css/bi.segment.css",
-                "/com/fr/bi/web/cross/css/bi.combo.css",
-                "/com/fr/bi/web/cross/css/bi.button.css",
-
-                "/com/fr/bi/web/cross/css/bi.button.css",
                 "/com/fr/bi/web/cross/css/bi.shared.table.css",
-                "/com/fr/bi/web/cross/css/bi.quarter.css",
-
-                "/com/fr/bi/web/cross/css/bi.label.css",
-                "/com/fr/bi/web/cross/css/bi.title.css",
 
                 "/com/fr/bi/web/cross/css/bi.extra.dialog.css",
                 "/com/fr/bi/web/cross/css/bi.edit.dialog.css",
@@ -205,6 +229,8 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/css/bi.template.list.css",
                 "/com/fr/bi/web/cross/css/bi.template.createdlist.css",
 
+                "/com/fr/bi/web/cross/css/theme/bi.chartpreview.css",
+                "/com/fr/bi/web/cross/css/theme/bi.stylesetting.css",
                 "/com/fr/bi/web/cross/css/theme/bi.theme.css",
 
                 "/com/fr/bi/web/cross/css/reporthangout/hangoutreport.plate.css",
@@ -226,19 +252,15 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",
                 "/com/fr/bi/web/cross/js/effect/allreports.js",
                 "/com/fr/bi/web/cross/js/bi.share.js",
+                "/com/fr/bi/web/cross/js/theme/bi.chartpreview.js",
+                "/com/fr/bi/web/cross/js/theme/bi.stylesetting.js",
                 "/com/fr/bi/web/cross/js/theme/bi.theme.js",
                 "/com/fr/bi/web/cross/js/theme/bi.widget.newanalysis.js",
                 "/com/fr/bi/web/cross/js/bi.toolbar.add.js",
                 "/com/fr/bi/web/cross/js/bi.directory.edit.js",
                 "/com/fr/bi/web/cross/js/reporthangout/hangoutreport.plate.js",
-                "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js",
-                "/com/fr/bi/web/cross/js/bi.extra.dialog.js",
-                "/com/fr/bi/web/cross/js/bi.segment.js",
-                "/com/fr/bi/web/cross/js/bi.combo.js",
-                "/com/fr/bi/web/cross/js/bi.button.js",
+                "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js"
 
-                "/com/fr/bi/web/cross/js/bi.label.js",
-                "/com/fr/bi/web/cross/js/bi.title.js"
         });
     }
 
@@ -246,7 +268,7 @@ public class BIPlate extends AbstractFSPlate {
     @Override
     public PlatformManageModule[] supportPlatformManageModules() {
         return new PlatformManageModule[]{
-                new PlatformManageModule("BI-Data_Setting", Inter.getLocText("BI_Data_Settings"), 15, 1, true)
+                new PlatformManageModule("BI-Data_Setting", Inter.getLocText("BI_Data_Settings"), 2009, 1, true)
         };
     }
 

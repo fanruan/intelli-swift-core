@@ -6,6 +6,8 @@
 }
 .bi-conf-view .conf-left-nav-pane {
   background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
   border-radius: 2px;
 }
 .bi-conf-view .conf-left-nav-pane .left-nav-title {
@@ -13,6 +15,8 @@
 }
 .bi-conf-view .conf-right-display-pane {
   background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
   border-radius: 2px;
 }
 .bi-conf-view .conf-right-display-pane .right-display-title {

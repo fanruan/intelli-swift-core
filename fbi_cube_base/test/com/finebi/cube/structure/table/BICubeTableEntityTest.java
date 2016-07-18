@@ -5,7 +5,7 @@ import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.location.*;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.structure.column.date.BIDateColumnTool;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -59,7 +59,7 @@ public class BICubeTableEntityTest extends TestCase {
             fields.add(DBFieldTestTool.generateTIMESTAMP());
 
             tableEntity.recordTableStructure(fields);
-            ICubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
+            CubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
 
             assertTrue(tableEntity.tableDataAvailable());
         } catch (Exception e) {
@@ -94,7 +94,7 @@ public class BICubeTableEntityTest extends TestCase {
             fields.add(DBFieldTestTool.generateTIME());
 
             tableEntity.recordTableStructure(fields);
-            ICubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
+            CubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
 
             assertTrue(tableEntity.tableDataAvailable());
         } catch (Exception e) {

@@ -13,4 +13,6 @@ public interface ICubeVersion extends Release {
 
     void addVersion(long version);
 
+    Boolean isVersionAvailable();
+
 }

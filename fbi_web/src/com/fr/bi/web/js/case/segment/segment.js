@@ -21,7 +21,8 @@ BI.Segment = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             items: BI.createItems(o.items, {
                 type: "bi.segment_button",
-                height: o.height - 2
+                height: o.height - 2,
+                whiteSpace: o.whiteSpace
             }),
             layout: [
                 {
@@ -43,6 +44,10 @@ BI.Segment = BI.inherit(BI.Widget, {
 
     setEnabledValue: function (v) {
         this.buttonGroup.setEnabledValue(v);
+    },
+
+    setEnable: function (v) {
+        this.buttonGroup.setEnable(v);
     },
 
     getValue: function () {

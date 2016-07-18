@@ -38,6 +38,9 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
             self._refreshTableAndFilter();
         });
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
+            self.model.set("clicked", {});
+        });
     },
 
     _render: function (vessel) {
@@ -86,16 +89,13 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         });
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
-            self.widget.attr("items")[3].top = 6;
             self.widget.resize();
         }, function () {
             if (!self.widget.element.parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
-                self.widget.attr("items")[3].top = 0;
                 self.widget.resize();
             }
         });
-
     },
 
     _buildWidgetTitle: function () {
@@ -108,7 +108,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
                     "dashboard-title-left" : "dashboard-title-center",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
                 validationChecker: function (v) {
@@ -141,10 +141,22 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
     _createTools: function () {
         var self = this;
+
+        this.refreshChartButton = BI.createWidget({
+            type: "bi.icon_button",
+            width: 16,
+            height: 16,
+            cls: "recover-chart-font-hightlight dashboard-title-detail"
+        });
+        this.refreshChartButton.on(BI.IconButton.EVENT_CHANGE, function () {
+            self.tableChart.magnify();
+        });
+
         var expand = BI.createWidget({
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -154,6 +166,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         var filterIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: "widget-tools-filter-font dashboard-title-detail",
+            title: BI.i18nText("BI-Show_Filters"),
             width: 16,
             height: 16
         });
@@ -181,99 +194,23 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             }
             self.filterPane.setVisible(!self.filterPane.isVisible());
         });
-        // var combo = BI.createWidget({
-        //     type: "bi.widget_combo",
-        //     wId: this.model.get("id")
-        // });
-        // combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
-        //     switch (type) {
-        //         case BICst.DASHBOARD_WIDGET_LINKAGE:
-        //             var layer = BI.Layers.make(self.getName(), "body");
-        //             var linkage = BI.createWidget({
-        //                 type: "bi.linkage",
-        //                 element: layer,
-        //                 wId: self.model.get("id")
-        //             });
-        //             linkage.on(BI.Linkage.EVENT_CONFIRM, function () {
-        //                 var values = linkage.getValue();
-        //                 self.model.set("linkages", values);
-        //                 BI.Layers.remove(self.getName());
-        //             });
-        //             linkage.on(BI.Linkage.EVENT_CANCEL, function () {
-        //                 BI.Layers.remove(self.getName());
-        //             });
-        //             linkage.populate();
-        //             BI.Layers.show(self.getName());
-        //             break;
-        //         case BICst.DASHBOARD_WIDGET_SHOW_NAME:
-        //             var settings = self.model.get("settings");
-        //             settings.show_name = !settings.show_name;
-        //             self.model.set("settings", settings);
-        //             self._refreshLayout();
-        //             break;
-        //         case BICst.DASHBOARD_WIDGET_RENAME:
-        //             self.title.focus();
-        //             break;
-        //         case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
-        //             var settings = self.model.get("settings");
-        //             settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
-        //             self.model.set("settings", settings);
-        //             self._refreshTitlePosition();
-        //             break;
-        //         case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
-        //             var settings = self.model.get("settings");
-        //             settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
-        //             self.model.set("settings", settings);
-        //             self._refreshTitlePosition();
-        //             break;
-        //         case BICst.DASHBOARD_WIDGET_FILTER:
-        //             if (BI.isNull(self.filterPane)) {
-        //                 self.filterPane = BI.createWidget({
-        //                     type: "bi.widget_filter",
-        //                     wId: self.model.get("id")
-        //                 });
-        //                 self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
-        //                     self.model.set(widget);
-        //                 });
-        //                 BI.createWidget({
-        //                     type: "bi.absolute",
-        //                     element: self.tableChart,
-        //                     items: [{
-        //                         el: self.filterPane,
-        //                         top: 0,
-        //                         left: 0,
-        //                         right: 0,
-        //                         bottom: 0
-        //                     }]
-        //                 });
-        //                 return;
-        //             }
-        //             self.filterPane.setVisible(!self.filterPane.isVisible());
-        //             break;
-        //         case BICst.DASHBOARD_WIDGET_EXCEL:
-        //             window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-        //                 + window.encodeURIComponent(self.model.get("name")));
-        //             break;
-        //         case BICst.DASHBOARD_WIDGET_COPY:
-        //             self.model.copy();
-        //             break;
-        //         case BICst.DASHBOARD_WIDGET_DELETE:
-        //             BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
-        //                 if (v === true) {
-        //                     self.model.destroy();
-        //                 }
-        //             });
-        //             break;
-        //     }
-        // });
-        // combo.on(BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW, function () {
-        //     self.chartDrill.populate();
-        // });
+
+        var excel = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "widget-tools-export-excel-font dashboard-title-detail",
+            title: BI.i18nText("BI-Export_As_Excel"),
+            width: 16,
+            height: 16
+        });
+        excel.on(BI.IconButton.EVENT_CHANGE, function () {
+            window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                + window.encodeURIComponent(self.model.get("name")));
+        });
 
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [filterIcon, expand],
+            items: [this.refreshChartButton, filterIcon, expand, excel],
             hgap: 3
         });
         this.tools.setVisible(false);
@@ -314,11 +251,47 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         })
     },
 
+    _refreshMagnifyButton: function () {
+        switch (this.model.get("type")) {
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+                this.refreshChartButton.setVisible(true);
+                break;
+            default:
+                this.refreshChartButton.setVisible(false);
+        }
+    },
+
     listenEnd: function () {
 
     },
 
     change: function (changed, prev, context, options) {
+        console.log(BI.Utils.getWidgetBoundsByID(this.model.get("id")));
         if (options.notrefresh === true) {
             return;
         }
@@ -336,6 +309,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "type")) {
             this.tableChart.resize();
+            this._refreshMagnifyButton();
         }
     },
 
@@ -345,7 +319,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
-        this.tableChartPopupulate();
+        this._refreshMagnifyButton();
+        this._refreshTableAndFilter();
         this._refreshLayout();
         this._refreshTitlePosition();
     }

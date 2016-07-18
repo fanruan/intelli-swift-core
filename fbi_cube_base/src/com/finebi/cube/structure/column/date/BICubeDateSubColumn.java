@@ -7,12 +7,13 @@ import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.BICubeTablePath;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.finebi.cube.structure.ICubeRelationManagerService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BICubeColumnEntity;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
 
 import java.util.Comparator;
 
@@ -65,6 +66,11 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
+    public void addPositionOfGroup(int position, Integer groupPosition) {
+        selfColumnEntity.addPositionOfGroup(position, groupPosition);
+    }
+
+    @Override
     public void recordSizeOfGroup(int size) {
         selfColumnEntity.recordSizeOfGroup(size);
     }
@@ -89,8 +95,13 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
-    public int getPositionOfGroup(T groupValues) throws BIResourceInvalidException {
-        return selfColumnEntity.getPositionOfGroup(groupValues);
+    public int getPositionOfGroupByGroupValue(T groupValues) throws BIResourceInvalidException {
+        return selfColumnEntity.getPositionOfGroupByGroupValue(groupValues);
+    }
+
+    @Override
+    public Integer getPositionOfGroupByRow(int row) throws BIResourceInvalidException {
+        return selfColumnEntity.getPositionOfGroupByRow(row);
     }
 
     @Override
@@ -99,17 +110,12 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
-    public GroupValueIndex getIndexByRow(int rowNumber) throws BIResourceInvalidException, BICubeIndexException {
-        return selfColumnEntity.getIndexByRow(rowNumber);
-    }
-
-    @Override
     public T getGroupValue(int position) {
         return selfColumnEntity.getGroupValue(position);
     }
 
     @Override
-    public ICubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException {
+    public CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException {
         return hostDataColumn.getRelationIndexGetter(path);
     }
 
@@ -163,5 +169,10 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     @Override
     public ICubeResourceLocation getResourceLocation() {
         return selfColumnEntity.getResourceLocation();
+    }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return selfColumnEntity.isVersionAvailable();
     }
 }

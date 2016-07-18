@@ -173,12 +173,20 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                 });
                 break;
             case BICst.WIDGET.SCATTER:
-            case BICst.WIDGET.BUBBLE:
                 this.chartSetting = BI.createWidget({
                     type: "bi.scatter_chart_setting",
                     wId: wId
                 });
                 this.chartSetting.on(BI.ScatterChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.BUBBLE:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.bubble_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.BubbleChartSetting.EVENT_CHANGE, function () {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
@@ -201,9 +209,17 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                 });
                 break;
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
                 this.chartSetting = BI.createWidget({
                     type: "bi.map_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.MapSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.GIS_MAP:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.gis_map_setting",
                     wId: wId
                 });
                 this.chartSetting.on(BI.MapSetting.EVENT_CHANGE, function () {

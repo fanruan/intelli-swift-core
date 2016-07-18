@@ -1,8 +1,4 @@
 /**
- * 选择图片大小
- * Created by GameJian on 2016/1/28.
- */
-/**
  * 单选框
  * Created by GameJian on 2016/1/28.
  */
@@ -12,7 +8,7 @@ BI.ImageButtonSize = BI.inherit(BI.Widget, {
         return BI.extend(BI.ImageButtonSize.superclass._defaultConfig.apply(this, arguments),{
             baseCls: "bi-image-button-size",
             width: 230,
-            height: 30
+            height: 24
         })
     },
 

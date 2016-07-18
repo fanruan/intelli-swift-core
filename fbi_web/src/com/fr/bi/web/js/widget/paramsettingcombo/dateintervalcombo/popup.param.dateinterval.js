@@ -23,27 +23,27 @@ BI.DateIntervalParamPopupView = BI.inherit(BI.ParamPopupView, {
             selected: true
         }, {
             type: "bi.param2_date_item",
-            value: BI.Param1DateItem.YEAR_QUARTER,
+            value: BI.Param2DateItem.YEAR_QUARTER,
             disabled: true
         }, {
             type: "bi.param2_date_item",
-            value: BI.Param1DateItem.YEAR_MONTH,
+            value: BI.Param2DateItem.YEAR_MONTH,
             disabled: true
         }, {
             type: "bi.param2_date_item",
-            value: BI.Param1DateItem.YEAR_WEEK,
+            value: BI.Param2DateItem.YEAR_WEEK,
             disabled: true
         }, {
             type: "bi.param2_date_item",
-            value: BI.Param1DateItem.YEAR_DAY,
+            value: BI.Param2DateItem.YEAR_DAY,
             disabled: true
         }, {
             type: "bi.param2_date_item",
-            value: BI.Param1DateItem.MONTH_WEEK,
+            value: BI.Param2DateItem.MONTH_WEEK,
             disabled: true
         }, {
             type: "bi.param2_date_item",
-            value: BI.Param1DateItem.MONTH_DAY,
+            value: BI.Param2DateItem.MONTH_DAY,
             disabled: true
         }]
     }

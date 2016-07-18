@@ -14,14 +14,17 @@ BI.SmallSelectTextTrigger = BI.inherit(BI.Trigger, {
     },
 
     _init: function () {
+        this.options.height -= 2;
         BI.SmallSelectTextTrigger.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.trigger = BI.createWidget({
             type: "bi.small_text_trigger",
             element: this.element,
-            height: o.height - 2,
-            text: o.text
+            height: o.height - 2
         });
+        if (BI.isKey(o.text)) {
+            this.setValue(o.text);
+        }
     },
 
     setValue: function (vals) {
@@ -34,8 +37,10 @@ BI.SmallSelectTextTrigger = BI.inherit(BI.Trigger, {
             }
         });
         if (result.length > 0) {
+            this.trigger.element.removeClass("bi-water-mark");
             this.trigger.setText(result.join(","));
         } else {
+            this.trigger.element.addClass("bi-water-mark");
             this.trigger.setText(o.text);
         }
     },

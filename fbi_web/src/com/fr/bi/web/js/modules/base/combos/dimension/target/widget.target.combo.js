@@ -12,8 +12,12 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     defaultItems: function(){
         var fieldId = BI.Utils.getFieldIDByDimensionID(this.options.dId);
+        var text = BI.i18nText("BI-This_Target_From");
         var fieldName = BI.Utils.getFieldNameByID(fieldId);
-        var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
+        if(BI.isNotNull(fieldName)){
+            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
+            text = BI.i18nText("BI-This_Target_From") + ": " + tableName + "." + fieldName
+        }
         return [
             [{
                 el: {
@@ -60,6 +64,10 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     text: BI.i18nText("BI-Area_Chart"),
                     value: BICst.WIDGET.AREA,
                     cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Accumulate_Area"),
+                    value: BICst.WIDGET.ACCUMULATE_AREA,
+                    cls: "dot-e-font"
                 }]
             }],
             [{
@@ -87,13 +95,13 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 cls: "copy-h-font"
             }],
             [{
-                text: BI.i18nText("BI-Delete_Target"),
+                text: BI.i18nText("BI-Remove"),
                 value: BICst.TARGET_COMBO.DELETE,
                 cls: "delete-h-font"
             }],
             [{
-                text: BI.i18nText("BI-This_Target_From") + ": " + tableName + "." + fieldName,
-                tipType: "warning",
+                text: text,
+                tipType: "success",
                 value: BICst.TARGET_COMBO.INFO,
                 cls: "dimension-from-font",
                 disabled: true
@@ -134,9 +142,6 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             return did === o.dId;
         });
         switch (wType) {
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.COMPARE_BAR:
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -156,6 +161,21 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
+                break;
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+                item[this.constants.CordonPos][0].cls = "";
+                item[this.constants.CordonPos][0] = {
+                    el: item[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Vertical") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
+                break;
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -180,7 +200,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        return;
+                        item[this.constants.CordonPos][0].disabled = true;
+                        BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
+                        return item;
                 }
                 item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
@@ -190,9 +212,22 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
+                break;
+            case BICst.WIDGET.MAP:
+                BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
+                break;
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, 1);
                 break;
             default:
-                item[0][this.constants.CHART_TYPE_POSITION].disabled = true;
+                BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
         }
         return item;

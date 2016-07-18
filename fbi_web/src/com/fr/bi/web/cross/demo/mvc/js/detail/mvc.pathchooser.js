@@ -100,19 +100,32 @@ PathChooserView = BI.inherit(BI.View, {
             //        {region: "区域I", value: "I", text: "I"},
             //        {region: "区域J", value: "J", text: "J"}]
             //]
-                [
-                    [{region: "区域A3", value: "学号"},
-
-                        {region: "区域A1", value: "IDA1", text: "ID"},
-                        {region: "区域A2", value: "IDA2", text: "ID"},
-                        {region: "区域A", value: "IDA", text: "ID"}],
-                    //[{region: "区域A3", value: "学号"},
-                    //    {region: "区域A1", value: "IDA1", text: "ID"},
-                    //    {region: "区域A", value: "IDA", text: "ID"}],
-                    [{region: "区域A3", value: "学号1"},
-                        {region: "区域A1", value: "IDA1", text: "ID"},
-                        {region: "区域A", value: "IDA5", text: "ID5"}]
-                ]
+                [[{"region": "表A",
+                    "text": "字段C",
+                    "value": "24865232e47b1431"
+                }, {
+                    "region": "表C",
+                    "text": "字段C",
+                    "value": "89d0e1ed43843e5d"
+                }, {
+                    "region": "表D",
+                    "regionText": "表D",
+                    "text": "字段B",
+                    "value": "123456"
+                }], [{
+                    "region": "表A",
+                    "text": "字段B",
+                    "value": "4dbd27aae61b9b60"
+                }, {
+                    "region": "表B",
+                    "text": "字段C",
+                    "value": "1568bdc6202664e5"
+                }, {
+                    "region": "表D",
+                    "regionText": "表D",
+                    "text": "字段B",
+                    "value": "123456"
+                }]]
         });
         pathchooser.setValue();
         BI.createWidget({

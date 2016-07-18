@@ -16,15 +16,14 @@ import java.util.Set;
  * Created by kary on 2016/6/13.
  */
 public  class CalculateDependManager implements CalculateDependTool {
-    public Set<CubeTableSource> analysisTableSources;
 
     @Override
-    public BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation) {
+    public BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation,Set<CubeTableSource> cubeTableSources) {
         Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
-        if (analysisTableSources.contains(biTableSourceRelation.getForeignTable())) {
+        if (cubeTableSources.contains(biTableSourceRelation.getForeignTable())) {
             cubeTableSourceSet.add(biTableSourceRelation.getForeignTable());
         }
-        if (analysisTableSources.contains(biTableSourceRelation.getPrimaryTable())) {
+        if (cubeTableSources.contains(biTableSourceRelation.getPrimaryTable())) {
             cubeTableSourceSet.add(biTableSourceRelation.getPrimaryTable());
         }
         return new BICubeGenerateRelation(biTableSourceRelation, cubeTableSourceSet);
@@ -43,7 +42,7 @@ public  class CalculateDependManager implements CalculateDependTool {
             BITableSourceRelationPath copyPath=new BITableSourceRelationPath();
             copyPath.copyFrom(biTableSourceRelationPath);
             copyPath.removeLastRelation();
-            if(copyPath.getAllRelations().size()>0||!tableRelationSet.contains(copyPath.getFirstRelation())) {
+            if(copyPath.getAllRelations().size()>1||tableRelationSet.contains(copyPath.getFirstRelation())) {
                 dependRelationPathSet.add(copyPath);
             }
         } catch (BITablePathEmptyException e) {
@@ -51,9 +50,5 @@ public  class CalculateDependManager implements CalculateDependTool {
         }
         BICubeGenerateRelationPath biCubeGenerateRelationPath = new BICubeGenerateRelationPath(biTableSourceRelationPath, dependRelationPathSet);
         return biCubeGenerateRelationPath;
-    }
-    @Override
-    public void setOriginal(Set<CubeTableSource> cubeTableSources) {
-        analysisTableSources = cubeTableSources;
     }
 }

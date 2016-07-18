@@ -9,6 +9,7 @@ BI.ChartSettingSelectColorItem = BI.inherit(BI.BasicButton, {
         return BI.extend(conf, {
             baseCls: (conf.baseCls || "") + " bi-chart-setting-select-color-item",
             value: [],
+            text: [],
             once: true,
             height: 50,
             width: 130
@@ -17,7 +18,7 @@ BI.ChartSettingSelectColorItem = BI.inherit(BI.BasicButton, {
     _init: function () {
         BI.ChartSettingSelectColorItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var colorBlocks = BI.map(o.value, function(idx, v){
+        var colorBlocks = BI.map(o.text, function(idx, v){
             var a = BI.createWidget({
                 type: "bi.layout"
             });

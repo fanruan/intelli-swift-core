@@ -18,7 +18,7 @@ BI.DateParamPopupView = BI.inherit(BI.ParamPopupView, {
 
     dateConfig: function () {
         return [{
-            type: "bi.param0_date_item",
+            type: "bi.param3_date_item",
             value: BICst.YEAR,
             selected: true
         }, {

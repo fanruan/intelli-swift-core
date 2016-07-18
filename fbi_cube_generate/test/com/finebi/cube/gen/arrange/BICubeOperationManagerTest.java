@@ -75,8 +75,9 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
             operationManager = new BICubeOperationManager4Test(cube, setSource);
             operationManager.initialWatcher();
             manager.registerDataSource(BIMemoryDataSourceFactory.getDataSourceSet());
-           ;
-            manager.registerTableRelationPath(BITableSourceRelationPathTestTool.getRelationPathSetABC());
+            Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
+            pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
+            manager.registerTableRelationPath(pathSet);
             operationManager.generateDataSource(BIMemoryDataSourceFactory.getDataSourceSetMap());
             IRouter router = BIFactoryHelper.getObject(IRouter.class);
             router.deliverMessage(BIMessageTestTool.generateMessageDataSourceStart());

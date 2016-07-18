@@ -164,64 +164,53 @@ public class CubeIndexLoader {
     private static Operator createRowOperator(int type, BISummaryWidget widget) {
         Operator operator;
         switch (type) {
-            case BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE: {
+            case BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE:
                 operator = new AllPageOperator();
                 break;
-            }
-            case BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH: {
+            case BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH:
                 operator = new NextPageOperator(widget.getMaxRow());
                 break;
-            }
-            case BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT: {
+            case BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT:
                 operator = new NextPageOperator(widget.getMaxRow());
                 break;
-            }
-            case BIReportConstant.TABLE_PAGE_OPERATOR.ROW_PRE: {
+            case BIReportConstant.TABLE_PAGE_OPERATOR.ROW_PRE:
                 operator = new LastPageOperator(widget.getMaxRow());
                 break;
-            }
-            case BIReportConstant.TABLE_PAGE_OPERATOR.EXPAND: {
+            case BIReportConstant.TABLE_PAGE_OPERATOR.EXPAND:
                 operator = new RefreshPageOperator(widget.getClickValue(), widget.getMaxRow());
                 break;
-            }
-            default: {
-                operator = new NextPageOperator(widget.getMaxRow());
+            default:
+                operator = new RefreshPageOperator(widget.getMaxRow());
+//                operator = new NextPageOperator(widget.getMaxRow());
                 break;
-            }
         }
         return operator;
     }
 
     private static Operator createColumnOperator(int type, BISummaryWidget widget) {
         //pony 横向的改成全部展示
-//        Operator operator;
-//        switch (type) {
-//            case BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE: {
-//                operator = new AllPageOperator();
-//                break;
-//            }
-//            case BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH: {
-//                operator = new NextPageOperator(widget.getMaxCol());
-//                break;
-//            }
-//            case BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT: {
-//                operator = new NextPageOperator(widget.getMaxCol());
-//                break;
-//            }
-//            case BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_PRE: {
-//                operator = new LastPageOperator(widget.getMaxCol());
-//                break;
-//            }
-//            case BIReportConstant.TABLE_PAGE_OPERATOR.EXPAND: {
-//                operator = new RefreshPageOperator(widget.getClickValue(), widget.getMaxCol());
-//                break;
-//            }
-//            default: {
-//                operator = new NextPageOperator(widget.getMaxCol());
-//                break;
-//            }
-//        }
-        return new AllPageOperator();
+        Operator operator;
+        switch (type) {
+            case BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE:
+                operator = new AllPageOperator();
+                break;
+            case BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH:
+                operator = new NextPageOperator(widget.getMaxCol());
+                break;
+            case BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT:
+                operator = new NextPageOperator(widget.getMaxCol());
+                break;
+            case BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_PRE:
+                operator = new LastPageOperator(widget.getMaxCol());
+                break;
+            case BIReportConstant.TABLE_PAGE_OPERATOR.EXPAND:
+                operator = new RefreshPageOperator(widget.getClickValue(), widget.getMaxCol());
+                break;
+            default:
+                operator = new RefreshPageOperator(widget.getMaxCol());
+                break;
+        }
+        return operator;
     }
 
     private static BISummaryTarget[] createUsedSummaryTargets(
@@ -393,10 +382,10 @@ public class CubeIndexLoader {
     }
 
     private boolean checkSupport(BISummaryTarget[] allTargets) {
-        if (VT4FBI.supportCalcuateTarget() && VT4FBI.supportDatabaseUnion()) {
+        if (VT4FBI.supportCalculateTarget() && VT4FBI.supportDatabaseUnion()) {
             return true;
         }
-        if (!VT4FBI.supportCalcuateTarget() && allTargets != null) {
+        if (!VT4FBI.supportCalculateTarget() && allTargets != null) {
             for (int i = 0; i < allTargets.length; i++) {
                 BISummaryTarget target = allTargets[i];
                 if (target instanceof BICalculateTarget) {

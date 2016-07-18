@@ -1,0 +1,325 @@
+body{
+    height: 100%;
+    width: 100%;
+    color:#333;
+    font-size: 12px;
+    font-family: 'microsoft yahei', Microsoft YaHei, STXihei, SimHei, SimSun, sans-serif;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    moz-user-select: -moz-none;
+    -moz-user-select: none;
+    -o-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+
+#fs-login-background {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+#fs-chicken-soup {
+    position: absolute;
+    background: transparent;
+    left : 47%;
+    top : 38%;
+    color : #ffffff;
+    font-size : 20px;
+    -webkit-animation: left_right_show 2s ease;
+    -moz-animation: left_right_show 2s ease;
+    -o-animation: left_right_show 2s ease;
+    animation: left_right_show  2s ease;
+    cursor: default;
+}
+
+@keyframes left_right_show {
+    from  {
+        left:80%;
+        color : #D6D6D6;
+    }
+    to {
+        left : 47%;
+        color : #ffffff;
+    }
+}
+
+@-webkit-keyframes left_right_show {
+     from  {
+         left:80%;
+         color : #D6D6D6;
+     }
+     to {
+         left : 47%;
+         color : #ffffff;
+     }
+ }
+
+@-moz-keyframes left_right_show {
+    from  {
+        left:80%;
+        color : #D6D6D6;
+    }
+    to {
+        left : 47%;
+        color : #ffffff;
+    }
+}
+
+@-o-keyframes left_right_show {
+    from  {
+        left:80%;
+        color : #D6D6D6;
+    }
+    to {
+        left : 47%;
+        color : #ffffff;
+    }
+}
+#fs-login-logo {
+    position: absolute;
+    top : 10%;
+    right : 40%;
+    width : 112px;
+    height : 180px;
+    transition: all 1s ease;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/logo.png') no-repeat;
+}
+
+#fs-login-logo:hover {
+    -webkit-animation: scale_light 3s ease infinite;
+    -moz-animation: scale_light 3s ease infinite;
+    -o-animation: scale_light 3s ease infinite;
+    animation: scale_light  3s ease infinite;
+}
+
+@keyframes scale_light {
+    0%  {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100%  {
+        transform: scale(1);
+    }
+}
+
+
+@-webkit-keyframes scale_light {
+    0%  {
+        -webkit-transform: scale(1);
+    }
+    50% {
+        -webkit-transform: scale(1.1);
+    }
+    100%  {
+        -webkit-transform: scale(1);
+    }
+}
+
+@-moz-keyframes scale_light {
+    0%  {
+        -moz-transform: scale(1);
+    }
+    50% {
+        -moz-transform: scale(1.1);
+    }
+    100%  {
+        -moz-transform: scale(1);
+    }
+}
+
+@-o-keyframes scale_light {
+    0%  {
+        -o-transform: scale(1);
+    }
+    50% {
+        -o-transform: scale(1.1);
+    }
+    100%  {
+        -o-transform: scale(1);
+    }
+}
+
+
+#fs-login-content{
+    position: absolute;
+    top : 0;
+    bottom : 0;
+    right : 0;
+    left : 68%;
+    background: #ffffff;
+    filter: Alpha(opacity=95);
+    opacity: 0.95;
+}
+
+
+#fs-login-input-area{
+    margin-top:6%;
+    margin-left: 23%;
+    margin-right: 23%;
+    margin-bottom:5%;
+    z-index: 1;
+    background: #ffffff;
+}
+
+.confirm-area{
+    margin-left: 23%;
+    margin-right: 23%;
+    height: 133px;
+}
+
+div.fs-login-input{
+    position: relative;
+    margin: 0 0 24px 0;
+    padding: 0;
+    color : #d8d8d8;
+    border-bottom: solid 1px #d8d8d8;
+}
+
+input, div.fs-login-errmask{
+    margin: 0;
+    border: 0;
+    border-radius : 1px;
+    vertical-align:middle;
+    -webkit-border-radius: 1px;
+    -moz-border-radius: 1px;
+    font-size: 16px;
+    height: 56px;
+    line-height: 56px;
+}
+input{
+
+    position: relative;
+    margin: 0 0 0 35px;
+    padding: 0;
+    outline: none;
+    width: 253px;
+}
+
+input {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
+div.fs-login-errmask{
+    filter: Alpha(opacity=40);
+    opacity: 0.4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right : 0;
+    color: #ffffff;
+    text-align: center;
+    background: #686868;
+    z-index: 1;
+}
+
+div.fs-login-input-username{
+    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/username.png') no-repeat 0px 14px;
+}
+div.fs-login-input-password{
+    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/password.png') no-repeat 0px 14px;
+}
+
+a{
+    display: block;
+    height: 50px;
+    background: #15abed;
+    color: #ffffff;
+    text-align: center;
+    line-height: 49px;
+    font-size: 20px;
+    border-radius : 25px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    cursor: pointer !important;
+    text-decoration: none;
+    outline: none;
+}
+div.fs-login-check{
+    height: 50px;
+    line-height: 50px;
+    font-size: 18px;
+    color : #aaaaa9;
+    background:url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/checkbox.png') no-repeat 0px 14px;
+}
+span.fs-login-remember{
+    padding-left: 35px;
+    cursor: pointer !important;
+}
+span.fs-login-remember-selected{
+    background:url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/checkbox_selected.png') no-repeat;
+}
+
+#fs-setting-area,#fs-sure-area {
+    position: absolute;
+    top:38%;
+    width: 100%;
+}
+
+#fs-login-logo:active {
+    -webkit-animation: scale_rotate 8s ease infinite;
+    -moz-animation: scale_rotate 8s ease infinite;
+    -o-animation: scale_rotate 8s ease infinite;
+    animation: scale_rotate  8s ease infinite;
+}
+
+@keyframes scale_rotate {
+    0%  {
+        transform: rotateY(0deg);
+    }
+    50% {
+        transform: rotateY(360deg);
+    }
+    100%  {
+        transform: rotateY(0deg);
+    }
+}
+
+
+@-webkit-keyframes scale_rotate {
+    0%  {
+        -webkit-transform:rotateY(0deg);
+    }
+    50% {
+        -webkit-transform: rotateY(360deg);
+    }
+    100%  {
+        -webkit-transform: rotateY(0deg);
+    }
+}
+
+@-moz-keyframes scale_rotate {
+    0%  {
+        -moz-transform: rotateY(0deg);
+    }
+    50% {
+        -moz-transform: rotateY(360deg);
+    }
+    100%  {
+        -moz-transform: rotateY(0deg);
+    }
+}
+
+@-o-keyframes scale_rotate {
+    0%  {
+        -o-transform: rotateY(0deg);
+    }
+    50% {
+        -o-transform: rotateY(360deg);
+    }
+    100%  {
+        -o-transform: rotateY(0deg);
+    }
+}

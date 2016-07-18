@@ -1,25 +1,26 @@
 package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.base.FRContext;
+import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.stable.StringUtils;
+import com.fr.stable.bridge.StableFactory;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
@@ -41,6 +42,9 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
         removePackageByName(packageId, userId);
         try {
             BICubeConfigureCenter.getPackageManager().persistData(userId);
+            BIConfigureManagerCenter.getAuthorityManager().persistData(userId);
+            BICubeManager biCubeManager= StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
+            biCubeManager.resetCubeGenerationHour(userId);
         } catch (Exception e) {
             FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
         }
@@ -69,26 +73,27 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
                     IRelationContainer foreignContainer = BICubeConfigureCenter.getTableRelationManager().getForeignRelation(userId, table);
                     addToRemoveList(foreignContainer, removeList);
                 }
-                //删除业务包中所有表的表名转义
-                BICubeConfigureCenter.getAliasManager().getTransManager(userId).removeTransName(table.getID().getIdentityValue());
 
-                //删除业务包中所有表中字段的转义
-                List<BusinessField> fieldsOfTableList = table.getFields();
-                Iterator<BusinessField> it = fieldsOfTableList.iterator();
-                while (it.hasNext()) {
-                    BICubeConfigureCenter.getAliasManager().getTransManager(userId).removeTransName(it.next().getFieldID().getIdentityValue());
-                }
-
+                //删除权限配置
+                BIConfigureManagerCenter.getAuthorityManager().removeAuthPackage(new BIPackageID(packageId));
             }
             for (int i = 0; i < removeList.size(); i++) {
                 BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, removeList.get(i));
             }
-
-
+            saveUpdateSettings(packageId, userId);
             BICubeConfigureCenter.getPackageManager().removePackage(userId, new BIPackageID(packageId));
         } catch (BIPackageAbsentException e) {
 
         }
+    }
+
+    private void saveUpdateSettings(String packageId, long userId) throws BIPackageAbsentException {
+        Iterator tableIt = BICubeConfigureCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables().iterator();
+        while (tableIt.hasNext()) {
+            BusinessTable table = (BusinessTable) tableIt.next();
+            BIConfigureManagerCenter.getUpdateFrequencyManager().removeUpdateSetting(table.getTableSource().getSourceID(),userId);
+        }
+        BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
     }
 
     private void addToRemoveList(IRelationContainer primaryContainer, List<BITableRelation> removeList) throws BIRelationAbsentException, BITableAbsentException {

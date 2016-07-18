@@ -33,7 +33,7 @@ import java.util.Comparator;
  * @see ICubeIndexDataService 位图索引
  * @since 4.0
  */
-public interface ICubeColumnEntityService<T> extends ICubeColumnReaderService<T> {
+public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> {
 
     void setRelationManagerService(ICubeRelationManagerService relationManagerService);
 
@@ -66,6 +66,12 @@ public interface ICubeColumnEntityService<T> extends ICubeColumnReaderService<T>
      */
     void addGroupIndex(int position, GroupValueIndex index);
 
+    /**
+     * 给每一个原始值添加在分组中的位置
+     * @param position 原始值的位置
+     * @param groupPosition 分组的位置
+     */
+    void addPositionOfGroup(int position, Integer groupPosition);
 
     void recordSizeOfGroup(int size);
 
@@ -84,4 +90,5 @@ public interface ICubeColumnEntityService<T> extends ICubeColumnReaderService<T>
     void copyDetailValue(ICubeColumnEntityService columnEntityService, long rowCount);
 
     void setOwner(ITableKey owner);
+
 }

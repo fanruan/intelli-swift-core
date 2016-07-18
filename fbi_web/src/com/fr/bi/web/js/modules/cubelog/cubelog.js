@@ -24,6 +24,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             type: "bi.progress_bar",
             width: "100%"
         });
+        this.processBar.setValue(100);
 
         BI.createWidget({
             type: "bi.vertical",
@@ -72,7 +73,6 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             vgap: 10
         });
         this.refreshLog();
-
     },
 
     refreshLog: function (isStart) {
@@ -83,14 +83,15 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         if (BI.isNull(this.interval)) {
             this.interval = setInterval(function () {
                 self.refreshLog();
-            }, 300);
+            }, 5000);
+            return;
         }
         BI.Utils.getCubeLog(function (data) {
-            if (!isStart && (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start)))) {
+            if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
                 self.interval && clearInterval(self.interval);
                 delete self.interval;
             }
-            !isStart && self._refreshProcess(data);
+            self._refreshProcess(data);
             self.cubeTree.populate(self._formatItems(data));
         });
     },
@@ -106,10 +107,15 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 generated += table.column.length;
             });
             var process = 1;
-            if (allFields !== 0 && BI.isNull(data.cube_end)) {
+            if(BI.isNull(data.cube_end)) {
+                if(allFields === 0) {
+                    return;
+                }
                 process = generated / allFields;
             }
-            this.processBar.setValue(Math.ceil(process * 100));
+            process = Math.ceil(process * 100);
+            process = process < 10 ? 10 : process;
+            this.processBar.setValue(process);
         }
     },
 

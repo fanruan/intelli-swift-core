@@ -93,7 +93,7 @@ public class UserWidget {
             if (rowCount == 0){
                 v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
             } else {
-                v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT);
+                v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT);
             }
             for (int i = 0; i < v.size(); i++){
                 tempValue.put(rowCount, v.get(i));
@@ -151,20 +151,23 @@ public class UserWidget {
         for (int i = 0; i < data.size(); i++){
             tempValue.put(i + row, data.get(i));
         }
-        if (data.size() != step ){
-            maxRow = row + data.size();
-        } else {
-            paging.setCurrentPage(page + 1);
-            exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
-            data =  exe.getData();
-            row = (page + 1) * step;
-            for (int i =0; i < data.size(); i++){
-                tempValue.put(i + row, data.get(i));
-            }
-            if (data.size() != step ){
-                maxRow = row + data.size();
-            }
+        maxRow = (int) paging.getTotalSize();
+        paging.setCurrentPage(page + 1);
+        exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
+        data =  exe.getData();
+        row = (page + 1) * step;
+        for (int i =0; i < data.size(); i++){
+            tempValue.put(i + row, data.get(i));
         }
+    }
+
+    public void clear() {
+        synchronized (lock){
+            maxRow = Integer.MAX_VALUE;
+            tempValue.clear();
+            session = new UserSession();
+        }
+
     }
 
     private class UserSession extends BISession{

@@ -432,6 +432,9 @@ public class Node extends BIField implements BINode {
 
     @Override
     public void setSummaryValue(Object key, Object value) {
+        if (value != null){
+            value = ((Number)value).doubleValue();
+        }
         getSummaryValue().put(key, value);
     }
 

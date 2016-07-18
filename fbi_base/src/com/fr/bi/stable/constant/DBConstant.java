@@ -6,8 +6,11 @@ import java.util.Calendar;
  * Created by 小灰灰 on 2015/9/7.
  */
 public class DBConstant {
-    public static final String GLOBAL_UPDATE = "__global_update__";
 
+public static final class CUBE_UPDATE_TYPE {
+    public static final String GLOBAL_UPDATE = "__global_update__";
+    public static final String SINGLETABLE_UPDATE = "__singleTable_update__";
+}
     /**
      * 数据库返回的数据类型
      *

@@ -50,24 +50,21 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
 
     _checkPathOfOneTable: function(value){
         value = value || [];
-        if(value.length === 1){
-            var pTId = BI.Utils.getTableIdByFieldID(value[0].primaryKey.field_id);
-            var fTId = BI.Utils.getTableIdByFieldID(value[0].foreignKey.field_id);
-            if(pTId === fTId){
-                return [];
-            }
-        }
+        //if(value.length === 1){
+        //    var pTId = BI.Utils.getTableIdByFieldID(value[0].primaryKey.field_id);
+        //    var fTId = BI.Utils.getTableIdByFieldID(value[0].foreignKey.field_id);
+        //    if(pTId === fTId){
+        //        return [];
+        //    }
+        //}
         return value;
     },
 
     _createRightRegionPath: function (combineFieldId, dimensionFieldId, joinRegion) {
         var self = this;
+        var uuidMap = {}; //管理一下各条路径上的uuid
         var ptId = BI.Utils.getTableIdByFieldID(dimensionFieldId);
         var paths = BI.Utils.getPathsFromFieldAToFieldB(combineFieldId, dimensionFieldId);
-        if(ptId === BI.Utils.getTableIdByFieldID(combineFieldId)){
-            this.rpath = paths[0];
-            return [];
-        }
         if(paths.length === 1){
             this.rpath = paths[0];
         }
@@ -75,8 +72,8 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
             var p = [], pId = BI.UUID();
             BI.each(path, function (id, relation) {
                 var foreignId = BI.Utils.getForeignIdFromRelation(relation);
+                var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                 if (id === 0) {
-                    var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                     p.push({
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
                         regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
@@ -85,13 +82,29 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                         direction: -1
                     });
                 }
-                p.push({
-                    region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
-                    regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
-                    text: BI.Utils.getFieldNameByID(foreignId),
-                    value: foreignId,
-                    direction: -1
-                });
+                if(BI.Utils.getTableIdByFieldID(foreignId) === BI.Utils.getTableIdByFieldID(primaryId)){
+                    var regionId = BI.UUID();
+                    if(BI.has(uuidMap, foreignId)){
+                        regionId = uuidMap[foreignId];
+                    }else{
+                        uuidMap[foreignId] = regionId;
+                    }
+                    p.push({
+                        region: regionId,
+                        regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
+                        text: BI.Utils.getFieldNameByID(foreignId),
+                        value: foreignId,
+                        direction: -1
+                    });
+                }else{
+                    p.push({
+                        region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
+                        text: BI.Utils.getFieldNameByID(foreignId),
+                        regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
+                        value: foreignId,
+                        direction: -1
+                    });
+                }
             });
             //左右两侧路径上的value值可能相同，相同的话要改一下
             var leftValues = BI.pluck(joinRegion[idx], "value");
@@ -109,12 +122,9 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
 
     _createLeftRegionPath: function (combineFieldId, targetFieldId) {
         var self = this;
+        var uuidMap = {}; //管理一下各条路径上的uuid
         var ptId = BI.Utils.getTableIdByFieldID(targetFieldId);
         var paths = BI.Utils.getPathsFromFieldAToFieldB(combineFieldId, targetFieldId);
-        if(ptId === BI.Utils.getTableIdByFieldID(combineFieldId)){
-            this.lpath = paths[0];
-            return [];
-        }
         if(paths.length === 1){
             this.lpath = paths[0];
         }
@@ -122,17 +132,32 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
             var p = [], pId = BI.UUID();
             BI.backEach(path, function (id, relation) {
                 var foreignId = BI.Utils.getForeignIdFromRelation(relation);
-                p.push({
-                    region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
-                    text: BI.Utils.getFieldNameByID(foreignId),
-                    value: foreignId
-                });
+                var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
+                if(BI.Utils.getTableIdByFieldID(foreignId) === BI.Utils.getTableIdByFieldID(primaryId)){
+                    var regionId = BI.UUID();
+                    if(BI.has(uuidMap, foreignId)){
+                        regionId = uuidMap[foreignId];
+                    }else{
+                        uuidMap[foreignId] = regionId;
+                    }
+                    p.push({
+                        region: regionId,
+                        regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
+                        text: BI.Utils.getFieldNameByID(foreignId),
+                        value: foreignId
+                    });
+                }else{
+                    p.push({
+                        region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
+                        text: BI.Utils.getFieldNameByID(foreignId),
+                        value: foreignId
+                    });
+                }
                 if (id === 0) {
-                    var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                     p.push({
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
                         text: BI.i18nText("BI-Primary_Key"),
-                        value: BI.Utils.getTableIdByFieldID(primaryId),
+                        value: primaryId,
                         direction: -1
                     });
                 }
@@ -159,7 +184,12 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         BI.each(lregion, function(idx, lg){
             BI.each(rregion, function(id, rg){
                 rg.splice(0, 1);
-                newRegion.push(BI.concat(lg, rg));
+                var lgValues = BI.pluck(lg, "value");
+                var rgValues = BI.pluck(rg, "value");
+                var result = BI.find(rgValues, function(idx, value){
+                    return BI.contains(lgValues, value);
+                });
+                BI.isNull(result) && newRegion.push(BI.concat(lg, rg));
             })
         });
         return newRegion;
@@ -212,12 +242,19 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         return v;
     },
 
+    _joinRegion: function(items){
+        BI.each(items, function(){
+
+        });
+    },
+
     populate: function (items) {
         this.path = [];
         this.pathRelationMap = {};
         this.pathValueMap = {};
         this.options.combineTableId = items.combineTableId;
         items = this._createRegionPathsByItems(items);
+        this._joinRegion(items);
         this.pathChooser.populate(items);
         if(items.length > 1){
             this.pathChooser.setValue();

@@ -13,6 +13,7 @@ import java.util.Map;
 public class DetailSortGviIndex {
     private Object[] value;
     private Object currentvalue;
+    private int currentIndex;
     private ICubeColumnIndexReader[] getters;
 
     private transient boolean allSort;
@@ -58,34 +59,35 @@ public class DetailSortGviIndex {
         if (filterGvi.getRowsCountWithData() == 0) {
             return null;
         }
+        allSort = true;
         if (getters.length == 0) {
             return filterGvi;
         }
         if (getters[0] == null) {
             return filterGvi;
         }
-        allSort = true;
         for (int i = 0; i < iters.length; i++) {
             //少于剩下的行数就直接返回，迭代器当前列移位
             if (filterGvi.getRowsCountWithData() <= leftCount) {
                 allSort = false;
-                resetValueAndIter(i - 1);
                 return filterGvi;
             }
             Map.Entry<Object, GroupValueIndex> entry;
             if (iters[i].hasNext()) {
                 entry = iters[i].next();
+                currentIndex = i;
                 currentvalue = entry.getKey();
                 filterGvi = filterGvi.AND(entry.getValue());
             } else {
                 return null;
             }
         }
-        //如果每一个值都and了，小于剩下的行数，则最后一个迭代器往移位，大于剩下的行数，迭代器不移位，因为已经取到了所需的行数，迭代器也不需要重置了
-        if(filterGvi.getRowsCountWithData() <= leftCount){
-            resetValueAndIter(value.length - 1);
-        }
+        currentIndex = value.length - 1;
         return filterGvi;
+    }
+
+    public void next(){
+        resetValueAndIter(currentIndex);
     }
 
     private void resetValueAndIter(int index){
@@ -111,6 +113,7 @@ public class DetailSortGviIndex {
             } else {
                 Map.Entry<Object, GroupValueIndex> entry = iters[index].next();
                 value[index] = entry.getKey();
+                iters[index] = asc[index] ? getters[index].iterator(value[index]) : getters[index].previousIterator(value[index]);
             }
         }
     }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by wuk on 16/4/25.
+ * Created by kary on 16/4/25.
  */
 public interface BIAuthorityManageProvider {
     String XML_TAG = "BIPackageAuthManageProvider";
@@ -26,6 +26,8 @@ public interface BIAuthorityManageProvider {
     JSONObject createJSON(long userId) throws Exception;
 
     void clear(long userId);
+
+    void removeAuthPackage(BIPackageID packageID);
 
     @Deprecated
     void persistData(long userId);

@@ -139,13 +139,13 @@ BI.extend(BI.Utils, {
         return packStructure;
 
     },
-    
+
     getUpdatePreviewSqlResult: function (data, callback) {
         Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
             callback(res);
         })
     },
-    
+
     getConfDataByField: function (table, fieldName, filterConfig, callback) {
         Data.Req.reqFieldsDataByData({
             table: table,
@@ -155,8 +155,8 @@ BI.extend(BI.Utils, {
             callback(data.value, data.hasNext);
         });
     },
-    
-    getConfDataByFieldId: function(fieldId, filterConfig, callback){
+
+    getConfDataByFieldId: function (fieldId, filterConfig, callback) {
         Data.Req.reqFieldsDataByFieldId({
             field_id: fieldId,
             filterConfig: filterConfig
@@ -164,7 +164,7 @@ BI.extend(BI.Utils, {
             callback(data.value, data.hasNext);
         });
     },
-    
+
     getAllPackageIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("packages"));
     },
@@ -230,18 +230,18 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("update_settings", id);
     },
 
-    getAuthorityLoginField: function(){
+    getAuthorityLoginField: function () {
         return Data.SharingPool.get("authority_settings", "login_field");
     },
 
-    getAuthorityRoles: function(){
+    getAuthorityRoles: function () {
         return Data.SharingPool.get("authority_settings", "all_roles");
     },
-    
-    getPackageAuthorityByID: function(pid) {
-        return Data.SharingPool.get("authority_settings", "packages_auth", pid);  
+
+    getPackageAuthorityByID: function (pid) {
+        return Data.SharingPool.get("authority_settings", "packages_auth", pid);
     },
-    
+
     savePackageAuthority: function (data, callback) {
         Data.Req.reqSavePackageAuthority(data, function (res) {
             callback(res);
@@ -305,9 +305,15 @@ BI.extend(BI.Utils, {
             callback(res);
         });
     },
-    
-    saveLoginField: function(data, callback){
-        Data.Req.reqSaveLoginField(data, function(res){
+
+    saveCubePath: function (path, callback) {
+        Data.Req.reqSaveCubePath(path, function (res) {
+            callback(res);
+        })
+    },
+
+    saveLoginField: function (data, callback) {
+        Data.Req.reqSaveLoginField(data, function (res) {
             callback(res);
         })
     },
@@ -429,31 +435,32 @@ BI.extend(BI.Utils, {
             callback(res);
         });
     },
-    
+
     getAllPackages: function (callback) {
         Data.Req.reqAllBusinessPackages(function (res) {
             callback(res);
         })
     },
 
-    getTableNamesOfAllPackages: function(callback){
-        Data.Req.getTableNamesOfAllPackages(function(res) {
+    getTableNamesOfAllPackages: function (callback) {
+        Data.Req.getTableNamesOfAllPackages(function (res) {
             callback(res);
         })
     },
 
-    updateCubeByTable: function (data, callback) {
-        Data.Req.updateCubeByTable(data, function () {
-            callback();
-        });
-    },
     generateCubeByTable: function (data, callback) {
         Data.Req.reqGenerateCubeByTable(data, function () {
             callback();
         });
     },
 
-    getPrimaryTablesByTable4Conf: function(table, callback) {
+    generateCube: function (callback) {
+        Data.Req.reqGenerateCube(function (res) {
+            callback(res);
+        });
+    },
+    
+    getPrimaryTablesByTable4Conf: function (table, callback) {
         Data.Req.reqPrimaryTablesByTable(table, function (res) {
             callback(res);
         });

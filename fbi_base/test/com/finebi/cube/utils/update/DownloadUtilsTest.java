@@ -12,11 +12,6 @@ import java.io.File;
  * @since 8.0
  */
 public class DownloadUtilsTest extends TestCase {
-    /**
-     * demo主程序
-     *
-     * @param args 参数
-     */
     public void testDownload() {
         String folderName = "DownloadUtilsTest";
         String name_download = "DownloadFile";

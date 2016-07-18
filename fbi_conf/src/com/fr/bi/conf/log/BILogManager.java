@@ -17,8 +17,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 //tod kary 现在只能监听cube生成过程中产生的异常，后期可考虑监听所有和cube相关的异常
-//edit kary 修改获取整体relation和cubetablesource的方法，以适应部分更新功能
+//edit kary 修改获取整体relation和cubeTableSource的方法，以适应部分更新功能
 public class BILogManager implements BILogManagerProvider {
 
 
@@ -65,13 +66,6 @@ public class BILogManager implements BILogManagerProvider {
         getInstance(userId).recordEnd();
     }
 
-    /**
-     * 版本替换
-     */
-    @Override
-    public void logVersion(long userId) {
-        getInstance(userId).recordVersion();
-    }
 
     /**
      * 日志开始
@@ -83,7 +77,8 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表错误日志
-     *  @param table 表
+     *
+     * @param table 表
      * @param text  内容
      */
     @Override
@@ -93,8 +88,9 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
+     *
      * @param table   表
-     * @param seconds  时间(秒)
+     * @param seconds 时间(秒)
      * @param percent 百分比
      */
     @Override
@@ -104,8 +100,9 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
+     *
      * @param table   表
-     * @param seconds  时间(秒)
+     * @param seconds 时间(秒)
      * @param percent 百分比
      */
     @Override
@@ -115,8 +112,9 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表读日志
-     * @param table 表
-     * @param seconds  时间(秒)
+     *
+     * @param table   表
+     * @param seconds 时间(秒)
      */
     @Override
     public void infoTableReading(IPersistentTable table, long seconds, long userId) {
@@ -125,7 +123,8 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
-     * @param table 表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      */
     @Override
@@ -135,7 +134,8 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
-     * @param table 表
+     *
+     * @param table   表
      * @param seconds 时间(秒)
      */
     @Override
@@ -146,6 +146,7 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
+     *
      * @param table      表
      * @param columnName 列名
      * @param seconds    时间(秒)
@@ -158,6 +159,7 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 表日志
+     *
      * @param table      表
      * @param columnName 列名
      * @param seconds    时间(秒)
@@ -169,7 +171,8 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 错误日志
-     *  @param ck   列关键字
+     *
+     * @param ck   列关键字
      * @param text 内容
      */
     @Override
@@ -179,8 +182,9 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 错误日志
+     *
      * @param ck      列关键字
-     * @param seconds  时间(秒)
+     * @param seconds 时间(秒)
      * @param percent 百分比
      */
     @Override
@@ -190,8 +194,9 @@ public class BILogManager implements BILogManagerProvider {
 
     /**
      * 错误日志
-     *  @param ck 列关键字
-     * @param seconds  时间(秒)
+     *
+     * @param ck      列关键字
+     * @param seconds 时间(秒)
      */
     @Override
     public void infoRelation(RelationColumnKey ck, long seconds, long userId) {
@@ -207,6 +212,7 @@ public class BILogManager implements BILogManagerProvider {
     public void loopRelation(Set<ArrayKey<BITableSourceRelation>> set, long userId) {
         getInstance(userId).loopRelation(set);
     }
+
     /**
      * 获取所有需要更新的relation信息
      */
@@ -214,14 +220,14 @@ public class BILogManager implements BILogManagerProvider {
     public void reLationPathSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet, long userId) {
         getInstance(userId).reLationSet(biTableSourceRelationHashSet);
     }
+
     /**
      * 获取所有需要更新的tableSource信息
      */
     @Override
     public void cubeTableSourceSet(Set<CubeTableSource> cubeTableSources, long userId) {
-       getInstance(userId).cubeTableSourceSet(cubeTableSources);
+        getInstance(userId).cubeTableSourceSet(cubeTableSources);
     }
-
 
 
     /**
@@ -242,8 +248,11 @@ public class BILogManager implements BILogManagerProvider {
 
     @Override
     public Date getConfigVersion(long userId) {
-        return getInstance(userId).getConfigVersion();
+        return getInstance(userId).getCubeEnd();
     }
 
-
+    @Override
+    public void clearLog(long userId) {
+        getInstance(userId).clearRecord();
+    }
 }

@@ -2,19 +2,23 @@ package com.fr.bi.field.filtervalue.date.evenfilter;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.date.DateFilterValue;
 import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
+import com.fr.bi.stable.exception.BITableUnreachableException;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -38,6 +42,10 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
     protected Set<BIDateValue> valueSet;
 
     private JSONObject valueJo;
+    private int type;
+    private int month;
+    private int year;
+    private int day;
 
     public DateKeyTargetFilterValue() {
 
@@ -60,7 +68,20 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
         if (valueSet == null || valueSet.isEmpty()) {
             return getGroupValueIndexWhenNull(target, loader);
         }
-        ICubeColumnIndexReader getter = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), group), dimension.getRelationList());
+        BITableRelationPath firstPath = null;
+        try {
+            firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userId, target, dimension.getField().getTableBelongTo());
+        } catch (BITableUnreachableException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        if (ComparatorUtils.equals(dimension.getField().getTableBelongTo(), target)) {
+            firstPath = new BITableRelationPath();
+        }
+        if (firstPath == null) {
+            return null;
+        }
+
+        ICubeColumnIndexReader getter = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), group), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
         Iterator<BIDateValue> it = valueSet.iterator();
         GroupValueIndex gvi = null;
         while (it.hasNext()) {
@@ -101,11 +122,23 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         this.valueSet = new HashSet<BIDateValue>();
         if (jo.has("filter_value")) {
-            JSONObject filterValue = jo.getJSONObject("filter_value");
-            if(filterValue.has("type") && filterValue.has("values")){
-                this.valueSet.add(BIDateValueFactory.createDateValue(filterValue.getInt("type"), filterValue.getLong("values")));
+            valueJo = jo.getJSONObject("filter_value");
+            if (valueJo.has("group") && valueJo.has("values")) {
+                this.valueSet.add(BIDateValueFactory.createDateValue(valueJo.getInt("group"), valueJo.getLong("values")));
+                this.group = valueJo.getInt("group");
             }
-            this.group = filterValue.getInt("type");
+            if (valueJo.has("value")) {
+                JSONObject filterValueJo = valueJo.getJSONObject("value");
+                if(filterValueJo.has("year")){
+                    this.year = filterValueJo.getInt("year");
+                }
+                if(filterValueJo.has("month")){
+                    this.month = filterValueJo.getInt("month");
+                }
+                if(filterValueJo.has("day")){
+                    this.day = filterValueJo.getInt("day");
+                }
+            }
         }
     }
 
@@ -177,22 +210,17 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof DateKeyTargetFilterValue)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         DateKeyTargetFilterValue that = (DateKeyTargetFilterValue) o;
 
-        if (group != that.group) {
-            return false;
-        }
-        if (!ComparatorUtils.equals(valueSet, that.valueSet)) {
-            return false;
-        }
-        return !(valueJo != null ? !ComparatorUtils.equals(valueJo, that.valueJo) : that.valueJo != null);
+        if (group != that.group) return false;
+        if (type != that.type) return false;
+        if (month != that.month) return false;
+        if (year != that.year) return false;
+        if (day != that.day) return false;
+        return valueSet != null ? valueSet.equals(that.valueSet) : that.valueSet == null;
 
     }
 
@@ -200,15 +228,18 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
     public int hashCode() {
         int result = group;
         result = 31 * result + (valueSet != null ? valueSet.hashCode() : 0);
-        result = 31 * result + (valueJo != null ? valueJo.hashCode() : 0);
+        result = 31 * result + type;
+        result = 31 * result + month;
+        result = 31 * result + year;
+        result = 31 * result + day;
         return result;
     }
 
-	@Override
-	public boolean isMatchValue(Long v) {
-		if(v == null){
+    @Override
+    public boolean isMatchValue(Long v) {
+        if (v == null) {
 
-		}
-		return false;
-	}
+        }
+        return false;
+    }
 }

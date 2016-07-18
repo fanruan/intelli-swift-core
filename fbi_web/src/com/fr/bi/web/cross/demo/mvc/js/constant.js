@@ -150,6 +150,8 @@ var _JS = [
 
     "widget/mvc.numberpager.js",
 
+    "widget/mvc.directionpager.js",
+
     "widget/mvc.skippager.js",
 
     "widget/mvc.allpager.js",
@@ -169,6 +171,8 @@ var _JS = [
     "widget/mvc.yearcalendar.js",
 
     "widget/mvc.scrollview.js",
+
+    "widget/mvc.chart.js",
 
     "widget/mvc.charts.js",
 
@@ -371,6 +375,8 @@ var _JS = [
 
     "detail/mvc.adaptivetable.js",
 
+    "detail/mvc.adaptivetable2.js",
+
     "detail/mvc.customscrolltable.js",
 
     "detail/mvc.pagetable.js",
@@ -400,7 +406,8 @@ var _JS = [
     "detail/mvc.barcharts.js",
     "detail/mvc.areacharts.js",
 
-    "detail/mvc.selectcolorcombo.js"
+    "detail/mvc.selectcolorcombo.js",
+
 ];
 
 
@@ -472,6 +479,7 @@ var _Routes = {
     "/tab": "TabView",
     "/pager": "PagerView",
     "/numberpager": "NumberPagerView",
+    "/directionpager": "DirectionPagerView",
     "/skippager": "SkipPagerView",
     "/allpager": "AllPagerView",
     "/loader": "LoaderView",
@@ -481,6 +489,7 @@ var _Routes = {
     "/calendar": "CalendarView",
     "/year_calendar": "YearCalendarView",
     "/scrollview": "ScrollView",
+    "/chart": "ChartView",
     "/charts": "ChartsView",
     "/farbtastic": "FarbtasticView",
     "/canvas": "CanvasView",
@@ -588,6 +597,7 @@ var _Routes = {
     "/relation_view": "RelationviewView",
     "/preview_table": "PreviewTableView",
     "/adaptive_table": "AdaptiveTableView",
+    "/adaptive_table2": "AdaptiveTable2View",
     "/excel_table": "ExcelTableView",
     "/custom_scroll_table": "CustomScrollTableView",
     "/page_table": "PageTableView",
@@ -852,6 +862,10 @@ _Models.widget = [{
 }, {
     pId: 8,
     text: "bi.chart",
+    value: "chart"
+}, {
+    pId: 8,
+    text: "charts",
     value: "charts"
 }, {
     pId: 5,
@@ -889,6 +903,10 @@ _Models.widget = [{
     pId: 4,
     text: "bi.number_pager",
     value: "numberpager"
+}, {
+    pId: 4,
+    text: "bi.direction_pager",
+    value: "directionpager"
 }, {
     pId: 4,
     text: "bi.skip_pager",
@@ -1346,12 +1364,12 @@ _Models.detail = [{
         value: "preview_table"
     }, {
         pId: 27,
-        text: "bi.excel_table",
-        value: "excel_table"
-    }, {
-        pId: 27,
         text: "bi.adaptive_table",
         value: "adaptive_table"
+    }, {
+        pId: 27,
+        text: "bi.adaptive_table(冻结表头)",
+        value: "adaptive_table2"
     }, {
         pId: 27,
         text: "bi.custom_scroll_table",
@@ -1368,6 +1386,10 @@ _Models.detail = [{
         pId: 27,
         text: "bi.page_table(调整列宽)",
         value: "page_table3"
+    }, {
+        pId: 27,
+        text: "bi.excel_table",
+        value: "excel_table"
     }, {
         pId: 32,
         text: "bi.sequence_table",

@@ -1,15 +1,17 @@
 package com.fr.bi.cal.stable.tableindex.index;
 
 
-import com.finebi.cube.conf.field.BusinessField;
-import com.fr.bi.base.key.BIKey;
+import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Date;
@@ -43,41 +45,12 @@ public class BIMultiTableIndex implements ICubeTableService {
         }
     }
 
-    /**
-     * 获取某列某行的值
-     *
-     * @param columnIndex 列
-     * @param row         行
-     * @return
-     */
+
     @Override
-    public Object getRow(BIKey columnIndex, int row) {
-        return childs.get(columnIndex).getRow(columnIndex, row);
+    public ICubeColumnDetailGetter getColumnDetailReader(BIKey key) {
+        return childs.get(key).getColumnDetailReader(key);
     }
 
-    /**
-     * 获取某列某行的值
-     *
-     * @param columnIndex
-     * @param row
-     * @return
-     */
-    @Override
-    public Object getRowValue(BIKey columnIndex, int row) {
-        return childs.get(columnIndex).getRowValue(columnIndex, row);
-    }
-
-    /**
-     * 获取某列指定行的值
-     *
-     * @param columnIndex
-     * @param rows
-     * @return
-     */
-    @Override
-    public Object[] getRow(BIKey columnIndex, int[] rows) {
-        return childs.get(columnIndex).getRow(columnIndex, rows);
-    }
 
     /**
      * 求最大值
@@ -251,6 +224,11 @@ public class BIMultiTableIndex implements ICubeTableService {
         return cs[0].getId();
     }
 
+    @Override
+    public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
+        return childs.get(key).getValueEntryGetter(key, relationList);
+    }
+
     /**
      * 释放资源
      */
@@ -259,11 +237,6 @@ public class BIMultiTableIndex implements ICubeTableService {
         for (ICubeTableService ti : cs) {
             ti.clear();
         }
-    }
-
-    @Override
-    public GroupValueIndex getIndexByRow(BIKey key, int row) {
-        return childs.get(key).getIndexByRow(key, row);
     }
 
     @Override

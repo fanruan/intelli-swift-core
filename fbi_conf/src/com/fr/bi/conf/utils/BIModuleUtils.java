@@ -6,6 +6,7 @@ import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
@@ -18,10 +19,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2015/12/16.
@@ -32,21 +30,39 @@ public class BIModuleUtils {
         JSONObject jo = new JSONObject();
         for (BIModule module : BIModuleManager.getModules()) {
             BISystemPackageConfigurationProvider provider = module.getBusiPackManagerProvider();
+            if (provider == null) {
+                continue;
+            }
             jo.join(provider.createPackageJSON(userId, locale));
         }
         return jo;
     }
 
-    public static ICubeTableService getTableIndex(BusinessTable td, BIUser user, Map<String, ICubeDataLoader> childLoaderMap) {
+    /**
+     * 分析用pack
+     * @param userId
+     * @param locale
+     * @return
+     * @throws Exception
+     */
+    public static JSONObject createAnalysisPackJSON(long userId, Locale locale) throws Exception {
+        JSONObject jo = new JSONObject();
         for (BIModule module : BIModuleManager.getModules()) {
-            return childLoaderMap.get(module.getModuleName()).getTableIndex(td.getTableSource());
+            BISystemPackageConfigurationProvider provider = module.getBusiPackManagerProvider();
+            if (provider == null) {
+                continue;
+            }
+            jo.join(provider.createAnalysisPackageJSON(userId, locale));
         }
-        return null;
+        return jo;
     }
 
-    public static ICubeTableService getTableIndex(CubeTableSource tableSource,  Map<String, ICubeDataLoader> childLoaderMap) {
+    public static ICubeTableService getTableIndex(CubeTableSource tableSource, Map<String, ICubeDataLoader> childLoaderMap) {
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
+            if (provider == null) {
+                continue;
+            }
             if (provider.isRecord(tableSource)) {
                 return childLoaderMap.get(module.getModuleName()).getTableIndex(tableSource);
             }
@@ -59,6 +75,9 @@ public class BIModuleUtils {
         Set<IBusinessPackageGetterService> set = new HashSet<IBusinessPackageGetterService>();
         for (BIModule module : BIModuleManager.getModules()) {
             BISystemPackageConfigurationProvider provider = module.getBusiPackManagerProvider();
+            if (provider == null) {
+                continue;
+            }
             set.addAll(provider.getAllPackages(userId));
         }
         return set;
@@ -68,9 +87,12 @@ public class BIModuleUtils {
         CubeTableSource source = null;
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
+            if (provider == null) {
+                continue;
+            }
             try {
                 BusinessTable table = provider.getBusinessTable(id);
-                if (table != null){
+                if (table != null) {
                     source = table.getTableSource();
                 }
             } catch (BIKeyAbsentException e) {
@@ -79,7 +101,7 @@ public class BIModuleUtils {
                 return source;
             }
         }
-        if (source == null){
+        if (source == null) {
             BINonValueUtils.beyondControl();
         }
         return null;
@@ -89,6 +111,9 @@ public class BIModuleUtils {
         BusinessField field = null;
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
+            if (provider == null) {
+                continue;
+            }
             try {
                 field = provider.getBusinessField(id);
             } catch (BIKeyAbsentException e) {
@@ -97,7 +122,7 @@ public class BIModuleUtils {
                 return field;
             }
         }
-        if (field == null){
+        if (field == null) {
             BINonValueUtils.beyondControl();
         }
         return null;
@@ -107,6 +132,9 @@ public class BIModuleUtils {
         BusinessTable field = null;
         for (BIModule module : BIModuleManager.getModules()) {
             BIDataSourceManagerProvider provider = module.getDataSourceManagerProvider();
+            if (provider == null) {
+                continue;
+            }
             try {
                 field = provider.getBusinessTable(id);
             } catch (BIKeyAbsentException e) {
@@ -115,7 +143,7 @@ public class BIModuleUtils {
                 return field;
             }
         }
-        if (field == null){
+        if (field == null) {
             BINonValueUtils.beyondControl();
         }
         return null;
@@ -125,8 +153,22 @@ public class BIModuleUtils {
         JSONObject jo = new JSONObject();
         for (BIModule module : BIModuleManager.getModules()) {
             BIAliasManagerProvider provider = module.getAliasManagerProvider();
+            if (provider == null) {
+                continue;
+            }
             jo.join(provider.getAliasJSON(userId));
         }
         return jo;
+    }
+
+    public static List<BIPackageID> getAvailablePackID(long userId) {
+        List<BIPackageID> authPacks = new ArrayList<BIPackageID>();
+        for (BIModule module : BIModuleManager.getModules()) {
+            Collection<BIPackageID> packs = module.getAvailablePackID(userId);
+            if (packs != null) {
+                authPacks.addAll(packs);
+            }
+        }
+        return authPacks;
     }
 }

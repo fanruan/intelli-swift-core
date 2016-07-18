@@ -44,14 +44,12 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         });
         //从viewMap中删除已被删除的dimension
         BI.each(this.viewMap[newType], function (regionId, dIds) {
-            BI.each(dIds, function (idx, dId) {
+            BI.remove(dIds, function(i, dId){
                 var result = BI.find(self.viewMap[self.type], function (regionId, ds) {
                     return BI.contains(ds, dId);
                 });
-                if (BI.isNull(result)) {
-                    BI.remove(dIds, dId);
-                }
-            })
+                return BI.isNull(result);
+            });
         });
 
         // 维度used属性显示逻辑
@@ -72,9 +70,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
                 }
             });
             BI.each(dimensions, function(id, map){
-                if(BI.isNull(oldMap[id])) {
-                    oldMap[id] = BI.deepClone(map);
-                }
+                oldMap[id] = BI.deepClone(map);
             });
             return;
         }
@@ -153,6 +149,22 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
                 self.dimensionsMap[newType][dId] = dimensions[dId];
             });
         });
+        if(newType === BICst.WIDGET.PIE || newType === BICst.WIDGET.DONUT || newType === BICst.WIDGET.DASHBOARD){
+            var selecttargetCount = 0;
+            BI.any(self.viewMap[newType][BICst.REGION.TARGET1], function(idx, dId){
+                if(self.dimensionsMap[newType][dId].used === true){
+                    selecttargetCount++;
+                }
+                if(selecttargetCount > 1){
+                    return true;
+                }
+            });
+            if(selecttargetCount > 1){
+                BI.each(self.viewMap[newType][BICst.REGION.DIMENSION1], function(idx, dId){
+                    self.dimensionsMap[newType][dId].used = false;
+                });
+            }
+        }
         var oldDims = self.dimensionsMap[newType];
         BI.each(oldDims, function(id, dim){
             if(BI.isNull(dimensions[id])){

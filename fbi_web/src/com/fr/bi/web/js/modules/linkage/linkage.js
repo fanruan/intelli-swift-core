@@ -27,11 +27,19 @@ BI.Linkage = BI.inherit(BI.Widget, {
         });
         this.arrangement = BI.createWidget({
             type: "bi.adaptive_arrangement",
+            isNeedResizeContainer: false,
             resizable: false,
             layoutType: Data.SharingPool.get("layoutType")
         });
         this.store = {};
         this.linkages = {};
+
+        var offset = $(".fit-dashboard").offset();
+        var left = offset.left, top = offset.top;
+        var right = $("body").width() - $(".fit-dashboard").width() - left,
+            bottom = $("body").height() - $(".fit-dashboard").height() - top;
+        right = right < 0 ? 0 : right;
+        bottom = bottom < 0 ? 0 : bottom;
 
         BI.createWidget({
             type: "bi.absolute",
@@ -44,10 +52,10 @@ BI.Linkage = BI.inherit(BI.Widget, {
                 bottom: 0
             }, {
                 el: this.arrangement,
-                left: 141,
-                right: 0,
-                top: 30,
-                bottom: 0
+                left: left,
+                right: right,
+                top: top,
+                bottom: bottom
             }]
         });
 
@@ -118,50 +126,54 @@ BI.Linkage = BI.inherit(BI.Widget, {
         this.dragContainer.empty();
         var tIds = BI.Utils.getAllTargetDimensionIDs(this.options.wId);
         BI.each(tIds, function (i, tId) {
-            var targetContainer = BI.createWidget({
-                type: "bi.vertical",
-                cls: "single-target-container",
-                items: [self._createTargetLinkage(tId)]
-            });
-            var linkedWIds = self.model.getLinkedWidgetsByTargetId(tId);
-            BI.each(linkedWIds, function (i, wId) {
-                targetContainer.addItem({
-                    type: "bi.htape",
-                    items: [{
-                        el: {
-                            type: "bi.center_adapt",
-                            cls: self.model.getWidgetIconClsByWidgetId(wId) + " widget-type-icon",
-                            items: [{
-                                type: "bi.icon"
-                            }],
-                            width: 26,
-                            height: 26
-                        },
-                        width: 26
-                    }, {
-                        el: {
-                            type: "bi.label",
-                            text: BI.Utils.getWidgetNameByID(wId),
-                            height: 26,
-                            textAlign: "left"
-                        }
-                    }, {
-                        el: {
-                            type: "bi.icon_button",
-                            cls: "close-h-font",
-                            width: 20,
-                            height: 26,
-                            handler: function(){
-                                self.model.deleteLinkage(tId, wId);
-                                self._populate();
-                            }
-                        },
-                        width: 20
-                    }],
-                    height: 30
+            if (BI.Utils.isTargetByDimensionID(tId) || BI.Utils.isCounterTargetByDimensionID(tId)) {
+                var targetContainer = BI.createWidget({
+                    type: "bi.vertical",
+                    cls: "single-target-container",
+                    items: [self._createTargetLinkage(tId)]
                 });
-            });
-            self.dragContainer.addItem(targetContainer);
+                var linkedWIds = self.model.getLinkedWidgetsByTargetId(tId);
+                BI.each(linkedWIds, function (i, wId) {
+                    targetContainer.addItem({
+                        type: "bi.htape",
+                        items: [{
+                            el: {
+                                type: "bi.center_adapt",
+                                cls: BI.Utils.getWidgetIconClsByWidgetId(wId) + " widget-type-icon",
+                                items: [{
+                                    type: "bi.icon",
+                                    width: 20,
+                                    height: 20
+                                }],
+                                width: 26,
+                                height: 26
+                            },
+                            width: 26
+                        }, {
+                            el: {
+                                type: "bi.label",
+                                text: BI.Utils.getWidgetNameByID(wId),
+                                height: 26,
+                                textAlign: "left"
+                            }
+                        }, {
+                            el: {
+                                type: "bi.icon_button",
+                                cls: "close-h-font",
+                                width: 20,
+                                height: 26,
+                                handler: function () {
+                                    self.model.deleteLinkage(tId, wId);
+                                    self._populate();
+                                }
+                            },
+                            width: 20
+                        }],
+                        height: 30
+                    });
+                });
+                self.dragContainer.addItem(targetContainer);
+            }
         });
     },
 

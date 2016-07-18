@@ -60,8 +60,7 @@ BI.DetailSelectDataPreviewSection = BI.inherit(BI.BarPopoverSection, {
             }, {
                 el: {
                     type: "bi.button",
-                    level: "ignore",
-                    text: BI.i18nText("BI-Cancel"),
+                    text: BI.i18nText("BI-Sure"),
                     height: 28,
                     handler: function(){
                         self.close();

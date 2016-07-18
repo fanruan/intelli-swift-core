@@ -13,11 +13,41 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
     _init: function(){
         BI.SelectDataWithMask.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.selectDataPane = BI.createWidget({
-            type: "bi.select_single_relation_table_field",
-            model: o.model
+        this.model = o.model;
+        this.fieldId = o.field_id;
+        this._initAllRelationTables();
+
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: this.element,
+            text: BI.i18nText("BI-Loading")
         });
-        this.selectDataPane.on(BI.SelectSingleRelationTableField.EVENT_CLICK_ITEM, function(){
+        BI.Utils.getAllPackages(function(packs){
+            self.packs = packs;
+            var ids = BI.Utils.getAllPackageIDs4Conf();
+            if(BI.isEmptyArray(ids)) {
+                ids = [BI.Utils.getCurrentPackageId4Conf()]
+            }
+            self.selectDataPane.setPackage(ids[0]);
+            mask.destroy();
+        });
+
+        this.selectDataPane = BI.createWidget({
+            type: "bi.package_select_data_service",
+            showRelativeTables: false,
+            showExcelView: false,
+            showDateGroup: false,
+            packageCreator: function() {
+                return BI.Utils.getAllGroupedPackagesTreeJSON4Conf();
+            },
+            tablesCreator: function (packageId) {
+                return self._getTablesStructureByPackId(packageId);
+            },
+            fieldsCreator: function (tableId, isRelation) {
+                return self._getFieldsStructureByTableId(tableId);
+            }
+        });
+        this.selectDataPane.on(BI.PackageSelectDataService.EVENT_CLICK_ITEM, function(){
             self.fireEvent(BI.SelectDataWithMask.EVENT_CHANGE, arguments);
         });
 
@@ -82,6 +112,115 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             items: [cancelButton],
             vgap: 10
         })
+    },
+
+    _initAllRelationTables: function(){
+        var self = this;
+        var relations = this.model.getRelations(), fieldId = this.model.getFieldId();
+        //灰化：所有已与当前表建立过关联关系的表灰化
+        //只需要遍历connectionSet
+        var connectionSet = relations.connectionSet;
+        this.allRelationTables = [];
+        var tableId = this.model.getTableIdByFieldId(fieldId);
+        BI.each(connectionSet, function (i, pf) {
+            var primaryKey = pf.primaryKey, foreignKey = pf.foreignKey;
+            //修改的就不用灰化了
+            if(self.fieldId === primaryKey.field_id || self.fieldId === foreignKey.field_id) {
+                return;
+            }
+            if (tableId === self.model.getTableIdByFieldId(primaryKey.field_id)) {
+                self.allRelationTables.push(self.model.getTableIdByFieldId(foreignKey.field_id));
+            } else if (tableId === self.model.getTableIdByFieldId(foreignKey.field_id)) {
+                self.allRelationTables.push(self.model.getTableIdByFieldId(primaryKey.field_id));
+            }
+        });
+    },
+
+    _getTablesStructureByPackId: function (pId) {
+        var self = this;
+        var translations = this.model.getTranslations();
+        var tableId = this.model.getTableIdByFieldId(this.model.getFieldId());
+        var tablesStructure = [];
+        //当前编辑业务包从Sharing Pool取
+        if (pId === BI.Utils.getCurrentPackageId4Conf()) {
+            var tables = BI.Utils.getCurrentPackageTables4Conf();
+            BI.each(tables, function (id, table) {
+                tablesStructure.push({
+                    id: id,
+                    type: "bi.select_data_level0_node",
+                    text: translations[id],
+                    value: id,
+                    isParent: true,
+                    open: false,
+                    disabled:self.allRelationTables.contains(id) || id === tableId,
+                    title: translations[id],
+                    warningTitle:  BI.i18nText("BI-Already_Relation_With_Current_Table")
+                });
+            });
+        } else {
+            var tables = self.packs[pId];
+            BI.each(tables, function(id, table){
+                tablesStructure.push({
+                    id: id,
+                    type: "bi.select_data_level0_node",
+                    text: translations[id],
+                    value: id,
+                    isParent: true,
+                    open: false,
+                    disabled: self.allRelationTables.contains(id) || id === tableId,
+                    title: translations[id],
+                    warningTitle:  BI.i18nText("BI-Already_Relation_With_Current_Table")
+                });
+            });
+        }
+        return tablesStructure;
+    },
+
+    _getFieldsStructureByTableId: function (tableId) {
+        var translations = this.model.getTranslations();
+        var fieldStructure = [];
+        var tables = BI.Utils.getCurrentPackageTables4Conf();
+        var fieldType = this.model.getFieldTypeByFieldId(this.model.getFieldId());
+        if (BI.isNotNull(tables[tableId])) {
+            var fields = [];
+            BI.each(tables[tableId].fields[0], function(i, field){
+                fieldType === field.field_type && fields.push(field);
+            });
+            BI.each(fields, function (i, field) {
+                fieldStructure.push({
+                    id: field.id,
+                    pId: tableId,
+                    type: "bi.select_data_level0_item",
+                    fieldType: fieldType,
+                    text: translations[field.id] || field.field_name,
+                    value: {
+                        field_id: field.id
+                    }
+                })
+            });
+        } else {
+            BI.some(this.packs, function(pId, pack){
+                return BI.some(pack, function(tId, fields){
+                    if(tableId === tId) {
+                        BI.each(fields, function(i, field){
+                            if(field.field_type === fieldType) {
+                                fieldStructure.push({
+                                    id: field.id,
+                                    pId: tableId,
+                                    type: "bi.select_data_level0_item",
+                                    fieldType: fieldType,
+                                    text: translations[field.id] || field.field_name,
+                                    value: {
+                                        field_id: field.id
+                                    }
+                                })
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        return fieldStructure;
     },
 
     destroy: function(){

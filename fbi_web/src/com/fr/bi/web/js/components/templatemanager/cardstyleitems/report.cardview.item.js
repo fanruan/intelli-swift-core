@@ -15,9 +15,10 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
     _init: function () {
         BI.ReportCardViewItem.superclass._init.apply(this, arguments);
         var o = this.options, self = this;
+        this.status = o.status;
         var renameButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "rename-report-font tool-rename-icon",
+            cls: "report-rename-font tool-rename-icon",
             title: BI.i18nText("BI-Table_Rename"),
             iconWidth: 20,
             iconHeight: 20,
@@ -36,7 +37,10 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
             iconHeight: 20,
             stopPropagation: true
         });
-
+        if (o.status === BICst.REPORT_STATUS.HANGOUT) {
+            deleteButton.setEnable(false);
+            deleteButton.setWarningTitle(BI.i18nText("BI-Hangout_Report_Can_Not_Delete"));
+        }
         deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
             o.onDeleteReport.apply(this, arguments);
         });
@@ -50,9 +54,87 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
+        if (FS.config.isAdmin === false) {
+            var markCls = "report-apply-hangout-ing-font";
+            this.hangout = BI.createWidget({
+                type: "bi.icon_change_button",
+                cls: "tool-rename-icon",
+                title: function(){
+                    if(self.status === BICst.REPORT_STATUS.NORMAL) {
+                        return BI.i18nText("BI-Report_Hangout_Applying");
+                    }
+                    if(self.status === BICst.REPORT_STATUS.APPLYING) {
+                        return BI.i18nText("BI-Cancel_Apply_Hangout");
+                    }
+                    if(self.status === BICst.REPORT_STATUS.HANGOUT) {
+                        return BI.i18nText("BI-Hangouted");
+                    }
+                },
+                stopPropagation: true,
+                invisible: true,
+                width: 20,
+                height: 20
+            });
+            if (o.status === BICst.REPORT_STATUS.HANGOUT) {
+                markCls = "report-hangout-font";
+                this.hangout.setEnable(false);
+                this.hangout.setWarningTitle(BI.i18nText("BI-Hangout_Report_Can_Not_Mark"));
+            }
+            this.markButton = BI.createWidget({
+                type: "bi.icon_change_button",
+                cls: "template-item-mark-icon",
+                title: function(){
+                    if(self.status === BICst.REPORT_STATUS.APPLYING) {
+                        return BI.i18nText("BI-Report_Hangout_Applying");
+                    }
+                    if(self.status === BICst.REPORT_STATUS.HANGOUT) {
+                        return BI.i18nText("BI-Hangouted");
+                    }
+                },
+                stopPropagation: true,
+                width: 20,
+                height: 20
+            });
+            this.markButton.setIcon(markCls);
+            this.hangout.on(BI.IconChangeButton.EVENT_CHANGE, function () {
+                o.onClickHangout();
+                self._onClickHangout();
+            });
+            this._refreshHangout();
+
+            //查看已分享
+            var sharedButton = BI.createWidget({
+                type: "bi.icon_button",
+                cls: "report-cancel-share-font tool-rename-icon",
+                title: BI.i18nText("BI-Cancel_Shared_Users"),
+                width: 20,
+                height: 20,
+                invisible: true
+            });
+            sharedButton.on(BI.IconButton.EVENT_CHANGE, function(){
+                var id = BI.UUID();
+                var sharedUsers = BI.createWidget({
+                    type: "bi.edit_shared_pane",
+                    shared: o.shared
+                });
+                sharedUsers.on(BI.EditSharedPane.EVENT_CLOSE, function(){
+                    BI.Popovers.remove(id);
+                });
+                sharedUsers.on(BI.EditSharedPane.EVENT_SAVE, function(){
+                    o.editSharedUsers(this.getValue());
+                    BI.Popovers.remove(id);
+                });
+                BI.Popovers.create(id, sharedUsers, {width: 600, height: 500}).open(id);
+            });
+            if(BI.isNull(o.shared) || o.shared.length === 0) {
+                sharedButton.setEnable(false);
+                sharedButton.setWarningTitle(BI.i18nText("BI-The_Report_Not_Shared"));
+            }
+        }
+
         var packageButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "card-view-report-icon",
+            cls: o.description === "true" ? "card-view-real-time-icon" : "card-view-report-icon",
             iconWidth: 90,
             iconHeight: 75
         });
@@ -100,13 +182,18 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
                 top: 0,
                 left: 0
             }, {
-                el: deleteButton,
-                right: 0,
-                top: 0
+                el: this.markButton || BI.createWidget(),
+                top: 16,
+                left: 36
             }, {
-                el: renameButton,
-                right: 0,
-                top: 25
+                el: {
+                    type: "bi.vertical",
+                    items: [sharedButton, this.hangout || BI.createWidget(), renameButton, deleteButton],
+                    bgap: 2,
+                    width: 25
+                },
+                top: 0,
+                right: 0
             }]
         });
         if(!self.checkbox.isSelected()){
@@ -118,12 +205,16 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
             self.checkbox.setVisible(true);
             deleteButton.setVisible(true);
             renameButton.setVisible(true);
+            self.hangout && self.hangout.setVisible(true);
+            sharedButton && sharedButton.setVisible(true);
         }, function(){
             if(!self.checkbox.isSelected()){
                 self.checkbox.setVisible(false);
             }
             deleteButton.setVisible(false);
             renameButton.setVisible(false);
+            self.hangout && self.hangout.setVisible(false);
+            sharedButton && sharedButton.setVisible(false);
         });
     },
 
@@ -134,6 +225,35 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
         } else {
             this.element.removeClass("active");
             this.checkbox.setVisible(false);
+        }
+    },
+
+    _onClickHangout: function () {
+        if (this.status === BICst.REPORT_STATUS.NORMAL) {
+            this.status = BICst.REPORT_STATUS.APPLYING;
+        } else {
+            this.status = BICst.REPORT_STATUS.NORMAL;
+        }
+        this._refreshHangout();
+    },
+
+    _refreshHangout: function () {
+        if (this.status === BICst.REPORT_STATUS.NORMAL) {
+            this.hangout.setIcon("report-apply-hangout-ing-font");
+            if(BI.isNotNull(this.markButton)) {
+                this.markButton.setVisible(false);
+            }
+        }
+        if(this.status === BICst.REPORT_STATUS.APPLYING) {
+            this.hangout.setIcon("report-hangout-ing-mark-font");
+            if(BI.isNotNull(this.markButton)) {
+                this.markButton.setIcon("report-hangout-ing-mark-font");
+                this.markButton.setVisible(true);
+            }
+        }
+        if(this.status === BICst.REPORT_STATUS.HANGOUT) {
+            this.hangout.setIcon("report-apply-hangout-normal-font");
+            this.markButton && this.markButton.setVisible(true);
         }
     },
 

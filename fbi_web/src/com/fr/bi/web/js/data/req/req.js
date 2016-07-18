@@ -216,6 +216,12 @@ Data.Req = BIReq = {
         })
     },
 
+    reqSaveCubePath: function (path, callback) {
+        BI.requestAsync("fr_bi_configure", "set_cube_path", {fileName: path}, function (res) {
+            callback(res);
+        })
+    },
+
     reqSaveLoginField: function (data, callback) {
         BI.requestAsync("fr_bi_configure", "save_login_field", data, function (res) {
             callback();
@@ -229,7 +235,7 @@ Data.Req = BIReq = {
     },
 
     reqAllTemplates: function (callback) {
-        BI.requestAsync('fr_bi', 'get_folder_report_list', {}, function (items) {
+        BI.requestAsync('fr_bi', 'get_folder_report_list_4_reuse', {}, function (items) {
             callback(items);
         })
     },
@@ -288,21 +294,23 @@ Data.Req = BIReq = {
         });
     },
 
-    updateCubeByTable: function (table, callback) {
+    reqGenerateCubeByTable: function (tableInfo, callback) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
-            connectionName: table.connection_name,
-            tableName: table.table_name,
-            tableId: table.id
-        }, function (res) {
-            callback(res);
-        });
+                // connectionName: table.connection_name,
+                // tableName: table.table_name,
+                // tableId: table.id
+                baseTableId: tableInfo.baseTable.id,
+                isETL: tableInfo.isETL,
+                ETLTableId: tableInfo.ETLTable==undefined?"":tableInfo.ETLTable.id
+            },
+            function (res) {
+                callback(res);
+            }
+        )
+        ;
     },
-    reqGenerateCubeByTable: function (table, callback) {
-        BI.requestAsync("fr_bi_configure", "set_cube_generate", {
-            connectionName: table.connection_name,
-            tableName: table.table_name,
-            tableId: table.id
-        }, function (res) {
+    reqGenerateCube: function (callback) {
+        BI.requestAsync("fr_bi_configure", "set_cube_generate", {}, function (res) {
             callback(res);
         });
     },
@@ -311,5 +319,9 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_configure", "get_primary_tables_by_table", table, function (res) {
             callback(res);
         });
+    },
+
+    reqGetChartPreStyle: function () {
+        return BI.requestSync('fr_bi_base', 'get_config_setting', null);
     }
 };

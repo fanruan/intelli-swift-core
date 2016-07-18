@@ -31,7 +31,6 @@ BI.SelectDataSearcher = BI.inherit(BI.Widget, {
             }
         });
         this.packagePane.on(BI.SelectDataSwitcher.EVENT_CHANGE, function () {
-            self.searcherPane.setPackage(this.getPackageId());
             self.fireEvent(BI.SelectDataSearcher.EVENT_CLICK_PACKAGE, arguments);
         });
         this.packagePane.on(BI.SelectDataSwitcher.EVENT_CLICK_ITEM, function () {
@@ -40,7 +39,6 @@ BI.SelectDataSearcher = BI.inherit(BI.Widget, {
 
         this.searcherPane = BI.createWidget({
             type: "bi.select_data_search_result_pane",
-            packages: o.packages,
             itemsCreator: function (op) {
                 op.packageId = self.getPackageId();
                 if (!op.packageId) {
@@ -101,7 +99,6 @@ BI.SelectDataSearcher = BI.inherit(BI.Widget, {
 
     setPackage: function (pId) {
         this.packagePane.setPackage(pId);
-        this.searcherPane.setPackage(pId);
     },
 
     getPackageId: function () {
@@ -119,7 +116,6 @@ BI.SelectDataSearcher = BI.inherit(BI.Widget, {
     populatePackages: function (packages) {
         this.options.packages = packages;
         this.packagePane.populatePackages(packages);
-        this.searcherPane.populatePackages(packages);
         this.searcher.stopSearch();
         this.populate();
     },

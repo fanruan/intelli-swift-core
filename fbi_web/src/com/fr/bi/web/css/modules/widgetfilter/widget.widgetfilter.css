@@ -3,6 +3,7 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-widget-filter {
   background: #ffffff;
+  z-index: 99999;
 }
 .bi-widget-filter .none-filter-tip {
   font-size: 14px;

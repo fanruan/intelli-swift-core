@@ -34,14 +34,17 @@ public class BIConfigurePathUtils {
         if (StringUtils.isEmpty(cubePath)) {
             return "";
         }
-        String oldPath = BIConfigureManagerCenter.getCubeConfManager().getCubePath();
+        String oldPath = BIConfigurePathUtils.createBasePath();
         if (ComparatorUtils.equals(cubePath, oldPath)) {
             return oldPath;
         }
         File file = new File(cubePath);
         if (!file.exists()) {
             try {
-                file.mkdirs();
+                boolean success = file.mkdirs();
+                if(!success) {
+                    return "";
+                }
                 return file.getAbsolutePath();
             } catch (Exception e) {
                 return "";
@@ -51,8 +54,11 @@ public class BIConfigurePathUtils {
                 }
             }
         }
-        if (!file.isDirectory() || file.list().length > 0) {
+        if (!file.isDirectory()) {
             return "";
+        }
+        if(file.list().length > 0) {
+            return "warning";
         }
         return file.getAbsolutePath();
     }

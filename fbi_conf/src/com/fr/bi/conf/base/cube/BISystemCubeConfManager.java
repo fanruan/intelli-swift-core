@@ -1,8 +1,10 @@
 package com.fr.bi.conf.base.cube;
 
 import com.finebi.cube.conf.BISystemDataManager;
+import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.conf.provider.BICubeConfManagerProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
@@ -65,13 +67,51 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public Object getLoginFieldValue(long userId) {
+    public Object getLoginFieldValue(BusinessField field, long userId) {
         try {
-            return getValue(UserControl.getInstance().getSuperManagerID()).getFieldValue(userId);
+            return getValue(UserControl.getInstance().getSuperManagerID()).getFieldValue(field, userId);
         } catch (BIKeyAbsentException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
         return null;
+    }
+
+    @Override
+    public void updatePackageLastModify() {
+        try {
+            getValue(UserControl.getInstance().getSuperManagerID()).setPackageLastModify(System.currentTimeMillis());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public long getPackageLastModify() {
+        try {
+            return getValue(UserControl.getInstance().getSuperManagerID()).getPackageLastModify();
+        } catch (BIKeyAbsentException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return System.currentTimeMillis();
+    }
+
+    @Override
+    public void updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS needGenerateCube) {
+        try {
+            getValue(UserControl.getInstance().getSuperManagerID()).setMultiPathCubeStatus(needGenerateCube);
+        } catch (BIKeyAbsentException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+    }
+
+    @Override
+    public BIReportConstant.MULTI_PATH_STATUS getMultiPathCubeStatus() {
+        try {
+            return getValue(UserControl.getInstance().getSuperManagerID()).getMultiPathCubeStatus();
+        } catch (BIKeyAbsentException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE;
     }
 
     @Override

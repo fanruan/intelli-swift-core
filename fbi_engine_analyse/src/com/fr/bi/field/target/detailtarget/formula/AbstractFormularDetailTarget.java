@@ -42,7 +42,11 @@ public abstract class AbstractFormularDetailTarget extends BIAbstractDetailTarge
      */
     @Override
     public Object createDetailValue(Long row, Map<String, Object> values, ICubeDataLoader loader, long userId) {
-        return BIFormularUtils.getCalculatorValue(Calculator.createCalculator(), "=" + expression, values);
+        Object ob =  BIFormularUtils.getCalculatorValue(Calculator.createCalculator(), "=" + expression, values);
+        if (ob instanceof Number){
+            return ((Number)ob).doubleValue();
+        }
+        return ob;
     }
 
     @Override

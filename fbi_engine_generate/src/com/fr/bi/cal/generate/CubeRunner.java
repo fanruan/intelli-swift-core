@@ -1,9 +1,17 @@
 package com.fr.bi.cal.generate;
 
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.impl.conf.CubeBuildStuffManager;
+import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
+import com.finebi.cube.exception.BIBuildReaderException;
+import com.finebi.cube.exception.BIBuildWriterException;
+import com.finebi.cube.exception.IllegalCubeResourceLocationException;
+import com.finebi.cube.impl.conf.CubeBuildByPart;
+import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
@@ -20,6 +28,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 
 /**
@@ -35,10 +44,9 @@ public class CubeRunner {
     protected volatile Status statue = Status.UNLOAD;
     protected BIUser biUser;
     QueueThread<CubeTask> cubeThread = new QueueThread<CubeTask>();
-    private CubeBuildStuffManager object;
+    private CubeBuildStaff object;
 
     public CubeRunner(long userId) {
-
         biUser = new BIUser(userId);
         init();
     }
@@ -57,18 +65,18 @@ public class CubeRunner {
             public void actionPerformed(CubeTask cubeTask) {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
-                        start();
-                        try {
-                            cubeTask.start();
-                            cubeTask.run();
-                        } catch (Exception e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
-                        } finally {
-                            cubeTask.end();
-                            finish();
-                            setStatue(Status.LOADED);
-                            BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
-                        }
+                start();
+                try {
+                    cubeTask.start();
+                    cubeTask.run();
+                } catch (Exception e) {
+                    BILogger.getLogger().error(e.getMessage(), e);
+                } finally {
+                    cubeTask.end();
+                    finish();
+                    setStatue(Status.LOADED);
+                    BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
+                }
             }
         });
         //设置检查任务
@@ -96,8 +104,27 @@ public class CubeRunner {
         }
     }
 
-    public boolean hasTask(CubeTask task) {
-        return cubeThread.contains(task);
+    public boolean hasTask(CubeTask t) {
+        Iterator<CubeTask> iterator = cubeThread.iterator();
+        while (iterator.hasNext()) {
+            CubeTask task = iterator.next();
+            if (task.getUUID().equals(t.getUUID())) {
+                return true;
+            }
+        }
+        return false;
+//        return cubeThread.contains(task);
+    }
+
+    public boolean hasTask(String uuid) {
+        Iterator<CubeTask> iterator = cubeThread.iterator();
+        while (iterator.hasNext()) {
+            CubeTask task = iterator.next();
+            if (task.getUUID().equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean hasTask() {
@@ -135,16 +162,15 @@ public class CubeRunner {
 
     private void generateCube() {
         setStatue(Status.LOADED);
-        CubeBuildStuff cubeBuildStuff= new CubeBuildStuffManager(new BIUser((biUser.getUserId())));
-        CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(biUser,cubeBuildStuff),biUser.getUserId());
+//        CubeBuild cubeBuild = new CubeBuildStaff(new BIUser((biUser.getUserId())));
+        CubeBuild cubeBuild = new CubeBuildByPart(biUser.getUserId(), CubeUpdateUtils.getNewTables(biUser.getUserId()), CubeUpdateUtils.getNewRelations(biUser.getUserId()));
+        CubeTask task = new BuildCubeTask(biUser, cubeBuild);
+        CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
     }
 
     private void start() {
-        backup();
-    }
-
-    private void backup() {
         BackUpUtils.backup();
+        copyOldCubesToTempCubes();
     }
 
     private void finish() {
@@ -154,22 +180,47 @@ public class CubeRunner {
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
-        renameToCurrentDirect();
+        replaceAndBackupOldCubes();
         setStatue(Status.LOADED);
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
     }
 
-    private void renameToCurrentDirect() {
+
+    private void replaceAndBackupOldCubes() {
         try {
-            BIFileUtils.moveFile(BIPathUtils.createUserTotalTempPath(biUser.getUserId()), BIPathUtils.createUserTotalPath(biUser.getUserId()));
+            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
+            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+            BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+            //暂时cube不做备份了,太吃空间了
+            BIFileUtils.delete(new File(advancedConf.getRootURI().toString()));
+            BIFileUtils.moveFile(tempConf.getRootURI().toString(), advancedConf.getRootURI().toString());
+        } catch (URISyntaxException e) {
+            BILogger.getLogger().error(e.getMessage());
+        } catch (BIBuildReaderException e) {
+            BILogger.getLogger().error(e.getMessage());
+        } catch (IllegalCubeResourceLocationException e) {
+            BILogger.getLogger().error(e.getMessage());
+        } catch (BIBuildWriterException e) {
+            BILogger.getLogger().error(e.getMessage());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILogger.getLogger().error(e.getMessage());
         }
+
     }
 
-    public CubeBuildStuffManager getCubeGeneratingObjects() {
-                if (object == null) {
-            object = new CubeBuildStuffManager(biUser);
+    private void copyOldCubesToTempCubes() {
+        try {
+            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
+            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+            BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+
+    }
+    public CubeBuildStaff getCubeGeneratingObjects() {
+        if (object == null) {
+            object = new CubeBuildStaff(biUser);
             object.initialCubeStuff();
         }
         return object;
@@ -194,11 +245,11 @@ public class CubeRunner {
     /**
      * 检查cube路径
      *
-     * @return true或fals
+     * @return true或false
      */
     private boolean checkCubePath() {
         return BIFileUtils.checkDir(new File(BIPathUtils.createBasePath()));
     }
 
-
+    
 }

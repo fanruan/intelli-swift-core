@@ -10,7 +10,6 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                 "10000": []
             },
             dimensions: {},
-            name: "",
             type: BICst.WIDGET.DETAIL,
             settings: {},
             filter_value: {}
@@ -86,7 +85,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                     name: this._createDimName(src.name),
                     _src: src._src,
                     type: src.type,
-                    sort: {type: BICst.SORT.ASC, target_id: dId},
+                    sort: {type: BICst.SORT.NONE, target_id: dId},
                     group: {type: BICst.GROUP.NO_GROUP},
                     used: true
                 };

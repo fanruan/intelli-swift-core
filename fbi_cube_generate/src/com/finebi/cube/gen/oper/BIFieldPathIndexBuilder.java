@@ -6,7 +6,7 @@ import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -22,11 +22,15 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
     private BIColumnKey field;
 
-    public BIFieldPathIndexBuilder(ICube cube, ICubeFieldSource field, BICubeTablePath relationPath) {
+    public BIFieldPathIndexBuilder(Cube cube, ICubeFieldSource field, BICubeTablePath relationPath) {
         this(cube, BIColumnKey.covertColumnKey(field), relationPath);
     }
 
-    public BIFieldPathIndexBuilder(ICube cube, BIColumnKey columnKey, BICubeTablePath relationPath) {
+    public BIFieldPathIndexBuilder(Cube cube, ICubeFieldSource field, BICubeTablePath relationPath, String columnSubType) {
+        this(cube, BIColumnKey.covertColumnKey(field, columnSubType), relationPath);
+    }
+
+    public BIFieldPathIndexBuilder(Cube cube, BIColumnKey columnKey, BICubeTablePath relationPath) {
         super(cube, relationPath);
         this.field = columnKey;
     }
@@ -43,8 +47,8 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
     }
 
     private void buildFieldPathIndex() {
-        ICubeColumnReaderService primaryColumnReader = null;
-        ICubeRelationEntityGetterService tablePathReader = null;
+        CubeColumnReaderService primaryColumnReader = null;
+        CubeRelationEntityGetterService tablePathReader = null;
         ICubeRelationEntityService targetPathEntity = null;
         try {
             primaryColumnReader = buildPrimaryColumnReader();
@@ -75,8 +79,7 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
     }
 
 
-
-    private ICubeColumnReaderService buildPrimaryColumnReader() throws BITablePathEmptyException, BICubeColumnAbsentException {
+    private CubeColumnReaderService buildPrimaryColumnReader() throws BITablePathEmptyException, BICubeColumnAbsentException {
         ITableKey primaryTableKey = relationPath.getFirstRelation().getPrimaryTable();
         return cube.getCubeColumn(primaryTableKey, field);
     }
@@ -91,7 +94,7 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
         return (ICubeRelationEntityService) cube.getCubeColumn(firstPrimaryKey, field).getRelationIndexGetter(frontRelation);
     }
 
-    private ICubeRelationEntityGetterService buildTableRelationPathReader() throws
+    private CubeRelationEntityGetterService buildTableRelationPathReader() throws
             BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException, BITablePathEmptyException {
         ITableKey firstPrimaryKey = relationPath.getFirstRelation().getPrimaryTable();
         BICubeTablePath tableRelationPath = buildTableRelationPath();

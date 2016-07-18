@@ -77,11 +77,11 @@ public abstract class AbstractAddColumnOperator extends AbstractETLOperator {
     @Override
     public IPersistentTable getBITable(IPersistentTable[] tables) {
         IPersistentTable biTable = getBITable();
-        biTable.addColumn(new PersistentField(fieldName, getSqlType()));
+        biTable.addColumn(new PersistentField(fieldName, getSqlType(tables)));
         return biTable;
     }
     
-    protected int getSqlType(){
+    protected int getSqlType(IPersistentTable[] tables){
     	return BIDBUtils.biTypeToSql(columnType);
     }
 

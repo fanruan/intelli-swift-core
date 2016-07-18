@@ -411,12 +411,12 @@
                 // handlers
 
                 _wrap.onloadstart = function (rpe, xhr) {
-                    BI.Msg.toast("loadstart");
+                    //BI.Msg.toast("loadstart");
                     self.fireEvent(BI.File.EVENT_UPLOADSTART);
                 };
 
                 _wrap.onprogress = function (rpe, xhr) {
-                    BI.Msg.toast("onprogress");
+                    //BI.Msg.toast("onprogress");
                     // percent for each bar
 
                     // fileSize is -1 only if browser does not support file info access
@@ -458,7 +458,7 @@
                         self_.clean(); // remove files from list
                         self_.hide(); // hide progress bars and enable input file
 
-                        BI.Msg.toast("onload");
+                        //BI.Msg.toast("onload");
                         self.fireEvent(BI.File.EVENT_UPLOADED);
                         // enable again the submit button/element
                     }, 1000);
@@ -485,16 +485,20 @@
                     if (wrap.fileType && -1 === wrap.fileType.indexOf("*." + ext)) {
                         //文件类型不支持
                         BI.Msg.toast("文件类型不支持");
-                        self.fireEvent(BI.File.EVENT_ERROR, {});
+                        self.fireEvent(BI.File.EVENT_ERROR, {
+                            errorType: 0,
+                            file: item
+                        });
                     } else if (wrap.maxSize !== -1 && size && wrap.maxSize < size) {
                         //文件大小不支持
                         BI.Msg.toast("文件大小不支持");
                         self.fireEvent(BI.File.EVENT_ERROR, {
+                            errorType: 1,
                             file: item
                         });
                     } else {
                         wrap.files.unshift(item);
-                        BI.Msg.toast(value);
+                        //BI.Msg.toast(value);
                         self.fireEvent(BI.File.EVENT_CHANGE, {
                             file: item
                         });
@@ -574,18 +578,7 @@
         },
 
         getValue: function () {
-            var v = this.wrap;
-            if (!v.attach_array) {
-                //return [];
-                // shoc: 返回空数组有个问题,提交入库的时候空文件控件值到后台变成"[]"始终会入库一条记录，
-                // 后台拦截了null、""等情况，在那里判断拦截这个不太合适，还是改这里了
-                return "";
-            }
-            if (!this.options.multiple && v.attach_array[0]
-                && v.attach_array[0].attach_type == "image") {
-                return v.attach_array[0];
-            }
-            return v.attach_array.length === 0 ? "" : v.attach_array;
+            return this.wrap.attach_array;
         },
 
         reset: function () {

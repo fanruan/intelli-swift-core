@@ -4,17 +4,18 @@
 package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -27,7 +28,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.structure.collection.list.LongList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -78,7 +78,7 @@ public class UserETLUpdateTask implements CubeTask {
 
     @Override
     public void run() {
-        final ICubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(this.source));
+        final CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(this.source));
         ICubeFieldSource[] columns = this.source.getFieldsArray(new HashSet<CubeTableSource>());
         List<ICubeFieldSource> columnList = new ArrayList<ICubeFieldSource>();
         for (ICubeFieldSource col : columns) {
@@ -100,7 +100,7 @@ public class UserETLUpdateTask implements CubeTask {
                 }
             }
         }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
-
+        tableEntityService.addVersion(getTableVersion());
         ICubeFieldSource[] fields = source.getFieldsArray(new HashSet<CubeTableSource>());
         for (int i = 0; i < fields.length; i++) {
             ICubeFieldSource field = fields[i];
@@ -110,14 +110,13 @@ public class UserETLUpdateTask implements CubeTask {
                 new BIFieldIndexGenerator(cube, source, field, targetColumnKey).mainTask(null);
             }
         }
-        tableEntityService.addVersion(getTableVersion());
-
     }
 
 
 
-	private  long getBaseSourceVersion(CubeTableSource source){
-        return BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).getTableIndex(source).getTableVersion(new IndexKey(StringUtils.EMPTY));
+	private long getBaseSourceVersion(CubeTableSource source){
+        ICubeTableService service = CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(source);
+        return service == null ? -1l : service.getTableVersion(new IndexKey(StringUtils.EMPTY));
 	}
 
 	public String getPath(){
@@ -137,7 +136,7 @@ public class UserETLUpdateTask implements CubeTask {
 		UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
 		manager.setCubePath(source.fetchObjectCore().getID().getIdentityValue(), getPath());
 		end = new Date();
-		manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue());
+		manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue(), source.getUserId());
 		manager.releaseCurrentThread();
 	}
 
@@ -204,13 +203,16 @@ public class UserETLUpdateTask implements CubeTask {
 
 		TreeMap<String, CubeTableSource> tm = new TreeMap<String, CubeTableSource>();
 		Set<CubeTableSource> set = new HashSet<CubeTableSource>();
-        for (CubeTableSource s : source.getSourceUsedBaseSource(set)){
+        for (CubeTableSource s : source.getSourceUsedBaseSource(set, new HashSet<CubeTableSource>())){
             tm.put(s.fetchObjectCore().getIDValue(), s);
         }
-		LongList versionList = new LongList();
-		Iterator<CubeTableSource> iter = tm.values().iterator();
+        tm.remove(source.getAnalysisCubeTableSource().fetchObjectCore().getIDValue());
+        List versionList = new ArrayList();
+        Iterator<Map.Entry<String, CubeTableSource>> iter = tm.entrySet().iterator();
 		while(iter.hasNext()){
-			versionList.add(getBaseSourceVersion(iter.next()));
+            Map.Entry<String, CubeTableSource> entry = iter.next();
+            versionList.add(entry.getKey());
+			versionList.add(getBaseSourceVersion(entry.getValue()));
 		}
 		return Arrays.hashCode(versionList.toArray());
 	}

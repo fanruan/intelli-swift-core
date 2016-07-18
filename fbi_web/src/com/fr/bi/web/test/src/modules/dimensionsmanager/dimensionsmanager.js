@@ -39,6 +39,7 @@ describe("测试DimensionsManager", function () {
         env.deleteDimensionById("1");
         manager.populate();
         var val = manager.getValue();
+        $("#wrapper").empty();
         expect(val.view).toEqual({10000: ["2"], 20000: ["3"], 30000: ["4", "5"]});
 
     });
@@ -61,6 +62,7 @@ describe("测试DimensionsManager", function () {
         expect(val.view).toEqual({10000: ["1", "2"], 20000: ["3"], 30000: ["4", "5"]});
         manager.model.setType(BICst.WIDGET.TABLE);
         var val = manager.getValue();
+        $("#wrapper").empty();
         expect(val.view).toEqual({10000: ["1", "2", "3"], 30000: ["4", "5"]});
 
     });

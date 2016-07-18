@@ -55,6 +55,11 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                 self.tools.setVisible(false);
             }
         });
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        });
     },
 
     _buildWidgetTitle: function () {
@@ -66,7 +71,7 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                 cls: "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
                 validationChecker: function (v) {
@@ -100,7 +105,12 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE:
-                    self.model.destroy();
+                    BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Sure_Delete") + self.model.get("name") + "?", function (v) {
+                        if (v === true) {
+                            self.model.destroy();
+                            BI.Utils.broadcastAllWidgets2Refresh();
+                        }
+                    });
                     break;
             }
         });
@@ -108,7 +118,22 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
     },
 
     _resetValue: function () {
-        this.model.set("value", []);
+        var value = this.model.get("value");
+
+        function resetValue(filters) {
+            BI.each(filters, function (i, filter) {
+                var fType = filter.filter_type;
+                var fValue = filter.filter_value;
+                if (fType === BICst.FILTER_TYPE.AND || fType === BICst.FILTER_TYPE.OR) {
+                    resetValue(fValue);
+                    return;
+                }
+                delete filter.filter_value;
+            });
+        }
+
+        resetValue(value);
+        this.model.set("value", value);
         this.refresh();
     },
 

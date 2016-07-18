@@ -6,10 +6,11 @@
 BI.TargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
 
     constants: {
-        CHART_TYPE_POSITION: 1
+        CHART_TYPE_POSITION: 1,
+        CordonPos: 1
     },
 
-    defaultItems: function(){
+    defaultItems: function () {
         var fieldId = BI.Utils.getFieldIDByDimensionID(this.options.dId);
         var fieldName = BI.Utils.getFieldNameByID(fieldId);
         var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
@@ -37,6 +38,30 @@ BI.TargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
                     value: BICst.SUMMARY_TYPE.MIN,
                     cls: "dot-e-font"
                 }]
+            }, {
+                el: {
+                    text: BI.i18nText("BI-Chart_Type"),
+                    value: BICst.TARGET_COMBO.CHART_TYPE,
+                    iconCls1: ""
+                },
+                children: [{
+                    text: BI.i18nText("BI-Column_Chart"),
+                    value: BICst.WIDGET.AXIS,
+                    cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Stacked_Chart"),
+                    value: BICst.WIDGET.ACCUMULATE_AXIS,
+                    cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Line_Chart"),
+                    value: BICst.WIDGET.LINE,
+                    cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Area_Chart"),
+                    value: BICst.WIDGET.AREA,
+                    cls: "dot-e-font"
+                }],
+                disabled: true
             }],
             [{
                 text: BI.i18nText("BI-This_Target_From") + ": " + tableName + "." + fieldName,
@@ -48,13 +73,11 @@ BI.TargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
         ];
     },
 
-    _defaultConfig: function(){
-        return BI.extend(BI.TargetComboShow.superclass._defaultConfig.apply(this, arguments), {
-
-        })
+    _defaultConfig: function () {
+        return BI.extend(BI.TargetComboShow.superclass._defaultConfig.apply(this, arguments), {})
     },
 
-    _init: function(){
+    _init: function () {
         BI.TargetComboShow.superclass._init.apply(this, arguments);
     },
 
@@ -64,14 +87,22 @@ BI.TargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
         return val;
     },
 
-    _assertChartType:function(val){
+    _assertChartType: function (val) {
         val || (val = {});
         val.type || (val.type = BICst.WIDGET.AXIS);
         return val;
     },
 
-    _rebuildItems: function(){
-        return this.defaultItems();
+    _rebuildItems: function () {
+        var o = this.options;
+        var item = this.defaultItems();
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if (wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
+            wType === BICst.WIDGET.COMBINE_CHART) {
+            item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+        }
+        return item;
     },
 
     _createValue: function () {
