@@ -252,6 +252,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 break;
         }
         if (flag === true) {
+            this._changeLayoutType(this.getLayoutType());
             this.fireEvent(BI.Fit.EVENT_CHANGE);
         }
     },
@@ -347,6 +348,7 @@ BI.Fit = BI.inherit(BI.Widget, {
             }
         }
         if (flag === true) {
+            this._changeLayoutType(this.getLayoutType());
             this.fireEvent(BI.Fit.EVENT_CHANGE);
         }
         return flag;
