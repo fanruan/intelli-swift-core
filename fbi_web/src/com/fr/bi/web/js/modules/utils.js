@@ -1579,7 +1579,7 @@
                     if(checkPathAvailable(path, from, to)){ //from和to中都不包含层级字段
                         return path;
                     }else{
-                        return [getRelationOfselfCircle(from, to, path)];
+                        return getRelationOfselfCircle(from, to, path);
                     }
                 } else {
                     return [[{
@@ -1587,17 +1587,38 @@
                         foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
                     }]]
                 }
+            }else{                          //不同表
+                if(hasSelfCircleInHeadOrTail(path)){     //路径中包含自循环表
+                    if(checkPathAvailable(path, from, to)){ //from和to中都不包含层级字段
+                        return path;
+                    }else{
+                        return getRelationOfselfCircle(from, to, path);
+                    }
+                }
             }
             return path;
 
             //获取自循环生成的层级所在的关联
             function getRelationOfselfCircle(from, to, paths){
-                return BI.find(paths, function(idx, path){
+                return BI.filter(paths, function(idx, path){
                     return BI.find(path, function (id, relation) {
                         var foreignId = self.getForeignIdFromRelation(relation);
                         return foreignId === from || foreignId === to;
                     });
                 })
+            }
+
+            function hasSelfCircleInHeadOrTail(paths){
+                var result = BI.find(paths, function (idx, path) {
+                    return BI.find(path, function (id, relation) {
+                        if(idx === 0 || idx === path.length - 1){
+                            return self.getTableIdByFieldID(self.getPrimaryIdFromRelation(relation))
+                                === self.getTableIdByFieldID(self.getForeignIdFromRelation(relation));
+                        }
+                        return false;
+                    });
+                });
+                return BI.isNull(result);
             }
 
             //是自循环还是循环路径
