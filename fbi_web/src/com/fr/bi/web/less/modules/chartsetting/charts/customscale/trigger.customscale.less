@@ -1,0 +1,18 @@
+@import "../../../../bibase";
+
+.bi-custom-scale-trigger{
+  & .trigger-text-button{
+    border: 1px solid @color-bi-border-normal;
+    .border-radius(2px);
+  }
+  & .view-button{
+      background-color: @color-bi-background-dark;
+      .border-radius(2px);
+      &:active{
+        background: @color-bi-background-highlight;
+      }
+      &.active{
+        background: @color-bi-background-highlight;
+      }
+  }
+}
