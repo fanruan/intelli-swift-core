@@ -2646,7 +2646,7 @@ Data.Utils = {
             configs.xAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS);
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
             configs.xAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "bar";
@@ -2866,7 +2866,7 @@ Data.Utils = {
             configs.xAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS);
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
             configs.xAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "bar";

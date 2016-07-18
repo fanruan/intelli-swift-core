@@ -101,7 +101,7 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         config.xAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.X_AXIS);
         formatNumberLevelInXaxis(this.config.left_y_axis_number_level);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.left_y_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
+        config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "bar";
