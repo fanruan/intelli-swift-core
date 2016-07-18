@@ -109,6 +109,10 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var pFId = BI.Utils.getFieldIDByDimensionID(o.dId);
+        var dimSrc = BI.Utils.getDimensionSrcByID(o.dId);
+        if(BI.has(dimSrc, "relation")){
+            pFId = BI.Utils.getForeignIdFromRelation(dimSrc.relation);
+        }
         var tIds = BI.Utils.getAllTargetDimensionIDs(wId);
         BI.each(tIds, function(idx, tId){
             var fFId = BI.Utils.getFieldIDByDimensionID(tId);

@@ -1575,12 +1575,8 @@
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
             if (tableA === tableB) {        //同一张表
-                if (isSelfCircle(path)) {      //是自循环表
-                    if(checkPathAvailable(path, from, to)){ //from和to中都不包含层级字段
-                        return path;
-                    }else{
-                        return [getRelationOfselfCircle(from, to, path)];
-                    }
+                if (isSelfCircle(path) && !checkPathAvailable(path, from, to)) {      //是自循环表且字段包含层级字段
+                    return [getRelationOfselfCircle(from, to, path)];
                 } else {
                     return [[{
                         primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
@@ -1598,6 +1594,19 @@
                         return foreignId === from || foreignId === to;
                     });
                 })
+            }
+
+            function hasSelfCircleInHeadOrTail(paths){
+                var result = BI.find(paths, function (idx, path) {
+                    return BI.find(path, function (id, relation) {
+                        if(idx === 0 || idx === path.length - 1){
+                            return self.getTableIdByFieldID(self.getPrimaryIdFromRelation(relation))
+                                === self.getTableIdByFieldID(self.getForeignIdFromRelation(relation));
+                        }
+                        return false;
+                    });
+                });
+                return BI.isNull(result);
             }
 
             //是自循环还是循环路径
