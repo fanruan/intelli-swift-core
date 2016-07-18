@@ -480,8 +480,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
-            }else if(ckp instanceof NumberDimensionCalculator){
-
             }
 
             v = v.getParent();
