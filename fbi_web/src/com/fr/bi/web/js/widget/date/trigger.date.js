@@ -134,7 +134,10 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
         var date = new Date();
         this.store_value = v;
         if (BI.isNotNull(v)) {
-            type = v.type, value = v.value;
+            type = v.type || BICst.MULTI_DATE_CALENDAR; value = v.value;
+            if(BI.isNull(value)){
+                value = v;
+            }
         }
         var _setInnerValue = function (date, text) {
             var dateStr = date.print("%Y-%x-%e");
@@ -229,12 +232,12 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
                 _setInnerValue(date, text);
                 break;
             default:
-                if (BI.isNull(v) || BI.isNull(v.day)) {
+                if (BI.isNull(value) || BI.isNull(value.day)) {
                     this.editor.setState("");
                     this.editor.setValue("");
                     this.setTitle("");
                 } else {
-                    var dateStr = v.year + "-" + (v.month + 1) + "-" + v.day;
+                    var dateStr = value.year + "-" + (value.month + 1) + "-" + value.day;
                     this.editor.setState(dateStr);
                     this.editor.setValue(dateStr);
                     this.setTitle(dateStr);

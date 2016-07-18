@@ -119,7 +119,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 textAlign: "left",
                 height: 25,
                 allowBlank: false,
-                errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
+                errorText: function(v) {
+                    if(BI.isNotNull(v) && v.trim() !== "") {
+                        return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
+                    }
+                    return BI.i18nText("BI-Widget_Name_Can_Not_Null");
+                },
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
