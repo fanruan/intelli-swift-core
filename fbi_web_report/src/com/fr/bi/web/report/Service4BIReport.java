@@ -37,6 +37,7 @@ public class Service4BIReport implements Service {
             new BIGetReportAndFolderAction(),
             new BIGetReportAndFolder4ReuseAction(),
             new BIAddReportAction(),
+            new BIReportSaveAsAction(),
             new BIGetShare2MeReportListAction(),
             new BIShareTemplateSaveAction(),
             new BIGetAllUserInfoAction(),
