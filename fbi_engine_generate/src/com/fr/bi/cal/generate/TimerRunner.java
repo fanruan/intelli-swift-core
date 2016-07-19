@@ -24,7 +24,7 @@ public class TimerRunner {
     public TimerRunner(long userId) {
         biUser = new BIUser(userId);
         biCubeTimeTaskCreatorProvider = StableFactory.getMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, BICubeTimeTaskCreatorManager.class);
-        reGenerateTimeTasks();
+//        reGenerateTimeTasks();
     }
 
     public void envChanged() {

@@ -28,7 +28,8 @@ public class SingleUserBIUpdateSettingManager {
     public void removeUpdateSetting(String sourceTableId) {
         this.updateSettings.remove(sourceTableId);
     }
-    public void clear(){
+
+    public void clear() {
         synchronized (updateSettings) {
             updateSettings.clear();
         }
