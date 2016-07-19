@@ -370,10 +370,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
                 title: title,
-                value: {
-                    field_id: fieldId,
-                    relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0]
-                },
+                value: fieldId,
                 drag: self._createDrag(fieldName)
             }, f));
         });
