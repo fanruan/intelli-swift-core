@@ -35,7 +35,7 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
 
     populate: function (data) {
         var self = this, o = this.options;
-        var value = data.value, fieldNames = data.fields;
+        var value = data.value;
         var currentId = BI.isNotNull(o.value.group) ? (o.value.field_id + o.value.group.type) : o.value;
         var tableId = BI.Utils.getTableIdByFieldID(BI.isNotNull(o.value.field_id) ? o.value.field_id : o.value);
         var sortedFieldIds = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId);
@@ -49,8 +49,11 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
             if(BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.COUNTER) {
                 return;
             }
-            var fieldName = BI.Utils.getOriginalFieldNameByID(fId);
-            var index = fieldNames.indexOf(fieldName);
+            var fieldName = BI.Utils.getFieldNameByID(fId);
+            var fieldValues = [];
+            BI.each(value, function(j, vs){
+                fieldValues.push(vs[i]);
+            });
             //日期类型特殊处理
             if (BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.DATE) {
                 var check = {};
@@ -201,7 +204,6 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                         height: 30
                     }]
                 });
-                var fieldValues = value[index];
                 //年份
                 var year = [], season = [], month = [], week = [], date_ = [], date_hms = [];
 
@@ -268,7 +270,7 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                     }],
                     height: 30
                 });
-                self.mapValues[fId] = value[index];
+                self.mapValues[fId] = fieldValues;
                 self.sortedFieldIdsArray.push(fId);
             }
         });
