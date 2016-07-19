@@ -16,6 +16,7 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
@@ -162,7 +163,7 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
-    public TreeSet<Integer> getRemovedList() {
+    public IntList getRemovedList() {
         if (hostTable.isRemovedListAvailable()) {
             return hostTable.getRemovedList();
         } else {

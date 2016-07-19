@@ -17,6 +17,7 @@ import com.finebi.cube.structure.property.BICubeProperty;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
@@ -428,9 +429,9 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     @Override
-    public TreeSet<Integer> getRemovedList() {
-        TreeSet<Integer> removedList = new TreeSet<Integer>();
+    public IntList getRemovedList() {
         ICubeIntegerReaderWrapper removedListReader = getRemovedListReader();
+        IntList removedList = new IntList();
         int i = 0;
         try {
             while (removedListReader.getSpecificValue(i)<removedListReader.getSpecificValue(i+1)) {

@@ -16,6 +16,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
@@ -150,7 +151,7 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
-    public TreeSet<Integer> getRemovedList() {
+    public IntList getRemovedList() {
         return masterTable.getRemovedList();
     }
 

@@ -7,11 +7,11 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Cube表的只读接口
@@ -40,7 +40,7 @@ public interface CubeTableEntityGetterService extends Release, ICubeVersion {
 
     int getRowCount();
 
-    TreeSet<Integer> getRemovedList();
+    IntList getRemovedList();
 
     ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException;
 

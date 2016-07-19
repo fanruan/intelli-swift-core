@@ -134,7 +134,7 @@ public class GroupIndexCreator<F, T> implements CubeGenerator {
             Entry<T, IntList> entry = it.next();
             wml.add(i, entry.getKey());
             IntList row = entry.getValue();
-            GroupValueIndex gvi = GVIFactory.createGroupVauleIndexBySimpleIndex(row);
+            GroupValueIndex gvi = GVIFactory.createGroupValueIndexBySimpleIndex(row);
             indexWriter.add(i, gvi.getBytes());
             i++;
             if ((i & CubeConstant.LOG_ROW) == 0) {// 每执行262144行print一下
@@ -147,7 +147,7 @@ public class GroupIndexCreator<F, T> implements CubeGenerator {
             }
             it.remove();
         }
-        nullWriter.add(0, GVIFactory.createGroupVauleIndexBySimpleIndex(nullList).getBytes());
+        nullWriter.add(0, GVIFactory.createGroupValueIndexBySimpleIndex(nullList).getBytes());
         cf.releaseGroupValueIndexCreator();
         cf.writeGroupCount(groupCount);
         cf.writeVersion(version);

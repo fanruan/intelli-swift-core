@@ -2,11 +2,11 @@ package com.finebi.cube.structure;
 
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * 表的基本属性。
@@ -36,7 +36,7 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
 
     int getRowCount();
 
-    TreeSet<Integer> getRemovedList();
+    IntList getRemovedList();
 
     Date getCubeLastTime();
 

@@ -13,6 +13,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Date;
 import java.util.List;
@@ -100,7 +101,7 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
-    public TreeSet<Integer> getRemovedList() {
+    public IntList getRemovedList() {
         return null;
     }
 
