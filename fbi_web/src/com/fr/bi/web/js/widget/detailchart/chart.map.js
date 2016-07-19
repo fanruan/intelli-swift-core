@@ -102,6 +102,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
             }
             config.rangeLegend.continuous = false;
             config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
+            /*config.rangeLegend.formatter = function(){
+                return this.from;
+            }*/
         }
 
         function formatToolTipAndDataLabel(format, numberLevel){
@@ -178,7 +181,6 @@ BI.MapChart = BI.inherit(BI.Widget, {
                                 from: conditionMax,
                                 to: maxScale
                             });
-
                         }
                         return range;
                     } else {
@@ -213,6 +215,10 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
             return [minValue, maxValue];
         }
+    },
+
+    formatter: function(range) {
+        return range.from
     },
 
     _formatDrillItems: function(items){
