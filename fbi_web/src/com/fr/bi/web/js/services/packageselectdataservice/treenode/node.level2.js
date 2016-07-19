@@ -9,6 +9,7 @@ BI.DetailSelectDataLevel2Node = BI.inherit(BI.Widget, {
             extraCls: "bi-detail-select-data-level2-node",
             id: "",
             pId: "",
+            layer: 2,
             open: false,
             height: 25
         })
@@ -19,6 +20,7 @@ BI.DetailSelectDataLevel2Node = BI.inherit(BI.Widget, {
         this.node = BI.createWidget({
             type: "bi.select_data_level2_node",
             element: this.element,
+            layer: o.layer,
             id: o.id,
             pId: o.pId,
             open: o.open,

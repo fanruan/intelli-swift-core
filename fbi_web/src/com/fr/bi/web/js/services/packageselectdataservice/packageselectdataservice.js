@@ -145,7 +145,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                             title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                             value: finded.pId,
-                            type: "bi.detail_select_data_level0_node"
+                            type: "bi.detail_select_data_level0_node",
+                            layer: 0
                         }, field2TableMap[finded.id || finded.value], {
                             isParent: true,
                             open: true,
@@ -194,6 +195,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 id: table.id,
                 wId: o.wId,
                 type: "bi.detail_select_data_level0_node",
+                layer: 0,
                 text: BI.Utils.getTableNameByID(table.id) || "",
                 title: BI.Utils.getTableNameByID(table.id) || "",
                 value: table.id,
@@ -228,6 +230,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         type: "bi.select_data_expander",
                         el: BI.extend({
                             type: "bi.detail_select_data_level1_node",
+                            layer: 1,
                             wId: o.wId,
                             text: BI.Utils.getTableNameByID(table.id) || "",
                             title: BI.Utils.getTableNameByID(table.id) || "",
@@ -283,6 +286,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     wId: o.wId,
                     _type: field.type || _type,
                     type: "bi.detail_select_data_level1_date_node",
+                    layer: 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: title,
@@ -296,6 +300,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     pId: tableId,
                     wId: o.wId,
                     type: "bi.detail_select_data_level0_item",
+                    layer: 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: title,
@@ -324,6 +329,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             value: id
                         }, field, {
                             type: "bi.select_data_level1_date_node",
+                            layer: 1,
                             isParent: true,
                             open: false
                         }),
@@ -360,6 +366,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 pId: tableId,
                 wId: o.wId,
                 type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+                layer: isRelation ? 3 : 2,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
                 title: title,
@@ -467,6 +474,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         type: "bi.select_data_expander",
                         el: {
                             type: "bi.detail_select_data_level2_date_node",
+                            layer: 2,
                             wId: o.wId,
                             _type: field.type || _type,
                             text: fieldName,
@@ -486,6 +494,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         wId: o.wId,
                         _type: field.type || _type,
                         type: "bi.detail_select_data_level1_date_node",
+                        layer: 1,
                         fieldType: BI.Utils.getFieldTypeByID(fid),
                         text: fieldName,
                         title: title,
@@ -500,6 +509,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     pId: tableId,
                     wId: o.wId,
                     type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
+                    layer: isRelation ? 2 : 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: title,
@@ -528,6 +538,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             value: id
                         }, field, {
                             type: isRelation ? "bi.select_data_level2_date_node" : "bi.select_data_level1_date_node",
+                            layer: isRelation ? 2 : 1,
                             isParent: true,
                             open: false
                         }),
@@ -651,6 +662,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         return [BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            layer: isRelation ? 3 : 2,
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
@@ -665,6 +677,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            layer: isRelation ? 3 : 2,
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
@@ -679,6 +692,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            layer: isRelation ? 3 : 2,
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
@@ -693,6 +707,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            layer: isRelation ? 3 : 2,
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
@@ -707,6 +722,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            layer: isRelation ? 3 : 2,
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {

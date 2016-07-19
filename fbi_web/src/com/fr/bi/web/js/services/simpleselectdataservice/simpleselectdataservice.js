@@ -90,7 +90,8 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                         text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                         title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                         value: finded.pId,
-                        type: "bi.simple_select_data_level0_node"
+                        type: "bi.simple_select_data_level0_node",
+                        layer: 0
                     }, field2TableMap[finded.id || finded.value], {
                         isParent: true,
                         open: true,
@@ -122,6 +123,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
             tablesStructure.push(BI.extend({
                 id: table.id,
                 type: "bi.simple_select_data_level0_node",
+                layer: 0,
                 text: BI.Utils.getTableNameByID(table.id) || "",
                 title: BI.Utils.getTableNameByID(table.id) || "",
                 value: table.id,
@@ -143,34 +145,17 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
             var fid = field.id;
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
             var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
-            //日期类型-特殊处理
-            if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
-                var _type = "bi.detail_select_data_level1_item";
-                fieldStructure.push(map[fid] = {
-                    id: fid,
-                    pId: tableId,
-                    wId: o.wId,
-                    _type: field.type || _type,
-                    type: "bi.detail_select_data_level1_date_node",
-                    fieldType: BI.Utils.getFieldTypeByID(fid),
-                    text: fieldName,
-                    title: title,
-                    value: fid,
-                    isParent: true
-                });
-                fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field));
-            } else {
-                fieldStructure.push(map[fid] = BI.extend({
-                    id: fid,
-                    pId: tableId,
-                    wId: o.wId,
-                    type: "bi.detail_select_data_level0_item",
-                    fieldType: BI.Utils.getFieldTypeByID(fid),
-                    text: fieldName,
-                    title: title,
-                    value: fid
-                }, field))
-            }
+            fieldStructure.push(map[fid] = BI.extend({
+                id: fid,
+                pId: tableId,
+                wId: o.wId,
+                type: "bi.detail_select_data_level0_item",
+                layer: 1,
+                fieldType: BI.Utils.getFieldTypeByID(fid),
+                text: fieldName,
+                title: title,
+                value: fid
+            }, field))
         });
 
         if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
@@ -192,6 +177,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                             value: id
                         }, field, {
                             type: "bi.select_data_level1_date_node",
+                            layer: 1,
                             isParent: true,
                             open: false
                         }),
@@ -228,6 +214,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                 pId: tableId,
                 wId: o.wId,
                 type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+                layer: isRelation ? 3 : 2,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
                 title: title,
@@ -331,6 +318,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                     pId: tableId,
                     wId: o.wId,
                     type: "bi.detail_select_data_level0_item",
+                    layer: 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: title,
@@ -358,6 +346,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                             value: id
                         }, field, {
                             type: "bi.select_data_level1_date_node",
+                            layer: 1,
                             isParent: true,
                             open: false
                         }),
