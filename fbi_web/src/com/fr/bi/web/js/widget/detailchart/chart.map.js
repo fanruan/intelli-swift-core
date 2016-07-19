@@ -222,10 +222,6 @@ BI.MapChart = BI.inherit(BI.Widget, {
         }
     },
 
-    formatter: function(range) {
-        return range.from
-    },
-
     _formatDrillItems: function(items){
         var self = this;
         BI.each(items.series, function(idx, da){
