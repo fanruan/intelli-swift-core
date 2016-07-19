@@ -3129,12 +3129,12 @@
   color: #009de3;
 }
 .widget-combo-detail-font .b-font:before {
-  content: "\e631";
+  content: "\e697";
   color: #009de3;
 }
 .widget-combo-detail-font.native .b-font:before,
 .widget-combo-detail-font.disabled .b-font:before {
-  content: "\e631";
+  content: "\e697";
   color: #009de3;
 }
 .widget-combo-pull-down-font .b-font:before {
@@ -3174,12 +3174,12 @@
   color: #009de3;
 }
 .widget-combo-expand-font .b-font:before {
-  content: "\e631";
+  content: "\e697";
   color: #808080;
 }
 .widget-combo-expand-font.native .b-font:before,
 .widget-combo-expand-font.disabled .b-font:before {
-  content: "\e631";
+  content: "\e697";
   color: #808080;
 }
 .widget-combo-linkage-font .b-font:before {

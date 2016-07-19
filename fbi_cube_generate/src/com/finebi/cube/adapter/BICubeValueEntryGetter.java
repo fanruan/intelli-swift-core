@@ -54,8 +54,7 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
     @Override
     public GroupValueIndex getIndexByRow(int row) {
         try {
-            Integer reverseRow = getReverseRow(row);
-            Integer groupRow = reverseRow == null ? null : columnReaderService.getPositionOfGroupByRow(reverseRow);
+            Integer groupRow  = getPositionOfGroupByRow(row);
             return getGroupValueIndex(groupRow);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
@@ -77,14 +76,25 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
         GroupValueIndex gvi = null;
         T value = null;
         try {
-            Integer reverseRow = getReverseRow(row);
-            groupRow = reverseRow == null ? null : columnReaderService.getPositionOfGroupByRow(reverseRow);
+            groupRow  = getPositionOfGroupByRow(row);
             gvi = getGroupValueIndex(groupRow);
             value = getGroupValue(groupRow);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
         return new CubeValueEntry(value, gvi, groupRow);
+    }
+
+    @Override
+    public Integer getPositionOfGroupByRow(int row) {
+        Integer groupRow = null;
+        try {
+            Integer reverseRow = getReverseRow(row);
+            groupRow = reverseRow == null ? null : columnReaderService.getPositionOfGroupByRow(reverseRow);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return groupRow;
     }
 
     @Override

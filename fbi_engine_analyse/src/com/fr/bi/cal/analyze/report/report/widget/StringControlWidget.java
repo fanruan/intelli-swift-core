@@ -1,6 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -8,6 +10,8 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
@@ -47,7 +51,14 @@ public class StringControlWidget extends BISummaryWidget {
     public JSONObject createDataJSON(BISessionProvider session) throws JSONException {
         BIDimension dimension = getDimensions()[0];
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
+        GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
         ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
+        List<Integer> list;
+        if (dimension.getGroup().getType() == BIReportConstant.GROUP.CUSTOM_GROUP || dimension.getGroup().getType() == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP){
+            list = createCustomGroupIndex(gvi, reader);
+        } else {
+            list = createIDGroupIndex(gvi, dimension, session);
+        }
         Set<String> selected_value = new HashSet<String>();
 
         if (selected_values != null && StringUtils.isNotEmpty(selected_values)) {
@@ -55,20 +66,55 @@ public class StringControlWidget extends BISummaryWidget {
             selected_value.addAll(Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray)));
         }
         if(data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH){
-            return new JSONObject().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value));
+            return new JSONObject().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, list));
         }
         if(data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1){
-            return getSearchResult(reader, selected_value, 0, reader.sizeOfGroup());
+            return getSearchResult(reader, selected_value, 0, list.size(), list);
         } else {
-            return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP);
+            return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP, list);
         }
     }
 
-    private int getSearchCount(ICubeColumnIndexReader reader, Set selectedValue) {
+    private List<Integer> createIDGroupIndex(GroupValueIndex gvi, BIDimension dimension, BISessionProvider session) {
+        ICubeTableService ti = session.getLoader().getTableIndex(dimension.getStatisticElement().getTableBelongTo().getTableSource());
+        final ICubeValueEntryGetter getter = ti.getValueEntryGetter(dimension.createKey(dimension.getStatisticElement()), new ArrayList<BITableSourceRelation>());
+        final Integer[] groupIndex = new Integer[getter.getGroupSize()];
+        gvi.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                Integer groupRow = getter.getPositionOfGroupByRow(row);
+                if (groupRow != null){
+                    groupIndex[groupRow] = groupRow;
+                }
+            }
+        });
+        List<Integer> list = new ArrayList<Integer>();
+        for (Integer integer : groupIndex){
+            if (integer != null){
+                list.add(integer);
+            }
+        }
+        return list;
+    }
+
+    private List<Integer> createCustomGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader) {
+        List<Integer> list = new ArrayList<Integer>();
+        Iterator<Map.Entry<String, GroupValueIndex>> it = reader.iterator();
+        int index = 0;
+        while (it.hasNext()){
+            if (!it.next().getValue().AND(gvi).isAllEmpty()){
+               list.add(index);
+            }
+            index ++;
+        }
+        return list;
+    }
+
+    private int getSearchCount(ICubeColumnIndexReader reader, Set selectedValue, List<Integer> list) {
         int count = 0;
         String keyword = this.keyword.toLowerCase();
-        for (int i = 0; i < reader.sizeOfGroup(); i ++){
-            Object ob = reader.getGroupValue(i);
+        for (int i = 0; i < list.size(); i ++){
+            Object ob = reader.getGroupValue(list.get(i));
             if (ob == null){
                 continue;
             }
@@ -113,7 +159,7 @@ public class StringControlWidget extends BISummaryWidget {
 
     }
 
-    private JSONObject getSearchResult(ICubeColumnIndexReader reader, Set selectedValue, int start, int end) throws JSONException {
+    private JSONObject getSearchResult(ICubeColumnIndexReader reader, Set selectedValue, int start, int end, List<Integer> list) throws JSONException {
         JSONArray ja = new JSONArray();
         JSONObject jo = new JSONObject();
         boolean hasNext = false;
@@ -121,8 +167,8 @@ public class StringControlWidget extends BISummaryWidget {
         List<String> match = new ArrayList<String>();
         int matched = 0;
         String key = this.keyword.toLowerCase();
-        for (int i = 0; i < reader.sizeOfGroup(); i ++){
-            Object ob = reader.getGroupValue(i);
+        for (int i = 0; i < list.size(); i ++){
+            Object ob = reader.getGroupValue(list.get(i));
             if (ob == null){
                 continue;
             }

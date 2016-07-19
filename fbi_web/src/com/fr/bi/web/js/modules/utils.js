@@ -263,6 +263,16 @@
             return views[tableId];
         },
 
+        isSelfCircleTableByTableId: function (tableId) {
+            var paths = BI.Utils.getPathsFromTableAToTableB(tableId, tableId);
+            if (paths.length === 0) {
+                return false;
+            }
+            return !BI.find(paths, function (idx, path) {
+                return path.length > 1;
+            });
+        },
+
         /**
          * 字段相关
          */
@@ -630,7 +640,7 @@
                 BICst.DEFAULT_CHART_SETTING.freeze_first_column;
         },
 
-        getWSShowRulesByID: function(wid) {
+        getWSShowRulesByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.rules_display) ? ws.rules_display :
                 BICst.DEFAULT_CHART_SETTING.bubble_display;
@@ -1589,8 +1599,8 @@
             return path;
 
             //获取自循环生成的层级所在的关联
-            function getRelationOfselfCircle(from, to, paths){
-                return BI.find(paths, function(idx, path){
+            function getRelationOfselfCircle(from, to, paths) {
+                return BI.find(paths, function (idx, path) {
                     return BI.find(path, function (id, relation) {
                         var foreignId = self.getForeignIdFromRelation(relation);
                         return foreignId === from || foreignId === to;
@@ -1598,10 +1608,10 @@
                 })
             }
 
-            function hasSelfCircleInHeadOrTail(paths){
+            function hasSelfCircleInHeadOrTail(paths) {
                 var result = BI.find(paths, function (idx, path) {
                     return BI.find(path, function (id, relation) {
-                        if(idx === 0 || idx === path.length - 1){
+                        if (idx === 0 || idx === path.length - 1) {
                             return self.getTableIdByFieldID(self.getPrimaryIdFromRelation(relation))
                                 === self.getTableIdByFieldID(self.getForeignIdFromRelation(relation));
                         }
@@ -1725,13 +1735,13 @@
             var self = this;
             var fields = this.getSortedFieldIdsOfOneTableByTableId(tableId);
             var dimensions = {}, view = {10000: []};
-            BI.each(fields, function(i, fieldId) {
+            BI.each(fields, function (i, fieldId) {
                 var id = BI.UUID();
                 var dimensionMap = {}, group = {};
                 dimensionMap[tableId] = {
                     target_relation: []
                 };
-                if(self.getFieldTypeByID(fieldId) === BICst.COLUMN.DATE) {
+                if (self.getFieldTypeByID(fieldId) === BICst.COLUMN.DATE) {
                     group.type = BICst.GROUP.YMDHMS;
                 }
                 var dType = BICst.TARGET_TYPE.STRING;

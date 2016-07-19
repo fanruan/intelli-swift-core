@@ -29,7 +29,7 @@ public class JobTask implements Job {
         long userId = Long.valueOf(data.get("userId").toString());
         String jobName = data.getString("jobName");
         String sourceName=data.getString("sourceName");
-        boolean tableExisted = null == TimerScheduleAdapter.tableCheck(userId, sourceName);
+        boolean tableExisted = null != TimerScheduleAdapter.tableCheck(userId, sourceName);
         if (!tableExisted&& !DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE.equals(sourceName)){
             return;
         }

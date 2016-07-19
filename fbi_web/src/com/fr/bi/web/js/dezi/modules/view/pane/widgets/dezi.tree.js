@@ -2,6 +2,11 @@
  * Created by roy on 16/4/13.
  */
 BIDezi.TreeWidgetView = BI.inherit(BI.View, {
+    _constants: {
+        TOOL_ICON_WIDTH: 20,
+        TOOL_ICON_HEIGHT: 20
+    },
+    
     _defaultConfig: function () {
         return BI.extend(BIDezi.TreeWidgetView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget"
@@ -88,8 +93,8 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         var self = this;
         var expand = BI.createWidget({
             type: "bi.icon_button",
-            width: 16,
-            height: 16,
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT,
             title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });

@@ -43,6 +43,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             labelStyle: {
                 "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
             },
+            "step": 0,
             "showLabel": true
         }];
         this.combineChart = BI.createWidget({

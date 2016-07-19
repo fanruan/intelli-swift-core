@@ -7,6 +7,7 @@ import com.finebi.cube.structure.Cube;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -16,6 +17,7 @@ import com.fr.stable.bridge.StableFactory;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by kary on 16/7/13.
@@ -32,6 +34,9 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             recordTableInfo();
             long count = transport();
             if (count >= 0) {
+                /*清楚remove的过滤条件*/
+                TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+                tableEntityService.recordRemovedLine(sortRemovedList);
                 tableEntityService.recordRowCount(count);
             }
             tableEntityService.addVersion(version);

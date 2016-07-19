@@ -8,6 +8,7 @@ BI.DetailSelectDataLevel2Item = BI.inherit(BI.Single, {
             extraCls: "bi-detail-select-data-level1-item bi-select-data-level1-item",
             height: 25,
             fieldType: BICst.COLUMN.STRING,
+            layer: 3,
             hgap: 0,
             lgap: 0,
             rgap: 35
@@ -38,7 +39,7 @@ BI.DetailSelectDataLevel2Item = BI.inherit(BI.Single, {
             cls: "select-date-level1-item-button " + this._getFieldClass(o.fieldType),
             text: o.text,
             value: o.value,
-            blankWidth: 60,
+            blankWidth:  o.layer * 20,
             height: 25,
             textLgap: 10,
             textRgap: 5

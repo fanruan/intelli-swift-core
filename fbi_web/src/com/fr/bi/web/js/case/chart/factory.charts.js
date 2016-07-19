@@ -224,7 +224,7 @@ BI.ChartCombineFormatItemFactory = {
                 "borderRadius": 0,
                 "shadow": false,
                 "borderWidth": 0,
-
+                "visible": true,
                 "style": {
                     "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#1a1a1a","fontSize":"12px"
                 },
