@@ -12,7 +12,8 @@ SelectColorComboView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var item = BI.createWidget({
             type: "bi.chart_setting_wrap_select_color_item",
-            text: "默认",
+            header: "默认",
+            text: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
             value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
         });
         var trigger = BI.createWidget({
