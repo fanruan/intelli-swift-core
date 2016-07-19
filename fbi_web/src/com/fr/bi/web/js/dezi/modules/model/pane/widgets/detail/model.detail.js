@@ -493,13 +493,13 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         if (BI.Utils.isDimensionByDimensionID(idx)) {
                             dimension.dimension_map = dimension.dimension_map || {};
                             var dimFieldId = BI.Utils.getFieldIDByDimensionID(idx);
-                            var dimSrc = BI.Utils.getDimensionSrcByID(idx);
-                            if(BI.has(dimSrc, "relation")){
-                                dimFieldId = BI.Utils.getForeignIdFromRelation(dimSrc.relation);
-                            }
-                            if(BI.has(src._src, "relation")){
-                                fId = BI.Utils.getForeignIdFromRelation(src._src.relation);
-                            }
+                            //var dimSrc = BI.Utils.getDimensionSrcByID(idx);
+                            //if(BI.has(dimSrc, "relation")){
+                            //    dimFieldId = BI.Utils.getForeignIdFromRelation(dimSrc.relation);
+                            //}
+                            //if(BI.has(src._src, "relation")){
+                            //    fId = BI.Utils.getForeignIdFromRelation(src._src.relation);
+                            //}
                             var path = BI.Utils.getPathsFromFieldAToFieldB(dimFieldId, fId);
                             if (path.length === 1) {
                                 var target_relation = path[0];
@@ -520,20 +520,18 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             }
                             if (!BI.Utils.isDimensionByDimensionID(idx)) {
                                 var tarFieldId = BI.Utils.getFieldIDByDimensionID(idx);
-                                var tarSrc = BI.Utils.getDimensionSrcByID(idx);
-                                if(BI.has(tarSrc, "relation")){
-                                    tarFieldId = BI.Utils.getForeignIdFromRelation(tarSrc.relation);
-                                }
-                                if(BI.has(src._src, "relation")){
-                                    fId = BI.Utils.getForeignIdFromRelation(src._src.relation);
-                                }
+                                //var tarSrc = BI.Utils.getDimensionSrcByID(idx);
+                                //if(BI.has(tarSrc, "relation")){
+                                //    tarFieldId = BI.Utils.getForeignIdFromRelation(tarSrc.relation);
+                                //}
+                                //if(BI.has(src._src, "relation")){
+                                //    fId = BI.Utils.getForeignIdFromRelation(src._src.relation);
+                                //}
                                 var path = BI.Utils.getPathsFromFieldAToFieldB(fId, tarFieldId);
                                 if (path.length === 1) {
                                     var target_relation = path[0];
                                     dimensions[dId].dimension_map[idx] = {
-                                        _src: {
-                                            field_id: fId
-                                        },
+                                        _src: src._src,
                                         target_relation: [target_relation]
                                     };
                                 }
