@@ -70,6 +70,11 @@ BI.MapChart = BI.inherit(BI.Widget, {
         if(this.config.initDrillPath.length > 1){
             config.initDrillPath = this.config.initDrillPath;
         }
+        config.dTools.click = function(){
+            //console.log(arguments);
+            //console.log(this);
+            self.fireEvent(BI.MapChart.EVENT_CHANGE, arguments);
+        };
         config.chartType = "areaMap";
         delete config.xAxis;
         delete config.yAxis;
