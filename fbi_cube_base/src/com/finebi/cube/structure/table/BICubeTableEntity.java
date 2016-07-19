@@ -14,6 +14,7 @@ import com.finebi.cube.structure.table.property.BICubeTableProperty;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.*;
@@ -92,7 +93,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
         Iterator<Integer> it = removedLine.iterator();
-        int row = tableProperty.getRowCount();
+        int row = 0;
         while (it.hasNext()) {
             tableProperty.recordRemovedList(row++,it.next());
         }
@@ -168,6 +169,11 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
+    public IntList getRemovedList() {
+        return tableProperty.getRemovedList();
+    }
+
+    @Override
     public Date getCubeLastTime() {
         return tableProperty.getCubeLastTime();
     }
@@ -234,6 +240,11 @@ public class BICubeTableEntity implements CubeTableEntityService {
     public void setTableOwner(ITableKey owner) {
         relationManager.setOwner(owner);
         columnManager.setOwner(owner);
+    }
+
+    @Override
+    public boolean isRemovedListAvailable() {
+        return tableProperty.isRemovedListAvailable();
     }
 
     @Override
