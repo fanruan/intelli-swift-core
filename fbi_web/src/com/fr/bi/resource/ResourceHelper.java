@@ -1539,6 +1539,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules4realtime/selectdata/widget.selectdata.js",
+                //实时报表拖拽
+                "com/fr/bi/web/js/modules4realtime/drag/widget.dragicongroup.js",
                 //实时报表文本选择字段
                 "com/fr/bi/web/js/modules4realtime/selectstring/widget.selectstring.js",
                 //实时报表数值选择字段
