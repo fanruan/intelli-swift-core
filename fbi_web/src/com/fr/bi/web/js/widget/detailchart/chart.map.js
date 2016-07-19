@@ -73,6 +73,16 @@ BI.MapChart = BI.inherit(BI.Widget, {
         config.chartType = "areaMap";
         delete config.xAxis;
         delete config.yAxis;
+
+        var find = BI.find(items, function(idx, item){
+            return BI.has(item, "type") && item.type === "areaMap";
+        });
+        if(BI.isNull(find)){
+            items.push({
+                type: "areaMap",
+                data: []
+            })
+        }
         return [items, config];
 
         function formatRangeLegend(){

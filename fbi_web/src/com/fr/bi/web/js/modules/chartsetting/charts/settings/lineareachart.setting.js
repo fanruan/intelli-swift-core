@@ -379,6 +379,18 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
+        //空值连续nullContinue,之前去掉了，现在又要加回来
+        //this.nullContinue = BI.createWidget({
+        //    type: "bi.multi_select_item",
+        //    value: BI.i18nText("BI-Null_Continue"),
+        //    invisible: BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.COMBINE_CHART,
+        //    width: 115
+        //});
+        //
+        //this.nullContinue.on(BI.Controller.EVENT_CHANGE, function(){
+        //    self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        //});
+
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
