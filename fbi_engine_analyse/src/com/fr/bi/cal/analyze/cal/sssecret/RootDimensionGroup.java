@@ -14,13 +14,11 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
-import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
 import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.data.key.date.BIDateValueFactory;
@@ -29,7 +27,6 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.lru.FIFOHashMap;
-import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
@@ -412,10 +409,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if ((ComparatorUtils.equals(root.getTableKey(), BIBusinessTable.createEmptyTable()) && deep > 0)) {
             sg = ng.createNoneTargetSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, getCKGvigetter(gv, deep), useRealData);
         } else {
-            if(deep > 0 && singleDimensionGroupCache != null && (singleDimensionGroupCache instanceof AllCalSingleDimensionGroup)){
+            if (deep > 0 && singleDimensionGroupCache != null && (singleDimensionGroupCache instanceof AllCalSingleDimensionGroup)) {
                 sg = AllCalSingleDimensionGroup.createInstanceWithCache((AllCalSingleDimensionGroup) singleDimensionGroupCache, ng.getRoot().getGroupValueIndex(), deep);
-            }
-            else {
+            } else {
                 sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
             }
         }
@@ -427,10 +423,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if ((ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0)) {
             sg = ng.createNoneTargetSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, getCKGvigetter(data, deep), useRealData);
         } else {
-            if(deep > 0 && singleDimensionGroupCache != null && (singleDimensionGroupCache instanceof AllCalSingleDimensionGroup)){
+            if (deep > 0 && singleDimensionGroupCache != null && (singleDimensionGroupCache instanceof AllCalSingleDimensionGroup)) {
                 sg = AllCalSingleDimensionGroup.createInstanceWithCache((AllCalSingleDimensionGroup) singleDimensionGroupCache, ng.getRoot().getGroupValueIndex(), deep);
-            }
-            else {
+            } else {
                 sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, useRealData);
             }
         }
@@ -477,11 +472,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 if (firstPath == null) {
                     continue;
                 }
+
+
                 GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
-            }
 
+
+            }
             v = v.getParent();
         }
         return gvi;

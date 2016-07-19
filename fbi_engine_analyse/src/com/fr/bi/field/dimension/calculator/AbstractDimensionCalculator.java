@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
@@ -267,6 +268,10 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
                     dimension == null ? null : dimension.getGroup(),
                     dimension == null ? null : dimension.getSort());
         }
+    }
+
+    public BITableRelationPath getSelfToSelfRelationPath() {
+        return dimension.getSelfToSelfRelationPath();
     }
 
 
