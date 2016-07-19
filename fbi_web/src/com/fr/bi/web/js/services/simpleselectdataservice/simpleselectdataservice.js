@@ -187,7 +187,10 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: title,
-                    value: fid
+                    value: {
+                        field_id: fieldId,
+                        relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0][0]
+                    }
                 }, f));
             }
         });
@@ -202,21 +205,20 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
             var pIds = [], fIds = [], map = {};
             var relations = BI.Utils.getPathsFromTableAToTableB(tableId, tableId);
             BI.each(relations, function (i, path) {
-                var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
                 var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
-                pIds.push(pId);
-                if (!map[pId]) {
-                    map[pId] = [];
-                }
-                map[pId].push(fId);
                 fIds.push(fId);
             });
             var newFields = [];
             BI.each(fields, function (i, field) {
-                var id = field.id;
-                if (pIds.contains(id)) {
-                } else if (!fIds.contains(id)) {
+                var isCircle = BI.Utils.getFieldIsCircleByID(field.id);
+                if(isCircle === false && !fIds.contains(field.id)){
                     newFields.push(field);
+                }
+                if(isCircle === true){
+                    map[field.id] = [];
+                    BI.each(fIds, function(idx, fId){
+                        map[field.id].push(fId);
+                    });
                 }
             });
         } else {
@@ -239,7 +241,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
         if (this._isSelfCircleTable(tableId)) {
             BI.each(fields, function (i, field) {
                 var id = field.id;
-                if (pIds.contains(id)) {
+                if (BI.Utils.getFieldIsCircleByID(id) === true) {
                     var fieldName = BI.Utils.getFieldNameByID(id) || "";
                     var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
                     fieldStructure.push({

@@ -954,6 +954,12 @@
                 BICst.DEFAULT_CHART_SETTING.show_zoom;
         },
 
+        getWSNullContinueByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
+                BICst.DEFAULT_CHART_SETTING.nullContinue;
+        },
+
         getWSTextDirectionByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.text_direction) ? ws.text_direction :
