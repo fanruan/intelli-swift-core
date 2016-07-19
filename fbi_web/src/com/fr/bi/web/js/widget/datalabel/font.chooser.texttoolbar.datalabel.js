@@ -4,7 +4,7 @@
 BI.DataLabelTextToolbarFontChooser = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.DataLabelTextToolbarFontChooser.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-data-label-text-toolbar-font-chooser",
+            baseCls: "bi-data-tab-text-toolbar-font-chooser",
             width: 50,
             height: 20
         });

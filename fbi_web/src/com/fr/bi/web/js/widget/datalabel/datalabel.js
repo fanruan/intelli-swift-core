@@ -18,133 +18,29 @@ BI.DataLabel = BI.inherit(BI.Widget, {
             text: "添加条件",
             width: 80,
             handler: function () {
-                
+                self.conditions.addItem();
             }
         });
-        this._createTab();
+        this.tab = BI.createWidget({
+            type: "bi.data_label_tab"
+        });
+        this.conditions = BI.createWidget({
+            type: "bi.data_label_condition_group"
+        });
         BI.createWidget({
             type: "bi.vertical",
             items: [{
                 type: "bi.right",
                 items: [addButton],
                 rgap: 10
-            },this._createTab()],
+            },this.conditions,this.tab],
             width: 560,
+            height: 400,
             element: this.element,
-            height: 400
-        })
-        // this.conditions = BI.createWidget({
-        //     type: "bi.data_label_condition_group"
-        // });
-        //
-        // BI.createWidget({
-        //     type: "bi.vertical",
-        //     element: this.element,
-        //     items: [{
-        //         type: "bi.right",
-        //         items: [addButton],
-        //         rgap: 8
-        //     },this.conditions],
-        //     width:500,
-        //     height:500
-        // })
-    },
-
-    _createTab: function () {
-        var tab = BI.createWidget({
-            type: "bi.button_group",
-            items: [{
-                type: "bi.radio",
-                value: 1
-            },{
-                type: "bi.label",
-                text: "文字标签",
-                rgap: 20
-            },{
-                type: "bi.radio",
-                value: 2
-            },{
-                type: "bi.label",
-                text: "图片标签"
-            }],
-            layouts: [{
-                type: "bi.left_vertical_adapt",
-                items: [{
-                    el: {
-                        type: "bi.horizontal",
-                        width: 550,
-                        height: 30,
-                        lgap: 2
-                    }
-                }]
-            }]
+            scrollable: null,
+            scrolly: false,
+            scrollx: false
         });
-        this.tabs = BI.createWidget({
-            direction: "custom",
-            type: "bi.tab",
-            element: this.element,
-            tab: tab,
-            cardCreator: BI.bind(this._createPanel, this)
-        });
-        return BI.createWidget({
-            type: "bi.absolute",
-            items: [{
-                el: tab
-            }]
-        })
-    },
-
-    _createPanel: function (v) {
-        switch (v){
-            case 1:
-                return this._createTextLabel();
-            case 2:
-                return this._createImageLabel();
-        }
-    },
-
-    _createTextLabel: function () {
-        this.texttoolbar = BI.createWidget({
-            type: "bi.data_label_text_toolbar"
-        });
-        return BI.createWidget({
-            type: "bi.absolute",
-            items: [{
-                el: this.texttoolbar,
-                top: 50
-            }]
-        })
-    },
-
-    _createImageLabel: function () {
-        this.imageset = BI.createWidget({
-            type: "bi.data_label_image_set"
-        });
-        this.barchart = BI.createWidget({
-            type: "bi.data_label_bar_chart"
-        });
-        return BI.createWidget({
-            type: "bi.absolute",
-            items: [{
-                el: this.barchart,
-                left: 0,
-                top: 50
-            },{
-                el: this.imageset,
-                left: 150,
-                top: 50
-            }],
-            width: 550,
-            height: 130
-            }
-        );
-    },
-    _createCondition: function () {
-        return BI.createWidget({
-            type: "bi.data_label_condition",
-            width: 500,
-            height: 40
-        })
     }
 });
 

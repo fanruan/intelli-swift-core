@@ -36,7 +36,7 @@ BI.DataLabelBarChart = BI.inherit(BI.Widget, {
         });
         BI.createWidget({
             type: "bi.absolute",
-            cls: "bi-data-label-bar-chart",
+            cls: "bi-data-tab-bar-chart",
             element: this.element,
             items: [{
                 el: this.combineChart,

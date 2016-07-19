@@ -1798,9 +1798,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/image/button/size/image.button.size.css",
 
                 //数据标签
-                "com/fr/bi/web/css/widget/datalabel/image/datalabel.imageset.css",
+                "com/fr/bi/web/css/widget/datalabel/tab/datalabel.imageset.css",
                 "com/fr/bi/web/css/widget/datalabel/datalabel.texttoolbar.css",
-                "com/fr/bi/web/css/widget/datalabel/barchart/datalabel.barchart.css",
+                "com/fr/bi/web/css/widget/datalabel/tab/datalabel.barchart.css",
 
                 //可选下拉树
                 "com/fr/bi/web/css/widget/selecttree/combo.select.tree.css",
@@ -2584,12 +2584,13 @@ public class ResourceHelper {
                 //web组件
                 "com/fr/bi/web/js/widget/web/web.js",
                 "com/fr/bi/web/js/widget/datalabel/datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/tab/tab.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/texttoolbar.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/font.chooser.texttoolbar.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/group.condition.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/item.condition.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/image/imageset.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/barchart/barchart.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/tab/imageset.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/tab/barchart.datalabel.js",
 
                 //布局
                 "com/fr/bi/web/js/widget/arrangement/arrangement.droppable.js",

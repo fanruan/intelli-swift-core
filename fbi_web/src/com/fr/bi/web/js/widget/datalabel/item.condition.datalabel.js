@@ -54,9 +54,7 @@ BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
             items: [this.condition],
             element: this.element,
             width:500,
-            height:60,
-            left:20,
-            top:20,
+            height:36,
             layouts: [{
                 type: "bi.horizontal"
             }]
