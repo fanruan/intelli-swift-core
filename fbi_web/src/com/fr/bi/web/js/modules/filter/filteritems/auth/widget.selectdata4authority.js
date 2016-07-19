@@ -75,10 +75,7 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
                             type: "bi.select_data_level0_item",
                             fieldType: field.field_type,
                             text: field.field_name,
-                            value: {
-                                id: field.id,
-                                field_id: field.id
-                            }
+                            value: field.id
                         })
                     });
                 }
