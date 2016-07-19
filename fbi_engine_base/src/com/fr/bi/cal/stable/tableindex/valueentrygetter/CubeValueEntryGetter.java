@@ -36,6 +36,11 @@ public class CubeValueEntryGetter implements ICubeValueEntryGetter {
     }
 
     @Override
+    public Integer getPositionOfGroupByRow(int row) {
+        return cf.getPositionOfGroup(row, manager);
+    }
+
+    @Override
     public int getGroupSize() {
         return (int) cf.getGroupCount(key);
     }
