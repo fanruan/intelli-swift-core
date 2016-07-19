@@ -90,7 +90,8 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                         text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                         title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                         value: finded.pId,
-                        type: "bi.simple_select_data_level0_node"
+                        type: "bi.simple_select_data_level0_node",
+                        layer: 0
                     }, field2TableMap[finded.id || finded.value], {
                         isParent: true,
                         open: true,
@@ -122,6 +123,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
             tablesStructure.push(BI.extend({
                 id: table.id,
                 type: "bi.simple_select_data_level0_node",
+                layer: 0,
                 text: BI.Utils.getTableNameByID(table.id) || "",
                 title: BI.Utils.getTableNameByID(table.id) || "",
                 value: table.id,
@@ -136,109 +138,27 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
         var fieldStructure = [];
         var self = this, o = this.options;
         var fields = o.fieldsCreator(tableId);
-        var search = [];
-        BI.each(fields, function (i, field) {
-            var fid = field.id;
-            var fieldName = field.text || BI.Utils.getFieldNameByID(fid);
-            search.push(BI.extend({
-                id: fid,
-                text: fieldName
-            }, field));
-        });
-        var result = BI.Func.getSearchResult(search, keyword);
-        fields = result.matched.concat(result.finded);
-        BI.each(fields, function (i, field) {
-            var fid = field.id;
-            var fieldName = BI.Utils.getFieldNameByID(fid) || "";
-            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
-            fieldStructure.push(BI.extend({
-                id: fid,
-                pId: tableId,
-                type: "bi.select_data_level0_item",
-                fieldType: BI.Utils.getFieldTypeByID(fid),
-                text: fieldName,
-                title: title,
-                value: fid
-            }, field));
-        });
-        return fieldStructure;
-    },
+        var map = {}, circleMap = {};
+        var newFields = this._getAllRelativeFields(tableId, fields, circleMap);
 
-    _isSelfCircleTable: function (tableId) {
-        return BI.Utils.getPathsFromTableAToTableB(tableId, tableId).length > 0;
-    },
-
-    _getSelfCircleFieldsByFieldId: function (fieldId, circleForeignIds) {
-        var self = this, o = this.options;
-        circleForeignIds || (circleForeignIds = []);
-        var tableId = BI.Utils.getTableIdByFieldID(fieldId);
-        var fields = o.fieldsCreator(tableId);
-        var fieldStructure = [];
-        BI.each(fields, function (i, f) {
-            var fid = f.id;
-            if (circleForeignIds.contains(f.id)) {
-                var fieldName = BI.Utils.getFieldNameByID(fid) || "";
-                var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
-                fieldStructure.push(BI.extend({
-                    id: fid,
-                    pId: tableId,
-                    wId: o.wId,
-                    type: "bi.detail_select_data_level1_item",
-                    fieldType: BI.Utils.getFieldTypeByID(fid),
-                    text: fieldName,
-                    title: title,
-                    value: {
-                        field_id: fieldId,
-                        relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0][0]
-                    }
-                }, f));
-            }
-        });
-        return fieldStructure;
-    },
-
-    _getFieldsStructureByTableId: function (tableId) {
-        var fieldStructure = [];
-        var self = this, o = this.options;
-        var fields = o.fieldsCreator(tableId);
-        if (this._isSelfCircleTable(tableId)) {
-            var pIds = [], fIds = [], map = {};
-            var relations = BI.Utils.getPathsFromTableAToTableB(tableId, tableId);
-            BI.each(relations, function (i, path) {
-                var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
-                fIds.push(fId);
-            });
-            var newFields = [];
-            BI.each(fields, function (i, field) {
-                var isCircle = BI.Utils.getFieldIsCircleByID(field.id);
-                if(isCircle === false && !fIds.contains(field.id)){
-                    newFields.push(field);
-                }
-                if(isCircle === true){
-                    map[field.id] = [];
-                    BI.each(fIds, function(idx, fId){
-                        map[field.id].push(fId);
-                    });
-                }
-            });
-        } else {
-            newFields = fields;
-        }
         BI.each(newFields, function (i, field) {
             var fid = field.id;
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
             var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
-            fieldStructure.push(BI.extend({
+            fieldStructure.push(map[fid] = BI.extend({
                 id: fid,
                 pId: tableId,
-                type: "bi.select_data_level0_item",
+                wId: o.wId,
+                type: "bi.detail_select_data_level0_item",
+                layer: 1,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
                 title: title,
                 value: fid
-            }, field));
+            }, field))
         });
-        if (this._isSelfCircleTable(tableId)) {
+
+        if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
             BI.each(fields, function (i, field) {
                 var id = field.id;
                 if (BI.Utils.getFieldIsCircleByID(id) === true) {
@@ -248,13 +168,185 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                         id: id,
                         pId: tableId,
                         type: "bi.select_data_expander",
+                        text: fieldName,
                         el: BI.extend({
+                            wId: o.wId,
                             text: fieldName,
                             title: title,
                             fieldType: BI.Utils.getFieldTypeByID(id),
                             value: id
                         }, field, {
                             type: "bi.select_data_level1_date_node",
+                            layer: 1,
+                            isParent: true,
+                            open: false
+                        }),
+                        popup: {
+                            items: self._getSelfCircleFieldsByFieldId(id, circleMap[id] || [])
+                        }
+                    });
+                }
+            });
+        }
+        var result = BI.Func.getSearchResult(fieldStructure, keyword);
+        fields = result.matched.concat(result.finded);
+        fieldStructure = [];
+        BI.each(fields, function (i, f) {
+            if (map[f.pId]) {
+                fieldStructure.push(map[f.pId]);
+            }
+            fieldStructure.push(f);
+        });
+        return fieldStructure;
+    },
+
+    _getSelfCircleFieldsByFieldId: function (fieldId, foregion, isRelation) {
+        var self = this, o = this.options;
+        foregion || (foregion = []);
+        var tableId = BI.Utils.getTableIdByFieldID(fieldId);
+        var fieldStructure = [];
+        BI.each(foregion, function (i, f) {
+            var fid = f.id;
+            var fieldName = BI.Utils.getFieldNameByID(fid) || "";
+            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+            fieldStructure.push(BI.extend({
+                id: fid,
+                pId: tableId,
+                wId: o.wId,
+                type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+                layer: isRelation ? 3 : 2,
+                fieldType: BI.Utils.getFieldTypeByID(fid),
+                text: fieldName,
+                title: title,
+                value: {
+                    field_id: fieldId,
+                    relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0]
+                }
+            }, f));
+        });
+        return fieldStructure;
+    },
+
+
+    _getAllRelativeFields: function (tableId, fields, map) {
+        map = map || {};
+        var newFields = [];
+        if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
+            var fIds = [], fieldList = [];
+            var relations = BI.Utils.getPathsFromTableAToTableB(tableId, tableId);
+            BI.each(relations, function (i, path) {
+                var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
+                fIds.push(fId);
+            });
+            BI.each(fields, function (i, field) {
+                var isCircle = BI.Utils.getFieldIsCircleByID(field.id);
+                if (isCircle !== true && !fIds.contains(field.id)) {
+                    newFields.push(field);
+                }
+                if (fIds.contains(field.id)) {
+                    fieldList.push(field);
+                }
+            });
+            BI.each(fields, function (i, field) {
+                var isCircle = BI.Utils.getFieldIsCircleByID(field.id);
+                if (isCircle === true) {
+                    map[field.id] = fieldList;
+                }
+            });
+        } else {
+            newFields = fields;
+        }
+        return newFields;
+    },
+
+    _getFieldsStructureByTableId: function (tableId) {
+        var fieldStructure = [];
+        var self = this, o = this.options;
+
+        var viewFields = [];
+        var fields = o.fieldsCreator(tableId);
+        var map = {};
+        var newFields = this._getAllRelativeFields(tableId, fields, map);
+
+        BI.each(newFields, function (i, field) {
+            var fid = field.id;
+            if (viewFields.contains(fid)) {
+                return;
+            }
+            var fieldName = BI.Utils.getFieldNameByID(fid) || "";
+            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+            //日期类型-特殊处理
+            if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
+                var _type = isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item";
+                if (isRelation === true) {
+                    fieldStructure.push({
+                        id: fid,
+                        pId: tableId,
+                        type: "bi.select_data_expander",
+                        el: {
+                            type: "bi.detail_select_data_level2_date_node",
+                            wId: o.wId,
+                            _type: field.type || _type,
+                            text: fieldName,
+                            title: title,
+                            value: fid,
+                            isParent: true,
+                            open: false
+                        },
+                        popup: {
+                            items: self._buildDateChildren(tableId, field, isRelation)
+                        }
+                    })
+                } else {
+                    fieldStructure.push({
+                        id: fid,
+                        pId: tableId,
+                        wId: o.wId,
+                        _type: field.type || _type,
+                        type: "bi.detail_select_data_level1_date_node",
+                        fieldType: BI.Utils.getFieldTypeByID(fid),
+                        text: fieldName,
+                        title: title,
+                        value: fid,
+                        isParent: true
+                    });
+                    fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
+                }
+            } else {
+                fieldStructure.push(BI.extend({
+                    id: fid,
+                    pId: tableId,
+                    wId: o.wId,
+                    type: "bi.detail_select_data_level0_item",
+                    layer: 1,
+                    fieldType: BI.Utils.getFieldTypeByID(fid),
+                    text: fieldName,
+                    title: title,
+                    value: fid
+                }, field))
+            }
+        });
+
+        if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
+            BI.each(fields, function (i, field) {
+                var id = field.id;
+                if (BI.Utils.getFieldIsCircleByID(id) === true) {
+                    var fieldName = BI.Utils.getFieldNameByID(id) || "";
+                    var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+                    fieldStructure.push({
+                        id: id,
+                        pId: tableId,
+                        type: "bi.select_data_expander",
+                        text: fieldName,
+                        el: BI.extend({
+                            wId: o.wId,
+                            text: fieldName,
+                            title: title,
+                            fieldType: BI.Utils.getFieldTypeByID(id),
+                            value: id
+                        }, field, {
+                            type: "bi.select_data_level1_date_node",
+                            layer: 1,
                             isParent: true,
                             open: false
                         }),

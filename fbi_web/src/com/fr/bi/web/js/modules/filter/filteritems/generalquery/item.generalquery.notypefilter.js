@@ -102,7 +102,8 @@ BI.GeneralQueryNoTypeFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
             _src: {
-                field_id: v
+                field_id: v,
+                relation: v.relation || []
             },
             id: this.options.id,
             node: o.node,
