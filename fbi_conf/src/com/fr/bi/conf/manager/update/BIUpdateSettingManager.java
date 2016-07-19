@@ -62,10 +62,6 @@ public class BIUpdateSettingManager extends BISystemDataManager<SingleUserBIUpda
         return null;
     }
 
-    public UpdateSettingSource getSingleUpdateSetting(long userId, String sourceId) {
-        return null;
-    }
-
     @Override
     public JSONObject createJSON(long userId) throws Exception {
         JSONObject jo = new JSONObject();

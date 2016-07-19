@@ -25,6 +25,14 @@ public class BICubeManager implements BICubeManagerProvider {
 
     private Map<Long, SingleUserCubeManager> userMap = new ConcurrentHashMap<Long, SingleUserCubeManager>();
 
+    public BICubeManager(Map<Long, SingleUserCubeManager> userMap) {
+        this.userMap = userMap;
+    }
+
+    public BICubeManager() {
+
+    }
+
     public SingleUserCubeManager getCubeManager(long userId) {
         return BIConstructorUtils.constructObject(userId, SingleUserCubeManager.class, userMap);
     }
