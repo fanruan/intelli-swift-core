@@ -6796,7 +6796,8 @@
             if (L.Browser.any3d) {
                 L.DomUtil.setTransform(this._container, topLeftOffset, scale);
             } else {
-                L.DomUtil.setPosition(this._container, topLeftOffset);
+                this._container.style.left = 0 + 'px';
+                this._container.style.top = 0 + 'px';
             }
         },
 
@@ -7242,12 +7243,18 @@
             this._data = data;
         },
 
+        updateWithData:function(){
+            this.onRemove();
+
+            this.onAdd();
+        },
+
         beforeAdd: function (map) {
             this._renderer = map.getRenderer(this);
         },
 
         onAdd: function () {
-            var useHtml = this._data.dataLabels.useHtml;
+            var useHtml = this._data.dataLabels.useHtml || !L.Browser.svg;
             if(useHtml){
                 this._text = document.createElement('div');
                 this._text.style.position = 'absolute';
@@ -7268,7 +7275,7 @@
                     startY = -radius-this._data.labelDim.height;
                 }else{
                     var iconHeight = this._data.icon.iconSize[1];
-                    startY = -iconHeight -this._data.labelDim.height;
+                    startY = -iconHeight/2 -this._data.labelDim.height;
                 }
             }
 
@@ -7280,11 +7287,11 @@
                 var labelStyle = label.style;
 
                 if(useHtml){
-                    var div = document.createElement('div')
+                    var div = document.createElement('div');
                     div.innerHTML = labelText;
                     div.style.zIndex = 1001;
                     div.style.position = 'absolute';
-                    div.style.left = -labelDim.x/2 + 'px';
+                    div.style.left = -labelDim.width/2 + 'px';
                     div.style.top = startY + 'px';
                     div.style.overflow = 'hidden';
                     div.style.whiteSpace = 'nowrap';
@@ -8492,7 +8499,7 @@
         },
 
         _removeText:function(layer){
-
+            L.DomUtil.remove(layer._text);
         },
 
         _initPath: function (layer) {
@@ -9744,6 +9751,19 @@
         },
 
         _onDown: function (e) {
+
+            var first = e.touches ? e.touches[0] : e;
+
+            var vanchart = this.map.vanchart;
+            if(vanchart && vanchart.components.rangeLegend){
+                var rangeLegend = vanchart.components.rangeLegend;
+                if(rangeLegend.componentOption.visible){
+                    if(VanUtils.containsPoint(rangeLegend.bounds, [first.clientX, first.clientY])){
+                        return;
+                    }
+                }
+            }
+
             // Ignore simulated events, since we handle both touch and
             // mouse explicitly; otherwise we risk getting duplicates of
             // touch events, see #4315.
@@ -9768,8 +9788,6 @@
             // @event down: Event
             // Fired when a drag is about to start.
             this.fire('down');
-
-            var first = e.touches ? e.touches[0] : e;
 
             this._startPoint = new L.Point(first.clientX, first.clientY);
             this._startPos = this._newPos = L.DomUtil.getPosition(this._element);
@@ -9980,6 +9998,8 @@
                 var map = this._map;
 
                 this._draggable = new L.Draggable(map._mapPane, map._container);
+
+                this._draggable.map = map;
 
                 this._draggable.on({
                     down: this._onDown,

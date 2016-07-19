@@ -279,6 +279,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if (BI.has(data, "t")) {
             var top = data.t, left = data.l;
             return BI.map(top.c, function (id, tObj) {
+                if(BI.isNull(tObj.c)){
+                    return {
+                        data: [],
+                        name: BI.Utils.getDimensionNameByID(tObj.n)
+                    };
+                }
                 var name = tObj.n, seriesName = tObj.n;
                 if (BI.isNotNull(seriesGroup) && seriesGroup.type === BICst.GROUP.YMD) {
                     var date = new Date(BI.parseInt(name));
