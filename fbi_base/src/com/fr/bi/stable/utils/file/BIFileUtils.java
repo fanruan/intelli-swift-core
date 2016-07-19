@@ -55,8 +55,8 @@ public class BIFileUtils {
 
     private static long MAX_PERSIZE = 1L << 24;
 
-    public static void delete(File f) {
-        StableUtils.deleteFile(f);
+    public static boolean delete(File f) {
+        return StableUtils.deleteFile(f);
     }
 
     public static void createDirs(File f) {

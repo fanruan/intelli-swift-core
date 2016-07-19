@@ -401,7 +401,7 @@ public class BICubeOperationManager {
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
         CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
 /*若没有更新设置,按默认处理*/
-        if (null == tableUpdateSetting || ComparatorUtils.equals(0, cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).getCubeVersion())) {
+        if (null == tableUpdateSetting || ComparatorUtils.equals(0, cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable())) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         } 
         /*全局更新时该表不更新*/
