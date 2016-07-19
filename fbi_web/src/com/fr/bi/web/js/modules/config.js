@@ -1165,13 +1165,16 @@ BICst.CONF_STATISTIC_DATE = [{
 }];
 //选色
 BICst.CHART_COLORS = [{
-    text: BI.i18nText("BI-Default"),
+    header: BI.i18nText("BI-Default"),
+    text: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
     value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
 }, {
-    text: BI.i18nText("BI-Bright"),
+    header: BI.i18nText("BI-Bright"),
+    text: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
     value: ["#9193ac", "#779ae3", "#e6a469", "#eddc80", "#9889d0"]
 }, {
-    text: BI.i18nText("BI-Elegant"),
+    header: BI.i18nText("BI-Elegant"),
+    text: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
     value: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"]
 }];
 
