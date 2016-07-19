@@ -45,7 +45,7 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
         _defaultConfig: function () {
             return BI.extend(BI.MultiDateCombo.superclass._defaultConfig.apply(this, arguments), {
                 baseCls: 'bi-multidate-combo',
-                height: 25
+                height: 24
             });
         },
         _init: function () {

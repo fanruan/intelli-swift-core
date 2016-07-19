@@ -334,3 +334,4 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
     }
 });
 BI.BubbleChart.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut('bi.bubble_chart', BI.BubbleChart);
