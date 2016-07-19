@@ -7,9 +7,10 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
     _constants: {
         SHOW_CHART: 1,
-        SHOW_FILTER: 2
+        SHOW_FILTER: 2,
+        TOOL_ICON_WIDTH: 20,
+        TOOL_ICON_HEIGHT: 20
     },
-
     _defaultConfig: function () {
         return BI.extend(BIDezi.DetailTableView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget"
@@ -105,8 +106,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 textAlign: "left",
                 height: 25,
                 allowBlank: false,
-                errorText: function(v) {
-                    if(BI.isNotNull(v) && v.trim() !== "") {
+                errorText: function (v) {
+                    if (BI.isNotNull(v) && v.trim() !== "") {
                         return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
                     }
                     return BI.i18nText("BI-Widget_Name_Can_Not_Null");
@@ -127,8 +128,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         var self = this;
         var filter = BI.createWidget({
             type: "bi.icon_button",
-            width: 16,
-            height: 16,
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT,
             title: BI.i18nText("BI-Show_Filters"),
             cls: "widget-tools-filter-font dashboard-title-detail"
         });
@@ -138,8 +139,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
         var expand = BI.createWidget({
             type: "bi.icon_button",
-            width: 16,
-            height: 16,
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT,
             title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });

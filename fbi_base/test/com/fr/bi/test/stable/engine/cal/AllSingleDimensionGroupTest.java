@@ -135,6 +135,11 @@ public class AllSingleDimensionGroupTest extends TestCase {
                 }
 
                 @Override
+                public Integer getPositionOfGroupByRow(int row) {
+                    return null;
+                }
+
+                @Override
                 public int getGroupSize() {
                     return 0;
                 }
