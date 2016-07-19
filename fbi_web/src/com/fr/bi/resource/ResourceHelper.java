@@ -1318,6 +1318,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.group.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/combo.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/popup.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/svg.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/trigger.customscale.js",

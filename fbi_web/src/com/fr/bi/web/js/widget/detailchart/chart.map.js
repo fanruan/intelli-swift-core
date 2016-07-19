@@ -94,10 +94,12 @@ BI.MapChart = BI.inherit(BI.Widget, {
             switch (self.config.chart_legend){
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.enabled = true;
+                    config.rangeLegend.visible = true;
                     config.rangeLegend.position = "bottom";
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     config.rangeLegend.enabled = true;
+                    config.rangeLegend.visible = true;
                     config.rangeLegend.position = "right";
                     break;
                 case BICst.CHART_LEGENDS.NOT_SHOW:
@@ -107,6 +109,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
             }
             config.rangeLegend.continuous = false;
             config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
+            /*config.rangeLegend.formatter = function(){
+                return this.from;
+            }*/
         }
 
         function formatToolTipAndDataLabel(format, numberLevel){
@@ -183,7 +188,6 @@ BI.MapChart = BI.inherit(BI.Widget, {
                                 from: conditionMax,
                                 to: maxScale
                             });
-
                         }
                         return range;
                     } else {
