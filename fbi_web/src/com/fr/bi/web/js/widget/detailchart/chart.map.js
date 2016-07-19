@@ -70,9 +70,24 @@ BI.MapChart = BI.inherit(BI.Widget, {
         if(this.config.initDrillPath.length > 1){
             config.initDrillPath = this.config.initDrillPath;
         }
+        config.dTools.click = function(){
+            //console.log(arguments);
+            //console.log(this);
+            self.fireEvent(BI.MapChart.EVENT_CHANGE, arguments);
+        };
         config.chartType = "areaMap";
         delete config.xAxis;
         delete config.yAxis;
+
+        var find = BI.find(items, function(idx, item){
+            return BI.has(item, "type") && item.type === "areaMap";
+        });
+        if(BI.isNull(find)){
+            items.push({
+                type: "areaMap",
+                data: []
+            })
+        }
         return [items, config];
 
         function formatRangeLegend(){

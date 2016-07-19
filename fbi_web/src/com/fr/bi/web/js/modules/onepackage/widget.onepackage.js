@@ -499,14 +499,15 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         });
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_CUBE_SAVE, function (obj) {
+            self.model.updateSettings=BI.deepClone(obj.updateSettings);
+            Data.SharingPool.put("fields", self.model.getAllFields());
+            Data.SharingPool.put("update_settings", self.model.updateSettings);
             var data = self.model.getValue();
             Data.SharingPool.put("translations", data.translations);
             Data.SharingPool.put("relations", data.relations);
-            Data.SharingPool.put("fields", self.model.getAllFields());
-            Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
             BI.Utils.updateTablesOfOnePackage(data, function () {
                 // self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
-                BI.Utils.generateCubeByTable(obj, function () {
+                BI.Utils.generateCubeByTable(obj.tableInfo, function () {
                 });
             });
         });

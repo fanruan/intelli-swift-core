@@ -97,6 +97,7 @@ BI.TargetNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _onTypeSelected: function (v) {
+        v = v.field_id || v;
         var fieldType = BI.Utils.getFieldTypeByID(v);
         var self = this, o = this.options;
         var filterItem = BI.TargetFilterItemFactory.createFilterItemByFieldType(fieldType);

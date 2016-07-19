@@ -288,7 +288,10 @@ BI.ETL = BI.inherit(BI.Widget, {
         });
         updateSet.on(BI.UpdateTableData.EVENT_CUBE_SAVE, function (obj) {
             self.model.setUpdateSettings(this.getValue());
-            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, obj)
+            var object = {};
+            object.tableInfo = obj;
+            object.updateSettings=BI.deepClone(this.model.table.update_settings);
+            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, object)
         });
         BI.Popovers.create(this.model.getId(), updateSet).open(this.model.getId());
     },

@@ -115,7 +115,10 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 
     @Override
     public Object getGroupValue(int position) {
-        return null;
+        if (position == sizeOfGroup() - 1){
+            return null;
+        }
+        return getter.getGroupValue(position);
     }
 
     @Override

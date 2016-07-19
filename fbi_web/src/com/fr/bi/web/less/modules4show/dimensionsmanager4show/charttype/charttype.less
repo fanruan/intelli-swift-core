@@ -3,7 +3,23 @@
 .bi-chart-type{
   background: @color-bi-background-normal;
   border: 1px solid @color-bi-border-line;
+  & .chart-type-combo{
+    & .bi-icon-change-button{
+      &:hover, &.hover {
+        background-color: @color-bi-background-dark;
+      }
+      &:active, &.active {
+        background-color: @color-bi-background-dark;
+      }
+    }
+  }
   & .chart-type-icon{
     font-size: 22px;
+    &:hover, &.hover {
+      background-color: @color-bi-background-dark;
+    }
+    &:active, &.active {
+      background-color: @color-bi-background-dark;
+    }
   }
 }

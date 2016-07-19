@@ -186,12 +186,17 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public IntList getRemovedList() {
-        return new IntList();
+        return primaryTable.getRemovedList();
     }
+
 
     @Override
     public GroupValueIndex getAllShowIndex() {
+        if(null!=getRemovedList()) {
+            return GVIFactory.createGroupValueIndexBySimpleIndex(getRemovedList()).NOT(getRowCount());
+        }else {
         return GVIFactory.createAllShowIndexGVI(getRowCount());
+        }
     }
 
     @Override

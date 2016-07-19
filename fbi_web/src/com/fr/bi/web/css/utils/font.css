@@ -2919,23 +2919,23 @@
   content: "\e672";
   color: #808080;
 }
-.calculate-target-font .b-font:before {
+.calculate-function-font .b-font:before {
   content: "\e6a3";
   color: #808080;
 }
-.calculate-target-font:hover .b-font:before,
-.calculate-target-font:focus .b-font:before,
-.calculate-target-font.hover .b-font:before {
+.calculate-function-font:hover .b-font:before,
+.calculate-function-font:focus .b-font:before,
+.calculate-function-font.hover .b-font:before {
   content: "\e6a3";
   color: #808080;
 }
-.calculate-target-font:active .b-font:before,
-.calculate-target-font.active .b-font:before {
+.calculate-function-font:active .b-font:before,
+.calculate-function-font.active .b-font:before {
   content: "\e6a3";
   color: #ffffff;
 }
-.calculate-target-font.native .b-font:before,
-.calculate-target-font.disabled .b-font:before {
+.calculate-function-font.native .b-font:before,
+.calculate-function-font.disabled .b-font:before {
   content: "\e6a3";
   color: #808080;
 }
@@ -3109,6 +3109,15 @@
 .target-style-more-arrow-font.disabled .b-font:before {
   content: "\e6a0";
   color: #58cc7d;
+}
+.calculate-target-font .b-font:before {
+  content: "\e6a3";
+  color: #1a1a1a;
+}
+.calculate-target-font.native .b-font:before,
+.calculate-target-font.disabled .b-font:before {
+  content: "\e6a3";
+  color: #1a1a1a;
 }
 .task-list-font .b-font:before {
   content: "\e694";
