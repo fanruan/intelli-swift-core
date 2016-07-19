@@ -14,10 +14,10 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
         BI.AuthoritySelectData.superclass._init.apply(this, arguments);
         var self = this;
 
-        BI.Utils.getAllPackages(function(packs){
+        BI.Utils.getAllPackages(function (packs) {
             self.packs = packs;
             var ids = BI.Utils.getAllPackageIDs4Conf();
-            if(BI.isEmptyArray(ids)) {
+            if (BI.isEmptyArray(ids)) {
                 ids = [BI.Utils.getCurrentPackageId4Conf()]
             }
             self.selectDataPane.setPackage(ids[0]);
@@ -29,7 +29,7 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
             showRelativeTables: false,
             showExcelView: false,
             showDateGroup: false,
-            packageCreator: function() {
+            packageCreator: function () {
                 return BI.Utils.getAllGroupedPackagesTree();
             },
             tablesCreator: function (packageId) {
@@ -39,7 +39,7 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
                 return self._getFieldsStructureByTableId(tableId);
             }
         });
-        this.selectDataPane.on(BI.PackageSelectDataService.EVENT_CLICK_ITEM, function(){
+        this.selectDataPane.on(BI.PackageSelectDataService.EVENT_CLICK_ITEM, function () {
             self.fireEvent(BI.AuthoritySelectData.EVENT_CONFIRM, arguments);
         });
     },
@@ -49,7 +49,7 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
         var tablesStructure = [];
         var translations = Data.SharingPool.get("translations");
         var tables = self.packs[pId];
-        BI.each(tables, function(id, table){
+        BI.each(tables, function (id, table) {
             tablesStructure.push({
                 id: id,
                 type: "bi.select_data_level0_node",
@@ -65,7 +65,7 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
 
     _getFieldsStructureByTableId: function (tableId) {
         var fieldStructure = [];
-        BI.some(this.packs, function(pId, pack) {
+        BI.some(this.packs, function (pId, pack) {
             return BI.some(pack, function (tId, fields) {
                 if (tableId === tId) {
                     BI.each(fields, function (i, field) {
@@ -75,7 +75,7 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
                             type: "bi.select_data_level0_item",
                             fieldType: field.field_type,
                             text: field.field_name,
-                            value: field
+                            value: field.id
                         })
                     });
                 }
