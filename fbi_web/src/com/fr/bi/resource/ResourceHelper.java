@@ -707,7 +707,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/widget.summarytable.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/combo/sortfilter.combo.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/tablechartmanager.css",
-                "com/fr/bi/web/css/modules/tablechartmanager/chartdisplay/chartdisplay.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/errorpane/tablechart.errorpane.css",
 
                 //自适应布局
@@ -1329,7 +1328,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/widget.chartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/settings/charts.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/axischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/bubblechart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/multiaxischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/percentchart.setting.js",
@@ -1992,6 +1991,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/set.js",
                 "com/fr/bi/web/js/base/utils/lru.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
+
+                "com/fr/bi/web/js/base/parsers/expression.js",
+                "com/fr/bi/web/js/base/parsers/path.js",
 
                 "com/fr/bi/web/js/base/action/action.js",
                 "com/fr/bi/web/js/base/action/action.show.js",

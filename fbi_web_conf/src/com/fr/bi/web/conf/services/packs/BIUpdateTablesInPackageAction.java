@@ -3,6 +3,7 @@ package com.fr.bi.web.conf.services.packs;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -99,6 +100,8 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             if (tableJson != null) {
                 BusinessTable table= pack.getSpecificTable(new BITableID(tableId));
                 BICubeConfigureCenter.getDataSourceManager().addTableSource(table, TableSourceFactory.createTableSource(tableJson, userId));
+                for (BusinessField businessField : table.getFields()) {
+                }
             } else {
                 BILogger.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }

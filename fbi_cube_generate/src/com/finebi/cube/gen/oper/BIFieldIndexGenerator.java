@@ -125,7 +125,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     private GroupValueIndex buildGroupValueIndex(IntList groupRowNumbers) {
-        return GVIFactory.createGroupVauleIndexBySimpleIndex(groupRowNumbers);
+        return GVIFactory.createGroupValueIndexBySimpleIndex(groupRowNumbers);
     }
 
     private Map<T, IntList> createTreeMap(IntList nullRowNumbers) {

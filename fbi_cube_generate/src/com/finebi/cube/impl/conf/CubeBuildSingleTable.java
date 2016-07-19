@@ -110,11 +110,6 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     }
 
     @Override
-    public Map<CubeTableSource, Long> getVersions() {
-        return null;
-    }
-
-    @Override
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
         return new HashSet<BICubeGenerateRelationPath>();
     }
@@ -136,23 +131,6 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
 
     public void setDependTableResource(Set<List<Set<CubeTableSource>>> dependTableResource) {
         this.dependTableResource = dependTableResource;
-    }
-
-    /**
-     * @param packs the packs to set
-     */
-    public void setPacks(Set<IBusinessPackageGetterService> packs, long userId) {
-        this.packs = packs;
-        this.sources = new HashSet<CubeTableSource>();
-        allBusinessTable = new HashSet<BIBusinessTable>();
-        for (IBusinessPackageGetterService pack : packs) {
-            Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
-            while (tIt.hasNext()) {
-                BIBusinessTable table = tIt.next();
-                allBusinessTable.add(table);
-                sources.add(table.getTableSource());
-            }
-        }
     }
 
 

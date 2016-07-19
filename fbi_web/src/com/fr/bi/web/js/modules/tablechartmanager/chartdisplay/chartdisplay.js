@@ -27,10 +27,11 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
 
         this.tab = BI.createWidget({
             type: "bi.tab",
-            cls: "chart-tab",
             element: this.element,
             cardCreator: BI.bind(this._createTabs, this)
         });
+
+        this.tab.element.css("z-index", 1);
 
         this.errorPane = BI.createWidget({
             type: "bi.table_chart_error_pane",
