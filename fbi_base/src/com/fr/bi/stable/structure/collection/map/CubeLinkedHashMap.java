@@ -18,7 +18,7 @@ public class CubeLinkedHashMap extends LinkedHashMap implements
 
     @Override
     public Object getGroupValue(int position) {
-        return null;
+        return getKey(position);
     }
 
     @Override

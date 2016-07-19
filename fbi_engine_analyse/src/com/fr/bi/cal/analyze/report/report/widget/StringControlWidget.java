@@ -47,7 +47,7 @@ public class StringControlWidget extends BISummaryWidget {
     public JSONObject createDataJSON(BISessionProvider session) throws JSONException {
         BIDimension dimension = getDimensions()[0];
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
-        ICubeColumnIndexReader reader = calculator.createNoneSortNoneGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
+        ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
         Set<String> selected_value = new HashSet<String>();
 
         if (selected_values != null && StringUtils.isNotEmpty(selected_values)) {
@@ -68,7 +68,11 @@ public class StringControlWidget extends BISummaryWidget {
         int count = 0;
         String keyword = this.keyword.toLowerCase();
         for (int i = 0; i < reader.sizeOfGroup(); i ++){
-            String str = reader.getGroupValue(i).toString();
+            Object ob = reader.getGroupValue(i);
+            if (ob == null){
+                continue;
+            }
+            String str = ob.toString();
             if (match(str, keyword, selectedValue)){
                 count++;
             }
@@ -118,7 +122,11 @@ public class StringControlWidget extends BISummaryWidget {
         int matched = 0;
         String key = this.keyword.toLowerCase();
         for (int i = 0; i < reader.sizeOfGroup(); i ++){
-            String str = reader.getGroupValue(i).toString();
+            Object ob = reader.getGroupValue(i);
+            if (ob == null){
+                continue;
+            }
+            String str = ob.toString();
             if (match(str, key, selectedValue)){
                 if (matched >= start && matched < end){
                     if(ComparatorUtils.equals(keyword, str)){
