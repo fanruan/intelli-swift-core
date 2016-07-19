@@ -33,7 +33,7 @@ public class GVIFactory {
      *
      * @param rowCount 行数
      */
-    public static GroupValueIndex createGroupVauleIndexBySimpleIndex(IntList list) {
+    public static GroupValueIndex createGroupValueIndexBySimpleIndex(IntList list) {
         if(list.size() == 0){
         	return RoaringGroupValueIndex.createAllEmptyGroupValueIndex();
         }

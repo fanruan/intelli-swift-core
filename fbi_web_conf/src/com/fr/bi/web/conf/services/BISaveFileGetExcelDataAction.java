@@ -2,6 +2,7 @@ package com.fr.bi.web.conf.services;
 
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.utils.excel.CSVTokenizer;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.utils.BIGetImportedExcelData;
@@ -13,7 +14,6 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.arhyme.csv.CSVTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -44,7 +44,7 @@ public class RangeIndexGetterTest extends TestCase {
         }
         CubeTreeMap<Integer> getter = new CubeTreeMap<Integer>(ComparatorFacotry.INTEGER_ASC);
         for (Map.Entry<Integer, IntList> entry : treeMap.entrySet()){
-            getter.put(entry.getKey(), GVIFactory.createGroupVauleIndexBySimpleIndex(entry.getValue()));
+            getter.put(entry.getKey(), GVIFactory.createGroupValueIndexBySimpleIndex(entry.getValue()));
         }
         return getter;
     }

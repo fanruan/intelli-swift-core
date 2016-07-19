@@ -64,17 +64,28 @@ AddConditionView = BI.inherit(BI.View, {
             }]
         });
 
-        var formula = BI.createWidget({
+        var formulaTrigger = BI.createWidget({
             type: "bi.custom_scale_trigger",
             height: 30,
             width: 120
         });
 
+        var svg = BI.createWidget({
+            type: "bi.svg-custom-scale",
+            height: 350,
+            width: 650
+        });
+
+        var formula = BI.createWidget({
+            type: "bi.popup-custom-scale"
+        });
+
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            items: [interval , formula],
-            hgap: 10
+            items: [interval , formulaTrigger , svg , formula],
+            hgap: 10,
+            vgap: 10
         });
     }
 

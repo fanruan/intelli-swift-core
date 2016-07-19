@@ -99,7 +99,7 @@ public class AllSingleDimensionGroupTest extends TestCase {
             Iterator<Entry<String, IntList>> iter = treeMap.entrySet().iterator();
             while (iter.hasNext()) {
                 Entry<String, IntList> entry = iter.next();
-                map.put(entry.getKey(), GVIFactory.createGroupVauleIndexBySimpleIndex(entry.getValue()));
+                map.put(entry.getKey(), GVIFactory.createGroupValueIndexBySimpleIndex(entry.getValue()));
                 IntList v = entry.getValue();
                 double result = 0;
                 Integer[] array = v.toArray();

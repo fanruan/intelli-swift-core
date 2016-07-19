@@ -263,10 +263,6 @@
             return views[tableId];
         },
 
-        getPreviewTableDataByTableId: function (tableId, callback) {
-            Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
-        },
-
         /**
          * 字段相关
          */
@@ -952,6 +948,12 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
                 BICst.DEFAULT_CHART_SETTING.show_zoom;
+        },
+
+        getWSNullContinueByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
+                BICst.DEFAULT_CHART_SETTING.nullContinue;
         },
 
         getWSTextDirectionByID: function (wid) {
@@ -1717,6 +1719,60 @@
         /**
          * 数据相关
          */
+
+        getPreviewTableDataByTableId: function (tableId, callback) {
+            //构造一个明细表
+            var self = this;
+            var fields = this.getSortedFieldIdsOfOneTableByTableId(tableId);
+            var dimensions = {}, view = {10000: []};
+            BI.each(fields, function(i, fieldId) {
+                var id = BI.UUID();
+                var dimensionMap = {}, group = {};
+                dimensionMap[tableId] = {
+                    target_relation: []
+                };
+                if(self.getFieldTypeByID(fieldId) === BICst.COLUMN.DATE) {
+                    group.type = BICst.GROUP.YMDHMS;
+                }
+                var dType = BICst.TARGET_TYPE.STRING;
+                switch (self.getFieldTypeByID(fieldId)) {
+                    case BICst.COLUMN.DATE:
+                        dType = BICst.TARGET_TYPE.DATE;
+                        break;
+                    case BICst.COLUMN.NUMBER:
+                        dType = BICst.TARGET_TYPE.NUMBER;
+                }
+                dimensions[id] = {
+                    name: id,
+                    _src: {
+                        field_id: fieldId,
+                        table_id: tableId
+                    },
+                    type: dType,
+                    used: true,
+                    dimension_map: dimensionMap,
+                    group: group
+                };
+                view[10000].push(id);
+            });
+            var widget = {
+                type: BICst.WIDGET.DETAIL,
+                bounds: {
+                    height: 0,
+                    width: 0,
+                    left: 0,
+                    top: 0
+                },
+                name: "__StatisticWidget__" + BI.UUID(),
+                page: 0,
+                dimensions: dimensions,
+                view: view
+            };
+            Data.Req.reqWidgetSettingByData({widget: widget}, function (res) {
+                callback(res.data);
+            });
+        },
+
         getDataByFieldID: function (fid, callback) {
             var d = {
                 type: BICst.WIDGET.TABLE,
