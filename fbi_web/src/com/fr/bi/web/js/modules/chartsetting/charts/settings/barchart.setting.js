@@ -65,7 +65,6 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
             cls: "single-line-settings",
-            verticalAlign: "top",
             columnSize: [100],
             items: [{
                 type: "bi.label",
