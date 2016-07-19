@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -24,7 +23,6 @@ import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.exception.BITableUnreachableException;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
@@ -480,16 +478,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
 
-                if (((StringDimensionCalculator) ck).getSelfToSelfRelationPath() != null) {
-                    ICubeColumnIndexReader selfToSelfColumnReader = session.getLoader().getTableIndex(ckp.getField().getTableBelongTo().getTableSource()).loadGroup(ckp.createKey(), BIConfUtils.convert2TableSourceRelation(((StringDimensionCalculator) ck).getSelfToSelfRelationPath().getAllRelations()));
-                    Iterator<Map.Entry> it = selfToSelfColumnReader.iterator();
-                    GroupValueIndex selfGvi = GVIFactory.createAllEmptyIndexGVI();
-                    while (it.hasNext()) {
-                        Map.Entry e = it.next();
-                        selfGvi = selfGvi.OR((GroupValueIndex) e.getValue());
-                    }
-                    gvi = gvi.AND(selfGvi);
-                }
+
             }
             v = v.getParent();
         }
