@@ -218,10 +218,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
                 title: title,
-                value: {
-                    field_id: fieldId,
-                    relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0]
-                }
+                value: fieldId
             }, f));
         });
         return fieldStructure;
@@ -277,41 +274,20 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
             var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             //日期类型-特殊处理
             if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
-                var _type = isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item";
-                if (isRelation === true) {
-                    fieldStructure.push({
-                        id: fid,
-                        pId: tableId,
-                        type: "bi.select_data_expander",
-                        el: {
-                            type: "bi.detail_select_data_level2_date_node",
-                            wId: o.wId,
-                            _type: field.type || _type,
-                            text: fieldName,
-                            title: title,
-                            value: fid,
-                            isParent: true,
-                            open: false
-                        },
-                        popup: {
-                            items: self._buildDateChildren(tableId, field, isRelation)
-                        }
-                    })
-                } else {
-                    fieldStructure.push({
-                        id: fid,
-                        pId: tableId,
-                        wId: o.wId,
-                        _type: field.type || _type,
-                        type: "bi.detail_select_data_level1_date_node",
-                        fieldType: BI.Utils.getFieldTypeByID(fid),
-                        text: fieldName,
-                        title: title,
-                        value: fid,
-                        isParent: true
-                    });
-                    fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
-                }
+                var _type = "bi.detail_select_data_level1_item";
+                fieldStructure.push({
+                    id: fid,
+                    pId: tableId,
+                    wId: o.wId,
+                    _type: field.type || _type,
+                    type: "bi.detail_select_data_level1_date_node",
+                    fieldType: BI.Utils.getFieldTypeByID(fid),
+                    text: fieldName,
+                    title: title,
+                    value: fid,
+                    isParent: true
+                });
+                fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
             } else {
                 fieldStructure.push(BI.extend({
                     id: fid,
