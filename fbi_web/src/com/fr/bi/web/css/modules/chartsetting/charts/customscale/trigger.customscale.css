@@ -13,6 +13,9 @@
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
+.bi-custom-scale-trigger .view-button:hover {
+  background: #009de3;
+}
 .bi-custom-scale-trigger .view-button:active {
   background: #009de3;
 }

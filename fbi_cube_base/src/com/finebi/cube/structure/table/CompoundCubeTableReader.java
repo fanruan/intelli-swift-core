@@ -166,8 +166,10 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     public IntList getRemovedList() {
         if (hostTable.isRemovedListAvailable()) {
             return hostTable.getRemovedList();
-        } else {
+        } else if (null!=parentTable&&parentTable.isRemovedListAvailable()){
             return parentTable.getRemovedList();
+        }else {
+            return  new IntList();
         }
 
     }

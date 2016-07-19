@@ -531,9 +531,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                 if (path.length === 1) {
                                     var target_relation = path[0];
                                     dimensions[dId].dimension_map[idx] = {
-                                        _src: {
-                                            field_id: fId
-                                        },
+                                        _src: src._src,
                                         target_relation: [target_relation]
                                     };
                                 }
