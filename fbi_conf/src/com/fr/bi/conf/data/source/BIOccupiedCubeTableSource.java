@@ -84,11 +84,19 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
 
     @Override
     public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
+        /**
+         * 返回-1表示当前行数是无效的。不能改为0行。否则在读取数据的时候会安装0行来读取了
+         */
         return -1;
     }
 
     @Override
     public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+        return -1;
+    }
+
+    @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
         return -1;
     }
 
@@ -149,8 +157,8 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
     }
 
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
-        return null;
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
+        return set;
     }
 
     @Override

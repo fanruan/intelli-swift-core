@@ -7,6 +7,7 @@ BIDezi.NumberDetailView = BI.inherit(BI.View, {
 
     constants: {
         DETAIL_NORTH_HEIGHT: 40,
+        DETAIL_TAB_WIDTH: 100,
         DETAIL_TAB_HEIGHT: 40,
         DETAIL_WEST_WIDTH: 280,
         DETAIL_DATA_STYLE_HEIGHT: 320,
@@ -91,7 +92,7 @@ BIDezi.NumberDetailView = BI.inherit(BI.View, {
             type: "bi.absolute",
             items: [{
                 el: {
-                    type: BI.Utils.isRealTime() ? "bi.select_number_4_realtime" : "bi.select_number",
+                    type: "bi.select_number",
                     wId: this.model.get("id"),
                     cls: "widget-select-data-pane"
                 },
@@ -112,10 +113,25 @@ BIDezi.NumberDetailView = BI.inherit(BI.View, {
             cls: "widget-top-wrapper",
             items: [{
                 el: {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Data")
+                    type: "bi.button_group",
+                    items: BI.createItems([{
+                        text: BI.i18nText("BI-Data"),
+                        selected: true
+                    }], {
+                        type: "bi.line_segment_button",
+                        height: this.constants.DETAIL_TAB_HEIGHT
+                    }),
+                    height: this.constants.DETAIL_TAB_HEIGHT,
+                    layouts: [{
+                        type: "bi.absolute_center_adapt",
+                        items: [{
+                            type: "bi.center",
+                            width: this.constants.DETAIL_TAB_WIDTH,
+                            height: this.constants.DETAIL_TAB_HEIGHT
+                        }]
+                    }]
                 },
-                height: 30
+                height: this.constants.DETAIL_TAB_HEIGHT
             }, {
                 el: this._createRegion()
             }]

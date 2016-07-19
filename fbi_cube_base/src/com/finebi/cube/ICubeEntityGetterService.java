@@ -1,7 +1,7 @@
 package com.finebi.cube;
 
 import com.fr.bi.base.key.BIKey;
-import com.finebi.cube.structure.ICubeTableEntityGetterService;
+import com.finebi.cube.structure.CubeTableEntityGetterService;
 
 /**
  * This class created on 2016/3/2.
@@ -18,5 +18,5 @@ public interface ICubeEntityGetterService {
      * @param tableKey table的key值
      * @return table的只读接口
      */
-    ICubeTableEntityGetterService getCubeTableGetter(BIKey tableKey);
+    CubeTableEntityGetterService getCubeTableGetter(BIKey tableKey);
 }

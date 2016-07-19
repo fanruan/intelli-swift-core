@@ -6494,6 +6494,19 @@
             }
         },
 
+        beforeAdd:function(map){
+            this._renderer = map.getRenderer(this);
+        },
+
+        onAdd: function (map) {
+            this._renderer._initGroup(this);
+            this._renderer._addGroup(this);
+
+            for (var i in this._layers) {
+                map.addLayer(this._layers[i]);
+            }
+        },
+
         // @method addLayer(layer: Layer): this
         // Adds the given layer to the group.
         addLayer: function (layer) {
@@ -6502,6 +6515,7 @@
             this._layers[id] = layer;
 
             if (this._map) {
+                layer._layerGroup = this;
                 this._map.addLayer(layer);
             }
 
@@ -6557,12 +6571,6 @@
             }
 
             return this;
-        },
-
-        onAdd: function (map) {
-            for (var i in this._layers) {
-                map.addLayer(this._layers[i]);
-            }
         },
 
         onRemove: function (map) {
@@ -6621,8 +6629,6 @@
     L.layerGroup = function (layers) {
         return new L.LayerGroup(layers);
     };
-
-
 
     /*
      * @class FeatureGroup
@@ -7225,8 +7231,124 @@
         }
     };
 
-    L.scatterMarker = function (latlng, options, data) {
-        return new L.ScatterMarker(latlng, options, data);
+    L.text = function(latlng, options, data){
+        return new L.Text(latlng, options, data);
+    };
+
+    L.Text = L.Layer.extend({
+
+        initialize: function (latlng, options, data) {
+            this._latlng = L.latLng(latlng);
+            this._data = data;
+        },
+
+        beforeAdd: function (map) {
+            this._renderer = map.getRenderer(this);
+        },
+
+        onAdd: function () {
+            var useHtml = this._data.dataLabels.useHtml;
+            if(useHtml){
+                this._text = document.createElement('div');
+                this._text.style.position = 'absolute';
+                this._text.style['pointer-events'] = 'none';
+                this.getPane().appendChild(this._text);
+            }else{
+                this._renderer._initText(this);
+                this._renderer._addText(this);
+            }
+
+            var labelContent = this._data.labelContent;
+            var centerX = 0, startY = -this._data.labelDim.height/2;
+            var chartType = this._data.series.type;
+            if(chartType == 'scatter' || chartType == 'pointMap'){
+
+                if(this._data.marker && !VanUtils.isImageMarker(this._data.marker.symbol)){
+                    var radius = this._data.marker.radius || 4.5;
+                    startY = -radius-this._data.labelDim.height;
+                }else{
+                    var iconHeight = this._data.icon.iconSize[1];
+                    startY = -iconHeight -this._data.labelDim.height;
+                }
+            }
+
+            for(var i = 0, count = labelContent.length; i < count; i++){
+                var label = labelContent[i];
+
+                var labelDim = label.dim;
+                var labelText = label.text;
+                var labelStyle = label.style;
+
+                if(useHtml){
+                    var div = document.createElement('div')
+                    div.innerHTML = labelText;
+                    div.style.zIndex = 1001;
+                    div.style.position = 'absolute';
+                    div.style.left = -labelDim.x/2 + 'px';
+                    div.style.top = startY + 'px';
+                    div.style.overflow = 'hidden';
+                    div.style.whiteSpace = 'nowrap';
+
+                    for(var fontStyle in labelStyle){
+                        //ie789的color属性只能是16进制的值
+                        if(fontStyle == 'color'){
+                            div.style.color = ColorUtils.colorToHex(labelStyle.color);
+                        }else {
+                            div.style[fontStyle] = labelStyle[fontStyle];
+                        }
+                    }
+                    this._text.appendChild(div);
+                }else{
+                    d3.select(this._text).append('tspan')
+                        .attr('x', centerX).attr('y', startY + labelDim.height/2)
+                        .attr('dy', '.32em').attr("text-anchor", "middle")
+                        .text(labelText);
+
+                    VanUtils.setTextStyle(d3.select(this._text), labelStyle);
+                }
+                startY += (labelDim.height + 2);
+            }
+
+            this._reset();
+        },
+
+        onRemove: function () {
+            this._renderer._removeText(this);
+        },
+
+        getEvents: function () {
+            return {
+                zoomend: this._project,
+                moveend: this._update,
+                viewreset: this._reset
+            };
+        },
+
+        _reset: function () {
+            // defined in children classes
+            this._project();
+            this._update();
+        },
+
+        _project: function () {
+            this._point = this._map.latLngToLayerPoint(this._latlng);
+        },
+
+        _update: function () {
+            if (this._map) {
+                if(this._text.tagName.toLowerCase() == 'div'){
+                    this._text.style.left = this._point.x + 'px';
+                    this._text.style.top = this._point.y + 'px';
+                }else{
+                    this._text.setAttribute("transform", 'translate(' + this._point.x + ',' + this._point.y + ')');
+                }
+            }
+        }
+    });
+
+
+    L.scatterMarker = function (latlng, options, data, renderer) {
+        return new L.ScatterMarker(latlng, options, data, renderer);
     };
 
     //固定pixel大小的标记点
@@ -7237,10 +7359,11 @@
             radius:'4.5'
         },
 
-        initialize: function (latlng, options, data) {
+        initialize: function (latlng, options, data, renderer) {
             L.setOptions(this, options);
             this._latlng = L.latLng(latlng);
             this._data = data;
+            this.renderer = renderer;
         },
 
         // @method getLatLng(): LatLng
@@ -7250,38 +7373,9 @@
         },
 
         _getMarkerPath:function(){
-
             var markerType = this.options.markerType;
             var r = this.options.radius;
-            var p = this._point;
-
-            var points = [];
-
-            switch(markerType){
-                case 'circle':
-                case 'circle_hollow':
-                    var arc = 'a' + r + ',' + r + ' 0 1,0 ';
-                    return  'M' + (p.x - r) + ',' + p.y + arc + (r * 2) + ',0 ' + arc + (-r * 2) + ',0 ';
-                case 'square':
-                case 'square_hollow':
-                    points = [{x:-r, y:-r}, {x:r, y:-r}, {x:r, y:r}, {x:-r, y:r}];
-                    break;
-                case 'diamond':
-                case 'diamond_hollow':
-                    r = r * 2 / Math.sqrt(2);
-                    points = [{x:-r, y:0}, {x:0, y:-r}, {x:r, y:0}, {x:0, y:r}]
-                    break;
-                case 'triangle':
-                case 'triangle_hollow':
-                    points = [{x:-r, y:r/Math.sqrt(3)}, {x:0, y:-(2 * Math.sqrt(3) / 3) * r}, {x:r, y:r/Math.sqrt(3)}];
-            }
-
-            points.forEach(function(point){
-                point.x += p.x;
-                point.y += p.y;
-            });
-
-            return L.SVG.pointsToPath(points, true)
+            return this.renderer._getMarkerPath(markerType, r);
         },
 
         _project: function () {
@@ -7295,7 +7389,15 @@
         },
 
         _updatePath: function () {
-            this._path.setAttribute('d', this._getMarkerPath());
+            var p = this._point;
+            if(L.Browser.svg){
+                this._path.setAttribute('d', this._getMarkerPath());
+                this._path.setAttribute('transform', 'translate(' + p.x + ',' + p.y + ')');
+            }else{
+                this._container.style.left = p.x + 'px';
+                this._container.style.top = p.y + 'px';
+                this._path.v = this.renderer.path2vml(this._getMarkerPath());
+            }
         },
 
         _empty: function () {
@@ -8166,8 +8268,30 @@
             this._updateStyle(layer);
         },
 
+        _initGroup:function(layerGroup){
+            layerGroup._g = L.SVG.create('g');
+        },
+
+        _addGroup:function(layerGroup){
+            this._container.appendChild(layerGroup._g);
+        },
+
+        _initText:function(layer){
+            layer._text = L.SVG.create('text');
+        },
+
+        _addText:function(layer){
+            var parent = (layer._layerGroup && layer._layerGroup._g) || this._rootGroup;
+            parent.appendChild(layer._text);
+        },
+
+        _removeText:function(layer){
+            L.DomUtil.remove(layer._text);
+        },
+
         _addPath: function (layer) {
-            this._rootGroup.appendChild(layer._path);
+            var parent = (layer._layerGroup && layer._layerGroup._g) || this._rootGroup;
+            parent.appendChild(layer._path);
             layer.addInteractiveTarget(layer._path);
         },
 
@@ -8216,6 +8340,8 @@
             } else {
                 path.setAttribute('fill', 'none');
             }
+
+            path.setAttribute('filter', options.filter ? options.filter : '');
         },
 
         _updatePoly: function (layer, closed) {
@@ -8336,11 +8462,37 @@
 
         _initContainer: function () {
             this._container = L.DomUtil.create('div', 'leaflet-vml-container');
+            this._container.style.top = '0px';
+            this._container.style.left = '0px';
+            this._container.style.position = 'absolute';
         },
 
         _update: function () {
             if (this._map._animatingZoom) { return; }
             L.Renderer.prototype._update.call(this);
+        },
+
+        _initGroup:function(layerGroup){
+            layerGroup._g = L.SVG.create('group');
+            L.DomUtil.addClass(layerGroup._g, 'leaflet-vml-shape ');
+            layerGroup._g.coordsize = '1 1';
+
+        },
+
+        _addGroup:function(layerGroup){
+            this._container.appendChild(layerGroup._g);
+        },
+
+        _initText:function(layer){
+
+        },
+
+        _addText:function(layer){
+
+        },
+
+        _removeText:function(layer){
+
         },
 
         _initPath: function (layer) {
@@ -8357,8 +8509,9 @@
         },
 
         _addPath: function (layer) {
+            var parent = (layer._layerGroup && layer._layerGroup._g) || this._container;
             var container = layer._container;
-            this._container.appendChild(container);
+            parent.appendChild(container);
 
             if (layer.options.interactive) {
                 layer.addInteractiveTarget(container);
@@ -11324,11 +11477,6 @@
         // @section
         // @aka Control.Attribution options
         options: {
-            position: 'bottomright',
-
-            // @option prefix: String = 'Leaflet'
-            // The HTML text shown before the attributions. Pass `false` to disable.
-            prefix: '<a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>'
         },
 
         initialize: function (options) {

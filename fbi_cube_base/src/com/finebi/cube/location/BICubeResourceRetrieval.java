@@ -91,11 +91,11 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
     }
 
     private ICubeResourceLocation buildTableLocation(String sourceID) throws URISyntaxException {
-        return buildLocation(cubeConfiguration.getRootURI().toString(), sourceID);
+        return buildLocation(cubeConfiguration.getRootURI().getPath(), sourceID);
     }
 
     private ICubeResourceLocation buildRootLocation(String sourceID) throws URISyntaxException {
-        return buildLocation(cubeConfiguration.getRootURI().toString(), sourceID);
+        return buildLocation(cubeConfiguration.getRootURI().getPath(), sourceID);
     }
 
     private ICubeResourceLocation buildRelationLocation(ITableKey tableKey, String relationSourceID) throws URISyntaxException, BICubeResourceAbsentException {

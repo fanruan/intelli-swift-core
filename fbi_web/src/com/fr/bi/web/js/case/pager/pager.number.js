@@ -52,6 +52,8 @@ BI.NumberPager = BI.inherit(BI.Widget, {
                 title: BI.i18nText("BI-Previous_Page"),
                 warningTitle: BI.i18nText("BI-Current_Is_First_Page"),
                 height: o.height - 2,
+                iconWidth: o.height - 2,
+                iconHeight: o.height - 2,
                 cls: "number-pager-prev column-pre-page-h-font"
             },
             next: {
@@ -60,6 +62,8 @@ BI.NumberPager = BI.inherit(BI.Widget, {
                 title: BI.i18nText("BI-Next_Page"),
                 warningTitle: BI.i18nText("BI-Current_Is_Last_Page"),
                 height: o.height - 2,
+                iconWidth: o.height - 2,
+                iconHeight: o.height - 2,
                 cls: "number-pager-next column-next-page-h-font"
             },
 
@@ -91,7 +95,15 @@ BI.NumberPager = BI.inherit(BI.Widget, {
         return this.currentPage;
     },
 
-    setValue: function(v){
+    hasPrev: function () {
+        return this.pager.hasPrev();
+    },
+
+    hasNext: function () {
+        return this.pager.hasNext();
+    },
+
+    setValue: function (v) {
         this.currentPage = v;
         this.pager.setValue(v);
     },

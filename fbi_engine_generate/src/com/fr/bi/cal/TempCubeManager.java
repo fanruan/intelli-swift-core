@@ -1,10 +1,15 @@
 package com.fr.bi.cal;
 
-import com.fr.bi.cal.generate.index.TempIndexGenerator;
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.impl.conf.CubeBuildTableSource;
+import com.fr.bi.base.BIUser;
+import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.common.inter.Release;
-
+import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.BIUserUtils;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 
 import java.util.Map;
@@ -20,9 +25,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TempCubeManager implements Release {
 
     private static Map<TempCubeTask, TempCubeManager> cubeMap = new ConcurrentHashMap<TempCubeTask, TempCubeManager>();
-    private TempIndexGenerator loader;
-    private TempIndexGenerator loaderGenerating;
-    private Queue<TempIndexGenerator> generater;
+    private CubeBuildTableSource cubeBuildTool;
+    private CubeBuildTableSource cubeBuildToolGenerating;
+    private Queue<CubeBuildTableSource> generater;
     private TempCubeTask task;
     private CubeThread cubeThread;
     private Release release;
@@ -34,7 +39,7 @@ public class TempCubeManager implements Release {
     public TempCubeManager(TempCubeTask task) {
         this.task = task;
         this.cubeThread = new CubeThread();
-        this.generater = new ConcurrentLinkedQueue<TempIndexGenerator>();
+        this.generater = new ConcurrentLinkedQueue<CubeBuildTableSource>();
         this.cubeThread.start();
     }
 
@@ -62,21 +67,21 @@ public class TempCubeManager implements Release {
         }
     }
 
-    public TempIndexGenerator getLoader() {
-        if (loader == null) {
-            loader = loaderGenerating;
+    public CubeBuildTableSource getCubeBuildTool() {
+        if (cubeBuildTool == null) {
+            cubeBuildTool = cubeBuildToolGenerating;
         }
-        return loader;
+        return cubeBuildTool;
     }
 
-    public TempIndexGenerator getLoaderGenerating() {
-        return loaderGenerating;
+    public CubeBuildTableSource getCubeBuildToolGenerating() {
+        return cubeBuildToolGenerating;
     }
 
-    public boolean addLoader(TempIndexGenerator loader, Release release) {
-        this.generater.add(loader);
+    public boolean addLoader(CubeBuildTableSource cubeBuildTool, Release release) {
+        this.generater.add(cubeBuildTool);
         synchronized (cubeThread) {
-            this.loaderGenerating = loader;
+            this.cubeBuildToolGenerating = cubeBuildTool;
             this.cubeThread.notifyAll();
             if (this.release == null) {
                 this.release = release;
@@ -87,11 +92,11 @@ public class TempCubeManager implements Release {
 
     @Override
     public void clear() {
-        if (loader != null) {
-            loader = null;
+        if (cubeBuildTool != null) {
+            cubeBuildTool = null;
         }
-        if (loaderGenerating != null) {
-            loaderGenerating = null;
+        if (cubeBuildToolGenerating != null) {
+            cubeBuildToolGenerating = null;
         }
         if (cubeThread != null) {
             cubeThread = null;
@@ -120,9 +125,18 @@ public class TempCubeManager implements Release {
                         }
                     }
                 }
-                loaderGenerating = generater.poll();
-                loaderGenerating.generateCube();
-                loader = loaderGenerating;
+                cubeBuildToolGenerating = generater.poll();
+                BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
+                CubeTask cubeGenerateTask = new BuildCubeTask(new BIUser(task.getUserId()), cubeBuildToolGenerating);
+                cubeManager.addTask(cubeGenerateTask, task.getUserId());
+                cubeBuildTool = cubeBuildToolGenerating;
+                while (cubeManager.hasTask(cubeGenerateTask, task.getUserId())) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        BILogger.getLogger().error(e.getMessage());
+                    }
+                }
                 if (release != null) {
                     release.clear();
                 }

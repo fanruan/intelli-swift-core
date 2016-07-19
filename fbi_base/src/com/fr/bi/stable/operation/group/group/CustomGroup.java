@@ -1,6 +1,7 @@
 package com.fr.bi.stable.operation.group.group;
 
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.AbstractGroup;
@@ -24,14 +25,14 @@ public class CustomGroup extends AbstractGroup {
 
     public static final String XML_TAG = "CustomGroup";
     @BICoreField
-    protected int ungroup2Other = 0;
+    protected int ungroup2Other = BIReportConstant.CUSTOM_GROUP.UNGROUP2OTHER.NOTSELECTED;
     @BICoreField
     protected String ungroup2OtherName;
     @BICoreField
     protected StringGroupInfo[] groups = new StringGroupInfo[0];
 
     public boolean ungroup2Other() {
-        return ungroup2Other == 1;
+        return ungroup2Other == BIReportConstant.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED;
     }
 
     public String getUngroup2OtherName() {
@@ -45,7 +46,7 @@ public class CustomGroup extends AbstractGroup {
     @Override
     public void readXML(XMLableReader reader) {
         if (reader.isAttr()) {
-            this.ungroup2Other = reader.getAttrAsInt("ungroup2Other", 0);
+            this.ungroup2Other = reader.getAttrAsInt("ungroup2Other", BIReportConstant.CUSTOM_GROUP.UNGROUP2OTHER.NOTSELECTED);
             this.ungroup2OtherName = reader.getAttrAsString("ungroup2OtherName", StringUtils.EMPTY);
         }
         final List<StringGroupInfo> list = new ArrayList<StringGroupInfo>();
@@ -93,6 +94,9 @@ public class CustomGroup extends AbstractGroup {
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             Object key = entry.getKey();
+            if (key == null){
+                continue;
+            }
             GroupValueIndex gvi = (GroupValueIndex) entry.getValue();
             boolean contains = false;
             for (int i = 0; i < len; i++) {
@@ -102,7 +106,7 @@ public class CustomGroup extends AbstractGroup {
                 }
             }
             if (!contains) {
-                if (ungroup2Other == 1) {
+                if (ungroup2Other == BIReportConstant.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
                     otherGVi = GVIUtils.OR(otherGVi, gvi);
                 } else {
                     String name = key.toString();

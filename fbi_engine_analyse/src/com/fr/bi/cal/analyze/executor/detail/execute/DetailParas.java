@@ -106,8 +106,7 @@ public class DetailParas {
         getters = new ICubeColumnIndexReader[sortList.size()];
         for (int i = 0; i < sortList.size(); i++) {
             getters[i] = sortList.get(i).createGroupValueMapGetter(target, loader, biUser.getUserId());
-            asc[i] = sortList.get(i).getSort().getSortType() == BIReportConstant.SORT.ASC ? true : false;
-            i++;
+            asc[i] = (sortList.get(i).getSort().getSortType() == BIReportConstant.SORT.ASC) || (sortList.get(i).getSort().getSortType() == BIReportConstant.SORT.NUMBER_ASC);
         }
     }
 

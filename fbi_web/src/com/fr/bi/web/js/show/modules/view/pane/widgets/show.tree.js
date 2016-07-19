@@ -22,17 +22,10 @@ BIShow.TreeWidgetView = BI.inherit(BI.View, {
         this._createTools();
 
         this.combo = BI.createWidget({
-            type: "bi.multi_tree_combo",
-            itemsCreator: function (op, callback) {
-                var data = BI.extend({
-                    floors: BI.size(self.model.get("dimensions"))
-                }, op);
-                BI.Utils.getWidgetDataByID(self.model.get("id"), function (jsonData) {
-                    callback(jsonData);
-                }, {tree_options: data})
-            }
+            type: "bi.select_tree_data_combo",
+            wId: this.model.get("id")
         });
-        this.combo.on(BI.MultiTreeCombo.EVENT_CONFIRM, function () {
+        this.combo.on(BI.SelectTreeDataCombo.EVENT_CONFIRM, function () {
             self.model.set("value", self.combo.getValue());
         });
 
@@ -71,7 +64,7 @@ BIShow.TreeWidgetView = BI.inherit(BI.View, {
                 cls: "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
                 validationChecker: function(v){

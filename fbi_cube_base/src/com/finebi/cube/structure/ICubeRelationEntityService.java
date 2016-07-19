@@ -9,10 +9,17 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeRelationEntityService extends ICubeRelationEntityGetterService, Release {
+public interface ICubeRelationEntityService extends CubeRelationEntityGetterService, Release {
 
     void addRelationIndex(int position, GroupValueIndex groupValueIndex);
 
     void addRelationNULLIndex(int position, GroupValueIndex groupValueIndex);
+
+    /**
+     * 加反向关联
+     * @param row 子表行号
+     * @param position 主表行号
+     */
+    void addReverseIndex(int row, Integer position);
 
 }

@@ -454,6 +454,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
         var chosenMap = self.fieldPane.getSelectedFieldMap();
         BI.each(chosenMap, function (id, fieldName) {
             self.fieldPane.addFieldWidget(id, fieldName, groupName);
+            self.fieldPane.setFieldSelectedFalse(id);
         });
         self._checkChosenNum();
     },
@@ -528,11 +529,11 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
             sort.details.push(groupobj.value);
         })
         if (self.bottom.isSelected()) {
-            group.ungroup2Other = 1;
+            group.ungroup2Other = BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED;
             group.ungroup2OtherName = ungroupedName;
             sort.details.push(ungroupedName);
         } else {
-            group.ungroup2Other = 0;
+            group.ungroup2Other = BICst.CUSTOM_GROUP.UNGROUP2OTHER.NOTSELECTED;
             group.ungroup2OtherName = "";
         }
         return group;

@@ -16,7 +16,11 @@ public interface BIUpdateFrequencyManagerProvider {
 
     void saveUpdateSetting(String tableId, UpdateSettingSource source, long userId);
 
+    void removeUpdateSetting(String sourceTableId, long userId);
+
     Map<String, UpdateSettingSource> getUpdateSettings(long userId);
+
+    UpdateSettingSource getTableUpdateSetting(String tableId,long userId);
 
     JSONObject createJSON(long userId) throws Exception;
 

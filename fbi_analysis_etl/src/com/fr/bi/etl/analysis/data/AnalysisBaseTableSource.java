@@ -37,11 +37,11 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
     @BICoreField
     protected BIWidget widget;
-    private int etlType;
+    protected int etlType;
     @BICoreField
-    private List<AnalysisETLSourceField> fieldList;
-    private String name;
-    private String widgetTableId;
+    protected List<AnalysisETLSourceField> fieldList;
+    protected String name;
+    protected String widgetTableId;
     public BIWidget getWidget() {
         return widget;
     }
@@ -106,6 +106,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             case BIReportConstant.GROUP.M:
             case BIReportConstant.GROUP.S:
             case BIReportConstant.GROUP.MD:
+            case BIReportConstant.GROUP.W:
                 return Types.INTEGER;
             case BIReportConstant.GROUP.YMD:
             case BIReportConstant.GROUP.YMDHMS:
@@ -140,7 +141,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             synchronized (userBaseTableMap){
                 UserCubeTableSource tmp = userBaseTableMap.get(userId);
                 if (tmp == null){
-                    source = new UserBaseTableSource(widget, etlType, userId, fieldList, name, widgetTableId);
+                    source = new UserBaseTableSource(this, userId);
                     userBaseTableMap.put(userId, source);
                 } else {
                     source = tmp;
@@ -180,6 +181,11 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
+    public void refreshWidget() {
+        widget.refreshColumns();
+    }
+
+    @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo =  super.createJSON();
         JSONObject widget = new JSONObject();
@@ -203,15 +209,19 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
      * @return
      */
     @Override
-    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set) {
+    public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
+        if(helper.contains(this)){
+            return set;
+        }
+        helper.add(this);
         for (BITargetAndDimension dim : widget.getViewDimensions()){
             if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
-                dim.createTableKey().getTableSource().getSourceUsedBaseSource(set);
+                dim.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }
         for (BITargetAndDimension target : widget.getViewTargets()){
             if (target.createTableKey() != null && target.createTableKey().getTableSource() != null){
-                target.createTableKey().getTableSource().getSourceUsedBaseSource(set);
+                target.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }
         return set;

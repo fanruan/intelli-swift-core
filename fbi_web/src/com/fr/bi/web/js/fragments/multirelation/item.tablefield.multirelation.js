@@ -15,7 +15,7 @@ BI.TableFieldItem = BI.inherit(BI.Single, {
         var self = this, o = this.options;
         this.tableLabel = BI.createWidget({
             type: "bi.label",
-            textHeight: 20,
+            textHeight: 30,
             cls: "multi-relation-table",
             value: o.tableName,
             text: o.tableName
@@ -23,14 +23,14 @@ BI.TableFieldItem = BI.inherit(BI.Single, {
 
         var dotLabel = BI.createWidget({
             type: "bi.label",
-            textHeight: 20,
+            textHeight: 30,
             cls: "multi-relation-dot",
             value: "."
         });
 
         this.fieldLabel = BI.createWidget({
             type: "bi.label",
-            textHeight: 20,
+            textHeight: 30,
             cls: "multi-relation-field",
             value: o.fieldName,
             text: o.fieldName

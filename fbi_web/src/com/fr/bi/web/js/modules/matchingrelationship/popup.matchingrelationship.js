@@ -18,7 +18,7 @@ BI.MatchingRelationPopup = BI.inherit(BI.BarPopoverSection, {
         BI.MatchingRelationPopup.superclass._init.apply(this, arguments);
     },
 
-    rebuildNorth : function(north) {
+    rebuildNorth: function (north) {
         var o = this.options;
         var name = BI.Utils.getDimensionNameByID(o.dId);
         BI.createWidget({
@@ -32,24 +32,24 @@ BI.MatchingRelationPopup = BI.inherit(BI.BarPopoverSection, {
         return true;
     },
 
-    rebuildCenter : function(center) {
+    rebuildCenter: function (center) {
         var self = this;
         this.matchTab = BI.createWidget({
             type: "bi.matching_relationship_tab",
             dId: this.options.dId,
             element: center
         });
-        this.matchTab.on(BI.MatchingRelationShipTab.EVENT_CHANGE, function(){
+        this.matchTab.on(BI.MatchingRelationShipTab.EVENT_CHANGE, function () {
             self._showPreConfig();
         });
         return true;
     },
 
-    rebuildSouth: function(south){
+    rebuildSouth: function (south) {
         var self = this;
         this.save = BI.createWidget({
             type: 'bi.button',
-            text: BI.i18nText("BI-Save_Config"),
+            text: BI.i18nText("BI-Save"),
             height: 30,
             value: 0,
             handler: function (v) {
@@ -58,6 +58,16 @@ BI.MatchingRelationPopup = BI.inherit(BI.BarPopoverSection, {
             }
         });
         this.cancel = BI.createWidget({
+            type: 'bi.button',
+            text: BI.i18nText("BI-Cancel"),
+            height: 30,
+            value: 1,
+            level: 'ignore',
+            handler: function () {
+                self.close();
+            }
+        });
+        this.back = BI.createWidget({
             type: 'bi.button',
             text: BI.i18nText("BI-Back_Step"),
             height: 30,
@@ -84,30 +94,34 @@ BI.MatchingRelationPopup = BI.inherit(BI.BarPopoverSection, {
         BI.createWidget({
             type: 'bi.left_right_vertical_adapt',
             element: south,
+            rhgap: 5,
+            lhgap: 5,
             items: {
-                left: [this.cancel],
-                right: [this.save, this.complete]
+                left: [this.back],
+                right: [this.cancel, this.save, this.complete]
             }
         });
     },
 
-    _showSaveConfig: function(){
+    _showSaveConfig: function () {
         this.save.setVisible(true);
-        this.cancel.setVisible(false);
+        this.cancel.setVisible(true);
+        this.back.setVisible(false);
         this.complete.setVisible(false);
     },
 
-    _showPreConfig: function(){
+    _showPreConfig: function () {
         this.save.setVisible(false);
-        this.cancel.setVisible(true);
+        this.cancel.setVisible(false);
+        this.back.setVisible(true);
         this.complete.setVisible(true);
     },
 
-    populate: function(){
+    populate: function () {
         this.matchTab.populate();
     },
 
-    end: function(){
+    end: function () {
         this.fireEvent(BI.MatchingRelationPopup.EVENT_CHANGE, this.matchTab.getValue());
     }
 });

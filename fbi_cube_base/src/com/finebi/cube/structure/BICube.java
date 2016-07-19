@@ -1,17 +1,15 @@
 package com.finebi.cube.structure;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.exception.BICubeColumnAbsentException;
-import com.finebi.cube.exception.BICubeRelationAbsentException;
-import com.finebi.cube.exception.BICubeResourceAbsentException;
-import com.finebi.cube.exception.IllegalRelationPathException;
+import com.finebi.cube.exception.*;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.structure.table.CompoundCubeTableReader;
+import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -21,11 +19,11 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  * @author Connery
  * @since 4.0
  */
-public class BICube implements ICube {
+public class BICube implements Cube {
     private ICubeResourceRetrievalService resourceRetrievalService;
     private ICubeResourceDiscovery discovery;
     private BICubeVersion cubeVersion;
-    private static String CUBE_PROPERTY = "property";
+    private static String CUBE_PROPERTY = CubeConstant.CUBE_PROPERTY;
 
     public BICube(ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         this.resourceRetrievalService = resourceRetrievalService;
@@ -42,28 +40,28 @@ public class BICube implements ICube {
     }
 
     @Override
-    public ICubeTableEntityGetterService getCubeTable(ITableKey tableKey) {
+    public CubeTableEntityGetterService getCubeTable(ITableKey tableKey) {
         return new CompoundCubeTableReader(tableKey, resourceRetrievalService, discovery);
     }
 
     @Override
-    public ICubeTableEntityService getCubeTableWriter(ITableKey tableKey) {
+    public CubeTableEntityService getCubeTableWriter(ITableKey tableKey) {
         return new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
 
     }
 
     @Override
-    public ICubeColumnReaderService getCubeColumn(ITableKey tableKey, BIColumnKey field) throws BICubeColumnAbsentException {
+    public CubeColumnReaderService getCubeColumn(ITableKey tableKey, BIColumnKey field) throws BICubeColumnAbsentException {
         return getCubeTable(tableKey).getColumnDataGetter(field);
     }
 
     @Override
-    public ICubeRelationEntityGetterService getCubeRelation(ITableKey tableKey, BICubeTablePath relationPath) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
+    public CubeRelationEntityGetterService getCubeRelation(ITableKey tableKey, BICubeTablePath relationPath) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
         return getCubeTable(tableKey).getRelationIndexGetter(relationPath);
     }
 
     @Override
-    public ICubeRelationEntityGetterService getCubeRelation(ITableKey tableKey, BICubeRelation relation) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
+    public CubeRelationEntityGetterService getCubeRelation(ITableKey tableKey, BICubeRelation relation) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
         BICubeTablePath relationPath = new BICubeTablePath();
         try {
             relationPath.addRelationAtHead(relation);
@@ -74,17 +72,19 @@ public class BICube implements ICube {
     }
 
     @Override
-    public boolean canRead(ITableKey tableKey) {
+    public boolean exist(ITableKey tableKey) {
         try {
             ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey);
             if (isResourceExist(location)) {
-                ICubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
+                CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
                 return tableEntityGetterService.tableDataAvailable();
             }
             return false;
 
         } catch (BICubeResourceAbsentException e) {
             e.printStackTrace();
+            return false;
+        }catch (BICubeTableAbsentException e){
             return false;
         }
     }
@@ -105,5 +105,10 @@ public class BICube implements ICube {
     @Override
     public void clear() {
         cubeVersion.clear();
+    }
+
+    @Override
+    public Boolean isVersionAvailable() {
+        return cubeVersion.isVersionAvailable();
     }
 }

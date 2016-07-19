@@ -3,12 +3,12 @@
  */
 package com.fr.bi.field.filtervalue.number.nonefilter;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
-import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONObject;
@@ -100,7 +100,8 @@ public abstract class NumberNoneValueFilterValue extends AbstractFilterValue<Num
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         ICubeTableService ti = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource());
-        GroupValueIndex gvi = TableIndexUtils.createLinkNullGVI(ti, dimension.getRelationList(), loader);
+        ICubeColumnIndexReader getter = ti.loadGroup(dimension.createKey(), dimension.getRelationList());
+        GroupValueIndex gvi = getter.getNULLIndex();
         return gvi == null
                 ? ti.getNullGroupValueIndex(dimension.createKey()) : gvi;
     }

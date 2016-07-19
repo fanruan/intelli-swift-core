@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source.operator.add.datediff;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
@@ -9,6 +10,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.time.BIDateUtils;
@@ -104,16 +106,18 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     }
 
     private class DataValueGetter implements ValueGetter {
+        ICubeColumnDetailGetter getter;
         ICubeTableService ti;
         BIKey key;
 
         DataValueGetter(ICubeTableService ti, BIKey key) {
             this.ti = ti;
             this.key = key;
+            this.getter = ti.getColumnDetailReader(key);
         }
 
         public Long getTime(int row) {
-            return (Long) ti.getRow(key, row);
+            return (Long) getter.getValue(row);
         }
 
         public void check() {
@@ -142,7 +146,7 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
         ValueGetter g1 = createValueGetter(field1, ti, systemTime);
         ValueGetter g2 = createValueGetter(field2, ti, systemTime);
         for (int row = 0; row < rowCount; row++) {
-            int value = dc.get(g1.getTime(row), g2.getTime(row));
+            long value = dc.get(g1.getTime(row), g2.getTime(row));
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
@@ -154,7 +158,7 @@ public class DateDiffOperator extends AbstractAddColumnOperator {
     }
 
     @Override
-    protected int getSqlType() {
+    protected int getSqlType(IPersistentTable[] tables) {
         return java.sql.Types.INTEGER;
     }
 

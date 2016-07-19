@@ -5,6 +5,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
@@ -26,6 +27,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @BICoreField
     protected DimensionFilter filter;
+    @BICoreField
     protected ISort sort = new NoSort();
     @BICoreField
     protected IGroup group = new NoGroup();
@@ -155,7 +157,8 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public boolean useTargetSort() {
-        return sort_target != null && !ComparatorUtils.equals(sort_target, id);
+        return (getSortType() == BIReportConstant.SORT.ASC || getSortType() == BIReportConstant.SORT.DESC
+        || getSortType() == BIReportConstant.SORT.NUMBER_ASC || getSortType() == BIReportConstant.SORT.NUMBER_DESC) && sort_target != null && !ComparatorUtils.equals(sort_target, id);
     }
 
 

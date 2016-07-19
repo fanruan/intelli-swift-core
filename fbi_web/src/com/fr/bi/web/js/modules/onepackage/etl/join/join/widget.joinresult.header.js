@@ -17,80 +17,42 @@ BI.JoinResultHeader = BI.inherit(BI.Widget, {
             element: this.element,
             items: []
         });
-        this.populate(this.options.mergeResult);
     },
 
-    _checkName: function(index, name){
-        var valid = true;
-        BI.some(this.mergeResult, function(i, names){
-            if(i !== index && name === names.name){
-                valid = false;
-                return true;
-            }
-        });
-        return valid;
-    },
-
-    populate: function(mergeResult, joinNames) {
+    populate: function(joinFields, joinNames, allFields) {
         var self = this;
-        this.mergeResult = mergeResult;
-        var items = [];
-        BI.each(this.mergeResult, function(i, name){
-            var title = name.name === name.column_name ? name.name : (name.name + "(" + name.column_name + ")");
-            var nameEditor = BI.createWidget({
-                type: "bi.sign_initial_editor",
-                allowBlank: false,
-                text: name.column_name,
-                title: title,
-                width: 100,
-                validationChecker: function(v){
-                    return self._checkName(i, v);
-                },
-                errorText: BI.i18nText("BI-Can_Not_Have_Rename_Fields")
-            });
-            nameEditor.setValue({value: name.name});
-            nameEditor.on(BI.SignInitialEditor.EVENT_CHANGE, function(){
-                var nameValue = nameEditor.getValue();
-                self.mergeResult[i].name = nameValue.value;
-                nameEditor.setTitle(nameValue.value === name.column_name ? nameValue.value : (nameValue.value + "(" + name.column_name + ")"));
-                self.fireEvent(BI.JoinResultHeader.EVENT_CHANGE, self.mergeResult);
-            });
-            var editorIcon = BI.createWidget({
-                type: "bi.icon_button",
-                cls: "edit-set-font",
-                width: 20,
-                height: 30,
-                handler: function(){
-                    nameEditor.focus();
-                }
-            });
-            var cls = "";
-            if(name.isLeft === true) {
-                cls = "table-color0";
-                BI.some(joinNames, function(j, jNames){
-                    if(jNames[0] === name.column_name) {
-                        cls = "table-color2";
-                        return true;
-                    }
-                });
+        var items = [], namesArray = [];
+        BI.each(joinNames, function(i, nameOb) {
+            namesArray.push(nameOb.name);
+            var cls = "result-table";
+            var merge = [];
+            if(joinFields[i].indexOf(-1) > -1) {
+                cls = "table-color" + (joinFields[i].indexOf(-1) === 0 ? 1 : 0 );
             } else {
-                cls = "table-color1";
-                BI.some(joinNames, function(j, jNames){
-                    if(jNames[1] === name.column_name) {
-                        cls = "table-color2";
-                        return true;
-                    }
+                BI.each(joinFields[i], function(j, joinIndex){
+                    merge.push(allFields[j][joinIndex].field_name);
                 });
             }
             items.push({
-                type: "bi.left_right_vertical_adapt",
-                items: {
-                    left: [nameEditor],
-                    right: [editorIcon]
-                },
+                type: "bi.join_preview_table_header_cell",
+                text: nameOb.name,
+                value: nameOb.name,
+                merge: merge,
                 cls: cls,
-                height: "100%"
-            });
+                validationChecker: function (v) {
+                    if(v === "") {
+                        return false;
+                    }
+                    if(namesArray.indexOf(v) > -1 && namesArray.indexOf(v) !== i) {
+                        return false;
+                    }
+                },
+                onRenameField: function(name) {
+                    namesArray[i] = name;
+                    joinNames[i].name = name;
+                    self.fireEvent(BI.JoinResultHeader.EVENT_CHANGE, joinNames);
+                }
+            })
         });
         this.table.populate([items]);
     }

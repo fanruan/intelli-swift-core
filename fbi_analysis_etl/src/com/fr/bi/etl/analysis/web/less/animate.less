@@ -14,26 +14,32 @@
 
 .keyframe(@class @from, @to, @key){
 
-    @name-webkit:~'@-webkit-keyframes @{key}';
-    @name-moz:~'@-moz-keyframes @{key}';
-    @name-o:~'@-o-keyframes @{key}';
+    //人民群众的智慧结晶
+    @name-webkit:~'**/ } @-webkit-keyframes @{key}';
+    @name-moz:~'**/ } @-moz-keyframes @{key}';
+    @name-o:~'**/ } @-o-keyframes @{key}';
+    @end:~'**/ } .useless-css-name-abcdefg-123456-just-comment';
     @name:~'@keyframes @{key}';
-    @value:~'from  @{from} to @{to}  /**to{1';
+    @value:~'from  @{from} to @{to}  /**';
 
     @{name} {
-      @{value}:~'1;}**/';
+      @{value}:~'';
     }
 
     @{name-webkit} {
-        @{value}:~'1;}**/'
+        @{value}:~''
     }
 
     @{name-moz} {
-        @{value}:~'1;}**/'
+        @{value}:~''
     }
 
     @{name-o} {
-        @{value}:~'1;}**/'
+        @{value}:~''
+    }
+
+    @{end} {
+      transition: all 0.5s;
     }
 }
 

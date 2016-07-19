@@ -120,7 +120,7 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
         var self = this;
         var filterType = filter.filter_type, filterValue = filter.filter_value;
         if (BI.isEmptyObject(filterValue)) {
-            return;
+            return filter;
         }
         if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
             BI.each(filterValue, function (i, value) {
@@ -128,18 +128,25 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
             });
         }
         if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
-            var start = filterValue.start, end = filterValue.end;
+            var start = filterValue.startDetail, end = filterValue.endDetail;
             if (BI.isNull(start)) {
                 delete filterValue.start;
+            }else{
+                filterValue.startDetail = start;
+                filterValue.start = parseComplexDate(start);
             }
             if (BI.isNull(end)) {
                 delete filterValue.end;
+            }else{
+                filterValue.endDetail = end;
+                filterValue.end = parseComplexDate(end);
             }
         }
 
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
             filterValue.values = parseComplexDate(filterValue);
-            filterValue.type = filterValue.type || BICst.GROUP.YMD
+            filterValue.type = filterValue.type || BICst.MULTI_DATE_CALENDAR;
+            filterValue.group = BICst.GROUP.YMD;
         }
         return filter;
 

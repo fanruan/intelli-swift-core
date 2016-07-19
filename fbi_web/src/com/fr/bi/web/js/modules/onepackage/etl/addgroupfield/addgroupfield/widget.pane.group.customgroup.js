@@ -191,7 +191,6 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
         groupWidget.on(BI.CustomgroupGroupExpander.EVENT_NODE_VALUE_CONFIRM, function () {
             self.groupMap[groupWidget.attr("id")] = groupWidget.getNodeValue();
             var items = self.createItemFromGroupMap();
-            self.populate(items);
         });
 
         return groupWidget;

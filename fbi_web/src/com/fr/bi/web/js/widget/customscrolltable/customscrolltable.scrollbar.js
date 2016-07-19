@@ -142,6 +142,14 @@ BI.CustomScrollTableScrollBar = BI.inherit(BI.Widget, {
         }
     },
 
+    hasVerticalScroll: function () {
+        return !($(".mCSB_container.mCS_y_hidden", this.length).length > 0);
+    },
+
+    hasHorizontalScroll: function () {
+        return !($(".mCSB_container.mCS_x_hidden", this.length).length > 0);
+    },
+
     setScrollToLeft: function () {
         $(".mCSB_container", this.element).css("left", "0");
         $(".mCSB_scrollTools .mCSB_dragger").css("left", "0");
@@ -181,6 +189,14 @@ BI.CustomScrollTableScrollBar = BI.inherit(BI.Widget, {
             this.element.mCustomScrollbar('scrollTo', 'right');
         } catch (e) {
 
+        }
+    },
+
+    setHidden: function (b) {
+        if (!!b) {
+            this.element.css("visibility", "hidden");
+        } else {
+            this.element.css("visibility", "visible");
         }
     }
 });

@@ -1,5 +1,6 @@
 package com.finebi.cube.gen.arrange;
 
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.*;
@@ -16,14 +17,22 @@ import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.status.IStatusTag;
 import com.finebi.cube.router.topic.ITopicTag;
 import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.structure.ICube;
-import com.finebi.cube.structure.ICubeTableEntityService;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
+import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTask;
+import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.control.UserControl;
+import com.fr.general.ComparatorUtils;
 
 import java.util.*;
 
@@ -34,7 +43,7 @@ import java.util.*;
  * @since 4.0
  */
 public class BICubeOperationManager {
-    private ICube cube;
+    private Cube cube;
     private BIOperation<Object> cubeBuildFinishOperation;
     private BIOperation<Object> pathBuildFinishWatcher;
     private BIDataSourceBuildFinishWatcher dataSourceBuildFinishWatcher;
@@ -45,7 +54,7 @@ public class BICubeOperationManager {
     private Map<CubeTableSource, BIOperation> tableSourceWatchers;
     private Map<CubeTableSource, Long> versionMap;
 
-    public BICubeOperationManager(ICube cube, Set<CubeTableSource> originalTableSet) {
+    public BICubeOperationManager(Cube cube, Set<CubeTableSource> originalTableSet) {
         this.cube = cube;
         registeredTransportTable = new HashSet<CubeTableSource>();
         registeredFieldIndex = new HashSet<CubeTableSource>();
@@ -314,14 +323,14 @@ public class BICubeOperationManager {
             while (it.hasNext()) {
                 BICubeGenerateRelation relation = it.next();
                 try {
-                    String sourceID = new BITableSourceRelationPath(relation.getDependRelations()).getSourceID();
+                    String sourceID = new BITableSourceRelationPath(relation.getRelation()).getSourceID();
                     BIOperation<Object> operation = new BIOperation<Object>(
                             sourceID,
-                            getRelationBuilder(cube, relation.getDependRelations()));
+                            getRelationBuilder(cube, relation.getRelation()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    if (null != relation.getCubeTableSourceSet()) {
-                        for (CubeTableSource cubeTableSource : relation.getCubeTableSourceSet()) {
+                    if (null != relation.getDependTableSourceSet()) {
+                        for (CubeTableSource cubeTableSource : relation.getDependTableSourceSet()) {
                             operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, cubeTableSource.getSourceID()));
                         }
                     }
@@ -355,7 +364,7 @@ public class BICubeOperationManager {
                             getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getBiTableSourceRelationPathSet()) {
+                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
                         operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
@@ -376,27 +385,50 @@ public class BICubeOperationManager {
         }
     }
 
-    protected BIRelationIndexGenerator getRelationBuilder(ICube cube, BITableSourceRelation relation) {
+    protected BIRelationIndexGenerator getRelationBuilder(Cube cube, BITableSourceRelation relation) {
         return new BIRelationIndexGenerator(cube, BICubeRelationUtils.convert(relation));
     }
 
-    protected BIFieldIndexGenerator getFieldIndexBuilder(ICube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
+    protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
         return new BIFieldIndexGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
     }
 
-    protected BITableSourceBuildWatcher getTableWatcherBuilder(ICubeTableEntityService tableEntityService) {
+    protected BITableSourceBuildWatcher getTableWatcherBuilder(CubeTableEntityService tableEntityService) {
         return new BITableSourceBuildWatcher(tableEntityService);
     }
 
-    protected BISourceDataTransport getDataTransportBuilder(ICube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version) {
-        return new BISourceDataTransport(cube, tableSource, allSources, parent, version);
+    protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version) {
+        UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
+        CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
+/*若没有更新设置,按默认处理*/
+        if (null == tableUpdateSetting || ComparatorUtils.equals(0, cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).getCubeVersion())) {
+            return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+        } 
+        /*全局更新时该表不更新*/
+        else if (currentTask.getTaskType() != CubeTaskType.SINGLE && tableUpdateSetting.getTogetherOrNever() == DBConstant.SINGLE_TABLE_UPDATE.NEVER) {
+            return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
+        } else {
+            switch (tableUpdateSetting.getUpdateType()) {
+                case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL: {
+                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+                }
+                case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
+                    return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version);
+                }
+                case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
+                    return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
+                }
+                default:
+                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+            }
+        }
     }
 
-    protected BITablePathIndexBuilder getTablePathBuilder(ICube cube, BITableSourceRelationPath tablePath) {
+    protected BITablePathIndexBuilder getTablePathBuilder(Cube cube, BITableSourceRelationPath tablePath) {
         return new BITablePathIndexBuilder(cube, BICubePathUtils.convert(tablePath));
     }
 
-    protected BIFieldPathIndexBuilder getFieldPathBuilder(ICube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {
+    protected BIFieldPathIndexBuilder getFieldPathBuilder(Cube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {
         return new BIFieldPathIndexBuilder(cube, field, BICubePathUtils.convert(tablePath));
     }
 

@@ -17,10 +17,11 @@ BI.TextAreaEditor = BI.inherit(BI.Single, {
         this.content = BI.createWidget({
             type: "bi.layout",
             tagName: "textarea",
-            width: "99%",
-            height: "99%",
+            width: "100%",
+            height: "100%",
             cls: "textarea-editor-content display-block"
         });
+        this.content.element.css({"overflow": "hidden", "resize": "none"});
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -32,7 +33,7 @@ BI.TextAreaEditor = BI.inherit(BI.Single, {
                 left: 0,
                 right: 3,
                 top: 0,
-                bottom: 3
+                bottom: 5
             }]
         });
 
@@ -75,6 +76,16 @@ BI.TextAreaEditor = BI.inherit(BI.Single, {
 
     getStyle: function () {
         return this.style;
+    },
+
+    setValid: function (b) {
+        BI.TextAreaEditor.superclass.setValid.apply(this, arguments);
+        this.content.setValid(b);
+    },
+
+    setEnable: function (b) {
+        BI.TextAreaEditor.superclass.setEnable.apply(this, arguments);
+        this.content.setEnable(b);
     }
 });
 BI.TextAreaEditor.EVENT_BLUR = "EVENT_BLUR";

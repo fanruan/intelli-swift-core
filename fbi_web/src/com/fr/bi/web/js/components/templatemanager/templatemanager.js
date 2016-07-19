@@ -21,7 +21,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         this.model = new BI.TemplateManagerModel({items: o.items});
         this._createTools();
         //管理员没有分享
-        //FS.config.isAdmin === true && (this.shareButton.setVisible(false));
+        FS.config.isAdmin === true && (this.shareButton.setVisible(false));
 
         //导航
         this.nav = BI.createWidget({
@@ -128,6 +128,9 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         });
         this.folderAndFileList.on(BI.TemplateManagerButtonGroup.EVENT_HANGOUT, function (id) {
             self._onHangout(id);
+        });
+        this.folderAndFileList.on(BI.TemplateManagerButtonGroup.EVENT_EDIT_SHARED, function(id, users){
+            self._editSharedUsers(id, users);
         });
 
         this.list = BI.createWidget({
@@ -241,6 +244,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
     _onRename: function (id, name, type) {
         this.model.renameNode(id, name);
         this._refreshNavTreeData();
+        this._refreshNavAndList();
         this.fireEvent(BI.TemplateManager.EVENT_FOLDER_RENAME, id, name, this.model.getCurrentNodeId(), type);
     },
 
@@ -273,6 +277,13 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         this.fireEvent(BI.TemplateManager.EVENT_HANGOUT, id, this.model.getStatusById(id));
     },
 
+    _editSharedUsers: function(id, users) {
+        this.model.editSharedUsers(id, users);
+        this._refreshNavTreeData();
+        this._refreshNavAndList();
+        this.fireEvent(BI.TemplateManager.EVENT_SHARE, [id], users, true);
+    },
+
     /**
      * 分享——移动——新建
      * @private
@@ -299,6 +310,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
                 });
                 shareBox.on(BI.ShareReportPane.EVENT_SHARE, function (users) {
                     self.fireEvent(BI.TemplateManager.EVENT_SHARE, selectedItems, users);
+                    BI.Popovers.remove(id);
                 });
                 BI.Popovers.create(id, shareBox, {width: 600, height: 500}).open(id);
             }
@@ -417,6 +429,10 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         this.searcherResultPane.on(BI.ReportSearchResultPane.EVENT_DELETE, function (id) {
             self._onRemove(id, BI.TemplateManagerButtonGroup.DELETE_REPORT);
         });
+        this.searcherResultPane.on(BI.ReportSearchResultPane.EVENT_HANGOUT, function(id){
+            self._onHangout(id);
+            self._refreshNavAndList();
+        });
     },
 
 
@@ -453,6 +469,12 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
 
     _refreshNavTreeData: function () {
         this.nav.refreshTreeData(this.model.getAllItems());
+    },
+    
+    resetModel: function(items) {
+        this.model.resetAllItems(items);
+        this._refreshNavTreeData();
+        this.populate();
     },
 
     populate: function () {

@@ -5,6 +5,8 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.IteratorManager;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.NormalIteratorManager;
+import com.fr.bi.cal.analyze.cal.multithread.MergeSummaryCall;
+import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTree;
@@ -14,7 +16,6 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.dimension.dimension.BIStringDimension;
-import com.fr.bi.field.dimension.filter.general.GeneralANDDimensionFilter;
 import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
 import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTargetKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -67,7 +68,11 @@ public class DimensionGroupFilter {
         iterators = getNodeIterators(mergerInfoList);
         sortedTrees = new SortedTree[mergerInfoList.size()];
         LoaderUtils.setAllExpander(mergerInfoList);
-
+        if(this.mergerInfoList != null){
+            for (MergerInfo m : this.mergerInfoList){
+                m.setHasTraverseResultFilter(hasTraverseResultFilter());
+            }
+        }
     }
 
     private NodeDimensionIterator[] getNodeIterators(List<MergerInfo> mergerInfoList) {
@@ -151,10 +156,10 @@ public class DimensionGroupFilter {
     private List<DimensionFilter> getDimensionTraverseResultFilters(int deep) {
         List<DimensionFilter> filterList = new ArrayList<DimensionFilter>();
         DimensionFilter filter = rowDimension[deep].getFilter();
-        if (isNormalResultFilter(filter)) {
+        if (filter != null && isNormalResultFilter(filter)) {
             filterList.add(filter);
         }
-        return AddTargetFilters(filterList);
+        return AddTargetFilters(filterList, deep);
     }
 
     private boolean isNormalResultFilter(DimensionFilter filter) {
@@ -163,11 +168,11 @@ public class DimensionGroupFilter {
 
     private List<DimensionFilter> getAllResultFilters() {
         List<DimensionFilter> filterList = getAllDimensionFilter();
-        return AddTargetFilters(filterList);
+        return AddTargetFilters(filterList, rowDimension.length - 1);
     }
 
-    private List<DimensionFilter> AddTargetFilters(List<DimensionFilter> filterList) {
-        if (targetFilterMap != null) {
+    private List<DimensionFilter> AddTargetFilters(List<DimensionFilter> filterList, int deep) {
+        if (targetFilterMap != null && deep == rowDimension.length - 1) {
             filterList.addAll(targetFilterMap.values());
         }
         return removeNullFilter(filterList);
@@ -223,14 +228,7 @@ public class DimensionGroupFilter {
         if (isNotStringDimensionFilter(filter)) {
             return false;
         }
-        if (filter instanceof GeneralANDDimensionFilter) {
-            GeneralANDDimensionFilter resultFilter = (GeneralANDDimensionFilter) filter;
-            if (resultFilter.canCreateDirectFilter()) {
-                return true;
-            }
-        }
-        return false;
-
+        return filter.canCreateDirectFilter();
     }
 
     private Node[] nextNodes(SummaryDimensionGroup[] summaryDimensionGroups) {
@@ -284,14 +282,12 @@ public class DimensionGroupFilter {
                 if (!isStringDimension(rowDimension[deep])) {
                     continue;
                 }
-                if (rowDimension[deep].getFilter() instanceof GeneralANDDimensionFilter) {
-                    GeneralANDDimensionFilter resultFilter = (GeneralANDDimensionFilter) rowDimension[deep].getFilter();
-                    if (resultFilter.canCreateDirectFilter()) {
-                        DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
-                        BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BITable.BI_EMPTY_TABLE())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
-                        GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
-                        ret[i] = and(ret[i], filterIndex);
-                    }
+                DimensionFilter resultFilter =  rowDimension[deep].getFilter();
+                if (resultFilter != null && resultFilter.canCreateDirectFilter()) {
+                    DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
+                    BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BITable.BI_EMPTY_TABLE())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
+                    GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
+                    ret[i] = and(ret[i], filterIndex);
                 }
             }
         }
@@ -318,15 +314,18 @@ public class DimensionGroupFilter {
         RowCounter counter = new RowCounter(rowDimension.length);
         TreeBuilder nodeBuilder = new TreeBuilder();
         setRootIndexMap(nodeBuilder);
+        int count = 0;
         while (!GroupUtils.isAllEmpty(roots)) {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
             for (int deep = firstChangeDeep; deep < rowDimension.length; deep++) {
-                fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep);
+                count ++;
+                fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep, count);
             }
             lastRoots = roots;
             roots = next();
         }
+        MultiThreadManagerImpl.getInstance().awaitExecutor();
         if (shouldBuildTree()) {
             buildTree(groupValueIndexe2D, counter, nodeBuilder);
         }
@@ -358,7 +357,7 @@ public class DimensionGroupFilter {
         }
     }
 
-    private void fillValueIndex(GroupValueIndex[][] groupValueIndexe2D, GroupConnectionValue[] roots, RowCounter counter, TreeBuilder nodeBuilder, int deep) {
+    private void fillValueIndex(GroupValueIndex[][] groupValueIndexe2D, GroupConnectionValue[] roots, RowCounter counter, TreeBuilder nodeBuilder, int deep, int count) {
         GroupConnectionValue[] groupConnectionValueChildren = getDeepChildren(roots, deep + 1);
 
         IMergerNode mergeNode = new MergerNode();
@@ -372,9 +371,13 @@ public class DimensionGroupFilter {
                 mergeNode.setCk(groupConnectionValueChildren[j].getCk());
                 groupValueIndexArray[j] = currentValue.getRoot().getGroupValueIndex();
                 gviMap.put(mergerInfoList.get(j).getTargetGettingKey(), currentValue.getRoot().getGroupValueIndex());
-                Number summaryValue = currentValue.getSummaryValue(mergerInfoList.get(j).getSummary());
-                if (summaryValue != null) {
-                    mergeNode.setSummaryValue(mergerInfoList.get(j).getTargetGettingKey(), summaryValue);
+                if(MultiThreadManagerImpl.getInstance().isMultiCall() && count < 100) {
+                    MultiThreadManagerImpl.getInstance().getExecutorService().submit(new MergeSummaryCall(mergeNode, currentValue, mergerInfoList.get(j)));
+                }else {
+                    Number summaryValue = currentValue.getSummaryValue(mergerInfoList.get(j).getSummary());
+                    if (summaryValue != null) {
+                        mergeNode.setSummaryValue(mergerInfoList.get(j).getTargetGettingKey(), summaryValue);
+                    }
                 }
             }
         }

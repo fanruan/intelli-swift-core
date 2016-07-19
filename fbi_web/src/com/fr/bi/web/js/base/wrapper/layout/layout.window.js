@@ -44,7 +44,7 @@ BI.WindowLayout = BI.inherit(BI.Layout, {
         throw new Error("不能添加元素")
     },
 
-    stroke: function(items){
+    stroke: function (items) {
         var o = this.options;
         if (BI.isNumber(o.rowSize)) {
             o.rowSize = BI.makeArray(o.items.length, 1 / o.items.length);
@@ -59,8 +59,8 @@ BI.WindowLayout = BI.inherit(BI.Layout, {
             if (col === 0) {
                 item.addClass("first-col");
             }
-            item.addClass(BI.isOdd(row) ? "odd-row" : "even-row");
-            item.addClass(BI.isOdd(col) ? "odd-col" : "even-col");
+            item.addClass(BI.isOdd(row + 1) ? "odd-row" : "even-row");
+            item.addClass(BI.isOdd(col + 1) ? "odd-col" : "even-col");
             item.addClass("center-element");
         }
 

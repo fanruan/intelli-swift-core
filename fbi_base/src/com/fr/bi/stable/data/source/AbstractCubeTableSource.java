@@ -55,12 +55,12 @@ public abstract class AbstractCubeTableSource extends AbstractTableSource {
             }
         }
         for (BIKey col : columns) {
-            td.addColumn(col.getKey(), tableIndex.getRowValue(col, 0).getClass());
+            td.addColumn(col.getKey(), tableIndex.getColumnDetailReader(col).getValue(0).getClass());
         }
         for (int row = 0; row < tableIndex.getRowCount(); row++) {
             List<Object> rowList = new ArrayList<Object>();
             for (BIKey col : columns) {
-                rowList.add(tableIndex.getRowValue(col, row));
+                rowList.add(tableIndex.getColumnDetailReader(col).getValue(row));
             }
             td.addRow(rowList);
         }

@@ -29,7 +29,8 @@ public class Service4AnalysisETL implements Service {
         new BIRenameAnalysisETLTableAction(),
         new BIPreviewAnalysisETLTableAction(),
         new BIAnalysisETLGetFieldMinMaxValueAction(),
-        new BIAnalysisETLGetGeneratingStatusAction()
+        new BIAnalysisETLGetGeneratingStatusAction(),
+        new BIGetUsedTablesAction()
     };
 
     @Override

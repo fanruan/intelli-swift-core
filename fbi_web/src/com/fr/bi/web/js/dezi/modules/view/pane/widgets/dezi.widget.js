@@ -38,6 +38,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
             self._refreshTableAndFilter();
         });
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
+            self.model.set("clicked", {});
+        });
     },
 
     _render: function (vessel) {
@@ -52,6 +55,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             status: BICst.WIDGET_STATUS.EDIT
         });
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
+        this.tableChartResize = BI.debounce(BI.bind(this.tableChart.resize, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
@@ -75,7 +79,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 el: this.tableChart,
                 left: 10,
                 right: 10,
-                top: 50,
+                top: 45,
                 bottom: 10
             }, {
                 el: this.chartDrill,
@@ -91,8 +95,14 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
-                self.widget.attr("items")[3].top = 0;
-                self.widget.resize();
+            }
+            self.widget.attr("items")[3].top = 0;
+            self.widget.resize();
+        });
+
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
             }
         });
     },
@@ -107,9 +117,14 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     "dashboard-title-left" : "dashboard-title-center",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
-                errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
+                errorText: function(v) {
+                    if(BI.isNotNull(v) && v.trim() !== "") {
+                        return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
+                    }
+                    return BI.i18nText("BI-Widget_Name_Can_Not_Null");
+                },
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
@@ -135,15 +150,43 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     _onClickChart: function (obj) {
-        this.chartDrill.populate(obj);
+        if (BI.has(obj, "clicked")) {
+            this.model.set(obj);
+        } else {
+            this.chartDrill.populate(obj);
+        }
     },
 
     _createTools: function () {
         var self = this;
+
+        this.refreshChartButton = BI.createWidget({
+            type: "bi.icon_button",
+            width: 16,
+            height: 16,
+            cls: "recover-chart-font-hightlight dashboard-title-detail",
+            title: BI.i18nText("BI-Restore")
+        });
+        this.refreshChartButton.on(BI.IconButton.EVENT_CHANGE, function () {
+            self.tableChart.magnify();
+        });
+
+        var filter = BI.createWidget({
+            type: "bi.icon_button",
+            width: 16,
+            height: 16,
+            title: BI.i18nText("BI-Show_Filters"),
+            cls: "widget-tools-filter-font dashboard-title-detail"
+        });
+        filter.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._onClickFilter();
+        });
+
         var expand = BI.createWidget({
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -156,6 +199,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
             switch (type) {
+                case BICst.DASHBOARD_WIDGET_EXPAND:
+                    self._expandWidget();
+                    break;
                 case BICst.DASHBOARD_WIDGET_LINKAGE:
                     var layer = BI.Layers.make(self.getName(), "body");
                     var linkage = BI.createWidget({
@@ -196,28 +242,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self._refreshTitlePosition();
                     break;
                 case BICst.DASHBOARD_WIDGET_FILTER:
-                    if (BI.isNull(self.filterPane)) {
-                        self.filterPane = BI.createWidget({
-                            type: "bi.widget_filter",
-                            wId: self.model.get("id")
-                        });
-                        self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
-                            self.model.set(widget);
-                        });
-                        BI.createWidget({
-                            type: "bi.absolute",
-                            element: self.tableChart,
-                            items: [{
-                                el: self.filterPane,
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0
-                            }]
-                        });
-                        return;
-                    }
-                    self.filterPane.setVisible(!self.filterPane.isVisible());
+                    self._onClickFilter();
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
                     window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
@@ -227,7 +252,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE:
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
+                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name") + "?", function (v) {
                         if (v === true) {
                             self.model.destroy();
                         }
@@ -242,10 +267,36 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [expand, combo],
-            hgap: 3
+            items: [this.refreshChartButton, filter, expand, combo],
+            lgap: 10
         });
         this.tools.setVisible(false);
+    },
+
+    _onClickFilter: function () {
+        var self = this;
+        if (BI.isNull(this.filterPane)) {
+            this.filterPane = BI.createWidget({
+                type: "bi.widget_filter",
+                wId: this.model.get("id")
+            });
+            this.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
+                self.model.set(widget);
+            });
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.tableChart,
+                items: [{
+                    el: this.filterPane,
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0
+                }]
+            });
+            return;
+        }
+        this.filterPane.setVisible(!this.filterPane.isVisible());
     },
 
     _refreshTableAndFilter: function () {
@@ -266,6 +317,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             this.widget.attr("items")[2].top = 50;
         }
         this.widget.resize();
+        this.tableChartResize();
     },
 
     _refreshTitlePosition: function () {
@@ -286,6 +338,35 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         })
     },
 
+    _refreshMagnifyButton: function () {
+        switch (this.model.get("type")) {
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.MAP:
+                this.refreshChartButton.setVisible(true);
+                break;
+            default:
+                this.refreshChartButton.setVisible(false);
+        }
+    },
+
     listenEnd: function () {
 
     },
@@ -295,7 +376,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             return;
         }
         if (BI.has(changed, "bounds")) {
-            this.tableChart.resize();
+            this.tableChartResize();
             this.chartDrill.populate();
         }
         if (BI.has(changed, "dimensions") ||
@@ -307,7 +388,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             this._refreshTableAndFilter();
         }
         if (BI.has(changed, "type")) {
-            this.tableChart.resize();
+            this._refreshMagnifyButton();
         }
     },
 
@@ -322,7 +403,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
-        this.tableChartPopupulate();
+        this._refreshMagnifyButton();
+        this._refreshTableAndFilter();
         this._refreshLayout();
         this._refreshTitlePosition();
     }

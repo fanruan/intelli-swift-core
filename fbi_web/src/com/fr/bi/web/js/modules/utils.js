@@ -2,8 +2,63 @@
     //运行时用到的工具类
     BI.Utils = {};
     BI.extend(BI.Utils, {
-        isRealTime: function () {
-            return Data.SharingPool.get("description") === "true";
+        /**
+         * lic相关
+         */
+        hasLicence: function () {
+            return Data.SharingPool.get("reg", "hasLic");
+        },
+
+        supportBasic: function () {
+            return Data.SharingPool.get("reg", "supportBasic");
+        },
+
+        supportBigData: function () {
+            return Data.SharingPool.get("reg", "supportBigData");
+        },
+
+        supportCalculateTarget: function () {
+            return Data.SharingPool.get("reg", "supportCalculateTarget");
+        },
+
+        supportDatabaseUnion: function () {
+            return Data.SharingPool.get("reg", "supportDatabaseUnion");
+        },
+
+        supportExcelView: function () {
+            return Data.SharingPool.get("reg", "supportExcelView");
+        },
+
+        supportGeneralControl: function () {
+            return Data.SharingPool.get("reg", "supportGeneralControl");
+        },
+
+        supportIncrementUpdate: function () {
+            return Data.SharingPool.get("reg", "supportIncrementUpdate");
+        },
+
+        supportMobileClient: function () {
+            return Data.SharingPool.get("reg", "supportMobileClient");
+        },
+
+        supportMultiStatisticsWidget: function () {
+            return Data.SharingPool.get("reg", "supportMultiStatisticsWidget");
+        },
+
+        supportOLAPTable: function () {
+            return Data.SharingPool.get("reg", "supportOLAPTable");
+        },
+
+        supportReportShare: function () {
+            return Data.SharingPool.get("reg", "supportReportShare");
+        },
+
+        supportSimpleControl: function () {
+            return Data.SharingPool.get("reg", "supportSimpleControl");
+        },
+
+        getDefaultChartConfig: function () {
+            return Data.BufferPool.getDefaultChartConfig();
         },
 
         getAllGroupedPackagesTreeJSON: function () {
@@ -173,7 +228,6 @@
                     filterFiledIds.push(fId);
                 }
             });
-            var countIds = this.getCountFieldIDsOfTableID(tableId) || [];
             var tNum = [], tString = [], tDate = [], fNum = [], fString = [], fDate = [];
             BI.each(transIds, function (i, id) {
                 switch (BI.Utils.getFieldTypeByID(id)) {
@@ -184,9 +238,6 @@
                         tString.push(id);
                         break;
                     case BICst.COLUMN.DATE:
-                        tDate.push(id);
-                        break;
-                    case BICst.COLUMN.COUNTER:
                         tDate.push(id);
                         break;
                 }
@@ -204,7 +255,7 @@
                         break;
                 }
             });
-            return countIds.concat(tNum).concat(tString).concat(tDate).concat(fNum).concat(fString).concat(fDate);
+            return tNum.concat(tString).concat(tDate).concat(fNum).concat(fString).concat(fDate);
         },
 
         getExcelViewByTableId: function (tableId) {
@@ -250,6 +301,12 @@
         getFieldIsUsableByID: function (fieldId) {
             if (BI.isNotNull(Pool.fields[fieldId])) {
                 return Pool.fields[fieldId].is_usable;
+            }
+        },
+
+        getFieldIsCircleByID: function (fieldId) {
+            if (BI.isNotNull(Pool.fields[fieldId])) {
+                return Pool.fields[fieldId].isCircle;
             }
         },
 
@@ -376,6 +433,10 @@
             return Data.SharingPool.get("widgets", wid, "sort_sequence") || [];
         },
 
+        isShowWidgetRealDataByID: function (wid) {
+            return Data.SharingPool.get("widgets", wid, "real_data");
+        },
+
         //获取指定widget的拷贝,拷贝信息只包含widget的自身信息，如维度指标及其相关属性
         //不包含widge间的信息,如widget间的联动什么的
         getWidgetCopyByID: function (wid) {
@@ -432,6 +493,7 @@
             }
 
             function createDimensionsAndTargets(idx) {
+                var newId = BI.UUID();
                 var dimension = BI.deepClone(widget.dimensions[idx]);
                 if (BI.has(dimTarIdMap, idx)) {
                     return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
@@ -458,8 +520,12 @@
                         if (BI.has(widget.dimensions[idx], "sort")) {
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
                             if (BI.has(dimension.sort, "sort_target")) {
-                                var result = createDimensionsAndTargets(dimension.sort.sort_target);
-                                dimension.sort.sort_target = result.id;
+                                if (dimension.sort.sort_target === idx) {
+                                    dimension.sort.sort_target = newId;
+                                } else {
+                                    var result = createDimensionsAndTargets(dimension.sort.sort_target);
+                                    dimension.sort.sort_target = result.id;
+                                }
                             }
                         }
                         break;
@@ -484,9 +550,8 @@
                         });
                         break;
                 }
-                var id = BI.UUID();
-                dimTarIdMap[idx] = id;
-                return {id: id, dimension: dimension};
+                dimTarIdMap[idx] = newId;
+                return {id: newId, dimension: dimension};
             }
         },
 
@@ -500,6 +565,12 @@
         getWSThemeColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.theme_color) ? ws.theme_color :
+                BICst.DEFAULT_CHART_SETTING.theme_color;
+        },
+
+        getWSMapBubbleColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.map_bubble_color) ? ws.map_bubble_color :
                 BICst.DEFAULT_CHART_SETTING.theme_color;
         },
 
@@ -557,6 +628,24 @@
                 BICst.DEFAULT_CHART_SETTING.freeze_dim;
         },
 
+        getWSFreezeFirstColumnById: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.freeze_first_column) ? ws.freeze_first_column :
+                BICst.DEFAULT_CHART_SETTING.freeze_first_column;
+        },
+
+        getWSShowRulesByID: function(wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.rules_display) ? ws.rules_display :
+                BICst.DEFAULT_CHART_SETTING.bubble_display;
+        },
+
+        getWSBubbleStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.bubble_style) ? ws.bubble_style :
+                BICst.DEFAULT_CHART_SETTING.bubble_style;
+        },
+
         getWSTransferFilterByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.transfer_filter) ? ws.transfer_filter :
@@ -581,15 +670,47 @@
         },
 
         getWSChartColorByID: function (wid) {
+            var self = this;
+
+            function getDefaultColor() {
+                var defaultChartConfig = self.getDefaultChartConfig();
+                var type = defaultChartConfig.defaultColor;
+                if (BI.isKey(type)) {
+                    var finded = BI.find(defaultChartConfig.styleList, function (i, style) {
+                        return style.value === type;
+                    });
+                    if (finded) {
+                        return finded.colors;
+                    }
+                }
+                if (defaultChartConfig.styleList.length > 0) {
+                    return defaultChartConfig.styleList[0].colors;
+                }
+            }
+
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_color) ? ws.chart_color :
-                BICst.DEFAULT_CHART_SETTING.chart_color;
+            return ws.chart_color
+                || getDefaultColor()
+                || BICst.DEFAULT_CHART_SETTING.chart_color;
         },
 
         getWSChartStyleByID: function (wid) {
+            var self = this;
+
+            function getChartStyle() {
+                var defaultChartConfig = self.getDefaultChartConfig();
+                return defaultChartConfig.chartStyle;
+            }
+
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_style) ? ws.chart_style :
-                BICst.DEFAULT_CHART_SETTING.chart_style;
+            var chartStyle;
+            if (BI.isNotNull(ws.chart_style)) {
+                return ws.chart_style;
+            }
+            if (BI.isNotNull(chartStyle = getChartStyle())) {
+                return chartStyle;
+            }
+            return BICst.DEFAULT_CHART_SETTING.chart_style;
         },
 
         getWSChartLineTypeByID: function (wid) {
@@ -669,6 +790,31 @@
             return BI.isNotNull(ws.left_y_axis_number_level) ? ws.left_y_axis_number_level :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
         },
+
+        getWSNumberOfPointerByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.number_of_pointer) ? ws.number_of_pointer :
+                BICst.POINTER.ONE;
+        },
+
+        getWSScaleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.auto_custom) ? ws.auto_custom :
+                BICst.SCALE_SETTING.AUTO
+        },
+
+        getWSDashboardStylesByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.style_conditions) ? ws.style_conditions :
+                BICst.DASHBOARD_STYLE_CONDITIONS
+        },
+
+        getWSMapStylesByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.map_styles) ? ws.map_styles :
+                BICst.MAP_STYLE_CONDITIONS
+        },
+
 
         getWSDashboardNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
@@ -1065,9 +1211,12 @@
 
         getFieldTypeByDimensionID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return this.getFieldTypeByID(this.getFieldIDByDimensionID(did));
+                var fieldId = this.getFieldIDByDimensionID(did);
+                if (BI.isKey(fieldId)) {
+                    return this.getFieldTypeByID(fieldId);
+                }
+                return BICst.COLUMN.NUMBER;
             }
-
         },
 
 
@@ -1081,6 +1230,13 @@
         getDimensionCordonByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
                 return Data.SharingPool.get("dimensions", did, "cordon");
+            }
+
+        },
+
+        getDimensionPositionByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "position");
             }
 
         },
@@ -1228,7 +1384,7 @@
                 case BICst.COLUMN.DATE:
                     return BICst.TARGET_TYPE.DATE;
                 default:
-                    return BICst.TARGET_TYPE.STRING;
+                    return BICst.TARGET_TYPE.NUMBER;
             }
         },
 
@@ -1251,6 +1407,81 @@
                     return true
                 }
             });
+        },
+
+        getWidgetIconClsByWidgetId: function (wId) {
+            var widgetType = BI.Utils.getWidgetTypeByID(wId);
+            switch (widgetType) {
+                case BICst.WIDGET.TABLE:
+                    return "drag-group-icon";
+                case BICst.WIDGET.CROSS_TABLE:
+                    return "drag-cross-icon";
+                case BICst.WIDGET.COMPLEX_TABLE:
+                    return "drag-complex-icon";
+                case BICst.WIDGET.DETAIL:
+                    return "drag-detail-icon";
+                case BICst.WIDGET.AXIS:
+                    return "drag-axis-icon";
+                case BICst.WIDGET.ACCUMULATE_AXIS:
+                    return "drag-axis-accu-icon";
+                case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                    return "drag-axis-percent-accu-icon";
+                case BICst.WIDGET.COMPARE_AXIS:
+                    return "drag-axis-compare-icon";
+                case BICst.WIDGET.FALL_AXIS:
+                    return "drag-axis-fall-icon";
+                case BICst.WIDGET.BAR:
+                    return "drag-bar-icon";
+                case BICst.WIDGET.ACCUMULATE_BAR:
+                    return "drag-bar-accu-icon";
+                case BICst.WIDGET.COMPARE_BAR:
+                    return "drag-bar-compare-icon";
+                case BICst.WIDGET.PIE:
+                    return "drag-pie-icon";
+                case BICst.WIDGET.MAP:
+                    return "drag-map-china-icon";
+                case BICst.WIDGET.GIS_MAP:
+                    return "drag-map-gis-icon";
+                case BICst.WIDGET.DASHBOARD:
+                    return "drag-dashboard-icon";
+                case BICst.WIDGET.DONUT:
+                    return "drag-donut-icon";
+                case BICst.WIDGET.BUBBLE:
+                    return "drag-bubble-icon";
+                case BICst.WIDGET.FORCE_BUBBLE:
+                    return "drag-bubble-force-icon";
+                case BICst.WIDGET.SCATTER:
+                    return "drag-scatter-icon";
+                case BICst.WIDGET.RADAR:
+                    return "drag-radar-icon";
+                case BICst.WIDGET.ACCUMULATE_RADAR:
+                    return "drag-radar-accu-icon";
+                case BICst.WIDGET.LINE:
+                    return "drag-line-icon";
+                case BICst.WIDGET.AREA:
+                    return "drag-area-icon";
+                case BICst.WIDGET.ACCUMULATE_AREA:
+                    return "drag-area-accu-icon";
+                case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                    return "drag-area-percent-accu-icon";
+                case BICst.WIDGET.COMPARE_AREA:
+                    return "drag-area-compare-icon";
+                case BICst.WIDGET.RANGE_AREA:
+                    return "drag-area-range-icon";
+                case BICst.WIDGET.COMBINE_CHART:
+                    return "drag-combine-icon";
+                case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                    return "drag-combine-mult-icon";
+                case BICst.WIDGET.FUNNEL:
+                    return "drag-funnel-icon";
+                case BICst.WIDGET.IMAGE:
+                    return "drag-image-icon";
+                case BICst.WIDGET.WEB:
+                    return "drag-web-icon";
+                case BICst.WIDGET.CONTENT:
+                    return "drag-input-icon";
+
+            }
         },
 
 
@@ -1311,7 +1542,7 @@
                     primaryTables.push(tId);
                 }
             });
-            return primaryTables;
+            return BI.uniq(primaryTables);
         },
 
         getForeignRelationTablesByTableID: function (tableId) {
@@ -1321,7 +1552,7 @@
                     foreignTables.push(tId);
                 }
             });
-            return foreignTables;
+            return BI.uniq(foreignTables);
         },
 
         getPathsFromTableAToTableB: function (from, to) {
@@ -1336,15 +1567,69 @@
         },
 
         getPathsFromFieldAToFieldB: function (from, to) {
+            var self = this;
             if (BI.isNull(from) || BI.isNull(to)) {
                 return [];
             }
             var tableA = BI.Utils.getTableIdByFieldID(from);
             var tableB = BI.Utils.getTableIdByFieldID(to);
-            if (tableA === tableB) {
-                return [[{primaryKey: {field_id: from}, foreignKey: {field_id: to}}]]
+            var path = this.getPathsFromTableAToTableB(tableA, tableB);
+            if (tableA === tableB) {        //同一张表
+                if (isSelfCircle(path) && !checkPathAvailable(path, from, to)) {      //是自循环表且字段包含层级字段
+                    return [getRelationOfselfCircle(from, to, path)];
+                } else {
+                    return [[{
+                        primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
+                        foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
+                    }]]
+                }
             }
-            return this.getPathsFromTableAToTableB(tableA, tableB);
+            return path;
+
+            //获取自循环生成的层级所在的关联
+            function getRelationOfselfCircle(from, to, paths){
+                return BI.find(paths, function(idx, path){
+                    return BI.find(path, function (id, relation) {
+                        var foreignId = self.getForeignIdFromRelation(relation);
+                        return foreignId === from || foreignId === to;
+                    });
+                })
+            }
+
+            function hasSelfCircleInHeadOrTail(paths){
+                var result = BI.find(paths, function (idx, path) {
+                    return BI.find(path, function (id, relation) {
+                        if(idx === 0 || idx === path.length - 1){
+                            return self.getTableIdByFieldID(self.getPrimaryIdFromRelation(relation))
+                                === self.getTableIdByFieldID(self.getForeignIdFromRelation(relation));
+                        }
+                        return false;
+                    });
+                });
+                return BI.isNull(result);
+            }
+
+            //是自循环还是循环路径
+            function isSelfCircle(paths) {
+                if (path.length === 0) {
+                    return false;
+                }
+                var result = BI.find(paths, function (idx, path) {
+                    return path.length > 1;
+                });
+                return BI.isNull(result);
+            }
+
+            //对自循环表检测路径合法依据：路径中的a个关联中是否存在外键为primKey
+            function checkPathAvailable(paths, primKey, foreign) {
+                var result = BI.find(paths, function (idx, path) {
+                    return BI.find(path, function (id, relation) {
+                        var foreignKey = self.getForeignIdFromRelation(relation);
+                        return foreignKey === primKey || foreignKey === foreign;
+                    });
+                });
+                return BI.isNull(result);
+            }
         },
 
         getCommonPrimaryTablesByTableIDs: function (tableIds) {
@@ -1449,7 +1734,8 @@
                         _src: {
                             field_id: fid
                         },
-                        type: BICst.COLUMN.STRING
+                        type: BICst.COLUMN.STRING,
+                        used: true
                     }
                 },
                 view: {
@@ -1465,6 +1751,7 @@
             var dimension = Data.SharingPool.get("dimensions", dId);
             dimension.group = {type: BICst.GROUP.ID_GROUP};
             dimension.filter_value = {};
+            dimension.used = true;
             var dimensions = {};
             dimensions[dId] = dimension;
             var view = {};
@@ -1478,8 +1765,10 @@
         getDataByDimensionID: function (dId, callback) {
             var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
+            dimension.used = true;
             var widget = Data.SharingPool.get("widgets", wid);
             widget.page = -1;
+            widget.real_data = true;
             widget.dimensions = {};
             widget.dimensions[dId] = dimension;
             widget.view = {};
@@ -1656,14 +1945,14 @@
                                 if (BI.isNumeric(year)) {
                                     filterValues.push({
                                         filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                                        filter_value: {type: BICst.GROUP.Y, values: year},
+                                        filter_value: {group: BICst.GROUP.Y, values: year},
                                         _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                     });
                                 }
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {type: BICst.GROUP.M, values: month};
+                                fValue = {group: BICst.GROUP.M, values: month + 1};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1676,14 +1965,14 @@
                                 if (BI.isNumeric(year)) {
                                     filterValues.push({
                                         filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                                        filter_value: {type: BICst.GROUP.Y, values: year},
+                                        filter_value: {group: BICst.GROUP.Y, values: year},
                                         _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                     });
                                 }
                                 if (!BI.isNumeric(quarter)) {
                                     return;
                                 }
-                                fValue = {type: BICst.GROUP.S, values: quarter};
+                                fValue = {group: BICst.GROUP.S, values: quarter};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1692,7 +1981,7 @@
                                 break;
                             case BICst.WIDGET.YEAR:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
-                                fValue = {type: BICst.GROUP.Y, values: fValue};
+                                fValue = {group: BICst.GROUP.Y, values: fValue};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1701,7 +1990,7 @@
                                 break;
                             case BICst.WIDGET.YMD:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
-                                fValue = {type: BICst.GROUP.YMD, values: parseComplexDate(fValue)};
+                                fValue = {group: BICst.GROUP.YMD, values: parseComplexDate(fValue)};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -1764,36 +2053,134 @@
             var widget = Data.SharingPool.get("widgets", wid);
             var filterValues = [];
 
+            //对于维度的条件，很有可能是一个什么属于分组 这边处理 （没放到构造的地方处理是因为“其他”）
+            function parseStringFilter4Group(dId, value) {
+                var group = BI.Utils.getDimensionGroupByID(dId);
+                var details = group.details;
+                var groupMap = {};
+                BI.each(details, function (i, detail) {
+                    groupMap[detail.id] = [];
+                    BI.each(detail.content, function (j, content) {
+                        groupMap[detail.id].push(content.value);
+                    });
+                });
+                var groupNames = BI.keys(groupMap), ungroupName = group.ungroup2OtherName;
+                if (group.ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
+                    // groupNames.push(ungroupName);
+                    groupNames.push(BICst.UNGROUP_TO_OTHER);
+                }
+                // 对于drill和link 一般value的数组里只有一个值
+                var v = value[0];
+                if (groupNames.contains(v)) {
+                    if (v === ungroupName) {
+                        var vs = [];
+                        BI.each(groupMap, function (gk, gv) {
+                            gk !== v && (vs = vs.concat(gv));
+                        });
+                        return {
+                            filter_type: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
+                            filter_value: {type: BI.Selection.Multi, value: vs},
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        }
+                    }
+                    return {
+                        filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                        filter_value: {type: BI.Selection.Multi, value: groupMap[v]},
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    }
+                }
+                return {
+                    filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                    filter_value: {type: BI.Selection.Multi, value: value},
+                    _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                }
+            }
+
+            function parseNumberFilter4Group(dId, v) {
+                var value = v[0];
+                var group = BI.Utils.getDimensionGroupByID(dId);
+                var groupValue = group.group_value, groupType = group.type;
+                var groupMap = {};
+                if (BI.isNull(groupValue) && BI.isNull(groupType)) {
+                    //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
+                    var sIndex = value.indexOf("-");
+                    var min = value.slice(0, sIndex), max = value.slice(sIndex + 1);
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: {
+                            min: min,
+                            max: max,
+                            closemin: true,
+                            closemax: false
+                        },
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    }
+                }
+                if (groupType === BICst.GROUP.AUTO_GROUP) {
+                    //坑爹，要自己算分组名称出来
+                    var groupInterval = groupValue.group_interval, max = groupValue.max, min = groupValue.min;
+                    while (min < max) {
+                        var newMin = min + groupInterval;
+                        groupMap[min + "-" + newMin] = {
+                            min: min,
+                            max: newMin,
+                            closemin: true,
+                            closemax: newMin >= max
+                        };
+                        min = newMin;
+                    }
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: groupMap[value],
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
+                }
+                var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
+                var oMin, oMax;
+                BI.each(groupNodes, function (i, node) {
+                    i === 0 && (oMin = node.min);
+                    i === groupNodes.length - 1 && (oMax = node.max);
+                    groupMap[node.id] = {
+                        min: node.min,
+                        max: node.max,
+                        closemin: node.closemin,
+                        closemax: node.closemax
+                    }
+                });
+                if (BI.isNotNull(groupMap[value])) {
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: groupMap[value],
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
+                } else if (useOther === value) {
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+                        filter_value: {
+                            min: oMin,
+                            max: oMax,
+                            closemin: true,
+                            closemax: true
+                        },
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
+                }
+            }
+
             function parseSimpleFilter(v) {
                 var dId = v.dId;
                 var dType = self.getDimensionTypeByID(dId);
                 switch (dType) {
                     case BICst.TARGET_TYPE.STRING:
-                        return {
-                            filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
-                            filter_value: {type: BI.Selection.Multi, value: v.value},
-                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(v.dId)}
-                        };
+                        return parseStringFilter4Group(dId, v.value);
                     case BICst.TARGET_TYPE.NUMBER:
-                        var value = v.value[0];
-                        var min = BI.parseInt(value.slice(0, value.indexOf("-")));
-                        var max = BI.parseInt(value.slice(value.indexOf("-") + 1, value.length));
-                        return {
-                            filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                            filter_value: {
-                                min: min,
-                                max: max,
-                                closemin: true,
-                                closemax: true
-                            },
-                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(v.dId)}
-                        };
+                        return parseNumberFilter4Group(dId, v.value);
                     case BICst.TARGET_TYPE.DATE:
                         var dGroup = self.getDimensionGroupByID(dId);
                         var groupType = dGroup.type;
                         return {
                             filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                            filter_value: {values: v.value[0], type: groupType},
+                            filter_value: {values: v.value[0], group: groupType},
                             _src: {field_id: BI.Utils.getFieldIDByDimensionID(v.dId)}
                         };
                 }
@@ -1801,7 +2188,7 @@
 
             //钻取条件  对于交叉表，要考虑的不仅仅是used，还有行表头与列表头之间的钻取问题
             var drill = this.getDrillByID(wid);
-            if (BI.isNotNull(drill)) {
+            if (BI.isNotNull(drill) && widget.type !== BICst.WIDGET.MAP) {
                 BI.each(drill, function (drId, drArray) {
                     if (drArray.length === 0) {
                         return;
@@ -1845,10 +2232,19 @@
                         filterValues.push(filterValue);
                     }
                 });
+                var transferFilter = BI.Utils.getWSTransferFilterByID(BI.Utils.getWidgetIDByDimensionID(cId));
+                if (transferFilter === true) {
+                    var tarFilter = BI.Utils.getDimensionFilterValueByID(cId);
+                    if (BI.isNotNull(tarFilter)) {
+                        parseFilter(tarFilter);
+                        if (BI.isNotNull(tarFilter) && BI.isNotEmptyObject(tarFilter)) {
+                            filterValues.push(tarFilter);
+                        }
+                    }
+                }
             });
 
-            //联动传递指标过滤条件  找到联动链上的所有的组件，获取所有的指标的过滤条件  感觉有点浮夸的功能
-
+            //联动传递指标过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
             var allLinksWIds = [];
 
             function getLinkedIds(wid, links) {
@@ -1866,15 +2262,46 @@
 
             getLinkedIds(wid, allLinksWIds);
             BI.each(allLinksWIds, function (i, lId) {
-                if (self.getWSTransferFilterByID(lId) === true) {
-                    var tarIds = BI.Utils.getAllTargetDimensionIDs(lId);
-                    BI.each(tarIds, function (i, tarId) {
-                        var tarFilter = BI.Utils.getDimensionFilterValueByID(tarId);
-                        if (BI.isNotEmptyObject(tarFilter)) {
-                            parseFilter(tarFilter);
-                            filterValues.push(tarFilter);
+                // 并不是拿到所有的指标的过滤条件
+                // if (self.getWSTransferFilterByID(lId) === true) {
+                //     var tarIds = BI.Utils.getAllTargetDimensionIDs(lId);
+                //     BI.each(tarIds, function (i, tarId) {
+                //         var tarFilter = BI.Utils.getDimensionFilterValueByID(tarId);
+                //         if (BI.isNotEmptyObject(tarFilter)) {
+                //             parseFilter(tarFilter);
+                //             filterValues.push(tarFilter);
+                //         }
+                //     })
+                // }
+
+                var lLinkages = BI.Utils.getLinkageValuesByID(lId);
+                BI.each(lLinkages, function (cId, linkValue) {
+                    var lTransferFilter = BI.Utils.getWSTransferFilterByID(BI.Utils.getWidgetIDByDimensionID(cId));
+                    if (lTransferFilter === true) {
+                        var lTarFilter = BI.Utils.getDimensionFilterValueByID(cId);
+                        if (BI.isNotNull(lTarFilter)) {
+                            parseFilter(lTarFilter);
+                            filterValues.push(lTarFilter);
                         }
-                    })
+                    }
+                });
+
+                //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
+                var linkDrill = self.getDrillByID(lId);
+                if (BI.isNotNull(linkDrill)) {
+                    BI.each(linkDrill, function (drId, drArray) {
+                        if (drArray.length === 0) {
+                            return;
+                        }
+                        BI.each(drArray, function (i, drill) {
+                            BI.each(drArray[i].values, function (i, v) {
+                                var filterValue = parseSimpleFilter(v);
+                                if (BI.isNotNull(filterValue)) {
+                                    filterValues.push(filterValue);
+                                }
+                            });
+                        });
+                    });
                 }
             });
 
@@ -1893,6 +2320,7 @@
             });
 
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
+            widget.real_data = true;
             return widget;
         },
 
@@ -1950,22 +2378,34 @@
             return parseComplexDateCommon(v);
         }
         function parseComplexDateForParam(value) {
-            var wWid = value.wId, se = value.startOrEnd;
+            var widgetInfo = value.widgetInfo, offset = value.offset;
+            if (BI.isNull(widgetInfo) || BI.isNull(offset)) {
+                return;
+            }
+            var paramdate = new Date();
+            var wWid = widgetInfo.wId, se = widgetInfo.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
+                if (BI.isNull(wWValue) || BI.isEmptyObject(wWValue)) {
+                    return;
+                }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
-                    return parseComplexDateCommon(wWValue.start);
+                    paramdate = parseComplexDateCommon(wWValue.start);
                 } else {
-                    return parseComplexDateCommon(wWValue.end);
+                    paramdate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
-                return parseComplexDateCommon(BI.Utils.getWidgetValueByID(value));
+                if (BI.isNull(widgetInfo.wId)) {
+                    return;
+                }
+                paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
+            return parseComplexDateCommon(offset, new Date(paramdate));
         }
 
-        function parseComplexDateCommon(v) {
+        function parseComplexDateCommon(v, consultedDate) {
             var type = v.type, value = v.value;
-            var date = new Date();
+            var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
             var tool = new BI.MultiDateParamTrigger();
             if (BI.isNull(type) && BI.isNotNull(v.year)) {
@@ -2092,11 +2532,11 @@
             }
         }
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
-            if(BI.isNull(filterValue)){
+            if (BI.isNull(filterValue)) {
                 filterValue = {};
-            }else{
+            } else {
                 filterValue.values = parseComplexDate(filterValue);
-                filterValue.type = BICst.GROUP.YMD;
+                filterValue.group = BICst.GROUP.YMD;
             }
         }
         return filter;
@@ -2145,7 +2585,7 @@
             }
             return {
                 start: start.getTime(),
-                end: end.getTime()
+                end: end.getTime() - 1
             }
         }
 

@@ -9,6 +9,7 @@ import com.finebi.cube.data.output.ICubeWriterBuilder;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -24,7 +25,8 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
 
     public BICubeLocation(String baseLocation, String childLocation) throws URISyntaxException {
         BINonValueUtils.checkNull(baseLocation);
-        this.baseLocation = new URI(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation))));
+        File file = new File(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation))));
+        this.baseLocation = new URI(attachLastSlash(file.toURI().getRawPath()));
         if (childLocation != null) {
             this.childLocation = new URI(BIStringUtils.cutStartSlash(replaceSlash(childLocation)));
         } else {
@@ -32,7 +34,6 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
         }
     }
 
-    
 
     @Override
     public URI getBaseLocation() {

@@ -73,6 +73,10 @@ public final class BIColumnKey implements BIKey {
         this(field.getFieldName(), fieldType2ColumnType.get(field.getClassType() + field.getFieldType()), EMPTY_SUB_TYPE);
     }
 
+    private BIColumnKey(ICubeFieldSource field, String columnSubType) {
+        this(field.getFieldName(), fieldType2ColumnType.get(field.getClassType() + field.getFieldType()), columnSubType);
+    }
+
     public BIColumnKey(String columnName, String columnType, String columnSubType) {
         if (!columnTypeSet.contains(columnType) || !columnSubTypeSet.contains(columnSubType)) {
             throw BINonValueUtils.beyondControl();
@@ -131,6 +135,11 @@ public final class BIColumnKey implements BIKey {
     public static BIColumnKey covertColumnKey(ICubeFieldSource field) {
         return new BIColumnKey(field);
     }
+
+    public static BIColumnKey covertColumnKey(ICubeFieldSource field, String columnSubType) {
+        return new BIColumnKey(field, columnSubType);
+    }
+
 
     public static List<BIColumnKey> generateSubField(ICubeFieldSource field) {
         switch (field.getFieldType()) {

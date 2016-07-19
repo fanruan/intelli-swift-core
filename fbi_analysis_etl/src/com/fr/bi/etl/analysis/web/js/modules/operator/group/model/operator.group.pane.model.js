@@ -240,7 +240,8 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
                     list = BICst.CONF_STATISTIC_NUMBER;
                     break;
                 case BICst.COLUMN.DATE:
-                    return BI.i18nText("BI-No_Repeat_Count");
+                    list = BICst.CONF_STATISTIC_DATE;
+                    break;
             }
         }
         if(groupOrSummary ===  0){

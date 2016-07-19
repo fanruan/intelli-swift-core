@@ -29,14 +29,15 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                         o.expandCallback();
                     }
                 },
-                width: 25
+                width: 25,
+                height: 25
             })
         }
 
         //日期的需要format
         var text = o.text;
         var dGroup = BI.Utils.getDimensionGroupByID(o.dId);
-        if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
+        if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD && BI.isNumeric(text)) {
             var date = new Date(BI.parseInt(text));
             text = date.print("%Y-%X-%d");
         }
@@ -53,7 +54,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 cls: cls,
-                height: 30,
+                height: 25,
                 whiteSpace: "nowrap",
                 textAlign: "left",
                 lgap: 5
@@ -142,7 +143,9 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
             var drillCombo = BI.createWidget({
                 type: "bi.down_list_combo",
                 chooseType: BI.Selection.None,
-                title: BI.i18nText("BI-Drill")
+                title: BI.i18nText("BI-Drill"),
+                cls: "drill-combo",
+                height: 25
             });
             drillCombo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function () {
                 var items = [[{

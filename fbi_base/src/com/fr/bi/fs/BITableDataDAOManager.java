@@ -176,7 +176,7 @@ public class BITableDataDAOManager extends XMLFileManager {
      * @param reportId 模板id
      * @param userIds  用户id
      */
-    public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds) throws Exception {
+    public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds, boolean isReset) throws Exception {
         synchronized (BITableDataDAOManager.class) {
             long[] userIdsNeedToAddIntoMapLeft = userIds;
             Iterator iter = getTdBISharedReport_idEntrySet().iterator();
@@ -188,7 +188,7 @@ public class BITableDataDAOManager extends XMLFileManager {
                     int existIndex = ArrayUtils.indexOf(userIdsNeedToAddIntoMapLeft, userId);
                     if (existIndex >= 0) {
                         userIdsNeedToAddIntoMapLeft = ArrayUtils.remove(userIdsNeedToAddIntoMapLeft, existIndex);
-                    } else {
+                    } else if (isReset) {
                         iter.remove();
                     }
                 }
@@ -255,10 +255,10 @@ public class BITableDataDAOManager extends XMLFileManager {
 
     public void removeSharedByReport(long reportId, long createBy) {
         Iterator iter = getTdBISharedReport_idEntrySet().iterator();
-        while (iter.hasNext()){
+        while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             BISharedReportNode node = (BISharedReportNode) entry.getValue();
-            if(node.getReportId() == reportId && node.getCreateBy() == createBy){
+            if (node.getReportId() == reportId && node.getCreateBy() == createBy) {
                 tdBISharedReport_idMap.remove(node.getId());
             }
             try {

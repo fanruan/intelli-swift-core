@@ -27,7 +27,7 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
     protected final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     protected Map<Long, FileChannel> fcMap = new ConcurrentHashMap<Long, FileChannel>();
     boolean[] initIndex = new boolean[INIT_INDEX_LENGTH];
-    private boolean isValid = true;
+    protected volatile boolean isValid = true;
     private ICubeSourceReleaseManager releaseManager;
     private File baseFile;
     private String readerHandler;
@@ -58,17 +58,26 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         if (filePosition < 0) {
             throw BINonValueUtils.illegalArgument("The value of argument must be positive,but it's " + filePosition + " now");
         }
-        readWriteLock.readLock().lock();
-        if (!isValid) {
-            readWriteLock.readLock().unlock();
+        if(isValid) {
+            Long index = filePosition >> getPageStep() >> NIOConstant.MAX_SINGLE_FILE_PART_SIZE;
+            initBuffer(index);
+            try {
+                return getValue(index, (int) (filePosition & getPageModeValue()));
+            } catch (IndexOutOfBoundsException e) {
+                throw new RuntimeException("the expect page value is:" + index, e);
+            } finally {
+            }
+        } else {
             throw new BIResourceInvalidException();
         }
-        Long index = filePosition >> getPageStep() >> NIOConstant.MAX_SINGLE_FILE_PART_SIZE;
+
+    }
+
+    private void initBuffer(Long index) {
         if (!buffers.containsKey(index)) {
             /**
              * 资源不可用，需要初始化，释放读锁，加写锁。
              */
-            readWriteLock.readLock().unlock();
             readWriteLock.writeLock().lock();
             try {
                 /**
@@ -80,7 +89,6 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
                 /**
                  * 添加读锁
                  */
-                readWriteLock.readLock().lock();
             } catch (IOException e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             } finally {
@@ -90,20 +98,9 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
                 readWriteLock.writeLock().unlock();
             }
         }
-        /**
-         * 读取数据
-         */
-        try {
-            return getValue(index, (int) (filePosition & getPageModeValue()));
-        } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException("the expect page value is:" + index, e);
-        } finally {
-            readWriteLock.readLock().unlock();
-        }
-
     }
 
-    protected abstract T getValue(Long page, int index);
+    protected abstract T getValue(Long page, int index) throws BIResourceInvalidException;
 
     @Override
     public void releaseHandler() {
@@ -129,7 +126,15 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         if (!isValid) {
             return;
         }
+        //先改变isValid状态再判断canClear
         isValid = false;
+        try {
+            //但愿10ms能 执行完get方法否则可能导致jvm崩溃
+            //锁太浪费资源了，10ms目前并没有遇到问题
+            Thread.currentThread().sleep(10);
+        } catch (InterruptedException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
         try {
             releaseChild();
             releaseBuffer();
@@ -139,6 +144,7 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         } finally {
             readWriteLock.writeLock().unlock();
         }
+
     }
 
     private boolean useReleaseManager() {

@@ -19,10 +19,11 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
     },
 
     rebuildNorth: function (north) {
+        var text = (BI.isNotNull(this.options.report) ? BI.i18nText("BI-Modify") : BI.i18nText("BI-Add")) + "BI"
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text: BI.i18nText("BI-Add") + "BI",
+            text: text,
             height: 50,
             textAlign: "left",
             hgap: 10
@@ -34,11 +35,12 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
         this.reportsCombo = BI.createWidget({
             type: "bi.multilayer_single_tree_combo",
             cls: "all-reports",
+            isDefaultInit: true,
             items: [],
             width: 220,
             height: 30
         });
-        this.reportsCombo.on(BI.MultiLayerSingleTreeCombo.EVENT_CHANGE, function(){
+        this.reportsCombo.on(BI.MultiLayerSingleTreeCombo.EVENT_CHANGE, function () {
             var v = this.getValue()[0];
             self.reportName.setValue(self.valueMap[v].reportName);
         });
@@ -51,18 +53,29 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
             var allReports = data.all_reports, users = data.users;
             var items = self._formatItems(allReports, users);
             self.reportsCombo.populate(items);
-            if (BI.isNotNull(o.report)) {
+            var reportId = "", createBy = "", reportText = "", description = "";
+            if (BI.isArray(o.report)) {
+                reportText = o.report[0];
+                reportId = o.report[1].reportId;
+                createBy = o.report[1].createBy;
+                description = o.report[1].description;
+            } else if (BI.isObject(o.report)) {
+                reportId = o.report.reportId;
+                createBy = o.report.createBy;
+                reportText = o.report.text;
+                description = o.report.description;
+            }
+            if (reportId !== "" && createBy !== "") {
                 var vId = "";
                 BI.some(self.valueMap, function (id, v) {
-                    if (v.reportId === o.report.reportId &&
-                        v.reportName === o.report.reportName &&
-                        v.createBy === o.report.createBy.toString()) {
+                    if (v.reportId === reportId &&
+                        v.createBy === createBy.toString()) {
                         vId = id;
                     }
                 });
                 self.reportsCombo.setValue(vId);
-                self.reportName.setValue(o.report.text);
-                self.description.setValue(o.report.description);
+                self.reportName.setValue(reportText);
+                self.description.setValue(description);
             }
             mask.destroy();
         });
@@ -197,8 +210,9 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
     },
 
     end: function () {
-        if(BI.isNull(this.reportsCombo.getValue()) || this.reportsCombo.getValue().length===0){
-            BI.Msg.alert(BI.i18nText("BI-Attention"), BI.i18nText("BI-Please_Select_Report"), function(){});
+        if (BI.isNull(this.reportsCombo.getValue()) || this.reportsCombo.getValue().length === 0) {
+            BI.Msg.alert(BI.i18nText("BI-Attention"), BI.i18nText("BI-Please_Select_Report"), function () {
+            });
             return;
         }
         this.fireEvent(BI.PlateHangoutReport.EVENT_SAVE);

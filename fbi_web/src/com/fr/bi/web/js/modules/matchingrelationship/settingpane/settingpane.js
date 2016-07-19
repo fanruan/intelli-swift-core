@@ -61,7 +61,6 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
 
         this.emptyItem = BI.createWidget({
             type: "bi.default",
-            tgap: 5,
             items: []
         });
 
@@ -142,7 +141,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             if(!this.selectCombineTableCombo){
                 this.selectCombineTableCombo = BI.createWidget({
                     type: "bi.text_value_combo",
-                    width: 220,
+                    text: BI.i18nText("BI-Please_Select_Combine_Table_For_Dimension_And_Target"),
                     height: 30
                 });
                 this.selectCombineTableCombo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
@@ -152,7 +151,21 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                         combineTableId: this.getValue()[0]
                     });
                 });
-                this.emptyItem.addItem(this.selectCombineTableCombo);
+                this.emptyItem.addItem({
+                    type: "bi.htape",
+                    height: 30,
+                    tgap: 5,
+                    items: [{
+                        el: {
+                            type: "bi.label",
+                            textAlign: "left",
+                            text: BI.i18nText("BI-Merge_Table"),
+                            cls: "setting-tip-label",
+                            height: this.constants.buttonHeight
+                        },
+                        width: this.constants.labelWidth
+                    }, this.selectCombineTableCombo]
+                });
             }
             var items = BI.map(commonPrimaryTableIds, function(idx, tId){
                 return {

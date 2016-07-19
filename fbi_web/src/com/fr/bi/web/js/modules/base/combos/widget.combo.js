@@ -107,6 +107,11 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         var namePos = BI.Utils.getWSNamePosByID(wId);
         return [
             [{
+                text: BI.i18nText("BI-Detailed_Setting"),
+                value: BICst.DASHBOARD_WIDGET_EXPAND,
+                cls: "widget-combo-expand-font"
+            }],
+            [{
                 text: BI.i18nText("BI-Link_To_Dots"),
                 value: BICst.DASHBOARD_WIDGET_LINKAGE,
                 cls: "widget-combo-linkage-font"
@@ -119,13 +124,16 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Rename"),
                 value: BICst.DASHBOARD_WIDGET_RENAME,
                 cls: "widget-combo-rename-edit-font",
-                disabled: !isShowName
+                disabled: !isShowName,
+                warningTitle: BI.i18nText("BI-Show_Widget_Name_First")
             }, {
                 el: {
                     text: BI.i18nText("BI-Title_Position"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS,
                     iconCls1: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT ?
-                        "widget-combo-title-left-font" : "widget-combo-title-center-font"
+                        "widget-combo-title-left-font" : "widget-combo-title-center-font",
+                    warningTitle: BI.i18nText("BI-Show_Widget_Name_First"),
+                    disabled: !isShowName
                 },
                 disabled: !isShowName,
                 children: [{
@@ -169,6 +177,11 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
         var namePos = BI.Utils.getWSNamePosByID(wId);
         return [
             [{
+                text: BI.i18nText("BI-Detailed_Setting"),
+                value: BICst.DASHBOARD_WIDGET_EXPAND,
+                cls: "widget-combo-expand-font"
+            }],
+            [{
                 text: BI.i18nText("BI-Show_Title"),
                 value: BICst.DASHBOARD_WIDGET_SHOW_NAME,
                 cls: isShowName ? "widget-combo-show-title-font" : ""
@@ -176,15 +189,19 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Rename"),
                 value: BICst.DASHBOARD_WIDGET_RENAME,
                 cls: "widget-combo-rename-edit-font",
-                disabled: !isShowName
+                disabled: !isShowName,
+                warningTitle: BI.i18nText("BI-Show_Widget_Name_First")
             }, {
                 el: {
                     text: BI.i18nText("BI-Title_Position"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS,
                     iconCls1: namePos === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT ?
-                        "widget-combo-title-left-font" : "widget-combo-title-center-font"
+                        "widget-combo-title-left-font" : "widget-combo-title-center-font",
+                    warningTitle: BI.i18nText("BI-Show_Widget_Name_First"),
+                    disabled: !isShowName
                 },
                 disabled: !isShowName,
+                warningTitle: BI.i18nText("BI-Show_Widget_Name_First"),
                 children: [{
                     text: BI.i18nText("BI-Position_Left"),
                     value: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
@@ -230,7 +247,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             [{
                 value: BICst.DASHBOARD_WIDGET_EXPAND,
                 text: BI.i18nText("BI-Detailed_Setting"),
-                cls: "dashboard-widget-combo-detail-set-font"
+                cls: "widget-combo-expand-font"
             }],
             [{
                 value: BICst.DASHBOARD_CONTROL_RANG_ASC,

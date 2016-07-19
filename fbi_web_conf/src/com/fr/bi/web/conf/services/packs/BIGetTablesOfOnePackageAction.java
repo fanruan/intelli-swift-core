@@ -1,13 +1,16 @@
 package com.fr.bi.web.conf.services.packs;
 
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -68,10 +71,16 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
             for (int j = 0; j < fs.length(); j++) {
                 JSONObject field = fs.getJSONObject(j);
                 BusinessTable table = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
-                field.put("id", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).getFieldID().getIdentityValue());
-                field.put("table_id", tableId);
-                field.put("is_usable", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).isUsable());
-                nFields.put(field);
+                try{
+                    field.put("id", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).getFieldID().getIdentityValue());
+                    field.put("table_id", tableId);
+                    field.put("is_usable", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).isUsable());
+                    field.put("isCircle", ((BIBusinessField)BusinessTableHelper.getSpecificField(table, field.getString("field_name"))).isCircle());
+                    nFields.put(field);
+                }catch (BIFieldAbsentException exception){
+                    BILogger.getLogger().error(exception.getMessage());
+                }
+
             }
             newFields.put(nFields);
         }

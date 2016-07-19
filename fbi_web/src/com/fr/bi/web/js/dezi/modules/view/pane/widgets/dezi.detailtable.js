@@ -37,7 +37,10 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
-        })
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
+            self.model.set("clicked", {});
+        });
     },
 
 
@@ -51,6 +54,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             status: BICst.WIDGET_STATUS.EDIT
         });
         this.tablePopulate = BI.debounce(BI.bind(this.table.populate, this.table), 0);
+        this.tableResize = BI.debounce(BI.bind(this.table.resize, this.table), 0);
         this.table.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
             self.model.set(ob);
         });
@@ -82,6 +86,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 self.tools.setVisible(false);
             }
         });
+        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        });
     },
 
     _buildWidgetTitle: function () {
@@ -94,9 +103,14 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     "dashboard-title-center" : "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
-                errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
+                errorText: function(v) {
+                    if(BI.isNotNull(v) && v.trim() !== "") {
+                        return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
+                    }
+                    return BI.i18nText("BI-Widget_Name_Can_Not_Null");
+                },
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
@@ -111,10 +125,22 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
     _createTools: function () {
         var self = this;
+        var filter = BI.createWidget({
+            type: "bi.icon_button",
+            width: 16,
+            height: 16,
+            title: BI.i18nText("BI-Show_Filters"),
+            cls: "widget-tools-filter-font dashboard-title-detail"
+        });
+        filter.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._onClickFilter();
+        });
+
         var expand = BI.createWidget({
             type: "bi.icon_button",
             width: 16,
             height: 16,
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -127,6 +153,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         });
         combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
             switch (type) {
+                case BICst.DASHBOARD_WIDGET_EXPAND:
+                    self._expandWidget();
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
                     var settings = self.model.get("settings");
                     settings.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
@@ -149,28 +177,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self._refreshLayout();
                     break;
                 case BICst.DASHBOARD_WIDGET_FILTER:
-                    if (BI.isNull(self.filterPane)) {
-                        self.filterPane = BI.createWidget({
-                            type: "bi.widget_filter",
-                            wId: self.model.get("id")
-                        });
-                        self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
-                            self.model.set(widget);
-                        });
-                        BI.createWidget({
-                            type: "bi.absolute",
-                            element: self.element,
-                            items: [{
-                                el: self.filterPane,
-                                top: 32,
-                                left: 0,
-                                right: 0,
-                                bottom: 0
-                            }]
-                        });
-                        return;
-                    }
-                    self.filterPane.setVisible(!self.filterPane.isVisible());
+                    self._onClickFilter();
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
                     window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
@@ -180,7 +187,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE :
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name"), function (v) {
+                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name") + "?", function (v) {
                         if (v === true) {
                             self.model.destroy();
                         }
@@ -192,10 +199,36 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [expand, combo],
-            hgap: 3
+            items: [filter, expand, combo],
+            lgap: 10
         });
         this.tools.setVisible(false);
+    },
+
+    _onClickFilter: function () {
+        var self = this;
+        if (BI.isNull(this.filterPane)) {
+            this.filterPane = BI.createWidget({
+                type: "bi.widget_filter",
+                wId: this.model.get("id")
+            });
+            this.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
+                self.model.set(widget);
+            });
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.table,
+                items: [{
+                    el: this.filterPane,
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0
+                }]
+            });
+            return;
+        }
+        this.filterPane.setVisible(!this.filterPane.isVisible());
     },
 
     _refreshTableAndFilter: function () {
@@ -215,6 +248,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             this.widget.attr("items")[2].top = 50;
         }
         this.widget.resize();
+        this.tableResize();
     },
 
     _refreshTitlePosition: function () {
@@ -240,9 +274,12 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
     },
 
-    change: function (changed) {
+    change: function (changed, prev, context, options) {
+        if (options.notrefresh === true) {
+            return;
+        }
         if (BI.has(changed, "bounds")) {
-            this.table.resize();
+            this.tableResize();
         }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();

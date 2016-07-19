@@ -1,5 +1,5 @@
 /**
- * @class BI.AbstractDimensionTargetCombo
+ * @class BI.AbstractDimensionTargetComboShow
  * @extend BI.Widget
  * @abstract
  */

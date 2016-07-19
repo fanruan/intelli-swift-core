@@ -1,0 +1,43 @@
+div.fs-login-input-password-confirm{
+    background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/checkbox_selected.png') no-repeat 0px 14px;
+}
+
+#fs-setting-title{
+    width : 100%;
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 16px;
+}
+
+#fs-sure-title{
+    font-size: 20px;
+    color : #666666;
+    margin-left: 30%;
+    margin-bottom: 3%;
+}
+#fs-login-info-username{
+    font-size: 16px;
+    color : #a5a5a5;
+    margin-left: 30%;
+    margin-bottom: 3%;
+}
+#fs-login-info-password{
+    font-size: 16px;
+    color : #a5a5a5;
+    margin-left: 30%;
+    margin-bottom: 3%;
+}
+#fs-sure-warning{
+    font-size: 16px;
+    color : #15bead;
+    margin-left: 30%;
+    margin-bottom: 5%;
+}
+
+#fs-login-reset{
+    font-size: 18px;
+    color : #abaaaa;
+    margin: 29px;
+    cursor: pointer;
+}
+

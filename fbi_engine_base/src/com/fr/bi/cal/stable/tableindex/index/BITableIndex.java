@@ -1,11 +1,11 @@
 package com.fr.bi.cal.stable.tableindex.index;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 
 import java.util.Iterator;

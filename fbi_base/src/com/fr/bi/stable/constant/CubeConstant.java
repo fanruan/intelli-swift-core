@@ -65,4 +65,6 @@ public class CubeConstant {
 
         public static final int CHECKTASK = 0x2;
     }
+
+    public static final String CUBE_PROPERTY = "property";
 }

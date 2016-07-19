@@ -78,6 +78,9 @@
 .font-hover-active(style-set-ha-font, @font-style-set, @color-bi-text-black, @color-bi-text-black, @color-bi-text-highlight);
 .font-effect(style-set-e-font, @font-style-set, @color-bi-text-black, @color-bi-text-black, @color-bi-text-highlight);
 
+//超级链接
+.font(hyper-link-font, @font-href);
+
 //过滤
 .font(filter-font, @font-filter);
 .font-hover(filter-h-font, @font-filter, @color-bi-text-black, @color-bi-text-black);
@@ -168,6 +171,8 @@
 .font-hover-active(chart-textarea-font, @font-text-area);
 .font-hover-active(chart-reuse-font, @font-reuse);
 
+.font(chart-date-normal-font, @font-date);
+
 //数值区间
 .font-hover-active(less-font, @font-less);
 .font-hover-active(less-equal-font, @font-less-equal);
@@ -182,6 +187,8 @@
 .font-hover-active(select-data-field-string-font, @font-field-string, @color-bi-text-black, @color-bi-text-black, @color-bi-text);
 .font-hover-active(select-data-field-number-font, @font-field-number, @color-bi-text-black, @color-bi-text-black, @color-bi-text);
 .font-hover-active(select-data-field-date-font, @font-field-date, @color-bi-text-black, @color-bi-text-black, @color-bi-text);
+.font(select-data-field-string-group-font, @font-field-string);
+.font(select-data-field-number-group-font, @font-field-number);
 .font(select-data-field-date-group-font, @font-field-date);
 .font-hover-active(select-data-preview-font, @font-preview, @color-bi-text-gray, @color-bi-text-highlight, @color-bi-text-highlight);
 
@@ -228,6 +235,7 @@
 .font-hover-active(time-font, @font-time);
 .font(rename-font, @font-rename);
 .font(delete-template-font, @font-delete, @color-bi-text-gray);
+.font(real-time-font, @font-real-time, @color-create-file-text);
 
 //选择表
 .font-hover-active(data-source-table-font, @font-source-table, @color-bi-text-highlight, @color-bi-text-highlight, @color-bi-text);
@@ -236,6 +244,7 @@
 .font-hover-active(sql-table-font, @font-sql-table, @color-bi-text-highlight, @color-bi-text-highlight, @color-bi-text);
 
 .font(refresh-table-font, @font-refresh);
+.font(recover-chart-font-hightlight, @font-recover-chart, @color-bi-text-highlight);
 
 .font-hover-active(tables-tile-view-font, @font-tile-view, @color-bi-font-native, @color-bi-font-hover, @color-bi-text);
 .font-hover-active(tables-relation-view-font, @font-relation-view, @color-bi-font-native, @color-bi-font-hover, @color-bi-text);
@@ -252,8 +261,8 @@
 .font-hover(data-config-font, @font-database, @color-bi-text, @color-bi-text);
 
 //切换文件夹视图
-.font-hover-active(folder-list-view, @font-classify, @color-bi-text, @color-bi-text, @color-bi-font-native);
-.font-hover-active(folder-card-view, @font-tile-view, @color-bi-text, @color-bi-text, @color-bi-font-native);
+.font-hover-active(folder-list-view, @font-classify, @color-bi-font-native, @color-bi-font-native, @color-bi-text);
+.font-hover-active(folder-card-view, @font-tile-view, @color-bi-font-native, @color-bi-font-native, @color-bi-text);
 
 .font-hover-active(item-check-font, @font-check-mark, @color-bi-text, @color-bi-background-gray, @color-bi-font-active);
 
@@ -270,6 +279,9 @@
 
 .font-hover-active(table-open-row-style-font, @font-table-row-open, @color-bi-font-native, @color-bi-font-hover, @color-bi-font-active);
 .font-hover-active(table-open-col-style-font, @font-table-col-open, @color-bi-font-native, @color-bi-font-hover, @color-bi-font-active);
+
+//气泡图计算函数
+.font-hover-active(calculate-target-font, @font-field-calc,  @color-bi-font-native, @color-bi-font-native, @color-bi-text);
 
 //匹配关系
 .font(path-set-doubt, @font-doubt, @color-bi-text-highlight);
@@ -297,15 +309,15 @@
 .font(target-style-equal-arrow-font, @font-mark-equal, @color-target-style-equal);
 .font(target-style-more-arrow-font, @font-mark-up-arrow, @color-target-style-more);
 
-.font(calculate-target-font, @font-field-calc, @color-bi-text-black);
-
 .font(task-list-font, @font-classify, @color-bi-text-highlight);
 
 .font(widget-combo-detail-font, @font-edit, @color-bi-text-highlight);
 .font(widget-combo-pull-down-font, @font-pull-down, @color-bi-text-highlight);
 .font(widget-tools-filter-font, @font-filter, @color-bi-text-highlight);
 .font(widget-tools-clear-font, @font-clear, @color-bi-text-highlight);
+.font(widget-tools-export-excel-font, @font-export-excel, @color-bi-text-highlight);
 
+.font(widget-combo-expand-font, @font-edit);
 .font(widget-combo-linkage-font, @font-linkage);
 .font(widget-combo-rename-edit-font, @font-rename-edit);
 .font(widget-combo-show-title-font, @font-check);
@@ -332,9 +344,16 @@
 .font(report-apply-hangout-ing-font, @font-apply-hangout, @color-bi-text-highlight);
 .font(report-hangout-font, @font-hangout, @color-bi-background-success);
 .font(report-cancel-hangout-font, @font-hangout, @color-bi-text-gray);
+.font(report-hangout-ing-mark-font, @font-hangout, @color-bi-background-highlight);
 
 //业务包管理
 .font(delete-font-package, @font-delete, @color-bi-text-warning);
-.font(delete-h-font-package,@font-delete,@color-bi-text-warning);
-.font(rename-font-package, @font-rename,@color-bi-text-highlight);
+.font(delete-h-font-package, @font-delete, @color-bi-text-warning);
+.font(rename-font-package, @font-rename, @color-bi-text-highlight);
+.font(package-selected-font, @font-check-box-selected, @color-bi-border-highlight);
+.font(package-not-selected-font, @font-check-box-not-selected, @color-bi-border-highlight);
 
+.font(report-detail-info-font, @font-info, @color-bi-text-redmark);
+.font(report-rename-font, @font-rename-edit, @color-bi-background-success);
+
+.font(report-cancel-share-font, @font-cancel-share, @color-bi-text-highlight);

@@ -25,7 +25,7 @@ BI.StaticCombo = BI.inherit(BI.Widget, {
             text: o.text,
             readonly: true,
             textLgap: 5,
-            height: o.height
+            height: o.height - 2
         });
         this.popup = BI.createWidget({
             type: "bi.text_value_combo_popup",

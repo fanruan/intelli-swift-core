@@ -19,7 +19,7 @@ import com.fr.stable.xml.XMLableReader;
 import java.util.*;
 
 /**
- * Created by wuk on 16/5/17.
+ * Created by kary on 16/5/17.
  */
 public class BINationDataSourceTool extends AbstractCubeTableSource{
     public String sourceID;
@@ -89,6 +89,11 @@ public class BINationDataSourceTool extends AbstractCubeTableSource{
 
     @Override
     public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
+        return 0;
+    }
+
+    @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
         return 0;
     }
 

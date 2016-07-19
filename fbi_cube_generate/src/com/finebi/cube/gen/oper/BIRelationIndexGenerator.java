@@ -16,6 +16,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
@@ -31,10 +32,10 @@ import java.util.*;
  * @since 4.0
  */
 public class BIRelationIndexGenerator extends BIProcessor {
-    protected ICube cube;
+    protected Cube cube;
     protected BICubeRelation relation;
 
-    public BIRelationIndexGenerator(ICube cube, BICubeRelation relation) {
+    public BIRelationIndexGenerator(Cube cube, BICubeRelation relation) {
         this.cube = cube;
         this.relation = relation;
     }
@@ -121,8 +122,8 @@ public class BIRelationIndexGenerator extends BIProcessor {
     }
 
     private void buildRelationIndex() {
-        ICubeTableEntityGetterService primaryTable = null;
-        ICubeTableEntityGetterService foreignTable = null;
+        CubeTableEntityGetterService primaryTable = null;
+        CubeTableEntityGetterService foreignTable = null;
         ICubeColumnEntityService primaryColumn = null;
         ICubeColumnEntityService foreignColumn = null;
         BICubeRelationEntity tableRelation = null;
@@ -151,6 +152,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
              * 主表的行数
              */
             int primaryRowCount = primaryTable.getRowCount();
+            Integer[] reverse = new Integer[foreignTable.getRowCount()];
             for (int row = 0; row < primaryRowCount; row++) {
                 /**
                  * 关联主字段的value值
@@ -159,7 +161,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 /**
                  * value值在子字段中的索引位置
                  */
-                int position = foreignColumn.getPositionOfGroup(primaryColumnValue);
+                int position = foreignColumn.getPositionOfGroupByGroupValue(primaryColumnValue);
                 /**
                  * 依据索引位置，取出索引
                  */
@@ -171,8 +173,11 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 }
                 appearPrimaryValue.or(foreignGroupValueIndex);
                 tableRelation.addRelationIndex(row, foreignGroupValueIndex);
+                initReverseIndex(reverse, row, foreignGroupValueIndex);
             }
-            tableRelation.addRelationNULLIndex(0, appearPrimaryValue.NOT(foreignTable.getRowCount()));
+            GroupValueIndex nullIndex =  appearPrimaryValue.NOT(foreignTable.getRowCount());
+            buildReverseIndex(tableRelation,reverse);
+            tableRelation.addRelationNULLIndex(0, nullIndex);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
@@ -194,6 +199,21 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
         }
 
+    }
+
+    private void initReverseIndex(final Integer[] index, final Integer row, GroupValueIndex gvi) {
+        gvi.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int rowIndex) {
+                index[rowIndex] = row;
+            }
+        });
+    }
+
+    private void buildReverseIndex(ICubeRelationEntityService tableRelation, Integer[] index) {
+        for (int i = 0; i < index.length; i ++){
+            tableRelation.addReverseIndex(i, index[i]);
+        }
     }
 
 }

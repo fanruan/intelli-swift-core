@@ -9,6 +9,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -16,9 +17,11 @@ import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.SqlSettedStatement;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
+import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -28,6 +31,7 @@ import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
+import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -54,6 +58,7 @@ public class DBTableSource extends AbstractTableSource {
     protected String dbName;
     @BICoreField
     protected String tableName;
+    protected UpdateSettingSource updateSettingSource;
 
     public DBTableSource() {
         super();
@@ -77,6 +82,10 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public IPersistentTable reGetBiTable() {
         return super.reGetBiTable();
+    }
+
+    public void setUpdateSettingSource(UpdateSettingSource updateSettingSource) {
+        this.updateSettingSource = updateSettingSource;
     }
 
     public static void main(String[] args) {
@@ -168,10 +177,45 @@ public class DBTableSource extends AbstractTableSource {
         return rowCount;
     }
 
-//    public IDataSourceReader<BIDataValue> iterator() {
-//
-//    }
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount) {
+        oldCount = dealWithInsert(traversal, fields, SQL, oldCount);
+        return oldCount;
+    }
 
+
+
+    private long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long rowCount) {
+        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        long t = System.currentTimeMillis();
+        try {
+            SQLRegUtils regUtils=new SQLRegUtils(SQL);
+            if (!regUtils.isSql()){
+                BILogger.getLogger().error("SQL syntax error");
+                return 0;
+            }
+            com.fr.data.impl.Connection connection = DatasourceManager.getInstance().getConnection(this.getDbName());
+            SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
+            sqlStatement.setSql(SQL);
+            rowCount = BICubeDBUtils.runSQL(sqlStatement, fields, new Traversal<BIDataValue>() {
+                @Override
+                public void actionPerformed(BIDataValue v) {
+                    try {
+                        dealWithOneData(traversal, v);
+                    } catch (Exception e) {
+                        BILogger.getLogger().error(e.getMessage(), e);
+                    }
+                }
+            }, rowCount);
+            if (fields.length > 0) {
+                biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, UserControl.getInstance().getSuperManagerID());
+            }
+        } catch (Throwable e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        } finally {
+        }
+        return rowCount;
+    }
     /**
      * 获取某个字段的distinct值
      *
@@ -268,6 +312,16 @@ public class DBTableSource extends AbstractTableSource {
         return jo;
     }
 
+    @Override
+    public void parseJSON(JSONObject jo, long userId) throws Exception {
+        super.parseJSON(jo, userId);
+        if(jo.has("connection_name")) {
+            dbName = jo.getString("connection_name");
+        }
+        if(jo.has("table_name")) {
+            tableName = jo.getString("table_name");
+        }
+    }
 
     @Override
     public void readXML(XMLableReader reader) {
@@ -287,4 +341,7 @@ public class DBTableSource extends AbstractTableSource {
         writer.attr("dbName", dbName).attr("tableName", tableName);
         writer.end();
     }
+
+    
+
 }

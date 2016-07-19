@@ -42,7 +42,9 @@ public class BIDBUtils {
      *
      * @param biType bi类型
      * @return 数据库类型
+     * 该方法现在弃用
      */
+    @Deprecated
     public static int biTypeToSql(int biType) {
         switch (biType) {
             case DBConstant.COLUMN.NUMBER:
@@ -56,7 +58,7 @@ public class BIDBUtils {
 
         }
     }
-
+    
     public static int classTypeToSql(int classType) {
         switch (classType) {
             case DBConstant.CLASS.INTEGER: {
@@ -342,6 +344,12 @@ public class BIDBUtils {
             if (item.containsKey("DECIMAL_DIGITS")) {
                 decimal_digits = (Integer) item.get("DECIMAL_DIGITS");
             }
+            if (!(dialect instanceof OracleDialect)) {
+                if (columnType == DBConstant.CLASS.DECIMAL) {
+                    decimal_digits = PersistentField.DEFALUTSCALE;
+                }
+            }
+
             dbTable.addColumn(new PersistentField(columnName, columnNameText, columnType, columnKey, columnSize, decimal_digits));
         }
         return dbTable;
@@ -430,7 +438,7 @@ public class BIDBUtils {
 
 
     /**
-     * 统一放到runsql里面释放connection，减少创建次数，不能单独使用
+     * 统一放到runSql里面释放connection，减少创建次数，不能单独使用
      *
      * @param dbName
      * @param tableName
@@ -443,7 +451,6 @@ public class BIDBUtils {
             Connection conn = sql.getSqlConn();
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
             Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
-
             sql.setFrom(dialect.table2SQL(table));
 
         } catch (Throwable e) {
@@ -451,7 +458,21 @@ public class BIDBUtils {
         }
         return sql;
     }
+    public static SQLStatement getSQLStatementByConditions(String dbName, String tableName,String where) {
+        com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        SQLStatement sql = new SQLStatement(connection);
+        try {
+            Connection conn = sql.getSqlConn();
+            Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+            Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
+            sql.setFrom(dialect.table2SQL(table));
+            sql.setWhere(where);
 
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+        return sql;
+    }
     public static SQLStatement getDistinctSQLStatement(String dbName, String tableName, String fieldName) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         SqlSettedStatement sql = new SqlSettedStatement(connection);

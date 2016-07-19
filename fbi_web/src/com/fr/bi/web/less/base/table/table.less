@@ -2,8 +2,8 @@
 
 .bi-table {
   > .center-element {
-    border-top: 1px solid @color-bi-border-normal;
-    border-left: 1px solid @color-bi-border-normal;
+    //border-top: 1px solid @color-bi-border-normal;
+    //border-left: 1px solid @color-bi-border-normal;
   }
 
   > .first-col {
@@ -15,16 +15,22 @@
 
   & > div > div > table {
     border-bottom: 1px solid @border-color-line;
-    //border-right: 1px solid @border-color-line;
+    border-right: 1px solid @border-color-line;
+  }
+  & > div.top-left > div > div > table {
+    border-bottom: 1px solid @border-color-line;
+    border-right: 1px solid @border-color-line;
   }
   & > div.top-right > div > div > table {
-    //border-right: 1px solid @border-color-line;
+    border-bottom: 1px solid @border-color-line;
+    border-right: 1px solid @border-color-line;
   }
   & > div.bottom-left > div > div > table {
     border-bottom: 1px solid @border-color-line;
+    border-right: 1px solid @border-color-line;
   }
   & > div.bottom-right > div > div > table {
-    //border-right: 1px solid @border-color-line;
+    border-right: 1px solid @border-color-line;
     border-bottom: 1px solid @border-color-line;
   }
 
@@ -43,10 +49,6 @@
     & > tbody > tr > td, & > thead > tr > td {
       border-top: 1px solid @border-color-line;
       border-left: 1px solid @color-bi-border-line;
-    }
-    & > tbody > tr:first-child > th, & > tbody > tr:first-child > td,
-    & > thead > tr:first-child > th, & > thead > tr:first-child > td {
-      //border-top: none;
     }
     & > tbody > tr.odd {
       //background-color: #f9f9f9;

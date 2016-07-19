@@ -23,7 +23,7 @@ BI.Widget = BI.inherit(FR.Widget, {
         })
     },
 
-    _initOpts : function () {
+    _initOpts: function () {
     },
 
     _init: function () {

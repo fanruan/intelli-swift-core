@@ -9,7 +9,7 @@ BI.QuarterCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.QuarterCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-quarter-combo",
-            height: 30
+            height: 25
         });
     },
     _init: function () {
@@ -62,9 +62,6 @@ BI.QuarterCombo = BI.inherit(BI.Widget, {
                 minWidth: 85,
                 el: this.popup
             }
-        });
-        this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
-            self.setValue(self.storeValue);
         });
     },
 

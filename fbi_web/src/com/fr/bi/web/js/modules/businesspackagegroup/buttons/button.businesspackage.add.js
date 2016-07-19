@@ -7,18 +7,20 @@ BI.BusinessPackageAdd = BI.inherit(BI.IconButton, {
     _defaultConfig: function () {
         var conf = BI.BusinessPackageAdd.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            baseCls: (conf.baseCls || "") + " business-package-add-icon",
+            baseCls: (conf.baseCls || ""),
             height: 140,
             width: 150
         })
     },
 
     _init: function () {
-        var self = this;
+        var self = this, o = this.options;
         BI.BusinessPackageAdd.superclass._init.apply(this, arguments);
         var addButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "business-package-add-icon",
+            cls: function () {
+                return o.disabled ? "business-package-add-disable-icon" : "business-package-add-icon"
+            },
             iconHeight: 75,
             iconWidth: 90
         });

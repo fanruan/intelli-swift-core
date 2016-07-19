@@ -1,5 +1,8 @@
 package com.fr.bi.fs.entry;
 
+import com.fr.bi.fs.BIDAOUtils;
+import com.fr.bi.fs.BIReportNode;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.data.core.db.dml.Table;
 import com.fr.data.core.db.tableObject.AbstractTableObject;
 import com.fr.data.core.db.tableObject.ColumnSize;
@@ -7,11 +10,12 @@ import com.fr.data.dao.CommonFieldColumnMapper;
 import com.fr.data.dao.FieldColumnMapper;
 import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.dao.PrimaryKeyFCMapper;
-import com.fr.fs.web.platform.entry.*;
+import com.fr.fs.web.platform.entry.BaseEntry;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.sql.Types;
+import java.util.List;
 
 /**
  * Created by Young's on 2016/6/6.
@@ -106,8 +110,21 @@ public class BIReportEntry extends BaseEntry {
 
     public JSONObject createJSONConfig() throws JSONException {
         JSONObject jo = createShowJSONConfig();
+        //这边的reportName还是不要用保存的了，因为用户会修改的
+        String reportName = this.reportName;
+        try {
+            List<BIReportNode> nodeList = BIDAOUtils.findByUserID(this.createBy);
+            for(int i = 0; i < nodeList.size(); i++){
+                BIReportNode node = nodeList.get(i);
+                if(node.getId() == this.reportId) {
+                    reportName = node.getReportName();
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
         jo.put("reportName", reportName);
-        jo.put("createBy", createBy);
         return jo;
     }
 
@@ -116,8 +133,9 @@ public class BIReportEntry extends BaseEntry {
         jo.put("mobileCoverId", mobileCoverId);
         jo.put("nodeicon", "bi");
         jo.put("reportId", this.getReportId());
+        jo.put("createBy", this.getCreateBy());
         jo.put("bilink", "?op=fr_bi&cmd=bi_init&id=" + this.getReportId()
-                + "&openFromShare=true&systemManager=true&createBy=" + this.getCreateBy());
+                + "&show=_bi_show_&createBy=" + this.getCreateBy());
         return jo;
     }
 

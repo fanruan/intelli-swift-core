@@ -46,7 +46,7 @@ BI.TimeSettingItem = BI.inherit(BI.Widget, {
                 value: BICst.UPDATE_FREQUENCY.EVER_SUNDAY
             }],
             width: 160,
-            height: 28
+            height: 30
         });
         this.frequency.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(v){
             var v = this.getValue()[0];

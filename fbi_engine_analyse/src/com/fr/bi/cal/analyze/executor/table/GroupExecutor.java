@@ -794,7 +794,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
 
         int calpage = paging.getOprator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
-        Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calpage, widget.useRealData(), session, expander.getYExpander());
+        Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node(null, null);
         }

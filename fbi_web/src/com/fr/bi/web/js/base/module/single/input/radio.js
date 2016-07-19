@@ -11,10 +11,10 @@ BI.Radio = BI.inherit(BI.IconButton, {
             baseCls: (conf.baseCls || "") + " bi-radio radio-icon",
             selected: false,
             handler: BI.emptyFn,
-            width: 13,
-            height: 13,
-            iconWidth: 13,
-            iconHeight: 13
+            width: 16,
+            height: 16,
+            iconWidth: 16,
+            iconHeight: 16
         })
     },
 

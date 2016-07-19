@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source.operator.create;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.FinalInt;
@@ -15,6 +16,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,13 +56,17 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
         if (fgvi == null) {
             return 0;
         }
+        final List<ICubeColumnDetailGetter> getters = new ArrayList<ICubeColumnDetailGetter>();
+        for (PersistentField c : columns){
+            getters.add(ti.getColumnDetailReader(new IndexKey(c.getFieldName())));
+        }
         fgvi.Traversal(new SingleRowTraversalAction() {
             int row = 0;
 
             @Override
             public void actionPerformed(int rowIndices) {
                 for (int i = 0; i < columns.size(); i++) {
-                    travel.actionPerformed(new BIDataValue(row, i, ti.getRow(new IndexKey(columns.get(i).getFieldName()), rowIndices)));
+                    travel.actionPerformed(new BIDataValue(row, i, getters.get(i).getValue(rowIndices)));
                 }
                 row++;
             }
@@ -78,6 +84,10 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
         final FinalInt writeRow = new FinalInt();
         IPersistentTable ptable = parents.get(0).getPersistentTable();
         final List<PersistentField> columns = ptable.getFieldList();
+        final List<ICubeColumnDetailGetter> getters = new ArrayList<ICubeColumnDetailGetter>();
+        for (PersistentField c : columns){
+            getters.add(ti.getColumnDetailReader(new IndexKey(c.getFieldName())));
+        }
         GroupValueIndex fgvi = createFilterIndex(parents, new CubeTILoaderAdapter() {
 
             public ICubeTableService getTableIndex(CubeTableSource tableSource, int start, int end) {
@@ -100,7 +110,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
             public boolean actionPerformed(int row){
                 currentRow.value++;
                 for (int i = 0; i < columns.size(); i++) {
-                    travel.actionPerformed(new BIDataValue(writeRow.value, i, ti.getRow(new IndexKey(columns.get(i).getFieldName()), row)));
+                    travel.actionPerformed(new BIDataValue(writeRow.value, i, getters.get(i).getValue(row)));
                 }
                 writeRow.value++;
                 return false;
@@ -119,6 +129,10 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
         final FinalInt writeRow = new FinalInt();
         IPersistentTable ptable = parents.get(0).getPersistentTable();
         final List<PersistentField> columns = ptable.getFieldList();
+        final List<ICubeColumnDetailGetter> getters = new ArrayList<ICubeColumnDetailGetter>();
+        for (PersistentField c : columns){
+            getters.add(ti.getColumnDetailReader(new IndexKey(c.getFieldName())));
+        }
         do {
             final ICubeTableService tableIndex = ti;
             GroupValueIndex fgvi = createFilterIndex(parents, new CubeTILoaderAdapter() {
@@ -149,7 +163,7 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
                         return true;
                     }
                     for (int i = 0; i < columns.size(); i++) {
-                        travel.actionPerformed(new BIDataValue(writeRow.value, i, tableIndex.getRow(new IndexKey(columns.get(i).getFieldName()), row)));
+                        travel.actionPerformed(new BIDataValue(writeRow.value, i,getters.get(i).getValue(row)));
                     }
                     writeRow.value++;
                     return false;
@@ -162,6 +176,10 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
             }
             index++;
             ti = loader.getTableIndex(getSingleParentMD5(parents), index* STEP, (index + 1)* STEP);
+            getters.clear();
+            for (PersistentField c : columns){
+                getters.add(ti.getColumnDetailReader(new IndexKey(c.getFieldName())));
+            }
         }
         while (ti.getRowCount() != 0);
         return writeRow.value;

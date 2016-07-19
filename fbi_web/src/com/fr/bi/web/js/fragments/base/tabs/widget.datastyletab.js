@@ -30,7 +30,7 @@ BI.DataStyleTab = BI.inherit(BI.Widget, {
                 }),
                 height: this.constants.DETAIL_TAB_HEIGHT,
                 layouts: [{
-                    type: "bi.center_adapt",
+                    type: "bi.absolute_center_adapt",
                     items: [{
                         type: "bi.center",
                         width: this.constants.DETAIL_TAB_WIDTH,

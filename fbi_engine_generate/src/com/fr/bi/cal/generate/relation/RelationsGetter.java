@@ -2,6 +2,7 @@ package com.fr.bi.cal.generate.relation;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -37,7 +38,7 @@ public class RelationsGetter {
     }
 
     private Set<String> createGenerateTables() {
-        Set<IBusinessPackageGetterService> packs = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getPacks();
+        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(biUser.getUserId());
         Set<BusinessTable> generateTable = BIPackUtils.getAllBusiTableKeys(packs);
         /**
          * TODO Connery：LoginInfo Mark

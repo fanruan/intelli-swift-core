@@ -6,6 +6,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.AbstractGroup;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 import com.fr.bi.stable.utils.BICollectionUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
 
@@ -112,6 +113,9 @@ public class AutoGroup extends AbstractGroup {
             add.append("0");
         }
         add.append("1");
+        if( ComparatorUtils.equals(val.charAt(cutPosition - 1), '.')){
+            return new BigDecimal(val.substring(0, cutPosition - 1)).add(new BigDecimal("1")).doubleValue();
+        }
         BigDecimal b1 = new BigDecimal(val);
         BigDecimal b2 = new BigDecimal(add.toString());
         return b1.add(b2).doubleValue();

@@ -9,7 +9,10 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         WIDGET: 0,
         TEMPLATE: 1,
         FOLDER: 2,
-        CREATE_BY_ME_ID: "-1"
+        CREATE_BY_ME_ID: "-1",
+        CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.NUMBER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
+            BICst.WIDGET.QUARTER, BICst.WIDGET.TREE, BICst.WIDGET.YEAR, BICst.WIDGET.YMD, BICst.WIDGET.GENERAL_QUERY,
+            BICst.WIDGET.QUERY, BICst.WIDGET.RESET]
     },
 
     _defaultConfig: function () {
@@ -21,57 +24,73 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
     _getWidgetClass: function (type) {
         switch (type) {
             case BICst.WIDGET.TABLE:
-                return "chart-table-font";
-            case BICst.WIDGET.BAR:
-                return "chart-bar-font";
-            case BICst.WIDGET.ACCUMULATE_BAR:
-                return "chart-accumulate-bar-font";
-            case BICst.WIDGET.PIE:
-                return "chart-pie-font";
-            case BICst.WIDGET.AXIS:
-                return "chart-axis-font";
-            case BICst.WIDGET.DASHBOARD:
-                return "chart-dashboard-font";
-            case BICst.WIDGET.MAP:
-                return "chart-map-font";
-            case BICst.WIDGET.DETAIL:
-                return "chart-detail-font";
-            case BICst.WIDGET.BUBBLE:
-                return "chart-bubble-font";
-            case BICst.WIDGET.SCATTER:
-                return "chart-scatter-font";
-            case BICst.WIDGET.RADAR:
-                return "chart-radar-font";
-            case BICst.WIDGET.STRING:
-                return "chart-string-font";
-            case BICst.WIDGET.NUMBER:
-                return "chart-number-font";
-            case BICst.WIDGET.DATE:
-                return "chart-date-font";
-            case BICst.WIDGET.YEAR:
-                return "chart-year-font";
-            case BICst.WIDGET.QUARTER:
-                return "chart-quarter-font";
-            case BICst.WIDGET.MONTH:
-                return "chart-month-font";
-            case BICst.WIDGET.TREE:
-                return "chart-tree-font";
-            case BICst.WIDGET.QUERY:
-                return "chart-query-font";
-            case BICst.WIDGET.RESET:
-                return "chart-reset-font";
+                return "drag-group-small-icon";
             case BICst.WIDGET.CROSS_TABLE:
-                return "chart-table-font";
+                return "drag-cross-small-icon";
             case BICst.WIDGET.COMPLEX_TABLE:
-                return "chart-table-font";
-            case BICst.WIDGET.CONTENT:
-                return "chart-content-font";
+                return "drag-complex-small-icon";
+            case BICst.WIDGET.DETAIL:
+                return "drag-detail-small-icon";
+            case BICst.WIDGET.AXIS:
+                return "drag-axis-small-icon";
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+                return "drag-axis-accu-small-icon";
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                return "drag-axis-percent-accu-small-icon";
+            case BICst.WIDGET.COMPARE_AXIS:
+                return "drag-axis-compare-small-icon";
+            case BICst.WIDGET.FALL_AXIS:
+                return "drag-axis-fall-small-icon";
+            case BICst.WIDGET.BAR:
+                return "drag-bar-small-icon";
+            case BICst.WIDGET.ACCUMULATE_BAR:
+                return "drag-bar-accu-small-icon";
+            case BICst.WIDGET.COMPARE_BAR:
+                return "drag-bar-compare-small-icon";
+            case BICst.WIDGET.PIE:
+                return "drag-pie-small-icon";
+            case BICst.WIDGET.MAP:
+                return "drag-map-china-small-icon";
+            case BICst.WIDGET.GIS_MAP:
+                return "drag-map-gis-small-icon";
+            case BICst.WIDGET.DASHBOARD:
+                return "drag-dashboard-small-icon";
+            case BICst.WIDGET.DONUT:
+                return "drag-donut-small-icon";
+            case BICst.WIDGET.BUBBLE:
+                return "drag-bubble-small-icon";
+            case BICst.WIDGET.FORCE_BUBBLE:
+                return "drag-bubble-force-small-icon";
+            case BICst.WIDGET.SCATTER:
+                return "drag-scatter-small-icon";
+            case BICst.WIDGET.RADAR:
+                return "drag-radar-small-icon";
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                return "drag-radar-accu-small-icon";
+            case BICst.WIDGET.LINE:
+                return "drag-line-small-icon";
+            case BICst.WIDGET.AREA:
+                return "drag-area-small-icon";
+            case BICst.WIDGET.ACCUMULATE_AREA:
+                return "drag-area-accu-small-icon";
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                return "drag-area-percent-accu-small-icon";
+            case BICst.WIDGET.COMPARE_AREA:
+                return "drag-area-compare-small-icon";
+            case BICst.WIDGET.RANGE_AREA:
+                return "drag-area-range-small-icon";
+            case BICst.WIDGET.COMBINE_CHART:
+                return "drag-combine-small-icon";
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                return "drag-combine-mult-small-icon";
+            case BICst.WIDGET.FUNNEL:
+                return "drag-funnel-small-icon";
             case BICst.WIDGET.IMAGE:
-                return "chart-image-font";
-            case BICst.WIDGET.YMD:
-                return "chart-ymd-font";
+                return "drag-image-small-icon";
             case BICst.WIDGET.WEB:
-                return "chart-web-font";
+                return "drag-web-small-icon";
+            case BICst.WIDGET.CONTENT:
+                return "drag-input-small-icon";
         }
     },
 
@@ -126,7 +145,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     id: item.id,
                     pId: item.pId,
                     type: "bi.multilayer_icon_arrow_node",
-                    iconCls: "file-font",
+                    iconCls: item.description === "true" ? "real-time-font" : "file-font",
                     text: item.text,
                     title: item.text,
                     isParent: true,
@@ -183,7 +202,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     id: currentTemplate.id,
                     pId: BI.UUID(),
                     type: "bi.multilayer_icon_arrow_node",
-                    iconCls: "file-font",
+                    iconCls: currentTemplate.description === "true" ? "real-time-font" : "file-font",
                     text: currentTemplate.text,
                     title: currentTemplate.text,
                     isParent: true,
@@ -201,7 +220,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 id: currentTemplate.id,
                 pId: BI.UUID(),
                 type: "bi.multilayer_icon_arrow_node",
-                iconCls: "file-font",
+                iconCls: currentTemplate.description === "true" ? "real-time-font" : "file-font",
                 text: currentTemplate.text,
                 title: currentTemplate.text,
                 isParent: true,
@@ -224,19 +243,24 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         var call = function (widgets) {
-            var result = BI.map(widgets, function (wId, widget) {
-                return {
-                    id: wId,
-                    pId: id,
-                    isParent: true,
-                    layer: layer,
-                    nodeType: self.constants.WIDGET,
+            var result = [];
+            BI.each(widgets, function (wId, widget) {
+                if(!BI.contains(self.constants.CONTROL_TYPE, widget.type)){
+                    result.push({
+                        id: wId,
+                        pId: id,
+                        isParent: true,
+                        layer: layer,
+                        nodeType: self.constants.WIDGET,
 
-                    type: "bi.multilayer_icon_arrow_node",
-                    text: widget.name,
-                    title: widget.name,
-                    value: wId,
-                    iconCls: self._getWidgetClass(widget.type)
+                        type: "bi.multilayer_icon_arrow_node",
+                        text: widget.name,
+                        title: widget.name,
+                        value: wId,
+                        iconCls: self._getWidgetClass(widget.type),
+                        iconHeight: 16,
+                        iconWidth: 16
+                    });
                 }
             });
             callback(BI.sortBy(result, "text"));
@@ -463,7 +487,8 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                             dimension.sort = sort;
                         }
                         var groupArray = [BICst.GROUP.CUSTOM_GROUP, BICst.SUMMARY_TYPE.SUM, BICst.SUMMARY_TYPE.MAX
-                            , BICst.SUMMARY_TYPE.MIN, BICst.SUMMARY_TYPE.AVG
+                            , BICst.SUMMARY_TYPE.MIN, BICst.SUMMARY_TYPE.AVG, BICst.GROUP.Y, BICst.GROUP.S, BICst.GROUP.M,
+                        BICst.GROUP.W, BICst.GROUP.YMD
                         ];
                         if (BI.isNotNull(group) && BI.contains(groupArray, group.type)) {
                             dimension.group = group;

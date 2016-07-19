@@ -36,7 +36,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
             type: "bi.chart_setting_select_color_combo",
             width: 130
         });
-        this.colorSelect.populate(BICst.CHART_COLORS);
+        this.colorSelect.populate();
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
             self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
@@ -167,6 +167,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
             width: this.constant.EDITOR_WIDTH,
             height: this.constant.EDITOR_HEIGHT,
             cls: "unit-input",
+            allowBlank: false,
             value: "0",
             errorText: BI.i18nText("BI-Please_Enter_Number_From_To_To", -90, 90),
             validationChecker: function(v){
@@ -277,6 +278,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Category_Axis"),
                 textAlign: "left",
+                textHeight: 60,
                 lgap: this.constant.SIMPLE_H_LGAP,
                 cls: "line-title"
             }, {
@@ -391,7 +393,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
     populate: function(){
         var wId = this.options.wId;
         var view = BI.Utils.getWidgetViewByID(wId);
-        var titleLY = BI.Utils.getWSXAxisTitleByID(wId), titleX = BI.Utils.getWSLeftYAxisTitleByID(wId);
+        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId), titleX = BI.Utils.getWSXAxisTitleByID(wId);
         if(titleLY === ""){
             BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
                 if(BI.Utils.isDimensionUsable(dId)){
@@ -416,10 +418,10 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.isShowTitleLY.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
-        this.isShowTitleX.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
-        this.editTitleLY.setValue(titleX);
-        this.editTitleX.setValue(titleLY);
+        this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
+        this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
+        this.editTitleLY.setValue(titleLY);
+        this.editTitleX.setValue(titleX);
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
@@ -434,13 +436,13 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
             chart_style: this.chartStyleGroup.getValue()[0],
-            x_axis_style: this.lYAxisStyle.getValue()[0],
-            x_axis_number_level: this.numberLevellY.getValue()[0],
-            x_axis_unit: this.LYUnit.getValue(),
-            show_left_y_axis_title: this.isShowTitleX.isSelected(),
-            show_x_axis_title: this.isShowTitleLY.isSelected(),
-            left_y_axis_title: this.editTitleX.getValue(),
-            x_axis_title: this.editTitleLY.getValue(),
+            left_y_axis_style: this.lYAxisStyle.getValue()[0],
+            left_y_axis_number_level: this.numberLevellY.getValue()[0],
+            left_y_axis_unit: this.LYUnit.getValue(),
+            show_x_axis_title: this.isShowTitleX.isSelected(),
+            show_left_y_axis_title: this.isShowTitleLY.isSelected(),
+            x_axis_title: this.editTitleX.getValue(),
+            left_y_axis_title: this.editTitleLY.getValue(),
             text_direction: this.text_direction.getValue(),
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
@@ -452,13 +454,13 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
         this.chartStyleGroup.setValue(v.chart_style);
-        this.lYAxisStyle.setValue(v.x_axis_style);
-        this.numberLevellY.setValue(v.x_axis_number_level);
-        this.LYUnit.setValue(v.x_axis_unit);
-        this.isShowTitleLY.setSelected(v.show_x_axis_title);
-        this.isShowTitleX.setSelected(v.show_left_y_axis_title);
-        this.editTitleLY.setValue(v.x_axis_title);
-        this.editTitleX.setValue(v.left_y_axis_title);
+        this.lYAxisStyle.setValue( v.left_y_axis_style);
+        this.numberLevellY.setValue(v.left_y_axis_number_level);
+        this.LYUnit.setValue(v.left_y_axis_unit);
+        this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
+        this.isShowTitleX.setSelected(v.show_x_axis_title);
+        this.editTitleLY.setValue(v.left_y_axis_title);
+        this.editTitleX.setValue(v.x_axis_title);
         this.text_direction.setValue(v.text_direction);
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);

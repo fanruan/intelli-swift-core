@@ -90,7 +90,7 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.text_value_down_list_combo",
             width: this._constant.COMBO_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
-            items: BICst.FILTER_DATE_COMBO
+            items: BICst.AUTH_FILTER_DATE_COMBO
         });
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
@@ -152,7 +152,7 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     _createTimeRange: function (value) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
-            type: "bi.custom_param_time_interval",
+            type: "bi.custom_time_interval",
             width: this._constant.INPUT_WIDTH,
             height: this._constant.TIME_INTERVAL_HEIGHT
         });
@@ -170,10 +170,10 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     _createDate: function (value) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
-            type: "bi.multidate_param_combo",
+            type: "bi.custom_multi_date_combo",
             width: this._constant.INPUT_WIDTH
         });
-        this.filterWidget.on(BI.MultiDateParamCombo.EVENT_CHANGE, function(){
+        this.filterWidget.on(BI.CustomMultiDateCombo.EVENT_CHANGE, function(){
             self._setNodeData({
                 filter_value : this.getValue()
             });

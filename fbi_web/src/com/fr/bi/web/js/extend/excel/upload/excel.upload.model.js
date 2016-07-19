@@ -40,6 +40,7 @@ BI.ExcelUploadModel = BI.inherit(FR.OB, {
             text: BI.i18nText("BI-Loading")
         });
         BI.Utils.saveFileGetExcelData(file.attach_id, function(data){
+            self.fullFileName = data.full_file_name;
             //对比前一次fields
             var fields = data.fields;
             if(BI.isNotEmptyArray(self.fields)){

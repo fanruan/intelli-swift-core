@@ -42,6 +42,14 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
             source.getSourceUsedAnalysisETLSource(set);
             set.add(source);
         }
+        set.add(this);
+    }
+
+    @Override
+    public void refreshWidget() {
+        for (AnalysisCubeTableSource source : getParents()){
+            source.refreshWidget();
+        }
     }
 
     @Override
@@ -89,6 +97,11 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
         throw new RuntimeException("Only UserTableSource can read");
     }
 
+    @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
+        return 0;
+    }
+
     public AnalysisETLTableSource(List<AnalysisETLSourceField> fieldList, String name, List<IETLOperator> operators, List<AnalysisCubeTableSource> parents) {
         super(operators, parents);
         this.fieldList = fieldList;
@@ -106,7 +119,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
                     for (AnalysisCubeTableSource parent : getParents()){
                         parents.add(parent.createUserTableSource(userId));
                     }
-                    source = new UserETLTableSource(getETLOperators(), parents, userId, fieldList);
+                    source = new UserETLTableSource(this, parents, userId);
                     userBaseTableMap.put(userId, source);
                 } else {
                     source = tmp;

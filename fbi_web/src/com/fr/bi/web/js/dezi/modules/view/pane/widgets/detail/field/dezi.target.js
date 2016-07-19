@@ -30,6 +30,13 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             self.model.set("used", self.usedCheck.isSelected());
         });
 
+        this.usedRadio = BI.createWidget({
+            type: "bi.radio"
+        });
+        this.usedRadio.on(BI.Radio.EVENT_CHANGE, function () {
+            self.model.set("used", self.usedRadio.isSelected());
+        });
+
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: this.constants.TARGET_BUTTON_HEIGHT,
@@ -45,6 +52,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         this.iconButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "filter-font",
+            title: BI.i18nText("BI-Modify_Filter_Conditions"),
             height: this.constants.DIMENSION_BUTTON_HEIGHT
         });
 
@@ -84,7 +92,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.center_adapt",
-                    items: [this.usedCheck]
+                    items: [this.usedCheck, this.usedRadio]
                 },
                 width: this.constants.CHECKBOX_WIDTH
             }, this.editor, {el: this.iconButton, width: 0},
@@ -121,9 +129,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                     self.model.set("style_of_chart", {type: s});
                     break;
                 case BICst.TARGET_COMBO.STYLE_SETTING:
-                    if(s === BICst.TARGET_COMBO.CORDON){
+                    if (s === BICst.TARGET_COMBO.CORDON) {
                         self._buildCordonPane();
-                    }else{
+                    } else {
                         self._buildStyleSettingPane();
                     }
                     break;
@@ -158,14 +166,13 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                     )
                     ;
                     break;
-                case
-                BICst.TARGET_COMBO.CHART_TYPE:
+                case BICst.TARGET_COMBO.CHART_TYPE:
                     self.model.set("style_of_chart", {type: s});
                     break;
                 case BICst.TARGET_COMBO.STYLE_SETTING:
-                    if(s === BICst.TARGET_COMBO.CORDON){
+                    if (s === BICst.TARGET_COMBO.CORDON) {
                         self._buildCordonPane();
-                    }else{
+                    } else {
                         self._buildStyleSettingPane();
                     }
                     break;
@@ -189,10 +196,17 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             type: "bi.calculate_target_combo",
             dId: this.model.get("id")
         });
-        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v) {
+        this.combo.on(BI.AbstractDimensionTargetCombo.EVENT_CHANGE, function (v, s) {
             switch (v) {
                 case BICst.CALCULATE_TARGET_COMBO.FORM_SETTING:
-                    self._buildStyleSettingPane();
+                    if (s === BICst.TARGET_COMBO.CORDON) {
+                        self._buildCordonPane();
+                    } else {
+                        self._buildStyleSettingPane();
+                    }
+                    break;
+                case BICst.TARGET_COMBO.CHART_TYPE:
+                    self.model.set("style_of_chart", {type: s});
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET:
                     self._updateTarget();
@@ -230,6 +244,31 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         return [this.calculateTargetButton, this.combo]
     },
 
+    _checkUsedEnable: function () {
+        var isUsed = this.model.get("used");
+        var wId = BI.Utils.getWidgetIDByDimensionID(this.model.get("id"));
+        this.usedCheck.setEnable(true);
+        this.usedCheck.setSelected(isUsed);
+        this.usedRadio.setEnable(true);
+        this.usedRadio.setSelected(isUsed);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if ((wType !== BICst.WIDGET.TABLE &&
+            wType !== BICst.WIDGET.CROSS_TABLE &&
+            wType !== BICst.WIDGET.COMPLEX_TABLE &&
+            wType !== BICst.WIDGET.GIS_MAP)
+            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION2
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
+            this.usedCheck.setEnable(false);
+            this.usedRadio.setEnable(false);
+        }
+        if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
+            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION1
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
+            this.usedCheck.setEnable(false);
+            this.usedRadio.setEnable(false);
+        }
+    },
+
     _updateTarget: function () {
         var self = this;
         var dId = this.model.get("id");
@@ -264,6 +303,51 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         return valid;
     },
 
+    _refreshCheckType: function () {
+        var tId = this.model.get("id");
+        var wId = BI.Utils.getWidgetIDByDimensionID(tId);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if (wType === BICst.WIDGET.FORCE_BUBBLE ||
+            wType === BICst.WIDGET.FALL_AXIS ||
+            wType === BICst.WIDGET.COMPARE_AXIS ||
+            wType === BICst.WIDGET.COMPARE_BAR ||
+            wType === BICst.WIDGET.RANGE_AREA ||
+            wType === BICst.WIDGET.COMPARE_AREA ||
+            wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
+            wType === BICst.WIDGET.SCATTER ||
+            wType === BICst.WIDGET.BUBBLE) {
+            this.usedCheck.setVisible(false);
+            this.usedRadio.setVisible(true);
+            return;
+        }
+        //特殊的地图 指标2一直为单选 若指标2中未选中 指标1为多选 否则单选
+        if (wType === BICst.WIDGET.MAP) {
+            var regionType = BI.Utils.getRegionTypeByDimensionID(tId);
+            if (regionType === BICst.REGION.TARGET2) {
+                this.usedCheck.setVisible(false);
+                this.usedRadio.setVisible(true);
+                return;
+            } else {
+                var allTarIds = BI.Utils.getAllTargetDimensionIDs(wId);
+                var isTar2Checked = false;
+                BI.some(allTarIds, function (i, tarId) {
+                    if (BI.Utils.getRegionTypeByDimensionID(tarId) === BICst.REGION.TARGET2 &&
+                        BI.Utils.isDimensionUsable(tarId)) {
+                        return isTar2Checked = true;
+                    }
+                });
+                if(isTar2Checked === true) {
+                    this.usedCheck.setVisible(false);
+                    this.usedRadio.setVisible(true);
+                    return;
+                }
+            }
+        }
+
+        this.usedCheck.setVisible(true);
+        this.usedRadio.setVisible(false);
+    },
+
     _buildFilterPane: function () {
         var self = this, id = this.model.get("id");
         BI.Popovers.remove(id);
@@ -278,7 +362,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         popup.populate();
     },
 
-    _buildCordonPane: function(){
+    _buildCordonPane: function () {
         var self = this, id = this.model.get("id");
         BI.Popovers.remove(id);
         var popup = BI.createWidget({
@@ -295,13 +379,26 @@ BIDezi.TargetView = BI.inherit(BI.View, {
     _buildStyleSettingPane: function () {
         var self = this, id = this.model.get("id");
         BI.Popovers.remove(id);
-        var popup = BI.createWidget({
-            type: "bi.target_style_setting",
-            dId: this.model.get("id")
-        });
-        popup.on(BI.TargetStyleSetting.EVENT_CHANGE, function () {
-            self.model.set("settings", this.getValue());
-        });
+        switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(id))) {
+            case BICst.WIDGET.MAP:
+                var popup = BI.createWidget({
+                    type: "bi.target_style_setting_for_map",
+                    dId: this.model.get("id")
+                });
+                popup.on(BI.TargetStyleSettingForMap.EVENT_CHANGE, function () {
+                    self.model.set("settings", this.getValue());
+                });
+                break;
+            default:
+                var popup = BI.createWidget({
+                    type: "bi.target_style_setting",
+                    dId: this.model.get("id")
+                });
+                popup.on(BI.TargetStyleSetting.EVENT_CHANGE, function () {
+                    self.model.set("settings", this.getValue());
+                });
+                break;
+        }
         BI.Popovers.create(id, popup).open(id);
     },
 
@@ -331,6 +428,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
+        this._checkUsedEnable();
         this.usedCheck.setSelected(this.model.get("used"));
         this.editor.setValue(this.model.get("name"));
         this.editor.setState(this.model.get("name"));
@@ -339,5 +437,6 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         items[2].width = filterIconWidth;
         this.htape.attr("items", items);
         this.htape.resize();
+        this._refreshCheckType();
     }
 });

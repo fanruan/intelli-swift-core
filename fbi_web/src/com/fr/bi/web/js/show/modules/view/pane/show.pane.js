@@ -54,7 +54,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
     },
 
     change: function (changed) {
-
+        this.refresh();
     },
 
     _createNorth: function () {
@@ -74,7 +74,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
             type: "bi.absolute",
             cls: "dashboard-toolbar",
             items: [{
-                el: viewChange,
+                el: Data.SharingPool.get("show") ? BI.createWidget() : viewChange,
                 top: 0,
                 left: 110
             }]
@@ -84,33 +84,40 @@ BIShow.PaneView = BI.inherit(BI.View, {
 
     _createDashBoard: function () {
         var self = this;
-        var items = [];
-
-        BI.each(this.model.cat("widgets"), function (wid, widget) {
-            var vessel = BI.createWidget({
-                type: "bi.layout",
-                id: wid
-            });
-            self.addSubVessel(wid, vessel);
-            items.push({
-                el: vessel,
-                left: widget.bounds.left,
-                top: widget.bounds.top,
-                width: widget.bounds.width,
-                height: widget.bounds.height
-            });
+        var map = [];
+        this.dashboard = BI.createWidget({
+            type: "bi.fit_4show",
+            widgetCreator: function (wId) {
+                if (!map[wId]) {
+                    map[wId] = BI.createWidget({
+                        type: "bi.layout"
+                    });
+                    self.addSubVessel(wId, map[wId]);
+                }
+                return map[wId];
+            }
         });
-        var dashboard = BI.createWidget({
-            type: "bi.adaptive_arrangement",
-            layoutType: this.model.get("layoutType"),
-            resizable: false
+        this.dashboard.on(BI.Fit4Show.EVENT_RESIZE, function () {
+            var regions = this.getAllRegions();
+            var widgets = self.model.get("widgets");
+            BI.each(regions, function (i, region) {
+                if (BI.isNotNull(widgets[region.id])) {
+                    widgets[region.id].bounds = {
+                        left: region.left,
+                        top: region.top,
+                        width: region.width,
+                        height: region.height
+                    }
+                }
+            });
+            self.model.set({"widgets": widgets});
         });
-        dashboard.populate(items);
-        return dashboard;
+        return this.dashboard;
     },
 
     refresh: function () {
         var self = this;
+        this.dashboard.populate();
         this._refreshWidgets();
     }
 });

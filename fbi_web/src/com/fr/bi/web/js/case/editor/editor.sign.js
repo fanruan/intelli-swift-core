@@ -116,6 +116,9 @@ BI.SignEditor = BI.inherit(BI.Single, {
             self._checkText();
             self.fireEvent(BI.SignEditor.EVENT_ERROR, arguments);
         });
+        this.editor.on(BI.Editor.EVENT_ENTER, function () {
+            self.fireEvent(BI.SignEditor.EVENT_ENTER, arguments);
+        });
         this.editor.on(BI.Editor.EVENT_RESTRICT, function () {
             self.fireEvent(BI.SignEditor.EVENT_RESTRICT, arguments);
         });
@@ -190,8 +193,9 @@ BI.SignEditor = BI.inherit(BI.Single, {
         return this.editor.isValid();
     },
 
-    setValid: function(){
-        this.editor.setValid();
+    setValid: function(v){
+        BI.SignEditor.superclass.setValid.apply(this, arguments);
+        this.editor.setValid(v);
     },
 
     setErrorText: function (text) {
@@ -241,6 +245,7 @@ BI.SignEditor.EVENT_STOP = "EVENT_STOP";
 BI.SignEditor.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.SignEditor.EVENT_VALID = "EVENT_VALID";
 BI.SignEditor.EVENT_ERROR = "EVENT_ERROR";
+BI.SignEditor.EVENT_ENTER = "EVENT_ENTER";
 BI.SignEditor.EVENT_RESTRICT = "EVENT_RESTRICT";
 BI.SignEditor.EVENT_SPACE = "EVENT_SPACE";
 BI.SignEditor.EVENT_EMPTY = "EVENT_EMPTY";

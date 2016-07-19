@@ -3,6 +3,7 @@
  */
 package com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.index;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.Operator;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.line.CalLineGetter;
@@ -39,10 +40,11 @@ public class NumberIndexCreater {
 	public GroupValueIndex createFilterGvi(GroupValueIndex gvi){
 		final double avg = getter.getCalLine(ti, key, gvi);
 		final GroupValueIndex index = GVIFactory.createAllEmptyIndexGVI();
+        final ICubeColumnDetailGetter cubeColumnDetailGetter = ti.getColumnDetailReader(key);
 		gvi.Traversal(new SingleRowTraversalAction() {
 			@Override
 			public void actionPerformed(int data) {
-                Object v = ti.getRow(key, data);
+                Object v = cubeColumnDetailGetter.getValue(data);
 				if(v != null && op.Compare(((Number)v).doubleValue(), avg)){
 					index.addValueByIndex(data);
 				}

@@ -13,37 +13,44 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var dId = o.dId;
         var name = o.text;
-        var combo = BI.createWidget({
-            type: "bi.sort_filter_target_combo",
-            dId: dId
-        });
-        combo.on(BI.SortFilterTargetCombo.EVENT_CHANGE, function (v) {
-            o.sortFilterChange(v);
-        });
+        var combo = BI.createWidget();
+        if(BI.Utils.getDimensionTypeByID(dId) < BICst.TARGET_TYPE.FORMULA) {
+            combo = BI.createWidget({
+                type: "bi.sort_filter_detail_combo",
+                dId: dId
+            });
+            combo.on(BI.SortFilterDetailCombo.EVENT_CHANGE, function (v) {
+                o.sortFilterChange(v);
+            });
+        }
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var st = this._getNumLevelByLevel(styleSettings.num_level) + (styleSettings.unit || "");
         if (BI.isNotEmptyString(st)) {
             name = name + "(" + st + ")";
         }
         BI.createWidget({
-            type: "bi.horizontal_adapt",
+            type: "bi.htape",
             element: this.element,
             items: [{
-                type: "bi.label",
-                text: name,
-                title: name,
-                cls: "header-cell-text",
-                whiteSpace: "nowrap",
-                textAlign: "left",
-                lgap: 5,
-                height: 36
+                el: {
+                    type: "bi.label",
+                    text: name,
+                    title: name,
+                    cls: "header-cell-text",
+                    whiteSpace: "nowrap",
+                    textAlign: "left",
+                    lgap: 5,
+                    height: 25
+                }
             }, {
-                type: "bi.default",
-                items: [combo],
-                width: 25,
-                height: 25
-            }],
-            columnSize: ["", 25]
+                el: {
+                    type: "bi.center_adapt",
+                    items: [combo],
+                    width: 25,
+                    height: 25
+                },
+                width: 25
+            }]
         });
     },
 

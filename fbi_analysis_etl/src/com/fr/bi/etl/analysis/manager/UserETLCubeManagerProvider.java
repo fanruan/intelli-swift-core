@@ -35,5 +35,7 @@ public interface UserETLCubeManagerProvider extends Release{
 
     void releaseCurrentThread();
 
-    void invokeUpdate(String identityValue);
+    void invokeUpdate(String identityValue, long userId);
+
+    void refresh();
 }

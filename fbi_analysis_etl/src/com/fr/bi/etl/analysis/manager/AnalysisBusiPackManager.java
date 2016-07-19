@@ -10,10 +10,12 @@ import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
+import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -23,6 +25,7 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
+ * 先注释掉普通用户看管理员的部分
  * Created by 小灰灰 on 2015/12/11.
  */
 public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnalysisBusiPackManager> implements BIAnalysisBusiPackManagerProvider {
@@ -59,6 +62,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(userId).getAllPacks()) {
             result.add(biBusinessPackage);
         }
+//        if (userId != UserControl.getInstance().getSuperManagerID()){
+//            for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).getAllPacks()) {
+//                result.add(biBusinessPackage);
+//            }
+//        }
         return result;
     }
 
@@ -185,7 +193,31 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public JSONObject createPackageJSON(long userId, Locale locale) throws Exception {
+//        getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).createJSON(locale);
+//        JSONObject jo = getUserAnalysisBusiPackManager(userId).createJSON(locale);
+//        if (userId != UserControl.getInstance().getSuperManagerID()){
+//            JSONObject adminJO = getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).createJSON(locale);
+//            setEdit(adminJO);
+//            jo.join(adminJO);
+//        }
+//        return jo;
         return getUserAnalysisBusiPackManager(userId).createJSON(locale);
+
+    }
+
+    @Override
+    public JSONObject createAnalysisPackageJSON(long userId, Locale locale) throws Exception {
+        return getUserAnalysisBusiPackManager(userId).createJSON(locale);
+    }
+
+    private void setEdit(JSONObject jo) throws Exception {
+        if (jo.has(Constants.PACK_ID)){
+            JSONObject pack = jo.getJSONObject(Constants.PACK_ID);
+            JSONArray tables = pack.getJSONArray("tables");
+            for (int i = 0; i < tables.length(); i++){
+                tables.getJSONObject(i).put("inedible", true);
+            }
+        }
     }
 
     @Override
@@ -231,13 +263,29 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         getUserAnalysisBusiPackManager(userId).removeTable(tableId);
     }
 
+    /**
+     * 先到管理员那找下，再找自己的吧
+     * @param tableId
+     * @param userId
+     * @return
+     * @throws BITableAbsentException
+     */
     @Override
     public AnalysisBusiTable getTable(String tableId, long userId) throws BITableAbsentException {
-        return getUserAnalysisBusiPackManager(userId).getTable(tableId);
+//        try{
+//            return getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).getTable(tableId);
+//        } catch (BITableAbsentException e){
+            return getUserAnalysisBusiPackManager(userId).getTable(tableId);
+//        }
     }
 
     @Override
     public Set<BusinessTable> getAllTables(long userId) {
+        return getUserAnalysisBusiPackManager(userId).getAllTables();
+    }
+
+    @Override
+    public Set<BusinessTable> getAnalysisAllTables(long userId) {
         return null;
     }
 

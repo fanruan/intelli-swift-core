@@ -73,27 +73,3 @@
   color: #1a1a1a;
   font-size: 14px;
 }
-.bi-etl-union .union-preview-result .bi-preview-table {
-  border-top: 1px solid #eaeaea;
-}
-.bi-etl-union .union-preview-result .bi-preview-table > div > table > thead > tr.odd {
-  background: none;
-}
-.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .result-table {
-  background: #d9f2fc;
-}
-.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .table-color0 {
-  background: #fef6df;
-}
-.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .table-color1 {
-  background: #daf3dc;
-}
-.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .table-color2 {
-  background: #d6f7f0;
-}
-.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .table-color3 {
-  background: #e8e6fe;
-}
-.bi-etl-union .union-preview-result .bi-preview-table > div > table > tbody .table-color4 {
-  background: #fee9e9;
-}

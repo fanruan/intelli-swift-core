@@ -2,6 +2,7 @@ package com.finebi.cube.conf.pack.imp;
 
 import com.finebi.cube.conf.pack.IPackagesManagerService;
 import com.finebi.cube.conf.pack.data.*;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.container.BISetContainer;
 import com.fr.bi.common.factory.IFactoryService;
@@ -167,7 +168,18 @@ public class BIPackageContainer extends BISetContainer<BIBusinessPackage> implem
     public void parsePackageContainer(BIPackageContainer container) {
         synchronized (container) {
             clear();
-            this.useContent(container);
+          Iterator<BIBusinessPackage> it = container.getContainer().iterator();
+            while (it.hasNext()){
+                try {
+                    BIBusinessPackage<BusinessTable> businessPackage = it.next();
+                    BIBusinessPackage<BusinessTable> copyBusinessPackage = new BIBasicBusinessPackage(businessPackage.getID(), businessPackage.getName(), businessPackage.getOwner(), businessPackage.getPosition());
+                    copyBusinessPackage.parseTableContainer(businessPackage);
+                    addPackage(copyBusinessPackage);
+                }catch (Exception e){
+                    BILogger.getLogger().error(e.getMessage(),e);
+                    continue;
+                }
+            }
         }
     }
 

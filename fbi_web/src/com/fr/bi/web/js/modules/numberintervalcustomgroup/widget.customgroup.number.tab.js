@@ -40,7 +40,7 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         this.tab.on(BI.Tab.EVENT_CHANGE, function(){
             self._checkState();
         });
-
+        
         this.tab.setSelect(BI.NumberIntervalCustomGroupCombo.Type_Auto);
     },
 
@@ -140,7 +140,8 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
             while(current + this.space < this.max){
                 items.push({
                     type:"bi.number_custom_group_item",
-                    group_name:current + "~" + (current + this.space),
+                    id: BI.UUID(),
+                    group_name:current + "-" + (current + this.space),
                     height:this.constants.intervalHeight,
                     min:current,
                     max:current + this.space,
@@ -152,7 +153,8 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
             if(current <= this.max){
                 items.push({
                     type:"bi.number_custom_group_item",
-                    group_name:current + "~" + this.max,
+                    id: BI.UUID(),
+                    group_name:current + "-" + this.max,
                     height:this.constants.intervalHeight,
                     min:current,
                     max:this.max,
@@ -200,6 +202,7 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         var minCount = this._checkMagnifyCount(min);
         var maxCount = this._checkMagnifyCount(max);
         var count = minCount > maxCount ? minCount : maxCount;
+        var magnify = 1;
         //缩小补零
         var s = "0.";
         while (count - minCount > 0) {
@@ -237,25 +240,14 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         min = this.min < 0 ? -(cutBig(min)) : cutSmall(min);
         max = this.max < 0 ? -(cutSmall(max)) : cutBig(max);
 
-        //(max - min) / 5
-        var tmp = max.sub(min) + "";
-        var p = BI.parseFloat(tmp.substring(2)).div(5) + "";
-        var len = tmp.split(".")[1].length - p.split(".")[0].length;
-        s = "0.";
-        while (len-- > 0){
-            s += "0";
+        while (count-- > 0) {
+            magnify *= 10;
         }
-        tmp = s + p.replace(".", "");
 
-        var tmpLength = tmp.split(".")[1].length;
-        if(tmpLength < count){
-            while (tmpLength++ < count){
-                tmp += "0";
-            }
-            return BI.parseFloat(tmp.substring(2));
-        }else{
-            return BI.parseFloat(tmp.substring(2, 2 + count) + "." + tmp.substring(2 + count));
-        }
+        //(max - min) / 5
+        var genMin = min.mul(magnify);
+        var genMax = max.mul(magnify);
+        return BI.parseFloat(genMax.sub(genMin)).div(5);
 
         function cutSmall(val){
             return BI.parseFloat(val.substring(0, i));
@@ -271,6 +263,9 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
                 add += "0";
             }
             add += "1";
+            if(val[i-1] === "."){
+                return BI.parseFloat(val) + 1;
+            }
             return BI.parseFloat(val) + BI.parseFloat(add);
         }
     },

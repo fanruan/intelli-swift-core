@@ -521,4 +521,33 @@ public class BIReportConstant {
         public static final int NORMAL = 3;
     }
 
+    public static final class CUSTOM_GROUP {
+        public static final class UNGROUP2OTHER {
+            public static final int NOTSELECTED = 0;
+            public static final int SELECTED = 1;
+        }
+
+    }
+
+    public enum MULTI_PATH_STATUS {
+        NEED_GENERATE_CUBE(0),
+        NOT_NEED_GENERATE_CUBE(1);
+
+        private int status;
+
+        MULTI_PATH_STATUS(int status) {
+            this.status = status;
+        }
+
+        public int getStatus() {
+            return this.status;
+        }
+
+        @Override
+        public String toString(){
+            return String.valueOf(this.status);
+        }
+    }
+
+
 }

@@ -45,17 +45,4 @@ public class BIStringDetailTarget extends BIAbstractDetailTarget {
         return true;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof BIStringDetailTarget)) {
-            return false;
-        }
-
-        return true;
-    }
-
-
 }

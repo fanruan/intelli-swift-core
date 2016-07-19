@@ -66,9 +66,16 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
             }
             if(tableInfo.connection_name === BICst.CONNECTION.EXCEL_CONNECTION) {
                 items.splice(0, 0, {
-                    text: BI.i18nText("BI-Remodify_Excel"),
-                    title: BI.i18nText("BI-Remodify_Excel"),
+                    text: BI.i18nText("BI-Update_Excel_Dot"),
+                    title: BI.i18nText("BI-Update_Excel_Dot"),
                     value: BICst.ETL_MANAGE_EXCEL_CHANGE
+                });
+            }
+            if(tableInfo.connection_name === BICst.CONNECTION.SQL_CONNECTION) {
+                items.splice(0, 0, {
+                    text: BI.i18nText("BI-Remodify_Sql"),
+                    title: BI.i18nText("BI-Remodify_Sql"),
+                    value: BICst.ETL_MANAGE_SQL_CHANGE
                 });
             }
             this._createCombo(items);

@@ -12,18 +12,6 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DetailTableCell.superclass._init.apply(this, arguments);
-        // this.wrapper = BI.createWidget({
-        //     type: "bi.absolute",
-        //     element: this.element
-        // });
-        //
-        // this.wrapper.addItem({
-        //     el: this._createItem(),
-        //     top: 0,
-        //     left: 0,
-        //     bottom: 0,
-        //     right: 0
-        // });
         this._createItem();
     },
 
@@ -46,6 +34,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         } else {
             var item = BI.createWidget({
                 type: "bi.label",
+                cls: "detail-table-cell-text",
                 textAlign: "left",
                 whiteSpace: "nowrap",
                 height: this.options.height,
@@ -85,6 +74,9 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
 
     _parseFloatByDot: function (text, dot) {
         if (text === Infinity || text !== text) {
+            return text;
+        }
+        if (!BI.isNumeric(text)) {
             return text;
         }
         var num = BI.parseFloat(text);
@@ -150,6 +142,10 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         text = this._parseNumLevel(text, numLevel);
         text = this._parseFloatByDot(text, format);
+
+        if (text === Infinity) {
+            text = "N/0";
+        }
         item.setText(text);
 
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
@@ -157,8 +153,15 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         BI.some(conditions, function (i, co) {
             var range = co.range;
             var min = BI.parseFloat(range.min), max = BI.parseFloat(range.max);
-            if ((range.closemin === true ? text >= min : text > min) &&
-                (range.closemax === true ? text <= max : text < max)) {
+            var minBoolean = true;
+            var maxBoolean = true;
+            if (BI.isNumeric(min)) {
+                minBoolean = (range.closemin === true ? text >= min : text > min);
+            }
+            if (BI.isNumeric(max)) {
+                maxBoolean = (range.closemax === true ? text <= max : text < max);
+            }
+            if (minBoolean && maxBoolean) {
                 color = co.color;
             }
         });

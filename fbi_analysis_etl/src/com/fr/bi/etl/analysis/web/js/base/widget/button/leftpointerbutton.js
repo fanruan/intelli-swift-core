@@ -13,6 +13,7 @@ BI.LeftPointerButton = FR.extend(BI.BasicButton, {
             width : 200,
             height: 20,
             forceNotSelected:true,
+            isShadowShowingOnSelected: true,
             iconCls : "icon-add"
         })
     },

@@ -1,5 +1,6 @@
 package com.fr.bi.web.service.action;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.etl.analysis.Constants;
@@ -38,8 +39,9 @@ public class BIAnalysisETLGetFieldMinMaxValueAction extends AbstractAnalysisETLA
         ICubeTableService service = PartCubeDataLoader.getInstance(userId, source).getTableIndex(source);
         BIKey key = new IndexKey(field);
         TreeSet tSet = new TreeSet(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+        ICubeColumnDetailGetter getter = service.getColumnDetailReader(key);
         for (int i = 0; i < service.getRowCount(); i++){
-            Object ob = service.getRow(key, i);
+            Object ob = getter.getValue(i);
             if (ob != null){
                 tSet.add(ob);
             }

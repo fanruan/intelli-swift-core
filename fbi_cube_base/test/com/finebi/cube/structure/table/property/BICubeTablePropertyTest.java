@@ -3,6 +3,7 @@ package com.finebi.cube.structure.table.property;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
+import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.BICubeConfigurationTest;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
@@ -12,9 +13,12 @@ import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.json.JSONObject;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -56,6 +60,38 @@ public class BICubeTablePropertyTest extends TestCase {
 
     }
 
+    public void testFieldReadAndWrite() {
+        List<ICubeFieldSource> tableFields = new ArrayList<ICubeFieldSource>();
+        try {
+
+
+            JSONObject jo1 = new JSONObject("{\"class_type\":5,\"is_enable\":true,\"field_size\":200,\"id\":\"客户ID\",\"table_id\":\"af33cab4\",\"is_usable\":true,\"field_type\":16,\"field_name\":\"客户ID\"}");
+            JSONObject jo2 = new JSONObject("{\"class_type\":5,\"is_enable\":true,\"field_size\":200,\"id\":\"销售机会ID\",\"table_id\":\"af33cab4\",\"is_usable\":true,\"field_type\":16,\"field_name\":\"销售机会ID\"}");
+            JSONObject jo3 = new JSONObject("{\"class_type\":5,\"is_enable\":true,\"field_size\":20,\"id\":\"合同类型\",\"table_id\":\"af33cab4\",\"is_usable\":true,\"field_type\":16,\"field_name\":\"合同类型\"}");
+
+            BICubeFieldSource field1 = new BICubeFieldSource(null, null, 0, 0);
+            BICubeFieldSource field2 = new BICubeFieldSource(null, null, 0, 0);
+            BICubeFieldSource field3 = new BICubeFieldSource(null, null, 0, 0);
+            field1.parseJSON(jo1);
+            field2.parseJSON(jo2);
+            field3.parseJSON(jo3);
+            tableFields.add(field1);
+            tableFields.add(field2);
+            tableFields.add(field3);
+            tableFields.add(field1);
+            tableFields.add(field2);
+            tableFields.add(field3);
+        } catch (BIResourceInvalidException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            BINonValueUtils.beyondControl(e.getMessage(), e);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
+
+        property.recordTableStructure(tableFields);
+        assertTrue(property.getFieldInfo().size()==6);
+    }
     public void testRowCountWriteAvailable() {
         synchronized (this.getClass()) {
             try {
@@ -338,4 +374,6 @@ public class BICubeTablePropertyTest extends TestCase {
             }
         }
     }
+
+
 }

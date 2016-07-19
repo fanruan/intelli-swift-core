@@ -6,6 +6,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         BI.SummaryTableModel.superclass._init.apply(this, arguments);
         var self = this;
         this.wId = this.options.wId;
+        this.status = this.options.status;      //一个恶心的属性，来自于详细设置，查看真实数据
         this.EMPTY_VALUE = BI.UUID();
         this._refreshDimsInfo();
 
@@ -46,6 +47,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
 
     getWidgetId: function () {
         return this.wId;
+    },
+
+    getStatus: function () {
+        return this.status;
     },
 
     isNeed2Freeze: function () {
@@ -136,6 +141,11 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         };
         op.clickvalue = this.clickValue;
         op.page = this.pageOperator;
+        op.status = this.status;
+        op.real_data = true;
+        if (this.status === BICst.WIDGET_STATUS.DETAIL) {
+            op.real_data = BI.Utils.isShowWidgetRealDataByID(this.wId) || false;
+        }
         return op;
     },
 
@@ -208,6 +218,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         this.mergeCols = [];
         this.columnSize = BI.Utils.getWSColumnSizeByID(wId);
 
+        this.tree = new BI.Tree();
+        this.crossTree = new BI.Tree();
+
     },
 
     resetETree: function () {
@@ -231,6 +244,46 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         return result;
     },
 
+    //clicked 中的值，如果是分组名使用分组对应的id
+    _parseClickedValue4Group: function (v, dId) {
+        var group = BI.Utils.getDimensionGroupByID(dId);
+        var fieldType = BI.Utils.getFieldTypeByDimensionID(dId);
+        var clicked = v;
+        
+        if (BI.isNotNull(group)) {
+            if(fieldType === BICst.COLUMN.STRING) {
+                var details = group.details,
+                    ungroup2Other = group.ungroup2Other,
+                    ungroup2OtherName = group.ungroup2OtherName;
+                if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
+                    ungroup2OtherName === v) {
+                    clicked = BICst.UNGROUP_TO_OTHER;
+                }
+                BI.some(details, function (i, detail) {
+                    if (detail.value === v) {
+                        clicked = detail.id;
+                        return true;
+                    }
+                });
+            } else if(fieldType === BICst.COLUMN.NUMBER) {
+                var groupValue = group.group_value, groupType = group.type;
+                if(groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
+                    var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
+                    if(useOther === v) {
+                        clicked = BICst.UNGROUP_TO_OTHER;
+                    }
+                    BI.some(groupNodes, function (i, node) {
+                        if(node.group_name === v) {
+                            clicked = node.id;
+                            return true;
+                        }
+                    });
+                }
+            }
+        }
+        return clicked;
+    },
+
     /**
      * 表items
      */
@@ -249,9 +302,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             var pValues = [];
             var tempLayer = currentLayer, tempNodeId = nodeId;
             while (tempLayer > 0) {
+                var pv = self.tree.search(tempNodeId).get("name"), dId = self.dimIds[tempLayer - 1];
                 pValues.push({
-                    value: [self.tree.search(tempNodeId).get("name")],
-                    dId: self.dimIds[tempLayer - 1]
+                    value: [self._parseClickedValue4Group(pv, dId)],
+                    dId: dId
                 });
                 tempNodeId = self.tree.search(tempNodeId).getParent().get("id");
                 tempLayer--;
@@ -310,36 +364,34 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             //有c->说明有children，构造children，并且需要在children中加入汇总情况（如果有并且需要）
             if (BI.isNotNull(child.c)) {
                 item.children = self._createTableItems(child.c, currentLayer, node) || [];
-                if (BI.isNotEmptyArray(child.s) && self.showRowTotal === true) {
+                //在tableForm为 行展开模式 的时候 如果不显示汇总行 只是最后一行不显示汇总
+                if (self.showRowTotal === true || self.getTableForm() === BICst.TABLE_FORM.OPEN_COL) {
                     var vs = [];
-                    BI.each(child.s, function (k, cs) {
-                        var tId = self.targetIds[k];
+                    var summary = self._getOneRowSummary(child.s);
+                    var tarSize = self.targetIds.length;
+                    BI.each(summary, function (i, sum) {
                         vs.push({
                             type: "bi.target_body_normal_cell",
-                            text: cs,
-                            dId: tId,
+                            text: sum,
+                            dId: self.targetIds[i % tarSize],
                             clicked: pValues,
                             cls: "summary-cell"
                         });
                     });
-                    // item.children.push({
-                    //     type: "bi.page_table_cell",
-                    //     text: BI.i18nText("BI-Summary_Values"),
-                    //     tag: BI.UUID(),
-                    //     isSum: true,
-                    //     values: vs,
-                    //     cls: "summary-cell"
-                    // })
                     item.values = vs;
                 }
+
                 item.isExpanded = true;
             } else if (BI.isNotNull(child.s)) {
                 var values = [];
-                if (BI.isNotNull(child.s.c) || BI.isNotNull(child.s.s)) {
+                if (BI.isNotNull(child.s.c) || BI.isArray(child.s.s)) {
                     //交叉表，pValue来自于行列表头的结合
                     var ob = {index: 0};
                     self._createTableSumItems(child.s.c, values, pValues, ob);
-                    self.showColTotal === true && self._createTableSumItems(child.s.s, values, pValues, ob);
+                    //显示列汇总 有指标
+                    if (self.showColTotal === true && self.targetIds.length > 0) {
+                        self._createTableSumItems(child.s.s, values, pValues, ob);
+                    }
                 } else {
                     BI.each(child.s, function (j, sum) {
                         var tId = self.targetIds[j];
@@ -356,6 +408,33 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             items.push(item);
         });
         return items;
+    },
+
+    _getOneRowSummary: function (sums) {
+        var self = this;
+        var summary = [];
+        //对于交叉表的汇总 s: {c: [{s: [200, 300]}, {s: [0, 0]}], s: [100, 500]}
+        if (BI.isArray(sums)) {
+            BI.each(sums, function (i, sum) {
+                if (BI.isObject(sum)) {
+                    summary = summary.concat(self._getOneRowSummary(sum));
+                    return;
+                }
+                summary.push(sum);
+            });
+        } else if (BI.isObject(sums)) {
+            var c = sums.c, s = sums.s;
+            //是否显示列汇总
+            if (BI.isNotNull(c) && BI.isNotNull(s)) {
+                summary = summary.concat(self._getOneRowSummary(c));
+                if (this.showColTotal === true) {
+                    summary = summary.concat(self._getOneRowSummary(s));
+                }
+            } else if (BI.isNotNull(s)) {
+                summary = summary.concat(self._getOneRowSummary(s));
+            }
+        }
+        return summary;
     },
 
     /**
@@ -527,22 +606,30 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     /**
      * 交叉表的(指标)汇总值
      */
-    _createTableSumItems: function (s, sum, pValues, ob) {
+    _createTableSumItems: function (s, sum, pValues, ob, isLast) {
         var self = this;
         BI.each(s, function (i, v) {
-            if (BI.isNotNull(v) && (BI.isNotNull(v.c) || BI.isNotNull(v.s))) {
-                self._createTableSumItems(v.c, sum, pValues, ob);
-                self.showColTotal === true && self._createTableSumItems(v.s, sum, pValues, ob);
+            if (BI.isObject(v)) {
+                var sums = v.s, child = v.c;
+                if (BI.isNotNull(sums) && BI.isNotNull(child)) {
+                    self._createTableSumItems(child, sum, pValues, ob, isLast);
+                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob, isLast);
+                } else if (BI.isNotNull(sums)) {
+                    self._createTableSumItems(sums, sum, pValues, ob, isLast);
+                }
+
             } else {
                 var tId = self.targetIds[i];
                 if (self.targetIds.length === 0) {
                     tId = self.crossDimIds[i];
                 }
+
                 sum.push({
                     type: "bi.target_body_normal_cell",
                     text: v,
                     dId: tId,
-                    clicked: pValues.concat(self.crossPV[ob.index])
+                    clicked: pValues.concat(self.crossPV[ob.index]),
+                    cls: isLast ? "last summary-cell" : ""
                 });
                 ob.index++;
             }
@@ -558,14 +645,36 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         //可以直接根据crossItems确定header的后半部分
         function parseHeader(items) {
             BI.each(items, function (i, item) {
-                var dName = BI.Utils.getDimensionNameByID(self.targetIds[i % (self.targetIds.length)]);
+                var dName = BI.Utils.getDimensionNameByID(self.targetIds[i % (self.targetIds.length)]) || "--";
                 if (BI.isNotNull(item.children)) {
                     parseHeader(item.children);
+                    if (BI.isNotNull(item.values) && self.showColTotal === true) {
+                        //合计
+                        BI.each(self.targetIds, function (j, tarId) {
+                            self.header.push({
+                                type: "bi.page_table_cell",
+                                cls: "cross-table-target-header",
+                                text: BI.i18nText("BI-Summary_Values") + ":" + BI.Utils.getDimensionNameByID(tarId),
+                                title: BI.i18nText("BI-Summary_Values") + ":" + BI.Utils.getDimensionNameByID(tarId),
+                                tag: BI.UUID()
+                            });
+                        });
+                    }
                 } else if (BI.isNotNull(item.isSum)) {
                     //合计
-                    item.text = BI.i18nText("BI-Summary_Values") + ":" + dName;
+                    item.text = BI.i18nText("BI-Summary_Values") + ":" + BI.Utils.getDimensionNameByID(item.dId);
                     item.cls = "cross-table-target-header";
                     self.header.push(item);
+                } else if (BI.isNotEmptyArray(item.values)) {
+                    BI.each(item.values, function (k, v) {
+                        self.header.push({
+                            type: "bi.page_table_cell",
+                            cls: "cross-table-target-header",
+                            text: BI.Utils.getDimensionNameByID(self.targetIds[k]),
+                            title: BI.Utils.getDimensionNameByID(self.targetIds[k]),
+                            tag: BI.UUID()
+                        })
+                    });
                 } else {
                     self.header.push({
                         type: "bi.page_table_cell",
@@ -597,17 +706,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         type: "bi.target_body_normal_cell",
                         text: v,
                         dId: tId,
-                        cls: "summary-cell last"
+                        cls: "summary-cell last",
+                        clicked: [{}]
                     });
                 });
-                // item.children.push({
-                //     type: "bi.page_table_cell",
-                //     text: BI.i18nText("BI-Summary_Values"),
-                //     tag: BI.UUID(),
-                //     isSum: true,
-                //     values: outerValues,
-                //     cls: "summary-cell last"
-                // })
                 item.values = outerValues;
             } else {
                 //使用第一个值作为一个维度
@@ -620,7 +722,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         type: "bi.target_body_normal_cell",
                         text: v,
                         dId: tId,
-                        cls: "summary-cell"
+                        cls: "summary-cell",
+                        clicked: [{}]
                     });
                 });
                 item.children.push({
@@ -680,11 +783,32 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 if (BI.isNotNull(crossItem.children)) {
                     var tempPV = [];
                     if (BI.isNotNull(crossItem.dId)) {
-                        tempPV = pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]);
+                        if (BI.isNotEmptyArray(crossItem.values)) {
+                            BI.each(crossItem.values, function (j, v) {
+                                tempPV = pv.concat([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]);
+                            });
+                            //显示列汇总的时候需要构造汇总
+                        } else {
+                            tempPV = pv.concat([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]);
+                        }
                     }
                     parseCrossItem2Array(crossItem.children, pValues, tempPV);
+                    //汇总
+                    if (BI.isNotEmptyArray(crossItem.values)) {
+                        BI.each(crossItem.values, function (j, v) {
+                            pValues.push([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]);
+                        });
+                    }
                 } else if (BI.isNotNull(crossItem.dId)) {
-                    pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
+                    if (BI.isNotEmptyArray(crossItem.values)) {
+                        BI.each(crossItem.values, function (j, v) {
+                            pValues.push(pv.concat([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]));
+                        });
+                    } else {
+                        // pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
+                        //最外层
+                        pValues.push([]);
+                    }
                 } else if (BI.isNotNull(crossItem.isSum)) {
                     pValues.push(pv);
                 }
@@ -700,41 +824,31 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             //汇总值
             var sums = [], ob = {index: 0};
             if (BI.isNotNull(left.s.c) && BI.isNotNull(left.s.s)) {
-                this._createTableSumItems(left.s.c, sums, [], ob);
+                this._createTableSumItems(left.s.c, sums, [], ob, true);
             } else {
-                this._createTableSumItems(left.s, sums, [], ob);
+                BI.isArray(left.s) && this._createTableSumItems(left.s, sums, [], ob, true);
             }
             if (this.showColTotal === true) {
                 var outerValues = [];
                 BI.each(left.s.s, function (i, v) {
-                    //有列表头无指标情况下，以该列表头为指标（内容都是--）
-                    var tId = self.targetIds[i];
-                    if (self.targetIds.length === 0) {
-                        tId = self.crossDimIds[i];
+                    if (self.targetIds.length > 0) {
+                        var tId = self.targetIds[i];
+                        outerValues.push({
+                            type: "bi.target_body_normal_cell",
+                            text: v,
+                            dId: tId,
+                            cls: "summary-cell last",
+                            clicked: [{}]
+                        });
                     }
-                    outerValues.push({
-                        type: "bi.target_body_normal_cell",
-                        text: v,
-                        dId: tId,
-                        cls: "summary-cell last"
-                    });
                 });
                 BI.each(sums, function (i, sum) {
                     sums[i].cls = "summary-cell last"
                 });
                 sums = sums.concat(outerValues);
             }
-            // item.children.push({
-            //     type: "bi.page_table_cell",
-            //     text: BI.i18nText("BI-Summary_Values"),
-            //     tag: BI.UUID(),
-            //     isSum: true,
-            //     values: sums,
-            //     cls: "summary-cell"
-            // })
             item.values = sums;
         }
-
         this.items = [item];
     },
 
@@ -783,6 +897,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 type: "bi.normal_expander_cell",
                 text: currValue,
                 dId: currDid,
+                isCross: true,
                 expandCallback: function () {
                     var clickNode = self.crossETree.search(nodeId);
                     //全部展开再收起——纵向
@@ -836,35 +951,52 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 }
             }
             var hasSum = false;
-            if (BI.isNotNull(self.crossItemsSums[currentLayer]) && self.crossItemsSums[currentLayer][i] === true) {
+            if (BI.isNotNull(self.crossItemsSums) &&
+                BI.isNotNull(self.crossItemsSums[currentLayer]) &&
+                self.crossItemsSums[currentLayer][i] === true) {
                 hasSum = true;
             }
             if (hasSum === true && self.showColTotal === true && BI.isNotEmptyArray(item.children)) {
                 BI.each(self.targetIds, function (k, tId) {
-                    // item.children.push({
-                    //     type: "bi.page_table_cell",
-                    //     text: BI.i18nText("BI-Summary_Values"),
-                    //     tag: BI.UUID(),
-                    //     isSum: true,
-                    //     cls: "summary-cell"
-                    // });
-                    item.values = [""];
+                    item.values = [];
+                    BI.each(self.targetIds, function (k, tarId) {
+                        item.values.push("");
+                    });
                 });
             }
-            //最后一层（无children）
-            if (BI.isNull(item.children)) {
-                BI.each(self.targetIds, function (i, tId) {
-                    crossHeaderItems.push(item);
-                });
-                //无指标是否也应当直接push进去 bug 95334
-                if (self.targetIds.length === 0) {
-                    crossHeaderItems.push(item);
-                }
-            } else {
-                crossHeaderItems.push(item);
+            if (self.showColTotal === true || BI.isNull(item.children)) {
+                item.values = BI.makeArray(self.targetIds.length, "");
             }
+            crossHeaderItems.push(item);
         });
         return crossHeaderItems;
+    },
+
+    //仅有列表头的交叉表
+    _createCrossHeader4OnlyCross: function () {
+        var self = this;
+        BI.each(this.crossDimIds, function (i, dId) {
+            if (BI.isNotNull(dId)) {
+                self.crossHeader.push({
+                    type: "bi.normal_header_cell",
+                    dId: dId,
+                    text: BI.Utils.getDimensionNameByID(dId),
+                    sortFilterChange: function (v) {
+                        self.resetETree();
+                        self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
+                        self.headerOperatorCallback(v, dId);
+                    }
+                });
+            }
+        });
+    },
+
+    _createCrossItems4OnlyCross: function () {
+        //交叉表items
+        var crossItem = {
+            children: this._createCrossPartItems(this.data.c, 0)
+        };
+        this.crossItems = [crossItem];
     },
 
     _setOtherGroupAttrs: function () {
@@ -911,6 +1043,25 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         }
     },
 
+    _setOtherAttrs4OnlyCross: function () {
+        var self = this;
+        this.columnSize = [""];
+        this.freezeCols = [];
+        this.mergeCols = [0];
+        function parseSizeOfCrossItems(items) {
+            BI.each(items, function (i, item) {
+                if (BI.isNotNull(item.children)) {
+                    parseSizeOfCrossItems(item.children);
+                } else {
+                    self.columnSize.push("");
+                }
+            });
+        }
+
+        parseSizeOfCrossItems(this.crossItems);
+
+    },
+
     createGroupTableAttrs: function () {
         //几个回调
         this.headerOperatorCallback = arguments[0];
@@ -919,6 +1070,16 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
 
         this._resetPartAttrs();
         this._refreshDimsInfo();
+
+        //仅有列表头的时候
+        if (this.dimIds.length === 0 &&
+            this.crossDimIds.length > 0 &&
+            this.targetIds.length === 0) {
+            this._createCrossHeader4OnlyCross();
+            this._createCrossItems4OnlyCross();
+            this._setOtherAttrs4OnlyCross();
+            return;
+        }
 
         //header
         this._createGroupTableHeader();

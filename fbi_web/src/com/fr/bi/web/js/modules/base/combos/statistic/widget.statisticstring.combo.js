@@ -21,10 +21,12 @@ BI.StatisticStringCombo = BI.inherit(BI.Widget, {
             }],
             [{
                 text: BI.i18nText("BI-Rename"),
-                value: BICst.STATISTICS_GROUP_STRING_COMBO.RENAME
+                value: BICst.STATISTICS_GROUP_STRING_COMBO.RENAME,
+                cls: "widget-combo-rename-edit-font"
             }, {
                 text: BI.i18nText("BI-Remove"),
-                value: BICst.STATISTICS_GROUP_STRING_COMBO.DELETE
+                value: BICst.STATISTICS_GROUP_STRING_COMBO.DELETE,
+                cls: "delete-h-font"
             }]
         ];
     },

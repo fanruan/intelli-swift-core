@@ -10,16 +10,35 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     _init: function () {
         BI.SummaryTable.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.model = new BI.SummaryTableModel({
-            wId: this.options.wId
+            wId: o.wId,
+            status: o.status
         });
         this._createTable();
+        this.errorPane = BI.createWidget({
+            type: "bi.table_chart_error_pane",
+            invisible: true
+        });
+        this.errorPane.element.css("z-index", 1);
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.errorPane,
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
+            }]
+        })
     },
 
     _createTable: function () {
         var self = this, o = this.options;
         this.empty();
+        this.vPage = 1;
+        this.hPage = 1;
         var tableStyle = this.model.getTableForm();
         switch (tableStyle) {
             case BICst.TABLE_FORM.OPEN_COL:
@@ -45,9 +64,20 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         itemsCreator: function (op, populate) {
                             var vPage = op.vpage, hPage = op.hpage;
                             var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            if (BI.isNotNull(vPage)) {
-                                pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                            if(vPage > self.vPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
                             }
+                            if(vPage < self.vPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                            }
+                            if(hPage > self.hPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                            }
+                            if(hPage < self.hPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
+                            }
+                            self.hPage = hPage;
+                            self.vPage = vPage;
                             self.model.setPageOperator(pageOperator);
                             self._onPageChange(function (items, header, crossItems, crossHeader) {
                                 populate.apply(self.table, arguments);
@@ -57,16 +87,31 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         pager: {
                             pages: false,
                             curr: 1,
-                            hasNext: function () {
-                                return self.model.getPage()[1] === 1;
+                            firstPage: 1,
+                            horizontal: {
+                                pages: false, //总页数
+                                curr: 1, //初始化当前页， pages为数字时可用
+                                hasPrev: function () {
+                                    return self.model.getPage()[2] === 1;
+                                },
+                                hasNext: function () {
+                                    return self.model.getPage()[3] === 1;
+                                },
+                                firstPage: 1,
+                                lastPage: BI.emptyFn
                             },
-                            hasPrev: function () {
-                                return self.model.getPage()[0] === 1;
-                            },
-                            firstPage: 1
-                        },
-                        hasHNext: function () {
-                            return self.model.getPage()[3] === 1;
+                            vertical: {
+                                pages: false, //总页数
+                                curr: 1, //初始化当前页， pages为数字时可用
+                                hasPrev: function () {
+                                    return self.model.getPage()[0] === 1;
+                                },
+                                hasNext: function () {
+                                    return self.model.getPage()[1] === 1;
+                                },
+                                firstPage: 1,
+                                lastPage: BI.emptyFn
+                            }
                         },
                         isNeedMerge: true,
                         regionColumnSize: this.model.getStoredRegionColumnSize()
@@ -96,28 +141,54 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         itemsCreator: function (op, populate) {
                             var vPage = op.vpage, hPage = op.hpage;
                             var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            if (BI.isNotNull(vPage)) {
-                                pageOperator = vPage > self.model.getPage()[4] ? BICst.TABLE_PAGE_OPERATOR.ROW_NEXT : BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                            if(vPage > self.vPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
                             }
+                            if(vPage < self.vPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                            }
+                            if(hPage > self.hPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                            }
+                            if(hPage < self.hPage) {
+                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
+                            }
+                            self.hPage = hPage;
+                            self.vPage = vPage;
                             self.model.setPageOperator(pageOperator);
                             self._onPageChange(function (items, header, crossItems, crossHeader) {
                                 populate.apply(self.table, arguments);
                                 self._afterTablePopulate();
-                            })
+                            });
                         },
                         pager: {
                             pages: false,
                             curr: 1,
-                            hasNext: function () {
-                                return self.model.getPage()[1] === 1;
+                            firstPage: 1,
+                            horizontal: {
+                                pages: false, //总页数
+                                curr: 1, //初始化当前页， pages为数字时可用
+                                hasPrev: function () {
+                                    return self.model.getPage()[2] === 1;
+                                },
+                                hasNext: function () {
+                                    return self.model.getPage()[3] === 1;
+                                },
+                                firstPage: 1,
+                                lastPage: BI.emptyFn
                             },
-                            hasPrev: function () {
-                                return self.model.getPage()[0] === 1;
-                            },
-                            firstPage: 1
-                        },
-                        hasHNext: function () {
-                            return self.model.getPage()[3] === 1;
+                            vertical: {
+                                pages: false, //总页数
+                                curr: 1, //初始化当前页， pages为数字时可用
+                                hasPrev: function () {
+                                    return self.model.getPage()[0] === 1;
+                                },
+                                hasNext: function () {
+                                    return self.model.getPage()[1] === 1;
+                                },
+                                firstPage: 1,
+                                lastPage: BI.emptyFn
+                            }
                         },
                         isNeedMerge: true,
                         regionColumnSize: this.model.getStoredRegionColumnSize()
@@ -209,54 +280,79 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.loading();
         BI.Utils.getWidgetDataByID(wId, function (jsonData) {
             self.loaded();
+            if (BI.isNotNull(jsonData.error)) {
+                self.errorPane.setErrorInfo(jsonData.error);
+                self.errorPane.setVisible(true);
+                return;
+            }
             if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
-                self.table.setVisible(false);
+                self.errorPane.setErrorInfo("invalid json data!");
+                self.errorPane.setVisible(true);
                 return;
             }
             self.model.setDataAndPage(jsonData);
             var widgetType = BI.Utils.getWidgetTypeByID(wId);
-            switch (widgetType) {
-                case BICst.WIDGET.TABLE:
-                    self._prepareData4GroupTable();
-                    break;
-                case BICst.WIDGET.CROSS_TABLE:
-                    //如果没有列表头，还是以分组表展示——后台传这样的数据
-                    if (BI.isNotNull(self.model.getData().t)) {
-                        self._prepareData4CrossTable();
-                    } else {
+            try {
+                switch (widgetType) {
+                    case BICst.WIDGET.TABLE:
                         self._prepareData4GroupTable();
-                    }
-                    break;
-                case BICst.WIDGET.COMPLEX_TABLE:
-                    self._populateComplexTable();
-                    break;
+                        break;
+                    case BICst.WIDGET.CROSS_TABLE:
+                        //如果没有列表头，还是以分组表展示——后台传这样的数据
+                        if (BI.isNotNull(self.model.getData().t)) {
+                            self._prepareData4CrossTable();
+                        } else {
+                            self._prepareData4GroupTable();
+                        }
+                        break;
+                    case BICst.WIDGET.COMPLEX_TABLE:
+                        self._populateComplexTable();
+                        break;
+                }
+                self._refreshTable();
+            } catch (e) {
+                self.errorPane.setErrorInfo("error happens during populate table: " + e);
+                self.errorPane.setVisible(true);
             }
-            self._populateTable();
         }, this.model.getExtraInfo());
     },
 
     _onPageChange: function (callback) {
         var self = this, wId = this.options.wId;
+        this.loading();
         BI.Utils.getWidgetDataByID(wId, function (jsonData) {
+            self.loaded();
+            if (BI.isNotNull(jsonData.error)) {
+                self.errorPane.setErrorInfo(jsonData.error);
+                self.errorPane.setVisible(true);
+                return;
+            }
             if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
-                self.table.setVisible(false);
+                self.errorPane.setErrorInfo("invalid json data!");
+                self.errorPane.setVisible(true);
                 return;
             }
             self.model.setDataAndPage(jsonData);
             var widgetType = BI.Utils.getWidgetTypeByID(wId);
-            switch (widgetType) {
-                case BICst.WIDGET.TABLE:
-                    self.model.createGroupTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
-                    break;
-                case BICst.WIDGET.CROSS_TABLE:
-                    if (BI.isNotNull(self.model.getData().t)) {
-                        self.model.createCrossTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
-                    } else {
+            try {
+                switch (widgetType) {
+                    case BICst.WIDGET.TABLE:
                         self.model.createGroupTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
-                    }
-                    break;
+                        break;
+                    case BICst.WIDGET.CROSS_TABLE:
+                        if (BI.isNotNull(self.model.getData().t)) {
+                            self.model.createCrossTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
+                        } else {
+                            self.model.createGroupTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
+                        }
+                        break;
+                }
+                callback(self.model.getItems(), self.model.getHeader(), self.model.getCrossItems(), self.model.getCrossHeader());
+            } catch (e) {
+                self.errorPane.setErrorInfo("error happens during populate for table: " + e);
+                self.errorPane.setVisible(true);
             }
-            callback(self.model.getItems(), self.model.getHeader(), self.model.getCrossItems(), self.model.getCrossHeader());
+            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {_page_: {h: self.table.getHPage(), v: self.table.getVPage()}});
         }, this.model.getExtraInfo());
     },
 
@@ -333,8 +429,13 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             });
             popup.on(BI.TargetSummaryFilterPopup.EVENT_CHANGE, function (v) {
                 var targetFilter = BI.Utils.getWidgetFilterValueByID(self.options.wId);
-                BI.isNotNull(v) && formatTargetFilter(v, dId);
-                targetFilter[dId] = v;
+                if (BI.isNotNull(v)) {
+                    formatTargetFilter(v, dId);
+                    targetFilter[dId] = v;
+                } else {
+                    delete targetFilter[dId];
+                }
+
                 self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {filter_value: targetFilter});
             });
         }
@@ -359,12 +460,22 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     },
 
     _populateTable: function () {
-        this.table.setVisible(true);
+        this.errorPane.setVisible(false);
         this.table.attr("isNeedFreeze", this.model.isNeed2Freeze());
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
         this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
+        this._afterTablePopulate();
+    },
+
+    _refreshTable: function() {
+        this.errorPane.setVisible(false);
+        this.table.attr("isNeedFreeze", this.model.isNeed2Freeze());
+        this.table.attr("freezeCols", this.model.getFreezeCols());
+        this.table.attr("mergeCols", this.model.getMergeCols());
+        this.table.attr("columnSize", this.model.getColumnSize());
+        this.table.refresh(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
         this._afterTablePopulate();
     },
 
@@ -381,43 +492,67 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         var widgetId = this.options.wId;
+        this.vPage = 1;
+        this.hPage = 1;
         this.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
         this.model.resetETree();
         this.loading();
         BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
             self.loaded();
+            if (BI.isNotNull(jsonData.error)) {
+                self.errorPane.setErrorInfo(jsonData.error);
+                self.errorPane.setVisible(true);
+                return;
+            }
             if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
-                self.table.setVisible(false);
+                self.errorPane.setErrorInfo("invalid json data!");
+                self.errorPane.setVisible(true);
                 return;
             }
             self.model.setDataAndPage(jsonData);
             var widgetType = BI.Utils.getWidgetTypeByID(widgetId);
-            switch (widgetType) {
-                case BICst.WIDGET.TABLE:
-                    self._prepareData4GroupTable();
-                    break;
-                case BICst.WIDGET.CROSS_TABLE:
-                    //如果没有列表头，还是以分组表展示——后台传这样的数据
-                    if (BI.isNotNull(self.model.getData().t)) {
-                        self._prepareData4CrossTable();
-                    } else {
+            try {
+                switch (widgetType) {
+                    case BICst.WIDGET.TABLE:
                         self._prepareData4GroupTable();
-                    }
-                    break;
-                case BICst.WIDGET.COMPLEX_TABLE:
-                    self._populateComplexTable();
-                    break;
+                        break;
+                    case BICst.WIDGET.CROSS_TABLE:
+                        //如果没有列表头，还是以分组表展示——后台传这样的数据
+                        if (BI.isNotNull(self.model.getData().t)) {
+                            self._prepareData4CrossTable();
+                        } else {
+                            self._prepareData4GroupTable();
+                        }
+                        break;
+                    case BICst.WIDGET.COMPLEX_TABLE:
+                        self._populateComplexTable();
+                        break;
+                }
+                if (self.model.getTableForm() !== self.tableForm) {
+                    self._createTable();
+                }
+                self.table.setVPage(1);
+                self._populateTable();
+            } catch (e) {
+                self.errorPane.setErrorInfo("error happens during populate table: " + e);
+                self.errorPane.setVisible(true);
             }
-            if (self.model.getTableForm() !== self.tableForm) {
-                self._createTable();
-            }
-            self.table.setVPage(1);
-            self._populateTable();
         }, this.model.getExtraInfo());
     },
 
     resize: function () {
         this.table.resize();
+    },
+
+    magnify: function(){
+
+    },
+
+    empty: function () {
+        BI.SummaryTable.superclass.empty.apply(this, arguments);
+        if (BI.isNotNull(this.table)) {
+            this.table.empty();
+        }
     }
 });
 BI.SummaryTable.EVENT_CHANGE = "EVENT_CHANGE";

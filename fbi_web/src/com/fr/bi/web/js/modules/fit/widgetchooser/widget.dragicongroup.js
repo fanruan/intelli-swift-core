@@ -113,48 +113,12 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                 icons.push(dragIcon);
                 return;
             }
-
-            var childIcons = BI.createWidget({
-                type: "bi.button_group",
-                items: BI.createItems(item.children, {
-                    type: "bi.drag_icon_button",
-                    height: 30,
-                    width: 36,
-                    drag: o.drag,
-                    stop: o.stop,
-                    helper: o.helper
-                }),
-                layouts: [{
-                    type: "bi.vertical"
-                }, {
-                    type: "bi.center_adapt",
-                    height: 40
-                }]
-            });
-
-            var el = BI.extend(item, {
-                type: "bi.icon_button",
-                height: 30,
-                width: 36
-            });
-            if (item.value !== c.valueMore) {
-                el.type = "bi.drag_icon_button";
-                el.drag = o.drag;
-                el.stop = o.stop;
-                el.helper = o.helper;
-            }
             var dragCombo = BI.createWidget({
-                type: "bi.icon_combo",
-                direction: "right",
-                adjustLength: -1,
-                height: 30,
-                width: 36,
-                minWidth: 50,
-                maxWidth: 50,
-                el: {
-                    el: el
-                },
-                popup: childIcons
+                type: "bi.drag_icon_combo",
+                drag: o.drag,
+                stop: o.stop,
+                helper: o.helper,
+                item: item
             });
             icons.push(dragCombo);
         });

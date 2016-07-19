@@ -3,12 +3,13 @@ package com.finebi.cube.gen;
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
+import com.finebi.cube.gen.oper.BISourceDataAllTransport;
 import com.finebi.cube.gen.oper.BISourceDataTransport;
 import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.BICubeTablePath;
-import com.finebi.cube.structure.ICubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.structure.column.ICubeColumnReaderService;
+import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.tools.BINationDataFactory;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.utils.BITableKeyUtils;
@@ -25,7 +26,7 @@ import com.fr.general.ComparatorUtils;
 import java.util.*;
 
 /**
- * Created by wuk on 16/5/17.
+ * Created by kary on 16/5/17.
  */
 public class BINationTablesTest extends BICubeTestBase {
     private BISourceDataTransport dataTransport;
@@ -73,12 +74,12 @@ public class BINationTablesTest extends BICubeTestBase {
             BICubeTablePath biCubeTablePath = getAllRelations();
 
             //测试relation
-            ICubeRelationEntityGetterService iCubeRelationEntityGetterService = cube.getCubeRelation(BITableKeyUtils.convert(BINationDataFactory.createTablePerson()), biCubeTablePath);
+            CubeRelationEntityGetterService iCubeRelationEntityGetterService = cube.getCubeRelation(BITableKeyUtils.convert(BINationDataFactory.createTablePerson()), biCubeTablePath);
             assertEquals(iCubeRelationEntityGetterService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0}));
             assertEquals(iCubeRelationEntityGetterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
 
             //根据value查找索引
-            final ICubeColumnReaderService iCubeColumnReaderService = cube.getCubeColumn(BITableKeyUtils.convert(BINationDataFactory.createTablePerson()), BIColumnKey.covertColumnKey(new BICubeFieldSource(BITableSourceTestTool.getDBTableSourcePerson(), "name", DBConstant.CLASS.STRING, 255)));
+            final CubeColumnReaderService iCubeColumnReaderService = cube.getCubeColumn(BITableKeyUtils.convert(BINationDataFactory.createTablePerson()), BIColumnKey.covertColumnKey(new BICubeFieldSource(BITableSourceTestTool.getDBTableSourcePerson(), "name", DBConstant.CLASS.STRING, 255)));
 
             //获取本表对应位置索引值
             assertEquals(iCubeColumnReaderService.getIndexByGroupValue("nameA"), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0, 2}));
@@ -118,7 +119,7 @@ public class BINationTablesTest extends BICubeTestBase {
      */
     public void transport(CubeTableSource tableSource) {
         try {
-            dataTransport = new BISourceDataTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(),1);
+            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(),1);
             dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();

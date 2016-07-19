@@ -21,7 +21,7 @@ ul.CodeMirror-hints {
 .ui-effects-transfer {
   background: rgb(255, 102, 0);
   .opacity(0.2);
-  border-radius: 5px;
+  .border-radius(5px);
   border: 2px rgb(142, 142, 142);
   z-index: @zIndex-tip;
 }
@@ -41,12 +41,23 @@ ul.CodeMirror-hints {
   bottom: 0;
 }
 
-.ui-resizable-s:hover {
-  border-bottom: 1px solid @color-bi-background-highlight;
-}
+.ui-resizable {
+  & > .ui-resizable-s:hover {
+    border-bottom: 1px solid @color-bi-background-highlight;
+  }
 
-.ui-resizable-e:hover {
-  border-right: 1px solid @color-bi-background-highlight;
+  & > .ui-resizable-e:hover {
+    border-right: 1px solid @color-bi-background-highlight;
+  }
+  &.ui-resizable-disabled {
+    & > .ui-resizable-s:hover {
+      border: none;
+    }
+
+    & > .ui-resizable-e:hover {
+      border: none;
+    }
+  }
 }
 
 .ui-resizable-se {

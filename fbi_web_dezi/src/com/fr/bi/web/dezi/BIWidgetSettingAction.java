@@ -1,6 +1,6 @@
 package com.fr.bi.web.dezi;
 
-import com.finebi.cube.api.BICubeManager;
+import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -8,6 +8,7 @@ import com.fr.bi.cal.stable.engine.TempPathGenerator;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ErrorHandlerHelper;
@@ -43,7 +44,7 @@ public class BIWidgetSettingAction extends AbstractBIDeziAction {
         MultiThreadManagerImpl.getInstance().refreshExecutorService();
         if (sessionIDInfor.getLoader() instanceof CubeTempModelReadingTableIndexLoader) {
             CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) sessionIDInfor.getLoader();
-            loader.registerTableIndex(Thread.currentThread().getId(), loader.getTableIndex(new BITableID("")));
+            loader.registerTableIndex(Thread.currentThread().getId(), loader.getTableIndex(BIModuleUtils.getSourceByID(new BITableID(sessionIDInfor.getTempTableId()), new BIUser(sessionIDInfor.getUserId()))));
         }
         JSONObject json = parseJSON(req);
         String widgetName = json.optString("name");
@@ -56,14 +57,14 @@ public class BIWidgetSettingAction extends AbstractBIDeziAction {
             MultiThreadManagerImpl.getInstance().refreshExecutorService();
             jo = widget.createDataJSON(sessionIDInfor);
         } catch (Exception exception) {
-            jo.put("error", exception.getMessage());
+            jo.put("error", exception.getStackTrace());
         }
         if (sessionIDInfor.getLoader() instanceof CubeTempModelReadingTableIndexLoader) {
             CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) sessionIDInfor.getLoader();
             loader.releaseTableIndex(Thread.currentThread().getId());
             TempPathGenerator.removeTempPath(Thread.currentThread().getId());
         }
-        BICubeManager.getInstance().fetchCubeLoader(userId).releaseCurrentThread();
+        sessionIDInfor.getLoader().releaseCurrentThread();
         WebUtils.printAsJSON(res, jo);
     }
 

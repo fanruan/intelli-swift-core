@@ -22,7 +22,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
         this.file = BI.createWidget({
             type: "bi.multifile_editor",
-            accept: "*.jpg;*.png;"
+            accept: "*.jpg;*.png;*.gif;"
         });
 
         this.img = BI.createWidget({
@@ -33,38 +33,50 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         });
 
         this.label.on(BI.TextButton.EVENT_CHANGE, function () {
-            self.file.select();
+            if (self.isValid()) {
+                self.file.select();
+            }
         });
 
         this.file.on(BI.MultifileEditor.EVENT_CHANGE, function (data) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                self.img.setSrc(e.target.result);
+            this.upload();
+        });
+        //直接把图片保存到resource目录下面
+        this.file.on(BI.MultifileEditor.EVENT_UPLOADED, function () {
+            var files = this.getValue();
+            var file = files[files.length - 1];
+            var attachId = file.attach_id, fileName = file.filename;
+            var src = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + attachId + "_" + fileName;
+            BI.requestAsync("fr_bi_dezi", "save_upload_image", {
+                attach_id: attachId
+            }, function (res) {
+                self.img.setSrc(src);
                 self._check();
                 self._setSize("auto", "auto");
-                self.fireEvent(BI.UploadImage.EVENT_CHANGE, e.target.result);
-            };
-            reader.readAsDataURL(data.file);
+                self.fireEvent(BI.UploadImage.EVENT_CHANGE, src);
+            })
         });
 
         this.upload = BI.createWidget({
             type: "bi.icon_button",
             cls: "upload-image-icon-button img-upload-font",
             title: BI.i18nText("BI-Upload_Image"),
-            height: 32,
-            width: 32
+            height: 24,
+            width: 24
         });
 
         this.upload.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.file.select();
+            if (self.isValid()) {
+                self.file.select();
+            }
         });
 
         this.del = BI.createWidget({
             type: "bi.icon_button",
             cls: "upload-image-icon-button img-shutdown-font",
-            title: BI.i18nText("fbi_Delete"),
-            height: 32,
-            width: 32
+            title: BI.i18nText("BI-Delete"),
+            height: 24,
+            width: 24
         });
 
         this.del.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -123,22 +135,23 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             }, {
                 el: this.del,
                 right: 4,
-                top: 4
+                top: 8
             }, {
                 el: this.href,
                 right: 36,
-                top: 4
+                top: 8
             }, {
                 el: this.size,
                 right: 68,
-                top: 4
+                top: 8
             }, {
                 el: this.upload,
                 right: 100,
-                top: 4
+                top: 8
             }]
         });
 
+        this.setToolbarVisible(false);
         this.img.invisible();
     },
 
@@ -173,6 +186,13 @@ BI.UploadImage = BI.inherit(BI.Widget, {
                 self._setSize("100%", "100%");
                 break;
         }
+    },
+
+    setToolbarVisible: function (v) {
+        this.upload.setVisible(v);
+        this.size.setVisible(v);
+        this.href.setVisible(v);
+        this.del.setVisible(v);
     },
 
     getValue: function () {

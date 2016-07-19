@@ -92,8 +92,8 @@ website:	http://code.google.com/p/jquerytree/
   *background-image: url("${servletURL}?op=resource&resource=/com/fr/bi/web/css/base/third/ztree/img/zTreeStandard.gif");
 }
 .ztree li span.button.chk {
-  width: 13px;
-  height: 13px;
+  width: 16px;
+  height: 16px;
   margin: 0 3px 0 0;
   cursor: auto;
 }

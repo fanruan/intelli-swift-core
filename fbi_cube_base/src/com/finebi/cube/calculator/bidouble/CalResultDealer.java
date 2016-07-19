@@ -19,15 +19,17 @@ public class CalResultDealer implements ResultDealer {
     private CubeDoubleDataCalculator cal;
     private BIKey key;
     private Traversal<BIDataValue> travel;
+    private int startCol;
 
-    public CalResultDealer(BIKey key, CubeDoubleDataCalculator cal, Traversal<BIDataValue> travel) {
+    public CalResultDealer(BIKey key, CubeDoubleDataCalculator cal, Traversal<BIDataValue> travel, int startCol) {
         this.key = key;
         this.cal = cal;
         this.travel = travel;
+        this.startCol = startCol;
     }
 
     @Override
-    public void dealWith(ICubeTableService tableGetterService, GroupValueIndex gvi, final int startCol) {
+    public void dealWith(ICubeTableService tableGetterService, GroupValueIndex gvi) {
         final Double v = cal.calculate(tableGetterService, key, gvi);
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override

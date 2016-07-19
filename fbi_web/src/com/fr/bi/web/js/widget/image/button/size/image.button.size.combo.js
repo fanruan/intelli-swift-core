@@ -18,8 +18,8 @@ BI.ImageButtonSizeCombo = BI.inherit(BI.Widget, {
             type: "bi.icon_button",
             cls: "img-size-font",
             title: o.title,
-            width: 32,
-            height: 32
+            width: 24,
+            height: 24
         });
         this.sizeChooser = BI.createWidget({
             type: "bi.image_button_size"

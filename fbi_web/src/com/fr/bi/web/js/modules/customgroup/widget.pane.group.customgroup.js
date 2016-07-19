@@ -149,6 +149,8 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
                 var fieldItem = {};
                 fieldItem.value = fieldName;
                 groupItem.content.push(fieldItem);
+                groupItem.id = groupID;
+
             })
             expanderItems.push(groupItem);
         })
@@ -187,16 +189,11 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
             });
         });
 
-        //groupWidget.on(BI.CustomgroupGroupExpander.EVENT_NODE_VALUE_CHANGE, function () {
-        //    self.groupMap[groupWidget.attr("id")] = groupWidget.getNodeValue();
-        //    var items = self.createItemFromGroupMap();
-        //    self.populate(items);
-        //});
 
         groupWidget.on(BI.CustomgroupGroupExpander.EVENT_NODE_VALUE_CONFIRM, function () {
             self.groupMap[groupWidget.attr("id")] = groupWidget.getNodeValue();
             var items = self.createItemFromGroupMap();
-            self.populate(items);
+            // self.populate(items);
         });
 
         return groupWidget;

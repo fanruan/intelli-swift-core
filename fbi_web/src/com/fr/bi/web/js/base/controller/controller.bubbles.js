@@ -116,14 +116,14 @@ BI.BubblesController = BI.inherit(BI.Controller, {
         }
         if (!this.storeBubbles[name]["top"]) {
             this.storeBubbles[name]["top"] = this._createBubble("top", text);
-            BI.createWidget({
-                type: "bi.absolute",
-                element: container,
-                items: [{
-                    el: this.storeBubbles[name]["top"]
-                }]
-            })
         }
+        BI.createWidget({
+            type: "bi.absolute",
+            element: container,
+            items: [{
+                el: this.storeBubbles[name]["top"]
+            }]
+        })
         this.set(name, this.storeBubbles[name]["top"])
         var position = this._getTopPosition(name, context, offsetStyle);
         this.get(name).element.css({left: position.left, top: position.top});
@@ -131,14 +131,14 @@ BI.BubblesController = BI.inherit(BI.Controller, {
         if (!$.isTopSpaceEnough(context, this.get(name))) {
             if (!this.storeBubbles[name]["left"]) {
                 this.storeBubbles[name]["left"] = this._createBubble("left", text, 30);
-                BI.createWidget({
-                    type: "bi.absolute",
-                    element: container,
-                    items: [{
-                        el: this.storeBubbles[name]["left"]
-                    }]
-                })
             }
+            BI.createWidget({
+                type: "bi.absolute",
+                element: container,
+                items: [{
+                    el: this.storeBubbles[name]["left"]
+                }]
+            })
             this.set(name, this.storeBubbles[name]["left"]);
             var position = this._getLeftPosition(name, context, offsetStyle);
             this.get(name).element.css({left: position.left, top: position.top});
@@ -146,14 +146,14 @@ BI.BubblesController = BI.inherit(BI.Controller, {
             if (!$.isLeftSpaceEnough(context, this.get(name))) {
                 if (!this.storeBubbles[name]["right"]) {
                     this.storeBubbles[name]["right"] = this._createBubble("right", text, 30);
-                    BI.createWidget({
-                        type: "bi.absolute",
-                        element: container,
-                        items: [{
-                            el: this.storeBubbles[name]["right"]
-                        }]
-                    })
                 }
+                BI.createWidget({
+                    type: "bi.absolute",
+                    element: container,
+                    items: [{
+                        el: this.storeBubbles[name]["right"]
+                    }]
+                })
                 this.set(name, this.storeBubbles[name]["right"])
                 var position = this._getRightPosition(name, context, offsetStyle);
                 this.get(name).element.css({left: position.left, top: position.top});
@@ -161,14 +161,14 @@ BI.BubblesController = BI.inherit(BI.Controller, {
                 if (!$.isRightSpaceEnough(context, this.get(name))) {
                     if (!this.storeBubbles[name]["bottom"]) {
                         this.storeBubbles[name]["bottom"] = this._createBubble("bottom", text);
-                        BI.createWidget({
-                            type: "bi.absolute",
-                            element: container,
-                            items: [{
-                                el: this.storeBubbles[name]["bottom"]
-                            }]
-                        })
                     }
+                    BI.createWidget({
+                        type: "bi.absolute",
+                        element: container,
+                        items: [{
+                            el: this.storeBubbles[name]["bottom"]
+                        }]
+                    });
                     this.set(name, this.storeBubbles[name]["bottom"]);
                     var position = this._getBottomPosition(name, context, offsetStyle);
                     this.get(name).element.css({left: position.left, top: position.top});

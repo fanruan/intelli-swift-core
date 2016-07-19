@@ -1,21 +1,22 @@
 package com.fr.bi.conf.data.source.operator.create;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
@@ -127,7 +128,7 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         if (sum.getGroup().getType() == BIReportConstant.GROUP.ID_GROUP || sum.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
             type = parentField.getSqlType();
         }
-        return new PersistentField(sum.getNameText(), type, 30);
+        return new PersistentField(sum.getNameText(), sum.getNameText(), type, parentField.getColumnSize(), parentField.getScale());
     }
 
     @Override
@@ -153,7 +154,12 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         GroupLine line = new GroupLine(ti, travel);
         ICubeColumnIndexReader[] getters = new ICubeColumnIndexReader[dimensions.length];
         for (int i = 0; i < getters.length; i++) {
-            getters[i] = getDimensions()[i].getGroup().createGroupedMap(ti.loadGroup(getDimensions()[i].createKey(), new ArrayList<BITableSourceRelation>()));
+            ICubeColumnIndexReader baseGroupMap = ti.loadGroup(getDimensions()[i].createKey(), new ArrayList<BITableSourceRelation>());
+            GroupValueIndex nullIndex =  ti.getNullGroupValueIndex(getDimensions()[i].createKey());
+            if (!nullIndex.isAllEmpty()){
+                baseGroupMap =  new CubeIndexGetterWithNullValue(baseGroupMap, nullIndex);
+            }
+            getters[i] = getDimensions()[i].getGroup().createGroupedMap(baseGroupMap);
         }
         Iterator<Entry<Object, GroupValueIndex>> iter = getters[0].iterator();
         while (iter.hasNext()) {

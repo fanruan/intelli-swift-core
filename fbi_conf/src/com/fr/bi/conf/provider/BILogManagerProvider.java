@@ -35,11 +35,6 @@ public interface BILogManagerProvider {
     void logEnd(long userId);
 
     /**
-     * 数据版本变化
-     */
-    void logVersion(long userId);
-
-    /**
      * 日志开始
      */
     void logIndexStart(long userId);
@@ -141,7 +136,7 @@ public interface BILogManagerProvider {
     /**
      * 死循环错误日志
      *
-     * @param map map对象
+     * @param set map对象
      */
     void loopRelation(Set<ArrayKey<BITableSourceRelation>> set, long userId);
 
@@ -160,4 +155,6 @@ public interface BILogManagerProvider {
     BIRecord getBILog(long userId);
 
     Date getConfigVersion(long userId);
+
+    void clearLog(long userId);
 }
