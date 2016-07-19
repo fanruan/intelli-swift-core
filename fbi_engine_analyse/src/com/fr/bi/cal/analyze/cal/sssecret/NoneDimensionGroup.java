@@ -134,11 +134,6 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     }
 
     public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
-        if(judgeNeedAllCal(needAllCalculate, pck)){
-//            System.out.println("**********************全部计算************************");
-            return AllCalSingleDimensionGroup.createInstance(tableKey, pck, gvi, loader, true);
-        }
-//        System.out.println("**********************非全部计算************************");
         if(ckIndex == 0){
             pck = null;
         }
