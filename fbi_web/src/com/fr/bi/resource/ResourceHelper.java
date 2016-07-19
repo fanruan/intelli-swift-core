@@ -1989,6 +1989,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/lru.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
 
+                "com/fr/bi/web/js/base/parsers/expression.js",
+                "com/fr/bi/web/js/base/parsers/path.js",
+
                 "com/fr/bi/web/js/base/action/action.js",
                 "com/fr/bi/web/js/base/action/action.show.js",
                 "com/fr/bi/web/js/base/action/action.show.effect.js",
