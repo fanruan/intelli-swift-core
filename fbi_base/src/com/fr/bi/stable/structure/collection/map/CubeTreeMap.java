@@ -23,7 +23,7 @@ public class CubeTreeMap<K> extends TreeMap implements ICubeColumnIndexReader, R
 
     @Override
     public int sizeOfGroup() {
-        return 0;
+        return size();
     }
 
     @Override

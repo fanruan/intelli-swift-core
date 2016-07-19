@@ -161,7 +161,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 iconHeight: 24
             }),
             layouts: [{
-                type: "bi.left"
+                type: "bi.left",
+                lgap: 2
             }]
         });
 
