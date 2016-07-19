@@ -2201,6 +2201,18 @@
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
                 }
+                if(groupType === BICst.GROUP.ID_GROUP) {
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: {
+                            min: BI.parseFloat(value),
+                            max: BI.parseFloat(value),
+                            closemin: true,
+                            closemax: true
+                        },
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    }
+                }
                 var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
                 var oMin, oMax;
                 BI.each(groupNodes, function (i, node) {
@@ -2219,7 +2231,7 @@
                         filter_value: groupMap[value],
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
-                } else if (useOther === value) {
+                } else if (value === BICst.UNGROUP_TO_OTHER) {
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
                         filter_value: {
