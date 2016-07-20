@@ -549,6 +549,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             }
         });
+        
+        // 还要看有没有设置好维度指标匹配关系
+        BI.remove(this.dimIds, function (i, dId) {
+            return BI.Utils.isDimensionByDimensionID(dId) &&
+                BI.isEmptyObject(BI.Utils.getDimensionMapByDimensionID(dId));
+        });
+        BI.remove(this.crossDimIds, function(i, dId) {
+            return BI.Utils.isDimensionByDimensionID(dId) &&
+                BI.isEmptyObject(BI.Utils.getDimensionMapByDimensionID(dId));
+        });
     },
 
     getWidgetData: function(type, callback){

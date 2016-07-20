@@ -1,6 +1,8 @@
 package com.finebi.cube.structure.detail;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.input.ICubeByteReaderWrapper;
+import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.constant.DBConstant;
 
@@ -15,6 +17,14 @@ public class BICubeByteDetailData extends BICubeDetailData<Byte> {
         super(discovery, superLocation);
     }
 
+    public byte getOriginalValueByRow(int rowNumber) {
+        try {
+            return ((ICubeByteReaderWrapper)getCubeReader()).getSpecificValue(rowNumber);
+        } catch (BIResourceInvalidException e) {
+            throw new RuntimeException("read byte failed", e);
+        }
+    }
+
     @Override
     protected ICubeResourceLocation setDetailType() {
         return currentLocation.setByteTypeWrapper();
@@ -23,5 +33,10 @@ public class BICubeByteDetailData extends BICubeDetailData<Byte> {
     @Override
     public int getClassType() {
         return DBConstant.CLASS.BYTE;
+    }
+
+    @Override
+    public Byte getOriginalObjectValueByRow(int rowNumber) {
+        return getOriginalValueByRow(rowNumber);
     }
 }

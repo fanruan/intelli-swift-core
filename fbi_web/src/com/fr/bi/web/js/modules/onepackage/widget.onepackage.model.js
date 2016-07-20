@@ -231,6 +231,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     addTablesToPackage: function (tables, callback) {
         var self = this;
         var oldTables = this.getTablesData();
+        var newTables = {};
         //添加表的时候就应该把原始表的名称作为当前业务包表的转义，同理删除也删掉
         //对于业务包表逻辑：保存当前表的转义（当前业务包转义不可重名）、关联，但id是一个新的，
         //暂时根据 id 属性区分 source 表和 package 表
@@ -296,7 +297,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     }
                 });
             }
-            self.tablesData[id] = BI.extend(table, {id: id});
+            newTables[id] = self.tablesData[id] = BI.extend(table, {id: id});
         });
         //添加完之后需要读关联转义信息
         var mask = BI.createWidget({
@@ -310,7 +311,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         BI.each(oldTables, function(id, t) {
             t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (oTables[id] = t);
         });
-        BI.each(this.getTablesData(), function(id, t) {
+        BI.each(newTables, function(id, t) {
             t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (nTables[id] = t);
         });
         var data = {
