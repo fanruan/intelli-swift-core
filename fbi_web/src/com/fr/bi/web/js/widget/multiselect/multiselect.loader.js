@@ -114,7 +114,7 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
     _scrollToTop: function () {
         var self = this;
         BI.delay(function () {
-            self.button_group.element.scrollTop(BI.MIN);
+            self.button_group.element.scrollTop(0);
         }, 30);
     },
 
