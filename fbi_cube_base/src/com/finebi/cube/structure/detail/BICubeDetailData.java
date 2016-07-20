@@ -4,10 +4,8 @@ import com.finebi.cube.CubeVersion;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.input.ICubeReader;
 import com.finebi.cube.data.output.ICubeWriter;
-import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.ICubeDetailDataService;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
@@ -18,7 +16,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  */
 public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     protected ICubeWriter<T> cubeWriter;
-    protected ICubeReader<T> cubeReader;
+    protected ICubeReader cubeReader;
     protected ICubeResourceLocation currentLocation;
     private ICubeResourceDiscovery discovery;
 
@@ -54,7 +52,7 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
         return cubeWriter;
     }
 
-    public ICubeReader<T> getCubeReader() {
+    public ICubeReader getCubeReader() {
         if (!isCubeReaderAvailable()) {
             initCubeReader();
         }
@@ -81,17 +79,6 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
-    }
-
-    @Override
-    public T getOriginalValueByRow(int rowNumber) {
-        try {
-            return getCubeReader().getSpecificValue(rowNumber);
-        } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        }
-        return null;
-
     }
 
     protected void resetCubeWriter() {

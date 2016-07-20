@@ -76,7 +76,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             List<String> content = duplicateRemove(tableSource.stringData);
             Collections.sort(content, ComparatorFacotry.CHINESE_ASC);
             for (int i = 0; i < content.size(); i++) {
-                assertEquals(content.get(i), columnReaderService.getGroupValue(i));
+                assertEquals(content.get(i), columnReaderService.getGroupObjectValue(i));
                 String one = content.get(i);
                 GroupValueIndex groupValueIndex = columnReaderService.getBitmapIndex(i);
                 assertEquals(groupValueIndex, GroupValueIndexTestTool.build(tableSource.stringData, one));
@@ -96,7 +96,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             List<Long> content = duplicateLongRemove(tableData.contents.get(0));
             Collections.sort(content, ComparatorFacotry.LONG_ASC);
             for (int i = 0; i < content.size(); i++) {
-                assertEquals(content.get(i), columnReaderService.getGroupValue(i));
+                assertEquals(content.get(i), columnReaderService.getGroupObjectValue(i));
                 Long one = content.get(i);
                 GroupValueIndex groupValueIndex = columnReaderService.getBitmapIndex(i);
                 assertEquals(groupValueIndex, GroupValueIndexTestTool.build(tableData.contents.get(0), one));
@@ -114,9 +114,9 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             CubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
             ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             CubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateYear(field));
-            assertEquals(1991, columnReaderService.getGroupValue(0));
-            assertEquals(1992, columnReaderService.getGroupValue(1));
-            assertEquals(1993, columnReaderService.getGroupValue(2));
+            assertEquals(1991, columnReaderService.getGroupObjectValue(0));
+            assertEquals(1992, columnReaderService.getGroupObjectValue(1));
+            assertEquals(1993, columnReaderService.getGroupObjectValue(2));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -148,9 +148,9 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 
             ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             CubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateMonth(field));
-            assertEquals(6, columnReaderService.getGroupValue(0));
-            assertEquals(7, columnReaderService.getGroupValue(1));
-            assertEquals(8, columnReaderService.getGroupValue(2));
+            assertEquals(6, columnReaderService.getGroupObjectValue(0));
+            assertEquals(7, columnReaderService.getGroupObjectValue(1));
+            assertEquals(8, columnReaderService.getGroupObjectValue(2));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -183,11 +183,11 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 
             ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             CubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateDay(field));
-            assertEquals(6, columnReaderService.getGroupValue(0));
-            assertEquals(9, columnReaderService.getGroupValue(1));
-            assertEquals(10, columnReaderService.getGroupValue(2));
-            assertEquals(11, columnReaderService.getGroupValue(3));
-            assertEquals(12, columnReaderService.getGroupValue(4));
+            assertEquals(6, columnReaderService.getGroupObjectValue(0));
+            assertEquals(9, columnReaderService.getGroupObjectValue(1));
+            assertEquals(10, columnReaderService.getGroupObjectValue(2));
+            assertEquals(11, columnReaderService.getGroupObjectValue(3));
+            assertEquals(12, columnReaderService.getGroupObjectValue(4));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -221,11 +221,11 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 
             ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             CubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateWeek(field));
-            assertEquals(1, columnReaderService.getGroupValue(0));
-            assertEquals(2, columnReaderService.getGroupValue(1));
-            assertEquals(3, columnReaderService.getGroupValue(2));
-            assertEquals(4, columnReaderService.getGroupValue(3));
-            assertEquals(5, columnReaderService.getGroupValue(4));
+            assertEquals(1, columnReaderService.getGroupObjectValue(0));
+            assertEquals(2, columnReaderService.getGroupObjectValue(1));
+            assertEquals(3, columnReaderService.getGroupObjectValue(2));
+            assertEquals(4, columnReaderService.getGroupObjectValue(3));
+            assertEquals(5, columnReaderService.getGroupObjectValue(4));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -240,7 +240,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 
             ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             CubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateSeason(field));
-            assertEquals(3, columnReaderService.getGroupValue(0));
+            assertEquals(3, columnReaderService.getGroupObjectValue(0));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -254,7 +254,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 //            fieldIndexGenerator(tableData, 0);
 //            DBField field = tableData.getFieldsArray(null)[0];
 //            ICubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(field));
-//            assertEquals(3, columnReaderService.getGroupValue(0));
+//            assertEquals(3, columnReaderService.getGroupObjectValue(0));
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //            assertTrue(false);
@@ -271,8 +271,8 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             Collections.sort(content, ComparatorFacotry.CHINESE_ASC);
 
             for (int i = 0; i < tableSource.stringData.size(); i++) {
-                String one = (String) columnReaderService.getOriginalValueByRow(i);
-                Integer groupRow = columnReaderService.getPositionOfGroupByRow(i);
+                String one = (String) columnReaderService.getOriginalObjectValueByRow(i);
+                int groupRow = columnReaderService.getPositionOfGroupByRow(i);
                 GroupValueIndex groupValueIndex = columnReaderService.getBitmapIndex(i);
                 assertEquals(groupValueIndex, GroupValueIndexTestTool.build(tableSource.stringData, one));
             }

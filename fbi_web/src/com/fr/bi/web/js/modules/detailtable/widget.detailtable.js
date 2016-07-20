@@ -7,6 +7,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detail-table",
+            overlap: false,
             wId: ""
         })
     },

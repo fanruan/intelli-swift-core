@@ -3,9 +3,7 @@
  */
 package com.fr.bi.test.stable.engine.cal;
 
-import com.finebi.cube.api.ICubeColumnDetailGetter;
-import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.api.*;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.engine.cal.AllSingleDimensionGroup;
@@ -135,8 +133,8 @@ public class AllSingleDimensionGroupTest extends TestCase {
                 }
 
                 @Override
-                public Integer getPositionOfGroupByRow(int row) {
-                    return null;
+                public int getPositionOfGroupByRow(int row) {
+                    return 0;
                 }
 
                 @Override
@@ -161,6 +159,16 @@ public class AllSingleDimensionGroupTest extends TestCase {
                 @Override
                 public Object getValue(int row) {
                     return values[row];
+                }
+
+                @Override
+                public PrimitiveType getPrimitiveType() {
+                    return null;
+                }
+
+                @Override
+                public PrimitiveDetailGetter createPrimitiveDetailGetter() {
+                    return null;
                 }
             };
         }

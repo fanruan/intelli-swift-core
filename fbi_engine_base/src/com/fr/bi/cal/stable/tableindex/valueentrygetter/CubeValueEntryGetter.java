@@ -36,7 +36,7 @@ public class CubeValueEntryGetter implements ICubeValueEntryGetter {
     }
 
     @Override
-    public Integer getPositionOfGroupByRow(int row) {
+    public int getPositionOfGroupByRow(int row) {
         return cf.getPositionOfGroup(row, manager);
     }
 
