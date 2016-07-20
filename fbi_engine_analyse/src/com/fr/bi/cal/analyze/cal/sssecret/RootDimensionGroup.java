@@ -700,7 +700,8 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             try {
                 GroupConnectionValue gv = new GroupConnectionValue(null, null, null, root);
                 IntList list = new IntList();
-                if (ReturnStatus.GroupEnd == getNext(gv, root, index.clone(), 0, expander, list)) {
+                int indexCopy[] = Arrays.copyOf(index, index.length);
+                if (ReturnStatus.GroupEnd == getNext(gv, root, indexCopy, 0, expander, list)) {
                     this.tempIndex = null;
                     return null;
                 }

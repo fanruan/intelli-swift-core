@@ -19,6 +19,7 @@ import com.fr.bi.stable.operation.sort.sort.NoSort;
 import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
@@ -109,9 +110,12 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
             if (fieldJo.has("relation")) {
-                BITableRelation[] selfRelationArray = new BITableRelation[1];
-                selfRelationArray[0] = BITableRelationHelper.getRelation(fieldJo.getJSONObject("relation"));
-                this.selfToSelfRelationPath = new BITableRelationPath(selfRelationArray);
+                JSONArray relationArray = fieldJo.getJSONArray("relation");
+                BITableRelation[] tableRelationArray = new BITableRelation[relationArray.length()];
+                for (int i = 0; i < relationArray.length(); i++) {
+                    tableRelationArray[i] = BITableRelationHelper.getRelation(relationArray.getJSONObject(i));
+                }
+                this.selfToSelfRelationPath = new BITableRelationPath(tableRelationArray);
             }
         }
 
