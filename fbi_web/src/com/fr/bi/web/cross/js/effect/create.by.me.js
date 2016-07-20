@@ -2,12 +2,11 @@
 
     $.extend(FS, {
 
-        createByMe: function (element, isAdmin) {
-            element.empty();
+        createByMe: function ($tab, $content, entry) {
+            entry.contentEl.empty();
             var templateManage = BI.createWidget({
                 type: "bi.template_manager",
-                element: element,
-                is_admin: isAdmin
+                element: entry.contentEl
             });
             templateManage.on(BI.TemplateManager.EVENT_FOLDER_RENAME, function (id, name, pId, type) {
                 //重命名或者新建文件夹
