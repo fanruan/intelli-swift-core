@@ -15,11 +15,12 @@ RelationviewView = BI.inherit(BI.View, {
             items: [
                 {
                     primary: {
-                        region: "B", regionText: "比", regionHandler: function () {
+                        region: "B", regionText: "比", regionTitle: "bbb", regionHandler: function () {
                             alert("a")
                         },
 
 
+                        title: "b2...",
                         value: "b2", text: "b2字段",
                         handler: function () {
                             alert("d")

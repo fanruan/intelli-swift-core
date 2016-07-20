@@ -32,4 +32,4 @@ BI.SvgCustomScale = BI.inherit(BI.Widget , {
         })
     }
 });
-$.shortcut("bi.svg-custom-scale" , BI.SvgCustomScale);
+$.shortcut("bi.svg_custom_scale" , BI.SvgCustomScale);
