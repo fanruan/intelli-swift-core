@@ -4,7 +4,6 @@ import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.relation.BITableRelation;
@@ -42,13 +41,13 @@ public class CubeTaskGenerate {
         boolean taskAddResult = false;
         CubeBuild cubeBuild;
 /*若有新增表或者新增关联，增量更新，否则进行全量*/
-        if (isPart(userId)) {
-            BILogger.getLogger().info("Cube part update start");
-            cubeBuild = new CubeBuildByPart(userId, BICubeGenerateUtils.getTables4CubeGenerate(userId), BICubeGenerateUtils.getRelations4CubeGenerate(userId));
-        } else {
+//        if (isPart(userId)) {
+//            BILogger.getLogger().info("Cube part update start");
+//            cubeBuild = new CubeBuildByPart(userId, BICubeGenerateUtils.getTables4CubeGenerate(userId), BICubeGenerateUtils.getRelations4CubeGenerate(userId));
+//        } else {
             BILogger.getLogger().info("Cube all update start");
             cubeBuild = new CubeBuildStaff(new BIUser(userId));
-        }
+//        }
         if (preConditionsCheck(userId, cubeBuild)) {
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
             taskAddResult = cubeManager.addTask(task, userId);

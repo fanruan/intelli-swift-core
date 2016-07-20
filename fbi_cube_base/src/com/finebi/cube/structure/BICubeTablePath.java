@@ -25,7 +25,7 @@ public class BICubeTablePath extends BIBasicRelationPath<ITableKey, BIColumnKey,
         Iterator<BICubeRelation> relationIterator = getAllRelations().iterator();
         while (relationIterator.hasNext()) {
             BICubeRelation relation = relationIterator.next();
-            sb.append(relation.getPrimaryTable().getSourceID()).append(relation.getForeignTable().getSourceID());
+            sb.append(relation.getPrimaryTable().getSourceID()).append(relation.getForeignTable().getSourceID()).append(relation.getForeignField()).append(relation.getPrimaryField().getKey()).append(relation.getForeignField().getKey());
         }
         return BIMD5Utils.getMD5String(new String[]{sb.toString()});
     }
