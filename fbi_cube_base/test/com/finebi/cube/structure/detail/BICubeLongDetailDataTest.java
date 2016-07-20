@@ -57,7 +57,8 @@ public class BICubeLongDetailDataTest extends TestCase {
             detailData.addDetailDataValue(0, Long.valueOf("12"));
             assertTrue(detailData.isCubeWriterAvailable());
             assertFalse(detailData.isCubeReaderAvailable());
-            assertEquals(Long.valueOf("12"), detailData.getOriginalValueByRow(0));
+            assertEquals(12, detailData.getOriginalValueByRow(0));
+            assertEquals(Long.valueOf("12"), detailData.getOriginalObjectValueByRow(0));
             assertTrue(detailData.isCubeReaderAvailable());
             assertTrue(detailData.isCubeWriterAvailable());
         } catch (Exception e) {
@@ -85,11 +86,11 @@ public class BICubeLongDetailDataTest extends TestCase {
         try {
             testReset();
 
-            assertEquals(Long.valueOf("12"), detailData.getOriginalValueByRow(0));
-
+            assertEquals(12, detailData.getOriginalValueByRow(0));
+            assertEquals(Long.valueOf("12"), detailData.getOriginalObjectValueByRow(0));
             detailData.addDetailDataValue(0, Long.valueOf("124"));
-            assertEquals(Long.valueOf("124"), detailData.getOriginalValueByRow(0));
-
+            assertEquals(124, detailData.getOriginalValueByRow(0));
+            assertEquals(Long.valueOf("124"), detailData.getOriginalObjectValueByRow(0));
 
             assertTrue(detailData.isCubeReaderAvailable());
             assertTrue(detailData.isCubeWriterAvailable());

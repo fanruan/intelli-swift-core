@@ -10,6 +10,7 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -38,13 +39,13 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
         }
     }
 
-    private Integer getReverseRow(int row){
+    private int getReverseRow(int row){
         try {
             return reverseRowGetter == null ? row : reverseRowGetter.getReverseIndex(row);
         } catch (BIResourceInvalidException e) {
             BINonValueUtils.beyondControl(e);
         }
-        return null;
+        return NIOConstant.INTEGER.NULL_VALUE;
     }
 
     private boolean isRelationIndex(List<BITableSourceRelation> relationList) {
@@ -54,7 +55,7 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
     @Override
     public GroupValueIndex getIndexByRow(int row) {
         try {
-            Integer groupRow  = getPositionOfGroupByRow(row);
+            int groupRow  = getPositionOfGroupByRow(row);
             return getGroupValueIndex(groupRow);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
@@ -62,17 +63,17 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
         return GVIFactory.createAllEmptyIndexGVI();
     }
 
-    private GroupValueIndex getGroupValueIndex(Integer row) throws BICubeIndexException {
-        return row == null ? indexDataGetterService.getNULLIndex(0) : indexDataGetterService.getBitmapIndex(row);
+    private GroupValueIndex getGroupValueIndex(int row) throws BICubeIndexException {
+        return row == NIOConstant.INTEGER.NULL_VALUE ? indexDataGetterService.getNULLIndex(0) : indexDataGetterService.getBitmapIndex(row);
     }
 
     private T getGroupValue(Integer groupRow) throws BICubeIndexException {
-        return groupRow == null ? null : columnReaderService.getGroupValue(groupRow);
+        return groupRow == null ? null : columnReaderService.getGroupObjectValue(groupRow);
     }
 
     @Override
     public CubeValueEntry getEntryByRow(int row) {
-        Integer groupRow = null;
+        int groupRow  = NIOConstant.INTEGER.NULL_VALUE;
         GroupValueIndex gvi = null;
         T value = null;
         try {
@@ -86,11 +87,11 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
     }
 
     @Override
-    public Integer getPositionOfGroupByRow(int row) {
-        Integer groupRow = null;
+    public int getPositionOfGroupByRow(int row) {
+        int groupRow = NIOConstant.INTEGER.NULL_VALUE;
         try {
-            Integer reverseRow = getReverseRow(row);
-            groupRow = reverseRow == null ? null : columnReaderService.getPositionOfGroupByRow(reverseRow);
+            int reverseRow = getReverseRow(row);
+            groupRow = reverseRow == NIOConstant.INTEGER.NULL_VALUE ? NIOConstant.INTEGER.NULL_VALUE : columnReaderService.getPositionOfGroupByRow(reverseRow);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }

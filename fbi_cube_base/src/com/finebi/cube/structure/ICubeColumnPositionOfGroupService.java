@@ -20,5 +20,5 @@ public interface ICubeColumnPositionOfGroupService extends Release{
      * @return
      * @throws BIResourceInvalidException
      */
-    Integer getPositionOfGroup(int row) throws BIResourceInvalidException;
+    int getPositionOfGroup(int row) throws BIResourceInvalidException;
 }

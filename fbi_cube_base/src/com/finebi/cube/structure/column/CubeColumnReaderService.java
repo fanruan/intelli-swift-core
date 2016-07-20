@@ -10,7 +10,6 @@ import com.finebi.cube.structure.ICubeIndexDataGetterService;
 import com.finebi.cube.structure.ICubeVersion;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.structure.object.CubeValueEntry;
 
 /**
  * Cube中列的可读接口
@@ -35,7 +34,7 @@ public interface CubeColumnReaderService<T> extends ICubeIndexDataGetterService,
      * @param row
      * @return 分组值的位置
      */
-    Integer getPositionOfGroupByRow(int row) throws BIResourceInvalidException;
+    int getPositionOfGroupByRow(int row) throws BIResourceInvalidException;
 
     /**
      * 分组数量
@@ -50,7 +49,7 @@ public interface CubeColumnReaderService<T> extends ICubeIndexDataGetterService,
      * @param rowNumber 数据库中的行号
      * @return 原始值
      */
-    T getOriginalValueByRow(int rowNumber);
+    T getOriginalObjectValueByRow(int rowNumber);
 
     /**
      * 根据分组值来获得相应的索引值
@@ -61,7 +60,7 @@ public interface CubeColumnReaderService<T> extends ICubeIndexDataGetterService,
      */
     GroupValueIndex getIndexByGroupValue(T groupValues) throws BIResourceInvalidException, BICubeIndexException;
 
-    T getGroupValue(int position);
+    T getGroupObjectValue(int position);
 
     boolean existRelationPath(BICubeTablePath path);
 
