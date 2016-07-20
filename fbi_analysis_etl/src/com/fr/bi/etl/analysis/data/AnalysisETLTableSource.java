@@ -97,6 +97,11 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
         throw new RuntimeException("Only UserTableSource can read");
     }
 
+    @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
+        return 0;
+    }
+
     public AnalysisETLTableSource(List<AnalysisETLSourceField> fieldList, String name, List<IETLOperator> operators, List<AnalysisCubeTableSource> parents) {
         super(operators, parents);
         this.fieldList = fieldList;

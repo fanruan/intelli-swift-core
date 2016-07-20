@@ -80,6 +80,11 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTab
     }
 
     @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
+        return 0;
+    }
+
+    @Override
     protected Set<CubeTableSource> createSourceSet() {
         Set<CubeTableSource> set = new HashSet<CubeTableSource>();
         if (oprators != null) {

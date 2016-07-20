@@ -75,7 +75,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
             fieldList.get(i).setTableBelongTo(tableSource);
             cubeFieldSources[i] = fieldList.get(i);
         }
-        //写这样写,确认无误后修改
         DBTableSource source = (DBTableSource) this.tableSource;
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
         source.setUpdateSettingSource(tableUpdateSetting);
@@ -84,7 +83,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
         /*add*/
         if (!ComparatorUtils.equals(tableUpdateSetting.getPartAddSQL(),"")) {
-            rowCount = dealWidthAdd(cubeFieldSources, source, tableUpdateSetting.getPartAddSQL(), rowCount);
+            rowCount = dealWidthAdd(cubeFieldSources, tableUpdateSetting.getPartAddSQL(), rowCount);
         }
         /*remove*/
         if (!ComparatorUtils.equals(tableUpdateSetting.getPartDeleteSQL(),"")) {
@@ -92,7 +91,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
         }
         /*modify*/
         if (!ComparatorUtils.equals(tableUpdateSetting.getPartModifySQL(),"")) {
-            rowCount = dealWidthAdd(cubeFieldSources, source, tableUpdateSetting.getPartModifySQL(), rowCount);
+            rowCount = dealWidthAdd(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), rowCount);
             sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
         }
         if (null!=sortRemovedList) {
@@ -103,7 +102,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
     }
     
 
-    private long dealWidthAdd(ICubeFieldSource[] cubeFieldSources, DBTableSource source, String SQL, long rowCount) {
+    private long dealWidthAdd(ICubeFieldSource[] cubeFieldSources, String SQL, long rowCount) {
         Traversal<BIDataValue> AddTraversal = new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
@@ -115,7 +114,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
             }
         };
 
-        rowCount = source.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount);
+        rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount);
         return rowCount;
     }
     
