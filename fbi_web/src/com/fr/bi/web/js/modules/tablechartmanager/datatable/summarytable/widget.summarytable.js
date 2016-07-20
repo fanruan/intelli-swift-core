@@ -1,10 +1,13 @@
 /**
  * 汇总表（分组表、交叉表）
+ * @class BI.SummaryTable
+ * @extends BI.Pane
  */
-BI.SummaryTable = BI.inherit(BI.LoadingPane2, {
+BI.SummaryTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.SummaryTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-summary-table"
+            baseCls: "bi-summary-table",
+            overlap: false
         })
     },
 

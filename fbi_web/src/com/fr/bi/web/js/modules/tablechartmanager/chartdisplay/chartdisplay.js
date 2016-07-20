@@ -1,9 +1,9 @@
 /**
  * 图表控件
  * @class BI.ChartDisplay
- * @extends BI.LoadingPane2
+ * @extends BI.Pane
  */
-BI.ChartDisplay = BI.inherit(BI.LoadingPane2, {
+BI.ChartDisplay = BI.inherit(BI.Pane, {
 
     constants: {
         SCATTER_REGION_COUNT: 3,
@@ -13,6 +13,7 @@ BI.ChartDisplay = BI.inherit(BI.LoadingPane2, {
     _defaultConfig: function () {
         return BI.extend(BI.ChartDisplay.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-chart-display",
+            overlap: false,
             wId: ""
         })
     },
