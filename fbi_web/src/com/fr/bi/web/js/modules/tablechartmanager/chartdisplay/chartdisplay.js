@@ -3,7 +3,7 @@
  * @class BI.ChartDisplay
  * @extends BI.Widget
  */
-BI.ChartDisplay = BI.inherit(BI.Widget, {
+BI.ChartDisplay = BI.inherit(BI.Pane, {
 
     constants: {
         SCATTER_REGION_COUNT: 3,
@@ -274,6 +274,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         this.errorPane.setVisible(false);
         this.tab.setSelect(type);
         var selectedTab = this.tab.getSelectedTab();
+        this.loading();
         this.model.getWidgetData(type, function (types, data, options) {
             if (BI.isNotNull(types.error)) {
                 self.errorPane.setErrorInfo(types.error);
@@ -343,6 +344,7 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
                 self.errorPane.setVisible(true);
             }
+            self.loaded();
         });
     },
 
