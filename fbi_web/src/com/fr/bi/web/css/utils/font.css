@@ -2921,23 +2921,12 @@
 }
 .calculate-function-font .b-font:before {
   content: "\e6a3";
-  color: #808080;
-}
-.calculate-function-font:hover .b-font:before,
-.calculate-function-font:focus .b-font:before,
-.calculate-function-font.hover .b-font:before {
-  content: "\e6a3";
-  color: #808080;
-}
-.calculate-function-font:active .b-font:before,
-.calculate-function-font.active .b-font:before {
-  content: "\e6a3";
   color: #ffffff;
 }
 .calculate-function-font.native .b-font:before,
 .calculate-function-font.disabled .b-font:before {
   content: "\e6a3";
-  color: #808080;
+  color: #ffffff;
 }
 .path-set-doubt .b-font:before {
   content: "\e69a";
