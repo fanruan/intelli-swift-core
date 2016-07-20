@@ -1,9 +1,9 @@
 /**
  * @class BI.DetailTable
- * @extends BI.Pane
+ * @extends BI.LoadingPane2
  * 明细表的表格
  */
-BI.DetailTable = BI.inherit(BI.Pane, {
+BI.DetailTable = BI.inherit(BI.LoadingPane2, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detail-table",

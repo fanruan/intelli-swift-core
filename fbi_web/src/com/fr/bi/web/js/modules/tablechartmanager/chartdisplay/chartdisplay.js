@@ -1,9 +1,9 @@
 /**
  * 图表控件
  * @class BI.ChartDisplay
- * @extends BI.Widget
+ * @extends BI.LoadingPane2
  */
-BI.ChartDisplay = BI.inherit(BI.Widget, {
+BI.ChartDisplay = BI.inherit(BI.LoadingPane2, {
 
     constants: {
         SCATTER_REGION_COUNT: 3,
@@ -274,7 +274,9 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         this.errorPane.setVisible(false);
         this.tab.setSelect(type);
         var selectedTab = this.tab.getSelectedTab();
+        this.loading();
         this.model.getWidgetData(type, function (types, data, options) {
+            self.loaded();
             if (BI.isNotNull(types.error)) {
                 self.errorPane.setErrorInfo(types.error);
                 self.errorPane.setVisible(true);
