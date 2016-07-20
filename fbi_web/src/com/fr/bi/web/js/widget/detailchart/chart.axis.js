@@ -118,7 +118,17 @@ BI.AxisChart = BI.inherit(BI.Widget, {
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
 
-        return [items, config];
+        var lineItem = [];
+        var otherItem = [];
+        BI.each(items, function(idx, item){
+            if(item.type === "line"){
+                lineItem.push(item);
+            }else{
+                otherItem.push(item);
+            }
+        });
+
+        return [BI.concat(otherItem, lineItem), config];
 
         function formatChartStyle() {
             switch (self.config.chart_style) {

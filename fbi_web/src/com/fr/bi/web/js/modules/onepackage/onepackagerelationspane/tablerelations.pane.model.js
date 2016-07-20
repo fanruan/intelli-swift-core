@@ -38,8 +38,12 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
         var tableNameText = "";
         if (BI.isNull(this.originalTableNames[tId])) {
             tableNameText = this.translations[tId];
-        } else if (BI.isNotNull(this.translations[tId]) && this.translations[tId] !== tableNameText) {
-            tableNameText = this.translations[tId] + "(" + this.originalTableNames[tId] + ")";
+        } else {
+            if (BI.isNotNull(this.translations[tId]) && this.translations[tId] !== this.originalTableNames[tId]) {
+                tableNameText = this.translations[tId];
+            } else {
+                tableNameText = this.translations[tId] + "(" + this.originalTableNames[tId] + ")";
+            }
         }
         return tableNameText;
     },
