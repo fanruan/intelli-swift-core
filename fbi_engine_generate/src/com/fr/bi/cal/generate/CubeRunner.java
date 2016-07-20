@@ -192,8 +192,10 @@ public class CubeRunner {
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
             //暂时cube不做备份了,太吃空间了
-            BIFileUtils.delete(new File(advancedConf.getRootURI().toString()));
-            BIFileUtils.moveFile(tempConf.getRootURI().toString(), advancedConf.getRootURI().toString());
+            boolean delete = BIFileUtils.delete(new File(advancedConf.getRootURI().toString()));
+            if (delete) {
+                BIFileUtils.moveFile(tempConf.getRootURI().toString(), advancedConf.getRootURI().toString());
+            }
         } catch (URISyntaxException e) {
             BILogger.getLogger().error(e.getMessage());
         } catch (BIBuildReaderException e) {
@@ -251,5 +253,5 @@ public class CubeRunner {
         return BIFileUtils.checkDir(new File(BIPathUtils.createBasePath()));
     }
 
-    
+
 }
