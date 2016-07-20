@@ -67,13 +67,14 @@ BI.MapChart = BI.inherit(BI.Widget, {
         };
 
         config.geo = this.config.geo;
-        if(this.config.initDrillPath.length > 1){
-            config.initDrillPath = this.config.initDrillPath;
-        }
+        //if(this.config.initDrillPath.length > 1){
+            //config.initDrillPath = this.config.initDrillPath;
+        //}
         config.dTools.click = function(){
             //console.log(arguments);
             //console.log(this);
-            self.fireEvent(BI.MapChart.EVENT_CHANGE, arguments);
+            //delete this.pointOption.drillDid;
+            //self.fireEvent(BI.MapChart.EVENT_CHANGE, this.pointOption);
         };
         config.chartType = "areaMap";
         delete config.xAxis;
@@ -278,7 +279,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
             geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
-            initDrillPath: options.initDrillPath || [],
+            //initDrillPath: options.initDrillPath || [],
             tooltip: options.tooltip || "",
             theme_color: options.theme_color || c.theme_color,
             map_styles: options.map_styles || [],
