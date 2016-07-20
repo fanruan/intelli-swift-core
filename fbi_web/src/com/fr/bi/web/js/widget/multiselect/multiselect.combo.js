@@ -259,7 +259,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             BI.each(res.value, function (i, v) {
                 if (!map[v]) {
                     self.storeValue.value.push(v);
-                    map[v] = true;
+                    map[v] = v;
                 }
             });
             var change = false;
@@ -269,7 +269,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
                     delete map[v];
                 }
             });
-            change && (this.storeValue.value = BI.keys(map));
+            change && (this.storeValue.value = BI.values(map));
             self._adjust(callback);
             return;
         }
