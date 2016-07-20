@@ -105,9 +105,15 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     break;
             }
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
-            config.gaugeAxis[0].formatter = function(){
-                return this + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
-            };
+            if(self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                config.gaugeAxis[0].formatter = function(){
+                    return (window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]) + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                };
+            }else{
+                config.gaugeAxis[0].formatter = function(){
+                    return this + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                };
+            }
         }
 
         function formatNumberLevelInYaxis(type, position){

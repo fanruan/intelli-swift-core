@@ -41,7 +41,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
         });
 
-        //风格——1、2、3
+        //风格——1、2
         this.chartStyleGroup = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.AXIS_STYLE_GROUP, {

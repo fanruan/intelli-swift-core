@@ -372,7 +372,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 title: title,
                 value: {
                     field_id: fieldId,
-                    relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0]
+                    relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0][0]
                 },
                 drag: self._createDrag(fieldName)
             }, f));
@@ -610,7 +610,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     }
                     if (BI.has(fId, "relation")) {
                         return {
-                            name: BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.relation[0])),
+                            name: BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.relation)),
                             _src: {
                                 id: fId.field_id,
                                 field_id: fId.field_id,
