@@ -4,10 +4,10 @@
 
 FS.THEME.config4navigation.onAfterInit = function () {
     $('#fs-frame-search').css({
-        right: 550
+        right: 350
     });
     $('#fs-frame-reg').css({
-        right: 600
+        right: 400
     });
     var $header = $('#fs-frame-header');
     var header = BI.createWidget({

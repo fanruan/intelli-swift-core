@@ -21,7 +21,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         this.model = new BI.TemplateManagerModel({items: o.items});
         this._createTools();
         //管理员没有分享
-        FS.config.isAdmin === true && (this.shareButton.setVisible(false));
+        o.is_admin === true && (this.shareButton.setVisible(false));
 
         //导航
         this.nav = BI.createWidget({
