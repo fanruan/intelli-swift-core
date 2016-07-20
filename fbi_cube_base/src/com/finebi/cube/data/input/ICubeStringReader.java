@@ -6,5 +6,5 @@ package com.finebi.cube.data.input;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeStringReader extends ICubeReader<String> {
+public interface ICubeStringReader extends ICubeReader,ICubeObjectReader<String> {
 }

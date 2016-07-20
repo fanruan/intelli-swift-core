@@ -157,7 +157,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 /**
                  * 关联主字段的value值
                  */
-                Object primaryColumnValue = primaryColumn.getOriginalValueByRow(row);
+                Object primaryColumnValue = primaryColumn.getOriginalObjectValueByRow(row);
                 /**
                  * value值在子字段中的索引位置
                  */

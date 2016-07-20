@@ -21,7 +21,7 @@ public class BICubeColumnPositionOfGroupService extends BICubeIntegerProperty im
     }
 
     @Override
-    public Integer getPositionOfGroup(int row) throws BIResourceInvalidException {
+    public int getPositionOfGroup(int row) throws BIResourceInvalidException {
         return getReader().getSpecificValue(row);
     }
 

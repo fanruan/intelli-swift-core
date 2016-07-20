@@ -74,12 +74,12 @@ public class BIDiskWriterReaderTest extends TestCase {
             writer.recordSpecificPositionValue(5l, Byte.valueOf("35"));
             location.setReaderSourceLocation();
             BIByteNIOReader reader = (BIByteNIOReader) discovery.getCubeReader(location);
-            assertEquals(reader.getSpecificValue(0l), Byte.valueOf("35"));
-            assertEquals(reader.getSpecificValue(1l), Byte.valueOf("35"));
-            assertEquals(reader.getSpecificValue(2l), Byte.valueOf("35"));
-            assertEquals(reader.getSpecificValue(3l), Byte.valueOf("35"));
-            assertEquals(reader.getSpecificValue(4l), Byte.valueOf("35"));
-            assertEquals(reader.getSpecificValue(5l), Byte.valueOf("35"));
+            assertEquals(reader.getSpecificValue(0l), Byte.valueOf("35").byteValue());
+            assertEquals(reader.getSpecificValue(1l), Byte.valueOf("35").byteValue());
+            assertEquals(reader.getSpecificValue(2l), Byte.valueOf("35").byteValue());
+            assertEquals(reader.getSpecificValue(3l), Byte.valueOf("35").byteValue());
+            assertEquals(reader.getSpecificValue(4l), Byte.valueOf("35").byteValue());
+            assertEquals(reader.getSpecificValue(5l), Byte.valueOf("35").byteValue());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }

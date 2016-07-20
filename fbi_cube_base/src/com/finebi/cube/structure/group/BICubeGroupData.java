@@ -22,7 +22,7 @@ import java.util.Comparator;
 public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
 
     protected ICubeWriter<T> groupWriter;
-    protected ICubeReader<T> groupReader;
+    protected ICubeReader groupReader;
     protected ICubeIntegerReaderWrapper groupLengthReader;
     protected ICubeIntegerWriterWrapper groupLengthWriter;
     protected Comparator groupComparator;
@@ -94,7 +94,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         return groupWriter;
     }
 
-    public ICubeReader<T> getGroupReader() {
+    public ICubeReader getGroupReader() {
         if (!isGroupReaderAvailable()) {
             initGroupReader();
         }
@@ -158,7 +158,6 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
 
     @Override
     public int sizeOfGroup() {
-
         try {
             return getGroupLengthReader().getSpecificValue(0);
         } catch (BIResourceInvalidException e) {
@@ -167,17 +166,6 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         return -1;
     }
 
-    @Override
-    public T getGroupValueByPosition(int position) {
-        try {
-            return getGroupReader().getSpecificValue(position);
-
-        } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        }
-
-        return null;
-    }
 
     @Override
     public void writeSizeOfGroup(int size) {
@@ -221,6 +209,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         resetLengthWriter();
     }
 
+
     public class GroupValueSearchAssistance implements ArrayLookupHelper.Lookup<T> {
         @Override
         public int minIndex() {
@@ -234,7 +223,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
 
         @Override
         public T lookupByIndex(int index) {
-            return getGroupValueByPosition(index);
+            return getGroupObjectValueByPosition(index);
         }
 
         @Override

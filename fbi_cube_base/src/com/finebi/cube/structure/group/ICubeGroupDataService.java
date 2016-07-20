@@ -33,7 +33,7 @@ public interface ICubeGroupDataService<T> extends Release {
     int getPositionOfGroupValue(T groupValue) throws BIResourceInvalidException;
 
 
-    T getGroupValueByPosition(int position);
+    T getGroupObjectValueByPosition(int position);
 
     int sizeOfGroup();
 

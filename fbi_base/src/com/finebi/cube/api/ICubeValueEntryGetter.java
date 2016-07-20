@@ -26,7 +26,7 @@ public interface ICubeValueEntryGetter {
      * @param row
      * @return
      */
-    Integer getPositionOfGroupByRow(int row);
+    int getPositionOfGroupByRow(int row);
 
     int getGroupSize();
 }
