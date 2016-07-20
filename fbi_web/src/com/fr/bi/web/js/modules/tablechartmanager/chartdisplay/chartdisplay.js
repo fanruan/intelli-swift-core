@@ -363,7 +363,6 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
                 self.errorPane.setVisible(true);
             }
-            self.loaded();
         });
     },
 
