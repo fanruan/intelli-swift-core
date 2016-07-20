@@ -2389,6 +2389,10 @@
             BI.each(dimensions, function (dId, dimension) {
                 var filterValue = dimension.filter_value || {};
                 parseFilter(filterValue);
+                // 维度指标匹配关系未设置的维度 used = false
+                if(self.isDimensionByDimensionID(dId) && BI.isEmptyObject(dimension.dimension_map)) {
+                    dimension.used = false;
+                }
             });
 
             //考虑表头上指标过滤条件的日期类型

@@ -60,7 +60,29 @@ BIShow.DetailView = BI.inherit(BI.BarFloatSection, {
         return this.dimensionsManager;
     },
 
+    _refreshDimensions: function () {
+        var self = this;
+        BI.each(self.model.cat("view"), function (regionType, dids) {
+            BI.each(dids, function (i, dId) {
+                self.skipTo(regionType + "/" + dId, dId, "dimensions." + dId, {}, {force: true});
+            });
+        });
+    },
+
+    change: function(changed, prev) {
+        if (BI.has(changed, "type") || BI.has(changed, "sub_type")) {
+            this._refreshDimensions();
+        }
+        if (BI.has(changed, "dimensions")) {
+            this._refreshDimensions();
+        }
+        if (BI.has(changed, "view")) {
+            this._refreshDimensions();
+        }
+    },
+
     refresh: function () {
         this.dimensionsManager.populate();
+        this._refreshDimensions();
     }
 });
