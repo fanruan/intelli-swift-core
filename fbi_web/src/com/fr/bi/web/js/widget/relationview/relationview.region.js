@@ -13,6 +13,7 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
             width: 150,
             text: "",
             value: "",
+            header: "",
             items: []
         });
     },
@@ -25,7 +26,8 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
             cls: "relation-view-region-title",
             height: 25,
             text: o.text,
-            value: o.value
+            value: o.value,
+            title: o.header
         });
         this.button_group = BI.createWidget({
             type: "bi.button_group",
