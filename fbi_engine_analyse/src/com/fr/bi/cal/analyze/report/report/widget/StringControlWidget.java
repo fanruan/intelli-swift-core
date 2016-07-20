@@ -12,6 +12,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
@@ -95,8 +96,8 @@ public class StringControlWidget extends BISummaryWidget {
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                Integer groupRow = getter.getPositionOfGroupByRow(row);
-                if (groupRow != null){
+                int groupRow = getter.getPositionOfGroupByRow(row);
+                if (groupRow != NIOConstant.INTEGER.NULL_VALUE){
                     groupIndex[groupRow] = groupRow;
                 }
             }

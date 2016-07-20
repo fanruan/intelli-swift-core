@@ -19,6 +19,20 @@ BI.DrillPushButton = BI.inherit(BI.BasicButton, {
         });
         svg.path("M0,0L60,0 L50,10 L10,10 Z")
             .attr({stroke: "#d4dadd", fill: "#ffffff"});
+        this.pushButton = BI.createWidget({
+            type: "bi.icon_change_button",
+            element: this.element,
+            iconWidth: 10,
+            iconHeight: 10
+        });
+    },
+    
+    setPushDown: function(){
+        this.pushButton.setIcon("drill-push-down-icon");
+    },
+    
+    setPushUp: function() {
+        this.pushButton.setIcon("drill-push-up-icon");
     },
 
     doClick: function () {

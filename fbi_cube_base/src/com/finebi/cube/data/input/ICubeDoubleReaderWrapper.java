@@ -1,10 +1,13 @@
 package com.finebi.cube.data.input;
 
+import com.finebi.cube.exception.BIResourceInvalidException;
+
 /**
  * This class created on 2016/3/4.
  *
  * @author Connery
  * @since 4.0
  */
-public interface ICubeDoubleReaderWrapper extends ICubeReader<Double> {
+public interface ICubeDoubleReaderWrapper extends ICubeReader {
+    double getSpecificValue(int rowNumber) throws BIResourceInvalidException;
 }

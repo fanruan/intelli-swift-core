@@ -189,6 +189,16 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             }
         });
 
+        // 还要看有没有设置好维度指标匹配关系
+        BI.remove(this.dimIds, function (i, dId) {
+            return BI.Utils.isDimensionByDimensionID(dId) &&
+                BI.isEmptyObject(BI.Utils.getDimensionMapByDimensionID(dId));
+        });
+        BI.remove(this.crossDimIds, function(i, dId) {
+            return BI.Utils.isDimensionByDimensionID(dId) &&
+                BI.isEmptyObject(BI.Utils.getDimensionMapByDimensionID(dId));
+        });
+
         //使用中的指标
         this.targetIds = [];
         BI.each(view[BICst.REGION.TARGET1], function (i, dId) {
@@ -249,9 +259,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         var group = BI.Utils.getDimensionGroupByID(dId);
         var fieldType = BI.Utils.getFieldTypeByDimensionID(dId);
         var clicked = v;
-        
+
         if (BI.isNotNull(group)) {
-            if(fieldType === BICst.COLUMN.STRING) {
+            if (fieldType === BICst.COLUMN.STRING) {
                 var details = group.details,
                     ungroup2Other = group.ungroup2Other,
                     ungroup2OtherName = group.ungroup2OtherName;
@@ -265,15 +275,15 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         return true;
                     }
                 });
-            } else if(fieldType === BICst.COLUMN.NUMBER) {
+            } else if (fieldType === BICst.COLUMN.NUMBER) {
                 var groupValue = group.group_value, groupType = group.type;
-                if(groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
+                if (groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
                     var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
-                    if(useOther === v) {
+                    if (useOther === v) {
                         clicked = BICst.UNGROUP_TO_OTHER;
                     }
                     BI.some(groupNodes, function (i, node) {
-                        if(node.group_name === v) {
+                        if (node.group_name === v) {
                             clicked = node.id;
                             return true;
                         }
@@ -785,24 +795,36 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     if (BI.isNotNull(crossItem.dId)) {
                         if (BI.isNotEmptyArray(crossItem.values)) {
                             BI.each(crossItem.values, function (j, v) {
-                                tempPV = pv.concat([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]);
+                                tempPV = pv.concat([{
+                                    dId: crossItem.dId,
+                                    value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]
+                                }]);
                             });
                             //显示列汇总的时候需要构造汇总
                         } else {
-                            tempPV = pv.concat([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]);
+                            tempPV = pv.concat([{
+                                dId: crossItem.dId,
+                                value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]
+                            }]);
                         }
                     }
                     parseCrossItem2Array(crossItem.children, pValues, tempPV);
                     //汇总
                     if (BI.isNotEmptyArray(crossItem.values)) {
                         BI.each(crossItem.values, function (j, v) {
-                            pValues.push([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]);
+                            pValues.push([{
+                                dId: crossItem.dId,
+                                value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]
+                            }]);
                         });
                     }
                 } else if (BI.isNotNull(crossItem.dId)) {
                     if (BI.isNotEmptyArray(crossItem.values)) {
                         BI.each(crossItem.values, function (j, v) {
-                            pValues.push(pv.concat([{dId: crossItem.dId, value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]}]));
+                            pValues.push(pv.concat([{
+                                dId: crossItem.dId,
+                                value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]
+                            }]));
                         });
                     } else {
                         // pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));

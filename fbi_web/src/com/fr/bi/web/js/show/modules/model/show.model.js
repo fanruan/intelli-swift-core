@@ -19,7 +19,7 @@ BIShow.Model = BI.inherit(BI.Model, {
         Data.SharingPool.put("reportId", this.get('reportId'));
         Data.SharingPool.put("sessionID", this.get('sessionID'));
         Data.SharingPool.put("show", this.get('show') === '_bi_show_');
-
+        
         this._initSessionBeater();
     },
     _initSessionBeater: function () {

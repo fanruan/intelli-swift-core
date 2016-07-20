@@ -22,4 +22,22 @@ public class BICubeByteColumn extends BICubeColumnEntity<Byte> {
         groupDataService = new BICubeByteGroupData(discovery, currentLocation);
     }
 
+    /**
+     * 根据行号获得对应的原始值。
+     *
+     * @param rowNumber 数据库中的行号
+     * @return 原始值
+     */
+    public byte getOriginalValueByRow(int rowNumber) {
+        return ((BICubeByteDetailData)detailDataService).getOriginalValueByRow(rowNumber);
+    }
+
+    public byte getGroupValue(int position) {
+        return ((BICubeByteGroupData)groupDataService).getGroupValueByPosition(position);
+    }
+
+    @Override
+    public Byte getOriginalObjectValueByRow(int rowNumber) {
+        return getOriginalValueByRow(rowNumber);
+    }
 }

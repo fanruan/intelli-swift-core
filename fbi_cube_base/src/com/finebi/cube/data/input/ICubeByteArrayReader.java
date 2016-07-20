@@ -6,5 +6,5 @@ package com.finebi.cube.data.input;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeByteArrayReader extends ICubeReader<byte[]> {
+public interface ICubeByteArrayReader extends ICubeReader, ICubeObjectReader<byte[]> {
 }

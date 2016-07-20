@@ -1,6 +1,8 @@
 package com.fr.bi.cal.stable.tableindex.detailgetter;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.PrimitiveDetailGetter;
+import com.finebi.cube.api.PrimitiveType;
 import com.fr.bi.cal.stable.cube.memory.AnyIndexArray;
 
 /**
@@ -16,5 +18,15 @@ public class MemoryDetailGetter implements ICubeColumnDetailGetter {
     @Override
     public Object getValue(int row) {
         return list.get(row);
+    }
+
+    @Override
+    public PrimitiveType getPrimitiveType() {
+        return null;
+    }
+
+    @Override
+    public PrimitiveDetailGetter createPrimitiveDetailGetter() {
+        return null;
     }
 }

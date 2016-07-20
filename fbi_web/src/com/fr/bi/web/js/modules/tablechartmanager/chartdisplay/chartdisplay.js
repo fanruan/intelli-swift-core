@@ -80,6 +80,14 @@ BI.ChartDisplay = BI.inherit(BI.Widget, {
         //上钻
         if (BI.isNull(drillId)) {
             drillOperators.pop();
+            //var val = drillOperators[drillOperators.length - 1].values[0].value[0];
+            //while (val !== value) {
+            //    if(drillOperators.length === 0){
+            //        break;
+            //    }
+            //    var obj = drillOperators.pop();
+            //    val = obj.values[0].value[0];
+            //}
         } else {
             drillOperators.push({
                 dId: drillId,

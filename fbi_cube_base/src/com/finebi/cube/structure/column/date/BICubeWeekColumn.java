@@ -28,4 +28,8 @@ public class BICubeWeekColumn extends BICubeDateSubColumn<Integer> {
         selfColumnEntity = new BICubeIntegerColumn(discovery, currentLocation);
 
     }
+
+    public int getGroupValue(int position) {
+        return ((BICubeIntegerColumn)selfColumnEntity).getGroupValue(position);
+    }
 }

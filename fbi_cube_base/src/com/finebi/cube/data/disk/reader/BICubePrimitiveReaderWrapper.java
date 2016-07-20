@@ -2,7 +2,6 @@ package com.finebi.cube.data.disk.reader;
 
 import com.finebi.cube.data.input.ICubeReader;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
-import com.finebi.cube.exception.BIResourceInvalidException;
 
 /**
  * This class created on 2016/3/30.
@@ -10,17 +9,13 @@ import com.finebi.cube.exception.BIResourceInvalidException;
  * @author Connery
  * @since 4.0
  */
-public class BICubePrimitiveReaderWrapper<T> implements ICubeReader<T> {
-    private ICubePrimitiveReader<T> reader;
+public class BICubePrimitiveReaderWrapper implements ICubeReader {
+    protected ICubePrimitiveReader reader;
 
-    public BICubePrimitiveReaderWrapper(ICubePrimitiveReader<T> reader) {
+    public BICubePrimitiveReaderWrapper(ICubePrimitiveReader reader) {
         this.reader = reader;
     }
 
-    @Override
-    public T getSpecificValue(int rowNumber) throws BIResourceInvalidException {
-        return reader.getSpecificValue(rowNumber);
-    }
 
     @Override
     public long getLastPosition(long rowCount) {
