@@ -321,8 +321,11 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
 
                         JSONObject srcJo = dims.getJSONObject("_src");
                         if (srcJo.has("relation")) {
-                            JSONObject selfRelationJo = srcJo.getJSONObject("relation");
-                            relationList.add(BITableRelationHelper.getRelation(selfRelationJo));
+                            JSONArray selfRelationJa = srcJo.getJSONArray("relation");
+                            for (int i = 0; i < selfRelationJa.length(); i++) {
+                                relationList.add(BITableRelationHelper.getRelation(selfRelationJa.getJSONObject(i)));
+                            }
+
                         }
                         if (primaryTableId != null && foreignTableId != null) {
                             if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreignTableId)))) {

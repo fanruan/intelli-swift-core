@@ -204,13 +204,14 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
             Iterator<BusinessTable> juniorTableIt = allTables.iterator();
             while (juniorTableIt.hasNext()) {
                 BusinessTable juniorTable = juniorTableIt.next();
-                if (!ComparatorUtils.equals(superTable, juniorTable)) {
                     try {
-                        resultPaths.addAll(getAllPath(userId, juniorTable, superTable));
+                        Set<BITableRelationPath> paths = getAllPath(userId, juniorTable, superTable);
+                        if(!paths.isEmpty()){
+                            resultPaths.addAll(paths);
+                        }
                     } catch (Exception e) {
                         continue;
                     }
-                }
             }
         }
         return resultPaths;
