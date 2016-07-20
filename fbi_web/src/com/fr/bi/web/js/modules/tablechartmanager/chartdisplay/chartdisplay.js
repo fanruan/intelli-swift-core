@@ -68,6 +68,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
     _onClickDrill: function (dId, value, drillId) {
         var wId = this.options.wId;
         var drillMap = BI.Utils.getDrillByID(wId);
+        var drilledIds = [];
+        BI.each(drillMap, function (drId, ds) {
+            BI.each(ds, function (i, drs) {
+                drilledIds.push(drs.dId);
+            });
+        });
+        if(BI.contains(drilledIds, dId)){
+            return;
+        }
+        if(BI.isNull(dId)){
+            this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), {})});
+            return;
+        }
         //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
         //当前钻取的根节点
         var rootId = dId;
@@ -80,15 +93,16 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var drillOperators = drillMap[rootId] || [];
         //上钻
         if (BI.isNull(drillId)) {
-            drillOperators.pop();
-            //var val = drillOperators[drillOperators.length - 1].values[0].value[0];
-            //while (val !== value) {
-            //    if(drillOperators.length === 0){
-            //        break;
-            //    }
-            //    var obj = drillOperators.pop();
-            //    val = obj.values[0].value[0];
-            //}
+            if(drillOperators.length !== 0){
+                var val = drillOperators[drillOperators.length - 1].values[0].value[0];
+                while (val !== value) {
+                    if(drillOperators.length === 0){
+                        break;
+                    }
+                    var obj = drillOperators.pop();
+                    val = obj.values[0].value[0];
+                }
+            }
         } else {
             drillOperators.push({
                 dId: drillId,
@@ -258,6 +272,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.MapChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                     self._onClickDrill(obj.dId, obj.x, obj.drillDid);
+                });
+                chart.on(BI.MapChart.EVENT_CLICK_DTOOL, function(obj){
+                    self._onClickDrill(obj.dId, obj.x);
                 });
                 return chart;
             case BICst.WIDGET.GIS_MAP:
