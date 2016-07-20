@@ -182,7 +182,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
     },
 
     _makeMap: function (values) {
-        return BI.makeObject(values || [], true);
+        return BI.makeObject(values || []);
     },
 
     _joinAll: function (res, callback) {
@@ -202,7 +202,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
                         delete map[v];
                     }
                 });
-                change && (self.storeValue.value = BI.keys(map));
+                change && (self.storeValue.value = BI.values(map));
                 self._adjust(callback);
                 return;
             }
@@ -216,7 +216,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
                     items.splice(i--, 1);
                 }
             });
-            self.storeValue.value = items.concat(BI.keys(selectedMap));
+            self.storeValue.value = items.concat(BI.values(selectedMap));
             self._adjust(callback);
         })
     },
