@@ -71,13 +71,15 @@ AddConditionView = BI.inherit(BI.View, {
         });
 
         var svg = BI.createWidget({
-            type: "bi.svg-custom-scale",
+            type: "bi.svg_custom_scale",
             height: 350,
             width: 650
         });
 
         var formula = BI.createWidget({
-            type: "bi.popup-custom-scale"
+            type: "bi.combo_custom_scale",
+            height: 30,
+            width: 200
         });
 
         BI.createWidget({

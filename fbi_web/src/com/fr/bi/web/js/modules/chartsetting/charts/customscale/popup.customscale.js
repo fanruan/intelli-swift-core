@@ -4,7 +4,9 @@
 BI.PopupCustomScale = BI.inherit(BI.Widget , {
     _defaultConfig: function() {
         return BI.extend(BI.PopupCustomScale.superclass._defaultConfig.apply(this , arguments) , {
-            baseCls: "bi-popup-custom-scale"
+            baseCls: "bi-popup-custom-scale",
+            height: 300,
+            width: 600
         })
     },
 
@@ -26,12 +28,16 @@ BI.PopupCustomScale = BI.inherit(BI.Widget , {
             type: "bi.calculate_target_formula_pane"
         });
 
+        this.pane.on(BI.CalculateTargetFormulaPane.EVENT_CHANGE , function() {
+            self.fireEvent(BI.PopupCustomScale.EVENT_CHANGE)
+        });
+
         BI.createWidget({
             type: "bi.absolute",
             cls: "",
             element: this.element,
-            width: 600,
-            height: 300,
+            height: o.height,
+            width: o.width,
             items: [{
                 el: this.pane,
                 left: 7,
@@ -40,7 +46,7 @@ BI.PopupCustomScale = BI.inherit(BI.Widget , {
                 bottom: 10
             } , {
                 el: svg,
-                left: 100,
+                left: 85,
                 top: -11
             }]
         })
@@ -48,12 +54,16 @@ BI.PopupCustomScale = BI.inherit(BI.Widget , {
     },
 
     getValue: function() {
-        this.pane.getValue()
+        return this.pane.getValue()
     },
 
     setValue: function(v) {
         this.pane.setValue(v)
+    },
+
+    populate: function(mode) {
+        this.pane.populate(mode)
     }
 });
 BI.PopupCustomScale.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.popup-custom-scale" , BI.PopupCustomScale);
+$.shortcut("bi.popup_custom_scale" , BI.PopupCustomScale);
