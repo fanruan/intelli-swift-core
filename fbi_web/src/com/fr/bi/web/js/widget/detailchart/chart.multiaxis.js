@@ -86,6 +86,7 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
         config.yAxis = this.yAxis;
 
 
+        var color = [];
         BI.each(config.yAxis, function(idx, axis){
             switch (axis.axisIndex){
                 case self.constants.LEFT_AXIS:
@@ -126,7 +127,18 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
 
-        return [items, config];
+        var lineItem = [];
+        var otherItem = [];
+        BI.each(items, function(idx, item){
+            item.color = [config.yAxis[idx].labelStyle.color];
+            if(item.type === "line"){
+                lineItem.push(item);
+            }else{
+                otherItem.push(item);
+            }
+        });
+
+        return [BI.concat(otherItem, lineItem), config];
 
         function formatChartStyle(){
             switch (self.config.chart_style) {
@@ -190,7 +202,7 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                            if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
                                 da.y = 0;
                             }
                         }

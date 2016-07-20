@@ -167,7 +167,7 @@ BI.ChartCombineFormatItemFactory = {
                     "animation": true,
                     style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#c4c6c6","fontSize":"12px","fontWeight":""}
                 },
-                "maxSize": 70,
+                "maxSize": 80,
                 "fillColorOpacity": 0.5,
                 "marker": {"symbol": "circle", "radius": 4.5, "enabled": true},
                 "step": false,
@@ -187,7 +187,7 @@ BI.ChartCombineFormatItemFactory = {
                     "shadow": true,
                     "curve": false,
                     "sizeBy": "area",
-                    "maxSize": 70,
+                    "maxSize": 80,
                     "minSize": 15,
                     "lineWidth": 0,
                     "animation": true,
