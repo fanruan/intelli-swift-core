@@ -138,7 +138,7 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
             }
         });
 
-        return [items, config];
+        return [BI.concat(otherItem, lineItem), config];
 
         function formatChartStyle(){
             switch (self.config.chart_style) {
