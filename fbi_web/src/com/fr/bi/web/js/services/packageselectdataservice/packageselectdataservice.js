@@ -484,7 +484,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             open: false
                         },
                         popup: {
-                            items: self._buildDateChildren(tableId, field, isRelation)
+                            //items: self._buildDateChildren(tableId, field, isRelation)
                         }
                     })
                 } else {
@@ -662,7 +662,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         return [BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            layer: isRelation ? 3 : 2,
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
@@ -670,6 +669,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             pId: fieldId,
             text: BI.i18nText("BI-Year_Fen"),
             title: prefix + BI.i18nText("BI-Year_Fen"),
+            layer: isRelation ? 3 : 2,
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.Y}
@@ -677,7 +677,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            layer: isRelation ? 3 : 2,
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
@@ -685,6 +684,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             pId: fieldId,
             text: BI.i18nText("BI-Quarter"),
             title: prefix + BI.i18nText("BI-Quarter"),
+            layer: isRelation ? 3 : 2,
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.S}
@@ -692,7 +692,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            layer: isRelation ? 3 : 2,
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
@@ -700,6 +699,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             pId: fieldId,
             text: BI.i18nText("BI-Multi_Date_Month"),
             title: prefix + BI.i18nText("BI-Multi_Date_Month"),
+            layer: isRelation ? 3 : 2,
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.M}
@@ -707,7 +707,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            layer: isRelation ? 3 : 2,
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
@@ -715,6 +714,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             pId: fieldId,
             text: BI.i18nText("BI-Week_XingQi"),
             title: prefix + BI.i18nText("BI-Week_XingQi"),
+            layer: isRelation ? 3 : 2,
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.W}
@@ -722,7 +722,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }), BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            layer: isRelation ? 3 : 2,
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
@@ -730,6 +729,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             pId: fieldId,
             text: BI.i18nText("BI-Date"),
             title: prefix + BI.i18nText("BI-Date"),
+            layer: isRelation ? 3 : 2,
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.YMD}
