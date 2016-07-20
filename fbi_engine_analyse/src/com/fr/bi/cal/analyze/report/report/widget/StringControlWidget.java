@@ -78,6 +78,19 @@ public class StringControlWidget extends BISummaryWidget {
     private List<Integer> createIDGroupIndex(GroupValueIndex gvi, BIDimension dimension, BISessionProvider session) {
         ICubeTableService ti = session.getLoader().getTableIndex(dimension.getStatisticElement().getTableBelongTo().getTableSource());
         final ICubeValueEntryGetter getter = ti.getValueEntryGetter(dimension.createKey(dimension.getStatisticElement()), new ArrayList<BITableSourceRelation>());
+        if (gvi.getRowsCountWithData() == ti.getRowCount()){
+            return new AbstractList<Integer>() {
+                @Override
+                public Integer get(int index) {
+                    return index;
+                }
+
+                @Override
+                public int size() {
+                    return getter.getGroupSize();
+                }
+            };
+        }
         final Integer[] groupIndex = new Integer[getter.getGroupSize()];
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override
