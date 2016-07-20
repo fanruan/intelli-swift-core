@@ -37,10 +37,22 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         //日期的需要format
         var text = o.text;
         var dGroup = BI.Utils.getDimensionGroupByID(o.dId);
-        if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD && BI.isNumeric(text)) {
-            var date = new Date(BI.parseInt(text));
-            text = date.print("%Y-%X-%d");
+        if (BI.isNotNull(dGroup) && BI.isNumeric(text)) {
+            if(dGroup.type === BICst.GROUP.YMD) {
+                var date = new Date(BI.parseInt(text));
+                text = date.print("%Y-%X-%d");
+            }
+            if(dGroup.type === BICst.GROUP.S) {
+                text = Date._QN[text];
+            }
+            if(dGroup.type === BICst.GROUP.M) {
+                text = Date._MN[text - 1];
+            }
+            if(dGroup.type === BICst.GROUP.W) {
+                text = Date._DN[text];
+            }
         }
+
 
         var cls = "expander-cell-text";
         //交叉表的item
