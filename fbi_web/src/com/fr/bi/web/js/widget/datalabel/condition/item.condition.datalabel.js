@@ -15,7 +15,7 @@ BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
     _defaultConfig: function () {
         var conf = BI.DataLabelConditionItem.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            
+            baseCls: "data-label-condition-item"
         });
     },
     
@@ -53,7 +53,6 @@ BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
             type: "bi.button_group",
             items: [this.condition],
             element: this.element,
-            width:500,
             height:36,
             layouts: [{
                 type: "bi.horizontal"

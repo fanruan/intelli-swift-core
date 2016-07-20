@@ -1808,8 +1808,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/image/button/size/image.button.size.css",
 
                 //数据标签
+                "com/fr/bi/web/css/widget/datalabel/datalabel.css",
+                "com/fr/bi/web/css/widget/datalabel/condition/datalabel.condition.css",
+                "com/fr/bi/web/css/widget/datalabel/condition/datalabel.conditionitem.css",
                 "com/fr/bi/web/css/widget/datalabel/tab/datalabel.imageset.css",
-                "com/fr/bi/web/css/widget/datalabel/datalabel.texttoolbar.css",
+                "com/fr/bi/web/css/widget/datalabel/tab/datalabel.texttoolbar.css",
                 "com/fr/bi/web/css/widget/datalabel/tab/datalabel.barchart.css",
 
                 //可选下拉树
@@ -2599,10 +2602,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/web/web.js",
                 "com/fr/bi/web/js/widget/datalabel/datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/tab/tab.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/texttoolbar.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/font.chooser.texttoolbar.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/group.condition.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/item.condition.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/tab/texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/tab/font.chooser.texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/condition/condition.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/condition/group.condition.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/condition/item.condition.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/tab/imageset.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/tab/barchart.datalabel.js",
 

@@ -13,7 +13,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
     _init: function () {
         var self = this;
         BI.DataLabelTextToolBar.superclass._init.apply(this, arguments);
-        this.font = BI.createWidget({
+        this.family = BI.createWidget({
             type: "bi.data_label_text_toolbar_font_chooser",
             height: 24,
             width: 80,
@@ -62,10 +62,29 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.left",
             element: this.element,
-            items: [this.font, this.size, this.bold, this.italic, this.colorchooser],
+            items: [this.family, this.size, this.bold, this.italic, this.colorchooser],
             hgap: 3,
             vgap: 3
         })
+    },
+
+    setValue: function (v) {
+        v || (v = {});
+        this.family.setValue(v["font-family"] || "");
+        this.size.setValue(v["font-size"] || 14);
+        this.bold.setSelected(v["font-weight"] === "bold");
+        this.italic.setSelected(v["font-style"] === "italic");
+        this.colorchooser.setValue(v["color"] || "#000000");
+    },
+
+    getValue: function () {
+        return {
+            "font-family": this.family.getValue(),
+            "font-size": this.size.getValue(),
+            "font-weight": this.bold.isSelected() ? "bold" : "normal",
+            "font-style": this.italic.isSelected() ? "italic" : "normal",
+            "color": this.colorchooser.getValue()
+        }
     }
 });
 BI.DataLabelTextToolBar.EVENT_CHANGE = "BI.DataLabelTextToolBar.EVENT_CHANGE";

@@ -17,7 +17,7 @@ DataLabelView = FR.extend(BI.View,{
         var self = this, o = this.options;
 
         BI.createWidget({
-            type: "bi.absolute",
+            type: "bi.vertical",
             element: vessel,
             hgap:100,
             vgap:60,
