@@ -40,7 +40,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                     el: {
                         type: "bi.horizontal",
                         width: 550,
-                        lgap: 2
+                        lgap: 10
                     }
                 }]
             }]
@@ -59,7 +59,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             items: [{
                 el: tab
             }],
-            width: 560,
+            width: 538,
             height: 60,
             scrollable: null,
             scrolly: false,
@@ -82,6 +82,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         });
         return BI.createWidget({
             type: "bi.absolute",
+            cls: "",
             items: [{
                 el: this.texttoolbar,
                 top: 30,
@@ -91,8 +92,12 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     },
 
     _createImageLabel: function () {
+        var self = this;
         this.imageset = BI.createWidget({
             type: "bi.data_label_image_set"
+        });
+        this.imageset.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DataLabelTab.EVENT_CHANGE,arguments);
         });
         this.barchart = BI.createWidget({
             type: "bi.data_label_bar_chart"
@@ -111,6 +116,15 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             }
         );
     },
+
+    getValue: function () {
+        switch (this.tabs.getSelect()) {
+            case 1:
+                return this.texttoolbar.getValue();
+            case 2:
+                return this.imageset.getValue();
+        }
+    }
 });
 
 $.shortcut("bi.data_label_tab", BI.DataLabelTab);

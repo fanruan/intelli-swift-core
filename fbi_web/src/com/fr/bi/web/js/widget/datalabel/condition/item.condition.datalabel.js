@@ -26,7 +26,8 @@ BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
             type: "bi.combo",
             el:{
                 type: "bi.text_button",
-                text: "test",
+                text: "请选择字段",
+                cls: "condition-trigger",
                 width: 80,
                 height: 25
             },
@@ -53,15 +54,16 @@ BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
             type: "bi.button_group",
             items: [this.condition],
             element: this.element,
-            height:36,
+            height: 40,
             layouts: [{
-                type: "bi.horizontal"
+                type: "bi.vertical_adapt",
+                hgap: 8
             }]
         })
     },
+
     _initOthers: function () {
         var self = this;
-
         this.relation = BI.createWidget({
             type: "bi.text_value_down_list_combo",
             width: 120,
@@ -74,30 +76,28 @@ BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
             width: 200,
             height: 30
         });
+        this.styleTab = BI.createWidget({
+            type: "bi.data_label_tab"
+        });
+        this.styleTrigger = BI.createWidget({
+            type: "bi.text_button",
+            text: "设置样式",
+            width: 80,
+            height: 38,
+            cls: "condition-trigger"
+        });
         this.style = BI.createWidget({
             type: "bi.combo",
-            el:{
-                type: "bi.text_button",
-                text: "设置样式",
-                width: 80,
-                height: 25
-            },
+            isNeedAdjustWidth: false,
+            el: this.styleTrigger,
             popup: {
-                el: {
-                    type: "bi.button_group",
-                    items: BI.createItems(this._items, {
-                        type: "bi.text_button",
-                        height: 25,
-                        handler: function (v) {
-                            self.condition.hideView();
-
-                        }
-                    }),
-                    layouts: [{
-                        type: "bi.vertical"
-                    }]
-                }
-            }
+                el: this.styleTab
+            },
+            offsetStyle: "right"
+        });
+        this.style.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
+            this.setValue("text");
+            //$(self.styleTrigger.element[0].childNodes[0].childNodes[0]).css(self.styleTab.getValue());
         });
         return [this.relation, this.interval, this.style];
     }

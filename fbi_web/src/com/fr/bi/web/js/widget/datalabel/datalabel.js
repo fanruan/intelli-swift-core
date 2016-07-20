@@ -40,13 +40,11 @@ BI.DataLabel = BI.inherit(BI.Widget, {
         this.condition = BI.createWidget({
             type: "bi.data_label_condition"
         });
-        this.tab = BI.createWidget({
-            type: "bi.data_label_tab"
-        });
         BI.createWidget({
             type: "bi.vertical",
-            items: [header,this.condition,this.tab],
+            items: [header,this.condition],
             width: 560,
+            height: 420,
             element: this.element,
             scrollable: null,
             scrolly: false,

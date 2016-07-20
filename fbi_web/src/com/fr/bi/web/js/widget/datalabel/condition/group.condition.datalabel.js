@@ -17,7 +17,8 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
             element: this.element,
             items: o.items,
             layouts: [{
-                type: "bi.vertical"
+                type: "bi.vertical",
+                hgap: 10
             }]
         });
 
