@@ -28,6 +28,7 @@ import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.impl.Connection;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 
 import java.util.List;
@@ -82,15 +83,15 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
         /*add*/
-        if (!ComparatorUtils.equals(tableUpdateSetting.getPartAddSQL(),"")) {
+        if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
             rowCount = dealWidthAdd(cubeFieldSources, tableUpdateSetting.getPartAddSQL(), rowCount);
         }
         /*remove*/
-        if (!ComparatorUtils.equals(tableUpdateSetting.getPartDeleteSQL(),"")) {
+        if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
             sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartDeleteSQL(), sortRemovedList, loader);
         }
         /*modify*/
-        if (!ComparatorUtils.equals(tableUpdateSetting.getPartModifySQL(),"")) {
+        if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
             rowCount = dealWidthAdd(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), rowCount);
             sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
         }
