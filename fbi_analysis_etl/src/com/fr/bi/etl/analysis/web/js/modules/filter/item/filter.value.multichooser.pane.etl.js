@@ -118,7 +118,7 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
     },
 
     _makeMap: function (values) {
-        return BI.makeObject(values || [], true);
+        return BI.makeObject(values || []);
     },
 
     setValue: function (value) {

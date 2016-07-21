@@ -100,18 +100,18 @@ public class ResourceHelper {
                 }
 
                 //分组
-                Iterator<String> groupNames = groups.keys();
+                Iterator<String> groupNames = allGroups.keys();
                 while (groupNames.hasNext()) {
                     String groupName = groupNames.next();
-                    JSONArray pIds = allGroups.getJSONArray(groupName);
-                    JSONArray singleGroup = new JSONArray();
-                    for (int i = 0; i < pIds.length(); i++) {
-                        if (packages.getJSONObject(pIds.getString(i)) != null) {
-                            singleGroup.put(pIds.getString(i));
+                    JSONObject group = allGroups.getJSONObject(groupName);
+                    JSONArray children = group.getJSONArray("children");
+                    for(int i = 0; i < children.length(); i++) {
+                        JSONObject child = children.getJSONObject(i);
+                        String childId = child.getString("id");
+                        if(packages.getJSONObject(childId) != null) {
+                            groups.put(groupName, group);
+                            break;
                         }
-                    }
-                    if (singleGroup.length() > 0) {
-                        groups.put(groupName, singleGroup);
                     }
                 }
             }
