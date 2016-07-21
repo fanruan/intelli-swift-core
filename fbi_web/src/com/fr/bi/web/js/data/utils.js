@@ -1059,8 +1059,9 @@ Data.Utils = {
                 var opts = formatItems([result], t);
                 return formatConfigForCompareBar(opts[1], opts[0]);
             case BICst.WIDGET.DONUT:
+                var t = [];
                 BI.each(data, function(idx, axisItems){
-                    var t = [];
+                    var type = [];
                     BI.each(axisItems, function(id, item){
                         type.push(BICst.WIDGET.DONUT);
                     });
@@ -2086,7 +2087,7 @@ Data.Utils = {
                         break;
                 }
                 if(position === constants.DASHBOARD_AXIS){
-                    dashboard_unit !== "" && (unit = unit + config.dashboard_unit)
+                    config.dashboard_unit !== "" && (unit = unit + config.dashboard_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }

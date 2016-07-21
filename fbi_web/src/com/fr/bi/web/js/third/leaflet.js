@@ -12670,7 +12670,4 @@
             this.fire('locationfound', data);
         }
     });
-
-
 }(window, document));
-//# sourceMappingURL=leaflet-src.map
