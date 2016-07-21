@@ -6,8 +6,9 @@ package com.fr.bi.field.target.filter.field;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.utils.BIModuleUtils;
@@ -20,9 +21,11 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -112,6 +115,24 @@ public class ColumnFieldFilter extends ColumnFilter {
         if (filterValue != null) {
             try {
                 Set<BITableRelationPath> pathSet = BICubeConfigureCenter.getTableRelationManager().getAllAvailablePath(userID, target, dataColumn.getTableBelongTo());
+                if (valueJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
+                    JSONObject srcJo = valueJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+                    if (srcJo.has("target_relation")) {
+                        BITableRelationPath usedPath = new BITableRelationPath();
+                        JSONArray selfRelationJa = srcJo.getJSONArray("target_relation");
+                        for (int i = 0; i < selfRelationJa.length(); i++) {
+                            BITableRelation selfRelation = BITableRelationHelper.getRelation(selfRelationJa.getJSONObject(i));
+                            if (BICubeConfigureCenter.getTableRelationManager().containTableRelation(userID, selfRelation)) {
+                                usedPath.addRelationAtTail(selfRelation);
+                            } else {
+                                break;
+                            }
+                        }
+                        Set<BITableRelationPath> usedPathSet = new HashSet<BITableRelationPath>();
+                        usedPathSet.add(usedPath);
+                        pathSet = usedPathSet;
+                    }
+                }
                 if (ComparatorUtils.equals(dataColumn.getTableBelongTo(), target) && pathSet.isEmpty()) {
                     gvi = filterValue.createFilterIndex(new NoneDimensionCalculator(dataColumn, new ArrayList<BITableSourceRelation>()), target, loader, userID);
                 } else {
