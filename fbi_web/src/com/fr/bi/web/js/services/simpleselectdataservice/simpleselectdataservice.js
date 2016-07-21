@@ -167,7 +167,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                     fieldStructure.push({
                         id: id,
                         pId: tableId,
-                        type: "bi.select_data_expander",
+                        type: "bi.expander",
                         text: fieldName,
                         el: BI.extend({
                             wId: o.wId,
@@ -182,6 +182,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                             open: false
                         }),
                         popup: {
+                            type: "bi.select_data_loader",
                             items: self._getSelfCircleFieldsByFieldId(id, circleMap[id] || [])
                         }
                     });
@@ -200,7 +201,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
         return fieldStructure;
     },
 
-    _getSelfCircleFieldsByFieldId: function (fieldId, foregion, isRelation) {
+    _getSelfCircleFieldsByFieldId: function (fieldId, foregion) {
         var self = this, o = this.options;
         foregion || (foregion = []);
         var tableId = BI.Utils.getTableIdByFieldID(fieldId);
@@ -213,8 +214,8 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                 id: fid,
                 pId: tableId,
                 wId: o.wId,
-                type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-                layer: isRelation ? 3 : 2,
+                type: "bi.detail_select_data_level1_item",
+                layer: 2,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
                 title: title,
@@ -241,7 +242,12 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
             BI.each(fields, function (i, field) {
                 var isCircle = BI.Utils.getFieldIsCircleByID(field.id);
                 if (isCircle !== true && !fIds.contains(field.id)) {
-                    newFields.push(field);
+                    newFields.push(BI.extend(field, {
+                        value: {
+                            field_id: field.id,
+                            target_relation: BI.Utils.getPathsFromFieldAToFieldB(field.id, field.id)[0]
+                        }
+                    }));
                 }
                 if (fIds.contains(field.id)) {
                     fieldList.push(field);
@@ -275,35 +281,17 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
             }
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
             var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
-            //日期类型-特殊处理
-            if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
-                var _type = "bi.detail_select_data_level1_item";
-                fieldStructure.push({
-                    id: fid,
-                    pId: tableId,
-                    wId: o.wId,
-                    _type: field.type || _type,
-                    type: "bi.detail_select_data_level1_date_node",
-                    fieldType: BI.Utils.getFieldTypeByID(fid),
-                    text: fieldName,
-                    title: title,
-                    value: fid,
-                    isParent: true
-                });
-                fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
-            } else {
-                fieldStructure.push(BI.extend({
-                    id: fid,
-                    pId: tableId,
-                    wId: o.wId,
-                    type: "bi.detail_select_data_level0_item",
-                    layer: 1,
-                    fieldType: BI.Utils.getFieldTypeByID(fid),
-                    text: fieldName,
-                    title: title,
-                    value: fid
-                }, field))
-            }
+            fieldStructure.push(BI.extend({
+                id: fid,
+                pId: tableId,
+                wId: o.wId,
+                type: "bi.detail_select_data_level0_item",
+                layer: 1,
+                fieldType: BI.Utils.getFieldTypeByID(fid),
+                text: fieldName,
+                title: title,
+                value: fid
+            }, field));
         });
 
         if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
@@ -315,7 +303,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                     fieldStructure.push({
                         id: id,
                         pId: tableId,
-                        type: "bi.select_data_expander",
+                        type: "bi.expander",
                         text: fieldName,
                         el: BI.extend({
                             wId: o.wId,
@@ -330,6 +318,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                             open: false
                         }),
                         popup: {
+                            type: "bi.select_data_loader",
                             items: self._getSelfCircleFieldsByFieldId(id, map[id] || [])
                         }
                     });
