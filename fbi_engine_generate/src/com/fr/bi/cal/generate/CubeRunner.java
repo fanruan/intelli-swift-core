@@ -6,9 +6,6 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
-import com.finebi.cube.exception.BIBuildReaderException;
-import com.finebi.cube.exception.BIBuildWriterException;
-import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.utils.CubeUpdateUtils;
@@ -28,7 +25,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 
 /**
@@ -175,14 +171,21 @@ public class CubeRunner {
 
     private void finish() {
         setStatue(Status.REPLACING);
-        BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
         long start = System.currentTimeMillis();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
+        BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
         replaceAndBackupOldCubes();
         setStatue(Status.LOADED);
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
+        deleteBackupFiles();
+    }
+
+    private void deleteBackupFiles() {
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+        File backupFolder = new File(new File(advancedConf.getRootURI().getPath()).getParentFile().getPath() + File.separator +"backup");
+        BIFileUtils.delete(backupFolder);
     }
 
 
@@ -191,35 +194,43 @@ public class CubeRunner {
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            //暂时cube不做备份了,太吃空间了
-            boolean delete = BIFileUtils.delete(new File(advancedConf.getRootURI().toString()));
-            if (delete) {
-                BIFileUtils.moveFile(tempConf.getRootURI().toString(), advancedConf.getRootURI().toString());
+            File parentFile = new File(advancedConf.getRootURI().getPath()).getParentFile();
+            if (!new File(parentFile.getPath() + File.separator +"backup").exists()){
+                new File(parentFile.getPath() + File.separator +"backup").mkdirs();
             }
-        } catch (URISyntaxException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (BIBuildReaderException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (IllegalCubeResourceLocationException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (BIBuildWriterException e) {
-            BILogger.getLogger().error(e.getMessage());
+            if(new File(advancedConf.getRootURI().getPath()).exists()){
+                BIFileUtils.renameFolder(new File(advancedConf.getRootURI().getPath()), new File(parentFile.getPath() + File.separator +"backup"+File.separator+ System.currentTimeMillis()));
+            }
+
+            boolean replaceSuccess = BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
+            if (!replaceSuccess){
+                BIFileUtils.copyFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
+            }
+
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
+        finally {
+            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+        }
+
 
     }
+
 
     private void copyOldCubesToTempCubes() {
         try {
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-            BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
+            if (new File(advancedConf.getRootURI().getPath()).exists()) {
+                BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
+            }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
 
     }
+
     public CubeBuildStaff getCubeGeneratingObjects() {
         if (object == null) {
             object = new CubeBuildStaff(biUser);

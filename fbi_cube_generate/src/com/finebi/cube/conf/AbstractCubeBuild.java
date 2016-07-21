@@ -31,8 +31,9 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     protected Set<BITableRelationPath> allRelationPathSet = new HashSet<BITableRelationPath>();
     protected Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
     protected CalculateDependTool calculateDependTool;
+
     public AbstractCubeBuild(long userId) {
-        this.userId=userId;
+        this.userId = userId;
         init(userId);
         setSources();
         fullTableDBFields();
@@ -52,8 +53,9 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
     @Override
     public ICubeConfiguration getCubeConfiguration() {
-        return  BICubeConfiguration.getTempConf(Long.toString(userId));
+        return BICubeConfiguration.getTempConf(Long.toString(userId));
     }
+
     protected Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
         Iterator<CubeTableSource> it = tableSources.iterator();
         Set<List<Set<CubeTableSource>>> depends = new HashSet<List<Set<CubeTableSource>>>();
@@ -144,16 +146,16 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         if (!isRelationValid(relation) || !isSourceRelationValid) {
             return null;
         }
-            BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
-                    primaryField,
-                    foreignField,
-                    primaryTable,
-                    foreignTable
-            );
-            primaryField.setTableBelongTo(primaryTable);
-            foreignField.setTableBelongTo(foreignTable);
-            return biTableSourceRelation;
-        }
+        BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
+                primaryField,
+                foreignField,
+                primaryTable,
+                foreignTable
+        );
+        primaryField.setTableBelongTo(primaryTable);
+        foreignField.setTableBelongTo(foreignTable);
+        return biTableSourceRelation;
+    }
 
 
     protected boolean isRelationValid(BITableRelation relation) {
