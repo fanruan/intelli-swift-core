@@ -11,6 +11,7 @@ import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
+import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.Status;
@@ -186,12 +187,13 @@ public class CubeRunner {
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            BIFileUtils.moveFile(tempConf.getRootURI().getPath(),advancedConf.getRootURI().getPath());
+            BIFileUtils.moveFile(tempConf.getRootURI().getPath(), advancedConf.getRootURI().getPath());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
-        }
-        finally {
+        } finally {
             BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+//            BIFactoryHelper.getObject(ICubeDataLoader.class, UserControl.getInstance().getSuperManagerID()).clear();
+            CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         }
     }
 
