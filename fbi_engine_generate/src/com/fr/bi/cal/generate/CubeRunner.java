@@ -176,10 +176,16 @@ public class CubeRunner {
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
-        BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
         replaceAndBackupOldCubes();
         setStatue(Status.LOADED);
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
+        deleteBackupFiles();
+    }
+
+    private void deleteBackupFiles() {
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+        File backupFolder = new File(new File(advancedConf.getRootURI().getPath()).getParentFile().getPath() + File.separator +"backup");
+        BIFileUtils.delete(backupFolder);
     }
 
 
@@ -192,12 +198,15 @@ public class CubeRunner {
             if (!new File(parentFile.getPath() + File.separator +"backup").exists()){
                 new File(parentFile.getPath() + File.separator +"backup").mkdirs();
             }
-            File tempFile = new File(parentFile.getPath() + File.separator +"backup"+File.separator+ System.currentTimeMillis());
-             BIFileUtils.renameFolder(new File(advancedConf.getRootURI().getPath()),tempFile);
+            if(new File(advancedConf.getRootURI().getPath()).exists()){
+                BIFileUtils.renameFolder(new File(advancedConf.getRootURI().getPath()), new File(parentFile.getPath() + File.separator +"backup"+File.separator+ System.currentTimeMillis()));
+            }
+
             boolean replaceSuccess = BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
             if (!replaceSuccess){
                 BIFileUtils.copyFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
             }
+
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
@@ -213,7 +222,9 @@ public class CubeRunner {
         try {
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+            if (new File(advancedConf.getRootURI().getPath()).exists()) {
                 BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
+            }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }

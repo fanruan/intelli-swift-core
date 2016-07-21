@@ -31,7 +31,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -162,13 +161,14 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
         return sortRemovedList;
     }
 private String addDataCondition(String sql){
-    String LastModifyTime="上次更新时间";
-    SQLRegUtils sqlRegUtils=new SQLRegUtils(sql);
-    Date cubeLastTime = tableEntityService.getCubeLastTime();
-if(null!=cubeLastTime){
-    String conditions = sqlRegUtils.getConditions().replace(LastModifyTime, cubeLastTime.toString());
-    sqlRegUtils.setConditions(conditions);
-}
-    return sqlRegUtils.toString();
+//    String LastModifyTime="上次更新时间";
+//    SQLRegUtils sqlRegUtils=new SQLRegUtils(sql);
+//    Date cubeLastTime = tableEntityService.getCubeLastTime();
+//if(null!=cubeLastTime){
+//    String conditions = sqlRegUtils.getConditions().replace(LastModifyTime, cubeLastTime.toString());
+//    sqlRegUtils.setConditions(conditions);
+//}
+//    return sqlRegUtils.toString();
+    return sql;
 }
 }
