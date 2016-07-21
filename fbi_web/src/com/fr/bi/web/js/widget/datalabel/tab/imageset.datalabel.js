@@ -3,9 +3,37 @@
  * Created by Fay on 2016/7/7.
  */
 BI.DataLabelImageSet = BI.inherit(BI.Widget, {
-    _defaultImg: [],
+    _defaultImg: [
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png"
+    ],
 
-    _img: [],
+    _img: [
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png"
+    ],
+
+    _imageSelect: "",
 
     _defaultConfig: function () {
         var conf = BI.DataLabelImageSet.superclass._defaultConfig.apply(this, arguments);
@@ -37,7 +65,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 width: 70,
                 cls: "image-set-tab-item"
             }],
-            width: 400,
+            width: 380,
             height: 24,
             layouts: [{
                 type: "bi.left_vertical_adapt",
@@ -66,7 +94,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 left: 0,
                 top: 105
             }],
-            width: 400,
+            width: 380,
             height: 130
         })
     },
@@ -131,13 +159,16 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             var file = files[files.length - 1];
             var attachId = file.attach_id, fileName = file.filename;
             var src = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + attachId + "_" + fileName;
-            BI.Utils.saveUploadedImage(attachId, function () {
+            BI.requestAsync("fr_bi_dezi", "save_upload_image", {
+                attach_id: attachId
+            }, function (res) {
                 if (self._img.length < 14) {
                     self._img.push(src);
                     self._refresh();
                     self.tabs.setSelect(2);
+                    self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, src);
                 }
-            });
+            })
         });
         var header = BI.createWidget({
             type: "bi.center_adapt",
@@ -151,7 +182,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 items: [headerButton],
                 rgap: 6
             }],
-            width: 400,
+            width: 380,
             height: 30
         });
         return header;
@@ -159,14 +190,19 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
 
     _createDefaultImgs: function () {
         var resultImgs = [];
+        var self = this;
         BI.each(this._defaultImg, function (i, src) {
             var img = {
                 column: i % 7,
                 row: parseInt(i / 7),
-                type: "bi.img",
+                type: "bi.image_button",
                 src: "",
                 width: 50,
-                height: "45%"
+                height: "45%",
+                handler: function () {
+                    self._imageSelect = self._defaultImg[i];
+                    self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
+                }
             };
             img.src = src;
             resultImgs.push(img);
@@ -177,7 +213,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             columns: 7,
             rows: 2,
             items: resultImgs,
-            width: 400,
+            width: 380,
             height: 105
         });
     },
@@ -187,7 +223,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             resultImgs = [];
         BI.each(this._img, function (i, src) {
             var img = {
-                type: "bi.img",
+                type: "bi.image_button",
                 src: "",
                 width: 50,
                 height: "90%"
@@ -223,7 +259,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             columns: 7,
             rows: 2,
             items: resultImgs,
-            width: 400,
+            width: 380,
             height: 75
         });
     },
@@ -238,7 +274,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this._img;
+        return this._imageSelect;
     }
 });
 

@@ -4,12 +4,6 @@
 BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
     _items: [{
         value: "自身"
-    },{
-        value: "文本类"
-    },{
-        value: "数值类"
-    },{
-        value: "时间类"
     }],
 
     _defaultConfig: function () {
@@ -68,9 +62,9 @@ BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
             type: "bi.text_value_down_list_combo",
             width: 120,
             height: 30,
-            items: BICst.FILTER_DATE_COMBO
+            items: BICst.TARGET_FILTER_NUMBER_COMBO
         });
-        this.relation.setValue(BICst.FILTER_DATE.BELONG_DATE_RANGE);
+        this.relation.setValue(BICst.TARGET_FILTER_NUMBER.BELONG_VALUE);
         this.interval = BI.createWidget({
             type: "bi.numerical_interval",
             width: 200,
@@ -79,12 +73,26 @@ BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
         this.styleTab = BI.createWidget({
             type: "bi.data_label_tab"
         });
-        this.styleTrigger = BI.createWidget({
+        this.styleTab.on(BI.DataLabelTab.IMG_CHANGE, function () {
+            self.style.hideView();
+        });
+        this.textTrigger = BI.createWidget({
             type: "bi.text_button",
             text: "设置样式",
             width: 80,
             height: 38,
             cls: "condition-trigger"
+        });
+        this.imgTrigger = BI.createWidget({
+            type: "bi.image_button",
+            width: 80,
+            height: 38,
+            cls: "condition-trigger"
+        });
+        this.imgTrigger.setVisible(false);
+        this.styleTrigger = BI.createWidget({
+            type: "bi.vertical",
+            items: [this.textTrigger,this.imgTrigger]
         });
         this.style = BI.createWidget({
             type: "bi.combo",
@@ -96,11 +104,25 @@ BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
             offsetStyle: "right"
         });
         this.style.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
-            this.setValue("text");
-            //$(self.styleTrigger.element[0].childNodes[0].childNodes[0]).css(self.styleTab.getValue());
+            if (typeof self.styleTab.getValue() === "string") {
+                self.imgTrigger.setSrc(self.styleTab.getValue());
+                self.imgTrigger.setVisible(true);
+                self.textTrigger.setVisible(false);
+            }  else {
+                self.textTrigger.setValue("text");
+                $(self.textTrigger.element[0].childNodes[0].childNodes[0]).css(self.styleTab.getValue());
+                self.imgTrigger.setVisible(false);
+                self.textTrigger.setVisible(true);
+            }
         });
         return [this.relation, this.interval, this.style];
-    }
+    },
+    
+    // getValue: function () {
+    //     this.
+    //     this.interval.getValue();
+    //     return this.relation.getValue();
+    // }
 });
 
 BI.DataLabelConditionItem.EVENT_CHANGE = "BI.DataLabelConditionItem.EVENT_CHANGE";

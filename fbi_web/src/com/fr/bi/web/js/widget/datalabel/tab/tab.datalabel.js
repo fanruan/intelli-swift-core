@@ -97,7 +97,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             type: "bi.data_label_image_set"
         });
         this.imageset.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
-            self.fireEvent(BI.DataLabelTab.EVENT_CHANGE,arguments);
+            self.fireEvent(BI.DataLabelTab.IMG_CHANGE,arguments);
         });
         this.barchart = BI.createWidget({
             type: "bi.data_label_bar_chart"
@@ -126,5 +126,5 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         }
     }
 });
-
+BI.DataLabelTab.IMG_CHANGE = "BI.DataLabelTab.IMG_CHANGE";
 $.shortcut("bi.data_label_tab", BI.DataLabelTab);

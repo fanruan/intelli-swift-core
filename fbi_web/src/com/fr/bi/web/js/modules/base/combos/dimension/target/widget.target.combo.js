@@ -159,6 +159,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
+                    },{
+                        text: "数据标签样式",
+                        value: BICst.TARGET_COMBO.DATA_LABEL
                     }]
                 };
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);

@@ -13,7 +13,7 @@ BI.DataLabelCondition = BI.inherit(BI.Widget, {
             type: "bi.button",
             text: "添加条件",
             width: 80,
-            height: 20,
+            height: 24,
             handler: function () {
                 self.conditions.addItem();
             }
@@ -27,8 +27,9 @@ BI.DataLabelCondition = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.right",
                 items: [addButton],
-                rgap: 8,
-                vgap: 6,
+                rgap: 6,
+                tgap: 6,
+                bgap: 2
             }, this.conditions]
         })
     }
