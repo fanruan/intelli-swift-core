@@ -70,10 +70,10 @@ BI.MapChart = BI.inherit(BI.Widget, {
         if(this.config.initDrillPath.length > 1){
             config.initDrillPath = this.config.initDrillPath;
         }
-        config.dTools.click = function(){
-            //console.log(arguments);
-            //console.log(this);
-            self.fireEvent(BI.MapChart.EVENT_CHANGE, arguments);
+        config.dTools.click = function(point){
+            point = point || {};
+            var pointOption = point.pointOption || {};
+            self.fireEvent(BI.MapChart.EVENT_CLICK_DTOOL, pointOption);
         };
         config.chartType = "areaMap";
         delete config.xAxis;
@@ -308,4 +308,5 @@ BI.MapChart = BI.inherit(BI.Widget, {
     }
 });
 BI.MapChart.EVENT_CHANGE = "EVENT_CHANGE";
+BI.MapChart.EVENT_CLICK_DTOOL = "EVENT_CLICK_DTOOL";
 $.shortcut('bi.map_chart', BI.MapChart);

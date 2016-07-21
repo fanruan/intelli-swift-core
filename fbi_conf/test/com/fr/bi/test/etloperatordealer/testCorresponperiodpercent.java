@@ -4,6 +4,8 @@
 package com.fr.bi.test.etloperatordealer;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.PrimitiveDetailGetter;
+import com.finebi.cube.api.PrimitiveType;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondPeriodPercentResultDealer;
@@ -120,6 +122,16 @@ public class testCorresponperiodpercent extends TestCase {
             public Object getValue(int row) {
                 return values[row];
             }
+
+            @Override
+            public PrimitiveType getPrimitiveType() {
+                return null;
+            }
+
+            @Override
+            public PrimitiveDetailGetter createPrimitiveDetailGetter() {
+                return null;
+            }
         }).anyTimes();
         ti.getColumnDetailReader(key2);
         EasyMock.expectLastCall().andReturn(new ICubeColumnDetailGetter(){
@@ -127,6 +139,16 @@ public class testCorresponperiodpercent extends TestCase {
             @Override
             public Object getValue(int row) {
                 return groupColumns[row];
+            }
+
+            @Override
+            public PrimitiveType getPrimitiveType() {
+                return null;
+            }
+
+            @Override
+            public PrimitiveDetailGetter createPrimitiveDetailGetter() {
+                return null;
             }
         }).anyTimes();
         control.replay();

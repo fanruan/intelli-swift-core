@@ -992,8 +992,9 @@ define('utils/ColorUtils',[],function(){
         for(i = 0; i < 3; i++){
             result.push(Math.round(0.65 * rgba[i] + 0.35 * tmp[i]));
         }
+        result.push(rgba[3]);
 
-        return toColor(result);
+        return toColor(result, 'rgba');
     }
 
     function getColorWithDivider(color, divider){
@@ -2537,7 +2538,7 @@ define('Handler',['require','./utils/BaseUtils','./Constants','./dom/DomEvent','
                 if (hoverPoint && !hoverPoint.series.supportSharedTooltip) {
 
                     sharedAxis && sharedAxis.getRender().removeHighlightBand();
-                    this._setCoveredKey(null);
+                    this._setCoveredKey(null, event);
 
                 } else {
 
@@ -2626,7 +2627,7 @@ define('Handler',['require','./utils/BaseUtils','./Constants','./dom/DomEvent','
             return key && axis && axis.sharedPoints[key] || [];
         },
 
-        _setCoveredKey: function (key) {
+        _setCoveredKey: function (key, event) {
             if (key === null) {
                 if (BaseUtils.isNull(this.vanchart.coveredKey)) {
                     return;
@@ -2643,7 +2644,7 @@ define('Handler',['require','./utils/BaseUtils','./Constants','./dom/DomEvent','
                     return;
                 }
 
-                this._setCoveredKey(null);
+                this._setCoveredKey(null, event);
 
                 var points = this._getCoveredPointsByKey(key);
                 points.map(function (point) {
@@ -2680,7 +2681,7 @@ define('Handler',['require','./utils/BaseUtils','./Constants','./dom/DomEvent','
             if (this._getCoveredPointsByKey(key).length !== 0) {
 
                 axis.getRender().drawHighlightBand(pos);
-                this._setCoveredKey(key);
+                this._setCoveredKey(key, event);
                 this.fireEventByData(this.vanchart.hoverSeries, 'forceMouseOut', event);
                 
                 // todo, shouldn't calculate dim&content every time
@@ -2831,14 +2832,16 @@ define('theme/options',['require','../Constants'],function (require) {
 
     options[Constants.SCATTER_CHART] = {
         plotOptions: {
-            fillColorOpacity:1
+            fillColorOpacity:1,
+            opacity:1
         }
 
     };
 
     options[Constants.BUBBLE_CHART] = {
         plotOptions: {
-            fillColorOpacity:0.75
+            fillColorOpacity:0.75,
+            opacity:0.75
         }
 
     };
@@ -2989,6 +2992,7 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
                 name:pointOption.name,
                 lnglat:pointOption.lnglat,
                 drill : QueryUtils.queryList(queryList, 'drilldown'),
+                opacity:QueryUtils.queryList(queryList, 'opacity'),
 
                 isNull:isNull,
                 style:series.style,
@@ -4287,6 +4291,27 @@ define('component/DrillTools',['require','./Base','../utils/BaseUtils','../utils
             this._setComponentBounds(Constants.TOP, BaseUtils.getTextHeight(cfg.style) * (TOP_PADDING * 2 + 1));
         },
 
+        findDataPointByName:function(name){
+
+            for(var i = 0, len = this.iconData.length; i < len; i++){
+                if(this.iconData[i].geo.geoName == name){
+                    break;
+                }
+            }
+
+            if(this.iconData[i - 1]){
+                var series = this.iconData[i - 1].series;
+                for(var j = 0; j < series.length; j++){
+                    for(var k = 0; k < series[j].points.length; k++){
+                        var p = series[j].points[k];
+                        if(p.drill && p.drill.geo.name == name){
+                            return p;
+                        }
+                    }
+                }
+            }
+        },
+
         addIconData:function(data){
             this.iconData.push(data);
             data.aniStart = this.getMarkAnimationStartPos(data);
@@ -4768,8 +4793,23 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
             var usedSize = this.tickLabelLength + axisTileLength;
 
+            var startSize = 0, endSize = 0;
+
             var isHorizontal = this.isHorizontal();
             var isInverted = this.vanchart.isInverted();
+
+            if(this.tickData && this.tickData.length > 1){
+                var t_s, t_e;
+                if(this.isAxisReversed()){
+                    t_s = this.tickData[this.tickData.length - 1].tickDim;
+                    t_e = this.tickData[0].tickDim;
+                }else{
+                    t_s = this.tickData[0].tickDim;
+                    t_e = this.tickData[this.tickData.length - 1].tickDim;
+                }
+                startSize = isHorizontal ? t_s.width : t_s.height;
+                endSize = isHorizontal ? t_e.width : t_s.height
+            }
 
             if(isHorizontal){
                 var max = isInverted ? axisOption.maxWidth : axisOption.maxHeight;
@@ -4793,6 +4833,21 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
             }else if(this.getRender()){
                 this._setComponentBounds(position, usedSize);
+            }
+
+            var plotBounds = this.vanchart.getPlotBounds();
+            var chartHeight = this.vanchart.chartHeight();
+
+            // clip vertical axis tick label
+            if (!isHorizontal) {
+
+                var topDet = Math.round(endSize/2);
+
+                var bottomDet = Math.round(startSize/2);
+                bottomDet = Math.max(bottomDet - (chartHeight - plotBounds.y - plotBounds.height), 0);
+
+                this._clipPlotBounds(Constants.TOP, topDet);
+                this._clipPlotBounds(Constants.BOTTOM, bottomDet);
             }
         },
 
@@ -6095,8 +6150,11 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
                 if(byAxis == this){
                     var points = sery.originalPoints || sery.points;
                     points.forEach(function(point){
+                        if (point.isNull) {
+                            return;
+                        }
                         var label =  isBaseAxis ? point.category : point.value;
-                        if(label && !stored[label]){
+                        if(!BaseUtils.isNull(label) && !stored[label]){
                             categories.push(label);
                             stored[label] = true;
                         }
@@ -9824,14 +9882,16 @@ define('theme/Options',['require','../Constants'],function (require) {
 
     options[Constants.SCATTER_CHART] = {
         plotOptions: {
-            fillColorOpacity:1
+            fillColorOpacity:1,
+            opacity:1
         }
 
     };
 
     options[Constants.BUBBLE_CHART] = {
         plotOptions: {
-            fillColorOpacity:0.75
+            fillColorOpacity:0.75,
+            opacity:0.75
         }
 
     };
@@ -9973,6 +10033,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
 
         _refresh:function(){
             this._loaded = false;
+            this.geoName = this.componentOption.name;
         },
 
         //每次钻取的时候要loadGeo的数据
@@ -9988,8 +10049,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
             var cfg = this.componentOption, geo = this;
             var leaflet = this.vanchart._leaflet;
 
-            this.geoName = cfg.name; this.maps = [];
-            this._validPointName = {}; this._validAreaName = {};
+            this.maps = []; this._validPointName = {}; this._validAreaName = {};
 
             if(cfg.data){
                 var maps = BaseUtils.isArray(cfg.data) ? cfg.data : [cfg.data];
@@ -10509,11 +10569,8 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../utils/Col
             var hoverColor = cfg.hoverColor || cfg.style.color;
             var colorOpacity = ColorUtils.getColorOpacityWithoutDefault(item.color);
             var color = ColorUtils.colorToHex(item.color);
-            if (sery.type === Constants.SCATTER_CHART||
-                sery.type === Constants.BUBBLE_CHART) {
-                colorOpacity = BaseUtils.hasDefined(colorOpacity) ? colorOpacity : sery.fillColorOpacity;
-            }
-            console.log(color);
+            colorOpacity = BaseUtils.hasDefined(colorOpacity) ? colorOpacity : sery.fillColorOpacity;
+            colorOpacity = BaseUtils.hasDefined(colorOpacity) ? colorOpacity : 1;
 
             BaseUtils.extend(item, {
                 series:sery,
@@ -11153,9 +11210,14 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
                 var formatter = tooltip.formatter;
                 var style = tooltip.style;
                 var label = formatter.identifier;
+                var cateLabel;
+                if(typeof formatter == 'object'){
+                    cateLabel = categoryPoint.series.chart._createCategoryLine(categoryPoint, label, style, formatter)
+                }else{
+                    cateLabel = BaseUtils.getFormatterFunction(formatter).call(categoryPoint);
+                }
 
-                tooltipContent = categoryPoint.series.chart._createCategoryLine(categoryPoint, label, style, formatter)
-                               + tooltipContent;
+                tooltipContent = cateLabel + tooltipContent;
             }
 
             return tooltipContent;
@@ -14097,6 +14159,8 @@ define('theme/default',[],function(){
         },
 
         legend:{
+            visible:true,
+            enabled:false,
             hiddenColor:'#cccccc',
             hoverColor:'green',
             borderRadius:0,
@@ -14111,6 +14175,8 @@ define('theme/default',[],function(){
         },
 
         rangeLegend:{
+            visible:true,
+            enabled:false,
             borderWidth:0,
             hiddenColor:'#cccccc',
             hoverColor:'green',
@@ -14119,8 +14185,7 @@ define('theme/default',[],function(){
                 fontFamily:'Verdana',
                 fontSize:'14px'
             },
-            position:'right',
-            enabled:false
+            position:'right'
         },
 
         backgroundColor:null,
@@ -14243,24 +14308,14 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 function viewreset(){
 
                     var map = chart.getChart(Constants.MAP_CHART);
-                    var geo = chart.getComponent(Constants.GEO_COMPONENT);
                     var hoverPoint = chart.hoverPoint;
                     var zoomLevel = chart._leaflet.getZoom();
                     var layerIndex = map.layerIndex;
 
                     //检查是否要做自动下钻,如果下钻成功,则直接返回
                     if(hoverPoint && hoverPoint.geo && hoverPoint.drill){
-
                         var zoomListener = hoverPoint.geo.getZoomListener();
-
                         if(zoomListener && zoomListener <= zoomLevel){
-                            chart.lastIconData = chart.lastIconData || [];
-
-                            chart.lastIconData[layerIndex] = {
-                                zoomListener:zoomListener,
-                                series:chart.series,
-                                geo:geo
-                            };
                             map.drillDown(hoverPoint);
                             return ;
                         }
@@ -14283,7 +14338,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 option.geo.imageMap && BaseUtils.extend(options, {crs:L.CRS.Simple});
 
                 this._leaflet = this._leaflet || L.map(dom, options);
-                this._leaflet.on('zoomend', viewreset, this._leaflet);
+                this._leaflet.on('zoom', viewreset, this._leaflet);
                 this._leaflet.vanchart = this;
 
                 BaseUtils.setDomBackground(dom, {
@@ -16678,7 +16733,7 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
 
         //处理堆积的点或者不堆积的其他的点
         _dealStackedPoints:function(points){
-            // this._calculatePercentage(points);
+            this._calculatePercentage(points);
 
             // this._mergeTooltipAttributes(points);
 
@@ -19683,7 +19738,7 @@ define('chart/Bar',['require','./BaseChart','../utils/BaseUtils','../Constants',
 
             var isVertical = point.location == Constants.TOP || point.location == Constants.BOTTOM;
 
-            var isPositive = point.value >= 0;
+            var isPositive = point.series.stackByPercent ? point.percentage >= 0 : point.value >= 0;
 
             var sery = point.series;
             var valueAxis = sery.valueAxis;
@@ -23064,7 +23119,7 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
                             var points = series[j].points;
 
                             for(var k = 0; k < points.length; k++){
-                                if(points[k].drill && points[k].name == name){
+                                if(points[k].drill && points[k].drill.geo.name == name){
                                     point = points[k];
                                     break;
                                 }
@@ -23224,6 +23279,16 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
 
         drillDown:function(dataPoint){
             if(dataPoint.drillSeries){
+
+                var vanchart = this.vanchart;
+
+                vanchart.lastIconData = vanchart.lastIconData || [];
+                vanchart.lastIconData[this.layerIndex] = {
+                    zoomListener:dataPoint.geo.getZoomListener(),
+                    series:vanchart.series,
+                    geo:vanchart.getComponent(Constants.GEO_COMPONENT)
+                };
+
                 this.vanchart.series = dataPoint.drillSeries;
                 this.vanchart.currentOption.series = dataPoint.drillSeries.originSeries;
                 this.vanchart.components.geo = dataPoint.geo;
@@ -23236,6 +23301,7 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
                     }
                 });
 
+                this.vanchart.hoverPoint = null;
                 dataPoint.geo.fitMapBounds();
 
                 var drillTools = this.vanchart.getComponent(Constants.DRILL_TOOLS);
@@ -23268,7 +23334,9 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
                 }
             });
 
+            this.vanchart.hoverPoint = null;
             iconData.geo.fitMapBounds();
+
             var drillTools = this.vanchart.getComponent(Constants.DRILL_TOOLS);
             if(drillTools){
                 drillTools.deleteIconData(iconData.series);
@@ -28386,7 +28454,7 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
                         stroke:true,
                         color:feature.marker.fillColor,
                         weight:2,
-                        opacity:1,
+                        opacity:feature.fillColorOpacity,
                         markerType:feature.marker.symbol,
                         radius:feature.marker.radius
                     }:
@@ -28754,7 +28822,8 @@ define('render/DrillToolsSvgRender',['require','./BaseRender','../utils/BaseUtil
                 g
                     .on('click', function(d){
                         
-                        cfg.click && cfg.click(d.geo.geoName);
+                        var dataPoint = dTools.findDataPointByName(d.geo.geoName);
+                        cfg.click && cfg.click(dataPoint);
 
                         map.drillUp(d);
                     })
@@ -28802,7 +28871,6 @@ define('render/TitleSvgRender',['require','./BaseRender','../utils/BaseUtils','.
             if(!this._titleG){
                 this._backgroundG = svgRoot.append('g')
                     .attr('transform', 'translate(' + bounds.x + ',' + bounds.y + ')');
-                BaseUtils.toBack(this._backgroundG.node());
 
                 this._titleG = svgRoot.append('g');
             }
@@ -34230,7 +34298,9 @@ define('render/DrillToolsVmlRender',['require','./BaseRender','../Constants','..
                         .attr(BaseUtils.cssNormalization(textStyle))
                         .transform('t' + transX + ',' + transY)
                         .click(function(){
-                            cfg.click && cfg.click(d.geo.geoName);
+
+                            var dataPoint = dTools.findDataPointByName(d.geo.geoName);
+                            cfg.click && cfg.click(dataPoint);
                             
                             map.drillUp(d);
                         })

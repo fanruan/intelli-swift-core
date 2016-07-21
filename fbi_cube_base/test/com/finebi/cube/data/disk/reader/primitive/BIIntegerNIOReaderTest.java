@@ -41,9 +41,9 @@ public class BIIntegerNIOReaderTest extends TestCase {
             writer.recordSpecificPositionValue(0, 1);
             writer.recordSpecificPositionValue(2, 1);
             writer.recordSpecificPositionValue(3, 1);
-            assertEquals(reader.getSpecificValue(0l), Integer.valueOf(1));
-            assertEquals(reader.getSpecificValue(2l), Integer.valueOf(1));
-            assertEquals(reader.getSpecificValue(3l), Integer.valueOf(1));
+            assertEquals(reader.getSpecificValue(0l), 1);
+            assertEquals(reader.getSpecificValue(2l), 1);
+            assertEquals(reader.getSpecificValue(3l), 1);
 
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);

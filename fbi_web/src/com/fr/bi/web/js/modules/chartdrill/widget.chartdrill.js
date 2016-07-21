@@ -18,10 +18,10 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             hgap: 5,
             vgap: 5
         });
-        var pushButton = BI.createWidget({
+        this.pushButton = BI.createWidget({
             type: "bi.drill_push_button"
         });
-        pushButton.on(BI.DrillPushButton.EVENT_CHANGE, function () {
+        this.pushButton.on(BI.DrillPushButton.EVENT_CHANGE, function () {
             self._onClickPush();
         });
         this.outerWrapper = BI.createWidget({
@@ -31,7 +31,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 el: this.wrapper,
                 top: 0
             }, {
-                el: pushButton,
+                el: this.pushButton,
                 top: 0
             }]
         })
@@ -90,8 +90,10 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this._initShowChartDrill();
         this.outerWrapper.setVisible(this.showDrill && BI.isNotNull(obj));
         if (this.showDrill === false || BI.isNull(obj)) {
+            this.pushButton.setPushDown();
             return;
         }
+        this.pushButton.setPushUp();
         var wId = this.options.wId;
         var dims = BI.Utils.getAllUsableDimDimensionIDs(wId);
         var classification = null, series = null;
@@ -187,6 +189,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this.wrapper.setVisible(isVisible);
         this.outerWrapper.attr("items")[1].top = isVisible ? this.buttonTop : 0;
         this.outerWrapper.resize();
+        isVisible ? this.pushButton.setPushUp() : this.pushButton.setPushDown();
     },
 
     _onClickDrill: function (dId, value, drillId) {

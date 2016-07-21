@@ -3,6 +3,7 @@ package com.finebi.cube.data.disk.reader;
 import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.data.input.ICubeDoubleReaderWrapper;
 import com.finebi.cube.data.input.ICubeDoubleReaderWrapperBuilder;
+import com.finebi.cube.data.input.primitive.ICubeDoubleReader;
 import com.finebi.cube.location.ICubeResourceLocation;
 
 import java.io.File;
@@ -25,7 +26,7 @@ public class BICubeDoubleReaderWrapperBuilder extends BINIOReaderBuilder<ICubeDo
         contentLocation.setReaderSourceLocation();
         contentLocation.setDoubleType();
         try {
-            return new BICubeDoubleReaderWrapper( BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(contentLocation));
+            return new BICubeDoubleReaderWrapper((ICubeDoubleReader) BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(contentLocation));
         } catch (Exception ignore) {
             throw new RuntimeException(ignore.getMessage(), ignore);
         }

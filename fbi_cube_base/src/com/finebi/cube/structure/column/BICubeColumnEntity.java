@@ -13,7 +13,6 @@ import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
-import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 
@@ -88,7 +87,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     }
 
     @Override
-    public Integer getPositionOfGroupByRow(int row) throws BIResourceInvalidException {
+    public int getPositionOfGroupByRow(int row) throws BIResourceInvalidException {
         return cubeColumnPositionOfGroupService.getPositionOfGroup(row);
     }
 
@@ -127,11 +126,6 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     }
 
     @Override
-    public T getOriginalValueByRow(int rowNumber) {
-        return detailDataService.getOriginalValueByRow(rowNumber);
-    }
-
-    @Override
     public GroupValueIndex getBitmapIndex(int position) throws BICubeIndexException {
         return indexDataService.getBitmapIndex(position);
     }
@@ -166,8 +160,8 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     }
 
     @Override
-    public T getGroupValue(int position) {
-        return groupDataService.getGroupValueByPosition(position);
+    public T getGroupObjectValue(int position) {
+        return groupDataService.getGroupObjectValueByPosition(position);
     }
 
     @Override

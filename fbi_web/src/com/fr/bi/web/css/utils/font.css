@@ -3447,3 +3447,21 @@
   content: "\e6b5";
   color: #009de3;
 }
+.drill-push-up-font .b-font:before {
+  content: "\e630";
+  color: #808080;
+}
+.drill-push-up-font.native .b-font:before,
+.drill-push-up-font.disabled .b-font:before {
+  content: "\e630";
+  color: #808080;
+}
+.drill-push-down-font .b-font:before {
+  content: "\e62d";
+  color: #808080;
+}
+.drill-push-down-font.native .b-font:before,
+.drill-push-down-font.disabled .b-font:before {
+  content: "\e62d";
+  color: #808080;
+}

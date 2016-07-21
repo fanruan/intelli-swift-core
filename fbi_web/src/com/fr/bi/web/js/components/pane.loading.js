@@ -24,7 +24,7 @@ BI.LoadingPane = BI.inherit(BI.Pane, {
             this._loading = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: this,
-                container: this.options.container,
+                container: this.options.container || this,
                 text: BI.i18nText("BI-Loading")
             });
         }
@@ -34,5 +34,6 @@ BI.LoadingPane = BI.inherit(BI.Pane, {
         this._loading.destroy();
         this._loading = null;
         this.options.onLoaded();
+        this.fireEvent(BI.Pane.EVENT_LOADED);
     }
 });

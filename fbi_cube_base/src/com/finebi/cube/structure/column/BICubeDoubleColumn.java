@@ -22,4 +22,22 @@ public class BICubeDoubleColumn extends BICubeColumnEntity<Double> {
         groupDataService = new BICubeDoubleGroupData(discovery, currentLocation);
     }
 
+    /**
+     * 根据行号获得对应的原始值。
+     *
+     * @param rowNumber 数据库中的行号
+     * @return 原始值
+     */
+    public double getOriginalValueByRow(int rowNumber) {
+        return ((BICubeDoubleDetailData)detailDataService).getOriginalValueByRow(rowNumber);
+    }
+
+    public double getGroupValue(int position) {
+        return ((BICubeDoubleGroupData)groupDataService).getGroupValueByPosition(position);
+    }
+    @Override
+    public Double getOriginalObjectValueByRow(int rowNumber) {
+        double value = getOriginalValueByRow(rowNumber);
+        return Double.isNaN(value) ? null : value;
+    }
 }

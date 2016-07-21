@@ -22,11 +22,11 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             el: {
                 type: "bi.icon_button",
                 cls: "widget-combo-pull-down-font pull-down-trigger",
-                width: 20,
-                height: 20
+                iconWidth: 16,
+                iconHeight: 16
             },
             element: this.element,
-            height: 20,
+            height: 22,
             width: 20
         });
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {

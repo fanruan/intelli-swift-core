@@ -36,7 +36,7 @@ public class LongNIOWriter extends AbstractNIOWriter<Long> {
 
     @Override
     protected void addValue(int row, Long value) {
-        longBuffer.put(row, value == null ? Long.MIN_VALUE : value);
+        longBuffer.put(row, value == null ? NIOConstant.LONG.NULL_VALUE : value);
     }
 
     @Override
