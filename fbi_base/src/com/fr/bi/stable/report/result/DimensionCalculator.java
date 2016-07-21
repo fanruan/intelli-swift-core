@@ -31,23 +31,6 @@ public interface DimensionCalculator extends FCloneable {
      */
     ICubeColumnIndexReader createNoneSortGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader);
 
-    /**
-     * 是否为超级大分组
-     *
-     * @param targetTable 指标表
-     * @param loader      注释
-     * @return 是否为超级大分组
-     */
-    boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader);
-
-    /**
-     * 是否为超级大分组
-     *
-     * @param loader 注释
-     * @return 是否为超级大分组
-     */
-    boolean isSupperLargeGroup(ICubeDataLoader loader);
-
     List<BITableSourceRelation> getRelationList();
 
     List<BITableSourceRelation> getDirectToDimensionRelationList();
@@ -67,9 +50,7 @@ public interface DimensionCalculator extends FCloneable {
 
     Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit);
 
-    ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader);
-
-    ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit);
+    int getOriginGroupSize(BusinessTable table, ICubeDataLoader loader);
 
     int getBaseTableValueCount(Object value, ICubeDataLoader loader);
 
