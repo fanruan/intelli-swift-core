@@ -34,6 +34,7 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         var tableIds = this.model.getTableIds();
         var fieldsMap = this.model.getFieldsMap();
         var relations = this.model.getRelations();
+        var connectSet = relations.connectionSet;
         var primKeyMap = relations.primKeyMap;
         var foreignKeyMap = relations.foreignKeyMap;
         var all_fields = this.model.getAllFields();
@@ -41,7 +42,7 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             self.fireEvent(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, this.options.value);
         };
         //var allTableSet = [];
-        var degrees = getTableIdsDegree(tableIds);
+        var degrees = getTableIdsDegree();
         var calcDegree = {};
         var distinctTableIds = [];
         BI.each(tableIds, function(idx, tId){
@@ -69,17 +70,27 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         });
         return items;
 
-        function getTableIdsDegree(tableIds){
+        function getTableIdsDegree(){
             var degree = {};
-            BI.each(tableIds, function(idx, tId){
-                var count = 0;
-                var foreFields = getFieldsInForeignMap(fieldsMap[tId]);
-                BI.each(foreFields, function(idx, fieldId){
-                    if(BI.has(foreignKeyMap, fieldId)) {
-                        count++;
-                    }
-                });
-                degree[tId] = count;
+            //因为1对1的关联在foreignKeyMap中取不到，所以弃用
+            //BI.each(tableIds, function(idx, tId){
+            //    var count = 0;
+            //    var foreFields = getFieldsInForeignMap(fieldsMap[tId]);
+            //    BI.each(foreFields, function(idx, fieldId){
+            //        if(BI.has(foreignKeyMap, fieldId)) {
+            //            count++;
+            //        }
+            //    });
+            //    degree[tId] = count;
+            //});
+            //待优化
+            BI.each(connectSet, function(idx, obj){
+                var foreignId = obj.foreignKey.field_id;
+                var tableId = all_fields[foreignId].table_id;
+                if(!BI.has(degree, tableId)){
+                    degree[tableId] = 0;
+                }
+                degree[tableId]++;
             });
             return degree;
         }
@@ -90,8 +101,9 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             BI.each(rels, function(idx, rel){
                 var primaryId = rel.primaryKey.field_id, foreignId = rel.foreignKey.field_id;
                 var foreignTableId = all_fields[foreignId].table_id;
-                //自循环
+                //是未访问过的节点且入度未满
                 if(!BI.contains(visitSet, foreignTableId) && calcDegree[foreignTableId] !== degrees[foreignTableId]){
+                    //自循环
                     if(all_fields[primaryId].table_id === all_fields[foreignId].table_id){
                         items.push({
                             primary: {
@@ -161,9 +173,7 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             var rel = [];
             var primFields = getFieldsInPrimKeyMap(fieldsMap[tId]);
             BI.each(primFields, function(idx, fieldId){
-                if(BI.has(primKeyMap, fieldId)) {
-                    rel = BI.concat(rel, primKeyMap[fieldId]);
-                }
+                rel = BI.concat(rel, primKeyMap[fieldId]);
             });
             return rel;
         }

@@ -5,7 +5,7 @@
 BI.DetailSelectDataLevel2Item = BI.inherit(BI.Single, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailSelectDataLevel2Item.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-detail-select-data-level2-item bi-select-data-level2-item",
+            extraCls: "bi-detail-select-data-level2-item bi-select-data-level1-item",
             height: 25,
             fieldType: BICst.COLUMN.STRING,
             layer: 3,
