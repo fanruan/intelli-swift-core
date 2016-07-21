@@ -34,8 +34,8 @@ public class BIPrimitiveDataCacheTest extends TestCase {
 
             location.setReaderSourceLocation();
             BIByteNIOReader reader = (BIByteNIOReader) discovery.getCubeReader(location);
-            assertEquals(reader.getSpecificValue(0l), Byte.valueOf("35"));
-            assertEquals(reader.getSpecificValue(1l), Byte.valueOf("35"));
+            assertEquals(reader.getSpecificValue(0l), Byte.valueOf("35").byteValue());
+            assertEquals(reader.getSpecificValue(1l), Byte.valueOf("35").byteValue());
 
             location.setWriterSourceLocation();
             BIByteNIOWriter writer_copy = (BIByteNIOWriter) discovery.getCubeWriter(location);
@@ -68,7 +68,7 @@ public class BIPrimitiveDataCacheTest extends TestCase {
 
             location.setReaderSourceLocation();
             BIByteNIOReader reader = (BIByteNIOReader) discovery.getCubeReader(location);
-            assertEquals(reader.getSpecificValue(0l), Byte.valueOf("35"));
+            assertEquals(reader.getSpecificValue(0l), Byte.valueOf("35").byteValue());
             assertTrue(writer.canWriter());
             assertTrue(reader.canReader());
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();

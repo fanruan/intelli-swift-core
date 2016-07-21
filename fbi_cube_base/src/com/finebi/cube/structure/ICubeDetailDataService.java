@@ -21,11 +21,13 @@ public interface ICubeDetailDataService<T> extends Release {
     void addDetailDataValue(int rowNumber, T originalValue);
 
 
-    T getOriginalValueByRow(int rowNumber);
+    T getOriginalObjectValueByRow(int rowNumber);
 
     int getClassType();
 
     CubeVersion getVersion();
 
     void recordVersion(CubeVersion version);
+
+
 }

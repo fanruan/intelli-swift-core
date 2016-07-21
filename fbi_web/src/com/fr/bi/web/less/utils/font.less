@@ -280,6 +280,9 @@
 .font-hover-active(table-open-row-style-font, @font-table-row-open, @color-bi-font-native, @color-bi-font-hover, @color-bi-font-active);
 .font-hover-active(table-open-col-style-font, @font-table-col-open, @color-bi-font-native, @color-bi-font-hover, @color-bi-font-active);
 
+//气泡图计算函数
+.font(calculate-function-font, @font-field-calc,  @font-color-white);
+
 //匹配关系
 .font(path-set-doubt, @font-doubt, @color-bi-text-highlight);
 
@@ -310,13 +313,13 @@
 
 .font(task-list-font, @font-classify, @color-bi-text-highlight);
 
-.font(widget-combo-detail-font, @font-edit, @color-bi-text-highlight);
+.font(widget-combo-detail-font, @font-solid-setting, @color-bi-text-highlight);
 .font(widget-combo-pull-down-font, @font-pull-down, @color-bi-text-highlight);
 .font(widget-tools-filter-font, @font-filter, @color-bi-text-highlight);
 .font(widget-tools-clear-font, @font-clear, @color-bi-text-highlight);
 .font(widget-tools-export-excel-font, @font-export-excel, @color-bi-text-highlight);
 
-.font(widget-combo-expand-font, @font-edit);
+.font(widget-combo-expand-font, @font-solid-setting);
 .font(widget-combo-linkage-font, @font-linkage);
 .font(widget-combo-rename-edit-font, @font-rename-edit);
 .font(widget-combo-show-title-font, @font-check);
@@ -356,3 +359,6 @@
 .font(report-rename-font, @font-rename-edit, @color-bi-background-success);
 
 .font(report-cancel-share-font, @font-cancel-share, @color-bi-text-highlight);
+
+.font(drill-push-up-font, @font-up);
+.font(drill-push-down-font, @font-down);

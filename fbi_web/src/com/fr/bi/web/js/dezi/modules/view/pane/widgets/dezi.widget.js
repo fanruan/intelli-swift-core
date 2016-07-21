@@ -7,7 +7,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     _constants: {
         SHOW_CHART: 1,
-        SHOW_FILTER: 2
+        SHOW_FILTER: 2,
+        TOOL_ICON_WIDTH: 20,
+        TOOL_ICON_HEIGHT: 20
     },
 
     _defaultConfig: function () {
@@ -119,7 +121,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 textAlign: "left",
                 height: 25,
                 allowBlank: false,
-                errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
+                errorText: function(v) {
+                    if(BI.isNotNull(v) && v.trim() !== "") {
+                        return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
+                    }
+                    return BI.i18nText("BI-Widget_Name_Can_Not_Null");
+                },
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
@@ -157,8 +164,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
         this.refreshChartButton = BI.createWidget({
             type: "bi.icon_button",
-            width: 16,
-            height: 16,
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT,
             cls: "recover-chart-font-hightlight dashboard-title-detail",
             title: BI.i18nText("BI-Restore")
         });
@@ -168,8 +175,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
         var filter = BI.createWidget({
             type: "bi.icon_button",
-            width: 16,
-            height: 16,
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT,
             title: BI.i18nText("BI-Show_Filters"),
             cls: "widget-tools-filter-font dashboard-title-detail"
         });
@@ -179,8 +186,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
         var expand = BI.createWidget({
             type: "bi.icon_button",
-            width: 16,
-            height: 16,
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT,
             title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });

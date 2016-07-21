@@ -2,7 +2,6 @@ package com.finebi.cube.data.input.primitive;
 
 import com.finebi.cube.CubeResourceRelease;
 import com.finebi.cube.data.ICubeSourceReleaseManager;
-import com.finebi.cube.exception.BIResourceInvalidException;
 
 /**
  * This class created on 2016/3/2.
@@ -10,15 +9,7 @@ import com.finebi.cube.exception.BIResourceInvalidException;
  * @author Connery
  * @since 4.0
  */
-public interface ICubePrimitiveReader<T> extends CubeResourceRelease {
-    /**
-     * 获得指点位置的值
-     *
-     * @param valuePosition 位置
-     * @return 值
-     * @throws BIResourceInvalidException
-     */
-    T getSpecificValue(long valuePosition) throws BIResourceInvalidException;
+public interface ICubePrimitiveReader extends CubeResourceRelease {
 
     boolean canReader();
 

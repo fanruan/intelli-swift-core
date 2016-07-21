@@ -55,8 +55,8 @@ public class BIFileUtils {
 
     private static long MAX_PERSIZE = 1L << 24;
 
-    public static void delete(File f) {
-        StableUtils.deleteFile(f);
+    public static boolean delete(File f) {
+        return StableUtils.deleteFile(f);
     }
 
     public static void createDirs(File f) {
@@ -310,6 +310,14 @@ public class BIFileUtils {
             throw BINonValueUtils.beyondControl(e);
         }
     }
+
+    /**
+     * 完整拷贝整个文件件
+     *
+     * @param src
+     * @param dest
+     * @throws IOException
+     */
     public static void copyFolder(File src, File dest) throws IOException {
         if (src.isDirectory()) {
             if (!dest.exists()) {
@@ -336,5 +344,12 @@ public class BIFileUtils {
             in.close();
             out.close();
         }
+    }
+
+    public static boolean renameFolder(File src, File dest) throws IOException {
+        if (!src.isDirectory() || !src.exists()) {
+            return false;
+        }
+        return src.renameTo(dest);
     }
 }

@@ -105,7 +105,7 @@ public abstract class AbstractTableIndex implements ICubeTableService {
             BILogger.getLogger().error(e.getMessage(), e);
         }
         this.allShowIndex = (removedList == null || removedList.size() == 0 )? GVIFactory.createAllShowIndexGVI(rowCount)
-                : GVIFactory.createGroupVauleIndexBySimpleIndex(removedList).NOT(rowCount);
+                : GVIFactory.createGroupValueIndexBySimpleIndex(removedList).NOT(rowCount);
     }
 
     @Override

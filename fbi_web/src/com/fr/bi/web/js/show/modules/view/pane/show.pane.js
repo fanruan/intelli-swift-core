@@ -54,7 +54,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
     },
 
     change: function (changed) {
-        this.refresh();
+        // this.refresh();
     },
 
     _createNorth: function () {

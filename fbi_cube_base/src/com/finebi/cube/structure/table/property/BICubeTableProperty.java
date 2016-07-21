@@ -17,6 +17,7 @@ import com.finebi.cube.structure.property.BICubeProperty;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
@@ -37,7 +38,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private static String TIMESTAMP_DATA = "timestamp";
     private static String SUPER_TABLES = "st";
 
-    private static String  REMOVED_LIST = "removedList";
+    private static String REMOVED_LIST = "removedList";
 
     private List<ICubeFieldSource> tableFields = null;
     private List<ITableKey> parentTable = null;
@@ -91,12 +92,15 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected boolean isRowCountReaderAvailable() {
         return rowCountReader != null;
     }
+
     protected boolean isRemoveListReaderAvailable() {
         return removeListReader != null;
     }
+
     protected boolean isRemoveListWriterAvailable() {
         return removeListWriter != null;
     }
+
     protected boolean isTimeStampWriterAvailable() {
         return timeStampWriter != null;
     }
@@ -162,12 +166,12 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     private void initialRemovedListReader() throws Exception {
         ICubeResourceLocation location = this.currentLocation.buildChildLocation(REMOVED_LIST);
-        location.setLongTypeWrapper();
+        location.setIntegerTypeWrapper();
         location.setReaderSourceLocation();
-        rowCountReader = (ICubeLongReaderWrapper) discovery.getCubeReader(location);
+        removeListReader = (ICubeIntegerReaderWrapper) discovery.getCubeReader(location);
 
     }
-    
+
     private void initialTimeStampReader() throws Exception {
         ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
         rowCountLocation.setLongTypeWrapper();
@@ -330,6 +334,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             }
         }
     }
+
     public ICubeIntegerWriterWrapper getRemovedListWriter() {
         try {
             if (!isRemoveListWriterAvailable()) {
@@ -352,7 +357,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
     }
 
-        @Override
+    @Override
     public void recordTableStructure(List<ICubeFieldSource> fields) {
         /**
          * 即便是空，也要记录是空数组0的长度。
@@ -381,11 +386,13 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         getRowCountWriter().recordSpecificValue(0, rowCount);
 
     }
+
     @Override
-    public void recordRemovedList(int position,int value) {
-        getRemovedListWriter().recordSpecificValue(position,value);
+    public void recordRemovedList(int position, int value) {
+        getRemovedListWriter().recordSpecificValue(position, value);
     }
-        @Override
+
+    @Override
     public void recordLastTime() {
         recordLastTime(System.currentTimeMillis());
     }
@@ -420,7 +427,26 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
         return -1;
     }
-    
+
+    @Override
+    public IntList getRemovedList() {
+        ICubeIntegerReaderWrapper removedListReader = getRemovedListReader();
+        IntList removedList = new IntList();
+        int i = 0;
+        try {
+            while (removedListReader.getSpecificValue(i)<removedListReader.getSpecificValue(i+1)) {
+                removedList.add(removedListReader.getSpecificValue(i));
+                i++;
+            }
+            if(i>0){
+                removedList.add(removedListReader.getSpecificValue(i));
+            }
+        } catch (BIResourceInvalidException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return removedList;
+    }
+
     @Override
     public Date getCubeLastTime() {
         try {
@@ -565,6 +591,11 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         parentFieldProperty.forceRelease();
         ((BICubeProperty) version).forceRelease();
         clear();
+    }
+
+    @Override
+    public boolean isRemovedListAvailable() {
+        return getRemovedListReader().canRead();
     }
 }
 

@@ -2919,6 +2919,15 @@
   content: "\e672";
   color: #808080;
 }
+.calculate-function-font .b-font:before {
+  content: "\e6a3";
+  color: #ffffff;
+}
+.calculate-function-font.native .b-font:before,
+.calculate-function-font.disabled .b-font:before {
+  content: "\e6a3";
+  color: #ffffff;
+}
 .path-set-doubt .b-font:before {
   content: "\e69a";
   color: #009de3;
@@ -3109,12 +3118,12 @@
   color: #009de3;
 }
 .widget-combo-detail-font .b-font:before {
-  content: "\e631";
+  content: "\e697";
   color: #009de3;
 }
 .widget-combo-detail-font.native .b-font:before,
 .widget-combo-detail-font.disabled .b-font:before {
-  content: "\e631";
+  content: "\e697";
   color: #009de3;
 }
 .widget-combo-pull-down-font .b-font:before {
@@ -3154,12 +3163,12 @@
   color: #009de3;
 }
 .widget-combo-expand-font .b-font:before {
-  content: "\e631";
+  content: "\e697";
   color: #808080;
 }
 .widget-combo-expand-font.native .b-font:before,
 .widget-combo-expand-font.disabled .b-font:before {
-  content: "\e631";
+  content: "\e697";
   color: #808080;
 }
 .widget-combo-linkage-font .b-font:before {
@@ -3437,4 +3446,22 @@
 .report-cancel-share-font.disabled .b-font:before {
   content: "\e6b5";
   color: #009de3;
+}
+.drill-push-up-font .b-font:before {
+  content: "\e630";
+  color: #808080;
+}
+.drill-push-up-font.native .b-font:before,
+.drill-push-up-font.disabled .b-font:before {
+  content: "\e630";
+  color: #808080;
+}
+.drill-push-down-font .b-font:before {
+  content: "\e62d";
+  color: #808080;
+}
+.drill-push-down-font.native .b-font:before,
+.drill-push-down-font.disabled .b-font:before {
+  content: "\e62d";
+  color: #808080;
 }

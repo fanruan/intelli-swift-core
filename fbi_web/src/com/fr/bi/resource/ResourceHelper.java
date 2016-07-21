@@ -682,6 +682,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/chartsetting/crosstable/widget.crosstable.setting.css",
 
                 //图样式
+                "com/fr/bi/web/css/modules/chartsetting/charts/customscale/popup.customscale.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",
 
@@ -705,7 +707,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/widget.summarytable.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/datatable/combo/sortfilter.combo.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/tablechartmanager.css",
-                "com/fr/bi/web/css/modules/tablechartmanager/chartdisplay/chartdisplay.css",
                 "com/fr/bi/web/css/modules/tablechartmanager/errorpane/tablechart.errorpane.css",
 
                 //自适应布局
@@ -1317,6 +1318,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.group.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/combo.customscale.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/popup.customscale.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/svg.customscale.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/trigger.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/combo.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/wrap.item.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.js",
@@ -1324,7 +1329,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/widget.chartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/settings/charts.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/axischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/bubblechart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/multiaxischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/percentchart.setting.js",
@@ -1535,6 +1540,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules4realtime/selectdata/widget.selectdata.js",
+                //实时报表拖拽
+                "com/fr/bi/web/js/modules4realtime/drag/widget.dragicongroup.js",
                 //实时报表文本选择字段
                 "com/fr/bi/web/js/modules4realtime/selectstring/widget.selectstring.js",
                 //实时报表数值选择字段
@@ -1988,6 +1995,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/lru.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
 
+                "com/fr/bi/web/js/base/parsers/expression.js",
+                "com/fr/bi/web/js/base/parsers/path.js",
+
                 "com/fr/bi/web/js/base/action/action.js",
                 "com/fr/bi/web/js/base/action/action.show.js",
                 "com/fr/bi/web/js/base/action/action.show.effect.js",
@@ -2278,6 +2288,7 @@ public class ResourceHelper {
 
                 //mask
                 "com/fr/bi/web/js/widget/base/mask/loading.mask.js",
+                "com/fr/bi/web/js/widget/base/mask/loading.background.js",
                 "com/fr/bi/web/js/widget/base/mask/cancel.loading.mask.js",
 
                 //toolbar
@@ -2600,6 +2611,7 @@ public class ResourceHelper {
                  */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
+                "com/fr/bi/web/js/components/pane.loading.2.js",
 
                 //选值
                 "com/fr/bi/web/js/components/valuechooser/combo.valuechooser.js",
@@ -2676,14 +2688,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/mobile/mobile.jQuery.js",
                 "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
-                "com/fr/bi/web/js/data/constant/biconst.js",
-                "com/fr/bi/web/js/data/constant/enums.js",
                 "com/fr/bi/web/js/core/underscore.js",
                 "com/fr/bi/web/js/base/base.js",
+                "com/fr/bi/web/mobile/mobile.data.js",
+                "com/fr/bi/web/js/data/data.js",
+                "com/fr/bi/web/js/data/constant/biconst.js",
+                "com/fr/bi/web/js/data/constant/enums.js",
                 "com/fr/bi/web/js/base/proto/number.js",
                 "com/fr/bi/web/js/base/proto/array.js",
                 "com/fr/bi/web/js/base/proto/date.js",
-                "com/fr/bi/web/js/data/data.js",
                 "com/fr/bi/web/js/data/utils.js"
         };
     }

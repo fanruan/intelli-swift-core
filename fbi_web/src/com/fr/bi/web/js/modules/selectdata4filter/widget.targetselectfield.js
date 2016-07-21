@@ -65,8 +65,7 @@ BI.TargetFilterSelectField = BI.inherit(BI.Widget, {
                         type: "bi.select_data_level0_item",
                         fieldType: BI.Utils.getFieldTypeByID(fid),
                         text: fieldName,
-                        title: fieldName,
-                        value: fid
+                        title: fieldName
                     })
                 });
                 return fieldStructure;

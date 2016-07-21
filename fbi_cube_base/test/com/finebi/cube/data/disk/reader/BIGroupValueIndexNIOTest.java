@@ -90,8 +90,7 @@ public class BIGroupValueIndexNIOTest extends TestCase {
             /**
              * Expect Exception
              */
-            return;
+            assertTrue(false);
         }
-        assertTrue(false);
     }
 }

@@ -1,10 +1,13 @@
 /**
  * 汇总表（分组表、交叉表）
+ * @class BI.SummaryTable
+ * @extends BI.Pane
  */
 BI.SummaryTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.SummaryTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-summary-table"
+            baseCls: "bi-summary-table",
+            overlap: false
         })
     },
 
@@ -64,16 +67,16 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         itemsCreator: function (op, populate) {
                             var vPage = op.vpage, hPage = op.hpage;
                             var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            if(vPage > self.vPage) {
+                            if (vPage > self.vPage) {
                                 pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
                             }
-                            if(vPage < self.vPage) {
+                            if (vPage < self.vPage) {
                                 pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
                             }
-                            if(hPage > self.hPage) {
+                            if (hPage > self.hPage) {
                                 pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
                             }
-                            if(hPage < self.hPage) {
+                            if (hPage < self.hPage) {
                                 pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
                             }
                             self.hPage = hPage;
@@ -141,16 +144,16 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         itemsCreator: function (op, populate) {
                             var vPage = op.vpage, hPage = op.hpage;
                             var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            if(vPage > self.vPage) {
+                            if (vPage > self.vPage) {
                                 pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
                             }
-                            if(vPage < self.vPage) {
+                            if (vPage < self.vPage) {
                                 pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
                             }
-                            if(hPage > self.hPage) {
+                            if (hPage > self.hPage) {
                                 pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
                             }
-                            if(hPage < self.hPage) {
+                            if (hPage < self.hPage) {
                                 pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
                             }
                             self.hPage = hPage;
@@ -352,7 +355,12 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 self.errorPane.setErrorInfo("error happens during populate for table: " + e);
                 self.errorPane.setVisible(true);
             }
-            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {_page_: {h: self.table.getHPage(), v: self.table.getVPage()}});
+            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {
+                _page_: {
+                    h: self.table.getHPage(),
+                    v: self.table.getVPage()
+                }
+            });
         }, this.model.getExtraInfo());
     },
 
@@ -469,7 +477,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this._afterTablePopulate();
     },
 
-    _refreshTable: function() {
+    _refreshTable: function () {
         this.errorPane.setVisible(false);
         this.table.attr("isNeedFreeze", this.model.isNeed2Freeze());
         this.table.attr("freezeCols", this.model.getFreezeCols());
@@ -544,7 +552,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
 
     },
 

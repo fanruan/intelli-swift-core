@@ -1,6 +1,5 @@
 package com.finebi.cube.data.input;
 
-import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.common.inter.Release;
 
 /**
@@ -9,9 +8,7 @@ import com.fr.bi.common.inter.Release;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeReader<T> extends Release {
-
-    T getSpecificValue(int rowNumber) throws BIResourceInvalidException;
+public interface ICubeReader extends Release {
 
     long getLastPosition(long rowCount);
 

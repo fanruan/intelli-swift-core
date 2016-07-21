@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -150,21 +151,18 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         if (!useRealData) {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
-        if(column.createValueMap(getRealTableKey4Calculate(), getLoader()).sizeOfGroup() < BIBaseConstant.SMALL_GROUP) {
+        int groupSize = column.createValueMap(getRealTableKey4Calculate(), getLoader()).sizeOfGroup();
+        if(groupSize < BIBaseConstant.SMALL_GROUP) {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         } else if (shouldGetIterByAllValue()) {
-            return getIterByAllValue();
-        } else if(column.createValueMap(getRealTableKey4Calculate(), getLoader()).sizeOfGroup() < BIBaseConstant.MIDDLE_GROUP) {
-            return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
-        } else if (hasParentRelation() && column.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
-             return getIterByChildValue();
+            return getIterByAllCal();
         } else {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
     }
 
     private boolean shouldGetIterByAllValue() {
-        return (column.isSupperLargeGroup(getRealTableKey4Calculate(), getLoader()) && root.getGroupValueIndex().getRowsCountWithData() < 1024) && (!column.hasSelfGroup());
+        return !column.hasSelfGroup();
     }
 
     private boolean hasParentRelation() {
@@ -251,6 +249,68 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             map.put(showKeys[i], gvis[i]);
         }
         return map.entrySet().iterator();
+    }
+
+    private Iterator getIterByAllCal(){
+        ICubeTableService ti = loader.getTableIndex(column.getField().getTableBelongTo().getTableSource());
+        final ICubeColumnIndexReader reader = ti.loadGroup(column.createKey(), column.getRelationList());
+        final Object[] groups = new Object[reader.sizeOfGroup()];
+        for (int i = 0; i < groups.length; i++) {
+            if(column.getSortType() != BIReportConstant.SORT.DESC) {
+                groups[i] = reader.getGroupValue(i);
+            }
+            else{
+                groups[i] = reader.getGroupValue(groups.length - i - 1);
+            }
+        }
+        return new Iterator() {
+
+            private int index = 0;
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+
+            @Override
+            public boolean hasNext() {
+                return index < groups.length;
+            }
+
+            @Override
+            public Object next() {
+                final int finalIndex = index;
+                final GroupValueIndex gvi = reader.getIndex(groups[finalIndex]);
+                Map.Entry entry = new Entry() {
+                    @Override
+                    public Object getKey() {
+                        return groups[finalIndex];
+                    }
+
+                    @Override
+                    public Object getValue() {
+                        return gvi;
+                    }
+
+                    @Override
+                    public Object setValue(Object value) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean equals(Object o) {
+                        return false;
+                    }
+
+                    @Override
+                    public int hashCode() {
+                        return 0;
+                    }
+                };
+                index++;
+                return entry;
+            }
+        };
     }
 
     private NewRootNodeChild getCurrentNodeChild(Entry entry) {

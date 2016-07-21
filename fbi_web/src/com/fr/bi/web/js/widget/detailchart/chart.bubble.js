@@ -17,7 +17,8 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80
+        LEGEND_HEIGHT: 80,
+        NO_PROJECT: 16
     },
 
     _defaultConfig: function () {
@@ -84,7 +85,8 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
                 break;
         }
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-
+        config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
+        config.plotOptions.shadow = this.config.bubble_style !== this.constants.NO_PROJECT;
         config.yAxis = this.yAxis;
 
         config.yAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.LEFT_AXIS);
@@ -165,7 +167,7 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
                     BI.each(item.data, function(id, da){
                         da.x = da.x || 0;
                         da.x = da.x.div(magnify);
-                        if(self.constants.MINLIMIT.sub(da.x) > 0){
+                        if(self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
                             da.x = 0;
                         }
                     })
@@ -181,7 +183,7 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                            if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
                                 da.y = 0;
                             }
                         }
@@ -309,7 +311,8 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
-            tooltip: options.tooltip || ""
+            tooltip: options.tooltip || "",
+            bubble_style: options.bubble_style || c.NO_PROJECT
         };
         this.options.items = items;
         var types = [];

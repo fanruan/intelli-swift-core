@@ -30,6 +30,13 @@ BIShow.TargetView = BI.inherit(BI.View, {
             self.model.set("used", self.usedCheck.isSelected());
         });
 
+        this.usedRadio = BI.createWidget({
+            type: "bi.radio"
+        });
+        this.usedRadio.on(BI.Radio.EVENT_CHANGE, function () {
+            self.model.set("used", self.usedRadio.isSelected());
+        });
+
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: this.constants.TARGET_BUTTON_HEIGHT,
@@ -84,7 +91,7 @@ BIShow.TargetView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.center_adapt",
-                    items: [this.usedCheck]
+                    items: [this.usedCheck, this.usedRadio]
                 },
                 width: this.constants.CHECKBOX_WIDTH
             }, this.editor, {el: this.iconButton, width: 0},
@@ -218,6 +225,76 @@ BIShow.TargetView = BI.inherit(BI.View, {
         return [this.calculateTargetButton, this.combo]
     },
 
+    _checkUsedEnable: function () {
+        var isUsed = this.model.get("used");
+        var wId = BI.Utils.getWidgetIDByDimensionID(this.model.get("id"));
+        this.usedCheck.setEnable(true);
+        this.usedCheck.setSelected(isUsed);
+        this.usedRadio.setEnable(true);
+        this.usedRadio.setSelected(isUsed);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if ((wType !== BICst.WIDGET.TABLE &&
+            wType !== BICst.WIDGET.CROSS_TABLE &&
+            wType !== BICst.WIDGET.COMPLEX_TABLE &&
+            wType !== BICst.WIDGET.GIS_MAP)
+            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION2
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
+            this.usedCheck.setEnable(false);
+            this.usedRadio.setEnable(false);
+        }
+        if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
+            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION1
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
+            this.usedCheck.setEnable(false);
+            this.usedRadio.setEnable(false);
+        }
+    },
+
+    _refreshCheckType: function () {
+        var tId = this.model.get("id");
+        var wId = BI.Utils.getWidgetIDByDimensionID(tId);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if (wType === BICst.WIDGET.FORCE_BUBBLE ||
+            wType === BICst.WIDGET.FALL_AXIS ||
+            wType === BICst.WIDGET.COMPARE_AXIS ||
+            wType === BICst.WIDGET.COMPARE_BAR ||
+            wType === BICst.WIDGET.RANGE_AREA ||
+            wType === BICst.WIDGET.COMPARE_AREA ||
+            wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
+            wType === BICst.WIDGET.SCATTER ||
+            wType === BICst.WIDGET.BUBBLE) {
+            this.usedCheck.setVisible(false);
+            this.usedRadio.setVisible(true);
+            return;
+        }
+        //特殊的地图 指标2一直为单选 若指标2中未选中 指标1为多选 否则单选
+        if (wType === BICst.WIDGET.MAP) {
+            var regionType = BI.Utils.getRegionTypeByDimensionID(tId);
+            if (regionType === BICst.REGION.TARGET2) {
+                this.usedCheck.setVisible(false);
+                this.usedRadio.setVisible(true);
+                return;
+            } else {
+                var allTarIds = BI.Utils.getAllTargetDimensionIDs(wId);
+                var isTar2Checked = false;
+                BI.some(allTarIds, function (i, tarId) {
+                    if (BI.Utils.getRegionTypeByDimensionID(tarId) === BICst.REGION.TARGET2 &&
+                        BI.Utils.isDimensionUsable(tarId)) {
+                        return isTar2Checked = true;
+                    }
+                });
+                if(isTar2Checked === true) {
+                    this.usedCheck.setVisible(false);
+                    this.usedRadio.setVisible(true);
+                    return;
+                }
+            }
+        }
+
+        this.usedCheck.setVisible(true);
+        this.usedRadio.setVisible(false);
+    },
+
     _updateTarget: function () {
         var self = this;
         var dId = this.model.get("id");
@@ -305,6 +382,7 @@ BIShow.TargetView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
+        this._checkUsedEnable();
         this.usedCheck.setSelected(this.model.get("used"));
         this.editor.setValue(this.model.get("name"));
         this.editor.setState(this.model.get("name"));
@@ -313,5 +391,6 @@ BIShow.TargetView = BI.inherit(BI.View, {
         items[2].width = filterIconWidth;
         this.htape.attr("items", items);
         this.htape.resize();
+        this._refreshCheckType();
     }
 });

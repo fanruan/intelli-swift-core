@@ -263,8 +263,14 @@
             return views[tableId];
         },
 
-        getPreviewTableDataByTableId: function (tableId, callback) {
-            Data.Req.reqPreviewTableData4DeziByTableId(tableId, callback);
+        isSelfCircleTableByTableId: function (tableId) {
+            var paths = BI.Utils.getPathsFromTableAToTableB(tableId, tableId);
+            if (paths.length === 0) {
+                return false;
+            }
+            return !BI.find(paths, function (idx, path) {
+                return path.length > 1;
+            });
         },
 
         /**
@@ -634,7 +640,7 @@
                 BICst.DEFAULT_CHART_SETTING.freeze_first_column;
         },
 
-        getWSShowRulesByID: function(wid) {
+        getWSShowRulesByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.rules_display) ? ws.rules_display :
                 BICst.DEFAULT_CHART_SETTING.bubble_display;
@@ -952,6 +958,12 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
                 BICst.DEFAULT_CHART_SETTING.show_zoom;
+        },
+
+        getWSNullContinueByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
+                BICst.DEFAULT_CHART_SETTING.nullContinue;
         },
 
         getWSTextDirectionByID: function (wid) {
@@ -1575,12 +1587,8 @@
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
             if (tableA === tableB) {        //同一张表
-                if (isSelfCircle(path)) {      //是自循环表
-                    if(checkPathAvailable(path, from, to)){ //from和to中都不包含层级字段
-                        return path;
-                    }else{
-                        return [getRelationOfselfCircle(from, to, path)];
-                    }
+                if (isSelfCircle(path) && !checkPathAvailable(path, from, to)) {      //是自循环表且字段包含层级字段
+                    return [getRelationOfselfCircle(from, to, path)];
                 } else {
                     return [[{
                         primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
@@ -1591,13 +1599,26 @@
             return path;
 
             //获取自循环生成的层级所在的关联
-            function getRelationOfselfCircle(from, to, paths){
-                return BI.find(paths, function(idx, path){
+            function getRelationOfselfCircle(from, to, paths) {
+                return BI.find(paths, function (idx, path) {
                     return BI.find(path, function (id, relation) {
                         var foreignId = self.getForeignIdFromRelation(relation);
                         return foreignId === from || foreignId === to;
                     });
                 })
+            }
+
+            function hasSelfCircleInHeadOrTail(paths) {
+                var result = BI.find(paths, function (idx, path) {
+                    return BI.find(path, function (id, relation) {
+                        if (idx === 0 || idx === path.length - 1) {
+                            return self.getTableIdByFieldID(self.getPrimaryIdFromRelation(relation))
+                                === self.getTableIdByFieldID(self.getForeignIdFromRelation(relation));
+                        }
+                        return false;
+                    });
+                });
+                return BI.isNull(result);
             }
 
             //是自循环还是循环路径
@@ -1708,6 +1729,60 @@
         /**
          * 数据相关
          */
+
+        getPreviewTableDataByTableId: function (tableId, callback) {
+            //构造一个明细表
+            var self = this;
+            var fields = this.getSortedFieldIdsOfOneTableByTableId(tableId);
+            var dimensions = {}, view = {10000: []};
+            BI.each(fields, function (i, fieldId) {
+                var id = BI.UUID();
+                var dimensionMap = {}, group = {};
+                dimensionMap[tableId] = {
+                    target_relation: []
+                };
+                if (self.getFieldTypeByID(fieldId) === BICst.COLUMN.DATE) {
+                    group.type = BICst.GROUP.YMDHMS;
+                }
+                var dType = BICst.TARGET_TYPE.STRING;
+                switch (self.getFieldTypeByID(fieldId)) {
+                    case BICst.COLUMN.DATE:
+                        dType = BICst.TARGET_TYPE.DATE;
+                        break;
+                    case BICst.COLUMN.NUMBER:
+                        dType = BICst.TARGET_TYPE.NUMBER;
+                }
+                dimensions[id] = {
+                    name: id,
+                    _src: {
+                        field_id: fieldId,
+                        table_id: tableId
+                    },
+                    type: dType,
+                    used: true,
+                    dimension_map: dimensionMap,
+                    group: group
+                };
+                view[10000].push(id);
+            });
+            var widget = {
+                type: BICst.WIDGET.DETAIL,
+                bounds: {
+                    height: 0,
+                    width: 0,
+                    left: 0,
+                    top: 0
+                },
+                name: "__StatisticWidget__" + BI.UUID(),
+                page: 0,
+                dimensions: dimensions,
+                view: view
+            };
+            Data.Req.reqWidgetSettingByData({widget: widget}, function (res) {
+                callback(res.data);
+            });
+        },
+
         getDataByFieldID: function (fid, callback) {
             var d = {
                 type: BICst.WIDGET.TABLE,
@@ -2126,6 +2201,18 @@
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
                 }
+                if(groupType === BICst.GROUP.ID_GROUP) {
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: {
+                            min: BI.parseFloat(value),
+                            max: BI.parseFloat(value),
+                            closemin: true,
+                            closemax: true
+                        },
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    }
+                }
                 var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
                 var oMin, oMax;
                 BI.each(groupNodes, function (i, node) {
@@ -2144,7 +2231,7 @@
                         filter_value: groupMap[value],
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
-                } else if (useOther === value) {
+                } else if (value === BICst.UNGROUP_TO_OTHER) {
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
                         filter_value: {
@@ -2302,6 +2389,10 @@
             BI.each(dimensions, function (dId, dimension) {
                 var filterValue = dimension.filter_value || {};
                 parseFilter(filterValue);
+                // 维度指标匹配关系未设置的维度 used = false
+                if(self.isDimensionByDimensionID(dId) && BI.isEmptyObject(dimension.dimension_map)) {
+                    dimension.used = false;
+                }
             });
 
             //考虑表头上指标过滤条件的日期类型

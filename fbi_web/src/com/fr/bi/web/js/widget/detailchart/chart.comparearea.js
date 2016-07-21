@@ -228,7 +228,7 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
                     if (position === item.yAxis) {
                         da.y = da.y || 0;
                         da.y = da.y.div(magnify);
-                        if (self.constants.MINLIMIT.sub(da.y) > 0) {
+                        if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
                             da.y = 0;
                         }
                         if ((BI.isNull(max) || da.y > max)) {
@@ -403,7 +403,6 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
                 position: idx > 0 ? "right" : "left",
                 lineWidth: 1,
                 axisIndex: idx,
-                reversed: idx > 0,
                 gridLineWidth: 0
             };
             self.yAxis.push(newYAxis);

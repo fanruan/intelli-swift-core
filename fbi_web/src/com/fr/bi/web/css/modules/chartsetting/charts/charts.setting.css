@@ -38,3 +38,6 @@
 .bi-charts-setting .bubble-style-button.active {
   background-color: #d4dadd;
 }
+.bi-charts-setting .bubble-style-button:hover {
+  background-color: #d4dadd;
+}

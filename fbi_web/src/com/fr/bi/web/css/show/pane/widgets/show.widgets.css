@@ -46,3 +46,6 @@
   border-radius: 10px;
   background: #ffffff;
 }
+.bi-dashboard-widget .dashboard-title-detail {
+  font-size: 16px;
+}
