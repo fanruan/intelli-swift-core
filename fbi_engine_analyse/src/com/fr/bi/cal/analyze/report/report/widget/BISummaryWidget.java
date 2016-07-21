@@ -296,11 +296,9 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                     Map<String, BusinessField> dimensionMap = new LinkedHashMap<String, BusinessField>();
                     dimensionsMap.put(dimensionId, dimensionMap);
                     if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
-                        if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
-                            JSONObject srcJo = targetRelationJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-                            String fieldId = srcJo.getString("field_id");
-                            dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));
-                        }
+                        JSONObject srcJo = targetRelationJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+                        String fieldId = srcJo.getString("field_id");
+                        dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));
                     }
                     if (targetRelationJo.has("target_relation")) {
                         Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
@@ -319,11 +317,14 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         String primaryTableId = primaryKeyJo.has("table_id") ? primaryKeyJo.getString("table_id") : null;
                         String foreignTableId = foreignKeyJo.has("table_id") ? foreignKeyJo.getString("table_id") : null;
 
-                        JSONObject srcJo = dims.getJSONObject("_src");
-                        if (srcJo.has("relation")) {
-                            JSONArray selfRelationJa = srcJo.getJSONArray("relation");
+                        JSONObject srcJo = dims.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+                        if (srcJo.has("target_relation")) {
+                            JSONArray selfRelationJa = srcJo.getJSONArray("target_relation");
                             for (int i = 0; i < selfRelationJa.length(); i++) {
-                                relationList.add(BITableRelationHelper.getRelation(selfRelationJa.getJSONObject(i)));
+                                BITableRelation selfRelation = BITableRelationHelper.getRelation(selfRelationJa.getJSONObject(i));
+                                if (BICubeConfigureCenter.getTableRelationManager().containTableRelation(userId, selfRelation)) {
+                                    relationList.add(selfRelation);
+                                }
                             }
 
                         }
