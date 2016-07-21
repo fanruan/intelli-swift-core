@@ -33,7 +33,8 @@ public class BIRandom extends Random {
         final long s0 = this.seed1;
         this.seed0 = s0;
         s1 ^= s1 << 23;
-        return (this.seed1 = (s1 ^ s0 ^ (s1 >>> 17) ^ (s0 >>> 26))) + s0;
+        this.seed1 = (s1 ^ s0 ^ (s1 >>> 17) ^ (s0 >>> 26));
+        return this.seed1 + s0;
     }
 
     @Override
