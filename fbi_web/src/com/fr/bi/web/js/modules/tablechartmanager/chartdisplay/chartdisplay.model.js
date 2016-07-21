@@ -552,12 +552,24 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         
         // 还要看有没有设置好维度指标匹配关系
         BI.remove(this.dimIds, function (i, dId) {
-            return BI.Utils.isDimensionByDimensionID(dId) &&
-                BI.isEmptyObject(BI.Utils.getDimensionMapByDimensionID(dId));
+            if(BI.Utils.isDimensionByDimensionID(dId)) {
+                var dimensionMap = BI.Utils.getDimensionMapByDimensionID(dId);
+                return BI.find(dimensionMap, function(i, item){
+                    if(BI.isNotNull(item) && item.length === 0) {
+                        return true;
+                    }
+                });
+            }
         });
         BI.remove(this.crossDimIds, function(i, dId) {
-            return BI.Utils.isDimensionByDimensionID(dId) &&
-                BI.isEmptyObject(BI.Utils.getDimensionMapByDimensionID(dId));
+            if(BI.Utils.isDimensionByDimensionID(dId)) {
+                var dimensionMap = BI.Utils.getDimensionMapByDimensionID(dId);
+                return BI.find(dimensionMap, function(i, item){
+                    if(BI.isNotNull(item) && item.length === 0) {
+                        return true;
+                    }
+                });
+            }
         });
     },
 

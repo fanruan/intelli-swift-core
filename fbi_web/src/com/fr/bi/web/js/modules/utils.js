@@ -2390,8 +2390,14 @@
                 var filterValue = dimension.filter_value || {};
                 parseFilter(filterValue);
                 // 维度指标匹配关系未设置的维度 used = false
-                if(self.isDimensionByDimensionID(dId) && BI.isEmptyObject(dimension.dimension_map)) {
-                    dimension.used = false;
+                if(self.isDimensionByDimensionID(dId)) {
+                    var dimensionMap = dimension.dimension_map;
+                    var findNull = BI.find(dimensionMap, function(i, item){
+                        if(BI.isNotNull(item) && item.length === 0) {
+                            return true;
+                        }
+                    });
+                    findNull && (dimension.used = false);
                 }
             });
 
