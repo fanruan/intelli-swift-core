@@ -2386,18 +2386,22 @@
 
             //日期类型的过滤条件
             var dimensions = widget.dimensions;
+            var tarIds = self.getAllUsableTargetDimensionIDs(wid);
             BI.each(dimensions, function (dId, dimension) {
                 var filterValue = dimension.filter_value || {};
                 parseFilter(filterValue);
                 // 维度指标匹配关系未设置的维度 used = false
                 if(self.isDimensionByDimensionID(dId)) {
                     var dimensionMap = dimension.dimension_map;
-                    var findNull = BI.find(dimensionMap, function(i, item){
-                        if(BI.isNotNull(item) && item.length === 0) {
-                            return true;
+                    var valid = true;
+                    BI.each(tarIds, function(i, tarId) {
+                        if(!BI.has(dimensionMap, tarId)) {
+                            valid = false;
                         }
                     });
-                    findNull && (dimension.used = false);
+                    if(valid === false) {
+                        dimension.used = false;
+                    }
                 }
             });
 

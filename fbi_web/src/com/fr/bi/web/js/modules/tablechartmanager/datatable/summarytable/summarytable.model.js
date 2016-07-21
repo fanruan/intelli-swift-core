@@ -193,21 +193,25 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         BI.remove(this.dimIds, function (i, dId) {
             if(BI.Utils.isDimensionByDimensionID(dId)) {
                 var dimensionMap = BI.Utils.getDimensionMapByDimensionID(dId);
-                return BI.find(dimensionMap, function(i, item){
-                    if(BI.isNotNull(item) && item.length === 0) {
-                        return true;
+                var valid = true;
+                BI.each(BI.Utils.getAllUsableTargetDimensionIDs(self.wId), function(i, tarId) {
+                    if(!BI.has(dimensionMap, tarId)) {
+                        valid = false;
                     }
                 });
+                return !valid;
             }
         });
         BI.remove(this.crossDimIds, function(i, dId) {
             if(BI.Utils.isDimensionByDimensionID(dId)) {
                 var dimensionMap = BI.Utils.getDimensionMapByDimensionID(dId);
-                return BI.find(dimensionMap, function(i, item){
-                    if(BI.isNotNull(item) && item.length === 0) {
-                        return true;
+                var valid = true;
+                BI.each(BI.Utils.getAllUsableTargetDimensionIDs(self.wId), function(i, tarId) {
+                    if(!BI.has(dimensionMap, tarId)) {
+                        valid = false;
                     }
                 });
+                return !valid;
             }
         });
 
