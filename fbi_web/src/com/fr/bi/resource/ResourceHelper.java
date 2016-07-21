@@ -108,7 +108,7 @@ public class ResourceHelper {
                     for(int i = 0; i < children.length(); i++) {
                         JSONObject child = children.getJSONObject(i);
                         String childId = child.getString("id");
-                        if(packages.getJSONObject(childId) != null) {
+                        if(packages.has(childId)) {
                             groups.put(groupName, group);
                             break;
                         }

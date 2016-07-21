@@ -46,8 +46,9 @@ public class BISaveFileGetExcelDataAction extends AbstractBIConfigureAction {
                 fs.close();
                 String originalPath = file.getAbsolutePath();
                 if (fileName.endsWith(".csv")) {
-                    int l = fileName.length();
-                    String name = fileName.substring(0, l - 4);
+                    String fullFileName = file.getName();
+                    int l = fullFileName.length();
+                    String name = fullFileName.substring(0, l - 4);
                     File xlsFile = new File(parentFile, name + ".xls");
                     Object lockCSV = BIPictureUtils.getImageLock(xlsFile.getAbsolutePath());
                     synchronized (lockCSV) {
