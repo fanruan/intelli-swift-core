@@ -31,6 +31,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -84,15 +85,15 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
-            rowCount = dealWidthAdd(cubeFieldSources, tableUpdateSetting.getPartAddSQL(), rowCount);
+            rowCount = dealWidthAdd(cubeFieldSources, addDataCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
         }
         /*remove*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartDeleteSQL(), sortRemovedList, loader);
+            sortRemovedList = dealWithRemove(cubeFieldSources, addDataCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader);
         }
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
-            rowCount = dealWidthAdd(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), rowCount);
+            rowCount = dealWidthAdd(cubeFieldSources, addDataCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
             sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
         }
         if (null!=sortRemovedList) {
@@ -160,5 +161,14 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
         BICubeDBUtils.runSQL(sqlStatement, new ICubeFieldSource[]{f}, removeTraversal);
         return sortRemovedList;
     }
-
+private String addDataCondition(String sql){
+    String LastModifyTime="上次更新时间";
+    SQLRegUtils sqlRegUtils=new SQLRegUtils(sql);
+    Date cubeLastTime = tableEntityService.getCubeLastTime();
+if(null!=cubeLastTime){
+    String conditions = sqlRegUtils.getConditions().replace(LastModifyTime, cubeLastTime.toString());
+    sqlRegUtils.setConditions(conditions);
+}
+    return sqlRegUtils.toString();
+}
 }
