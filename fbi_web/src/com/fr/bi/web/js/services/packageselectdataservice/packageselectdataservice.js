@@ -610,7 +610,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     }
                     if (BI.has(fId, "relation")) {
                         return {
-                            name: BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.relation)),
+                            name: BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.relation[0])),
                             _src: {
                                 id: fId.field_id,
                                 field_id: fId.field_id,
