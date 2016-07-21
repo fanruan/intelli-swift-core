@@ -12,9 +12,10 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.stable.constant.CellConstant;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -22,7 +23,6 @@ import com.fr.stable.ExportConstants;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -103,6 +103,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     @Override
     public JSONObject getCubeNode() throws JSONException {
+        long start = System.currentTimeMillis();
         GroupValueIndex gvi = createDetailViewGvi();
         paging.setTotalSize(gvi.getRowsCountWithData());
         final JSONArray ja = new JSONArray();
@@ -125,6 +126,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
             }
         };
         travel(action, gvi);
+        BILogger.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return jo;
     }
 
