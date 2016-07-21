@@ -34,7 +34,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             recordTableInfo();
             long count = transport();
             if (count >= 0) {
-                /*清楚remove的过滤条件*/
+                /*清除remove的过滤条件*/
                 TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
                 tableEntityService.recordRemovedLine(sortRemovedList);
                 tableEntityService.recordRowCount(count);

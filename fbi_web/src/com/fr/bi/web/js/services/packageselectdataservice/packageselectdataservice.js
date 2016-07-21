@@ -374,7 +374,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 title: title,
                 value: {
                     field_id: fieldId,
-                    relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0]
+                    target_relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0]
                 },
                 drag: self._createDrag(fieldName)
             }, f));
@@ -617,14 +617,14 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             group: {type: fId.group.type}
                         }
                     }
-                    if (BI.has(fId, "relation")) {
+                    if (BI.has(fId, "target_relation")) {
                         return {
-                            name: BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.relation[0])),
+                            name: BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.target_relation[0])),
                             _src: {
                                 id: fId.field_id,
                                 field_id: fId.field_id,
                                 table_id: BI.Utils.getTableIdByFieldID(fId.field_id),
-                                relation: fId.relation
+                                target_relation: fId.target_relation
                             },
                             type: BI.Utils.getDimensionTypeByFieldID(fId.field_id)
                         }
