@@ -220,7 +220,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                 title: title,
                 value: {
                     field_id: fieldId,
-                    relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0]
+                    target_relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0]
                 }
             }, f));
         });
