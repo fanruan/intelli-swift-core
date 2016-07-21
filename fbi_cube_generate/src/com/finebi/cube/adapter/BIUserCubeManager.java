@@ -83,7 +83,7 @@ public class BIUserCubeManager implements ICubeDataLoader {
 
     @Override
     public void clear() {
-
+        cube.clear();
     }
 
     @Override
