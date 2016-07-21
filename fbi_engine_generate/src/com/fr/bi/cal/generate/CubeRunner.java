@@ -201,6 +201,9 @@ public class CubeRunner {
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
+        finally {
+            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+        }
 
 
     }
