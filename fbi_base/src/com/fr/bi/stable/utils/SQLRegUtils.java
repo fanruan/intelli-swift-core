@@ -356,6 +356,10 @@ public class SQLRegUtils {
         return conditions;
     }
 
+    public void setConditions(String conditions) {
+        this.conditions = conditions;
+    }
+
     public String getGroupCols() {
         return groupCols;
     }
