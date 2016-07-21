@@ -33,6 +33,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             long count = transport();
             if (count >= 0) {
                 tableEntityService.recordRowCount(count);
+                tableEntityService.clear();
             }
             tableEntityService.addVersion(version);
             long tableCostTime = System.currentTimeMillis() - t;

@@ -77,14 +77,16 @@ public class BICube implements Cube {
             ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey);
             if (isResourceExist(location)) {
                 CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
-                return tableEntityGetterService.tableDataAvailable();
+                boolean result = tableEntityGetterService.tableDataAvailable();
+                tableEntityGetterService.clear();
+                return result;
             }
             return false;
 
         } catch (BICubeResourceAbsentException e) {
             e.printStackTrace();
             return false;
-        }catch (BICubeTableAbsentException e){
+        } catch (BICubeTableAbsentException e) {
             return false;
         }
     }
@@ -100,6 +102,7 @@ public class BICube implements Cube {
     @Override
     public void addVersion(long version) {
         cubeVersion.addVersion(version);
+        cubeVersion.clear();
     }
 
     @Override
