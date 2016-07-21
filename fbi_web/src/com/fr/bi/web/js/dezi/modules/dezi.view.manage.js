@@ -16,6 +16,7 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
     },
 
     getDetail: function (id, type) {
+        var view = "";
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -47,32 +48,45 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
-                return "BIDezi.DetailView";
+                view = "BIDezi.DetailView";
+                break;
             case BICst.WIDGET.DETAIL:
-                return "BIDezi.DetailTableDetailView";
+                view = "BIDezi.DetailTableDetailView";
+                break;
             case BICst.WIDGET.STRING:
-                return "BIDezi.StringDetailView";
+                view = "BIDezi.StringDetailView";
+                break;
             case BICst.WIDGET.DATE:
-                return "BIDezi.DateRangeDetailView";
+                view = "BIDezi.DateRangeDetailView";
+                break;
             case BICst.WIDGET.NUMBER:
-                return "BIDezi.NumberDetailView";
+                view = "BIDezi.NumberDetailView";
+                break;
             case BICst.WIDGET.QUERY:
             case BICst.WIDGET.YEAR:
-                return "BIDezi.YearDetailView";
+                view = "BIDezi.YearDetailView";
+                break;
             case BICst.WIDGET.QUARTER:
-                return "BIDezi.YearQuarterDetailView";
+                view = "BIDezi.YearQuarterDetailView";
+                break;
             case BICst.WIDGET.MONTH:
-                return "BIDezi.YearMonthDetailView";
+                view = "BIDezi.YearMonthDetailView";
+                break;
             case BICst.WIDGET.YMD:
-                return "BIDezi.DateDetailView";
+                view = "BIDezi.DateDetailView";
+                break;
             case BICst.WIDGET.TREE:
-                return "BIDezi.TreeDetailView";
+                view = "BIDezi.TreeDetailView";
+                break;
             default:
-                return "BIDezi.DetailView";
+                view = "BIDezi.DetailView";
+                break;
         }
+        return view;
     },
 
     getWidget: function (id, type) {
+        var view = "";
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -104,43 +118,62 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
-                return "BIDezi.WidgetView";
+                view = "BIDezi.WidgetView";
+                break;
             case BICst.WIDGET.CONTENT:
-                return "BIDezi.ContentWidgetView";
+                view = "BIDezi.ContentWidgetView";
+                break;
             case BICst.WIDGET.IMAGE:
-                return "BIDezi.ImageWidgetView";
+                view = "BIDezi.ImageWidgetView";
+                break;
             case BICst.WIDGET.WEB:
-                return "BIDezi.WebWidgetView";
+                view = "BIDezi.WebWidgetView";
+                break;
             case BICst.WIDGET.DETAIL:
-                return "BIDezi.DetailTableView";
+                view = "BIDezi.DetailTableView";
+                break;
             case BICst.WIDGET.STRING:
-                return "BIDezi.StringWidgetView";
+                view = "BIDezi.StringWidgetView";
+                break;
             case BICst.WIDGET.NUMBER:
-                return "BIDezi.NumberWidgetView";
+                view = "BIDezi.NumberWidgetView";
+                break;
             case BICst.WIDGET.DATE:
-                return "BIDezi.DateRangeView";
+                view = "BIDezi.DateRangeView";
+                break;
             case BICst.WIDGET.YEAR:
-                return "BIDezi.YearWidgetView";
+                view = "BIDezi.YearWidgetView";
+                break;
             case BICst.WIDGET.QUARTER:
-                return "BIDezi.YearQuarterWidgetView";
+                view = "BIDezi.YearQuarterWidgetView";
+                break;
             case BICst.WIDGET.MONTH:
-                return "BIDezi.YearMonthWidgetView";
+                view = "BIDezi.YearMonthWidgetView";
+                break;
             case BICst.WIDGET.YMD:
-                return "BIDezi.DateWidgetView";
+                view = "BIDezi.DateWidgetView";
+                break;
             case BICst.WIDGET.TREE:
-                return "BIDezi.TreeWidgetView";
+                view = "BIDezi.TreeWidgetView";
+                break;
             case BICst.WIDGET.GENERAL_QUERY:
-                return "BIDezi.GeneralQueryView";
+                view = "BIDezi.GeneralQueryView";
+                break;
             case BICst.WIDGET.QUERY:
-                return "BIDezi.QueryView";
+                view = "BIDezi.QueryView";
+                break;
             case BICst.WIDGET.RESET:
-                return "BIDezi.ResetView";
+                view = "BIDezi.ResetView";
+                break;
             default:
-                return "BIDezi.WidgetView";
+                view = "BIDezi.WidgetView";
+                break;
         }
+        return view;
     },
 
     getDimensionOrTarget: function (id, type, region, dId) {
+        var view = "";
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -174,30 +207,42 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.FUNNEL:
                 if (BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
                     BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region)) {
-                    return "BIDezi.DimensionView";
+                    view = "BIDezi.DimensionView";
+                    break;
                 }
-                return "BIDezi.TargetView";
+                view = "BIDezi.TargetView";
+                break;
             case BICst.WIDGET.DETAIL:
-                return "BIDezi.DetailDimensionView";
+                view = "BIDezi.DetailDimensionView";
+                break;
             case BICst.WIDGET.STRING:
-                return "BIDezi.StringDimensionView";
+                view = "BIDezi.StringDimensionView";
+                break;
             case BICst.WIDGET.NUMBER:
-                return "BIDezi.NumberDimensionView";
+                view = "BIDezi.NumberDimensionView";
+                break;
             case BICst.WIDGET.DATE:
-                return "BIDezi.DateDimensionView";
+                view = "BIDezi.DateDimensionView";
+                break;
             case BICst.WIDGET.YEAR:
             case BICst.WIDGET.QUARTER:
             case BICst.WIDGET.MONTH:
             case BICst.WIDGET.YMD:
-                return "BIDezi.DateDimensionView";
+                view = "BIDezi.DateDimensionView";
+                break;
             case BICst.WIDGET.TREE:
-                return "BIDezi.TreeDimensionView";
+                view = "BIDezi.TreeDimensionView";
+                break;
             case BICst.WIDGET.QUERY:
-                return "";
+                view = "";
+                break;
             case BICst.WIDGET.RESET:
-                return "";
+                view = "";
+                break;
             default:
-                return "BIDezi.DimensionView";
+                view = "BIDezi.DimensionView";
+                break;
         }
+        return view;
     }
 }));
