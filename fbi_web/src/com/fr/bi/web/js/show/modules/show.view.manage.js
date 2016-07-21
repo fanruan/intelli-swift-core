@@ -71,10 +71,10 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
                 return "BIShow.GeneralQueryView";
             case BICst.WIDGET.QUERY:
                 return "BIShow.QueryView";
-                break;
             case BICst.WIDGET.RESET:
                 return "BIShow.ResetView";
-                break;
+            default:
+                return "BIShow.WidgetView";
         }
     },
 
@@ -131,9 +131,11 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.TREE:
                 return "BIShow.TreeDimensionView";
             case BICst.WIDGET.QUERY:
-                break;
+                return "";
             case BICst.WIDGET.RESET:
-                break;
+                return "";
+            default:
+                return "BIShow.DimensionView";
         }
     }
 }));

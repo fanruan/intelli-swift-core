@@ -57,7 +57,6 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.NUMBER:
                 return "BIDezi.NumberDetailView";
             case BICst.WIDGET.QUERY:
-                break;
             case BICst.WIDGET.YEAR:
                 return "BIDezi.YearDetailView";
             case BICst.WIDGET.QUARTER:
@@ -68,7 +67,8 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
                 return "BIDezi.DateDetailView";
             case BICst.WIDGET.TREE:
                 return "BIDezi.TreeDetailView";
-            case BICst.WIDGET.RESET:
+            default:
+                return "BIDezi.DetailView";
         }
     },
 
@@ -133,10 +133,10 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
                 return "BIDezi.GeneralQueryView";
             case BICst.WIDGET.QUERY:
                 return "BIDezi.QueryView";
-                break;
             case BICst.WIDGET.RESET:
                 return "BIDezi.ResetView";
-                break;
+            default:
+                return "BIDezi.WidgetView";
         }
     },
 
@@ -193,9 +193,11 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.TREE:
                 return "BIDezi.TreeDimensionView";
             case BICst.WIDGET.QUERY:
-                break;
+                return "";
             case BICst.WIDGET.RESET:
-                break;
+                return "";
+            default:
+                return "BIDezi.DimensionView";
         }
     }
 }));
