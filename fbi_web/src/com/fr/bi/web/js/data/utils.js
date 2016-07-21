@@ -721,7 +721,8 @@ Data.Utils = {
             auto_custom: BI.isNull(options.map_styles) ? false : options.auto_custom,
             initDrillPath: options.initDrillPath || [],
             lnglat: options.lnglat || constants.LNG_FIRST,
-            click: options.click
+            click: options.click,
+            map_bubble_color: options.map_bubble_color || constants.theme_color
         };
 
         var maxes = [];
@@ -1295,6 +1296,7 @@ Data.Utils = {
             delete configs.legend;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.tooltip.shared = true;
+            config.plotOptions.bubble.color = config.map_bubble_color;
             //config.plotOptions.color = BI.isArray(config.theme_color) ? config.theme_color : [config.theme_color];
             var formatterArray = [];
             BI.backEach(items, function(idx, item){
@@ -1328,16 +1330,18 @@ Data.Utils = {
             function formatRangeLegend(){
                 switch (config.chart_legend){
                     case BICst.CHART_LEGENDS.BOTTOM:
-                        configs.rangeLegend.enabled = true;
-                        configs.rangeLegend.position = "bottom";
+                        config.rangeLegend.enabled = true;
+                        config.rangeLegend.visible = true;
+                        config.rangeLegend.position = "bottom";
                         break;
                     case BICst.CHART_LEGENDS.RIGHT:
-                        configs.rangeLegend.enabled = true;
-                        configs.rangeLegend.position = "right";
+                        config.rangeLegend.enabled = true;
+                        config.rangeLegend.visible = true;
+                        config.rangeLegend.position = "right";
                         break;
                     case BICst.CHART_LEGENDS.NOT_SHOW:
-                    default:
-                        configs.rangeLegend.enabled = false;
+                        config.rangeLegend.enabled = true;
+                        config.rangeLegend.visible = false;
                         break;
                 }
                 configs.rangeLegend.continuous = false;
@@ -1420,8 +1424,12 @@ Data.Utils = {
                                 });
 
                             }
+                            return range;
+                        }  else {
+                            defaultStyle.color = defaultColor;
+                            return defaultStyle;
                         }
-                        return range;
+
                 }
             }
 

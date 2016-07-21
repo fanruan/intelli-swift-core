@@ -46,7 +46,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
-        config.plotOptions.bubble.color = this.config.bubble_color;
+        config.plotOptions.bubble.color = this.config.map_bubble_color;
         //config.plotOptions.color = BI.isArray(this.config.theme_color) ? this.config.theme_color : [this.config.theme_color];
         var formatterArray = [];
         BI.backEach(items, function(idx, item){
@@ -194,7 +194,6 @@ BI.MapChart = BI.inherit(BI.Widget, {
                         defaultStyle.color = defaultColor;
                         return defaultStyle;
                     }
-
             }
         }
 
@@ -283,7 +282,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
             theme_color: options.theme_color || c.theme_color,
             map_styles: options.map_styles || [],
             auto_custom: options.auto_custom || c.auto_custom,
-            bubble_color: options.map_bubble_color || c.theme_color
+            map_bubble_color: options.map_bubble_color || c.theme_color
         };
         this.options.items = items;
 
