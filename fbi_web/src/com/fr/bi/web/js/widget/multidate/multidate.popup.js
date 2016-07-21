@@ -306,6 +306,7 @@
                         this.dateTab.setSelect(BICst.MULTI_DATE_YMD_CARD);
                         this.textButton.setValue(BI.i18nText("BI-Multi_Date_Today"));
                     }
+                    this.textButton.setEnable(true);
                     break;
             }
         },
