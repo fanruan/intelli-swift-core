@@ -149,10 +149,10 @@ Data.Utils = {
             return drills;
         }
 
-        function isDimensionByDimensionID(){
+        function isDimensionByDimensionID(dId){
             var region = 0;
-            BI.some(widget.view, function (reg, dId) {
-                if (view.contains(dId)) {
+            BI.some(widget.view, function (reg, arr) {
+                if (arr.contains(dId)) {
                     region = reg;
                     return true;
                 }
