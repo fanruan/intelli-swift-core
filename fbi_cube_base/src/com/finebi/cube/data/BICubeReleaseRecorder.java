@@ -28,18 +28,22 @@ public class BICubeReleaseRecorder implements ICubeSourceReleaseManager {
     }
 
     public void record(Object obj) {
-        if (!content.containsKey(obj)) {
-            content.put(obj, Thread.currentThread().getStackTrace());
-        } else {
+        synchronized (content) {
+            if (!content.containsKey(obj)) {
+                content.put(obj, Thread.currentThread().getStackTrace());
+            } else {
 //            throw BINonValueUtils.beyondControl();
+            }
         }
     }
 
     public void remove(Object obj) {
-        if (content.containsKey(obj)) {
-            content.remove(obj);
-        } else {
+        synchronized (content) {
+            if (content.containsKey(obj)) {
+                content.remove(obj);
+            } else {
 //            throw BINonValueUtils.beyondControl();
+            }
         }
     }
 

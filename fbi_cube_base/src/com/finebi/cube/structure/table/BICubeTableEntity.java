@@ -82,7 +82,6 @@ public class BICubeTableEntity implements CubeTableEntityService {
     @Override
     public void recordRowCount(long rowCount) {
         tableProperty.recordRowCount(rowCount);
-
     }
 
     @Override
@@ -200,6 +199,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
         }
         relationManager.clear();
         tableProperty.clear();
+//        tableProperty.forceRelease();
     }
 
     @Override
