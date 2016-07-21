@@ -21,7 +21,6 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -248,17 +247,25 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (o == null || getClass() != o.getClass()) return false;
+
         AbstractDimensionCalculator that = (AbstractDimensionCalculator) o;
-        return ComparatorUtils.equals(fetchObjectCore(), that.fetchObjectCore());
+
+        if (relations != null ? !relations.equals(that.relations) : that.relations != null) return false;
+        if (directToDimenRelations != null ? !directToDimenRelations.equals(that.directToDimenRelations) : that.directToDimenRelations != null)
+            return false;
+        if (dimension != null ? !dimension.equals(that.dimension) : that.dimension != null) return false;
+        return field != null ? field.equals(that.field) : that.field == null;
 
     }
 
     @Override
     public int hashCode() {
-        return fetchObjectCore().hashCode();
+        int result = relations != null ? relations.hashCode() : 0;
+        result = 31 * result + (directToDimenRelations != null ? directToDimenRelations.hashCode() : 0);
+        result = 31 * result + (dimension != null ? dimension.hashCode() : 0);
+        result = 31 * result + (field != null ? field.hashCode() : 0);
+        return result;
     }
 
     public class BIDimensionCore extends BICoreWrapper {
