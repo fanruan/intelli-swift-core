@@ -173,7 +173,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     break;
             }
             if(position === self.constants.DASHBOARD_AXIS){
-                self.dashboard_unit !== "" && (unit = unit + self.config.dashboard_unit)
+                self.config.dashboard_unit !== "" && (unit = unit + self.config.dashboard_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
         }

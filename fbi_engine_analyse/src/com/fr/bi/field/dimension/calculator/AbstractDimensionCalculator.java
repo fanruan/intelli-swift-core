@@ -99,32 +99,9 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return dimension.getGroup().createGroupedMap(createNoneSortNoneGroupValueMapGetter(target, loader));
     }
 
-    /**
-     * 是否为超级大分组
-     *
-     * @param targetTable 指标表
-     * @param loader      注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader) {
-        return false;
-    }
-
     @Override
     public boolean hasSelfGroup() {
         return dimension.getGroup().isNullGroup();
-    }
-
-    /**
-     * 是否为超级大分组
-     *
-     * @param loader 注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(ICubeDataLoader loader) {
-        return false;
     }
 
     @Override
@@ -193,13 +170,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     }
 
     @Override
-    public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader) {
-        return createValueMap(table, loader, true, 0);
-    }
-
-    @Override
-    public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
-        //默认设置field本身为关联主键
+    public int getOriginGroupSize(BusinessTable table, ICubeDataLoader loader) {
         CubeTableSource usedTableSource = getTableSourceFromField();
         BIKey usedColumnKey = dimension.createKey(field);
         //多对多处理,这里默认relationList的第一个关联是公共主表关联
@@ -209,9 +180,8 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
             usedTableSource = primaryTableSource;
             usedColumnKey = new IndexKey(primaryField.getFieldName());
         }
-        ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
-        getter = dimension.getGroup().createGroupedMap(getter);
-        return dimension.getSort().createGroupedMap(getter);
+        ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList());
+        return getter.sizeOfGroup();
     }
 
     private CubeTableSource getTableSourceFromField() {

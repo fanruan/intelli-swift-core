@@ -17,8 +17,6 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * This class created on 2016/3/10.
@@ -34,7 +32,6 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     private Map<ICubeResourceLocation, ResourceLock> resourceLockMap;
     private BIResourceSimpleCache<ICubePrimitiveReader> readerCache;
     private BIResourceSimpleCache<ICubePrimitiveWriter> writerCache;
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
     private boolean releasingResource = false;
 
     public static BICubeDiskPrimitiveDiscovery getInstance() {
