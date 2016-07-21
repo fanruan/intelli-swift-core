@@ -149,10 +149,10 @@ Data.Utils = {
             return drills;
         }
 
-        function isDimensionByDimensionID(){
+        function isDimensionByDimensionID(dId){
             var region = 0;
-            BI.some(widget.view, function (reg, dId) {
-                if (view.contains(dId)) {
+            BI.some(widget.view, function (reg, arr) {
+                if (arr.contains(dId)) {
                     region = reg;
                     return true;
                 }
@@ -1092,7 +1092,7 @@ Data.Utils = {
                 var opts = formatItems(data, t);
                 return formatConfigForPie(opts[1], opts[0]);
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                var opts = formatItems(data, t);
+                var opts = formatItems(data, types);
                 return formatConfigForMultiAxis(opts[1], opts[0]);
             case BICst.WIDGET.FORCE_BUBBLE:
                 var t = [];
@@ -2274,7 +2274,7 @@ Data.Utils = {
                         axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
                         axis.title.rotation = constants.ROTATION;
-                        axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[0];
+                        axis.labelStyle.color = axis.lineColor = axis.tickColor = configs.colors[0];
                         break;
                     case constants.RIGHT_AXIS:
                         axis.reversed = config.right_y_axis_reversed;
@@ -2284,7 +2284,7 @@ Data.Utils = {
                         axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
                         axis.title.rotation = constants.ROTATION;
-                        axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[1];
+                        axis.labelStyle.color = axis.lineColor = axis.tickColor = configs.colors[1];
                         break;
                     case constants.RIGHT_AXIS_SECOND:
                         axis.reversed = config.right_y_axis_second_reversed;
@@ -2294,7 +2294,7 @@ Data.Utils = {
                         axis.title.text = config.show_right_y_axis_second_title === true ? config.right_y_axis_second_title + axis.title.text : axis.title.text;
                         axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
                         axis.title.rotation = constants.ROTATION;
-                        axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[2];
+                        axis.labelStyle.color = axis.lineColor = axis.tickColor = configs.colors[2];
                         break;
                 }
             });
@@ -2304,8 +2304,19 @@ Data.Utils = {
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
 
+            var lineItem = [];
+            var otherItem = [];
+            BI.each(items, function(idx, item){
+                item.color = [configs.yAxis[idx].labelStyle.color];
+                if(item.type === "line"){
+                    lineItem.push(item);
+                }else{
+                    otherItem.push(item);
+                }
+            });
+
             return BI.extend(configs, {
-                series: items
+                series: BI.concat(otherItem, lineItem)
             });
 
             function formatChartStyle(){
