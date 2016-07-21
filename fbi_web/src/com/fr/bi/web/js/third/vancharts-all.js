@@ -2992,7 +2992,7 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
                 name:pointOption.name,
                 lnglat:pointOption.lnglat,
                 drill : QueryUtils.queryList(queryList, 'drilldown'),
-                opacity:QueryUtils.queryList(queryList, 'opacity'),
+                fillColorOpacity:QueryUtils.queryList(queryList, 'fillColorOpacity'),
 
                 isNull:isNull,
                 style:series.style,
@@ -9996,7 +9996,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
             try{
                 mapData = JSON.parse(resource);
             }catch (e){
-                if(window.FR){
+                if(window.FR && window.FR.ajax){
                     FR.ajax({
                         type: 'GET',
                         url: resource,
@@ -10079,7 +10079,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                 });
             }
 
-            if(cfg.tileLayer && !this.imageString){
+            if(cfg.tileLayer && !cfg.imageMap){
                 // gis层级
                 L.tileLayer(cfg.tileLayer).addTo(leaflet);
             }
@@ -10150,10 +10150,25 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                     lnglat = type == Constants.POINT_MAP ? feature.geometry.coordinates : feature.properties.center;
 
                     if(!lnglat){
-                        var bounds = d3.geo.bounds(feature);
-                        var lng = (bounds[0][0] + bounds[1][0])/2;
-                        var lat = (bounds[0][1] + bounds[1][1])/2;
-                        lnglat = [lng, lat];
+                        if(this._isImageMap()){
+                            var points = [];
+                            var lngMin = this.imageWidth,lngMax = 0;
+                            var latMin = this.imageHeight, latMax = 0;
+                            getAllPoints(feature, points);
+                            points.forEach(function (point) {
+                                lngMin = Math.min(lngMin, point[0]);
+                                lngMax = Math.max(lngMax, point[0]);
+
+                                latMin = Math.min(latMin, point[1]);
+                                latMax = Math.max(latMax, point[1]);
+                            });
+                            lnglat = [(lngMax + lngMin)/2, (latMax + latMin)/2];
+                        }else{
+                            var bounds = d3.geo.bounds(feature);
+                            var lng = (bounds[0][0] + bounds[1][0])/2;
+                            var lat = (bounds[0][1] + bounds[1][1])/2;
+                            lnglat = [lng, lat];
+                        }
                     }
                 }
             }
@@ -10333,6 +10348,10 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
             }
         },
 
+        _isImageMap:function(){
+            return this.componentOption.imageMap;
+        },
+
         //这个fitbounds既需要考虑json文件,还要考虑点地图的时候的在数据里写死了经纬度
         _getFitBounds:function(){
 
@@ -10340,7 +10359,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
             var byJson = true;
             var lngMin = 180, lngMax = -180, latMin = 90, latMax = -90;
 
-            if(this.imageString){
+            if(this._isImageMap()){
                 lngMin = this.imageWidth; lngMax = 0;
                 latMin = this.imageHeight; latMax = 0;
             }
@@ -10366,7 +10385,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
 
             if(byJson && this.maps && this.maps.length){
 
-                if(this.imageString){
+                if(this._isImageMap()){
 
                     var allPoints = [];
                     this.maps.forEach(function(map){
@@ -10569,8 +10588,13 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../utils/Col
             var hoverColor = cfg.hoverColor || cfg.style.color;
             var colorOpacity = ColorUtils.getColorOpacityWithoutDefault(item.color);
             var color = ColorUtils.colorToHex(item.color);
-            colorOpacity = BaseUtils.hasDefined(colorOpacity) ? colorOpacity : sery.fillColorOpacity;
-            colorOpacity = BaseUtils.hasDefined(colorOpacity) ? colorOpacity : 1;
+            if(sery.type == Constants.RADAR_CHART && !sery.columnType){//雷达图的填充色透明度不影响图例
+                colorOpacity = colorOpacity || 1;
+            }else{
+                colorOpacity = BaseUtils.hasDefined(colorOpacity) ? colorOpacity : sery.fillColorOpacity;
+                colorOpacity = BaseUtils.hasDefined(colorOpacity) ? colorOpacity : 1;
+            }
+
 
             BaseUtils.extend(item, {
                 series:sery,
