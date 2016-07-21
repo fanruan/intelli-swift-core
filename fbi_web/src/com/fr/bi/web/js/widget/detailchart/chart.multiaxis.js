@@ -86,7 +86,6 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
         config.yAxis = this.yAxis;
 
 
-        var color = [];
         BI.each(config.yAxis, function(idx, axis){
             switch (axis.axisIndex){
                 case self.constants.LEFT_AXIS:

@@ -36,7 +36,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     self.set("clicked", linkageValues);
                 }
                 BI.remove(arr, function (i, id) {
-                    if(key2 == id){
+                    if(key2 === id){
                         isTarget = true;
                         return true;
                     }
@@ -94,7 +94,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             var views = this.get("view"), dimensions = this.get("dimensions");
             BI.each(views, function (region, arr) {
                 BI.each(arr, function (i, id) {
-                    if (key2 == id) {
+                    if (key2 === id) {
                         regionType = region;
                         arr = arr.splice(i + 1, 0, copy);
                         return false;

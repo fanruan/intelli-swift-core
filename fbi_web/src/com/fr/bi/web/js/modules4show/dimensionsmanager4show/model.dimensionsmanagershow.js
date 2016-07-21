@@ -77,7 +77,7 @@ BI.DimensionsManagerShowModel = BI.inherit(BI.Widget, {
         //图表
         var usedTargets = BI.Utils.getAllUsableTargetDimensionIDs(wId);
         BI.each(this.viewMap[newType], function (regionId, dIds) {
-            var dim1Found = false, dim2Found = false, series = [];
+            var dim1Found = false, dim2Found = false;
             var tar1Found = false, tar2Found = false, tar3Found = false;
             BI.each(dIds, function (i, dId) {
                 if (regionId === BICst.REGION.DIMENSION1) {
