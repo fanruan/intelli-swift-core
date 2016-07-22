@@ -15,8 +15,8 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class created on 2016/3/10.
@@ -50,7 +50,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     private BICubeDiskPrimitiveDiscovery() {
         writerManager = BIPrimitiveNIOWriterManager.getInstance();
         readerManager = BIPrimitiveNIOReaderManager.getInstance();
-        resourceLockMap = new HashMap<ICubeResourceLocation, ResourceLock>();
+        resourceLockMap = new ConcurrentHashMap<ICubeResourceLocation, ResourceLock>();
         writerCache = new BIResourceSimpleCache<ICubePrimitiveWriter>();
         readerCache = new BIResourceSimpleCache<ICubePrimitiveReader>();
     }
@@ -116,10 +116,13 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     }
 
     private ResourceLock getLock(ICubeResourceLocation resourceLocation) {
-        if (resourceLockMap.containsKey(resourceLocation)) {
-            return resourceLockMap.get(resourceLocation);
-        } else {
-            synchronized (resourceLockMap) {
+        /**
+         * 加强一些
+         */
+        synchronized (resourceLockMap) {
+            if (resourceLockMap.containsKey(resourceLocation)) {
+                return resourceLockMap.get(resourceLocation);
+            } else {
                 if (!resourceLockMap.containsKey(resourceLocation)) {
                     ResourceLock lock = new ResourceLock();
                     resourceLockMap.put(resourceLocation, lock);
