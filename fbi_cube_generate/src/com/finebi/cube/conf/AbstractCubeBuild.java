@@ -43,7 +43,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         allBusinessTable = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
         calculateDependTool = new CalculateDependManager();
         try {
-            allRelationPathSet = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
+            allRelationPathSet=BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
         } catch (BITableRelationConfusionException e) {
             BILogger.getLogger().error(e.getMessage());
         } catch (BITablePathConfusionException e) {
