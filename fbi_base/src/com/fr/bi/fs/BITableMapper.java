@@ -23,7 +23,7 @@ public class BITableMapper {
                 new CommonFieldColumnMapper(FIELD_USERID, Types.BIGINT, new ColumnSize(10), false),
                 new CommonFieldColumnMapper(REPORT_ID, Types.BIGINT, new ColumnSize(10), false),
                 new CommonFieldColumnMapper(SESSIONID, Types.VARCHAR, new ColumnSize(50), false),
-        }, new String[][]{new String[]{FIELD_USERID, REPORT_ID}});
+        }, new String[][]{new String[]{FIELD_USERID, REPORT_ID, SESSIONID}});
     }
 
     /**

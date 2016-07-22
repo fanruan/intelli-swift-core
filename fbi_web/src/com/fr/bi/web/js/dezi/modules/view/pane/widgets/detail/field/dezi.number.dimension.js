@@ -29,6 +29,7 @@ BIDezi.NumberDimensionView = BI.inherit(BI.View, {
             type: "bi.sign_editor",
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
             cls: "bi-dimension-name",
+            allowBlank: false,
             validationChecker: function () {
                 return self._checkDimensionName(self.editor.getValue());
             }

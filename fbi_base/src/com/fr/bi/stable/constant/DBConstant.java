@@ -123,4 +123,6 @@ public static final class CUBE_UPDATE_TYPE {
 
         public static final int NEVER = 0x1;
     }
+
+    public static final String SYSTEM_USER_NAME = "__system_user_name__";
 }

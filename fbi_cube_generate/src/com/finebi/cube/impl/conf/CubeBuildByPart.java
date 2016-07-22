@@ -66,39 +66,30 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     }
 
     private void setRelations() {
-        Map sourceIdMap = new HashMap<String, BITableSourceRelation>();
+
         Iterator<BITableRelation> iterator = newRelations.iterator();
         while (iterator.hasNext()) {
             BITableRelation relation = iterator.next();
             BITableSourceRelation sourceRelation = convertRelation(relation);
-            if (null == sourceRelation) {
-                return;
-            }
-            if (!sourceIdMap.containsKey(relation.toString())) {
-                biTableSourceRelationSet.add(sourceRelation);
-                newTableSources.add(sourceRelation.getForeignTable());
-                newTableSources.add(sourceRelation.getPrimaryTable());
-            }
-
+            biTableSourceRelationSet.add(sourceRelation);
+            newTableSources.add(sourceRelation.getForeignTable());
+            newTableSources.add(sourceRelation.getPrimaryTable());
         }
-        sourceIdMap.clear();
+        biTableSourceRelationSet = removeDuplicateRelations(biTableSourceRelationSet);
     }
 
     private void setRelationPath() {
-        Map sourceIdMap = new HashMap<String, BITableSourceRelationPath>();
         for (BITableRelationPath path : allRelationPathSet) {
             try {
                 BITableSourceRelationPath relationPath = convertPath(path);
-                if (null != relationPath && !sourceIdMap.containsKey(relationPath.getSourceID())) {
-                    sourceIdMap.put(relationPath.getSourceID(), relationPath);
+                if (null != relationPath) {
                     biTableSourceRelationPathSet.add(relationPath);
                 }
             } catch (Exception e) {
                 continue;
             }
         }
-        sourceIdMap.clear();
-
+        biTableSourceRelationPathSet=removeDuplicateRelationPaths(biTableSourceRelationPathSet);
     }
 
 

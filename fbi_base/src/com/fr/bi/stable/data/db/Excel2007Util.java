@@ -166,7 +166,15 @@ public class Excel2007Util {
                 columnCount = oneRow.length;
                 columnNames = new String[columnCount];
                 for (int j = 0; j < oneRow.length; j++) {
-                    columnNames[j] = oneRow[j].toString();
+                    String cName = oneRow[j].toString();
+                    String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
+                    Pattern p = Pattern.compile(regEx);
+                    Matcher m = p.matcher(cName);
+                    cName = m.replaceAll(StringUtils.EMPTY).trim();
+                    columnNames[j] = cName;
+                    if (ComparatorUtils.equals(StringUtils.EMPTY, cName)) {
+                        columnNames[j] = Inter.getLocText("BI-Field");
+                    }
                 }
                 createDistinctColumnNames();
             } else if (i == 1) {
