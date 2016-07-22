@@ -36,12 +36,12 @@ BI.ParamItem = BI.inherit(BI.Widget, {
 
         this.radioGroup.on(BI.Controller.EVENT_CHANGE, function (type) {
             if (type === BI.Events.CONFIRM) {
-                self.fireEvent(BI.MultiDateCard.EVENT_CHANGE);
+                self.fireEvent(BI.ParamItem.EVENT_CHANGE);
             }
         });
         this.radioGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.setValue(self.getValue());
-            self.fireEvent(BI.MultiDateCard.EVENT_CHANGE);
+            self.fireEvent(BI.ParamItem.EVENT_CHANGE);
         });
         BI.createWidget({
             element: this.element,

@@ -32,7 +32,7 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.MultiAxisChart.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
         this.xAxis = [{
             type: "category",
             title: {
@@ -58,8 +58,8 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
     _formatConfig: function(config, items){
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
-        formatCordon();
+        config.style = this.formatChartStyle();
+        this.formatCordon();
         switch (this.config.chart_legend){
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
@@ -84,16 +84,13 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
             delete config.zoom.zoomType;
         }
         config.yAxis = this.yAxis;
-
-
-        var color = [];
         BI.each(config.yAxis, function(idx, axis){
             switch (axis.axisIndex){
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed;
-                    axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
+                    axis.formatter = self.formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
                     formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx);
-                    axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    axis.title.text = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
@@ -101,9 +98,9 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
                     break;
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed;
-                    axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
+                    axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
                     formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx);
-                    axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    axis.title.text = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
@@ -111,13 +108,15 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
                     break;
                 case self.constants.RIGHT_AXIS_SECOND:
                     axis.reversed = self.config.right_y_axis_second_reversed;
-                    axis.formatter = formatTickInXYaxis(self.config.right_y_axis_second_style, self.constants.RIGHT_AXIS_SECOND);
+                    axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_second_style, self.constants.RIGHT_AXIS_SECOND);
                     formatNumberLevelInYaxis(self.config.right_y_axis_second_number_level, idx);
-                    axis.title.text = getXYAxisUnit(self.config.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
+                    axis.title.text = self.getXYAxisUnit(self.config.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
                     axis.title.text = self.config.show_right_y_axis_second_title === true ? self.config.right_y_axis_second_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
                     axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[2];
+                    break;
+                default:
                     break;
             }
         });
@@ -140,62 +139,8 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
 
         return [BI.concat(otherItem, lineItem), config];
 
-        function formatChartStyle(){
-            switch (self.config.chart_style) {
-                case BICst.CHART_STYLE.STYLE_GRADUAL:
-                    return "gradual";
-                case BICst.CHART_STYLE.STYLE_NORMAL:
-                default:
-                    return "normal";
-            }
-        }
-
-        function formatCordon(){
-            BI.each(self.config.cordon, function(idx, cor){
-                if(idx === 0 && self.xAxis.length > 0){
-                    var magnify = calcMagnify(self.config.x_axis_number_level);
-                    self.xAxis[0].plotLines = BI.map(cor, function(i, t){
-                        return BI.extend(t, {
-                            value: t.value.div(magnify),
-                            width: 1,
-                            label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
-                                "text": t.text,
-                                "align": "top"
-                            }
-                        });
-                    });
-                }
-                if(idx > 0 && self.yAxis.length >= idx){
-                    var magnify = 1;
-                    switch (idx - 1) {
-                        case self.constants.LEFT_AXIS:
-                            magnify = calcMagnify(self.config.left_y_axis_number_level);
-                            break;
-                        case self.constants.RIGHT_AXIS:
-                            magnify = calcMagnify(self.config.right_y_axis_number_level);
-                            break;
-                        case self.constants.RIGHT_AXIS_SECOND:
-                            magnify = calcMagnify(self.config.right_y_axis_second_number_level);
-                            break;
-                    }
-                    self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
-                        return BI.extend(t, {
-                            value: t.value.div(magnify),
-                            width: 1,
-                            label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
-                                "text": t.text,
-                                "align": "left"
-                            }
-                        });
-                    });
-                }
-            })
-        }
-
         function formatNumberLevelInYaxis(type, position){
-            var magnify = calcMagnify(type);
+            var magnify = self.calcMagnify(type);
             if(magnify > 1){
                 BI.each(items, function(idx, item){
                     BI.each(item.data, function(id, da){
@@ -213,103 +158,177 @@ BI.MultiAxisChart = BI.inherit(BI.Widget, {
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }
         }
+    },
 
-        function calcMagnify(type){
-            var magnify = 1;
-            switch (type) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    magnify = 1;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    magnify = 10000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    magnify = 1000000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    magnify = 100000000;
-                    break;
-            }
-            return magnify;
+    formatChartStyle: function () {
+        switch (this.config.chart_style) {
+            case BICst.CHART_STYLE.STYLE_GRADUAL:
+                return "gradual";
+            case BICst.CHART_STYLE.STYLE_NORMAL:
+            default:
+                return "normal";
         }
+    },
 
-        function getXYAxisUnit(numberLevelType, position){
-            var unit = "";
-            switch (numberLevelType) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    unit = "";
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    unit = BI.i18nText("BI-Wan");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    unit = BI.i18nText("BI-Million");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    unit = BI.i18nText("BI-Yi");
-                    break;
+    formatCordon: function () {
+        var self = this;
+        var magnify = 1;
+        BI.each(this.config.cordon, function (idx, cor) {
+            if (idx === 0 && self.xAxis.length > 0) {
+                magnify = self.calcMagnify(self.config.x_axis_number_level);
+                self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
+                    return BI.extend(t, {
+                        value: t.value.div(magnify),
+                        width: 1,
+                        label: {
+                            "style": {
+                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                "color": "#808080",
+                                "fontSize": "12px",
+                                "fontWeight": ""
+                            },
+                            "text": t.text,
+                            "align": "top"
+                        }
+                    });
+                });
             }
-            if(position === self.constants.X_AXIS){
-                self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
+            if (idx > 0 && self.yAxis.length >= idx) {
+                magnify = 1;
+                switch (idx - 1) {
+                    case self.constants.LEFT_AXIS:
+                        magnify = self.calcMagnify(self.config.left_y_axis_number_level);
+                        break;
+                    case self.constants.RIGHT_AXIS:
+                        magnify = self.calcMagnify(self.config.right_y_axis_number_level);
+                        break;
+                    case self.constants.RIGHT_AXIS_SECOND:
+                        magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
+                        break;
+                    default:
+                        break;
+                }
+                self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
+                    return BI.extend(t, {
+                        value: t.value.div(magnify),
+                        width: 1,
+                        label: {
+                            "style": {
+                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                "color": "#808080",
+                                "fontSize": "12px",
+                                "fontWeight": ""
+                            },
+                            "text": t.text,
+                            "align": "left"
+                        }
+                    });
+                });
             }
-            if(position === self.constants.LEFT_AXIS){
-                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
-            }
-            if(position === self.constants.RIGHT_AXIS){
-                self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
-            }
-            if(position === self.constants.RIGHT_AXIS_SECOND){
-                self.config.right_y_axis_second_unit !== "" && (unit = unit + self.config.right_y_axis_second_unit)
-            }
-            return unit === "" ? unit : "(" + unit + ")";
+        })
+    },
+
+    calcMagnify: function (type) {
+        var magnify = 1;
+        switch (type) {
+            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                magnify = 1;
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                magnify = 10000;
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                magnify = 1000000;
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                magnify = 100000000;
+                break;
+            default:
+                break;
         }
+        return magnify;
+    },
 
-        function formatTickInXYaxis(type, position){
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
+    getXYAxisUnit: function (numberLevelType, position) {
+        var unit = "";
+        switch (numberLevelType) {
+            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                unit = "";
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                unit = BI.i18nText("BI-Wan");
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                unit = BI.i18nText("BI-Million");
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                unit = BI.i18nText("BI-Yi");
+                break;
+            default:
+                break;
+        }
+        if (position === this.constants.X_AXIS) {
+            this.config.x_axis_unit !== "" && (unit = unit + this.config.x_axis_unit)
+        }
+        if (position === this.constants.LEFT_AXIS) {
+            this.config.left_y_axis_unit !== "" && (unit = unit + this.config.left_y_axis_unit)
+        }
+        if (position === this.constants.RIGHT_AXIS) {
+            this.config.right_y_axis_unit !== "" && (unit = unit + this.config.right_y_axis_unit)
+        }
+        if (position === this.constants.RIGHT_AXIS_SECOND) {
+            this.config.right_y_axis_second_unit !== "" && (unit = unit + this.config.right_y_axis_second_unit)
+        }
+        return unit === "" ? unit : "(" + unit + ")";
+    },
+
+    formatTickInXYaxis: function (type, position) {
+        var formatter = '#.##';
+        switch (type) {
+            case this.constants.NORMAL:
+                formatter = '#.##';
+                break;
+            case this.constants.ZERO2POINT:
+                formatter = '#0';
+                break;
+            case this.constants.ONE2POINT:
+                formatter = '#0.0';
+                break;
+            case this.constants.TWO2POINT:
+                formatter = '#0.00';
+                break;
+            default:
+                break;
+        }
+        if (position === this.constants.LEFT_AXIS) {
+            if (this.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (type === this.constants.NORMAL) {
+                    formatter = '#0%'
+                } else {
+                    formatter += '%';
+                }
             }
-            if(position === self.constants.LEFT_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
+        }else{
+            if (position === this.constants.RIGHT_AXIS) {
+                if (this.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    if (type === this.constants.NORMAL) {
                         formatter = '#0%'
-                    }else{
+                    } else {
+                        formatter += '%';
+                    }
+                }
+            }else{
+                if (this.config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    if (type === this.constants.NORMAL) {
+                        formatter = '#0%'
+                    } else {
                         formatter += '%';
                     }
                 }
             }
-            if(position === self.constants.RIGHT_AXIS){
-                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            if(position === self.constants.RIGHT_AXIS_SECOND){
-                if(self.config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
         }
+        return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
     },
 
     populate: function (items, options, types) {

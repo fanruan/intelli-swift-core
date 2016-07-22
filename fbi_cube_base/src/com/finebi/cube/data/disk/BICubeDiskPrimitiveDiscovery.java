@@ -34,7 +34,6 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     private Map<ICubeResourceLocation, ResourceLock> resourceLockMap;
     private BIResourceSimpleCache<ICubePrimitiveReader> readerCache;
     private BIResourceSimpleCache<ICubePrimitiveWriter> writerCache;
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
     private boolean releasingResource = false;
 
     public static BICubeDiskPrimitiveDiscovery getInstance() {
@@ -120,7 +119,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
 
     private ResourceLock getLock(ICubeResourceLocation resourceLocation) {
         /**
-         * 加强一些
+         * ��ǿһЩ
          */
         synchronized (resourceLockMap) {
             if (resourceLockMap.containsKey(resourceLocation)) {

@@ -1587,7 +1587,7 @@
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
             if (tableA === tableB) {        //同一张表
-                if (isSelfCircle(path) && !checkPathAvailable(path, from, to)) {      //是自循环表且字段包含层级字段
+                if (this.isSelfCircleTableByTableId(tableA) && !checkPathAvailable(path, from, to)) {      //是自循环表且字段包含层级字段
                     return [getRelationOfselfCircle(from, to, path)];
                 } else {
                     return [[{
@@ -1606,30 +1606,6 @@
                         return foreignId === from || foreignId === to;
                     });
                 })
-            }
-
-            function hasSelfCircleInHeadOrTail(paths) {
-                var result = BI.find(paths, function (idx, path) {
-                    return BI.find(path, function (id, relation) {
-                        if (idx === 0 || idx === path.length - 1) {
-                            return self.getTableIdByFieldID(self.getPrimaryIdFromRelation(relation))
-                                === self.getTableIdByFieldID(self.getForeignIdFromRelation(relation));
-                        }
-                        return false;
-                    });
-                });
-                return BI.isNull(result);
-            }
-
-            //是自循环还是循环路径
-            function isSelfCircle(paths) {
-                if (path.length === 0) {
-                    return false;
-                }
-                var result = BI.find(paths, function (idx, path) {
-                    return path.length > 1;
-                });
-                return BI.isNull(result);
             }
 
             //对自循环表检测路径合法依据：路径中的a个关联中是否存在外键为primKey
@@ -2509,7 +2485,7 @@
                 case BICst.MULTI_DATE_YEAR_AFTER:
                     return new Date(currY + 1 * value, currM, currD).getTime();
                 case BICst.MULTI_DATE_YEAR_BEGIN:
-                    return new Date(currY, 1, 1).getTime();
+                    return new Date(currY, 0, 1).getTime();
                 case BICst.MULTI_DATE_YEAR_END:
                     return new Date(currY, 11, 31).getTime();
 

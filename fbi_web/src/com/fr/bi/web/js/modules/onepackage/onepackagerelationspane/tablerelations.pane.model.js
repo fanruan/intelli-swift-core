@@ -36,9 +36,9 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
 
     getTableTranName: function (tId) {
         var tableNameText = "";
-        if (BI.isNull(this.originalTableNames[tId])) {
+        if (BI.isNull(this.originalTableNames[tId]) || this.translations[tId] === this.originalTableNames[tId]) {
             tableNameText = this.translations[tId];
-        } else if (BI.isNotNull(this.translations[tId]) && this.translations[tId] !== this.originalTableNames[tId]) {
+        } else if (BI.isNotNull(this.translations[tId])) {
             tableNameText = this.translations[tId] + "(" + this.originalTableNames[tId] + ")";
         }
         return tableNameText;
@@ -47,9 +47,8 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
     getFieldTranName: function (fieldId) {
         var fieldData = this.all_fields[fieldId];
         var fieldNameText = fieldData.field_name;
-        var fId = fieldData.table_id + fieldNameText;
-        if (BI.isNotNull(this.translations[fId]) && this.translations[fId] !== fieldNameText) {
-            fieldNameText = this.translations[fId] + "(" + fieldNameText + ")";
+        if (BI.isNotNull(this.translations[fieldId]) && this.translations[fieldId] !== fieldNameText) {
+            fieldNameText = this.translations[fieldId] + "(" + fieldNameText + ")";
         }
         return fieldNameText;
     },

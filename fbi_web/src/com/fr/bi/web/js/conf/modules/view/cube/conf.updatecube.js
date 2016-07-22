@@ -41,13 +41,14 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             handler: function () {
                 self.immediateButton.setEnable(false);
                 self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
-                self.cubeLog.refreshLog(true);
-                // self.model.set("immediateUpdate", true);
-                self.taskAdding = true;
                 BI.Utils.generateCube(function (data) {
                     self.taskAdding = false;
+                    self.cubeLog.refreshLog(true);
+                    self._createCheckInterval();
                 });
-                self._createCheckInterval();
+
+                // self.model.set("immediateUpdate", true);
+                self.taskAdding = true;
             }
         });
 
