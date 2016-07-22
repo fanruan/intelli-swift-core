@@ -60,7 +60,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.FUNNEL:
                 this.chartSetting = BI.createWidget({
-                    type: "bi.charts_setting",
+                    type: "bi.axis_charts_setting",
                     wId: wId
                 });
                 this.chartSetting.on(BI.ChartsSetting.EVENT_CHANGE, function () {

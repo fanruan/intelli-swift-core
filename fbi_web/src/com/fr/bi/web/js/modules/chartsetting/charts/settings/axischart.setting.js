@@ -1,9 +1,9 @@
 /**
- * @class BI.ChartsSetting
+ * @class BI.AxisChartsSetting
  * @extends BI.Widget
  * 柱状，堆积柱状，组合图样式
  */
-BI.ChartsSetting = BI.inherit(BI.Widget, {
+BI.AxisChartsSetting = BI.inherit(BI.Widget, {
     constant: {
         SINGLE_LINE_HEIGHT: 60,
         SIMPLE_H_GAP: 10,
@@ -22,13 +22,13 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
     },
 
     _defaultConfig: function(){
-        return BI.extend(BI.ChartsSetting.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.AxisChartsSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting"
         })
     },
 
     _init: function(){
-        BI.ChartsSetting.superclass._init.apply(this, arguments);
+        BI.AxisChartsSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         this.colorSelect = BI.createWidget({
@@ -38,7 +38,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.colorSelect.populate();
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //风格——1、2
@@ -58,7 +58,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -110,7 +110,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.numberLevellY = BI.createWidget({
@@ -121,7 +121,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.rYAxisStyle = BI.createWidget({
@@ -132,7 +132,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.rYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.numberLevelrY = BI.createWidget({
@@ -143,7 +143,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.numberLevelrY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //单位
@@ -156,7 +156,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.RYUnit = BI.createWidget({
@@ -168,7 +168,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.RYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //显示标题
@@ -180,7 +180,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleLY = BI.createWidget({
@@ -190,7 +190,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             cls: "unit-input"
         });
         this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.isShowTitleRY = BI.createWidget({
@@ -201,7 +201,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleRY.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleRY = BI.createWidget({
@@ -212,7 +212,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.editTitleRY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //轴逆序
@@ -223,7 +223,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.reversedLY.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.reversedRY = BI.createWidget({
@@ -233,7 +233,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.reversedRY.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //横轴文本方向
@@ -250,7 +250,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             }
         });
         this.text_direction.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.isShowTitleX = BI.createWidget({
@@ -261,7 +261,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
 
         this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function(){
             this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.editTitleX = BI.createWidget({
@@ -272,7 +272,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //图例
@@ -284,7 +284,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //数据标签
@@ -295,7 +295,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //数据表格
@@ -309,7 +309,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             if(this.isSelected()){
                 self.showZoom.setSelected(false);
             }
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //网格线
@@ -320,7 +320,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //图表缩放滚轮
@@ -334,7 +334,7 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
             if(this.isSelected()){
                 self.showDataTable.setSelected(false);
             }
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({
@@ -666,5 +666,5 @@ BI.ChartsSetting = BI.inherit(BI.Widget, {
         this.showZoom.setSelected(v.show_zoom);
     }
 });
-BI.ChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.charts_setting", BI.ChartsSetting);
+BI.AxisChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.axis_charts_setting", BI.AxisChartsSetting);
