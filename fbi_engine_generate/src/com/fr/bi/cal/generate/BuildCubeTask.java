@@ -100,7 +100,6 @@ public class BuildCubeTask implements CubeTask {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
         }
     }
 
@@ -123,8 +122,9 @@ public class BuildCubeTask implements CubeTask {
         operationManager.generateRelationBuilder(cubeBuild.getCubeGenerateRelationSet());
         operationManager.generateTableRelationPath(cubeBuild.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
+
         try {
-            BIConfigureManagerCenter.getLogManager().reLationPathSet(cubeBuild.getBiTableSourceRelationPathSet(), biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().relationPathSet(cubeBuild.getBiTableSourceRelationPathSet(), biUser.getUserId());
             BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuild.getAllSingleSources(), biUser.getUserId());
             router.deliverMessage(generateMessageDataSourceStart());
         } catch (BIDeliverFailureException e) {
