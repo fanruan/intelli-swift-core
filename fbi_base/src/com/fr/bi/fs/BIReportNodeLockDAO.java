@@ -52,8 +52,22 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
 		createSession().delete(BIReportNodeLock.class);
 	}
 
+
 	/**
 	 * 获取模板被哪些用户session lock
+	 * @param reportId
+	 * @return
+	 */
+	public List<BIReportNodeLock> getLock(long reportId) {
+		Map<String, Object> fvMap = new HashMap<String, Object>();
+		fvMap.put(BITableMapper.BI_REPORT_NODE_LOCK.REPORT_ID, reportId);
+		return createSession().listByFieldValues(BIReportNodeLock.class, fvMap);
+	}
+
+
+	/**
+	 * 获取模板被哪些用户session lock
+	 * @param userId 当前用户id
 	 * @param reportId
 	 * @return
      */
