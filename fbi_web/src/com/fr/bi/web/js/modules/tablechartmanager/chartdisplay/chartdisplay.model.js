@@ -550,31 +550,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             }
         });
         
-        // 还要看有没有设置好维度指标匹配关系
-        BI.remove(this.dimIds, function (i, dId) {
-            if(BI.Utils.isDimensionByDimensionID(dId)) {
-                var dimensionMap = BI.Utils.getDimensionMapByDimensionID(dId);
-                var valid = true;
-                BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, tarId) {
-                    if(!BI.has(dimensionMap, tarId)) {
-                        valid = false;
-                    }
-                });
-                return !valid;
-            }
-        });
-        BI.remove(this.crossDimIds, function(i, dId) {
-            if(BI.Utils.isDimensionByDimensionID(dId)) {
-                var dimensionMap = BI.Utils.getDimensionMapByDimensionID(dId);
-                var valid = true;
-                BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, tarId) {
-                    if(!BI.has(dimensionMap, tarId)) {
-                        valid = false;
-                    }
-                });
-                return !valid;
-            }
-        });
     },
 
     getWidgetData: function(type, callback){

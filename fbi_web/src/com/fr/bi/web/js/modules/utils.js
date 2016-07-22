@@ -2362,23 +2362,9 @@
 
             //日期类型的过滤条件
             var dimensions = widget.dimensions;
-            var tarIds = self.getAllUsableTargetDimensionIDs(wid);
             BI.each(dimensions, function (dId, dimension) {
                 var filterValue = dimension.filter_value || {};
                 parseFilter(filterValue);
-                // 维度指标匹配关系未设置的维度 used = false
-                if(self.isDimensionByDimensionID(dId)) {
-                    var dimensionMap = dimension.dimension_map;
-                    var valid = true;
-                    BI.each(tarIds, function(i, tarId) {
-                        if(!BI.has(dimensionMap, tarId)) {
-                            valid = false;
-                        }
-                    });
-                    if(valid === false) {
-                        dimension.used = false;
-                    }
-                }
             });
 
             //考虑表头上指标过滤条件的日期类型
