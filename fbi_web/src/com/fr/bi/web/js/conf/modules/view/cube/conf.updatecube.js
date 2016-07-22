@@ -66,6 +66,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             success: function (data) {
                 var isGenerating = data.isGenerating;
                 if (isGenerating === false && self.taskAdding ==false) {
+
                     self.immediateButton.setEnable(true);
                     self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
                     //清掉interval了
