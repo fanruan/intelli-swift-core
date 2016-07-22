@@ -169,13 +169,13 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     var settings = self.model.get("settings");
                     settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
                     self.model.set("settings", settings);
-                    self._refreshLayout();
+                    self._refreshTitlePosition();
                     break;
                 case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
                     var settings = self.model.get("settings");
                     settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
                     self.model.set("settings", settings);
-                    self._refreshLayout();
+                    self._refreshTitlePosition();
                     break;
                 case BICst.DASHBOARD_WIDGET_FILTER:
                     self._onClickFilter();

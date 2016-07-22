@@ -71,17 +71,24 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         if (text === Infinity || text !== text) {
             return text;
         }
+        //解决丢精度问题
+        var pointSize = 1;
+        var pointArr = text.toString().split(".");
+        if(BI.isNotNull(pointArr[1])) {
+            pointSize = pointArr[1].length;
+        }
+        var pointLevel =  Math.pow(10, pointSize);
         switch (numLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
                 return text;
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                return text / 10000;
+                return text * pointLevel / (10000 * pointLevel);
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                return text / 1000000;
+                return text * pointLevel / (1000000 * pointLevel);
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                return text / 100000000;
+                return text * pointLevel / (100000000 * pointLevel);
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return text * 100;
+                return text * pointLevel * 100 / pointLevel;
         }
         return text;
     },
