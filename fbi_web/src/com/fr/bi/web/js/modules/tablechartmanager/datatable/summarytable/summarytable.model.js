@@ -189,32 +189,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             }
         });
 
-        // 还要看有没有设置好维度指标匹配关系
-        BI.remove(this.dimIds, function (i, dId) {
-            if(BI.Utils.isDimensionByDimensionID(dId)) {
-                var dimensionMap = BI.Utils.getDimensionMapByDimensionID(dId);
-                var valid = true;
-                BI.each(BI.Utils.getAllUsableTargetDimensionIDs(self.wId), function(i, tarId) {
-                    if(!BI.has(dimensionMap, tarId)) {
-                        valid = false;
-                    }
-                });
-                return !valid;
-            }
-        });
-        BI.remove(this.crossDimIds, function(i, dId) {
-            if(BI.Utils.isDimensionByDimensionID(dId)) {
-                var dimensionMap = BI.Utils.getDimensionMapByDimensionID(dId);
-                var valid = true;
-                BI.each(BI.Utils.getAllUsableTargetDimensionIDs(self.wId), function(i, tarId) {
-                    if(!BI.has(dimensionMap, tarId)) {
-                        valid = false;
-                    }
-                });
-                return !valid;
-            }
-        });
-
         //使用中的指标
         this.targetIds = [];
         BI.each(view[BICst.REGION.TARGET1], function (i, dId) {

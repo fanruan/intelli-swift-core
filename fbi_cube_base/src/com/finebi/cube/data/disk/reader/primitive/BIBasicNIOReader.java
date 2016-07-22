@@ -132,6 +132,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     }
 
     public void releaseSource() {
+
         readWriteLock.writeLock().lock();
         if (!isValid) {
             return;
@@ -141,7 +142,8 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
         try {
             //但愿10ms能 执行完get方法否则可能导致jvm崩溃
             //锁太浪费资源了，10ms目前并没有遇到问题
-            Thread.currentThread().sleep(10);
+            //daniel:改成1ms，最垃圾的磁盘也读完了
+            Thread.currentThread().sleep(1);
         } catch (InterruptedException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
