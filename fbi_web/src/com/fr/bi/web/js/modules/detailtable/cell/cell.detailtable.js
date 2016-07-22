@@ -53,16 +53,16 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
     },
 
     _parseNumLevel: function (text, numLevel) {
-        if (text === Infinity || text !== text) {
+        if (text === Infinity || text !== text || !BI.isNumeric(text)) {
             return text;
         }
         //解决丢精度问题
         var pointSize = 1;
         var pointArr = text.toString().split(".");
-        if(BI.isNotNull(pointArr[1])) {
+        if (BI.isNotNull(pointArr[1])) {
             pointSize = pointArr[1].length;
         }
-        var pointLevel =  Math.pow(10, pointSize);
+        var pointLevel = Math.pow(10, pointSize);
         switch (numLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
                 return text;
