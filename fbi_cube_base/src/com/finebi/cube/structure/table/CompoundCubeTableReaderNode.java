@@ -219,6 +219,11 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
+    public boolean isCubeLastTimeAvailable() {
+        return masterTable.isCubeLastTimeAvailable();
+    }
+
+    @Override
     public void recordFieldNamesFromParent(Set<String> fieldNames) {
         throw new UnsupportedOperationException();
     }
