@@ -1,4 +1,5 @@
 /**
+ * custom scale
  * Created by GameJian on 2016/7/19.
  */
 BI.ComboCustomScale = BI.inherit(BI.Widget , {
@@ -10,7 +11,7 @@ BI.ComboCustomScale = BI.inherit(BI.Widget , {
 
     _init: function() {
         BI.ComboCustomScale.superclass._init.apply(this , arguments);
-        var self = this, o = this,options;
+        var self = this;
 
         this.pane = BI.createWidget({
             type: "bi.popup_custom_scale"
@@ -51,7 +52,7 @@ BI.ComboCustomScale = BI.inherit(BI.Widget , {
     },
 
     setValue: function(v) {
-
+        this.pane.setValue(v)
     }
 });
 BI.ComboCustomScale.EVENT_CHANGE = "EVENT_CHANGE";

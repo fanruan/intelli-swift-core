@@ -294,7 +294,6 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var selectedTab = this.tab.getSelectedTab();
         this.loading();
         this.model.getWidgetData(type, function (types, data, options) {
-            self.loaded();
             if (BI.isNotNull(types.error)) {
                 self.errorPane.setErrorInfo(types.error);
                 self.errorPane.setVisible(true);
@@ -359,6 +358,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                     lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
                 });
                 selectedTab.populate(data, op, types);
+                self.loaded();
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
                 self.errorPane.setVisible(true);

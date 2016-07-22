@@ -139,8 +139,8 @@ public class Excel2003Util implements HSSFListener {
             case BOFRecord.sid:
                 processBOFRecord(record);
                 break;
-            case DimensionsRecord.sid:
-                processDimensionRecord(record);
+            case RowRecord.sid:
+                processRowRecord(record);
                 break;
             //collection of label record
             case SSTRecord.sid:
@@ -207,9 +207,9 @@ public class Excel2003Util implements HSSFListener {
         }
     }
 
-    private void processDimensionRecord(Record record){
+    private void processRowRecord(Record record){
         //此处读到的count都包含了标识行和列结束的cell，即+1了
-        columnCount = ((DimensionsRecord)record).getLastCol();
+        columnCount = ((RowRecord)record).getLastCol();
     }
 
     public void processBlankRecord(Record record) {

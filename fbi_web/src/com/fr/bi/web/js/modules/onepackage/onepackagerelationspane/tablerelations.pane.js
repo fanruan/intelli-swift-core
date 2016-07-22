@@ -35,8 +35,6 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         var fieldsMap = this.model.getFieldsMap();
         var relations = this.model.getRelations();
         var connectSet = relations.connectionSet;
-        var primKeyMap = relations.primKeyMap;
-        var foreignKeyMap = relations.foreignKeyMap;
         var all_fields = this.model.getAllFields();
         var regionHandler = function(){
             self.fireEvent(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, this.options.value);
@@ -45,16 +43,48 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         var degrees = getTableIdsDegree();
         var calcDegree = {};
         var distinctTableIds = [];
-        BI.each(tableIds, function(idx, tId){
+        var relationTableSet = [];
+        this._getAllRelationTablesByTables(tableIds, relationTableSet);
+        BI.each(relationTableSet, function(idx, tId){
             calcDegree[tId] = 0;
         });
-        BI.each(tableIds, function(idx, tId){
+        BI.each(relationTableSet, function(idx, tId){
             if(BI.contains(distinctTableIds, tId)){
                 return;
             }
             distinctTableIds.push(tId);
-            var primFields = getFieldsInPrimKeyMap(fieldsMap[tId]);
-            var foreFields = getFieldsInForeignMap(fieldsMap[tId]);
+            var primFields = self.getFieldsInPrimKeyMap(fieldsMap[tId]);
+            var foreFields = self.getFieldsInForeignMap(fieldsMap[tId]);
+            if(BI.isNull(fieldsMap[tId])){
+                BI.each(connectSet, function(idx, obj){
+                    var primTableId = all_fields[obj.primaryKey.field_id].table_id;
+                    var foreignTableId = all_fields[obj.foreignKey.field_id].table_id;
+                    if(tId === primTableId && BI.contains(tableIds, foreignTableId)){
+                        var primaryId = obj.primaryKey.field_id;
+                        var foreignId = obj.foreignKey.field_id;
+                        items.push({
+                            primary: {
+                                region: tId,
+                                regionText: self.model.getTableTranName(tId),
+                                regionTitle: self.model.getTableTranName(tId),
+                                value: primaryId,
+                                text: self.model.getFieldTranName(primaryId),
+                                title: self.model.getFieldTranName(primaryId)
+                            },
+                            foreign: {
+                                region: all_fields[foreignId].table_id,
+                                regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
+                                regionTitle: self.model.getTableTranName(all_fields[foreignId].table_id),
+                                value: foreignId,
+                                text: self.model.getFieldTranName(foreignId),
+                                title: self.model.getFieldTranName(foreignId),
+                                regionHandler: regionHandler
+                            }
+                        });
+                    }
+                });
+                return;
+            }
             if(BI.isEmptyArray(primFields) && BI.isEmptyArray(foreFields)){
                 items.push({
                     primary: {
@@ -96,7 +126,7 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         }
 
         function getViewItemsByTableId(tId, visitSet){
-            var rels = getRelationsByPrimaryId(tId);
+            var rels = self.getRelationsByPrimaryId(tId);
             var items = [];
             BI.each(rels, function(idx, rel){
                 var primaryId = rel.primaryKey.field_id, foreignId = rel.foreignKey.field_id;
@@ -125,25 +155,30 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                             }
                         });
                     }else{
+                        var primaryItem = {
+                            region: all_fields[primaryId].table_id,
+                            regionText: self.model.getTableTranName(all_fields[primaryId].table_id),
+                            regionTitle: self.model.getTableTranName(all_fields[primaryId].table_id),
+                            value: primaryId,
+                            text: self.model.getFieldTranName(primaryId),
+                            title: self.model.getFieldTranName(primaryId),
+                            regionHandler: regionHandler
+                        };
+                        var foreignItem = {
+                            region: all_fields[foreignId].table_id,
+                            regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
+                            regionTitle: self.model.getTableTranName(all_fields[foreignId].table_id),
+                            value: foreignId,
+                            text: self.model.getFieldTranName(foreignId),
+                            title: self.model.getFieldTranName(foreignId),
+                            regionHandler: regionHandler
+                        };
+                        if(!BI.contains(self.model.getTableIds(), all_fields[foreignId].table_id)){
+                            delete foreignItem.regionHandler;
+                        }
                         items.push({
-                            primary: {
-                                region: all_fields[primaryId].table_id,
-                                regionText: self.model.getTableTranName(all_fields[primaryId].table_id),
-                                regionTitle: self.model.getTableTranName(all_fields[primaryId].table_id),
-                                value: primaryId,
-                                text: self.model.getFieldTranName(primaryId),
-                                title: self.model.getFieldTranName(primaryId),
-                                regionHandler: regionHandler
-                            },
-                            foreign: {
-                                region: all_fields[foreignId].table_id,
-                                regionText: self.model.getTableTranName(all_fields[foreignId].table_id),
-                                regionTitle: self.model.getTableTranName(all_fields[foreignId].table_id),
-                                value: foreignId,
-                                text: self.model.getFieldTranName(foreignId),
-                                title: self.model.getFieldTranName(foreignId),
-                                regionHandler: regionHandler
-                            }
+                            primary: primaryItem,
+                            foreign: foreignItem
                         });
                     }
                 }
@@ -156,27 +191,72 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             });
             return items;
         }
+    },
 
-        function getFieldsInPrimKeyMap(fieldIds){
-            return BI.filter(fieldIds, function(idx, fieldId){
-                return BI.has(primKeyMap, fieldId);
-            });
-        }
+    getFieldsInPrimKeyMap: function (fieldIds) {
+        var relations = this.model.getRelations();
+        var primKeyMap = relations.primKeyMap;
+        return BI.filter(fieldIds, function (idx, fieldId) {
+            return BI.has(primKeyMap, fieldId);
+        });
+    },
 
-        function getFieldsInForeignMap(fieldIds){
-            return BI.filter(fieldIds, function(idx, fieldId){
-                return BI.has(foreignKeyMap, fieldId);
-            });
-        }
+    getFieldsInForeignMap: function (fieldIds) {
+        var relations = this.model.getRelations();
+        var foreignKeyMap = relations.foreignKeyMap;
+        return BI.filter(fieldIds, function (idx, fieldId) {
+            return BI.has(foreignKeyMap, fieldId);
+        });
+    },
 
-        function getRelationsByPrimaryId(tId){
-            var rel = [];
-            var primFields = getFieldsInPrimKeyMap(fieldsMap[tId]);
-            BI.each(primFields, function(idx, fieldId){
-                rel = BI.concat(rel, primKeyMap[fieldId]);
+    getRelationsByPrimaryId: function (tId) {
+        var rel = [];
+        var relations = this.model.getRelations();
+        var primKeyMap = relations.primKeyMap;
+        var fieldsMap = this.model.getFieldsMap();
+        var primFields = this.getFieldsInPrimKeyMap(fieldsMap[tId]);
+        BI.each(primFields, function (idx, fieldId) {
+            rel = BI.concat(rel, primKeyMap[fieldId]);
+        });
+        return rel;
+    },
+
+    _getAllRelationTablesByTables: function(tableIds, resultTables){
+        var self = this;
+        var all_fields = this.model.getAllFields();
+        var relations = this.model.getRelations();
+        var primKeyMap = relations.primKeyMap;
+        var foreignKeyMap = relations.foreignKeyMap;
+        BI.each(tableIds, function(idx, tableId){
+            if(BI.contains(resultTables, tableId)){
+                return;
+            }
+            resultTables.push(tableId);
+            var fieldsMap = self.model.getFieldsMap();
+            var primFields = self.getFieldsInPrimKeyMap(fieldsMap[tableId]);
+            var foreFields = self.getFieldsInForeignMap(fieldsMap[tableId]);
+            BI.each(BI.concat(primFields, foreFields), function(id, fieldId){
+                var rels = [];
+                if(BI.has(primKeyMap, fieldId)){
+                    rels = primKeyMap[fieldId];
+                    BI.each(rels, function(i, rel){
+                        if(!BI.contains(resultTables, rel.foreignKey.field_id)){
+                            var tId = all_fields[rel.foreignKey.field_id].table_id;
+                            self._getAllRelationTablesByTables([tId], resultTables);
+                        }
+                    })
+                }
+                if(BI.has(foreignKeyMap, fieldId)){
+                    rels = foreignKeyMap[fieldId];
+                    BI.each(rels, function(i, rel){
+                        if(!BI.contains(resultTables, rel.primaryKey.field_id)){
+                            var tId = all_fields[rel.primaryKey.field_id].table_id;
+                            self._getAllRelationTablesByTables([tId], resultTables);
+                        }
+                    })
+                }
             });
-            return rel;
-        }
+        });
     },
 
     populate: function(items){

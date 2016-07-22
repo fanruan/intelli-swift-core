@@ -227,7 +227,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     relationTablesStructure.push({
                         id: table.id,
                         pId: BI.PackageSelectDataService.RELATION_TABLE,
-                        type: "bi.select_data_expander",
+                        type: "bi.expander",
                         el: BI.extend({
                             type: "bi.detail_select_data_level1_node",
                             layer: 1,
@@ -240,6 +240,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             open: false
                         }),
                         popup: {
+                            type: "bi.select_data_loader",
                             items: self._getFieldStructureOfOneTable(table.id, true)
                         }
                     });
@@ -319,7 +320,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     fieldStructure.push({
                         id: id,
                         pId: tableId,
-                        type: "bi.select_data_expander",
+                        type: "bi.expander",
                         text: fieldName,
                         el: BI.extend({
                             wId: o.wId,
@@ -334,6 +335,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             open: false
                         }),
                         popup: {
+                            type: "bi.select_data_loader",
                             items: self._getSelfCircleFieldsByFieldId(id, circleMap[id] || [])
                         }
                     });
@@ -394,7 +396,12 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             BI.each(fields, function (i, field) {
                 var isCircle = BI.Utils.getFieldIsCircleByID(field.id);
                 if (isCircle !== true && !fIds.contains(field.id)) {
-                    newFields.push(field);
+                    newFields.push(BI.extend(field, {
+                        value: {
+                            field_id: field.id,
+                            target_relation: BI.Utils.getPathsFromFieldAToFieldB(field.id, field.id)[0]
+                        }
+                    }));
                 }
                 if (fIds.contains(field.id)) {
                     fieldList.push(field);
@@ -471,7 +478,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     fieldStructure.push({
                         id: fid,
                         pId: tableId,
-                        type: "bi.select_data_expander",
+                        type: "bi.expander",
                         el: {
                             type: "bi.detail_select_data_level2_date_node",
                             layer: 2,
@@ -484,7 +491,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             open: false
                         },
                         popup: {
-                            //items: self._buildDateChildren(tableId, field, isRelation)
+                            type: "bi.select_data_loader",
+                            items: self._buildDateChildren(tableId, field, isRelation)
                         }
                     })
                 } else {
@@ -501,7 +509,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         value: fid,
                         isParent: true
                     });
-                    fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
+                    //fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
                 }
             } else {
                 fieldStructure.push(BI.extend({
@@ -528,7 +536,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     fieldStructure.push({
                         id: id,
                         pId: tableId,
-                        type: "bi.select_data_expander",
+                        type: "bi.expander",
                         text: fieldName,
                         el: BI.extend({
                             wId: o.wId,
@@ -543,6 +551,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             open: false
                         }),
                         popup: {
+                            type: "bi.select_data_loader",
                             items: self._getSelfCircleFieldsByFieldId(id, map[id] || [], isRelation)
                         }
                     });
