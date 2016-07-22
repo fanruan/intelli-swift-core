@@ -3,6 +3,7 @@
  */
 package com.fr.bi.fs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,13 +52,28 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
 		createSession().delete(BIReportNodeLock.class);
 	}
 
+
 	/**
 	 * 获取模板被哪些用户session lock
 	 * @param reportId
 	 * @return
-     */
+	 */
 	public List<BIReportNodeLock> getLock(long reportId) {
 		Map<String, Object> fvMap = new HashMap<String, Object>();
+		fvMap.put(BITableMapper.BI_REPORT_NODE_LOCK.REPORT_ID, reportId);
+		return createSession().listByFieldValues(BIReportNodeLock.class, fvMap);
+	}
+
+
+	/**
+	 * 获取模板被哪些用户session lock
+	 * @param userId 当前用户id
+	 * @param reportId
+	 * @return
+     */
+	public List<BIReportNodeLock> getLock(long userId, long reportId) {
+		Map<String, Object> fvMap = new HashMap<String, Object>();
+		fvMap.put(BITableMapper.BI_REPORT_NODE_LOCK.FIELD_USERID, userId);
 		fvMap.put(BITableMapper.BI_REPORT_NODE_LOCK.REPORT_ID, reportId);
 		return createSession().listByFieldValues(BIReportNodeLock.class, fvMap);
 	}
@@ -71,17 +87,24 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
 		if(StringUtils.isEmpty(sessionId)){
 			return false;
 		}
-		BIReportNodeLock lock = getLock(sessionId, userId, reportId);
-		if(lock == null){
+		List<BIReportNodeLock> lock = getLock(userId, reportId);
+		if(lock == null || lock.size() == 0){
 			synchronized (this) {
-				lock = getLock(sessionId, userId, reportId);
-				if(lock == null) {
-					lock = new BIReportNodeLock(sessionId, userId, reportId);
-					lock(lock);
+				lock =  getLock(userId, reportId);
+				if(lock == null || lock.size() == 0) {
+					BIReportNodeLock l = new BIReportNodeLock(sessionId, userId, reportId);
+					lock(l);
+					lock = new ArrayList<BIReportNodeLock>();
+					lock.add(l);
 				}
 			}
 		}
-		return ComparatorUtils.equals(sessionId, lock.getSessionId());
+		for(BIReportNodeLock l : lock) {
+			if(ComparatorUtils.equals(sessionId, l.getSessionId())){
+				return true;
+			}
+		}
+		return false;
 		
 	}
 

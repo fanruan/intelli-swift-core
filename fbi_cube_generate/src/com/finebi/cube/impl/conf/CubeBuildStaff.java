@@ -3,13 +3,13 @@ package com.finebi.cube.impl.conf;
 import com.finebi.cube.conf.AbstractCubeBuild;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CalculateDependTool;
-import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -31,7 +31,6 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
     private Set<CubeTableSource> allSingleSources;
 
     private Set<BITableSourceRelation> tableSourceRelationSet;
-    private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private Set<BITableRelation> tableRelationSet;
     private Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap;
     private Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap;
@@ -103,7 +102,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
 
     public void setTableRelationSet(Set<BITableRelation> tableRelationSet) {
         this.tableRelationSet = filterRelation(tableRelationSet);
-        this.tableSourceRelationSet = convertRelations(this.tableRelationSet);
+        this.tableSourceRelationSet =removeDuplicateRelations(convertRelations(this.tableRelationSet));
     }
 
     public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
@@ -116,41 +115,36 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
 
     private Set<BITableSourceRelation> convertRelations(Set<BITableRelation> connectionSet) {
         Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
-        Map sourceIdMap = new HashMap<String, BITableSourceRelation>();
         for (BITableRelation relation : connectionSet) {
             try {
                 BITableSourceRelation tableSourceRelation = convertRelation(relation);
-                if (null != tableSourceRelation&&!sourceIdMap.containsKey(tableSourceRelation.toString())) {
+                if (null!=tableSourceRelation) {
                     set.add(tableSourceRelation);
-                    sourceIdMap.put(tableSourceRelation.toString(),tableSourceRelation);
                 }
             } catch (NullPointerException e) {
                 BILogger.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }
-        sourceIdMap.clear();
         return set;
     }
 
 
 
 
-    private Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> tableRelationPaths) {
+    private Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> paths) {
         Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
-        Map sourceIdMap = new HashMap<String, BITableSourceRelationPath>();
-        for (BITableRelationPath path : tableRelationPaths) {
+        for (BITableRelationPath path : paths) {
             try {
-                BITableSourceRelationPath relationPath = convertPath(path);
-                if (null != relationPath && !sourceIdMap.containsKey(relationPath.getSourceID())) {
-                    sourceIdMap.put(relationPath.getSourceID(), relationPath);
+                BITableSourceRelationPath relationPath = convert(path);
+                if (null!=relationPath) {
                     set.add(relationPath);
                 }
             } catch (Exception e) {
                 continue;
             }
         }
-        sourceIdMap.clear();
+        set=removeDuplicateRelationPaths(set);
         return set;
     }
 
@@ -164,17 +158,17 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         this.allSingleSources = allSingleSources;
     }
 
-//    private BITableSourceRelationPath convert(BITableRelationPath path) {
-//        BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
-//        try {
-//            for (BITableRelation relation : path.getAllRelations()) {
-//                tableSourceRelationPath.addRelationAtTail(convertRelation(relation));
-//            }
-//        } catch (BITablePathConfusionException e) {
-//            throw BINonValueUtils.beyondControl(e);
-//        }
-//        return tableSourceRelationPath;
-//    }
+    private BITableSourceRelationPath convert(BITableRelationPath path) {
+        BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
+        try {
+            for (BITableRelation relation : path.getAllRelations()) {
+                tableSourceRelationPath.addRelationAtTail(convertRelation(relation));
+            }
+        } catch (BITablePathConfusionException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+        return tableSourceRelationPath;
+    }
 
     public Set<List<Set<CubeTableSource>>> getDependTableResource() {
         return dependTableResource;
@@ -186,7 +180,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
 
 
 
-    
+
 
 
     /**
