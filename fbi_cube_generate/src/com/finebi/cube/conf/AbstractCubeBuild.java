@@ -173,4 +173,39 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         return tableSourceRelationPath;
     }
 
+    protected Set<BITableSourceRelation> removeDuplicateRelations(Set<BITableSourceRelation> tableRelations) {
+        Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
+        Map sourceIdMap = new HashMap<String, BITableSourceRelation>();
+        for (BITableSourceRelation relation : tableRelations) {
+            try {
+                if (!sourceIdMap.containsKey(relation.toString())) {
+                    set.add(relation);
+                    sourceIdMap.put(relation.toString(), relation);
+                }
+            } catch (NullPointerException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                continue;
+            }
+        }
+        sourceIdMap.clear();
+        return set;
+    }
+
+    protected Set<BITableSourceRelationPath> removeDuplicateRelationPaths(Set<BITableSourceRelationPath> paths) {
+        Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
+        Map sourceIdMap = new HashMap<String, BITableSourceRelationPath>();
+        for (BITableSourceRelationPath path : paths) {
+            try {
+                if (!sourceIdMap.containsKey(path.getSourceID())) {
+                    set.add(path);
+                    sourceIdMap.put(path.getSourceID(), path);
+                }
+            } catch (NullPointerException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                continue;
+            }
+        }
+        sourceIdMap.clear();
+        return set;
+    }
 }

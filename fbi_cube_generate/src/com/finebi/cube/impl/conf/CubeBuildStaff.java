@@ -3,7 +3,6 @@ package com.finebi.cube.impl.conf;
 import com.finebi.cube.conf.AbstractCubeBuild;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CalculateDependTool;
-import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -32,7 +31,6 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
     private Set<CubeTableSource> allSingleSources;
 
     private Set<BITableSourceRelation> tableSourceRelationSet;
-    private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private Set<BITableRelation> tableRelationSet;
     private Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap;
     private Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap;
@@ -104,7 +102,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
 
     public void setTableRelationSet(Set<BITableRelation> tableRelationSet) {
         this.tableRelationSet = filterRelation(tableRelationSet);
-        this.tableSourceRelationSet = convertRelations(this.tableRelationSet);
+        this.tableSourceRelationSet =removeDuplicateRelations(convertRelations(this.tableRelationSet));
     }
 
     public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
@@ -137,7 +135,6 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
     private Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> paths) {
         Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
         for (BITableRelationPath path : paths) {
-
             try {
                 BITableSourceRelationPath relationPath = convert(path);
                 if (null!=relationPath) {
@@ -147,6 +144,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
                 continue;
             }
         }
+        set=removeDuplicateRelationPaths(set);
         return set;
     }
 
@@ -182,7 +180,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
 
 
 
-    
+
 
 
     /**

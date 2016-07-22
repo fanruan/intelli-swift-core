@@ -14,6 +14,7 @@ import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -159,7 +160,6 @@ public class CubeRunner {
 
     private void generateCube() {
         setStatue(Status.LOADED);
-//        CubeBuild cubeBuild = new CubeBuildStaff(new BIUser((biUser.getUserId())));
         CubeBuild cubeBuild = new CubeBuildByPart(biUser.getUserId(), CubeUpdateUtils.getNewTables(biUser.getUserId()), CubeUpdateUtils.getNewRelations(biUser.getUserId()));
         CubeTask task = new BuildCubeTask(biUser, cubeBuild);
         CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
@@ -172,14 +172,16 @@ public class CubeRunner {
 
     private void finish() {
         setStatue(Status.REPLACING);
-        long start = System.currentTimeMillis();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
+        long start = System.currentTimeMillis();
         BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
         replaceOldCubes();
         setStatue(Status.LOADED);
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
+        /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
+        BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
     }
 
     private void replaceOldCubes() {
