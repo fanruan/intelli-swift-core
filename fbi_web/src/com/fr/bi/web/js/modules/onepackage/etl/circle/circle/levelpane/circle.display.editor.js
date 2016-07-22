@@ -30,7 +30,7 @@ BI.CircleDisplayEditor = BI.inherit(BI.Widget, {
             validationChecker: function(v){
                 return o.validationChecker(v, self.attr("id"));
             },
-            errorText: BI.i18nText("BI-Have_Repeated_Field_Name"),
+            //errorText: BI.i18nText("BI-Have_Repeated_Field_Name"),
             value: o.value,
             allowBlank: false,
             height: this.constants.labelHeight
@@ -42,6 +42,14 @@ BI.CircleDisplayEditor = BI.inherit(BI.Widget, {
                 type: "bi.left",
                 hgap: 5
             }]
+        });
+
+        this.editor.on(BI.SignEditor.EVENT_ERROR, function(v){
+            if(v === ""){
+                this.setErrorText(BI.i18nText("BI-Field_Name_Cannot_Be_Null"));
+            }else{
+                this.setErrorText(BI.i18nText("BI-Have_Repeated_Field_Name"));
+            }
         });
 
         this.editor.on(BI.Controller.EVENT_CHANGE, function(){
