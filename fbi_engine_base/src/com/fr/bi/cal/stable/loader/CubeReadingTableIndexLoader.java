@@ -149,8 +149,6 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
                     loader.clear();
                 }
             }
-            userMap.clear();
-            childLoaderMap.clear();
         }
     }
 
