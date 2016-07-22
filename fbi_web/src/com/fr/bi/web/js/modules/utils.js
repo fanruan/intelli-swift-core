@@ -2670,10 +2670,12 @@
                     break;
                 case BICst.WIDGET.YMD:
                     if (BI.isNotNull(wValue)) {
-                        date = new Date(parseComplexDate(wValue));
+                        var v = parseComplexDate(wValue);
+                        if(BI.isNotNull(v)){
+                            date = new Date(v);
+                        }
                     }
                     break;
-
             }
             return date;
         }

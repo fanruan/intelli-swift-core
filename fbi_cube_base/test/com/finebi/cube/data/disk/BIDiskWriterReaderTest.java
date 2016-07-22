@@ -18,18 +18,18 @@ import java.io.File;
  * @since 4.0
  */
 public class BIDiskWriterReaderTest extends TestCase {
-        private ICubePrimitiveResourceDiscovery discovery;
+    private ICubePrimitiveResourceDiscovery discovery;
 
-        public static String projectPath = computePath();
+    public static String projectPath = computePath();
 
-        @Override
-        protected void setUp() throws Exception {
-            super.setUp();
-            discovery = BICubeDiskPrimitiveDiscovery.getInstance();
-        }
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+//        discovery = BICubeDiskPrimitiveDiscovery.getInstance();
+    }
 
-    private void down() {
-
+    public BIDiskWriterReaderTest() {
+        this.discovery = BICubeDiskPrimitiveDiscovery.getInstance();
     }
 
     private static String computePath() {
@@ -62,7 +62,9 @@ public class BIDiskWriterReaderTest extends TestCase {
     }
 
     public void testSimpleWriteReader() {
+//        synchronized(discovery) {
         try {
+            discovery = BICubeDiskPrimitiveDiscovery.getInstance();
             ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(projectPath, "writer");
             location.setByteType();
             BIByteNIOWriter writer = (BIByteNIOWriter) discovery.getCubeWriter(location);
@@ -83,6 +85,7 @@ public class BIDiskWriterReaderTest extends TestCase {
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
+//        }
     }
 
     public void testSimpleWriteReaderOpenTime() {
@@ -120,4 +123,6 @@ public class BIDiskWriterReaderTest extends TestCase {
             BILogger.getLogger().error(e.getMessage(), e);
         }
     }
+
 }
+
