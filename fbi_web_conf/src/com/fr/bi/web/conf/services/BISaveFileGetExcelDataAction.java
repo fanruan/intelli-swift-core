@@ -2,6 +2,7 @@ package com.fr.bi.web.conf.services;
 
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.excel.CSVTokenizer;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -10,10 +11,10 @@ import com.fr.cache.Attachment;
 import com.fr.cache.AttachmentSource;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,15 +50,15 @@ public class BISaveFileGetExcelDataAction extends AbstractBIConfigureAction {
                     String fullFileName = file.getName();
                     int l = fullFileName.length();
                     String name = fullFileName.substring(0, l - 4);
-                    File xlsFile = new File(parentFile, name + ".xls");
-                    Object lockCSV = BIPictureUtils.getImageLock(xlsFile.getAbsolutePath());
+                    File xlsxFile = new File(parentFile, name + ".xlsx");
+                    Object lockCSV = BIPictureUtils.getImageLock(xlsxFile.getAbsolutePath());
                     synchronized (lockCSV) {
-                        FileOutputStream fs1 = new FileOutputStream(xlsFile);
+                        FileOutputStream fs1 = new FileOutputStream(xlsxFile);
                         fs1.flush();
                         fs1.close();
-                        csvToExcel(originalPath, xlsFile.getAbsolutePath());
+                        csvToExcel(originalPath, xlsxFile.getAbsolutePath());
                     }
-                    file = xlsFile;
+                    file = xlsxFile;
                 }
                 BIGetImportedExcelData excelTableData = new BIGetImportedExcelData(file.getName());
                 JSONObject jo = excelTableData.getFieldsAndPreviewData();
@@ -68,9 +69,9 @@ public class BISaveFileGetExcelDataAction extends AbstractBIConfigureAction {
     }
 
     public void csvToExcel(String csv, String excel) throws IOException {
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet("Sheet1");
         BufferedReader r = null;
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Sheet1");
 
         try{
             r = new BufferedReader(new FileReader(csv));
@@ -79,19 +80,17 @@ public class BISaveFileGetExcelDataAction extends AbstractBIConfigureAction {
                 String ln = r.readLine();
                 if (ln == null)
                     break;
-                HSSFRow row = sheet.createRow(i++);
+                XSSFRow row = sheet.createRow(i++);
                 int j = 0;
                 for (CSVTokenizer it = new CSVTokenizer(ln); it.hasMoreTokens();){
                     try{
                         String val = it.nextToken();
-                        HSSFCell cell = row.createCell((short) j++);
+                        XSSFCell cell = row.createCell((short) j++);
                         cell.setCellValue(val);
                     }catch (Exception e){
-                        HSSFCell cell = row.createCell((short) j++);
+                        XSSFCell cell = row.createCell((short) j++);
                         cell.setCellValue("");
-                        String val = it.getQuate();
-                        System.out.println(j);
-                        FRContext.getLogger().error(e.getMessage(), e);
+                        BILogger.getLogger().error(e.getMessage());
                     }
                 }
             }
@@ -102,7 +101,7 @@ public class BISaveFileGetExcelDataAction extends AbstractBIConfigureAction {
         FileOutputStream fileOut = null;
         try{
             fileOut = new FileOutputStream(excel);
-            wb.write(fileOut);
+            workbook.write(fileOut);
         }finally{
             if (fileOut != null)
                 fileOut.close();
