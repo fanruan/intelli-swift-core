@@ -117,8 +117,8 @@ public class ResourceHelper {
             }
 
             translations = BIModuleUtils.createAliasJSON(userId);
-            relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(userId);
-            excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
+            relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(manageId);
+            excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(manageId);
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
             for (IBusinessPackageGetterService p : packs) {
                 if (manageId != userId && !authPacks.contains(p.getID())) {
