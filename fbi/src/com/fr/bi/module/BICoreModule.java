@@ -24,10 +24,7 @@ import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
-import com.fr.bi.fs.BIReportNodeLockDAO;
-import com.fr.bi.fs.BITableMapper;
-import com.fr.bi.fs.HSQLBIReportDAO;
-import com.fr.bi.fs.TableDataBIReportDAO;
+import com.fr.bi.fs.*;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -45,12 +42,14 @@ import com.fr.data.core.db.dml.Select;
 import com.fr.data.core.db.dml.Table;
 import com.fr.data.core.db.tableObject.Column;
 import com.fr.data.core.db.tableObject.ColumnSize;
+import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.data.pool.MemoryConnection;
 import com.fr.file.DatasourceManager;
 import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
+import com.fr.general.FRLogger;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
@@ -325,9 +324,28 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registDAO() {
+        dropBIReportNodeLockDAOTable();
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(TableDataDAOControl.class.getName(), TableDataBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.getInstance());
+    }
+
+    private void dropBIReportNodeLockDAOTable() {
+        Connection cn = null;
+        PreparedStatement ps = null;
+        String tableName = ObjectTableMapper.PREFIX_NAME + BIReportNodeLock.class.getSimpleName();
+        try {
+            cn = PlatformDB.getDB().createConnection();
+            ps = cn.prepareStatement("DROP TABLE " + DialectFactory.generateDialect(cn).column2SQL(tableName));
+            ps.execute();
+            FRLogger.getLogger().info("Table " + tableName + " has been deleted successfully");
+            cn.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtils.closeStatement(ps);
+            DBUtils.closeConnection(cn);
+        }
     }
 
     private void registerResources() {
