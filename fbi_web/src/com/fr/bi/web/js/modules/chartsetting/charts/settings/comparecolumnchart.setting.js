@@ -59,7 +59,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({

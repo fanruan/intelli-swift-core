@@ -597,5 +597,10 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     public boolean isRemovedListAvailable() {
         return getRemovedListReader().canRead();
     }
+
+    @Override
+    public boolean isCubeLastUpdateTimeAvailable() {
+        return getTimeStampReader().canRead();
+    }
 }
 

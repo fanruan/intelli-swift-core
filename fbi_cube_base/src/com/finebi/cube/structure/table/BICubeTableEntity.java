@@ -227,6 +227,11 @@ public class BICubeTableEntity implements CubeTableEntityService {
         return tableProperty.isRowCountAvailable();
     }
 
+    @Override
+    public boolean isCubeLastTimeAvailable() {
+        return tableProperty.isCubeLastUpdateTimeAvailable();
+    }
+
     public long getCubeVersion() {
         return tableProperty.getCubeVersion();
     }

@@ -31,6 +31,9 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -40,10 +43,11 @@ import static com.fr.bi.util.BICubeDBUtils.getColumnName;
 /**
  * Created by kary on 16/7/13.
  */
-public class BISourceDataPartTransport extends BISourceDataTransport{
+public class BISourceDataPartTransport extends BISourceDataTransport {
     public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
         super(cube, tableSource, allSources, parentTableSource, version);
     }
+
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
@@ -69,6 +73,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
             return null;
         }
     }
+
     private long transport() {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
         ICubeFieldSource[] cubeFieldSources = new ICubeFieldSource[fieldList.size()];
@@ -79,7 +84,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
         DBTableSource source = (DBTableSource) this.tableSource;
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
         source.setUpdateSettingSource(tableUpdateSetting);
-        long rowCount = tableEntityService.isVersionAvailable()?tableEntityService.getRowCount():0;
+        long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
         /*add*/
@@ -95,13 +100,13 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
             rowCount = dealWidthAdd(cubeFieldSources, addDataCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
             sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
         }
-        if (null!=sortRemovedList) {
+        if (null != sortRemovedList) {
             tableEntityService.recordRemovedLine(sortRemovedList);
         }
 
         return rowCount;
     }
-    
+
 
     private long dealWidthAdd(ICubeFieldSource[] cubeFieldSources, String SQL, long rowCount) {
         Traversal<BIDataValue> AddTraversal = new Traversal<BIDataValue>() {
@@ -118,7 +123,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
         rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount);
         return rowCount;
     }
-    
+
 
     private TreeSet<Integer> dealWithRemove(ICubeFieldSource[] fields, String partDeleteSQL, final TreeSet<Integer> sortRemovedList, ICubeDataLoader loader) {
         SQLRegUtils regUtils = new SQLRegUtils(partDeleteSQL);
@@ -160,15 +165,20 @@ public class BISourceDataPartTransport extends BISourceDataTransport{
         BICubeDBUtils.runSQL(sqlStatement, new ICubeFieldSource[]{f}, removeTraversal);
         return sortRemovedList;
     }
-private String addDataCondition(String sql){
-//    String LastModifyTime="上次更新时间";
-//    SQLRegUtils sqlRegUtils=new SQLRegUtils(sql);
-//    Date cubeLastTime = tableEntityService.getCubeLastTime();
-//if(null!=cubeLastTime){
-//    String conditions = sqlRegUtils.getConditions().replace(LastModifyTime, cubeLastTime.toString());
-//    sqlRegUtils.setConditions(conditions);
-//}
-//    return sqlRegUtils.toString();
-    return sql;
-}
+
+    private String addDataCondition(String sql) {
+        String LastModifyTime = "${上次更新时间}";
+        SQLRegUtils sqlRegUtils = new SQLRegUtils(sql);
+        String conditions = sqlRegUtils.getConditions();
+        if (tableEntityService.isCubeLastTimeAvailable() && null != tableEntityService.getCubeLastTime()) {
+            Date lastTime = tableEntityService.getCubeLastTime();
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
+            String dateStr = sdf.format(lastTime);
+            conditions = conditions.replace(LastModifyTime,dateStr);
+            sqlRegUtils.setConditions(conditions);
+        } else
+            conditions = conditions.replace(LastModifyTime, "");
+        sqlRegUtils.setConditions(conditions);
+        return sqlRegUtils.toString();
+    }
 }

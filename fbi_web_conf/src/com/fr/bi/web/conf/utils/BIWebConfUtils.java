@@ -23,7 +23,7 @@ public class BIWebConfUtils {
                 loader.getTableIndex(key);
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILogger.getLogger().error(e.getMessage());
             return false;
         }
         return true;

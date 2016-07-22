@@ -74,4 +74,6 @@ public interface CubeTableEntityGetterService extends Release, ICubeVersion {
     boolean tableDataAvailable();
 
     boolean isRowCountAvailable();
+
+    boolean isCubeLastTimeAvailable();
 }
