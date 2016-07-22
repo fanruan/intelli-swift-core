@@ -368,7 +368,6 @@ public class BICubeOperationManager {
                         operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    System.out.println(sourceID);
                 } catch (Exception e) {
                     throw BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
