@@ -58,7 +58,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FallAxisChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -207,7 +207,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FallAxisChartSetting.EVENT_CHANGE);
         });
 
         //数据表格
@@ -221,7 +221,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
             if(this.isSelected()){
                 self.showZoom.setSelected(false);
             }
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FallAxisChartSetting.EVENT_CHANGE);
         });
 
         //网格线
@@ -232,7 +232,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FallAxisChartSetting.EVENT_CHANGE);
         });
 
         //图表缩放滚轮
@@ -246,7 +246,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
             if(this.isSelected()){
                 self.showDataTable.setSelected(false);
             }
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FallAxisChartSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({

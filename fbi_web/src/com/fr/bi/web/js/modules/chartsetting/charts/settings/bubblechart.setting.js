@@ -472,7 +472,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         //数据标签
@@ -483,7 +483,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         //网格线
@@ -494,7 +494,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         //气泡大小
