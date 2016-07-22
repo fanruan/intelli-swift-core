@@ -140,8 +140,9 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         if (!useRealData) {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
-        int groupSize = column.getOriginGroupSize(getRealTableKey4Calculate(), getLoader());
-        if(groupSize < BIBaseConstant.SMALL_GROUP) {
+        BusinessTable target = getRealTableKey4Calculate();
+        int groupSize = column.getOriginGroupSize(target, getLoader());
+        if(groupSize < BIBaseConstant.SMALL_GROUP || hasNoFilter(target)) {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         } else if (shouldGetIterByAllValue()) {
             return getIterByAllCal();
@@ -152,6 +153,15 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
     private boolean shouldGetIterByAllValue() {
         return !column.hasSelfGroup();
+    }
+
+    private boolean hasNoFilter(BusinessTable target) {
+        GroupValueIndex gvi = root.getGroupValueIndex();
+        if (gvi == null){
+            return false;
+        }
+        long rowCount = getLoader().getTableIndex(target.getTableSource()).getRowCount();
+        return gvi.getRowsCountWithData() == rowCount;
     }
 
 
