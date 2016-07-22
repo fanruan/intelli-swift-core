@@ -50,14 +50,14 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     return;
                 }
                 if (BI.isNotNull(op.node.isParent)) {
-                    //if (op.node.fieldType === BICst.COLUMN.DATE) {
-                    //    var newNode = BI.clone(op.node);
-                    //    delete newNode.children;
-                    //    delete newNode.isParent;
-                    //    newNode.type = newNode._type;
-                    //    populate(self._buildDateChildren(op.node.pId, newNode));
-                    //    return;
-                    //}
+                    if (op.node.fieldType === BICst.COLUMN.DATE) {
+                        var newNode = BI.clone(op.node);
+                        delete newNode.children;
+                        delete newNode.isParent;
+                        newNode.type = newNode._type;
+                        populate(self._buildDateChildren(op.node.pId, newNode));
+                        return;
+                    }
                     populate(self._getFieldsStructureByTableId(op.node.id));
                 }
             }
@@ -509,7 +509,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         value: fid,
                         isParent: true
                     });
-                    fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
+                    //fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
                 }
             } else {
                 fieldStructure.push(BI.extend({
