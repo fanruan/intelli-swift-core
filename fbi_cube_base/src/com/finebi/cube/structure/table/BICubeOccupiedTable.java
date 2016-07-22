@@ -141,6 +141,11 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
+    public boolean isCubeLastTimeAvailable() {
+        return false;
+    }
+
+    @Override
     public void clear() {
 
     }
