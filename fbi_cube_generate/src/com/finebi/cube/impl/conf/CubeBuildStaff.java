@@ -136,10 +136,10 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
 
 
 
-    protected Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> paths) {
+    private Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> tableRelationPaths) {
         Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
         Map sourceIdMap = new HashMap<String, BITableSourceRelationPath>();
-        for (BITableRelationPath path : paths) {
+        for (BITableRelationPath path : tableRelationPaths) {
             try {
                 BITableSourceRelationPath relationPath = convertPath(path);
                 if (null != relationPath && !sourceIdMap.containsKey(relationPath.getSourceID())) {

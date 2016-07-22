@@ -17,7 +17,7 @@ import java.io.File;
  * @author Connery
  * @since 4.0
  */
-public class BIDiskWriterReaderTest extends TestCase{
+public class BIDiskWriterReaderTest extends TestCase {
     private ICubePrimitiveResourceDiscovery discovery;
 
     public static String projectPath = computePath();
@@ -25,7 +25,7 @@ public class BIDiskWriterReaderTest extends TestCase{
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        discovery = BICubeDiskPrimitiveDiscovery.getInstance();
+//        discovery = BICubeDiskPrimitiveDiscovery.getInstance();
     }
 
     public BIDiskWriterReaderTest() {
@@ -124,31 +124,5 @@ public class BIDiskWriterReaderTest extends TestCase{
         }
     }
 
-        public   void testWriter() {
-//        synchronized(discovery) {
-            try {
-                discovery = BICubeDiskPrimitiveDiscovery.getInstance();
-                ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(projectPath, "writer");
-                location.setByteType();
-                BIByteNIOWriter writer = (BIByteNIOWriter) discovery.getCubeWriter(location);
-                writer.recordSpecificPositionValue(0l, Byte.valueOf("35"));
-                writer.recordSpecificPositionValue(1l, Byte.valueOf("35"));
-                writer.recordSpecificPositionValue(2l, Byte.valueOf("35"));
-                writer.recordSpecificPositionValue(3l, Byte.valueOf("35"));
-                writer.recordSpecificPositionValue(4l, Byte.valueOf("35"));
-                writer.recordSpecificPositionValue(5l, Byte.valueOf("35"));
-                location.setReaderSourceLocation();
-                BIByteNIOReader reader = (BIByteNIOReader) discovery.getCubeReader(location);
-                assertEquals(reader.getSpecificValue(0l), Byte.valueOf("35").byteValue());
-                assertEquals(reader.getSpecificValue(1l), Byte.valueOf("35").byteValue());
-                assertEquals(reader.getSpecificValue(2l), Byte.valueOf("35").byteValue());
-                assertEquals(reader.getSpecificValue(3l), Byte.valueOf("35").byteValue());
-                assertEquals(reader.getSpecificValue(4l), Byte.valueOf("35").byteValue());
-                assertEquals(reader.getSpecificValue(5l), Byte.valueOf("35").byteValue());
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
-
-    }
 }
 
