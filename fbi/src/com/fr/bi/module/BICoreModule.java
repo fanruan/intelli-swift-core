@@ -338,10 +338,10 @@ public class BICoreModule extends AbstractModule {
             cn = PlatformDB.getDB().createConnection();
             ps = cn.prepareStatement("DROP TABLE " + DialectFactory.generateDialect(cn).column2SQL(tableName));
             ps.execute();
-            FRLogger.getLogger().info("Table " + tableName + " has been deleted successfully");
+            BILogger.getLogger().info("Table " + tableName + " has been deleted successfully");
             cn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             DBUtils.closeStatement(ps);
             DBUtils.closeConnection(cn);
