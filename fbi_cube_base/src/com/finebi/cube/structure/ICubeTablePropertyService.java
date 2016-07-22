@@ -55,4 +55,5 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
     
     boolean isRemovedListAvailable();
 
+    boolean isCubeLastUpdateTimeAvailable();
 }

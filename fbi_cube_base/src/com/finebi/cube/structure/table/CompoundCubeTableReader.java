@@ -240,6 +240,11 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
+    public boolean isCubeLastTimeAvailable() {
+        return hostTable.isCubeLastTimeAvailable() || (isParentAvailable() && parentTable.isCubeLastTimeAvailable());
+    }
+
+    @Override
     public void recordFieldNamesFromParent(Set<String> fieldNames) {
         hostTable.recordFieldNamesFromParent(fieldNames);
     }
