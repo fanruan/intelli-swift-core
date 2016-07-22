@@ -33,12 +33,18 @@ BIDezi.Model = BI.inherit(BI.Model, {
                 _t: new Date()
             }, BI.emptyFn);
         }, 30000);
-        window.onbeforeunload = function () {
-            BI.requestSync("closesessionid", "", {
-                sessionID: Data.SharingPool.get("sessionID"),
-                _t: new Date()
+        $(window).unload(function () {
+            $(window).unbind('unload');
+            FR.ajax({
+                async: false,
+                url: FR.servletURL,
+                data: {
+                    op: 'closesessionid',
+                    sessionID: Data.SharingPool.get("sessionID"),
+                    _t: new Date()
+                }
             })
-        };
+        })
     },
 
     updateURL: function () {
