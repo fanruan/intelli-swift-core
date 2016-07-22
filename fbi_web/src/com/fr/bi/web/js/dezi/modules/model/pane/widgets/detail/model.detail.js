@@ -374,7 +374,19 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 this.set("dimensions", dims);
             }
         }
-        if (BI.has(changed, "view") && !BI.has(changed, "dimensions")) {
+
+        //这边不能光靠changed中是否包含dimensions来确定是不是增加减少了dimension
+        //因为指标复制会改变dimension的dimensionmap
+        var hasDifferentDimension = true;
+        if(!BI.has(changed, "dimensions")){
+            hasDifferentDimension = false;
+        }else{
+            var dimensionIds = BI.keys(changed.dimensions);
+            hasDifferentDimension = BI.isNotNull(BI.find(prev.dimensions, function(dId, dimension){
+                return !BI.contains(dimensionIds, dId);
+            }));
+        }
+        if (BI.has(changed, "view") && hasDifferentDimension === false) {
             var wType = this.get("type");
             if (wType !== BICst.WIDGET.TABLE &&
                 wType !== BICst.WIDGET.CROSS_TABLE &&
