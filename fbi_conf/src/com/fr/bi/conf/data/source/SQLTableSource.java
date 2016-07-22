@@ -62,7 +62,9 @@ public class SQLTableSource extends ServerTableSource {
 
     @Override
     public IPersistentTable getPersistentTable() {
-        dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
+        if (dbTable == null){
+            dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
+        }
         return dbTable;
     }
 
