@@ -64,7 +64,6 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public void initData() {
-//        SystemFactoryRegister.systemRegister();
         System.out.println("FINE BI 4.0.070220948");
         initModules();
         super.initData();
