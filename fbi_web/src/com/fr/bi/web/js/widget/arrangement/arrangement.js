@@ -1983,10 +1983,10 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     _start: function (cur) {
         this.arrangement.setVisible(true);
         this.droppable.setVisible(true);
+        BI.each(this.drops, function (i, drop) {
+            drop.el.setVisible(false);
+        });
         if (cur) {
-            BI.each(this.drops, function (i, drop) {
-                drop.el.setVisible(false);
-            });
             if (this.drops[cur]) {
                 this.drops[cur].el.setVisible(true);
             }

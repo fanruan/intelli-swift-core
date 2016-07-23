@@ -94,6 +94,163 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
         }
     },
 
+    _vAlign: function (position, regions) {
+        var self = this;
+        var vs = this._positionAt(position, regions);
+        var positions = [];
+        var l;
+        if (vs.left.length > 0) {
+            l = vs.left[0].left;
+        } else if (vs.right.length > 0) {
+            l = vs.right[0].left + vs.right[0].width;
+        }
+        var rs = vs.left.concat(vs.right);
+        BI.each(rs, function (i, region) {
+            if (self._isEqual(region.left, l) || self._isEqual(region.left + region.width, l)) {
+                var p = self._getRegionClientPosition(region.id);
+                var topPoint = {
+                    top: p.top + region.height / 2,
+                    left: l
+                };
+                positions.push({
+                    id: region.id,
+                    start: topPoint,
+                    end: {
+                        left: l,
+                        top: position.top
+                    }
+                });
+            }
+        });
+        return positions;
+    },
+
+    _leftAlign: function (position, size, regions) {
+        var self = this;
+        return this._vAlign({
+            left: position.left,
+            top: position.top + size.height / 2
+        }, regions);
+    },
+
+    _rightAlign: function (position, size, regions) {
+        var self = this;
+        return this._vAlign({
+            left: position.left + size.width,
+            top: position.top + size.height / 2
+        }, regions);
+    },
+
+    _hAlign: function (position, regions) {
+        var self = this;
+        var hs = this._positionAt(position, regions);
+        var positions = [];
+        var t;
+        if (hs.top.length > 0) {
+            t = hs.top[0].top;
+        } else if (hs.bottom.length > 0) {
+            t = hs.bottom[0].top + hs.bottom[0].height;
+        }
+        var rs = hs.top.concat(hs.bottom);
+        BI.each(rs, function (i, region) {
+            if (self._isEqual(region.top, t) || self._isEqual(region.top + region.height, t)) {
+                var p = self._getRegionClientPosition(region.id);
+                var leftPoint = {
+                    top: t,
+                    left: region.left + region.width / 2
+                };
+                positions.push({
+                    id: region.id,
+                    start: leftPoint,
+                    end: {
+                        left: position.left,
+                        top: t
+                    }
+                });
+            }
+        });
+        return positions;
+    },
+
+    _topAlign: function (position, size, regions) {
+        var self = this;
+        return this._hAlign({
+            left: position.left + size.width / 2,
+            top: position.top
+        }, regions);
+    },
+
+    _bottomAlign: function (position, size, regions) {
+        var self = this;
+        return this._hAlign({
+            left: position.left + size.width / 2,
+            top: position.top + size.height
+        }, regions);
+    },
+
+    _centerAlign: function (position, size, regions) {
+        var self = this;
+        var cs = this._positionAt({
+            left: position.left + size.width / 2,
+            top: position.top + size.height / 2
+        }, regions);
+        var positions = [];
+        var l;
+        if (cs.center.length > 0) {
+            l = cs.center[0].left + cs.center[0].width / 2;
+        }
+        BI.each(cs.center, function (i, region) {
+            if (self._isEqual(region.left + region.width / 2, l)) {
+                var p = self._getRegionClientPosition(region.id);
+                var topPoint = {
+                    top: p.top + p.height / 2,
+                    left: p.left + p.width / 2
+                };
+                positions.push({
+                    id: region.id,
+                    start: topPoint,
+                    end: {
+                        left: l,
+                        top: position.top + size.height / 2
+                    }
+                });
+            }
+        });
+        return positions;
+    },
+
+    _middleAlign: function (position, size, regions) {
+        var self = this;
+        var cs = this._positionAt({
+            left: position.left + size.width / 2,
+            top: position.top + size.height / 2
+        }, regions);
+        var positions = [];
+        var t;
+        if (cs.middle.length > 0) {
+            t = cs.middle[0].top + cs.middle[0].height / 2;
+        }
+        BI.each(cs.middle, function (i, region) {
+            if (self._isEqual(region.top + region.height / 2, t)) {
+                var p = self._getRegionClientPosition(region.id);
+                var topPoint = {
+                    top: p.top + p.height / 2,
+                    left: p.left + p.width / 2
+                };
+                positions.push({
+                    id: region.id,
+                    start: topPoint,
+                    end: {
+                        left: position.left + size.width / 2,
+                        top: t
+                    }
+                });
+            }
+        });
+        return positions;
+    },
+
+
     _drawOneTag: function (start, end) {
         var s = BI.createWidget({
             type: "bi.icon_button",
@@ -149,11 +306,10 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
     },
 
     _removeTags: function () {
-
-    },
-
-    _generateTags: function () {
-
+        BI.each(this.tags, function (i, w) {
+            w.destroy();
+        });
+        this.tags = [];
     },
 
     getDirectRelativeRegions: function (name, direction) {
@@ -161,6 +317,7 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
     },
 
     addRegion: function (region, position) {
+        this._removeTags();
         return this.arrangement.addRegion(region, position);
     },
 
@@ -174,51 +331,97 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
 
     setPosition: function (position, size) {
         var self = this;
-        //switch (this.getLayoutType()) {
-        //    case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-        //        break;
-        //    case BI.Arrangement.LAYOUT_TYPE.FREE:
-        //        var topleft = this._positionAt(position);
-        //        BI.each(topleft, function (direction, rs) {
-        //            switch (direction) {
-        //                case "left":
-        //                    var l;
-        //                    if (rs.length > 0) {
-        //                        l = rs[0].left;
-        //                    }
-        //                    BI.each(rs, function (i, region) {
-        //                        if (self._isEqual(region.left, l)) {
-        //                            var position = self._getRegionClientPosition(region.id);
-        //                            var topPoint = {
-        //                                top: position.top + region.height / 2,
-        //                                left: position.left
-        //                            };
-        //                            self._drawOneTag(topPoint, {
-        //                                left: position.left,
-        //                                top: position.top + size.height / 2
-        //                            })
-        //                        }
-        //                    });
-        //                    break;
-        //                case "right":
-        //                    break;
-        //                case "center":
-        //                    break;
-        //                case "top":
-        //                    break;
-        //                case "middle":
-        //                    break;
-        //                case "bottom":
-        //                    break;
-        //            }
-        //        });
-        //        break;
-        //}
+        this._removeTags();
+        if (position.left > 0 && position.top > 0) {
+            switch (this.getLayoutType()) {
+                case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                    break;
+                case BI.Arrangement.LAYOUT_TYPE.FREE:
+                    var left = this._leftAlign(position, size);
+                    var right = this._rightAlign(position, size);
+                    var top = this._topAlign(position, size);
+                    var bottom = this._bottomAlign(position, size);
+                    var center = this._centerAlign(position, size);
+                    var middle = this._middleAlign(position, size);
+
+                    BI.each(center, function (i, pos) {
+                        self._drawOneTag(pos.start, pos.end);
+                        position.left = pos.end.left - size.width / 2;
+                    });
+                    BI.each(right, function (i, pos) {
+                        self._drawOneTag(pos.start, pos.end);
+                        position.left = pos.end.left - size.width;
+                    });
+                    BI.each(left, function (i, pos) {
+                        self._drawOneTag(pos.start, pos.end);
+                        position.left = pos.end.left;
+                    });
+                    BI.each(middle, function (i, pos) {
+                        self._drawOneTag(pos.start, pos.end);
+                        position.top = pos.end.top - size.height / 2;
+                    });
+                    BI.each(bottom, function (i, pos) {
+                        self._drawOneTag(pos.start, pos.end);
+                        position.top = pos.end.top - size.height;
+                    });
+                    BI.each(top, function (i, pos) {
+                        self._drawOneTag(pos.start, pos.end);
+                        position.top = pos.end.top;
+                    });
+                    break;
+            }
+        }
         var at = this.arrangement.setPosition(position, size);
         return at;
     },
 
     setRegionPosition: function (name, position) {
+        if (position.left > 0 && position.top > 0) {
+            switch (this.getLayoutType()) {
+                case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                    break;
+                case BI.Arrangement.LAYOUT_TYPE.FREE:
+                    var regions = this.getAllRegions();
+                    var me, other = [];
+                    BI.each(regions, function (i, region) {
+                        if (region.id === name) {
+                            me = region;
+                        } else {
+                            other.push(region);
+                        }
+                    });
+                    var size = {
+                        width: me.width,
+                        height: me.height
+                    };
+                    var left = this._leftAlign(position, size, other);
+                    var right = this._rightAlign(position, size, other);
+                    var top = this._topAlign(position, size, other, other);
+                    var bottom = this._bottomAlign(position, size, other);
+                    var center = this._centerAlign(position, size, other);
+                    var middle = this._middleAlign(position, size, other);
+
+                    BI.each(center, function (i, pos) {
+                        position.left = pos.end.left - size.width / 2;
+                    });
+                    BI.each(right, function (i, pos) {
+                        position.left = pos.end.left - size.width;
+                    });
+                    BI.each(left, function (i, pos) {
+                        position.left = pos.end.left;
+                    });
+                    BI.each(middle, function (i, pos) {
+                        position.top = pos.end.top - size.height / 2;
+                    });
+                    BI.each(bottom, function (i, pos) {
+                        position.top = pos.end.top - size.height;
+                    });
+                    BI.each(top, function (i, pos) {
+                        position.top = pos.end.top;
+                    });
+                    break;
+            }
+        }
         return this.arrangement.setRegionPosition(name, position);
     },
 
