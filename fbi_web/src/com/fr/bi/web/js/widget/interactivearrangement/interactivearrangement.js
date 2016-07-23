@@ -35,6 +35,18 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
             self.fireEvent(BI.InteractiveArrangement.EVENT_RESIZE, arguments);
         });
 
+        this.arrangement.on(BI.AdaptiveArrangement.EVENT_ELEMENT_RESIZE, function (id, size) {
+            var p = self._getRegionClientPosition(id);
+            self.draw({
+                left: p.left,
+                top: p.top
+            }, size, id);
+        });
+        this.arrangement.on(BI.AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE, function (id, size) {
+            self.stopDraw();
+            self.setRegionSize(id, size);
+        });
+
         this.tags = [];
 
     },
@@ -375,7 +387,7 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
         var regions = this.getAllRegions();
         var me;
         if (name) {
-            me = this.getRegionByName(name);
+            me = this._getRegionClientPosition(name);
         }
         var other = this._getRegionExcept(name, regions);
         position = position || {
@@ -394,7 +406,7 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
         var middle = this._middleAlign(position, size, other);
 
         BI.each(center, function (i, pos) {
-            size.width = (pos.end.top - position.top) / 2;
+            size.width = (pos.end.left - position.left) * 2;
         });
         BI.each(right, function (i, pos) {
             size.width = pos.end.left - position.left;
@@ -402,7 +414,7 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
         BI.each(left, function (i, pos) {
         });
         BI.each(middle, function (i, pos) {
-            size.height = (pos.end.top - position.top) / 2;
+            size.height = (pos.end.top - position.top) * 2;
         });
         BI.each(bottom, function (i, pos) {
             size.height = pos.end.top - position.top;
@@ -457,6 +469,7 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
     },
 
     setRegionSize: function (name, size) {
+        size = this.getSize(name, null, size);
         return this.arrangement.setRegionSize(name, size);
     },
 
