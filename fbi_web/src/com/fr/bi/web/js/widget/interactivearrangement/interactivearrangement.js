@@ -306,11 +306,11 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
             items: [{
                 el: s,
                 left: start.left - 6,
-                top: start.top - 6
+                top: start.top - 7
             }, {
                 el: e,
                 left: end.left - 6,
-                top: end.top - 6
+                top: end.top - 7
             }, {
                 el: line,
                 left: Math.min(start.left, end.left),
