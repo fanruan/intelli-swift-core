@@ -204,6 +204,9 @@ public class CubeRunner {
         try {
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+            if (new File(tempConf.getRootURI().getPath()).exists()){
+                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
+            }
             if (new File(advancedConf.getRootURI().getPath()).exists()) {
                 BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
             }
