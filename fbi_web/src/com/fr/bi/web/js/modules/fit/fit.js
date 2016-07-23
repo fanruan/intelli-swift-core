@@ -18,12 +18,12 @@ BI.Fit = BI.inherit(BI.Widget, {
         BI.Fit.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.arrangement = BI.createWidget({
-            type: "bi.adaptive_arrangement",
+            type: "bi.interactive_arrangement",
             layoutType: o.layoutType,
             cls: "fit-dashboard",
             items: o.items
         });
-        this.arrangement.on(BI.AdaptiveArrangement.EVENT_RESIZE, function () {
+        this.arrangement.on(BI.InteractiveArrangement.EVENT_RESIZE, function () {
             self.fireEvent(BI.Fit.EVENT_CHANGE, arguments);
         });
 

@@ -73,6 +73,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         });
     },
 
+    _isEqual: function () {
+        return this.arrangement._isEqual.apply(this.arrangement, arguments);
+    },
+
     _initResizable: function (item) {
         var self = this, o = this.options;
         item.element.css("zIndex", ++this.zIndex);

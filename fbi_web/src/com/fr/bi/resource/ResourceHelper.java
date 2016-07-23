@@ -1877,6 +1877,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/arrangement/arrangement.droppable.css",
                 "com/fr/bi/web/css/widget/arrangement/arrangement.css",
 
+
+                "com/fr/bi/web/css/widget/interactivearrangement/interactivearrangement.css",
+
                 "com/fr/bi/web/css/widget/timesetting/timesetting.day.css",
                 "com/fr/bi/web/css/widget/timesetting/timesetting.hour.css",
 
@@ -2603,6 +2606,9 @@ public class ResourceHelper {
 
                 //自适应布局
                 "com/fr/bi/web/js/widget/adaptivearrangement/adaptivearrangement.js",
+
+                //交互式布局
+                "com/fr/bi/web/js/widget/interactivearrangement/interactivearrangement.js",
 
                 "com/fr/bi/web/js/widget/uploadfile/progress.uploadfile.js",
 
