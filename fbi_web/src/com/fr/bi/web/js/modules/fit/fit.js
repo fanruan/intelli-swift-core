@@ -109,7 +109,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                     self._startDrag(id, ui.position, e);
                 },
                 drag: function (e, ui) {
-                    self._drag(id, size || {}, ui.position);
+                    self._drag(id, ui.position, size || {});
                 },
                 stop: function (e, ui) {
                     self._stopDrag(id, ui.position, widget);
@@ -148,40 +148,45 @@ BI.Fit = BI.inherit(BI.Widget, {
     _startDrag: function (id, position, e) {
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                this.flag = this.arrangement.deleteRegion(id);
+                this.arrangement.deleteRegion(id);
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 break;
         }
     },
 
-    _drag: function (id, size, position) {
+    _drag: function (id, position, size) {
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                if (BI.isNotNull(this.flag)) {
-                    this.arrangement.setPosition({
-                        left: position.left,
-                        top: position.top
-                    }, {
-                        width: size.width,
-                        height: size.height
-                    });
-                }
+                this.arrangement.setPosition({
+                    left: position.left,
+                    top: position.top
+                }, {
+                    width: size.width,
+                    height: size.height
+                });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
-                //this.arrangement.setRegionPosition(id, {
-                //    left: position.left < 0 ? 0 : position.left,
-                //    top: position.top < 0 ? 0 : position.top
-                //});
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
+                this.arrangement.draw(position, size, id);
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
+                });
                 break;
         }
     },
 
     _stopDrag: function (id, position, widget) {
         var flag = false;
+        this.arrangement.stopDraw();
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                if (BI.isNotNull(this.flag) && !(flag = this.arrangement.addRegion({
+                if (!(flag = this.arrangement.addRegion({
                         el: widget
                     }))) {
                     this.arrangement.revoke();
