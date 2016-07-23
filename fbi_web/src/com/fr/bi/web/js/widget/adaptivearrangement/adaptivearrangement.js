@@ -297,7 +297,6 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             this._old = old;
         } else {
             this._old = this.getAllRegions();
-            this.arrangement._deleteRegionByName(name);
             this.relayout();
         }
         return true;

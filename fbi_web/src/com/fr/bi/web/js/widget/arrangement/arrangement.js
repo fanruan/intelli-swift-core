@@ -2080,7 +2080,9 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 }
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
-                break;
+                this._deleteRegionByName(name);
+                this._populate(this.getAllRegions());
+                return true;
         }
         return false;
     },
