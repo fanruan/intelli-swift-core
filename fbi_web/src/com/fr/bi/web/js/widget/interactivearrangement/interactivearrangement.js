@@ -481,8 +481,8 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
                 case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
-                    this.draw(position, size);
                     position = this.getPosition(null, position, size);
+                    this.draw(position, size);
                     break;
             }
         }
