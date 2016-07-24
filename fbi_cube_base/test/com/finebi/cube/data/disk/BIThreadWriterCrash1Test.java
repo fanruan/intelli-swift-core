@@ -15,7 +15,7 @@ import java.io.File;
  * Created by kary on 2016/7/22.
  * 调用相同句柄对同一个文件读写时，有一定概率导致jvm崩溃
  */
-public class BIThreadWriterError1 extends Thread {
+public class BIThreadWriterCrash1Test extends Thread {
     private ICubePrimitiveResourceDiscovery discovery;
 
     public static String projectPath = computePath();
@@ -25,13 +25,13 @@ public class BIThreadWriterError1 extends Thread {
     }
     public static void main(String[] args) {
         for (int i = 0; i < 200; i++) {
-            new BIThreadWriterError1().start();
+            new BIThreadWriterCrash1Test().start();
         }
     }
 
     private BIByteNIOWriter writer;
 
-    public BIThreadWriterError1() {
+    public BIThreadWriterCrash1Test() {
         this.discovery = BICubeDiskPrimitiveDiscovery.getInstance();
         ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(projectPath, "threadWriter");
         location.setByteType();
