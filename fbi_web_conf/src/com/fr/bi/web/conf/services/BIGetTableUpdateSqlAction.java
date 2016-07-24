@@ -6,7 +6,6 @@ import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.DatasourceManager;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -32,10 +31,10 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String stringSql = WebUtils.getHTTPRequestParameter(req, "sql");
         String tableString = WebUtils.getHTTPRequestParameter(req, "table");
-        long userId = ServiceUtils.getCurrentUserID(req);
 
-//        Date lastUpdateDate = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId)).getTableIndex(BIBasicCore.generateValueCore(sourceId)).getLastTime();
         Date lastUpdateDate = new Date();
+        long threeDaysAgo = lastUpdateDate.getTime() - 24 * 3600 *1000* 3;
+        lastUpdateDate.setTime(threeDaysAgo);
         String sql = parseSQL(stringSql, lastUpdateDate);
         JSONObject jo = new JSONObject();
         jo.put("sql", sql);
