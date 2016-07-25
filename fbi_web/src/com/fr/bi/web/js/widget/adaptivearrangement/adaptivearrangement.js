@@ -104,7 +104,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             },
             stop: function (e, ui) {
                 self._resize(item.attr("id"), ui.size);
-                var offset = self._getScrollOffset();
+                self.setRegionSize(item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE, item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
             }
