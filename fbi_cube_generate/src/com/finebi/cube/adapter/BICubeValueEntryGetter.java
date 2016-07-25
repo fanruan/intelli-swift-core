@@ -87,6 +87,19 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
     }
 
     @Override
+    public CubeValueEntry getEntryByGroupRow(int row) {
+        GroupValueIndex gvi = null;
+        T value = null;
+        try {
+            gvi = getGroupValueIndex(row);
+            value = getGroupValue(row);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return new CubeValueEntry(value, gvi, row);
+    }
+
+    @Override
     public int getPositionOfGroupByRow(int row) {
         int groupRow = NIOConstant.INTEGER.NULL_VALUE;
         try {
