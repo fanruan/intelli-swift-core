@@ -187,7 +187,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     private Iterator getIterByAllCal(BusinessTable target){
-        ICubeTableService ti = loader.getTableIndex(target.getTableSource());
+        ICubeTableService ti = getLoader().getTableIndex(column.getField().getTableBelongTo().getTableSource());
         final ICubeValueEntryGetter getter = ti.getValueEntryGetter(column.createKey(), column.getRelationList());
         final int[] groupIndex = new int[getter.getGroupSize()];
         Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
