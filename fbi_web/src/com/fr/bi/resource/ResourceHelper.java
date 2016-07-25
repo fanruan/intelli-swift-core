@@ -2606,6 +2606,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/datalabel/tab/tab.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/tab/texttoolbar.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/tab/font.chooser.texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/widget/datalabel/condition/item.numberfield.js",
+                "com/fr/bi/web/js/widget/datalabel/condition/factory.filteritem.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/condition/condition.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/condition/group.condition.datalabel.js",
                 "com/fr/bi/web/js/widget/datalabel/condition/item.condition.datalabel.js",

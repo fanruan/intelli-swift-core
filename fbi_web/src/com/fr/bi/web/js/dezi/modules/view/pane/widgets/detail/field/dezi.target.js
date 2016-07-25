@@ -385,11 +385,11 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             type: "bi.data_label_popup",
             dId: this.model.get("id")
         });
-        popup.on(BI.DataLabel.EVENT_CHANGE, function (v) {
-            //self.model.set("datalabel", v);
-            console.log("change")
+        popup.on(BI.DataLabelPopup.EVENT_CHANGE, function (v) {
+            self.model.set("data_label", v);
         });
         BI.Popovers.create(id, popup).open(id);
+        popup.populate();
     },
 
     _buildStyleSettingPane: function () {

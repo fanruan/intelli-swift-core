@@ -68,6 +68,7 @@ BI.TargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
         this.fieldId = o._src.field_id;
         var fieldName = BI.Utils.getFieldNameByID(this.fieldId);
+        console.log(this.fieldId)
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
             text: fieldName,

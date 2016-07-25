@@ -1,129 +1,123 @@
 /**
  * Created by lfhli on 2016/7/15.
  */
-BI.DataLabelConditionItem = BI.inherit(BI.Widget,{
-    _items: [{
-        value: "自身"
-    }],
+BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
+
+    _constant: {
+        LEFT_ITEMS_H_GAP: 5,
+        CONTAINER_HEIGHT: 40,
+        CONDITION_TYPE_COMBO_ADJUST: 2,
+        BUTTON_HEIGHT: 30,
+        TEXT_BUTTON_H_GAP: 10,
+        ADD_FIELD_POPUP_WIDTH: 230,
+        HEIGHT_MAX: 10000,
+        MAX_HEIGHT: 500
+    },
 
     _defaultConfig: function () {
-        var conf = BI.DataLabelConditionItem.superclass._defaultConfig.apply(this, arguments);
-        return BI.extend(conf, {
-            baseCls: "data-label-condition-item"
-        });
-    },
-    
-    _init: function () {
-        BI.DataLabelConditionItem.superclass._init.apply(this, arguments);
-        var self = this;
-        this.condition = BI.createWidget({
-            type: "bi.combo",
-            el:{
-                type: "bi.text_button",
-                text: "请选择字段",
-                cls: "condition-trigger",
-                width: 80,
-                height: 25
-            },
-            popup: {
-                el: {
-                    type: "bi.button_group",
-                    items: BI.createItems(this._items, {
-                        type: "bi.text_button",
-                        height: 25,
-                        handler: function (v) {
-                            self.condition.hideView();
-                            self.buttongroup.removeItemAt([1,2,3]);
-                            self.buttongroup.addItems(self._initOthers());
-                        }
-                    }),
-                    layouts: [{
-                        type: "bi.vertical"
-                    }]
-                }
-            }
-        });
-
-        this.buttongroup = BI.createWidget({
-            type: "bi.button_group",
-            items: [this.condition],
-            element: this.element,
-            height: 40,
-            layouts: [{
-                type: "bi.vertical_adapt",
-                hgap: 8
-            }]
+        return BI.extend(BI.DataLabelConditionItem.superclass._defaultConfig.apply(this, arguments), {
+            extraCls: "data-label-condition-item",
+            afterValueChange: BI.emptyFn
         })
     },
 
-    _initOthers: function () {
-        var self = this;
-        this.relation = BI.createWidget({
-            type: "bi.text_value_down_list_combo",
-            width: 120,
-            height: 30,
-            items: BICst.TARGET_FILTER_NUMBER_COMBO
+    _init: function () {
+        BI.DataLabelConditionItem.superclass._init.apply(this, arguments);
+        var self = this, o = this.options;
+
+        var left = this._buildConditionsNoType();
+        this.deleteButton = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "close-h-font"
         });
-        this.relation.setValue(BICst.TARGET_FILTER_NUMBER.BELONG_VALUE);
-        this.interval = BI.createWidget({
-            type: "bi.numerical_interval",
-            width: 200,
-            height: 30
+        this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
+            self.destroy();
+            BI.DataLabelConditionItem.superclass.destroy.apply(this,arguments);
         });
-        this.styleTab = BI.createWidget({
-            type: "bi.data_label_tab"
-        });
-        this.styleTab.on(BI.DataLabelTab.IMG_CHANGE, function () {
-            self.style.hideView();
-        });
-        this.textTrigger = BI.createWidget({
-            type: "bi.text_button",
-            text: "设置样式",
-            width: 80,
-            height: 38,
-            cls: "condition-trigger"
-        });
-        this.imgTrigger = BI.createWidget({
-            type: "bi.image_button",
-            width: 80,
-            height: 38,
-            cls: "condition-trigger"
-        });
-        this.imgTrigger.setVisible(false);
-        this.styleTrigger = BI.createWidget({
-            type: "bi.vertical",
-            items: [this.textTrigger,this.imgTrigger]
-        });
-        this.style = BI.createWidget({
-            type: "bi.combo",
-            isNeedAdjustWidth: false,
-            el: this.styleTrigger,
-            popup: {
-                el: this.styleTab
+        this.itemContainer = BI.createWidget({
+            type: "bi.left_right_vertical_adapt",
+            cls: "item-no-type",
+            height: this._constant.CONTAINER_HEIGHT,
+            items: {
+                left: [left],
+
+                right: [this.deleteButton]
             },
-            offsetStyle: "right"
+            lhgap: this._constant.LEFT_ITEMS_H_GAP,
+            rhgap: this._constant.LEFT_ITEMS_H_GAP
         });
-        this.style.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
-            if (typeof self.styleTab.getValue() === "string") {
-                self.imgTrigger.setSrc(self.styleTab.getValue());
-                self.imgTrigger.setVisible(true);
-                self.textTrigger.setVisible(false);
-            }  else {
-                self.textTrigger.setValue("text");
-                $(self.textTrigger.element[0].childNodes[0].childNodes[0]).css(self.styleTab.getValue());
-                self.imgTrigger.setVisible(false);
-                self.textTrigger.setVisible(true);
+
+        BI.createWidget({
+            type: "bi.vertical",
+            element: this.element,
+            items: [this.itemContainer]
+
+        });
+    },
+
+    populate: function (items) {
+        if (BI.isNotNull(this.typeSelectedItem)) {
+            this.typeSelectedItem.populate(items);
+        }
+    },
+
+    _buildConditionsNoType: function () {
+        var self = this, o = this.options;
+        var selectFieldPane = BI.createWidget({
+            type: "bi.target_filter_select_field",
+            height: this._constant.MAX_HEIGHT,
+            field_id: o.field_id
+        });
+        this.addCondition = BI.createWidget({
+            type: "bi.combo",
+            isNeedAdjustHeight: true,
+            adjustLength: this._constant.CONDITION_TYPE_COMBO_ADJUST,
+            el: {
+                type: "bi.button",
+                level: "common",
+                height: this._constant.BUTTON_HEIGHT,
+                text: BI.i18nText("BI-Please_Select_Field")
+            },
+            popup: {
+                el: selectFieldPane,
+                minWidth: 228,
+                maxHeight: this._constant.MAX_HEIGHT
             }
         });
-        return [this.relation, this.interval, this.style];
-    },
-    
-    // getValue: function () {
-    //     this.
-    //     this.interval.getValue();
-    //     return this.relation.getValue();
-    // }
-});
 
+        selectFieldPane.on(BI.TargetFilterSelectField.EVENT_CLICK_ITEM, function (v) {
+            self._onTypeSelected(v);
+        });
+        return this.addCondition;
+    },
+
+    _onTypeSelected: function (v) {
+        v = v.field_id || v;
+        var fieldType = BI.Utils.getFieldTypeByID(v);
+        var self = this, o = this.options;
+        var filterItem = BI.DataLabelFilterItemFactory.createFilterItemByFieldType(fieldType);
+        this.itemContainer.destroy();
+        this.itemContainer = null;
+        //todo
+        this.typeSelectedItem = BI.createWidget(filterItem, {
+            element: this.element,
+            _src: {
+                field_id: v
+            },
+            id: this.options.id
+        });
+    },
+
+    getValue: function () {
+        if (BI.isNotNull(this.typeSelectedItem)) {
+            var result = this.typeSelectedItem.getValue();
+            // result.id = this.options.id;
+            return result;
+        }
+        return {
+            filter_type: BICst.FILTER_TYPE.EMPTY_CONDITION
+        }
+    }
+});
 BI.DataLabelConditionItem.EVENT_CHANGE = "BI.DataLabelConditionItem.EVENT_CHANGE";
 $.shortcut("bi.data_label_condition_item", BI.DataLabelConditionItem);

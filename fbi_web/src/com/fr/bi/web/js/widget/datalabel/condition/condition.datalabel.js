@@ -8,7 +8,7 @@ BI.DataLabelCondition = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DataLabelCondition.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         var addButton = BI.createWidget({
             type: "bi.button",
             text: "添加条件",
@@ -19,7 +19,8 @@ BI.DataLabelCondition = BI.inherit(BI.Widget, {
             }
         });
         this.conditions = BI.createWidget({
-            type: "bi.data_label_condition_group"
+            type: "bi.data_label_condition_group",
+            dId: o.dId
         });
         BI.createWidget({
             type: "bi.vertical",
@@ -32,6 +33,14 @@ BI.DataLabelCondition = BI.inherit(BI.Widget, {
                 bgap: 2
             }, this.conditions]
         })
+    },
+
+    populate: function () {
+        this.conditions.populate();
+    },
+
+    getValue: function () {
+        return this.conditions.getValue();
     }
 });
 

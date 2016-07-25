@@ -6,21 +6,41 @@ BI.DataLabel = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         var conf = BI.DataLabel.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            baseCls: "bi-data-label"
+            baseCls: "bi-data-label",
+            dId: ""
         });
     },
 
     _init: function () {
         BI.DataLabel.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.condition = BI.createWidget({
-            type: "bi.data_label_condition"
+            type: "bi.data_label_condition",
+            dId: o.dId
         });
         BI.createWidget({
             type: "bi.vertical",
             items: [this.condition],
             element: this.element
         });
+    },
+
+    populate: function () {
+        var o = this.options;
+        // var conditions = BI.Utils.getDimensionFilterValueByID(o.dId);
+        // if (BI.isNotEmptyObject(conditions)) {
+        //     conditions = [conditions];
+        // } else {
+        //     conditions = [];
+        // }
+        // this.transformConditions2Tree(conditions);
+        // this.filter.populate(conditions);
+        this.condition.populate();
+    },
+    
+    getValue: function () {
+        console.log(this.condition.getValue());
+        return this.condition.getValue();
     }
 });
 

@@ -29,7 +29,7 @@ BI.DataLabelPopup = BI.inherit(BI.BarPopoverSection, {
 
     rebuildCenter : function(center) {
         var o = this.options;
-        this.targetFilterPane = BI.createWidget({
+        this.dataLabelPane = BI.createWidget({
             type: "bi.data_label",
             element: center,
             dId: o.dId
@@ -37,13 +37,13 @@ BI.DataLabelPopup = BI.inherit(BI.BarPopoverSection, {
         return true;
     },
 
-    // populate: function(){
-    //     this.targetFilterPane.populate();
-    // },
+    populate: function(){
+        this.dataLabelPane.populate();
+    },
 
-    // end: function(){
-    //     this.fireEvent(BI.DataLabelPopup.EVENT_CHANGE, this.targetFilterPane.getValue()[0]);
-    // }
+    end: function(){
+        this.fireEvent(BI.DataLabelPopup.EVENT_CHANGE, this.dataLabelPane.getValue());
+    }
 });
 
 BI.DataLabelPopup.EVENT_CHANGE = "EVENT_CHANGE";
