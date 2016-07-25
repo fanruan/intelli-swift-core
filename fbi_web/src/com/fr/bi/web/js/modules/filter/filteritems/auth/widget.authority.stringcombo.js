@@ -100,7 +100,11 @@ BI.AuthoritySelectFieldDataCombo = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this.combo.getValue();
+        var val = this.combo.getValue() || {};
+        return {
+            type: val.type,
+            value: val.value
+        }
     }
 });
 BI.AuthoritySelectFieldDataCombo.EVENT_CONFIRM = "AuthoritySelectFieldDataCombo.EVENT_CONFIRM";
