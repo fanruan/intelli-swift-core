@@ -10335,12 +10335,12 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
             var center = cfg.viewCenter ? L.latLng(cfg.viewCenter[1], cfg.viewCenter[0]) : null;
 
             if(!isNaN(+level) && center){
-                leaflet.setView(center, level + 1 - this.scale);
+                leaflet.setView(center, level);
             }else{
                 if(!isNaN(+level)){
                     leaflet.fitBounds(this._getFitBounds(),{animate:false});
                     var center = leaflet.getCenter();
-                    leaflet.setView(center, level + 1 - this.scale);
+                    leaflet.setView(center, level);
                 }else{
                     leaflet.fitBounds(this._getFitBounds());
                 }
@@ -20351,11 +20351,11 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','../utils/Co
             var paneBackgroundColor = QueryUtils.queryList(queryList, 'paneBackgroundColor');
             var slotBackgroundColor = QueryUtils.queryList(queryList, 'slotBackgroundColor');
             var innerPaneBackgroundColor = QueryUtils.queryList(queryList, 'innerPaneBackgroundColor');
-            var thermometerLayout = QueryUtils.queryList(queryList, 'thermometerLayout');
+            var thermometerLayout = QueryUtils.queryList(queryList, 'thermometerLayout') || Constants.HORIZONTAL_LAYOUT;
 
             var bands = QueryUtils.queryList(queryList, 'bands') || [];
 
-            var className = series.className + style;
+            var className = series.className + style + thermometerLayout;
 
             BaseUtils.extend(series,
                 {

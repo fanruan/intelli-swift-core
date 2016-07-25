@@ -1309,11 +1309,11 @@ BICst.DASHBOARD_CHART_STYLE_GROUP = [{
 }, {
     cls: "dashboard-chart-style-percent-icon",
     title: BI.i18nText("BI-Percent_Donut_Dashboard"),
-    value: BICst.CHART_SHAPE.PERCENT_DASHBOARD
+    value: BICst.CHART_SHAPE.PERCENT_SCALE_SLOT
 }, {
     cls: "dashboard-chart-style-percent-scale-slot-icon",
     title: BI.i18nText("BI-Percent_Scale_Slot_Dashboard"),
-    value: BICst.CHART_SHAPE.PERCENT_SCALE_SLOT
+    value: BICst.CHART_SHAPE.PERCENT_DASHBOARD
 }, {
     cls: "dashboard-chart-style-vertical-tube-icon",
     title: BI.i18nText("BI-Vertical_Tube"),

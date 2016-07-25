@@ -104,6 +104,36 @@ BI.BubbleChart = BI.inherit(BI.Widget, {
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "bubble";
 
+        //为了给数据标签加个%,还要遍历所有的系列，唉
+        if(config.plotOptions.dataLabels.enabled === true){
+            BI.each(items, function(idx, item){
+                var isNeedFormatDataLabelX = false;
+                var isNeedFormatDataLabelY = false;
+                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    isNeedFormatDataLabelX = true;
+                }
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    isNeedFormatDataLabelY = true;
+                }
+                if(isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true){
+                    item.dataLabels = {
+                        "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                        "align": "outside",
+                        enabled: true,
+                        formatter: {
+                            identifier: "${X}${Y}${SIZE}"
+                        }
+                    };
+                    if(isNeedFormatDataLabelX === true){
+                        item.dataLabels.formatter.xFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    }
+                    if(isNeedFormatDataLabelY === true){
+                        item.dataLabels.formatter.yFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    }
+                }
+            });
+        }
+
         return [items, config];
 
         function formatChartStyle(){
