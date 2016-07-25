@@ -104,7 +104,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             },
             stop: function (e, ui) {
                 self._resize(item.attr("id"), ui.size);
-                var offset = self._getScrollOffset();
+                self.setRegionSize(item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE, item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
             }
@@ -161,7 +161,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             } else {
                 var finded = BI.find(tops.concat(bottoms), function (i, r) {
                     r = self.getRegionByName(r.id);
-                    return Math.abs(size.width + region.left - (r.left + r.width)) < 10;
+                    return Math.abs(size.width + region.left - (r.left + r.width)) <= 3;
                 });
                 if (finded) {
                     finded = this.getRegionByName(finded.id);
@@ -179,7 +179,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             } else {
                 var finded = BI.find(lefts.concat(rights), function (i, r) {
                     r = self.getRegionByName(r.id);
-                    return Math.abs(size.height + region.top - (r.top + r.height)) < 10;
+                    return Math.abs(size.height + region.top - (r.top + r.height)) <= 3;
                 });
                 if (finded) {
                     finded = this.getRegionByName(finded.id);

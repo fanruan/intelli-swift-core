@@ -89,15 +89,15 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
-            rowCount = dealWidthAdd(cubeFieldSources, addDataCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
+            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
         }
         /*remove*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, addDataCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader);
+            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader);
         }
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
-            rowCount = dealWidthAdd(cubeFieldSources, addDataCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
+            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
             sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
         }
         if (null != sortRemovedList) {
@@ -166,19 +166,23 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         return sortRemovedList;
     }
 
-    private String addDataCondition(String sql) {
+    private String addDateCondition(String sql) {
         String LastModifyTime = "${上次更新时间}";
+        if (!sql.contains(LastModifyTime)) {
+            return sql;
+        }
         SQLRegUtils sqlRegUtils = new SQLRegUtils(sql);
         String conditions = sqlRegUtils.getConditions();
         if (tableEntityService.isCubeLastTimeAvailable() && null != tableEntityService.getCubeLastTime()) {
             Date lastTime = tableEntityService.getCubeLastTime();
             DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
             String dateStr = sdf.format(lastTime);
-            conditions = conditions.replace(LastModifyTime,dateStr);
+            conditions = conditions.replace(LastModifyTime, dateStr);
             sqlRegUtils.setConditions(conditions);
         } else
             conditions = conditions.replace(LastModifyTime, "");
         sqlRegUtils.setConditions(conditions);
         return sqlRegUtils.toString();
     }
+
 }
