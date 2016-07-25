@@ -1,5 +1,6 @@
 package com.fr.bi.cube.engine.result;
 
+import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.report.data.dimension.BIDateDimension;
 import com.fr.bi.report.data.dimension.BIDimension;
 import junit.framework.TestCase;
