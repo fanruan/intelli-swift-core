@@ -148,7 +148,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         if(groupSize < BIBaseConstant.SMALL_GROUP || hasNoFilter(target)) {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         } else if (shouldGetIterByAllValue()) {
-            return getIterByAllCal(target);
+            return getIterByAllCal();
         } else {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
@@ -177,8 +177,8 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         return ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
     }
 
-    private Iterator getIterByAllCal(BusinessTable target){
-        ICubeTableService ti = loader.getTableIndex(target.getTableSource());
+    private Iterator getIterByAllCal(){
+        ICubeTableService ti = getLoader().getTableIndex(column.getField().getTableBelongTo().getTableSource());
         final ICubeValueEntryGetter getter = ti.getValueEntryGetter(column.createKey(), column.getRelationList());
         final int[] groupIndex = new int[getter.getGroupSize()];
         Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
