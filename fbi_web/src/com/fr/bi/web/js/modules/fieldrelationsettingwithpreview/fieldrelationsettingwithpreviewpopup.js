@@ -196,7 +196,7 @@ BI.FieldRelationSettingWithPreviewPopup = BI.inherit(BI.BarPopoverSection, {
             });
             self.tabs[dId].on(BI.DetailTablePathSettingTab.EVENT_CHANGE, function (relations) {
                 self.model.setChoosePath(dId, relations);
-
+                self.tree.populate();
             })
         });
         this.tabPane.empty();
