@@ -28,7 +28,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
             element: vessel,
             items: [{
                 el: north,
-                height: this._const.toolbarHeight
+                height: BICst.CONFIG.SHOW_DASHBOARD_TITLE ? this._const.toolbarHeight : 0
             }, {
                 el: BI.createWidget(),
                 height: 1
