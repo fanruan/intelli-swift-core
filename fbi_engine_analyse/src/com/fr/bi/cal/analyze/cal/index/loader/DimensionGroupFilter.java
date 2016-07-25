@@ -70,7 +70,7 @@ public class DimensionGroupFilter {
         LoaderUtils.setAllExpander(mergerInfoList);
         if(this.mergerInfoList != null){
             for (MergerInfo m : this.mergerInfoList){
-                m.setHasTraverseResultFilter(hasTraverseResultFilter());
+                m.setHasTraverseResultFilter(hasTraverseResultFilter() || targetSort != null);
             }
         }
     }

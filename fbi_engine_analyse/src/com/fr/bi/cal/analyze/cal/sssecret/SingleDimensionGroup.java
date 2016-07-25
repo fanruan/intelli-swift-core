@@ -143,42 +143,51 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         if (!useRealData) {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
+        if (hasSpecialGroup()) {
+            return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
+        }
         BusinessTable target = getRealTableKey4Calculate();
         int groupSize = column.getOriginGroupSize(target, getLoader());
-        if(groupSize < BIBaseConstant.SMALL_GROUP || hasNoFilter(target)) {
+        if (groupSize < BIBaseConstant.SMALL_GROUP) {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
-        } else if (shouldGetIterByAllValue()) {
-            return getIterByAllCal();
+        } else if (needCalAll(target)) {
+            return getIterByAllCal(target);
         } else {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
     }
 
-    private boolean shouldGetIterByAllValue() {
-        return !column.hasSelfGroup();
+    private boolean hasSpecialGroup(){
+        int groupType = column.getGroup().getType();
+        if (groupType == BIReportConstant.GROUP.AUTO_GROUP) {
+            return true;
+        }
+        if (groupType == BIReportConstant.GROUP.CUSTOM_GROUP ||
+                groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP) {
+            return column.hasSelfGroup();
+        }
+        return false;
     }
 
-    private boolean hasNoFilter(BusinessTable target) {
-        GroupValueIndex gvi = root.getGroupValueIndex();
-        if (gvi == null){
+    private boolean needCalAll(BusinessTable target){
+        double validPercent = 0.75;
+        if (ckIndex != 0) {
+            return true;
+        }
+        int wholeRowCount = getLoader().getTableIndex(target.getTableSource()).getRowCount();
+        int currentRowCount = root.getGroupValueIndex().getRowsCountWithData();
+        if (currentRowCount * 1.0 / wholeRowCount > validPercent) {
             return false;
         }
-        long rowCount = getLoader().getTableIndex(target.getTableSource()).getRowCount();
-        return gvi.getRowsCountWithData() == rowCount;
+        return true;
     }
-
-
-    private boolean hasParentRelation(int i) {
-        return pckindex[i] != -1 && (!column.hasSelfGroup()) && (!pcolumns[i].hasSelfGroup() && pcolumns[i].getBaseTableValueCount(data[i], getLoader()) < 256);
-    }
-
 
     private BusinessTable getRealTableKey4Calculate() {
         return ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
     }
 
-    private Iterator getIterByAllCal(){
-        ICubeTableService ti = getLoader().getTableIndex(column.getField().getTableBelongTo().getTableSource());
+    private Iterator getIterByAllCal(BusinessTable target){
+        ICubeTableService ti = loader.getTableIndex(target.getTableSource());
         final ICubeValueEntryGetter getter = ti.getValueEntryGetter(column.createKey(), column.getRelationList());
         final int[] groupIndex = new int[getter.getGroupSize()];
         Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
