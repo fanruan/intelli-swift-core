@@ -22,6 +22,7 @@ import com.fr.bi.stable.data.db.SqlSettedStatement;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BICubeDBUtils;
@@ -85,7 +86,14 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
         source.setUpdateSettingSource(tableUpdateSetting);
         long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;
+
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+        if (tableEntityService.isRemovedListAvailable()) {
+            IntList removedList = tableEntityService.getRemovedList();
+            for (int i = 0; i < removedList.size(); i++) {
+                sortRemovedList.add(Integer.valueOf(removedList.get(i)));
+            }
+        }
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
