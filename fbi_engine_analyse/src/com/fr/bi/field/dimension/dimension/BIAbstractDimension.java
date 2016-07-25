@@ -1,10 +1,14 @@
 package com.fr.bi.field.dimension.dimension;
 
+import com.finebi.cube.conf.relation.BITableRelationHelper;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.dimension.filter.DimensionFilterFactory;
+import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
@@ -15,6 +19,7 @@ import com.fr.bi.stable.operation.sort.sort.NoSort;
 import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
@@ -32,6 +37,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
     @BICoreField
     protected IGroup group = new NoGroup();
     private String sort_target;
+    private BITableRelationPath selfToSelfRelationPath;
 
     @Override
     public IGroup getGroup() {
@@ -101,6 +107,18 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         if (jo.has("group")) {
             this.group = BIGroupFactory.parseGroup(jo.optJSONObject("group"));
         }
+        if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
+            JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+            if (fieldJo.has("target_relation")) {
+                JSONArray relationArray = fieldJo.getJSONArray("target_relation");
+                BITableRelation[] tableRelationArray = new BITableRelation[relationArray.length()];
+                for (int i = 0; i < relationArray.length(); i++) {
+                    tableRelationArray[i] = BITableRelationHelper.getRelation(relationArray.getJSONObject(i));
+                }
+                this.selfToSelfRelationPath = new BITableRelationPath(tableRelationArray);
+            }
+        }
+
     }
 
     @Override
@@ -158,7 +176,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
     @Override
     public boolean useTargetSort() {
         return (getSortType() == BIReportConstant.SORT.ASC || getSortType() == BIReportConstant.SORT.DESC
-        || getSortType() == BIReportConstant.SORT.NUMBER_ASC || getSortType() == BIReportConstant.SORT.NUMBER_DESC) && sort_target != null && !ComparatorUtils.equals(sort_target, id);
+                || getSortType() == BIReportConstant.SORT.NUMBER_ASC || getSortType() == BIReportConstant.SORT.NUMBER_DESC) && sort_target != null && !ComparatorUtils.equals(sort_target, id);
     }
 
 
@@ -170,8 +188,13 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         return true;
     }
 
+
     @Override
     public Object getValueByType(Object data) {
         return data == null ? StringUtils.EMPTY : data.toString();
+    }
+
+    public BITableRelationPath getSelfToSelfRelationPath() {
+        return selfToSelfRelationPath;
     }
 }

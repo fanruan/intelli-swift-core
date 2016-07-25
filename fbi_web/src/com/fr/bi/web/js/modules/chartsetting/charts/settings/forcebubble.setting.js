@@ -80,7 +80,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({

@@ -74,4 +74,6 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         throw new RuntimeException(UNSUPPORT);
     }
+
+    
 }

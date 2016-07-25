@@ -52,6 +52,7 @@ public class BuildCubeTask implements CubeTask {
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
     private String uuid;
+//    private int updateTypes = DBConstant.SINGLE_TABLE_UPDATE.NEVER;
 
 
     public BuildCubeTask(BIUser biUser, CubeBuild cubeBuild) {
@@ -70,7 +71,10 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public CubeTaskType getTaskType() {
-        return CubeTaskType.BUILD;
+        if (cubeBuild.isSingleTable()) {
+            return CubeTaskType.SINGLE;
+        }
+        return CubeTaskType.ALL;
     }
 
     @Override
@@ -96,7 +100,6 @@ public class BuildCubeTask implements CubeTask {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
         }
     }
 
@@ -119,8 +122,9 @@ public class BuildCubeTask implements CubeTask {
         operationManager.generateRelationBuilder(cubeBuild.getCubeGenerateRelationSet());
         operationManager.generateTableRelationPath(cubeBuild.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
+
         try {
-            BIConfigureManagerCenter.getLogManager().reLationPathSet(cubeBuild.getBiTableSourceRelationPathSet(), biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().relationPathSet(cubeBuild.getBiTableSourceRelationPathSet(), biUser.getUserId());
             BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuild.getAllSingleSources(), biUser.getUserId());
             router.deliverMessage(generateMessageDataSourceStart());
         } catch (BIDeliverFailureException e) {
@@ -162,4 +166,5 @@ public class BuildCubeTask implements CubeTask {
     public boolean equals(Object obj) {
         return this.getUUID().equals(((BuildCubeTask) obj).getUUID());
     }
+
 }

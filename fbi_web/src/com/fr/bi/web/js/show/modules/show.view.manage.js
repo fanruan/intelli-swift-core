@@ -11,6 +11,7 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
     },
 
     getWidget: function (id, type) {
+        var view = "";
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -42,43 +43,62 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
-                return "BIShow.WidgetView";
+                view = "BIShow.WidgetView";
+                break;
             case BICst.WIDGET.CONTENT:
-                return "BIShow.ContentWidgetView";
+                view = "BIShow.ContentWidgetView";
+                break;
             case BICst.WIDGET.IMAGE:
-                return "BIShow.ImageWidgetView";
+                view = "BIShow.ImageWidgetView";
+                break;
             case BICst.WIDGET.WEB:
-                return "BIShow.WebWidgetView";
+                view = "BIShow.WebWidgetView";
+                break;
             case BICst.WIDGET.DETAIL:
-                return "BIShow.DetailTableView";
+                view = "BIShow.DetailTableView";
+                break;
             case BICst.WIDGET.STRING:
-                return "BIShow.StringWidgetView";
+                view = "BIShow.StringWidgetView";
+                break;
             case BICst.WIDGET.NUMBER:
-                return "BIShow.NumberWidgetView";
+                view = "BIShow.NumberWidgetView";
+                break;
             case BICst.WIDGET.DATE:
-                return "BIShow.DateRangeView";
+                view = "BIShow.DateRangeView";
+                break;
             case BICst.WIDGET.YEAR:
-                return "BIShow.YearWidgetView";
+                view = "BIShow.YearWidgetView";
+                break;
             case BICst.WIDGET.QUARTER:
-                return "BIShow.YearQuarterWidgetView";
+                view = "BIShow.YearQuarterWidgetView";
+                break;
             case BICst.WIDGET.MONTH:
-                return "BIShow.YearMonthWidgetView";
+                view = "BIShow.YearMonthWidgetView";
+                break;
             case BICst.WIDGET.YMD:
-                return "BIShow.DateWidgetView";
+                view = "BIShow.DateWidgetView";
+                break;
             case BICst.WIDGET.TREE:
-                return "BIShow.TreeWidgetView";
+                view = "BIShow.TreeWidgetView";
+                break;
             case BICst.WIDGET.GENERAL_QUERY:
-                return "BIShow.GeneralQueryView";
+                view = "BIShow.GeneralQueryView";
+                break;
             case BICst.WIDGET.QUERY:
-                return "BIShow.QueryView";
+                view = "BIShow.QueryView";
                 break;
             case BICst.WIDGET.RESET:
-                return "BIShow.ResetView";
+                view = "BIShow.ResetView";
+                break;
+            default:
+                view = "BIShow.WidgetView";
                 break;
         }
+        return view;
     },
 
     getDimensionOrTarget: function (id, type, region, dId) {
+        var view = "";
         switch (BI.parseInt(type)) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
@@ -112,28 +132,40 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.FUNNEL:
                 if (BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
                     BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region)) {
-                    return "BIShow.DimensionView";
+                    view = "BIShow.DimensionView";
+                    break;
                 }
-                return "BIShow.TargetView";
+                view = "BIShow.TargetView";
+                break;
             case BICst.WIDGET.DETAIL:
-                return "BIShow.DetailDimensionView";
+                view = "BIShow.DetailDimensionView";
+                break;
             case BICst.WIDGET.STRING:
-                return "BIShow.StringDimensionView";
+                view = "BIShow.StringDimensionView";
+                break;
             case BICst.WIDGET.NUMBER:
-                return "BIShow.NumberDimensionView";
+                view = "BIShow.NumberDimensionView";
+                break;
             case BICst.WIDGET.DATE:
-                return "BIShow.DateDimensionView";
+                view = "BIShow.DateDimensionView";
+                break;
             case BICst.WIDGET.YEAR:
             case BICst.WIDGET.QUARTER:
             case BICst.WIDGET.MONTH:
             case BICst.WIDGET.YMD:
-                return "BIShow.DateDimensionView";
+                view = "BIShow.DateDimensionView";
+                break;
             case BICst.WIDGET.TREE:
-                return "BIShow.TreeDimensionView";
+                view = "BIShow.TreeDimensionView";
+                break;
             case BICst.WIDGET.QUERY:
+                view = "";
                 break;
             case BICst.WIDGET.RESET:
+                view = "";
                 break;
         }
+        return view;
     }
-}));
+}))
+;

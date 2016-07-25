@@ -42,4 +42,8 @@ public class CubeTableCache {
         }
     }
 
+    public void clear() {
+        cache.invalidateAll();
+    }
+
 }

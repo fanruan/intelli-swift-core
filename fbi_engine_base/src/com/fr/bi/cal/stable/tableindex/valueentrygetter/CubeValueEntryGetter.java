@@ -1,5 +1,6 @@
 package com.fr.bi.cal.stable.tableindex.valueentrygetter;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
@@ -8,6 +9,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.structure.object.CubeValueEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +35,17 @@ public class CubeValueEntryGetter implements ICubeValueEntryGetter {
     @Override
     public CubeValueEntry getEntryByRow(int row) {
         return new CubeValueEntry(cf.createDetailGetter(manager).getValue(row), cf.getIndexByRow(row, manager), cf.getPositionOfGroup(row, manager));
+    }
+
+    @Override
+    public CubeValueEntry getEntryByGroupRow(int row) {
+        ICubeColumnIndexReader reader = cf.createGroupByType(key, new ArrayList<BITableSourceRelation>(), manager);
+        return new CubeValueEntry(reader.getGroupValue(row), reader.getIndex(reader.getGroupValue(row)), row);
+    }
+
+    @Override
+    public int getPositionOfGroupByRow(int row) {
+        return cf.getPositionOfGroup(row, manager);
     }
 
     @Override

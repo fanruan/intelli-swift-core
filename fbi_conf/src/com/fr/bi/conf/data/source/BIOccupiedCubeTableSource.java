@@ -96,6 +96,11 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
     }
 
     @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
+        return -1;
+    }
+
+    @Override
     public Set getFieldDistinctNewestValues(String fieldName, ICubeDataLoader loader, long userId) {
         return new HashSet();
     }

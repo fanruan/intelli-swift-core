@@ -30,7 +30,13 @@ BI.CircleDisplayEditor = BI.inherit(BI.Widget, {
             validationChecker: function(v){
                 return o.validationChecker(v, self.attr("id"));
             },
-            errorText: BI.i18nText("BI-Have_Repeated_Field_Name"),
+            errorText: function(v){
+                if(v === ""){
+                    return BI.i18nText("BI-Field_Name_Cannot_Be_Null");
+                }else{
+                    return BI.i18nText("BI-Have_Repeated_Field_Name");
+                }
+            },
             value: o.value,
             allowBlank: false,
             height: this.constants.labelHeight

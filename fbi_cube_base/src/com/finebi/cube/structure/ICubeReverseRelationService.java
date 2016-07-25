@@ -20,5 +20,5 @@ public interface ICubeReverseRelationService extends Release {
      * @return 主表行号
      * @throws BIResourceInvalidException
      */
-    Integer getReverseRow(int row) throws BIResourceInvalidException;
+    int getReverseRow(int row) throws BIResourceInvalidException;
 }

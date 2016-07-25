@@ -16,6 +16,7 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
@@ -162,6 +163,18 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
+    public IntList getRemovedList() {
+        if (hostTable.isRemovedListAvailable()) {
+            return hostTable.getRemovedList();
+        } else if (null!=parentTable&&parentTable.isRemovedListAvailable()){
+            return parentTable.getRemovedList();
+        }else {
+            return  new IntList();
+        }
+
+    }
+
+    @Override
     public ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
         for (ICubeFieldSource field : compoundFields) {
             if (ComparatorUtils.equals(field.getFieldName(), fieldName)) {
@@ -227,6 +240,11 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
+    public boolean isCubeLastTimeAvailable() {
+        return hostTable.isCubeLastTimeAvailable() || (isParentAvailable() && parentTable.isCubeLastTimeAvailable());
+    }
+
+    @Override
     public void recordFieldNamesFromParent(Set<String> fieldNames) {
         hostTable.recordFieldNamesFromParent(fieldNames);
     }
@@ -251,6 +269,12 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
         if (parentTable != null) {
             parentTable.setTableOwner(owner);
         }
+    }
+
+    @Override
+    public boolean isRemovedListAvailable() {
+        return hostTable.isRemovedListAvailable() || (isParentAvailable() && parentTable.isRemovedListAvailable());
+
     }
 
     @Override

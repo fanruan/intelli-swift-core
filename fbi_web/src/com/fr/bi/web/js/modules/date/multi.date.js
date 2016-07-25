@@ -4,30 +4,30 @@
  * 日期控件——适配后台数据
  */
 BI.CustomMultiDateCombo = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.CustomMultiDateCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-custom-multi-date-combo"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.CustomMultiDateCombo.superclass._init.apply(this, arguments);
         var self = this;
         this.multiDate = BI.createWidget({
             type: "bi.multidate_combo",
             element: this.element
         });
-        this.multiDate.on(BI.MultiDateCombo.EVENT_CONFIRM,function(){
+        this.multiDate.on(BI.MultiDateCombo.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CustomMultiDateCombo.EVENT_CHANGE);
         });
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.multiDate.getValue();
     },
 
-    setValue: function(v){
-        if(BI.isEmpty(v)) {
+    setValue: function (v) {
+        if (BI.isEmpty(v)) {
             this.multiDate.setValue();
             return;
         }

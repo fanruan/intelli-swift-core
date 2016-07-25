@@ -72,7 +72,40 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.gradientConditions = BI.createWidget({
+            type: "bi.chart_add_gradient_condition_group"
+        });
 
+        this.gradientConditions.on(BI.ChartAddGradientConditionGroup.EVENT_CHANGE, function() {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.addGradientButton = BI.createWidget({
+            type: "bi.button",
+            text: BI.i18nText("BI-Add_Condition"),
+            height: this.constant.BUTTON_HEIGHT
+        });
+
+        this.addGradientButton.on(BI.Button.EVENT_CHANGE, function() {
+            self.gradientConditions.addItem();
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.gradientSetting = BI.createWidget({
+            type: "bi.label",
+            cls: "attr-names",
+            textAlign: "left",
+            text: BI.i18nText("BI-Color_Setting"),
+            height: 20
+        });
+
+        this.gradientColorSetting = BI.createWidget({
+            type: "bi.left",
+            cls: "single-line-settings",
+            tgap: 10,
+            bgap: 10,
+            hgap: 5,
+            items: [this.gradientSetting, this.gradientConditions],
+            width: "100%"
         });
 
         this.addConditionButton = BI.createWidget({
@@ -128,7 +161,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 iconHeight: 24
             }),
             layouts: [{
-                type: "bi.left"
+                type: "bi.left",
+                lgap: 2
             }]
         });
 
@@ -151,7 +185,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             }, {
                 type: "bi.left",
                 cls: "detail-style",
-                items: BI.createItems([{
+                items: BI.createItems([/*{
                     type: "bi.label",
                     text: BI.i18nText("BI-Display_Rules"),
                     cls: "attr-names"
@@ -167,9 +201,13 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                     lgap: 15
                 }, {
                     type: "bi.center_adapt",
+                    items: [this.addGradientButton],
+                    lgap:15
+                }, {
+                    type: "bi.center_adapt",
                     items: [this.addConditionButton],
                     lgap: 15
-                }, {
+                }, */{
                     type: "bi.label",
                     text: BI.i18nText("BI-Total_Style"),
                     cls: "attr-names",
@@ -180,7 +218,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                         items: [this.bubbleStyleGroup]
                     },
                     lgap: this.constant.SIMPLE_H_GAP
-                }, this.fixedColorSetting], {
+                }/*, this.fixedColorSetting, this.gradientColorSetting*/], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 })
             }]
@@ -363,10 +401,10 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
-                }, {
+                }/*, {
                     type: "bi.center_adapt",
                     items: [this.YScale]
-                }], {
+                }*/], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: this.constant.SIMPLE_H_GAP
@@ -415,10 +453,10 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleX, this.editTitleX]
-                }, {
+                }/*, {
                     type: "bi.center_adapt",
                     items: [this.XScale]
-                }], {
+                }*/], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: this.constant.SIMPLE_H_GAP
@@ -434,7 +472,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         //数据标签
@@ -445,7 +483,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         //网格线
@@ -456,7 +494,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         //气泡大小
@@ -510,7 +548,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.gridLine]
-                }, {
+                }/*, {
                     type: "bi.center_adapt",
                     items: [{
                         type: "bi.label",
@@ -523,7 +561,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                         text: "px"
                     }],
                     hgap: 3
-                }], {
+                }*/], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: this.constant.SIMPLE_H_GAP
@@ -582,7 +620,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, YAxis, XAxis, showElement, otherAttr, modeChange],
+            items: [tableStyle, YAxis, XAxis, showElement, otherAttr/*, modeChange*/],
             hgap: 10
         })
     },
@@ -593,13 +631,22 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 this.dimensionColor.setVisible(true);
                 this.addConditionButton.setVisible(false);
                 this.fixedColorSetting.setVisible(false);
+                this.addGradientButton.setVisible(false);
+                this.gradientColorSetting.setVisible(false);
                 break;
             case BICst.DISPLAY_RULES.FIXED:
                 this.dimensionColor.setVisible(false);
                 this.addConditionButton.setVisible(true);
                 this.fixedColorSetting.setVisible(true);
+                this.addGradientButton.setVisible(false);
+                this.gradientColorSetting.setVisible(false);
                 break;
             case BICst.DISPLAY_RULES.GRADIENT:
+                this.dimensionColor.setVisible(false);
+                this.addConditionButton.setVisible(false);
+                this.fixedColorSetting.setVisible(false);
+                this.addGradientButton.setVisible(true);
+                this.gradientColorSetting.setVisible(true);
                 break;
         }
     },

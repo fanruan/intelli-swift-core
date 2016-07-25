@@ -97,14 +97,14 @@ BI.TargetNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _onTypeSelected: function (v) {
-        var fieldType = BI.Utils.getFieldTypeByID(v);
+        var fieldType = BI.Utils.getFieldTypeByID(v.field_id || v);
         var self = this, o = this.options;
         var filterItem = BI.TargetFilterItemFactory.createFilterItemByFieldType(fieldType);
         this.itemContainer.destroy();
         this.itemContainer = null;
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
-            _src: {
+            _src: BI.isObject(v) ? v : {
                 field_id: v
             },
             id: this.options.id,
@@ -118,10 +118,9 @@ BI.TargetNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             value: filterItem.filter_type,
             filter_type: filterItem.filter_type,
             filter_value: {value: []},
-            _src: {
+            _src: BI.isObject(v) ? v : {
                 field_id: v
             }
-
         }));
     },
 

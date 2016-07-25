@@ -1,14 +1,19 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.result.Node;
+import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
+import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 import com.fr.general.ComparatorUtils;
@@ -23,11 +28,11 @@ import java.util.*;
 
 public class StringControlWidget extends BISummaryWidget {
 
-    private int page = -1;
+    private static final int STEP = 100;
     private int data_type = -2;
     private int times = -1;
     private String selected_values;
-    private String keyword;
+    private String keyword = StringUtils.EMPTY;
 
     @Override
     public BIDimension[] getViewDimensions() {
@@ -45,34 +50,106 @@ public class StringControlWidget extends BISummaryWidget {
     }
 
     public JSONObject createDataJSON(BISessionProvider session) throws JSONException {
-        Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadGroup(this, new BISummaryTarget[0], this.getDimensions(), this.getDimensions(), new BISummaryTarget[0], -1, true, (BISession) session);
-        List<Node> nodelist = tree.getChilds();
-        Iterator<Node> it = nodelist.iterator();
-        List<String> list = new ArrayList<String>();
-        while (it.hasNext()){
-            list.add(it.next().getShowValue());
+        BIDimension dimension = getDimensions()[0];
+        DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
+        GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
+        ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
+        List<Integer> list;
+        if (dimension.getGroup().getType() == BIReportConstant.GROUP.CUSTOM_GROUP || dimension.getGroup().getType() == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP){
+            list = createCustomGroupIndex(gvi, reader);
+        } else {
+            list = createIDGroupIndex(gvi, dimension, session);
         }
-        List<String> selected_value = new ArrayList<String>();
+        Set<String> selected_value = new HashSet<String>();
 
         if (selected_values != null && StringUtils.isNotEmpty(selected_values)) {
             JSONArray selectedValueArray = new JSONArray(selected_values);
-            selected_value = Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray));
+            selected_value.addAll(Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray)));
         }
-        List<String> result = getSearchResult(list, keyword, selected_value);
         if(data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH){
-            return new JSONObject().put(BIJSONConstant.JSON_KEYS.VALUE, result.size());
+            return new JSONObject().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, list));
         }
-        if(data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA){
-            JSONArray ja = new JSONArray(result);
-            return new JSONObject().put(BIJSONConstant.JSON_KEYS.VALUE, ja);
+        if(data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1){
+            return getSearchResult(reader, selected_value, 0, list.size(), list);
+        } else {
+            return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP, list);
         }
-        JSONArray ja = new JSONArray(getItemsByTimes(result, times));
-        JSONObject jo = new JSONObject();
-        jo.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
-        jo.put(BIJSONConstant.JSON_KEYS.HAS_NEXT, hasNextByTimes(result, times));
-        return jo;
     }
 
+    private List<Integer> createIDGroupIndex(GroupValueIndex gvi, BIDimension dimension, BISessionProvider session) {
+        ICubeTableService ti = session.getLoader().getTableIndex(dimension.getStatisticElement().getTableBelongTo().getTableSource());
+        final ICubeValueEntryGetter getter = ti.getValueEntryGetter(dimension.createKey(dimension.getStatisticElement()), new ArrayList<BITableSourceRelation>());
+        if (gvi.getRowsCountWithData() == ti.getRowCount()){
+            return new AbstractList<Integer>() {
+                @Override
+                public Integer get(int index) {
+                    return index;
+                }
+
+                @Override
+                public int size() {
+                    return getter.getGroupSize();
+                }
+            };
+        }
+        final Integer[] groupIndex = new Integer[getter.getGroupSize()];
+        gvi.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                int groupRow = getter.getPositionOfGroupByRow(row);
+                if (groupRow != NIOConstant.INTEGER.NULL_VALUE){
+                    groupIndex[groupRow] = groupRow;
+                }
+            }
+        });
+        List<Integer> list = new ArrayList<Integer>();
+        for (Integer integer : groupIndex){
+            if (integer != null){
+                list.add(integer);
+            }
+        }
+        return list;
+    }
+
+    private List<Integer> createCustomGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader) {
+        List<Integer> list = new ArrayList<Integer>();
+        Iterator<Map.Entry<String, GroupValueIndex>> it = reader.iterator();
+        int index = 0;
+        while (it.hasNext()){
+            if (!it.next().getValue().AND(gvi).isAllEmpty()){
+               list.add(index);
+            }
+            index ++;
+        }
+        return list;
+    }
+
+    private int getSearchCount(ICubeColumnIndexReader reader, Set selectedValue, List<Integer> list) {
+        int count = 0;
+        String keyword = this.keyword.toLowerCase();
+        for (int i = 0; i < list.size(); i ++){
+            Object ob = reader.getGroupValue(list.get(i));
+            if (ob == null){
+                continue;
+            }
+            String str = ob.toString();
+            if (match(str, keyword, selectedValue)){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private boolean match(String value, String keyword, Set selectedValue){
+        if (selectedValue.contains(value)){
+            return false;
+        }
+        if (StringUtils.isEmpty(keyword)){
+            return true;
+        }
+        String strPinyin = BIPhoneticismUtils.getPingYin(value).toLowerCase();
+        return strPinyin.contains(keyword) || value.contains(keyword);
+    }
 
     @Override
     protected TemplateBlock createBIBlock(BISession session) {
@@ -90,59 +167,49 @@ public class StringControlWidget extends BISummaryWidget {
             if (treeJo.has("times")) {
                 times = treeJo.getInt("times");
             }
-            selected_values = treeJo.optString("selected_values", "");
-            keyword = treeJo.optString("keyword", "");
+            selected_values = treeJo.optString("selected_values", StringUtils.EMPTY);
+            keyword = treeJo.optString("keyword", StringUtils.EMPTY);
         }
 
     }
 
-    private boolean hasNextByTimes(List<String> items, int times) {
-        return times * 100 < items.size();
-    }
-
-    private List<String> getItemsByTimes(List<String> items, int times) {
-        if(times == -1){
-            return items;
-        }
-        List<String> result = new ArrayList<String>();
-        int i = 0;
-        Iterator<String> it = items.iterator();
-        while (it.hasNext() && i < (times - 1) * 100){
-            it.next();
-            ++i;
-        }
-        while (it.hasNext() && i < times * 100){
-            result.add(it.next());
-            i++;
-        }
-        return result;
-    }
-
-    private List<String> getSearchResult(List<String> source, String keyword, List<String> selectedValue) throws JSONException {
-        if(StringUtils.isNotEmpty(keyword) || !selectedValue.isEmpty()){
-            List<String> find = new ArrayList<String>();
-            List<String> match = new ArrayList<String>();
-            keyword = keyword.toLowerCase();
-            Iterator<String> it = source.iterator();
-            while (it.hasNext()){
-                String str = it.next();
-                String strPinyin = BIPhoneticismUtils.getPingYin(str);
-                strPinyin = strPinyin.toLowerCase();
-                str = str.toUpperCase();
-                if(strPinyin.contains(keyword) || str.contains(keyword)){
-                    if(!selectedValue.contains(str)){
-                        if(ComparatorUtils.equals(keyword, str)){
-                            match.add(str);
-                        }else{
-                            find.add(str);
-                        }
-                    }
-                }
+    private JSONObject getSearchResult(ICubeColumnIndexReader reader, Set selectedValue, int start, int end, List<Integer> list) throws JSONException {
+        JSONArray ja = new JSONArray();
+        JSONObject jo = new JSONObject();
+        boolean hasNext = false;
+        List<String> find = new ArrayList<String>();
+        List<String> match = new ArrayList<String>();
+        int matched = 0;
+        String key = this.keyword.toLowerCase();
+        for (int i = 0; i < list.size(); i ++){
+            Object ob = reader.getGroupValue(list.get(i));
+            if (ob == null){
+                continue;
             }
-            match.addAll(find);
-            return match;
+            String str = ob.toString();
+            if (match(str, key, selectedValue)){
+                if (matched >= start && matched < end){
+                    if(ComparatorUtils.equals(keyword, str)){
+                        match.add(str);
+                    }else{
+                        find.add(str);
+                    }
+                } else if (matched >= end){
+                    hasNext = true;
+                    break;
+                }
+                matched ++;
+            }
         }
-        return source;
+        for (String s : match){
+            ja.put(s);
+        }
+        for (String s : find){
+            ja.put(s);
+        }
+        jo.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
+        jo.put(BIJSONConstant.JSON_KEYS.HAS_NEXT, hasNext);
+        return jo;
     }
 
     @Override

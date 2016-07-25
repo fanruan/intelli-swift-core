@@ -1,17 +1,23 @@
 package com.finebi.cube.structure.table.property;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.input.ICubeIntegerReaderWrapper;
 import com.finebi.cube.data.input.ICubeLongReaderWrapper;
 import com.finebi.cube.data.input.ICubeStringReader;
+import com.finebi.cube.data.output.ICubeIntegerWriterWrapper;
 import com.finebi.cube.data.output.ICubeLongWriterWrapper;
 import com.finebi.cube.data.output.ICubeStringWriter;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.finebi.cube.structure.*;
+import com.finebi.cube.structure.BITableKey;
+import com.finebi.cube.structure.ICubeTablePropertyService;
+import com.finebi.cube.structure.ICubeVersion;
+import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.property.BICubeProperty;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
@@ -32,6 +38,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private static String TIMESTAMP_DATA = "timestamp";
     private static String SUPER_TABLES = "st";
 
+    private static String REMOVED_LIST = "removedList";
+
     private List<ICubeFieldSource> tableFields = null;
     private List<ITableKey> parentTable = null;
 
@@ -50,6 +58,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private ICubeLongReaderWrapper timeStampReader;
 
     private ParentFieldProperty parentFieldProperty;
+    private ICubeIntegerWriterWrapper removeListWriter;
+    private ICubeIntegerReaderWrapper removeListReader;
 
     public BICubeTableProperty(ICubeResourceLocation currentLocation, ICubeResourceDiscovery discovery) {
         this.currentLocation = currentLocation.copy();
@@ -81,6 +91,14 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     protected boolean isRowCountReaderAvailable() {
         return rowCountReader != null;
+    }
+
+    protected boolean isRemoveListReaderAvailable() {
+        return removeListReader != null;
+    }
+
+    protected boolean isRemoveListWriterAvailable() {
+        return removeListWriter != null;
     }
 
     protected boolean isTimeStampWriterAvailable() {
@@ -135,6 +153,22 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         rowCountLocation.setLongTypeWrapper();
         rowCountLocation.setReaderSourceLocation();
         rowCountReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
+
+    }
+
+    private void initialRemovedListWriter() throws Exception {
+        ICubeResourceLocation location = this.currentLocation.buildChildLocation(REMOVED_LIST);
+        location.setIntegerTypeWrapper();
+        location.setWriterSourceLocation();
+        removeListWriter = (ICubeIntegerWriterWrapper) discovery.getCubeWriter(location);
+
+    }
+
+    private void initialRemovedListReader() throws Exception {
+        ICubeResourceLocation location = this.currentLocation.buildChildLocation(REMOVED_LIST);
+        location.setIntegerTypeWrapper();
+        location.setReaderSourceLocation();
+        removeListReader = (ICubeIntegerReaderWrapper) discovery.getCubeReader(location);
 
     }
 
@@ -301,6 +335,28 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
     }
 
+    public ICubeIntegerWriterWrapper getRemovedListWriter() {
+        try {
+            if (!isRemoveListWriterAvailable()) {
+                initialRemovedListWriter();
+            }
+            return removeListWriter;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeIntegerReaderWrapper getRemovedListReader() {
+        try {
+            if (!isRemoveListReaderAvailable()) {
+                initialRemovedListReader();
+            }
+            return removeListReader;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
     @Override
     public void recordTableStructure(List<ICubeFieldSource> fields) {
         /**
@@ -329,6 +385,11 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     public void recordRowCount(long rowCount) {
         getRowCountWriter().recordSpecificValue(0, rowCount);
 
+    }
+
+    @Override
+    public void recordRemovedList(int position, int value) {
+        getRemovedListWriter().recordSpecificValue(position, value);
     }
 
     @Override
@@ -365,6 +426,25 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
         return -1;
+    }
+
+    @Override
+    public IntList getRemovedList() {
+        ICubeIntegerReaderWrapper removedListReader = getRemovedListReader();
+        IntList removedList = new IntList();
+        int i = 0;
+        try {
+            while (removedListReader.getSpecificValue(i)<removedListReader.getSpecificValue(i+1)) {
+                removedList.add(removedListReader.getSpecificValue(i));
+                i++;
+            }
+            if(i>0){
+                removedList.add(removedListReader.getSpecificValue(i));
+            }
+        } catch (BIResourceInvalidException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return removedList;
     }
 
     @Override
@@ -511,6 +591,16 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         parentFieldProperty.forceRelease();
         ((BICubeProperty) version).forceRelease();
         clear();
+    }
+
+    @Override
+    public boolean isRemovedListAvailable() {
+        return getRemovedListReader().canRead();
+    }
+
+    @Override
+    public boolean isCubeLastUpdateTimeAvailable() {
+        return getTimeStampReader().canRead();
     }
 }
 

@@ -14,6 +14,7 @@ import com.finebi.cube.structure.table.property.BICubeTableProperty;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.*;
@@ -81,7 +82,6 @@ public class BICubeTableEntity implements CubeTableEntityService {
     @Override
     public void recordRowCount(long rowCount) {
         tableProperty.recordRowCount(rowCount);
-
     }
 
     @Override
@@ -94,7 +94,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
         Iterator<Integer> it = removedLine.iterator();
         int row = 0;
         while (it.hasNext()) {
-            removedLineWriter.recordSpecificPositionValue(row++, it.next());
+            tableProperty.recordRemovedList(row++,it.next());
         }
     }
 
@@ -168,6 +168,11 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
+    public IntList getRemovedList() {
+        return tableProperty.getRemovedList();
+    }
+
+    @Override
     public Date getCubeLastTime() {
         return tableProperty.getCubeLastTime();
     }
@@ -194,6 +199,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
         }
         relationManager.clear();
         tableProperty.clear();
+//        tableProperty.forceRelease();
     }
 
     @Override
@@ -221,6 +227,11 @@ public class BICubeTableEntity implements CubeTableEntityService {
         return tableProperty.isRowCountAvailable();
     }
 
+    @Override
+    public boolean isCubeLastTimeAvailable() {
+        return tableProperty.isCubeLastUpdateTimeAvailable();
+    }
+
     public long getCubeVersion() {
         return tableProperty.getCubeVersion();
     }
@@ -234,6 +245,11 @@ public class BICubeTableEntity implements CubeTableEntityService {
     public void setTableOwner(ITableKey owner) {
         relationManager.setOwner(owner);
         columnManager.setOwner(owner);
+    }
+
+    @Override
+    public boolean isRemovedListAvailable() {
+        return tableProperty.isRemovedListAvailable();
     }
 
     @Override

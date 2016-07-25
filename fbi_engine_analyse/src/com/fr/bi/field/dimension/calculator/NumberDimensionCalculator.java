@@ -4,11 +4,10 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 
 import java.util.Comparator;
@@ -48,21 +47,6 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
             treeMap.put(entry.getKey(), entry.getValue());
         }
         return getSortType() != BIReportConstant.SORT.NUMBER_DESC ? treeMap.iterator() : treeMap.previousIterator();
-    }
-
-    /**
-     * 是否为超级大分组
-     *
-     * @param loader 注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(ICubeDataLoader loader) {
-        if (dimension.getGroup() == null) {
-            return createValueMap(dimension.createTableKey(), loader).nonPrecisionSize() > BIBaseConstant.LARGE_GROUP_LINE;
-        } else {
-            return false;
-        }
     }
 
 }

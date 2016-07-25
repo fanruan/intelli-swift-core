@@ -35,6 +35,9 @@ BI.QuarterCombo = BI.inherit(BI.Widget, {
             }
         });
         this.trigger.on(BI.QuarterTrigger.EVENT_CONFIRM, function () {
+            if(self.combo.isViewVisible()) {
+                return;
+            }
             if(this.getKey() && this.getKey() !== self.storeValue) {
                 self.setValue(this.getKey());
             }else if(!this.getKey()){

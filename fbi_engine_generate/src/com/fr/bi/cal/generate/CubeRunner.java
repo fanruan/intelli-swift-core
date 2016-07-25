@@ -6,18 +6,15 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
-import com.finebi.cube.exception.BIBuildReaderException;
-import com.finebi.cube.exception.BIBuildWriterException;
-import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
-import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
+import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.constant.CubeConstant;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -30,7 +27,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 
 /**
@@ -164,7 +160,6 @@ public class CubeRunner {
 
     private void generateCube() {
         setStatue(Status.LOADED);
-//        CubeBuild cubeBuild = new CubeBuildStaff(new BIUser((biUser.getUserId())));
         CubeBuild cubeBuild = new CubeBuildByPart(biUser.getUserId(), CubeUpdateUtils.getNewTables(biUser.getUserId()), CubeUpdateUtils.getNewRelations(biUser.getUserId()));
         CubeTask task = new BuildCubeTask(biUser, cubeBuild);
         CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
@@ -177,57 +172,50 @@ public class CubeRunner {
 
     private void finish() {
         setStatue(Status.REPLACING);
-        BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
-        long start = System.currentTimeMillis();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
-        replaceAndBackupOldCubes();
+        long start = System.currentTimeMillis();
+        BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
+        replaceOldCubes();
         setStatue(Status.LOADED);
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
+        /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
+        BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
     }
 
-
-    private void replaceAndBackupOldCubes() {
+    private void replaceOldCubes() {
         try {
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            //暂时cube不做备份了,太吃空间了
-            BIFileUtils.delete(new File(advancedConf.getRootURI().toString()));
-            BIFileUtils.moveFile(tempConf.getRootURI().toString(), advancedConf.getRootURI().toString());
-            BICubeLocation advancedLocation = new BICubeLocation(advancedConf.getRootURI().getPath(), CubeConstant.CUBE_PROPERTY);
-            BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(advancedLocation);
-            BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(advancedLocation);
-        } catch (URISyntaxException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (BIBuildReaderException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (IllegalCubeResourceLocationException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (BIBuildWriterException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BIFileUtils.moveFile(tempConf.getRootURI().getPath(), advancedConf.getRootURI().getPath());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
+        } finally {
+            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+//            BIFactoryHelper.getObject(ICubeDataLoader.class, UserControl.getInstance().getSuperManagerID()).clear();
+            CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         }
-
     }
+
 
     private void copyOldCubesToTempCubes() {
         try {
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-            BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
-            BICubeLocation advancedLocation = new BICubeLocation(advancedConf.getRootURI().getPath(), CubeConstant.CUBE_PROPERTY);
-//            BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(advancedLocation);
-//            BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(advancedLocation);
-        } catch (URISyntaxException e) {
-            BILogger.getLogger().error(e.getMessage());
+            if (new File(tempConf.getRootURI().getPath()).exists()){
+                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
+            }
+            if (new File(advancedConf.getRootURI().getPath()).exists()) {
+                BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
+            }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
 
     }
+
     public CubeBuildStaff getCubeGeneratingObjects() {
         if (object == null) {
             object = new CubeBuildStaff(biUser);
@@ -261,5 +249,5 @@ public class CubeRunner {
         return BIFileUtils.checkDir(new File(BIPathUtils.createBasePath()));
     }
 
-    
+
 }

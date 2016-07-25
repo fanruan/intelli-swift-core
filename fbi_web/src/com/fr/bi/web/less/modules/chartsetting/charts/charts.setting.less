@@ -4,7 +4,7 @@
     border-top: 1px solid @color-bi-border-line;
     & .chart-style-font{
       border: 1px solid @color-bi-border-default;
-      .border-radius(2px);
+      .border-radius(@radius-2);
       &:hover{
         background: @color-bi-background-gray;
       }
@@ -22,13 +22,16 @@
     }
     & .unit-input{
       border: 1px solid @color-bi-border-normal;
-      .border-radius(2px);
+      .border-radius(@radius-2);
     }
   }
 
   & .bubble-style-button{
     .border-radius(@radius-2);
     &.active{
+      background-color: @color-bi-background-dark;
+    }
+    &:hover{
       background-color: @color-bi-background-dark;
     }
   }

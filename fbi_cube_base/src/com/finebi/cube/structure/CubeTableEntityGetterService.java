@@ -7,6 +7,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Date;
 import java.util.List;
@@ -38,6 +39,8 @@ public interface CubeTableEntityGetterService extends Release, ICubeVersion {
     Set<BIColumnKey> getCubeColumnInfo();
 
     int getRowCount();
+
+    IntList getRemovedList();
 
     ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException;
 
@@ -71,4 +74,6 @@ public interface CubeTableEntityGetterService extends Release, ICubeVersion {
     boolean tableDataAvailable();
 
     boolean isRowCountAvailable();
+
+    boolean isCubeLastTimeAvailable();
 }

@@ -89,5 +89,6 @@ public class UserCubeManagerCached implements ICubeDataLoader {
     @Override
     public void clear() {
         hostCubeManager.clear();
+        cubeTableCache.clear();
     }
 }

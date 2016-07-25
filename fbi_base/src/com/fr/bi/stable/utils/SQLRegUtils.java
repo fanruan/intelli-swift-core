@@ -211,15 +211,12 @@ public class SQLRegUtils {
         }
 
         StringBuffer sb=new StringBuffer();
-        sb.append("原SQL为"+sql+"\n");
-        sb.append("解析后的SQL为\n");
-
 
         for(String str:getParsedSqlList()){
             sb.append(str);
         }
 
-        sb.append("\n");
+        sb.append(" ");
 
         return sb.toString();
     }
@@ -264,7 +261,7 @@ public class SQLRegUtils {
         }
 
         if(cols!=null){
-            sqlList.add("select\n");
+            sqlList.add(" select ");
             if(isSingleLine){
                 sqlList.add(getAddEnterStr(cols,Comma));
             }
@@ -274,7 +271,7 @@ public class SQLRegUtils {
         }
 
         if(tables!=null){
-            sqlList.add(" \nfrom\n");
+            sqlList.add(" from ");
 
             if(isSingleLine){
                 sqlList.add(getAddEnterStr(tables,Comma));
@@ -285,7 +282,7 @@ public class SQLRegUtils {
         }
 
         if(conditions!=null){
-            sqlList.add(" \nwhere\n");
+            sqlList.add("     where    ");
 
             if(isSingleLine){
                 sqlList.add(getAddEnterStr(conditions,"(and|or)"));
@@ -296,7 +293,7 @@ public class SQLRegUtils {
         }
 
         if(groupCols!=null){
-            sqlList.add(" \ngroup by\n");
+            sqlList.add("     group by    ");
 
             if(isSingleLine){
                 sqlList.add(getAddEnterStr(groupCols,Comma));
@@ -307,7 +304,7 @@ public class SQLRegUtils {
         }
 
         if(orderCols!=null){
-            sqlList.add(" \norder by\n");
+            sqlList.add("     order by    ");
 
             if(isSingleLine){
                 sqlList.add(getAddEnterStr(orderCols,Comma));
@@ -357,6 +354,10 @@ public class SQLRegUtils {
 
     public String getConditions() {
         return conditions;
+    }
+
+    public void setConditions(String conditions) {
+        this.conditions = conditions;
     }
 
     public String getGroupCols() {

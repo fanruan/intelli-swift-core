@@ -1,7 +1,10 @@
 package com.finebi.cube.structure.group;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.input.ICubeByteReaderWrapper;
+import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
+import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.Comparator;
 
@@ -22,8 +25,23 @@ public class BICubeByteGroupData extends BICubeGroupData<Byte> {
     }
 
 
+    public byte getGroupValueByPosition(int position) {
+        try {
+            return ((ICubeByteReaderWrapper)getGroupReader()).getSpecificValue(position);
+
+        } catch (BIResourceInvalidException e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            throw new RuntimeException("read byte failed", e);
+        }
+    }
+
     @Override
     protected Comparator<Byte> defaultComparator() {
         return null;
+    }
+
+    @Override
+    public Byte getGroupObjectValueByPosition(int index) {
+        return getGroupValueByPosition(index);
     }
 }

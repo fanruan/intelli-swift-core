@@ -20,12 +20,13 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
+public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
 
     private final static int INIT_INDEX_LENGTH = 128;
-    protected Map<Long, MappedByteBuffer> buffers = new ConcurrentHashMap<Long, MappedByteBuffer>();
+    protected Map<Integer, MappedByteBuffer> buffers = new ConcurrentHashMap<Integer, MappedByteBuffer>();
+    protected transient MappedByteBuffer[] bufferArray = new MappedByteBuffer[1];
     protected final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    protected Map<Long, FileChannel> fcMap = new ConcurrentHashMap<Long, FileChannel>();
+    protected Map<Integer, FileChannel> fcMap = new ConcurrentHashMap<Integer, FileChannel>();
     boolean[] initIndex = new boolean[INIT_INDEX_LENGTH];
     protected volatile boolean isValid = true;
     private ICubeSourceReleaseManager releaseManager;
@@ -53,28 +54,40 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
 
     protected abstract void releaseChild();
 
-    @Override
-    public T getSpecificValue(long filePosition) throws BIResourceInvalidException {
+    protected int getPage(long filePosition) throws BIResourceInvalidException {
         if (filePosition < 0) {
             throw BINonValueUtils.illegalArgument("The value of argument must be positive,but it's " + filePosition + " now");
         }
         if(isValid) {
-            Long index = filePosition >> getPageStep() >> NIOConstant.MAX_SINGLE_FILE_PART_SIZE;
+            int index = (int)(filePosition >> getPageStep() >> NIOConstant.MAX_SINGLE_FILE_PART_SIZE);
             initBuffer(index);
-            try {
-                return getValue(index, (int) (filePosition & getPageModeValue()));
-            } catch (IndexOutOfBoundsException e) {
-                throw new RuntimeException("the expect page value is:" + index, e);
-            } finally {
-            }
+            return index;
         } else {
             throw new BIResourceInvalidException();
         }
 
     }
 
-    private void initBuffer(Long index) {
-        if (!buffers.containsKey(index)) {
+    protected int getIndex(long filePosition){
+        return (int) (filePosition & getPageModeValue());
+    }
+
+    private boolean buffersContains(int index){
+        if (bufferArray.length < index){
+            synchronized (this){
+                if (bufferArray.length < index){
+                    MappedByteBuffer[] temp = new MappedByteBuffer[index];
+                    System.arraycopy(bufferArray, 0, temp, 0, bufferArray.length);
+                    bufferArray = temp;
+                }
+            }
+            return false;
+        }
+        return bufferArray[index] != null;
+    }
+
+    private void initBuffer(int index) {
+        if (!buffersContains(index)) {
             /**
              * 资源不可用，需要初始化，释放读锁，加写锁。
              */
@@ -83,7 +96,7 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
                 /**
                  * 重新检查是否有其它线程已经初始化了
                  */
-                if (!buffers.containsKey(index)) {
+                if (!buffersContains(index)) {
                     initialBuffer(index);
                 }
                 /**
@@ -99,9 +112,6 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
             }
         }
     }
-
-    protected abstract T getValue(Long page, int index) throws BIResourceInvalidException;
-
     @Override
     public void releaseHandler() {
         if (useReleaseManager()) {
@@ -122,6 +132,7 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
     }
 
     public void releaseSource() {
+
         readWriteLock.writeLock().lock();
         if (!isValid) {
             return;
@@ -131,7 +142,8 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         try {
             //但愿10ms能 执行完get方法否则可能导致jvm崩溃
             //锁太浪费资源了，10ms目前并没有遇到问题
-            Thread.currentThread().sleep(10);
+            //daniel:改成1ms，最垃圾的磁盘也读完了
+            Thread.currentThread().sleep(1);
         } catch (InterruptedException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
@@ -152,10 +164,11 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
     }
 
     private void releaseBuffer() {
-        for (Entry<Long, MappedByteBuffer> entry : buffers.entrySet()) {
+        for (Entry<Integer, MappedByteBuffer> entry : buffers.entrySet()) {
             BIReleaseUtils.doClean(entry.getValue());
         }
         buffers.clear();
+        bufferArray = new MappedByteBuffer[1];
     }
 
     private void releaseChannel() throws IOException {
@@ -169,11 +182,12 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         }
     }
 
-    private void initialBuffer(long index) throws IOException {
+    private void initialBuffer(int index) throws IOException {
         FileChannel channel = initFile(index);
         MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
         initChild(index, buffer);
         buffers.put(index, buffer);
+        bufferArray[index] = buffer;
         fcMap.put(index, channel);
     }
 
@@ -182,7 +196,7 @@ public abstract class BIBasicNIOReader<T> implements ICubePrimitiveReader<T> {
         this.releaseManager = releaseHelper;
     }
 
-    protected abstract void initChild(Long index, MappedByteBuffer buffer);
+    protected abstract void initChild(int index, MappedByteBuffer buffer);
 
     private FileChannel initFile(long fileIndex) {
         //兼容之前的

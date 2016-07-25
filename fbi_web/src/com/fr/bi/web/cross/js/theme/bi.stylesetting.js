@@ -160,7 +160,7 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-        this.data = BI.requestSync('fr_bi_base', 'get_config_setting', null);
+        this.data = Data.BufferPool.getDefaultChartConfig();
         this.color.populate(this.data.styleList);
         this.style.setValue(this.data.chartStyle || 0);
         if (BI.isKey(this.data.defaultColor)) {

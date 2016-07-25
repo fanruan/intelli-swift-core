@@ -203,7 +203,7 @@ BI.AreaChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                            if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
                                 da.y = 0;
                             }
                         }
@@ -297,7 +297,7 @@ BI.AreaChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
-            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
         }
     },
 

@@ -108,7 +108,11 @@ BI.BarChart = BI.inherit(BI.Widget, {
 
         //分类轴
         config.yAxis = this.yAxis;
-        this.config.show_x_axis_title === true && (config.yAxis[0].title.text = this.config.x_axis_title);
+        if(this.config.show_x_axis_title === true){
+            config.yAxis[0].title.text = this.config.x_axis_title
+        }else{
+            config.yAxis[0].title.text = "";
+        }
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
         config.yAxis[0].labelRotation = this.config.text_direction;
@@ -191,7 +195,7 @@ BI.BarChart = BI.inherit(BI.Widget, {
                     BI.each(item.data, function (id, da) {
                         da.x = da.x || 0;
                         da.x = da.x.div(magnify);
-                        if (self.constants.MINLIMIT.sub(da.x) > 0) {
+                        if(self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
                             da.x = 0;
                         }
                     })

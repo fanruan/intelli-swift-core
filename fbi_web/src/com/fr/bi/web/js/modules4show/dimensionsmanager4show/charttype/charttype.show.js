@@ -36,7 +36,11 @@ BI.ChartTypeShow = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var result = [];
         var wId = o.wId;
-        var wType = BI.Utils.getWidgetTypeByID(wId);
+        //这个type需要从original_show_widgets中取
+        var originalShowWidgets = Data.SharingPool.get("original_show_widgets");
+        var widget = originalShowWidgets[wId];
+        var wType = widget.type;
+
         BI.each(items, function (i, item) {
             if (BI.isNotEmptyArray(item.children)) {
                 var foundType = false, matchItem = {};

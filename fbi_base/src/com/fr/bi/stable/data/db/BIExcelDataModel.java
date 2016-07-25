@@ -137,7 +137,6 @@ public class BIExcelDataModel extends AbstractDataModel {
         }
         switch (getExcelType()){
             case EXCEL_TYPE_CSV:
-                break;
             case EXCEL_TYPE_XLS:
                 initExcel4XLS(true);
                 break;

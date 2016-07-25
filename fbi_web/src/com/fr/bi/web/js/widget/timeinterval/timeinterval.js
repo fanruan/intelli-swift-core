@@ -118,6 +118,8 @@ BI.TimeInterval = BI.inherit(BI.Single, {
                 self.element.addClass(self.constants.timeErrorCls);
                 self.fireEvent(BI.TimeInterval.EVENT_ERROR);
             }else{
+                self._clearTitle();
+                self.element.removeClass(self.constants.timeErrorCls);
                 self.fireEvent(BI.TimeInterval.EVENT_CHANGE);
             }
         });

@@ -234,10 +234,10 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
                 }
                 clearBuffer();
                 try {
-                    if (cacheFile.exists()) {
-                        cacheFile.delete();
-                    }
-                    cacheFile.createNewFile();
+//                    if (cacheFile.exists()) {
+//                        cacheFile.delete();
+//                    }
+//                    cacheFile.createNewFile();
                     fc = new RandomAccessFile(cacheFile, "rw").getChannel();
                 } catch (FileNotFoundException e) {
                     BILogger.getLogger().error(e.getMessage(), e);

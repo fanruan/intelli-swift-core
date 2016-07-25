@@ -42,6 +42,10 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
     protected Set<BIDateValue> valueSet;
 
     private JSONObject valueJo;
+    private int type;
+    private int month;
+    private int year;
+    private int day;
 
     public DateKeyTargetFilterValue() {
 
@@ -123,6 +127,18 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
                 this.valueSet.add(BIDateValueFactory.createDateValue(valueJo.getInt("group"), valueJo.getLong("values")));
                 this.group = valueJo.getInt("group");
             }
+            if (valueJo.has("value")) {
+                JSONObject filterValueJo = valueJo.getJSONObject("value");
+                if(filterValueJo.has("year")){
+                    this.year = filterValueJo.getInt("year");
+                }
+                if(filterValueJo.has("month")){
+                    this.month = filterValueJo.getInt("month");
+                }
+                if(filterValueJo.has("day")){
+                    this.day = filterValueJo.getInt("day");
+                }
+            }
         }
     }
 
@@ -194,22 +210,17 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof DateKeyTargetFilterValue)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         DateKeyTargetFilterValue that = (DateKeyTargetFilterValue) o;
 
-        if (group != that.group) {
-            return false;
-        }
-        if (!ComparatorUtils.equals(valueSet, that.valueSet)) {
-            return false;
-        }
-        return !(valueJo != null ? !ComparatorUtils.equals(valueJo, that.valueJo) : that.valueJo != null);
+        if (group != that.group) return false;
+        if (type != that.type) return false;
+        if (month != that.month) return false;
+        if (year != that.year) return false;
+        if (day != that.day) return false;
+        return valueSet != null ? valueSet.equals(that.valueSet) : that.valueSet == null;
 
     }
 
@@ -217,7 +228,10 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
     public int hashCode() {
         int result = group;
         result = 31 * result + (valueSet != null ? valueSet.hashCode() : 0);
-        result = 31 * result + (valueJo != null ? valueJo.hashCode() : 0);
+        result = 31 * result + type;
+        result = 31 * result + month;
+        result = 31 * result + year;
+        result = 31 * result + day;
         return result;
     }
 

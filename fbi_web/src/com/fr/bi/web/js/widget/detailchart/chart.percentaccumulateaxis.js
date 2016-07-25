@@ -172,7 +172,7 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                            if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
                                 da.y = 0;
                             }
                         }

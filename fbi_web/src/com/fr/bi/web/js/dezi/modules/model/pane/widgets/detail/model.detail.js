@@ -36,7 +36,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     self.set("clicked", linkageValues);
                 }
                 BI.remove(arr, function (i, id) {
-                    if(key2 == id){
+                    if(key2 === id){
                         isTarget = true;
                         return true;
                     }
@@ -94,7 +94,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             var views = this.get("view"), dimensions = this.get("dimensions");
             BI.each(views, function (region, arr) {
                 BI.each(arr, function (i, id) {
-                    if (key2 == id) {
+                    if (key2 === id) {
                         regionType = region;
                         arr = arr.splice(i + 1, 0, copy);
                         return false;
@@ -105,7 +105,17 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 BI.each(dimensions, function (idx, dimension) {
                     if (BI.Utils.isDimensionByDimensionID(idx)) {
                         dimension.dimension_map = dimension.dimension_map || {};
-                        var path = BI.Utils.getPathsFromFieldAToFieldB(BI.Utils.getFieldIDByDimensionID(idx), BI.Utils.getFieldIDByDimensionID(copy));
+                        var dimFieldId = BI.Utils.getFieldIDByDimensionID(idx);
+                        var tsrFieldId = BI.Utils.getFieldIDByDimensionID(copy);
+                        //var dimSrc = BI.Utils.getDimensionSrcByID(idx);
+                        //var tarSrc = BI.Utils.getDimensionSrcByID(copy);
+                        //if(BI.has(dimSrc, "relation")){
+                        //    dimFieldId = BI.Utils.getForeignIdFromRelation(dimSrc.relation);
+                        //}
+                        //if(BI.has(tarSrc, "relation")){
+                        //    tsrFieldId = BI.Utils.getForeignIdFromRelation(tarSrc.relation);
+                        //}
+                        var path = BI.Utils.getPathsFromFieldAToFieldB(dimFieldId, tsrFieldId);
                         if (path.length === 1) {
                             var target_relation = path[0];
                             dimension.dimension_map[copy] = {
@@ -364,7 +374,19 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 this.set("dimensions", dims);
             }
         }
-        if (BI.has(changed, "view") && !BI.has(changed, "dimensions")) {
+
+        //这边不能光靠changed中是否包含dimensions来确定是不是增加减少了dimension
+        //因为指标复制会改变dimension的dimensionmap
+        var hasDifferentDimension = true;
+        if(!BI.has(changed, "dimensions")){
+            hasDifferentDimension = false;
+        }else{
+            var dimensionIds = BI.keys(changed.dimensions);
+            hasDifferentDimension = BI.isNotNull(BI.find(prev.dimensions, function(dId, dimension){
+                return !BI.contains(dimensionIds, dId);
+            }));
+        }
+        if (BI.has(changed, "view") && hasDifferentDimension === false) {
             var wType = this.get("type");
             if (wType !== BICst.WIDGET.TABLE &&
                 wType !== BICst.WIDGET.CROSS_TABLE &&
@@ -482,7 +504,15 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         }
                         if (BI.Utils.isDimensionByDimensionID(idx)) {
                             dimension.dimension_map = dimension.dimension_map || {};
-                            var path = BI.Utils.getPathsFromFieldAToFieldB(BI.Utils.getFieldIDByDimensionID(idx), fId);
+                            var dimFieldId = BI.Utils.getFieldIDByDimensionID(idx);
+                            //var dimSrc = BI.Utils.getDimensionSrcByID(idx);
+                            //if(BI.has(dimSrc, "relation")){
+                            //    dimFieldId = BI.Utils.getForeignIdFromRelation(dimSrc.relation);
+                            //}
+                            //if(BI.has(src._src, "relation")){
+                            //    fId = BI.Utils.getForeignIdFromRelation(src._src.relation);
+                            //}
+                            var path = BI.Utils.getPathsFromFieldAToFieldB(dimFieldId, fId);
                             if (path.length === 1) {
                                 var target_relation = path[0];
                                 dimension.dimension_map[dId] = {
@@ -501,13 +531,19 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                 return;
                             }
                             if (!BI.Utils.isDimensionByDimensionID(idx)) {
-                                var path = BI.Utils.getPathsFromFieldAToFieldB(fId, BI.Utils.getFieldIDByDimensionID(idx));
+                                var tarFieldId = BI.Utils.getFieldIDByDimensionID(idx);
+                                //var tarSrc = BI.Utils.getDimensionSrcByID(idx);
+                                //if(BI.has(tarSrc, "relation")){
+                                //    tarFieldId = BI.Utils.getForeignIdFromRelation(tarSrc.relation);
+                                //}
+                                //if(BI.has(src._src, "relation")){
+                                //    fId = BI.Utils.getForeignIdFromRelation(src._src.relation);
+                                //}
+                                var path = BI.Utils.getPathsFromFieldAToFieldB(fId, tarFieldId);
                                 if (path.length === 1) {
                                     var target_relation = path[0];
                                     dimensions[dId].dimension_map[idx] = {
-                                        _src: {
-                                            field_id: fId
-                                        },
+                                        _src: src._src,
                                         target_relation: [target_relation]
                                     };
                                 }

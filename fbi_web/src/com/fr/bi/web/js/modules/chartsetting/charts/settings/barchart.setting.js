@@ -59,13 +59,12 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
             cls: "single-line-settings",
-            verticalAlign: "top",
             columnSize: [100],
             items: [{
                 type: "bi.label",
@@ -209,7 +208,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
         });
 
         //数据标签
@@ -220,7 +219,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
         });
 
         //网格线
@@ -231,7 +230,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({

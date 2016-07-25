@@ -58,7 +58,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -206,7 +206,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
         //网格线
@@ -217,7 +217,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.Widget, {
         });
 
         this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({

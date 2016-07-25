@@ -13,6 +13,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Date;
 import java.util.List;
@@ -100,6 +101,11 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
+    public IntList getRemovedList() {
+        return null;
+    }
+
+    @Override
     public ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException {
         return null;
     }
@@ -135,6 +141,11 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
+    public boolean isCubeLastTimeAvailable() {
+        return false;
+    }
+
+    @Override
     public void clear() {
 
     }
@@ -161,6 +172,11 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     @Override
     public void setTableOwner(ITableKey owner) {
 
+    }
+
+    @Override
+    public boolean isRemovedListAvailable() {
+        return false;
     }
 
     @Override

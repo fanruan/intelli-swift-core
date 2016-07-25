@@ -80,7 +80,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             self.model.setName(packageName.getValue());
         });
 
-        var viewType = BI.createWidget({
+        this.viewType = BI.createWidget({
             type: "bi.segment",
             cls: "tables-view-group",
             items: BI.createItems(self.model.getViewType(), {
@@ -91,9 +91,9 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             }),
             width: 60
         });
-        viewType.setValue(BICst.TABLES_VIEW.TILE);
-        viewType.on(BI.Segment.EVENT_CHANGE, function () {
-            self.showCardLayout.showCardByName(viewType.getValue()[0]);
+        this.viewType.setValue(BICst.TABLES_VIEW.TILE);
+        this.viewType.on(BI.Segment.EVENT_CHANGE, function () {
+            self.showCardLayout.showCardByName(this.getValue()[0]);
         });
 
         this.searcher = BI.createWidget({
@@ -187,7 +187,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                     },
                     packageName, buttonsWrapper
                 ],
-                right: [this.searcher, viewType]
+                right: [this.searcher, this.viewType]
             },
             lhgap: 8,
             rhgap: 8,
@@ -305,6 +305,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
     },
 
     _refreshTablesInPackage: function () {
+        this.viewType.setValue(BICst.TABLES_VIEW.TILE);
         this.showCardLayout.showCardByName(this.showCardLayout.getDefaultShowName());
         this.tableList.populate(this._createItemsForTableList());
         this.relationView.populate({
@@ -498,14 +499,15 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         });
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_CUBE_SAVE, function (obj) {
+            self.model.updateSettings=BI.deepClone(obj.updateSettings);
+            Data.SharingPool.put("fields", self.model.getAllFields());
+            Data.SharingPool.put("update_settings", self.model.updateSettings);
             var data = self.model.getValue();
             Data.SharingPool.put("translations", data.translations);
             Data.SharingPool.put("relations", data.relations);
-            Data.SharingPool.put("fields", self.model.getAllFields());
-            Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
             BI.Utils.updateTablesOfOnePackage(data, function () {
                 // self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
-                BI.Utils.generateCubeByTable(obj, function () {
+                BI.Utils.generateCubeByTable(obj.tableInfo, function () {
                 });
             });
         });

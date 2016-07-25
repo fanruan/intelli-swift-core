@@ -12,9 +12,11 @@ import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class created on 2016/3/10.
@@ -30,6 +32,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     private Map<ICubeResourceLocation, ResourceLock> resourceLockMap;
     private BIResourceSimpleCache<ICubePrimitiveReader> readerCache;
     private BIResourceSimpleCache<ICubePrimitiveWriter> writerCache;
+    private boolean releasingResource = false;
 
     public static BICubeDiskPrimitiveDiscovery getInstance() {
         if (instance != null) {
@@ -47,47 +50,79 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     private BICubeDiskPrimitiveDiscovery() {
         writerManager = BIPrimitiveNIOWriterManager.getInstance();
         readerManager = BIPrimitiveNIOReaderManager.getInstance();
-        resourceLockMap = new HashMap<ICubeResourceLocation, ResourceLock>();
+        resourceLockMap = new ConcurrentHashMap<ICubeResourceLocation, ResourceLock>();
         writerCache = new BIResourceSimpleCache<ICubePrimitiveWriter>();
         readerCache = new BIResourceSimpleCache<ICubePrimitiveReader>();
     }
 
     @Override
     public ICubePrimitiveReader getCubeReader(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildReaderException {
-        BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
-        if (readerCache.isAvailableResource(resourceLocation) && !readerCache.getResource(resourceLocation).isForceReleased()) {
-            return readerCache.getResource(resourceLocation);
-        } else {
-            ICubePrimitiveReader reader = readerManager.buildCubeReader(resourceLocation);
-            releaseRecorder.record(reader);
-            reader.setReleaseHelper(releaseRecorder);
-            readerCache.makeAvailable(resourceLocation, reader);
-            return reader;
+        if (releasingResource) {
+            throw new RuntimeException("Current can't get the resource reader");
+        }
+        try {
+            ResourceLock resourceLock = getLock(resourceLocation);
+            synchronized (resourceLock) {
+                BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
+                if (readerCache.isAvailableResource(resourceLocation) && !readerCache.getResource(resourceLocation).isForceReleased()) {
+                    return readerCache.getResource(resourceLocation);
+                } else {
+                    if (readerCache.isAvailableResource(resourceLocation) && !readerCache.getResource(resourceLocation).isForceReleased()) {
+                        return readerCache.getResource(resourceLocation);
+                    }
+                    ICubePrimitiveReader reader = readerManager.buildCubeReader(resourceLocation);
+                    releaseRecorder.record(reader);
+                    reader.setReleaseHelper(releaseRecorder);
+                    readerCache.makeAvailable(resourceLocation, reader);
+                    return reader;
+
+                }
+            }
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        } finally {
+
         }
     }
 
     @Override
     public ICubePrimitiveWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException {
-        ResourceLock lock = getLock(resourceLocation);
-        synchronized (lock) {
-            if (writerCache.isAvailableResource(resourceLocation) && !writerCache.getResource(resourceLocation).isForceReleased()) {
-                return writerCache.getResource(resourceLocation);
-            } else {
-                BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
-                ICubePrimitiveWriter writer = writerManager.buildCubeWriter(resourceLocation);
-                releaseRecorder.record(writer);
-                writer.setReleaseManager(releaseRecorder);
-                writerCache.makeAvailable(resourceLocation, writer);
-                return writer;
+        if (releasingResource) {
+            throw new RuntimeException("Current can't get the resource reader");
+        }
+        try {
+            ResourceLock resourceLock = getLock(resourceLocation);
+            synchronized (resourceLock) {
+                if (writerCache.isAvailableResource(resourceLocation) && !writerCache.getResource(resourceLocation).isForceReleased()) {
+                    return writerCache.getResource(resourceLocation);
+                } else {
+                    if (writerCache.isAvailableResource(resourceLocation) && !writerCache.getResource(resourceLocation).isForceReleased()) {
+                        return writerCache.getResource(resourceLocation);
+                    }
+                    BICubeReleaseRecorder releaseRecorder = BIFactoryHelper.getObject(BICubeReleaseRecorder.class);
+                    ICubePrimitiveWriter writer = writerManager.buildCubeWriter(resourceLocation);
+                    releaseRecorder.record(writer);
+                    writer.setReleaseManager(releaseRecorder);
+                    writerCache.makeAvailable(resourceLocation, writer);
+                    return writer;
+
+                }
             }
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        } finally {
+
         }
     }
 
     private ResourceLock getLock(ICubeResourceLocation resourceLocation) {
-        if (resourceLockMap.containsKey(resourceLocation)) {
-            return resourceLockMap.get(resourceLocation);
-        } else {
-            synchronized (resourceLockMap) {
+        /**
+         * 加强一些
+         */
+        synchronized (resourceLockMap) {
+            if (resourceLockMap.containsKey(resourceLocation)) {
+                return resourceLockMap.get(resourceLocation);
+            } else {
                 if (!resourceLockMap.containsKey(resourceLocation)) {
                     ResourceLock lock = new ResourceLock();
                     resourceLockMap.put(resourceLocation, lock);
@@ -101,8 +136,19 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
 
     }
 
+    public void finishRelease() {
+        releasingResource = false;
+    }
+
     public void forceRelease() {
-        readerCache.forceRelease();
-        writerCache.forceRelease();
+        releasingResource = true;
+        try {
+            readerCache.forceRelease();
+            writerCache.forceRelease();
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        } finally {
+
+        }
     }
 }

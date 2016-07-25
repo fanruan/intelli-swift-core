@@ -125,13 +125,13 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     private GroupValueIndex buildGroupValueIndex(IntList groupRowNumbers) {
-        return GVIFactory.createGroupVauleIndexBySimpleIndex(groupRowNumbers);
+        return GVIFactory.createGroupValueIndexBySimpleIndex(groupRowNumbers);
     }
 
     private Map<T, IntList> createTreeMap(IntList nullRowNumbers) {
         Map<T, IntList> group2rowNumber = new TreeMap<T, IntList>(columnEntityService.getGroupComparator());
         for (int i = 0; i < rowCount; i++) {
-            T originalValue = columnEntityService.getOriginalValueByRow(i);
+            T originalValue = columnEntityService.getOriginalObjectValueByRow(i);
             if (originalValue != null) {
                 IntList list = group2rowNumber.get(originalValue);
                 if (list == null) {

@@ -51,7 +51,7 @@ public class BICubeColumnPositionOfGroupServiceTest extends TestCase {
             cubeColumnPositionOfGroupService.addPositionOfGroup(1, 1);
             assertTrue(cubeColumnPositionOfGroupService.isWriterAvailable());
             assertFalse(cubeColumnPositionOfGroupService.isReaderAvailable());
-            assertEquals(cubeColumnPositionOfGroupService.getPositionOfGroup(1), new Integer(1));
+            assertEquals(cubeColumnPositionOfGroupService.getPositionOfGroup(1), 1);
             assertTrue(cubeColumnPositionOfGroupService.isWriterAvailable());
             assertTrue(cubeColumnPositionOfGroupService.isReaderAvailable());
         } catch (Exception e) {

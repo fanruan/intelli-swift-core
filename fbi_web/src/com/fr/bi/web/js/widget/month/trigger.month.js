@@ -9,7 +9,7 @@ BI.MonthTrigger = BI.inherit(BI.Trigger, {
     _const: {
         hgap: 4,
         vgap: 2,
-        triggerWidth: 30,
+        triggerWidth: 25,
         errorText: BI.i18nText("BI-Month_Trigger_Error_Text")
     },
 

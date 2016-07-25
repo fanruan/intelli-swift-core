@@ -84,6 +84,10 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Value_Axis"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.COMPARE_BAR:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Value_Axis_One"), BICst.REGION.TARGET1);
+                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Value_Axis_Two"), BICst.REGION.TARGET2);
+                break;
             case BICst.WIDGET.RANGE_AREA:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Low_Value_Axis"), BICst.REGION.TARGET1);
@@ -121,14 +125,14 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.BUBBLE:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
-                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Y_Value"), BICst.REGION.TARGET1);
-                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-X_Value"), BICst.REGION.TARGET2);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Y_Value_Axis"), BICst.REGION.TARGET1);
+                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-X_Value_Axis"), BICst.REGION.TARGET2);
                 this.regions[BICst.REGION.TARGET3] = this._createTargetRegion(BI.i18nText("BI-Bubble_Size"), BICst.REGION.TARGET3);
                 break;
             case BICst.WIDGET.SCATTER:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Category"), BICst.REGION.DIMENSION1);
-                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Y_Value"), BICst.REGION.TARGET1);
-                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-X_Value"), BICst.REGION.TARGET2);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Y_Value_Axis"), BICst.REGION.TARGET1);
+                this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-X_Value_Axis"), BICst.REGION.TARGET2);
                 break;
         }
 

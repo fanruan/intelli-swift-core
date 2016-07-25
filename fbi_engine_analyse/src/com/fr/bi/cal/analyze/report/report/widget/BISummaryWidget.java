@@ -272,7 +272,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             }
         }
         if (jo.has("filter_value")) {
-            JSONObject targetFilter = (JSONObject) jo.get("filter_value");
+            JSONObject targetFilter = jo.getJSONObject("filter_value");
             Iterator it = targetFilter.keys();
             while (it.hasNext()) {
                 String key = it.next().toString();
@@ -296,11 +296,9 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                     Map<String, BusinessField> dimensionMap = new LinkedHashMap<String, BusinessField>();
                     dimensionsMap.put(dimensionId, dimensionMap);
                     if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
-                        if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
-                            JSONObject srcJo = targetRelationJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-                            String fieldId = srcJo.getString("field_id");
-                            dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));
-                        }
+                        JSONObject srcJo = targetRelationJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+                        String fieldId = srcJo.getString("field_id");
+                        dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));
                     }
                     if (targetRelationJo.has("target_relation")) {
                         Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
@@ -318,6 +316,18 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         String foreignFieldId = foreignKeyJo.optString("field_id");
                         String primaryTableId = primaryKeyJo.has("table_id") ? primaryKeyJo.getString("table_id") : null;
                         String foreignTableId = foreignKeyJo.has("table_id") ? foreignKeyJo.getString("table_id") : null;
+
+                        JSONObject srcJo = dims.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+                        if (srcJo.has("target_relation")) {
+                            JSONArray selfRelationJa = srcJo.getJSONArray("target_relation");
+                            for (int i = 0; i < selfRelationJa.length(); i++) {
+                                BITableRelation selfRelation = BITableRelationHelper.getRelation(selfRelationJa.getJSONObject(i));
+                                if (BICubeConfigureCenter.getTableRelationManager().containTableRelation(userId, selfRelation)) {
+                                    relationList.add(selfRelation);
+                                }
+                            }
+
+                        }
                         if (primaryTableId != null && foreignTableId != null) {
                             if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreignTableId)))) {
                                 relationMap.put(targetId, relationList);
@@ -387,7 +397,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         return this.maxRow;
     }
 
-    private class TargetSort extends NameObject{
+    private class TargetSort extends NameObject {
         public TargetSort(String s, Object o) {
             super(s, o);
         }

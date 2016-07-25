@@ -145,7 +145,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                             title: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                             value: finded.pId,
-                            type: "bi.detail_select_data_level0_node"
+                            type: "bi.detail_select_data_level0_node",
+                            layer: 0
                         }, field2TableMap[finded.id || finded.value], {
                             isParent: true,
                             open: true,
@@ -194,6 +195,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 id: table.id,
                 wId: o.wId,
                 type: "bi.detail_select_data_level0_node",
+                layer: 0,
                 text: BI.Utils.getTableNameByID(table.id) || "",
                 title: BI.Utils.getTableNameByID(table.id) || "",
                 value: table.id,
@@ -225,9 +227,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     relationTablesStructure.push({
                         id: table.id,
                         pId: BI.PackageSelectDataService.RELATION_TABLE,
-                        type: "bi.select_data_expander",
+                        type: "bi.expander",
                         el: BI.extend({
                             type: "bi.detail_select_data_level1_node",
+                            layer: 1,
                             wId: o.wId,
                             text: BI.Utils.getTableNameByID(table.id) || "",
                             title: BI.Utils.getTableNameByID(table.id) || "",
@@ -237,6 +240,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             open: false
                         }),
                         popup: {
+                            type: "bi.select_data_loader",
                             items: self._getFieldStructureOfOneTable(table.id, true)
                         }
                     });
@@ -267,8 +271,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         var fieldStructure = [];
         var self = this, o = this.options;
         var fields = o.fieldsCreator(tableId);
-        var map = {};
-        BI.each(fields, function (i, field) {
+        var map = {}, circleMap = {};
+        var newFields = this._getAllRelativeFields(tableId, fields, circleMap);
+
+        BI.each(newFields, function (i, field) {
             var fid = field.id;
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
             var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
@@ -281,6 +287,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     wId: o.wId,
                     _type: field.type || _type,
                     type: "bi.detail_select_data_level1_date_node",
+                    layer: 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: title,
@@ -294,6 +301,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     pId: tableId,
                     wId: o.wId,
                     type: "bi.detail_select_data_level0_item",
+                    layer: 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: title,
@@ -302,6 +310,38 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 }, field))
             }
         });
+
+        if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
+            BI.each(fields, function (i, field) {
+                var id = field.id;
+                if (BI.Utils.getFieldIsCircleByID(id) === true) {
+                    var fieldName = BI.Utils.getFieldNameByID(id) || "";
+                    var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+                    fieldStructure.push({
+                        id: id,
+                        pId: tableId,
+                        type: "bi.expander",
+                        text: fieldName,
+                        el: BI.extend({
+                            wId: o.wId,
+                            text: fieldName,
+                            title: title,
+                            fieldType: BI.Utils.getFieldTypeByID(id),
+                            value: id
+                        }, field, {
+                            type: "bi.select_data_level1_date_node",
+                            layer: 1,
+                            isParent: true,
+                            open: false
+                        }),
+                        popup: {
+                            type: "bi.select_data_loader",
+                            items: self._getSelfCircleFieldsByFieldId(id, circleMap[id] || [])
+                        }
+                    });
+                }
+            });
+        }
         var result = BI.Func.getSearchResult(fieldStructure, keyword);
         fields = result.matched.concat(result.finded);
         fieldStructure = [];
@@ -314,31 +354,69 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         return fieldStructure;
     },
 
-    _getSelfCircleFieldsByFieldId: function (fieldId, circleForeignIds, isRelation) {
+    _getSelfCircleFieldsByFieldId: function (fieldId, foregion, isRelation) {
         var self = this, o = this.options;
-        circleForeignIds || (circleForeignIds = []);
+        foregion || (foregion = []);
         var tableId = BI.Utils.getTableIdByFieldID(fieldId);
-        var fields = o.fieldsCreator(tableId, isRelation);
         var fieldStructure = [];
-        BI.each(fields, function (i, f) {
+        BI.each(foregion, function (i, f) {
             var fid = f.id;
-            if (circleForeignIds.contains(f.id)) {
-                var fieldName = BI.Utils.getFieldNameByID(fid) || "";
-                var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
-                fieldStructure.push(BI.extend({
-                    id: fid,
-                    pId: tableId,
-                    wId: o.wId,
-                    type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-                    fieldType: BI.Utils.getFieldTypeByID(fid),
-                    text: fieldName,
-                    title: title,
-                    value: fid,
-                    drag: self._createDrag(fieldName)
-                }, f));
-            }
+            var fieldName = BI.Utils.getFieldNameByID(fid) || "";
+            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+            fieldStructure.push(BI.extend({
+                id: fid,
+                pId: tableId,
+                wId: o.wId,
+                type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+                layer: isRelation ? 3 : 2,
+                fieldType: BI.Utils.getFieldTypeByID(fid),
+                text: fieldName,
+                title: title,
+                value: {
+                    field_id: fieldId,
+                    target_relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0]
+                },
+                drag: self._createDrag(fieldName)
+            }, f));
         });
         return fieldStructure;
+    },
+
+
+    _getAllRelativeFields: function (tableId, fields, map) {
+        map = map || {};
+        var newFields = [];
+        if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
+            var fIds = [], fieldList = [];
+            var relations = BI.Utils.getPathsFromTableAToTableB(tableId, tableId);
+            BI.each(relations, function (i, path) {
+                var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
+                fIds.push(fId);
+            });
+            BI.each(fields, function (i, field) {
+                var isCircle = BI.Utils.getFieldIsCircleByID(field.id);
+                if (isCircle !== true && !fIds.contains(field.id)) {
+                    newFields.push(BI.extend(field, {
+                        value: {
+                            field_id: field.id,
+                            target_relation: BI.Utils.getPathsFromFieldAToFieldB(field.id, field.id)[0]
+                        }
+                    }));
+                }
+                if (fIds.contains(field.id)) {
+                    fieldList.push(field);
+                }
+            });
+            BI.each(fields, function (i, field) {
+                var isCircle = BI.Utils.getFieldIsCircleByID(field.id);
+                if (isCircle === true) {
+                    map[field.id] = fieldList;
+                }
+            });
+        } else {
+            newFields = fields;
+        }
+        return newFields;
     },
 
     /**
@@ -383,30 +461,9 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }
 
         var fields = o.fieldsCreator(tableId, isRelation);
-        if (this._isSelfCircleTable(tableId)) {
-            var pIds = [], fIds = [], map = {};
-            var relations = BI.Utils.getPathsFromTableAToTableB(tableId, tableId);
-            BI.each(relations, function (i, path) {
-                var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
-                var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
-                pIds.push(pId);
-                if (!map[pId]) {
-                    map[pId] = [];
-                }
-                map[pId].push(fId);
-                fIds.push(fId);
-            });
-            var newFields = [];
-            BI.each(fields, function (i, field) {
-                var id = field.id;
-                if (pIds.contains(id)) {
-                } else if (!fIds.contains(id)) {
-                    newFields.push(field);
-                }
-            });
-        } else {
-            newFields = fields;
-        }
+        var map = {};
+        var newFields = this._getAllRelativeFields(tableId, fields, map);
+
         BI.each(newFields, function (i, field) {
             var fid = field.id;
             if (viewFields.contains(fid)) {
@@ -421,9 +478,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     fieldStructure.push({
                         id: fid,
                         pId: tableId,
-                        type: "bi.select_data_expander",
+                        type: "bi.expander",
                         el: {
                             type: "bi.detail_select_data_level2_date_node",
+                            layer: 2,
                             wId: o.wId,
                             _type: field.type || _type,
                             text: fieldName,
@@ -433,6 +491,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             open: false
                         },
                         popup: {
+                            type: "bi.select_data_loader",
                             items: self._buildDateChildren(tableId, field, isRelation)
                         }
                     })
@@ -443,13 +502,14 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         wId: o.wId,
                         _type: field.type || _type,
                         type: "bi.detail_select_data_level1_date_node",
+                        layer: 1,
                         fieldType: BI.Utils.getFieldTypeByID(fid),
                         text: fieldName,
                         title: title,
                         value: fid,
                         isParent: true
                     });
-                    fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
+                    //fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field, isRelation));
                 }
             } else {
                 fieldStructure.push(BI.extend({
@@ -457,6 +517,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     pId: tableId,
                     wId: o.wId,
                     type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
+                    layer: isRelation ? 2 : 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: title,
@@ -465,16 +526,18 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 }, field))
             }
         });
-        if (this._isSelfCircleTable(tableId)) {
+
+        if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
             BI.each(fields, function (i, field) {
                 var id = field.id;
-                if (pIds.contains(id)) {
+                if (BI.Utils.getFieldIsCircleByID(id) === true) {
                     var fieldName = BI.Utils.getFieldNameByID(id) || "";
                     var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
                     fieldStructure.push({
                         id: id,
                         pId: tableId,
-                        type: "bi.select_data_expander",
+                        type: "bi.expander",
+                        text: fieldName,
                         el: BI.extend({
                             wId: o.wId,
                             text: fieldName,
@@ -483,10 +546,12 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             value: id
                         }, field, {
                             type: isRelation ? "bi.select_data_level2_date_node" : "bi.select_data_level1_date_node",
+                            layer: isRelation ? 2 : 1,
                             isParent: true,
                             open: false
                         }),
                         popup: {
+                            type: "bi.select_data_loader",
                             items: self._getSelfCircleFieldsByFieldId(id, map[id] || [], isRelation)
                         }
                     });
@@ -494,16 +559,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             });
         }
         return fieldStructure;
-    },
-
-    _isSelfCircleTable: function (tableId) {
-        var paths = BI.Utils.getPathsFromTableAToTableB(tableId, tableId)
-        if(paths.length === 0){
-            return false;
-        }
-        return !BI.find(paths, function(idx, path){
-            return path.length > 1;
-        });
     },
 
     /**
@@ -562,6 +617,18 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             group: {type: fId.group.type}
                         }
                     }
+                    if (BI.has(fId, "target_relation")) {
+                        return {
+                            name: BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.target_relation[0])),
+                            _src: {
+                                id: fId.field_id,
+                                field_id: fId.field_id,
+                                table_id: BI.Utils.getTableIdByFieldID(fId.field_id),
+                                target_relation: fId.target_relation
+                            },
+                            type: BI.Utils.getDimensionTypeByFieldID(fId.field_id)
+                        }
+                    }
                     return {
                         name: BI.Utils.getFieldNameByID(fId),
                         _src: {
@@ -611,6 +678,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             pId: fieldId,
             text: BI.i18nText("BI-Year_Fen"),
             title: prefix + BI.i18nText("BI-Year_Fen"),
+            layer: isRelation ? 3 : 2,
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.Y}
@@ -625,6 +693,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             pId: fieldId,
             text: BI.i18nText("BI-Quarter"),
             title: prefix + BI.i18nText("BI-Quarter"),
+            layer: isRelation ? 3 : 2,
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.S}
@@ -639,6 +708,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             pId: fieldId,
             text: BI.i18nText("BI-Multi_Date_Month"),
             title: prefix + BI.i18nText("BI-Multi_Date_Month"),
+            layer: isRelation ? 3 : 2,
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.M}
@@ -653,6 +723,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             pId: fieldId,
             text: BI.i18nText("BI-Week_XingQi"),
             title: prefix + BI.i18nText("BI-Week_XingQi"),
+            layer: isRelation ? 3 : 2,
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.W}
@@ -667,6 +738,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             pId: fieldId,
             text: BI.i18nText("BI-Date"),
             title: prefix + BI.i18nText("BI-Date"),
+            layer: isRelation ? 3 : 2,
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.YMD}

@@ -7,7 +7,9 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
     _constants: {
         SHOW_CHART: 1,
-        SHOW_FILTER: 2
+        SHOW_FILTER: 2,
+        TOOL_ICON_WIDTH: 20,
+        TOOL_ICON_HEIGHT: 20
     },
 
     _defaultConfig: function () {
@@ -110,7 +112,12 @@ BIShow.WidgetView = BI.inherit(BI.View, {
                 textAlign: "left",
                 height: 25,
                 allowBlank: false,
-                errorText: BI.i18nText("BI-Widget_Name_Can_Not_Repeat"),
+                errorText: function(v) {
+                    if(BI.isNotNull(v) && v.trim() !== "") {
+                        return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
+                    }
+                    return BI.i18nText("BI-Widget_Name_Can_Not_Null");
+                },
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
@@ -144,8 +151,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
         this.refreshChartButton = BI.createWidget({
             type: "bi.icon_button",
-            width: 16,
-            height: 16,
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT,
             cls: "recover-chart-font-hightlight dashboard-title-detail"
         });
         this.refreshChartButton.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -154,8 +161,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
         var expand = BI.createWidget({
             type: "bi.icon_button",
-            width: 16,
-            height: 16,
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT,
             title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
@@ -167,8 +174,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             cls: "widget-tools-filter-font dashboard-title-detail",
             title: BI.i18nText("BI-Show_Filters"),
-            width: 16,
-            height: 16
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT
         });
         filterIcon.on(BI.IconButton.EVENT_CHANGE, function () {
             if (BI.isNull(self.filterPane)) {
@@ -199,8 +206,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             cls: "widget-tools-export-excel-font dashboard-title-detail",
             title: BI.i18nText("BI-Export_As_Excel"),
-            width: 16,
-            height: 16
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT
         });
         excel.on(BI.IconButton.EVENT_CHANGE, function () {
             window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
@@ -255,7 +262,6 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         switch (this.model.get("type")) {
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.ACCUMULATE_AREA:
-            case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
@@ -269,16 +275,11 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
             case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.DONUT:
-            case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.FORCE_BUBBLE:
-            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
                 this.refreshChartButton.setVisible(true);
                 break;
             default:
@@ -291,7 +292,6 @@ BIShow.WidgetView = BI.inherit(BI.View, {
     },
 
     change: function (changed, prev, context, options) {
-        console.log(BI.Utils.getWidgetBoundsByID(this.model.get("id")));
         if (options.notrefresh === true) {
             return;
         }

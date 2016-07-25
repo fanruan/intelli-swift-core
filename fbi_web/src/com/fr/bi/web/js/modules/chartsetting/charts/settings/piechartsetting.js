@@ -172,7 +172,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
         //数据标签
@@ -183,7 +183,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({

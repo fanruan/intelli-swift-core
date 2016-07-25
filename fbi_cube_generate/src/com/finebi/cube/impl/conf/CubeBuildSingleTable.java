@@ -1,7 +1,6 @@
 package com.finebi.cube.impl.conf;
 
-import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.AbstractCubeBuild;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -18,24 +17,18 @@ import java.util.*;
 /**
  * Created by kary on 16/5/30.
  */
-public class CubeBuildSingleTable implements CubeBuild {
+public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild {
 
     private Set<IBusinessPackageGetterService> packs;
     private Set<CubeTableSource> sources;
     private Set<CubeTableSource> allSingleSources;
-    private ICubeConfiguration cubeConfiguration;
     private Set<BIBusinessTable> allBusinessTable = new HashSet<BIBusinessTable>();
     private BIUser biUser;
-
-    public CubeBuildSingleTable(BusinessTable businessTable, ICubeConfiguration cubeConfiguration, long userId) {
-        this.biUser = new BIUser(userId);
-        this.cubeConfiguration = cubeConfiguration;
-        init(businessTable);
-    }
+    
 
     public CubeBuildSingleTable(BusinessTable businessTable, long userId) {
+        super(userId);
         this.biUser = new BIUser(userId);
-        this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         init(businessTable);
     }
 
@@ -112,18 +105,8 @@ public class CubeBuildSingleTable implements CubeBuild {
     }
 
     @Override
-    public ICubeConfiguration getCubeConfiguration() {
-        return cubeConfiguration;
-    }
-
-    @Override
     public Set<BITableRelation> getTableRelationSet() {
         return new HashSet<BITableRelation>();
-    }
-
-    @Override
-    public Map<CubeTableSource, Long> getVersions() {
-        return null;
     }
 
     @Override
@@ -150,23 +133,6 @@ public class CubeBuildSingleTable implements CubeBuild {
         this.dependTableResource = dependTableResource;
     }
 
-    /**
-     * @param packs the packs to set
-     */
-    public void setPacks(Set<IBusinessPackageGetterService> packs, long userId) {
-        this.packs = packs;
-        this.sources = new HashSet<CubeTableSource>();
-        allBusinessTable = new HashSet<BIBusinessTable>();
-        for (IBusinessPackageGetterService pack : packs) {
-            Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
-            while (tIt.hasNext()) {
-                BIBusinessTable table = tIt.next();
-                allBusinessTable.add(table);
-                sources.add(table.getTableSource());
-            }
-        }
-    }
-
 
     /**
      * @return the tableSourceRelationSet
@@ -174,17 +140,6 @@ public class CubeBuildSingleTable implements CubeBuild {
     @Override
     public Set<BITableSourceRelation> getTableSourceRelationSet() {
         return new HashSet<BITableSourceRelation>();
-    }
-
-
-    private Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
-        Iterator<CubeTableSource> it = tableSources.iterator();
-        Set<List<Set<CubeTableSource>>> depends = new HashSet<List<Set<CubeTableSource>>>();
-        while (it.hasNext()) {
-            CubeTableSource tableSource = it.next();
-            depends.add(tableSource.createGenerateTablesList());
-        }
-        return depends;
     }
 
 
