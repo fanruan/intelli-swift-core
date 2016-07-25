@@ -6,6 +6,7 @@ import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.utils.CubeUpdateUtils;
+import com.fr.base.FRContext;
 import com.fr.bi.cal.generate.TimerRunner;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
@@ -32,6 +33,7 @@ import com.fr.data.dao.FieldColumnMapper;
 import com.fr.data.dao.MToMRelationFCMapper;
 import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.dao.RelationFCMapper;
+import com.fr.dav.LocalEnv;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.base.entity.PlatformManageModule;
 import com.fr.fs.control.EntryPoolFactory;
@@ -41,6 +43,7 @@ import com.fr.fs.dao.EntryDAO;
 import com.fr.fs.dao.FSDAOManager;
 import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.plugin.ExtraClassManager;
 import com.fr.stable.*;
@@ -64,7 +67,11 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public void initData() {
-        System.out.println("FINE BI 4.0.070220948");
+        try{
+            ((LocalEnv) FRContext.getCurrentEnv()).setBuildFilePath("bibuild.txt");
+        } catch(Throwable e){
+        }
+        System.out.println("FINE BI :" + GeneralUtils.readBuildNO());
         initModules();
         super.initData();
         startModules();

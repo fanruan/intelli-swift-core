@@ -143,7 +143,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader) {
         ICubeColumnIndexReader getter = createNoneSortGroupValueMapGetter(table, loader);
-        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
+        if (isNoGroup()) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }
         return dimension.getSort().createGroupedMap(getter).iterator();
@@ -163,10 +163,14 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         }
         ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);
-        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
+        if (useRealData && isNoGroup()) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }
         return dimension.getSort().createGroupedMap(getter).iterator();
+    }
+
+    private boolean isNoGroup() {
+        return getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP;
     }
 
     @Override

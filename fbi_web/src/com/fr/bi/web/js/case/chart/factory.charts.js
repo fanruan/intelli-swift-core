@@ -85,7 +85,7 @@ BI.ChartCombineFormatItemFactory = {
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
                     },
                     "align": "outside",
                     "enabled": false
@@ -212,7 +212,7 @@ BI.ChartCombineFormatItemFactory = {
                 enabled: false,
                 "borderColor": "rgb(0,0,0)",
                 "borderWidth": 1,
-                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                 style:{
                     "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
                 }
