@@ -202,14 +202,14 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
             @Override
             public boolean hasNext() {
+                while ( index < groupIndex.length && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE ){
+                    index ++;
+                }
                 return index < groupIndex.length;
             }
 
             @Override
             public Object next() {
-                while ( hasNext() && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE ){
-                    index ++;
-                }
                 final CubeValueEntry gve = getter.getEntryByGroupRow(index);
                 Map.Entry entry = new Entry() {
                     @Override
@@ -251,14 +251,14 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
             @Override
             public boolean hasNext() {
+                while ( index >= 0 && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE ){
+                    index --;
+                }
                 return index >= 0;
             }
 
             @Override
             public Object next() {
-                while ( hasNext() && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE ){
-                    index --;
-                }
                 final CubeValueEntry gve = getter.getEntryByGroupRow(index);
                 Map.Entry entry = new Entry() {
                     @Override
