@@ -22,6 +22,13 @@ public interface ICubeValueEntryGetter {
     CubeValueEntry getEntryByRow(int row);
 
     /**
+     * 根据行号获取该行对应的CubeValueEntry
+     * @param row
+     * @return
+     */
+    CubeValueEntry getEntryByGroupRow(int row);
+
+    /**
      * 根据行号获取在分组中的位置
      * @param row
      * @return
