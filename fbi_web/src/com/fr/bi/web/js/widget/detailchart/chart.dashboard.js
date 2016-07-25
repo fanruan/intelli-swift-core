@@ -18,7 +18,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-6,
+        MINLIMIT: 1e-5,
         ONE_POINTER: 1,
         MULTI_POINTER: 2,
         HALF_DASHBOARD: 9,
@@ -106,6 +106,9 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             }
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
             if(self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                config.plotOptions.valueLabel.formatter.valueFormat = function(){
+                    return (window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]);
+                };
                 config.gaugeAxis[0].formatter = function(){
                     return (window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]) + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                 };
@@ -124,7 +127,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                            if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
                                 da.y = 0;
                             }
                         }
