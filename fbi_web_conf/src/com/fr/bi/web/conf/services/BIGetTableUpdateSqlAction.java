@@ -48,22 +48,22 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         String tableString = WebUtils.getHTTPRequestParameter(req, "table");
         JSONObject table = new JSONObject(tableString);
         Date lastUpdateDate = new Date();
-        long threeDaysAgo = lastUpdateDate.getTime() - 24 * 3600 *1000* 3;
+        long threeDaysAgo = lastUpdateDate.getTime() - 24 * 3600 * 1000 * 3;
         lastUpdateDate.setTime(threeDaysAgo);
         String tableId = (String) table.get("id");
         ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
         ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
-        CubeTableSource tableSource=null;
+        CubeTableSource tableSource = null;
         Cube cube = new BICube(resourceRetrievalService, discovery);
         for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(UserControl.getInstance().getSuperManagerID())) {
-            if (businessTable.getID().getIdentity().equals(tableId)){
-                tableSource=businessTable.getTableSource();
+            if (businessTable.getID().getIdentity().equals(tableId)) {
+                tableSource = businessTable.getTableSource();
             }
         }
-        if (null!=tableSource) {
+        if (null != tableSource) {
             CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
-            if (tableEntityService.isCubeLastTimeAvailable()){
-                lastUpdateDate=tableEntityService.getCubeLastTime();
+            if (tableEntityService.isCubeLastTimeAvailable()) {
+                lastUpdateDate = tableEntityService.getCubeLastTime();
             }
         }
         String sql = parseSQL(stringSql, lastUpdateDate);
