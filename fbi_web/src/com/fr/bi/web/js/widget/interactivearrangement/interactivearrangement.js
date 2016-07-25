@@ -65,22 +65,22 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
         var left = [], center = [], right = [], top = [], middle = [], bottom = [];
         BI.each(regions, function (i, region) {
             var client = self._getRegionClientPosition(region.id);
-            if (Math.abs(client.left - position.left) <= 10) {
+            if (Math.abs(client.left - position.left) <= 3) {
                 left.push(region);
             }
-            if (Math.abs(client.left + client.width / 2 - position.left) <= 10) {
+            if (Math.abs(client.left + client.width / 2 - position.left) <= 3) {
                 center.push(region);
             }
-            if (Math.abs(client.left + client.width - position.left) <= 10) {
+            if (Math.abs(client.left + client.width - position.left) <= 3) {
                 right.push(region);
             }
-            if (Math.abs(client.top - position.top) <= 10) {
+            if (Math.abs(client.top - position.top) <= 3) {
                 top.push(region);
             }
-            if (Math.abs(client.top + client.height / 2 - position.top) <= 10) {
+            if (Math.abs(client.top + client.height / 2 - position.top) <= 3) {
                 middle.push(region);
             }
-            if (Math.abs(client.top + client.height - position.top) <= 10) {
+            if (Math.abs(client.top + client.height - position.top) <= 3) {
                 bottom.push(region);
             }
         });
