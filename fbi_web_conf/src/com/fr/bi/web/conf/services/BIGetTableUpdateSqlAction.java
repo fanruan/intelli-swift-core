@@ -14,6 +14,8 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +35,7 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         String tableString = WebUtils.getHTTPRequestParameter(req, "table");
 
         Date lastUpdateDate = new Date();
-        long threeDaysAgo = lastUpdateDate.getTime() - 24 * 3600 *1000* 3;
+        long threeDaysAgo = lastUpdateDate.getTime() - 24 * 3600 * 1000 * 3;
         lastUpdateDate.setTime(threeDaysAgo);
         String sql = parseSQL(stringSql, lastUpdateDate);
         JSONObject jo = new JSONObject();
@@ -79,7 +81,9 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         Matcher matcher = pat.matcher(sql);
         while (matcher.find()) {
             String matchStr = matcher.group(0);
-            sql = sql.replace(matchStr, date.toString());
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
+            String dateStr = sdf.format(date);
+            sql = sql.replace(matchStr, dateStr);
         }
         return sql;
     }
