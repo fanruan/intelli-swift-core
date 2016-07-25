@@ -1,5 +1,8 @@
 package com.fr.bi.cube.engine.result;
 
+import com.fr.bi.cal.analyze.cal.result.CrossHeader;
+import com.fr.bi.cal.analyze.cal.result.CrossNode;
+import com.fr.bi.cal.analyze.cal.result.NewCrossRoot;
 import com.fr.bi.cube.engine.index.IDGroupValueIndex;
 import com.fr.bi.cube.engine.store.ColumnKey;
 import junit.framework.TestCase;

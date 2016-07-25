@@ -1,5 +1,7 @@
 package com.fr.bi.cube.engine.result;
 
+import com.fr.bi.cal.analyze.cal.result.DiskBaseRootNodeChild;
+import com.fr.bi.cal.analyze.cal.result.RootNodeChild;
 import com.fr.bi.cube.engine.store.ColumnKey;
 import junit.framework.TestCase;
 
