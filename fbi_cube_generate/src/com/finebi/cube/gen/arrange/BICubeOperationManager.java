@@ -32,7 +32,6 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
-import com.fr.general.ComparatorUtils;
 
 import java.util.*;
 
@@ -399,10 +398,11 @@ public class BICubeOperationManager {
     protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version) {
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
         CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
-/*若没有更新设置,按默认处理*/
-        if (null == tableUpdateSetting || ComparatorUtils.equals(0, cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable())) {
+/*若没有更新设置,按默认处理
+* 首次更新均为全局更新*/
+        if (null == tableUpdateSetting || !(cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable() && cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isCubeLastTimeAvailable())) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
-        } 
+        }
         /*全局更新时该表不更新*/
         else if (currentTask.getTaskType() != CubeTaskType.SINGLE && tableUpdateSetting.getTogetherOrNever() == DBConstant.SINGLE_TABLE_UPDATE.NEVER) {
             return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);

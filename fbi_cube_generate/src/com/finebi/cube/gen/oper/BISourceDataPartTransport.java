@@ -168,17 +168,21 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
     private String addDataCondition(String sql) {
         String LastModifyTime = "${上次更新时间}";
+        if (!sql.contains(LastModifyTime)) {
+            return sql;
+        }
         SQLRegUtils sqlRegUtils = new SQLRegUtils(sql);
         String conditions = sqlRegUtils.getConditions();
         if (tableEntityService.isCubeLastTimeAvailable() && null != tableEntityService.getCubeLastTime()) {
             Date lastTime = tableEntityService.getCubeLastTime();
             DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
             String dateStr = sdf.format(lastTime);
-            conditions = conditions.replace(LastModifyTime,dateStr);
+            conditions = conditions.replace(LastModifyTime, dateStr);
             sqlRegUtils.setConditions(conditions);
         } else
             conditions = conditions.replace(LastModifyTime, "");
         sqlRegUtils.setConditions(conditions);
         return sqlRegUtils.toString();
     }
+
 }
