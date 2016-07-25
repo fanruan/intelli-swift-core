@@ -121,6 +121,37 @@ BI.AreaChart = BI.inherit(BI.Widget, {
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "area";
+
+        //为了给数据标签加个%,还要遍历所有的系列，唉
+        if(config.plotOptions.dataLabels.enabled === true){
+            BI.each(items, function(idx, item){
+                var isNeedFormatDataLabel = false;
+                switch (config.yAxis[item.yAxis].axisIndex) {
+                    case self.constants.LEFT_AXIS:
+                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                            isNeedFormatDataLabel = true;
+                        }
+                        break;
+                    case self.constants.RIGHT_AXIS:
+                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                            isNeedFormatDataLabel = true;
+                        }
+                        break;
+                }
+                if(isNeedFormatDataLabel === true){
+                    item.dataLabels = {
+                        "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                        "align": "outside",
+                        enabled: true,
+                        formatter: {
+                            identifier: "${VALUE}",
+                            valueFormat: "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}"
+                        }
+                    };
+                }
+            });
+        }
+
         return [items, config];
 
         function formatChartStyle(){
