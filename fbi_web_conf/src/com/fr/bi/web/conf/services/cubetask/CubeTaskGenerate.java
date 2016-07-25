@@ -50,12 +50,14 @@ public class CubeTaskGenerate {
         CubeBuild cubeBuild;
         /*若cube不存在,全局更新*/
 /*若有新增表或者新增关联，增量更新，否则进行全量*/
-//        if (isPart(userId)) {
-        if(false){
+        if (isPart(userId)) {
             BILogger.getLogger().info("Cube part update start");
-            cubeBuild = new CubeBuildByPart(userId, BICubeGenerateUtils.getTables4CubeGenerate(userId), BICubeGenerateUtils.getRelations4CubeGenerate(userId));
         } else {
             BILogger.getLogger().info("Cube all update start");
+        }
+        if (false) {
+            cubeBuild = new CubeBuildByPart(userId, BICubeGenerateUtils.getTables4CubeGenerate(userId), BICubeGenerateUtils.getRelations4CubeGenerate(userId));
+        } else {
             cubeBuild = new CubeBuildStaff(new BIUser(userId));
         }
         if (preConditionsCheck(userId, cubeBuild)) {
@@ -65,13 +67,13 @@ public class CubeTaskGenerate {
         return taskAddResult;
     }
 
-    private  static boolean isPart(long userId) {
+    private static boolean isPart(long userId) {
         Set<BIBusinessTable> newTables = BICubeGenerateUtils.getTables4CubeGenerate(userId);
         Set<BITableRelation> newRelationSet = BICubeGenerateUtils.getRelations4CubeGenerate(userId);
         ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
         ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(userId)));
         Cube cube = new BICube(resourceRetrievalService, discovery);
-        boolean isPart = (newTables.size() > 0 || newRelationSet.size() > 0)&&cube.isVersionAvailable();
+        boolean isPart = (newTables.size() > 0 || newRelationSet.size() > 0) && cube.isVersionAvailable();
         return isPart;
     }
 

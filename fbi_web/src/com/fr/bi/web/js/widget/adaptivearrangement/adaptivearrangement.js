@@ -73,6 +73,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         });
     },
 
+    _isEqual: function () {
+        return this.arrangement._isEqual.apply(this.arrangement, arguments);
+    },
+
     _initResizable: function (item) {
         var self = this, o = this.options;
         item.element.css("zIndex", ++this.zIndex);
@@ -91,12 +95,17 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             helper: "bi-resizer",
             start: function () {
                 item.element.css("zIndex", ++self.zIndex);
+                self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_START_RESIZE);
             },
             resize: function (e, ui) {
                 // self._resize(item.attr("id"), ui.size);
+                var offset = self._getScrollOffset();
+                self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_RESIZE, item.attr("id"), ui.size);
             },
             stop: function (e, ui) {
                 self._resize(item.attr("id"), ui.size);
+                self.setRegionSize(item.attr("id"), ui.size);
+                self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE, item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
             }
         });
@@ -152,7 +161,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             } else {
                 var finded = BI.find(tops.concat(bottoms), function (i, r) {
                     r = self.getRegionByName(r.id);
-                    return Math.abs(size.width + region.left - (r.left + r.width)) < 10;
+                    return Math.abs(size.width + region.left - (r.left + r.width)) <= 3;
                 });
                 if (finded) {
                     finded = this.getRegionByName(finded.id);
@@ -170,7 +179,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             } else {
                 var finded = BI.find(lefts.concat(rights), function (i, r) {
                     r = self.getRegionByName(r.id);
-                    return Math.abs(size.height + region.top - (r.top + r.height)) < 10;
+                    return Math.abs(size.height + region.top - (r.top + r.height)) <= 3;
                 });
                 if (finded) {
                     finded = this.getRegionByName(finded.id);
@@ -288,7 +297,6 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             this._old = old;
         } else {
             this._old = this.getAllRegions();
-            this.arrangement._deleteRegionByName(name);
             this.relayout();
         }
         return true;
@@ -422,5 +430,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         }
     }
 });
+BI.AdaptiveArrangement.EVENT_ELEMENT_START_RESIZE = "AdaptiveArrangement.EVENT_ELEMENT_START_RESIZE";
+BI.AdaptiveArrangement.EVENT_ELEMENT_RESIZE = "AdaptiveArrangement.EVENT_ELEMENT_RESIZE";
+BI.AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE = "AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE";
 BI.AdaptiveArrangement.EVENT_RESIZE = "AdaptiveArrangement.EVENT_RESIZE";
 $.shortcut('bi.adaptive_arrangement', BI.AdaptiveArrangement);

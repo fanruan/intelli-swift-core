@@ -30,6 +30,9 @@ BIShow.PaneView = BI.inherit(BI.View, {
                 el: north,
                 height: this._const.toolbarHeight
             }, {
+                el: BI.createWidget(),
+                height: 1
+            }, {
                 el: this.dashboard
             }]
         })

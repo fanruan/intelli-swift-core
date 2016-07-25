@@ -2,6 +2,7 @@ package com.fr.bi.stable.data.db;
 
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -283,12 +284,16 @@ public class Excel2003Util implements HSSFListener {
     }
 
     public void processMergeRecord(Record record) {
-        MergeCellsRecord merge = (MergeCellsRecord) record;
-        String m = merge.getAreaAt(0).formatAsString();
-        String[] merged = m.split(":");
-        String s = merged[0], e = merged[1];
-        ColumnRow start = ColumnRow.valueOf(s), end = ColumnRow.valueOf(e);
-        mergeCells.put(start, end);
+        try {
+            MergeCellsRecord merge = (MergeCellsRecord) record;
+            String m = merge.getAreaAt(0).formatAsString();
+            String[] merged = m.split(":");
+            String s = merged[0], e = merged[1];
+            ColumnRow start = ColumnRow.valueOf(s), end = ColumnRow.valueOf(e);
+            mergeCells.put(start, end);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
     }
 
     public void initValue() {

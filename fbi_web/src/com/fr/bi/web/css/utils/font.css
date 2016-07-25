@@ -3465,3 +3465,12 @@
   content: "\e62d";
   color: #808080;
 }
+.drag-tag-font .b-font:before {
+  content: "\e600";
+  color: #f07d0a;
+}
+.drag-tag-font.native .b-font:before,
+.drag-tag-font.disabled .b-font:before {
+  content: "\e600";
+  color: #f07d0a;
+}

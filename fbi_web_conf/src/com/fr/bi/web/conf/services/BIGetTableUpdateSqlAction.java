@@ -6,7 +6,6 @@ import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.DatasourceManager;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -15,6 +14,8 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,10 +33,10 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String stringSql = WebUtils.getHTTPRequestParameter(req, "sql");
         String tableString = WebUtils.getHTTPRequestParameter(req, "table");
-        long userId = ServiceUtils.getCurrentUserID(req);
 
-//        Date lastUpdateDate = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId)).getTableIndex(BIBasicCore.generateValueCore(sourceId)).getLastTime();
         Date lastUpdateDate = new Date();
+        long threeDaysAgo = lastUpdateDate.getTime() - 24 * 3600 * 1000 * 3;
+        lastUpdateDate.setTime(threeDaysAgo);
         String sql = parseSQL(stringSql, lastUpdateDate);
         JSONObject jo = new JSONObject();
         jo.put("sql", sql);
@@ -80,7 +81,9 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         Matcher matcher = pat.matcher(sql);
         while (matcher.find()) {
             String matchStr = matcher.group(0);
-            sql = sql.replace(matchStr, date.toString());
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
+            String dateStr = sdf.format(date);
+            sql = sql.replace(matchStr, dateStr);
         }
         return sql;
     }
