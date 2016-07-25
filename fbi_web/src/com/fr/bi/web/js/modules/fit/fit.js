@@ -112,7 +112,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                     var r;
                     switch (self.getLayoutType()) {
                         case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                            r = size;
+                            r = size || {};
                             break;
                         case BI.Arrangement.LAYOUT_TYPE.FREE:
                             r = self.arrangement.getRegionByName(id);
