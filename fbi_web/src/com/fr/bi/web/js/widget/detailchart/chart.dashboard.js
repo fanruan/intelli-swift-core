@@ -76,11 +76,13 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.style = "ring";
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                    config.plotOptions.percentageLabel.enabled = false;
                     break;
                 case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                     config.plotOptions.style = "slot";
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                    config.plotOptions.percentageLabel.enabled = false;
                     break;
                 case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                     config.plotOptions.style = "thermometer";
@@ -90,6 +92,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.percentageLabel.align = "bottom";
                     config.plotOptions.layout = "vertical";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                    config.plotOptions.percentageLabel.enabled = false;
                     break;
                 case BICst.CHART_SHAPE.VERTICAL_TUBE:
                     config.plotOptions.style = "thermometer";
@@ -98,6 +101,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.valueLabel.align = "left";
                     config.plotOptions.percentageLabel.align = "left";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                    config.plotOptions.percentageLabel.enabled = false;
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
