@@ -941,7 +941,7 @@ Data.Utils = {
                 var items = [];
                 var t = [];
                 var type = [];
-                BI.each(items, function(idx, axisItems){
+                BI.each(data, function(idx, axisItems){
                     type.push(BICst.WIDGET.AREA);
                 });
                 if(BI.isNotEmptyArray(type)){
@@ -954,38 +954,38 @@ Data.Utils = {
                     return [];
                 }
                 if(items.length === 1){
-                    return [items];
-                }
-                var colors = config.chart_color || [];
-                if(BI.isEmptyArray(colors)){
-                    colors = ["#5caae4"];
-                }
-                var seriesMinus = [];
-                BI.each(items[0].data, function(idx, item){
-                    var res = items[1].data[idx].y - item.y;
-                    seriesMinus.push({
-                        x: items[1].data[idx].x,
-                        y: res,
-                        targetIds: items[1].data[idx].targetIds
-                    });
-                });
-                items[1] = {
-                    data: seriesMinus,
-                    name: items[1].name,
-                    stack: "stackedArea",
-                    fillColor: colors[0]
-                };
-                BI.each(items, function(idx, item){
-                    if(idx === 0){
-                        BI.extend(item, {
-                            name: items[0].name,
-                            fillColorOpacity: 0,
-                            stack: "stackedArea",
-                            marker: {enabled: false},
-                            fillColor: false
-                        });
+                }else{
+                    var colors = config.chart_color || [];
+                    if(BI.isEmptyArray(colors)){
+                        colors = ["#5caae4"];
                     }
-                });
+                    var seriesMinus = [];
+                    BI.each(items[0].data, function(idx, item){
+                        var res = items[1].data[idx].y - item.y;
+                        seriesMinus.push({
+                            x: items[1].data[idx].x,
+                            y: res,
+                            targetIds: items[1].data[idx].targetIds
+                        });
+                    });
+                    items[1] = {
+                        data: seriesMinus,
+                        name: items[1].name,
+                        stack: "stackedArea",
+                        fillColor: colors[0]
+                    };
+                    BI.each(items, function(idx, item){
+                        if(idx === 0){
+                            BI.extend(item, {
+                                name: items[0].name,
+                                fillColorOpacity: 0,
+                                stack: "stackedArea",
+                                marker: {enabled: false},
+                                fillColor: false
+                            });
+                        }
+                    });
+                }
                 var opts = formatItems([items], t);
                 return formatConfigForRange(opts[1], opts[0]);
             case BICst.WIDGET.BAR:

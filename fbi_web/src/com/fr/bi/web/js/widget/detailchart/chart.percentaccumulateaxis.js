@@ -254,7 +254,7 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
-            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
         }
     },
 
