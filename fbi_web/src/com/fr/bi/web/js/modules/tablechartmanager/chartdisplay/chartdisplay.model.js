@@ -44,8 +44,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                     type = BICst.WIDGET.BUBBLE;
                 }
-                var adjustData = BI.map(data.c, function (id, item) {
+                var adjustData = [];
+                BI.each(data.c, function (id, item) {
                     var res = {};
+                    if(BI.isNull(assertValue(item.s[idx]))){
+                        return;
+                    }
                     if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                         switch(type){
                             case BICst.WIDGET.BUBBLE:
@@ -78,7 +82,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             name: res.x
                         };
                     }
-                    return res;
+                    adjustData.push(res);
                 });
                 var obj = {};
                 obj.data = adjustData;
@@ -89,6 +93,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             });
         }
         return result;
+
+        function assertValue(v){
+            if(BI.isNull(v)){
+                return;
+            }
+            if(!BI.isFinite(v)){
+                return 0;
+            }
+            return v;
+        }
     },
 
     _formatDataForGISMap: function(data){

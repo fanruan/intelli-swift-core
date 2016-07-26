@@ -97,11 +97,16 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
         BI.each(items, function (i, item) {
             BI.extend(item, {
                 type: viewType === BI.TemplateManager.LIST_VIEW ? "bi.report_list_view_item" : "bi.report_card_view_item",
+                isAdmin: o.isAdmin,
                 onClickReport: function(){
-                    FS.tabPane.addItem({
-                        title: item.text,
-                        src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
-                    });
+                    if(BI.isNotNull(FS) && BI.isNotNull(FS.tabPane)) {
+                        FS.tabPane.addItem({
+                            title: item.text,
+                            src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
+                        });
+                    } else {
+                        window.open(FR.servletURL + item.buildUrl + "&edit=_bi_edit_", "_blank");
+                    }
                 },
                 onRenameReport: function(name){
                     self.fireEvent(BI.ReportSearchResultPane.EVENT_REPORT_RENAME, item.id, name);

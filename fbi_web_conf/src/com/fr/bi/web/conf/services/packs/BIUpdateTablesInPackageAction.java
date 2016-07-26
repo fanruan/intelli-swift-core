@@ -93,12 +93,11 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO, tableDataJO));
 
 
-
         for (int i = 0; i < tableIdsJO.length(); i++) {
             String tableId = tableIdsJO.optJSONObject(i).optString("id");
             JSONObject tableJson = tableDataJO.optJSONObject(tableId);
             if (tableJson != null) {
-                BusinessTable table= pack.getSpecificTable(new BITableID(tableId));
+                BusinessTable table = pack.getSpecificTable(new BITableID(tableId));
                 BICubeConfigureCenter.getDataSourceManager().addTableSource(table, TableSourceFactory.createTableSource(tableJson, userId));
                 for (BusinessField businessField : table.getFields()) {
                 }
@@ -199,7 +198,19 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             source.parseJSON(updateSettingJO.getJSONObject(sourceTableId));
             BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(sourceTableId, source, userId);
         }
-        BICubeManager biCubeManager= StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
+        /*此处加个判断，万一前台删除业务表时没有删除updateSettings，这边再删除下
+        * 已经在前台删除了*/
+//        Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
+//        Set<String> removedSet = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(userId).keySet();
+//        for (BusinessTable table : allTables) {
+//            if (removedSet.contains(table.getTableSource().getSourceID())){
+//                removedSet.remove(table.getID().getIdentity());
+//            }
+//        }
+//        for (String s : removedSet) {
+//            BIConfigureManagerCenter.getUpdateFrequencyManager().removeUpdateSetting(s,userId);
+//        }
+        BICubeManager biCubeManager = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManager.class);
         biCubeManager.resetCubeGenerationHour(userId);
     }
 
@@ -230,7 +241,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 //        } catch (BIFieldAbsentException e) {
 //            BILogger.getLogger().error(e.getMessage(), e);
 //        }
-        if(relationJo.has("field_id")){
+        if (relationJo.has("field_id")) {
             fieldId = relationJo.getString("field_id");
         }
         return fieldId;

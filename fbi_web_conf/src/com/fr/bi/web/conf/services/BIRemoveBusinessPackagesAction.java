@@ -59,6 +59,8 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
         if (StringUtils.isEmpty(packageId)) {
             return;
         }
+        //删除权限配置
+        BIConfigureManagerCenter.getAuthorityManager().removeAuthPackage(new BIPackageID(packageId));
         try {
             Iterator tableIt = BICubeConfigureCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables().iterator();
             ArrayList<BITableRelation> removeList = new ArrayList<BITableRelation>();
@@ -74,8 +76,6 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
                     addToRemoveList(foreignContainer, removeList);
                 }
 
-                //删除权限配置
-                BIConfigureManagerCenter.getAuthorityManager().removeAuthPackage(new BIPackageID(packageId));
             }
             for (int i = 0; i < removeList.size(); i++) {
                 BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, removeList.get(i));

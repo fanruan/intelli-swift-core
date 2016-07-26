@@ -111,9 +111,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
             }
             config.rangeLegend.continuous = false;
             config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
-            /*config.rangeLegend.formatter = function(){
-                return this.from;
-            }*/
+            config.rangeLegend.formatter = function(){
+                return this.to;
+            }
         }
 
         function formatToolTipAndDataLabel(format, numberLevel){
@@ -258,10 +258,10 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
                         da.y = 0;
                     }
-                    if((BI.isNull(self.max) || da.y > self.max) && id === 0){
+                    if((BI.isNull(self.max) || BI.parseFloat(da.y) > BI.parseFloat(self.max)) && id === 0){
                         self.max = da.y;
                     }
-                    if((BI.isNull(self.min) || da.y < self.min) && id === 0){
+                    if((BI.isNull(self.min) || BI.parseFloat(da.y) > BI.parseFloat(self.min)) && id === 0){
                         self.min = da.y;
                     }
                     if(BI.has(it, "type") && it.type == "bubble"){

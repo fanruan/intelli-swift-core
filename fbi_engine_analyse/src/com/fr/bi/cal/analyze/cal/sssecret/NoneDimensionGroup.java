@@ -205,8 +205,8 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
         }
         for (DimensionCalculator d : dcs){
             if(d.getSortType() == BIReportConstant.SORT.CUSTOM
-                    || d.getGroup().getType() == BIReportConstant.GROUP.CUSTOM_GROUP
-                    || d.getGroup().getType() == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP){
+                    || d.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP
+                    || d.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP){
                 return false;
             }
         }

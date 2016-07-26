@@ -37,10 +37,10 @@ BI.ETLSQL = BI.inherit(BI.ETL, {
                 dataLinkName: finalTable.dataLinkName
             });
             BI.Layers.show(self._constant.SQL_LAYER);
-            sqlEditor.on(BI.ExcelUpload.EVENT_CANCEL, function(){
+            sqlEditor.on(BI.EditSQL.EVENT_CANCEL, function(){
                 BI.Layers.remove(self._constant.SQL_LAYER);
             });
-            sqlEditor.on(BI.ExcelUpload.EVENT_SAVE, function(data){
+            sqlEditor.on(BI.EditSQL.EVENT_SAVE, function(data){
                 BI.Layers.remove(self._constant.SQL_LAYER);
                 self.model.setFields(data.fields);
                 self.model.saveTableById(finalTable.id, data);
