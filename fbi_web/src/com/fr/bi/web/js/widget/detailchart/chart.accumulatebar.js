@@ -17,7 +17,8 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80
+        LEGEND_HEIGHT: 80,
+        FIX_COUNT: 6
     },
 
     _defaultConfig: function () {
@@ -179,17 +180,15 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
 
         function formatNumberLevelInXaxis(type){
             var magnify = calcMagnify(type);
-            if(magnify > 1){
-                BI.each(items, function(idx, item){
-                    BI.each(item.data, function(id, da){
-                        da.x = da.x || 0;
-                        da.x = da.x.div(magnify);
-                        if(self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
-                            da.x = 0;
-                        }
-                    })
+            BI.each(items, function (idx, item) {
+                BI.each(item.data, function (id, da) {
+                    da.x = da.x || 0;
+                    da.x = da.x.div(magnify).toFixed(self.constants.FIX_COUNT);
+                    if (self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0) {
+                        da.x = 0;
+                    }
                 })
-            }
+            })
         }
 
         function calcMagnify(type){

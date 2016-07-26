@@ -17,7 +17,8 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80
+        LEGEND_HEIGHT: 80,
+        FIX_COUNT: 6
     },
 
     _defaultConfig: function () {
@@ -255,7 +256,7 @@ BI.CompareAreaChart = BI.inherit(BI.Widget, {
                 BI.each(item.data, function (id, da) {
                     if (position === item.yAxis) {
                         da.y = da.y || 0;
-                        da.y = da.y.div(magnify);
+                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
                         if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
                             da.y = 0;
                         }
