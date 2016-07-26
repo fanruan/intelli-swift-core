@@ -11,7 +11,6 @@ import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.*;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
 import com.fr.general.ComparatorUtils;
-import com.fr.general.GeneralUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -1311,8 +1310,7 @@ public class Node extends BIField implements BINode {
         }
         JSONArray summary = new JSONArray();
         for (int i = 0; i < keys.length; i++) {
-            String value = GeneralUtils.objectToString(this.getSummaryValue(keys[i]));
-            summary.put(GeneralUtils.objectToNumber(value));
+            summary.put(this.getSummaryValue(keys[i]));
         }
         jo.put("s", summary);
         jo.put("x", getTotalLengthWithSummary());
