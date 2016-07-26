@@ -13,6 +13,7 @@ import com.fr.bi.common.inter.Release;
 import com.fr.bi.field.dimension.calculator.CombinationDateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.CombinationDimensionCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.report.key.SummaryCalculator;
@@ -196,6 +197,9 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
      * @return
      */
     private boolean judgeNeedAllCal(boolean needAllCal, DimensionCalculator[] dcs){
+        if (getRoot().getGroupValueIndex() instanceof AllShowRoaringGroupValueIndex){
+            return false;
+        }
         if(!needAllCal){
             return false;
         }
