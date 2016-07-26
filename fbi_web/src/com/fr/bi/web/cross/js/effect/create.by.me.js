@@ -7,7 +7,7 @@
             var templateManage = BI.createWidget({
                 type: "bi.template_manager",
                 element: entry.contentEl,
-                is_admin: isAdmin
+                isAdmin: isAdmin
             });
             templateManage.on(BI.TemplateManager.EVENT_FOLDER_RENAME, function (id, name, pId, type) {
                 //重命名或者新建文件夹

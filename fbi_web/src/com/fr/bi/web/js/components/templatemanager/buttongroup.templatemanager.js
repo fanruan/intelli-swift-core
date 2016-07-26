@@ -54,7 +54,7 @@ BI.TemplateManagerButtonGroup = BI.inherit(BI.Widget, {
             } else {
                 BI.extend(item, {
                     type: self.viewType === BI.TemplateManager.LIST_VIEW ? "bi.report_list_view_item" : "bi.report_card_view_item",
-                    is_admin: o.is_admin,
+                    isAdmin: o.isAdmin,
                     onClickReport: function(){
                         if(BI.isNotNull(FS) && BI.isNotNull(FS.tabPane)) {
                             FS.tabPane.addItem({

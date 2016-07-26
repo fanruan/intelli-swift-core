@@ -97,7 +97,7 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
         BI.each(items, function (i, item) {
             BI.extend(item, {
                 type: viewType === BI.TemplateManager.LIST_VIEW ? "bi.report_list_view_item" : "bi.report_card_view_item",
-                is_admin: o.is_admin,
+                isAdmin: o.isAdmin,
                 onClickReport: function(){
                     if(BI.isNotNull(FS) && BI.isNotNull(FS.tabPane)) {
                         FS.tabPane.addItem({

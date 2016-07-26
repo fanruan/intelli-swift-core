@@ -21,7 +21,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         this.model = new BI.TemplateManagerModel({items: o.items});
         this._createTools();
         //管理员没有分享
-        o.is_admin === true && (this.shareButton.setVisible(false));
+        o.isAdmin === true && (this.shareButton.setVisible(false));
 
         //导航
         this.nav = BI.createWidget({
@@ -100,7 +100,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         this.folderAndFileList = BI.createWidget({
             type: "bi.template_manager_button_group",
             items: BI.deepClone(this.model.getAllItems()),
-            is_admin: o.is_admin,
+            isAdmin: o.isAdmin,
             folderChecker: function (name, id) {
                 return self.model.checkFolderName(name, id);
             },

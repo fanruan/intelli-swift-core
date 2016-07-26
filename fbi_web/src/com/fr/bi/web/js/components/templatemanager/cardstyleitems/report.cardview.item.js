@@ -54,7 +54,7 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
-        if (o.is_admin === false) {
+        if (o.isAdmin === false) {
             var markCls = "report-apply-hangout-ing-font";
             this.hangout = BI.createWidget({
                 type: "bi.icon_change_button",
