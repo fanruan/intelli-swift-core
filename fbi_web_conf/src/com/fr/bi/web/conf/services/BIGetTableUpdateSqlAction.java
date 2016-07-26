@@ -109,7 +109,7 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         Matcher matcher = pat.matcher(sql);
         while (matcher.find()) {
             String matchStr = matcher.group(0);
-            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
             String dateStr = sdf.format(date);
             sql = sql.replace(matchStr, dateStr);
         }
