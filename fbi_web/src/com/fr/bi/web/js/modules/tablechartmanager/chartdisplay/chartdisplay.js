@@ -376,6 +376,3 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
 });
 BI.ChartDisplay.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.chart_display', BI.ChartDisplay);
-
-var a = {
-}
