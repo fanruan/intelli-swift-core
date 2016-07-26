@@ -183,11 +183,12 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
                             da.y = 0;
                         }
                     }
-                })
+                });
+                if(position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    item.tooltip = BI.deepClone(config.plotOptions.tooltip);
+                    item.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                }
             });
-            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
-            }
         }
 
         function calcMagnify(type){
