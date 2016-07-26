@@ -18,7 +18,9 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
         LNG_FIRST: 3,
-        LAT_FIRST: 4
+        LAT_FIRST: 4,
+        FIX_COUNT: 6,
+        MINLIMIT: 1e-6
     },
 
     _defaultConfig: function () {
@@ -86,6 +88,10 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
             BI.each(item, function(id, it){
                 var res = [];
                 BI.each(it.data, function(i, da){
+                    da.y = da.y.toFixed(self.constants.FIX_COUNT);
+                    if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
+                        da.y = 0;
+                    }
                     var lnglat = da.x.split(",");
                     if(self.config.lnglat === self.constants.LAT_FIRST){
                         var lng = lnglat[1];

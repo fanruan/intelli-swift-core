@@ -25,6 +25,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         PERCENT_DASHBOARD: 10,
         PERCENT_SCALE_SLOT: 11,
         VERTICAL_TUBE: 12,
+        FIX_COUNT: 6,
         HORIZONTAL_TUBE: 13
     },
 
@@ -121,19 +122,17 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
 
         function formatNumberLevelInYaxis(type, position){
             var magnify = calcMagnify(type);
-            if(magnify > 1){
-                BI.each(items, function(idx, item){
-                    BI.each(item.data, function(id, da){
-                        if (position === item.yAxis) {
-                            da.y = da.y || 0;
-                            da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
-                                da.y = 0;
-                            }
+            BI.each(items, function (idx, item) {
+                BI.each(item.data, function (id, da) {
+                    if (position === item.yAxis) {
+                        da.y = da.y || 0;
+                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
+                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
+                            da.y = 0;
                         }
-                    })
+                    }
                 })
-            }
+            });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }

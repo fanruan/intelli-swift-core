@@ -17,7 +17,8 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80
+        LEGEND_HEIGHT: 80,
+        FIX_COUNT: 6
     },
 
     _defaultConfig: function () {
@@ -198,19 +199,17 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
 
         function formatNumberLevelInYaxis(type, position){
             var magnify = calcMagnify(type);
-            if(magnify > 1){
-                BI.each(items, function(idx, item){
-                    BI.each(item.data, function(id, da){
-                        if (position === item.yAxis) {
-                            da.y = da.y || 0;
-                            da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
-                                da.y = 0;
-                            }
+            BI.each(items, function (idx, item) {
+                BI.each(item.data, function (id, da) {
+                    if (position === item.yAxis) {
+                        da.y = da.y || 0;
+                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
+                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
+                            da.y = 0;
                         }
-                    })
+                    }
                 })
-            }
+            });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }

@@ -381,10 +381,13 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
         if(!BI.has(changed, "dimensions")){
             hasDifferentDimension = false;
         }else{
-            var dimensionIds = BI.keys(changed.dimensions);
-            hasDifferentDimension = BI.isNotNull(BI.find(prev.dimensions, function(dId, dimension){
-                return !BI.contains(dimensionIds, dId);
-            }));
+            if(BI.size(changed.dimensions) !== BI.size(prev.dimensions)){
+            }else{
+                var dimensionIds = BI.keys(changed.dimensions);
+                hasDifferentDimension = BI.isNotNull(BI.find(prev.dimensions, function(dId, dimension){
+                    return !BI.contains(dimensionIds, dId);
+                }));
+            }
         }
         if (BI.has(changed, "view") && hasDifferentDimension === false) {
             var wType = this.get("type");
