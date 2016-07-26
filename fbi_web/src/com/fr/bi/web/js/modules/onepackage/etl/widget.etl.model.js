@@ -52,6 +52,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
             BI.each(fs, function (j, field) {
                 field.id = self._getCurrentFieldIdByFieldInfo(field);
                 field.isCircle = _getIsCircle(field);
+                field.table_id = self.id;
                 self.allFields[field.id] = field;
             })
         });
@@ -106,9 +107,9 @@ BI.ETLModel = BI.inherit(FR.OB, {
         BI.some(oldFields, function (index, fieldObj) {
             if (fieldObj.field_name === fieldInfo.field_name && fieldObj.table_id === self.id) {
                 id = fieldObj.id;
-                return true
+                return true;
             }
-            return false
+            return false;
         });
         return id;
     },
