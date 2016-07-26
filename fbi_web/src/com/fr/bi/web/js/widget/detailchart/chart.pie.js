@@ -18,7 +18,8 @@ BI.PieChart = BI.inherit(BI.Widget, {
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
         MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80
+        LEGEND_HEIGHT: 80,
+        FIX_COUNT: 6
     },
 
     _defaultConfig: function () {
@@ -71,6 +72,15 @@ BI.PieChart = BI.inherit(BI.Widget, {
         config.plotOptions.dataLabels.align = "outside";
         config.plotOptions.dataLabels.connectorWidth = "outside";
         config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+        BI.each(items, function (idx, item) {
+            BI.each(item.data, function (id, da) {
+                da.y = da.y || 0;
+                da.y = da.y.toFixed(self.constants.FIX_COUNT);
+                if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
+                    da.y = 0;
+                }
+            })
+        });
         return [items, config];
 
         function formatChartStyle(){

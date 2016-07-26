@@ -73,6 +73,7 @@ BIShow.View = BI.inherit(BI.View, {
         var subvessel = BI.createWidget();
         var saveAs = BI.createWidget({
             type: "bi.icon_text_item",
+            invisible: !BICst.CONFIG.SHOW_DASHBOARD_TITLE,
             cls: "toolbar-save-font save-as",
             text: BI.i18nText("BI-Save_As"),
             height: 30,

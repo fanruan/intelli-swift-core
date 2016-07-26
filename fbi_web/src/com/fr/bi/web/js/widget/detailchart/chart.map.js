@@ -18,7 +18,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
         theme_color: "#65bce7",
-        auto_custom: 1
+        auto_custom: 1,
+        FIX_COUNT: 6,
+        MINLIMIT: 1e-6
     },
 
     _defaultConfig: function () {
@@ -109,9 +111,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
             }
             config.rangeLegend.continuous = false;
             config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
-            /*config.rangeLegend.formatter = function(){
-                return this.from;
-            }*/
+            config.rangeLegend.formatter = function(){
+                return this.to;
+            }
         }
 
         function formatToolTipAndDataLabel(format, numberLevel){
@@ -227,6 +229,10 @@ BI.MapChart = BI.inherit(BI.Widget, {
         var self = this;
         BI.each(items.series, function(idx, da){
             BI.each(da.data, function(idx, data){
+                data.y = data.y.toFixed(self.constants.FIX_COUNT);
+                if (self.constants.MINLIMIT.sub(Math.abs(data.y)) > 0) {
+                    data.y = 0;
+                }
                 if(BI.has(da, "type") && da.type == "bubble"){
                     data.name = data.x;
                     data.size = data.y;
@@ -248,10 +254,14 @@ BI.MapChart = BI.inherit(BI.Widget, {
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
-                    if((BI.isNull(self.max) || da.y > self.max) && id === 0){
+                    da.y = da.y.toFixed(self.constants.FIX_COUNT);
+                    if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
+                        da.y = 0;
+                    }
+                    if((BI.isNull(self.max) || BI.parseFloat(da.y) > BI.parseFloat(self.max)) && id === 0){
                         self.max = da.y;
                     }
-                    if((BI.isNull(self.min) || da.y < self.min) && id === 0){
+                    if((BI.isNull(self.min) || BI.parseFloat(da.y) > BI.parseFloat(self.min)) && id === 0){
                         self.min = da.y;
                     }
                     if(BI.has(it, "type") && it.type == "bubble"){

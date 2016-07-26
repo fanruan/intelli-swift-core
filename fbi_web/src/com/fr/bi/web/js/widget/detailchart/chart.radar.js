@@ -18,7 +18,8 @@ BI.RadarChart = BI.inherit(BI.Widget, {
         TWO2POINT: 4,
         POLYGON: 7,
         MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80
+        LEGEND_HEIGHT: 80,
+        FIX_COUNT: 6
     },
 
     _defaultConfig: function () {
@@ -84,6 +85,22 @@ BI.RadarChart = BI.inherit(BI.Widget, {
         config.chartType = "radar";
         delete config.xAxis;
         delete config.yAxis;
+        //为了给数据标签加个%,还要遍历所有的系列，唉
+        if(config.plotOptions.dataLabels.enabled === true){
+            BI.each(items, function(idx, item){
+                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    item.dataLabels = {
+                        "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                        "align": "outside",
+                        enabled: true,
+                        formatter: {
+                            identifier: "${VALUE}",
+                            valueFormat: "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}"
+                        }
+                    };
+                }
+            });
+        }
         return [items, config];
 
         function formatChartStyle(){
@@ -109,19 +126,17 @@ BI.RadarChart = BI.inherit(BI.Widget, {
 
         function formatNumberLevelInYaxis(type, position){
             var magnify = calcMagnify(type);
-            if(magnify > 1){
-                BI.each(items, function(idx, item){
-                    BI.each(item.data, function(id, da){
-                        if(position === item.yAxis){
-                            da.y = da.y || 0;
-                            da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
-                                da.y = 0;
-                            }
+            BI.each(items, function (idx, item) {
+                BI.each(item.data, function (id, da) {
+                    if (position === item.yAxis) {
+                        da.y = da.y || 0;
+                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
+                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
+                            da.y = 0;
                         }
-                    })
+                    }
                 })
-            }
+            });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }

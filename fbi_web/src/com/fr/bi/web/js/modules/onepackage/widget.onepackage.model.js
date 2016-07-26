@@ -225,12 +225,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 delete self.allFields[id];
             }
         });
-
-        //删除该表的相关更新信息
-        if(BI.isNotNull(this.updateSettings) && BI.isNotNull(this.updateSettings[tableId])) {
-            delete this.updateSettings[tableId];
-        }
-
         this._syncSharedPackages();
     },
 

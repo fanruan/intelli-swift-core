@@ -17,44 +17,46 @@ BI.CircleShowTextCombo = BI.inherit(BI.Widget, {
         BI.CircleShowTextCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.combo = BI.createWidget({
-            type: 'bi.multi_select_combo',
+            type: 'bi.all_value_chooser_combo',
             element: this.element,
-            itemsCreator: BI.bind(this._itemsCreator, this)
+            itemsCreator: function (op, callback) {
+                callback(o.items);
+            }
         });
 
-        this.combo.on(BI.MultiSelectCombo.EVENT_CONFIRM, function () {
+        this.combo.on(BI.AllValueChooserCombo.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CircleShowTextCombo.EVENT_CONFIRM);
         });
     },
 
-    _itemsCreator: function (options, callback) {
-        var self = this;
-        var items = this.options.items;
-        if (BI.isNotNull(options.keyword)) {
-            var search = BI.Func.getSearchResult(items, options.keyword);
-            items = search.matched.concat(search.finded);
-        }
-        if (BI.isNotNull(options.selected_values)) {//过滤
-            var filter = BI.makeObject(options.selected_values, true);
-            items = BI.filter(items, function (i, ob) {
-                return !filter[ob.value];
-            });
-        }
-        if (options.type == BI.MultiSelectCombo.REQ_GET_DATA_LENGTH) {
-            callback({count: items.length});
-            return;
-        }
-        callback({
-            items: items
-        });
-    },
+    //_itemsCreator: function (options, callback) {
+    //    var self = this;
+    //    var items = this.options.items;
+    //    if (BI.isNotNull(options.keyword)) {
+    //        var search = BI.Func.getSearchResult(items, options.keyword);
+    //        items = search.matched.concat(search.finded);
+    //    }
+    //    if (BI.isNotNull(options.selected_values)) {//过滤
+    //        var filter = BI.makeObject(options.selected_values, true);
+    //        items = BI.filter(items, function (i, ob) {
+    //            return !filter[ob.value];
+    //        });
+    //    }
+    //    if (options.type == BI.MultiSelectCombo.REQ_GET_DATA_LENGTH) {
+    //        callback({count: items.length});
+    //        return;
+    //    }
+    //    callback({
+    //        items: items
+    //    });
+    //},
 
-    populate: function(items){
+    populate: function (items) {
         this.options.items = items;
     },
 
     setValue: function (v) {
-        if(BI.isNull(v)){
+        if (BI.isNull(v)) {
             this.combo.setValue();
             return;
         }

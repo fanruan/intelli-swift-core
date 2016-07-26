@@ -17,7 +17,8 @@ BI.BarChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80
+        LEGEND_HEIGHT: 80,
+        FIX_COUNT: 6
     },
 
     _defaultConfig: function () {
@@ -125,6 +126,24 @@ BI.BarChart = BI.inherit(BI.Widget, {
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "bar";
+
+        //为了给数据标签加个%,还要遍历所有的系列，唉
+        if(config.plotOptions.dataLabels.enabled === true){
+            BI.each(items, function(idx, item){
+                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    item.dataLabels = {
+                        "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                        "align": "outside",
+                        enabled: true,
+                        formatter: {
+                            identifier: "${VALUE}",
+                            valueFormat: "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}"
+                        }
+                    };
+                }
+            });
+        }
+
         return [items, config];
 
         function formatChartStyle() {
@@ -190,17 +209,15 @@ BI.BarChart = BI.inherit(BI.Widget, {
 
         function formatNumberLevelInXaxis(type) {
             var magnify = calcMagnify(type);
-            if (magnify > 1) {
-                BI.each(items, function (idx, item) {
-                    BI.each(item.data, function (id, da) {
-                        da.x = da.x || 0;
-                        da.x = da.x.div(magnify);
-                        if(self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
-                            da.x = 0;
-                        }
-                    })
+            BI.each(items, function (idx, item) {
+                BI.each(item.data, function (id, da) {
+                    da.x = da.x || 0;
+                    da.x = da.x.div(magnify).toFixed(self.constants.FIX_COUNT);
+                    if (self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0) {
+                        da.x = 0;
+                    }
                 })
-            }
+            })
         }
 
         function calcMagnify(type) {

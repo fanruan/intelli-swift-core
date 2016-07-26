@@ -22,6 +22,7 @@ import com.fr.bi.stable.data.db.SqlSettedStatement;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BICubeDBUtils;
@@ -37,6 +38,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.fr.bi.util.BICubeDBUtils.getColumnName;
 
@@ -85,7 +88,14 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
         source.setUpdateSettingSource(tableUpdateSetting);
         long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;
+
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+        if (tableEntityService.isRemovedListAvailable()) {
+            IntList removedList = tableEntityService.getRemovedList();
+            for (int i = 0; i < removedList.size(); i++) {
+                sortRemovedList.add(Integer.valueOf(removedList.get(i)));
+            }
+        }
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
@@ -167,22 +177,33 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     }
 
     private String addDateCondition(String sql) {
-        String LastModifyTime = "${上次更新时间}";
-        if (!sql.contains(LastModifyTime)) {
-            return sql;
-        }
-        SQLRegUtils sqlRegUtils = new SQLRegUtils(sql);
-        String conditions = sqlRegUtils.getConditions();
+//        String LastModifyTime = "${上次更新时间}";
+//        if (!sql.contains(LastModifyTime)) {
+//            return sql;
+//        }
+//        SQLRegUtils sqlRegUtils = new SQLRegUtils(sql);
+//        String conditions = sqlRegUtils.getConditions();
+//        if (tableEntityService.isCubeLastTimeAvailable() && null != tableEntityService.getCubeLastTime()) {
+//            Date lastTime = tableEntityService.getCubeLastTime();
+//            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
+//            String dateStr = sdf.format(lastTime);
+//            conditions = conditions.replace(LastModifyTime, dateStr);
+//            sqlRegUtils.setConditions(conditions);
+////            sql=parseSQL(sql,lastTime);
+//        }
+//            conditions = conditions.replace(LastModifyTime, "");
+//        sqlRegUtils.setConditions(conditions);
         if (tableEntityService.isCubeLastTimeAvailable() && null != tableEntityService.getCubeLastTime()) {
             Date lastTime = tableEntityService.getCubeLastTime();
-            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
-            String dateStr = sdf.format(lastTime);
-            conditions = conditions.replace(LastModifyTime, dateStr);
-            sqlRegUtils.setConditions(conditions);
-        } else
-            conditions = conditions.replace(LastModifyTime, "");
-        sqlRegUtils.setConditions(conditions);
-        return sqlRegUtils.toString();
+            Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
+            Matcher matcher = pat.matcher(sql);
+            while (matcher.find()) {
+                String matchStr = matcher.group(0);
+                DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
+                String dateStr = sdf.format(lastTime);
+                sql = sql.replace(matchStr, dateStr);
+            }
+        }
+        return sql;
     }
-
 }

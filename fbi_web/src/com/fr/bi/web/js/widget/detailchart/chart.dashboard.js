@@ -18,13 +18,14 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-6,
+        MINLIMIT: 1e-5,
         ONE_POINTER: 1,
         MULTI_POINTER: 2,
         HALF_DASHBOARD: 9,
         PERCENT_DASHBOARD: 10,
         PERCENT_SCALE_SLOT: 11,
         VERTICAL_TUBE: 12,
+        FIX_COUNT: 6,
         HORIZONTAL_TUBE: 13
     },
 
@@ -75,11 +76,13 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.style = "ring";
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                    config.plotOptions.percentageLabel.enabled = false;
                     break;
                 case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                     config.plotOptions.style = "slot";
                     config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                    config.plotOptions.percentageLabel.enabled = false;
                     break;
                 case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                     config.plotOptions.style = "thermometer";
@@ -89,6 +92,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.percentageLabel.align = "bottom";
                     config.plotOptions.layout = "vertical";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                    config.plotOptions.percentageLabel.enabled = false;
                     break;
                 case BICst.CHART_SHAPE.VERTICAL_TUBE:
                     config.plotOptions.style = "thermometer";
@@ -97,6 +101,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     config.plotOptions.valueLabel.align = "left";
                     config.plotOptions.percentageLabel.align = "left";
                     config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                    config.plotOptions.percentageLabel.enabled = false;
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
@@ -106,6 +111,9 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             }
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
             if(self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                config.plotOptions.valueLabel.formatter.valueFormat = function(){
+                    return (window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]);
+                };
                 config.gaugeAxis[0].formatter = function(){
                     return (window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]) + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                 };
@@ -118,19 +126,17 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
 
         function formatNumberLevelInYaxis(type, position){
             var magnify = calcMagnify(type);
-            if(magnify > 1){
-                BI.each(items, function(idx, item){
-                    BI.each(item.data, function(id, da){
-                        if (position === item.yAxis) {
-                            da.y = da.y || 0;
-                            da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(da.y) > 0){
-                                da.y = 0;
-                            }
+            BI.each(items, function (idx, item) {
+                BI.each(item.data, function (id, da) {
+                    if (position === item.yAxis) {
+                        da.y = da.y || 0;
+                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
+                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
+                            da.y = 0;
                         }
-                    })
+                    }
                 })
-            }
+            });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }
