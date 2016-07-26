@@ -55,7 +55,7 @@ public class StringControlWidget extends BISummaryWidget {
         GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
         ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
         List<Integer> list;
-        if (dimension.getGroup().getType() == BIReportConstant.GROUP.CUSTOM_GROUP || dimension.getGroup().getType() == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP){
+        if (dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP || dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP){
             list = createCustomGroupIndex(gvi, reader);
         } else {
             list = createIDGroupIndex(gvi, dimension, session);
