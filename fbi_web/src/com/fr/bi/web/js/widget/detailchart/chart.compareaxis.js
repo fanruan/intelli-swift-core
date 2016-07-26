@@ -241,18 +241,19 @@ BI.CompareAxisChart = BI.inherit(BI.Widget, {
                         if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
                             da.y = 0;
                         }
-                        if((BI.isNull(max) || da.y > max)){
+                        if((BI.isNull(max) || BI.parseFloat(da.y) > BI.parseFloat(max))){
                             max = da.y;
                         }
                     }
                 });
+                if(position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    item.tooltip = BI.deepClone(config.plotOptions.tooltip);
+                    item.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                }
                 if(BI.isNotNull(max)){
                     self.maxes.push(max);
                 }
             });
-            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
-            }
         }
 
         function calcMagnify(type){
