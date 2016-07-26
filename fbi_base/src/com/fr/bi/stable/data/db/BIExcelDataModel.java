@@ -117,6 +117,7 @@ public class BIExcelDataModel extends AbstractDataModel {
         }
         switch (getExcelType()){
             case EXCEL_TYPE_CSV:
+                initExcel4CSV(false);
                 break;
             case EXCEL_TYPE_XLS:
                 initExcel4XLS(false);
@@ -137,6 +138,8 @@ public class BIExcelDataModel extends AbstractDataModel {
         }
         switch (getExcelType()){
             case EXCEL_TYPE_CSV:
+                initExcel4CSV(true);
+                break;
             case EXCEL_TYPE_XLS:
                 initExcel4XLS(true);
                 break;
@@ -183,6 +186,19 @@ public class BIExcelDataModel extends AbstractDataModel {
             rowDataList = excel2003Util.getRowDataList();
             columnNames = excel2003Util.getColumnNames();
             columnTypes = excel2003Util.getColumnTypes();
+        }catch (Exception e){
+            BILogger.getLogger().error(e.getMessage());
+        }
+    }
+
+    private void initExcel4CSV(boolean isPreview) {
+        long start = System.currentTimeMillis();
+        try {
+            ExcelCSVUtil excelCSVUtil = new ExcelCSVUtil(this.filePath, isPreview);
+            BILogger.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
+            rowDataList = excelCSVUtil.getRowDataList();
+            columnNames = excelCSVUtil.getColumnNames();
+            columnTypes = excelCSVUtil.getColumnTypes();
         }catch (Exception e){
             BILogger.getLogger().error(e.getMessage());
         }
