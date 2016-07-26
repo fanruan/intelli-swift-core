@@ -5819,7 +5819,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             var radiusScale = this.scale;
             var categories = this.polar.angleAxis.scale.domain();
             var shape = this.polar.shape;
-            if (shape === Constants.POLYGON_RADAR && categories.length == 2) {
+            if (shape === Constants.POLYGON_RADAR && categories.length <= 2) {
                 var arc = d3.svg.arc().startAngle(0).endAngle(2 * Math.PI).innerRadius(0);
                 return arc.outerRadius(radiusScale(value))();
             }else{
@@ -11223,7 +11223,7 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
                     return a + content;
 
                 } else {
-                    return a + BaseUtils.getFormatterFunction(formatter).call(b);
+                    return a + BaseUtils.getFormatterFunction(formatter).call(b) + '<br />';
                 }
 
             }, '');
@@ -18340,7 +18340,7 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
     var LINE_LABEL_GAP = 2;
     var STEP = Math.PI / 180;
 
-    var DECREASE = [0.75,0.7,0.65,0.6,0.55];
+    var DECREASE = [0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5];
 
     var VIS_MIN = 1E-10;
 
@@ -18464,9 +18464,6 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
             this._dfsTraverseData(this.root, this.option.orderType);
             this.nodes = this._bfsTraverseData(this.root);
-            // console.log(this.root);
-            // console.log(series);
-            // console.log(this.option);
 
             // better sequence?
             if (series.fixedState === 'fixed') {
@@ -18797,7 +18794,7 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             }
 
             //高度不够，需要省略一些标签
-            if(radius < totalHeight){
+            if(radius * 1.2 < totalHeight){
 
                 var det = totalHeight - radius;
 
@@ -18817,16 +18814,7 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             }
 
             arcs.sort(function(a, b){
-                var startA = a.x;
-                var startB = b.x;
-
-                if(startA < startB){
-                    return -1;
-                }else if(startA > startB){
-                    return 1;
-                }else{
-                    return 0;
-                }
+                return a.x - b.x;
             });
 
             return arcs;
@@ -18842,6 +18830,19 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                     return {startAngle:Math.PI, endAngle:3 * Math.PI / 2};
                 case LEFT_TOP:
                     return {startAngle:3 * Math.PI / 2, endAngle: 2 * Math.PI};
+            }
+        },
+
+        _getLocByArc: function (arc) {
+            arc = arc % (2 * Math.PI);
+            if(arc < Math.PI / 2){
+                return RIGHT_TOP;
+            }else if(arc < Math.PI){
+                return RIGHT_BOTTOM;
+            }else if(arc < 3 * Math.PI / 2){
+                return LEFT_BOTTOM;
+            }else{
+                return LEFT_TOP;
             }
         },
 
@@ -18934,246 +18935,123 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             });
         },
 
-        _calculateOutsideLabelBounds:function(outPoints, pieConfig, isRecalculate){
-            if(!outPoints.length){
-                return ;
-            }
+        calcOutsideLabel: function (outPoints, fixedState, radius, center, plotBounds) {
 
-            //清空计算结果
-            outPoints.forEach(function(arc){
-                arc.labelPos = null;
-            });
+            var pointsGroups = {};
 
-            isRecalculate = isRecalculate || false;
+            outPoints.map(function (p) {
+                var center = this.getCenterAngle(p);
+                var loc = this._getLocByArc(center);
+                pointsGroups[loc] = pointsGroups[loc] || [];
+                pointsGroups[loc].push(p);
+            }, this);
 
-            //先划分区域
-            var rightTop = [];
-            var rightBottom = [];
-            var leftTop = [];
-            var leftBottom = [];
+            if (fixedState) {
 
-            for(var i = 0, len = outPoints.length; i < len; i++){
-                var point = outPoints[i];
+                pointsGroups = this.ignoreMin(pointsGroups, radius);
+                this.placeOutSideLabels(pointsGroups, radius);
+                return radius;
 
-                var center = this.getCenterAngle(point);
-
-                if(center < Math.PI / 2){
-                    rightTop.push(point)
-                }else if(center >= Math.PI / 2 && center < Math.PI){
-                    rightBottom.push(point);
-                }else if(center >= Math.PI && center < 3 * Math.PI /2){
-                    leftBottom.push(point);
-                }else{
-                    leftTop.push(point);
-                }
-            }
-
-            isRecalculate ? this._calculateArcR(pieConfig, rightTop, rightBottom, leftTop, leftBottom)
-                :this._initCalculateArcR(pieConfig, rightTop, rightBottom, leftTop, leftBottom);
-        },
-
-        _initCalculateArcR:function(pieConfig, rightTop, rightBottom, leftTop, leftBottom){
-            if (pieConfig.fixedState === 'fixed') {
-                var dim = {width: Number.MAX_VALUE, height: Number.MAX_VALUE};
-                this._testIfAllFit(pieConfig.radius, dim, rightTop, rightBottom, leftTop, leftBottom, true);
             } else {
-                var originR = pieConfig.radius;
-                var usedR = originR * 0.5;
-
-                var bounds = pieConfig.bounds;
-                var dim = {width: bounds.width / 2, height: bounds.height / 2};
-
-                //半径的下界都不能放下的话
-                if (!this._testIfAllHorizontalFit(usedR, dim, rightTop, rightBottom, leftTop, leftBottom)) {
-                    pieConfig.radius = usedR;
-
-                    //计算位置
-                    this._testIfAllFit(usedR, dim, rightTop, rightBottom, leftTop, leftBottom)
-
-                    return;
-                }
 
                 for (var i = 0, len = DECREASE.length; i < len; i++) {
-                    usedR = originR * DECREASE[i];
+                    var usedR = radius * DECREASE[i];
+                    var usedPointsG = this.ignoreMin(pointsGroups, radius);
 
-                    if (this._testIfAllFit(usedR, dim, rightTop, rightBottom, leftTop, leftBottom)) {
-                        pieConfig.radius = usedR;
-                        return;
+                    this.placeOutSideLabels(usedPointsG, usedR);
+
+                    if (this.testWithinBounds(usedPointsG, center, plotBounds)) {
+                        break;
                     }
                 }
-
-                this._testIfAllFit(usedR, dim, rightTop, rightBottom, leftTop, leftBottom, true);
-                pieConfig.radius = usedR;
+                return usedR;
             }
         },
 
-        _calculateArcR:function(pieConfig, rightTop, rightBottom, leftTop, leftBottom){
-            if (pieConfig.fixedState === 'fixed') {
-                var dim = {width: Number.MAX_VALUE, height: Number.MAX_VALUE};
-                this._testIfAllFit(pieConfig.radius, dim, rightTop, rightBottom, leftTop, leftBottom, true);
-            } else {
-                var usedR = pieConfig.radius;
-                var bounds = pieConfig.bounds;
-                var dim = {width: bounds.width / 2, height: bounds.height / 2};
-
-                this._testIfAllFit(usedR, dim, rightTop, rightBottom, leftTop, leftBottom, true);
+        ignoreMin: function (pointsGroups, radius) {
+            var result = {};
+            for (var i in pointsGroups) {
+                pointsGroups[i].map(function (p) { p.labelPos = null; });
+                result[i] = this._ignoreMinArcLabel(radius, pointsGroups[i]);
             }
+            return result;
         },
 
-        _testIfAllHorizontalFit:function(usedR, dim, rightTop, rightBottom, leftTop, leftBottom){
-            var tmpRightTop = this._ignoreMinArcLabel(usedR, rightTop);
-            var tmpRightBottom = this._ignoreMinArcLabel(usedR, rightBottom);
-            var tmpLeftTop = this._ignoreMinArcLabel(usedR, leftTop);
-            var tmpLeftBottom = this._ignoreMinArcLabel(usedR, leftBottom);
-
-            var rightTop = this._testIfHorizontalFit(tmpRightTop, usedR, dim, RIGHT_TOP);
-            var rightBottom = this._testIfHorizontalFit(tmpRightBottom, usedR, dim, RIGHT_BOTTOM);
-            var leftTop = this._testIfHorizontalFit(tmpLeftTop, usedR, dim, LEFT_TOP);
-            var leftBottom = this._testIfHorizontalFit(tmpLeftBottom, usedR, dim, LEFT_BOTTOM);
-
-            return rightTop && rightBottom && leftTop && leftBottom;
-        },
-
-        _testIfHorizontalFit:function(arcPoints, usedR, dim, location){
-
-            var outerR = usedR * 1.2;
-            var hWidth = usedR * 0.1;
-            var allLabelBounds = BaseUtils.makeBounds(-dim.width, dim.height, dim.width * 2, dim.height * 2);
-
-            for(var i = 0, len = arcPoints.length; i < len; i++){
-
-                var point = arcPoints[i];
-
-                var labelDim = point.labelDim;
-
-                var centerAngle = this.getCenterAngle(point);
-
-                var centerX = outerR * Math.sin(centerAngle);
-
-                var centerY = outerR * Math.cos(centerAngle + Math.PI);
-
-                var bounds = this._getLabelBounds(location, centerX, centerY, hWidth, labelDim);
-
-                if(bounds.x < allLabelBounds.x || (bounds.x + bounds.width > allLabelBounds.x + allLabelBounds.width)){
-                    return false;
+        testWithinBounds: function (pointsGroups, center, wholeBounds) {
+            for (var i in pointsGroups) {
+                var bounds, x, y, width, height;
+                x = y = 0;
+                switch (i) {
+                    case RIGHT_TOP:
+                    case RIGHT_BOTTOM:
+                        y = -center[1];
+                        width = wholeBounds.width - center[0];
+                        height = wholeBounds.height;
+                        break;
+                    case LEFT_BOTTOM:
+                    case LEFT_TOP:
+                        x = -center[0];
+                        y = -center[1];
+                        width = center[0];
+                        height = wholeBounds.height;
+                        break;
                 }
-            }
+                bounds = {x: x, y: y, width: width, height: height};
 
-            return true;
-        },
-
-        _testIfAllFit:function(usedR, dim, rightTop, rightBottom, leftTop, leftBottom, forceFloat){
-
-            var tmpRightTop = this._ignoreMinArcLabel(usedR, rightTop);
-            var tmpRightBottom = this._ignoreMinArcLabel(usedR, rightBottom);
-            var tmpLeftTop = this._ignoreMinArcLabel(usedR, leftTop);
-            var tmpLeftBottom = this._ignoreMinArcLabel(usedR, leftBottom);
-
-            var rightTop = this._testIfFit(rightTop, tmpRightTop, usedR, dim, RIGHT_TOP, forceFloat);
-            var rightBottom = this._testIfFit(rightBottom, tmpRightBottom, usedR, dim, RIGHT_BOTTOM, forceFloat);
-            var leftTop = this._testIfFit(leftTop, tmpLeftTop, usedR, dim, LEFT_TOP, forceFloat);
-            var leftBottom = this._testIfFit(leftBottom, tmpLeftBottom, usedR, dim, LEFT_BOTTOM, forceFloat);
-
-            return rightTop && rightBottom && leftTop && leftBottom;
-        },
-
-        _testIfFit:function(totalPoints, arcPoints, usedR, dim, location, forceFloat){
-
-            return (totalPoints.length == arcPoints.length && !forceFloat) ? this._testFixedPositionIfFit(arcPoints, usedR, dim, location)
-                :this._testFloatPositionIfFit(arcPoints, usedR, dim, location)
-
-        },
-
-        _testFixedPositionIfFit:function(arcPoints, usedR, dim, location){
-
-            var manager = new BoundsManager();
-
-            var outerR = usedR * 1.2;
-            var hWidth = usedR * 0.1;
-            var allLabelBounds = BaseUtils.makeBounds(-dim.width, -dim.height, dim.width * 2, dim.height * 2);
-
-            for(var i = 0, len = arcPoints.length; i < len; i++){
-
-                var point = arcPoints[i];
-
-                var labelDim = point.labelDim;
-
-                var centerAngle = this.getCenterAngle(point);
-
-                var centerX = outerR * Math.sin(centerAngle);
-
-                var centerY = outerR * Math.cos(centerAngle + Math.PI);
-
-                var bounds = this._getLabelBounds(location, centerX, centerY, hWidth, labelDim);
-
-                if(manager.isOverlapped(bounds) || !BaseUtils.containsRect(allLabelBounds, bounds)){
-                    return false;
-                }else{
-                    manager.addBounds(bounds);
-
-                    var midPos = {x:centerX, y:centerY};
-                    var endPos;
-                    if(location == RIGHT_TOP || location == RIGHT_BOTTOM){
-                        endPos = {x:centerX + hWidth, y:centerY};
-                    }else{
-                        endPos = {x:centerX - hWidth, y:centerY};
+                for (var j = 0; j < pointsGroups[i].length; j++) {
+                    var p = pointsGroups[i][j];
+                    if (!p.labelPos) {
+                        continue;
                     }
-                    point.labelPos = {
-                        x:bounds.x,
-                        y:bounds.y,
-
-                        midPos:midPos,
-                        endPos:endPos
+                    var pBounds = {
+                        x: p.labelPos.x,
+                        y: p.labelPos.y,
+                        width: p.labelDim.width,
+                        height: p.labelDim.height
                     };
+                    if (!BaseUtils.containsRect(bounds, pBounds)) {
+                        return false;
+                    }
                 }
             }
-
             return true;
         },
 
-        _testFloatPositionIfFit:function(arcPoints, usedR, dim, location){
-
-            var fromStart = this._findNiceBoundsFromStartAngle(arcPoints, usedR, dim, location);
-
-            if(!fromStart){
-
-                arcPoints.forEach(function(arc){
-                    arc.labelPos = null;
-                });
-
-                return this._findNiceBoundsFromEndAngle(arcPoints, usedR, dim, location);
+        placeOutSideLabels: function (pointsGroups, radius) {
+            for (var i in pointsGroups) {
+                if (!this.findNiceBounds(true, pointsGroups[i], radius, i)
+                    && !this.findNiceBounds(false, pointsGroups[i], radius, i)
+                ) {
+                    // here MUST be true.
+                    // for we have ignored min arcs, the problem is how to place them.
+                    // return false;
+                }
             }
-
-            return fromStart;
+            return true;
         },
 
-        _findNiceBoundsFromStartAngle:function(arcPoints, usedR, dim, location){
-            return this._findNiceBounds(true, arcPoints, usedR, dim, location);
-        },
-
-        _findNiceBoundsFromEndAngle:function(arcPoints, usedR, dim, location){
-            return this._findNiceBounds(false, arcPoints, usedR, dim, location);
-        },
-
-        _findNiceBounds:function(isAngleIncrease, arcPoints, usedR, dim, location){
+        findNiceBounds:function(isAngleIncrease, arcPoints, usedR, location){
 
             var outerR = usedR * 1.2;
             var hWidth = usedR * 0.1;
 
-            var manager = new BoundsManager();
             var angleRange = this._getStartAndEndAngle(location);
-
-            var allLabelBounds = this._getPossibleLabelBoundsByLocation(dim, location);
-
 
             var searchEnd = isAngleIncrease ? angleRange.endAngle : angleRange.startAngle;
             var step = isAngleIncrease ? STEP : -STEP;
 
+            var preBounds;
+            var preAngle;
 
-            var found = true;
-            for(var i = 0, len = arcPoints.length; i < len && found; i++){
+            arcPoints.map(function (p) {
+                p.labelPos = null;
+            });
+
+            for(var i = 0, len = arcPoints.length; i < len; i++){
 
                 var pointIndex = isAngleIncrease ? i : len - i - 1;
+
+                var compare = isAngleIncrease ? Math.max : Math.min;
 
                 var point = arcPoints[pointIndex];
 
@@ -19181,50 +19059,70 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
                 var centerAngle = this.getCenterAngle(point);
 
-                var centerX = outerR * Math.sin(centerAngle);
+                centerAngle = preAngle ? compare(centerAngle, preAngle) : centerAngle;
 
-                var centerY = outerR * Math.cos(centerAngle + Math.PI);
+                var found = false;
+                for(var angle = centerAngle; (isAngleIncrease ? angle < searchEnd : angle > searchEnd); angle += step){
 
-                var bounds = this._getLabelBounds(location, centerX, centerY, hWidth, labelDim);
+                    var centerX = outerR * Math.sin(angle);
+                    var centerY = outerR * Math.cos(angle + Math.PI);
 
-                if(manager.isOverlapped(bounds) || !BaseUtils.containsRect(allLabelBounds, bounds)){
-                    found = false;
-                    for(var angle = centerAngle + step; (isAngleIncrease ? angle < searchEnd : angle > searchEnd); angle += step){
+                    var bounds = this._getLabelBounds(location, centerX, centerY, hWidth, labelDim);
 
-                        centerX = outerR * Math.sin(angle);
-                        centerY = outerR * Math.cos(angle + Math.PI);
-
-                        bounds = this._getLabelBounds(location, centerX, centerY, hWidth, labelDim);
-
-                        if(!manager.isOverlapped(bounds) && BaseUtils.containsRect(allLabelBounds, bounds)){
-                            found = true;
-                            break;
-                        }
+                    if ((preBounds ? !this._isOverlapOrShadow(preBounds, bounds) : true)
+                    ) {
+                        found = true;
+                        preAngle = angle;
+                        break;
                     }
                 }
 
-                if(found){
-
-                    var midPos = {x:centerX, y:centerY};
-                    var endPos;
-                    if(location == RIGHT_TOP || location == RIGHT_BOTTOM){
-                        endPos = {x:centerX + hWidth, y:centerY};
-                    }else{
-                        endPos = {x:centerX - hWidth, y:centerY};
-                    }
-
-                    manager.addBounds(bounds);
-                    point.labelPos = {
-                        x:bounds.x,
-                        y:bounds.y,
-
-                        midPos:midPos,
-                        endPos:endPos
-                    };
+                if (!found) {
+                    return false;
                 }
+
+                var midPos = {x:centerX, y:centerY};
+                var endPos;
+                if(location == RIGHT_TOP || location == RIGHT_BOTTOM){
+                    endPos = {x:centerX + hWidth, y:centerY};
+                }else{
+                    endPos = {x:centerX - hWidth, y:centerY};
+                }
+
+                preBounds = bounds;
+                point.labelPos = {
+                    x:bounds.x,
+                    y:bounds.y,
+
+                    midPos:midPos,
+                    endPos:endPos
+                };
             }
 
-            return found;
+            return true;
+        },
+
+        _calculateOutsideLabelBounds:function(outPoints, pieConfig, isRecalculate){
+
+            var plotBounds = this.getPlotBounds();
+            var center = [];
+            center[0] = pieConfig.center[0] - plotBounds.x;
+            center[1] = pieConfig.center[1] - plotBounds.y;
+
+            var fixedState = pieConfig.fixedState || isRecalculate;
+
+            pieConfig.radius = this.calcOutsideLabel(outPoints, fixedState, pieConfig.radius, center, plotBounds);
+
+        },
+
+        _isOverlapOrShadow: function (a, b) {
+            var topHalfMinY = Math.max(a.y, b.y);
+            var topHalfMaxY = Math.min(a.y + a.height / 2, b.y + b.height / 2);
+            var bottomHalfMinY = Math.max(a.y + a.height / 2 , b.y + b.height / 2);
+            var bottomHalfMaxY = Math.min(a.y + a.height, b.y + b.height);
+
+            return BaseUtils.rectangleOverlapped(a, b) ||
+                topHalfMinY <= topHalfMaxY || bottomHalfMinY <= bottomHalfMaxY;
         },
 
         getCenterAngle:function(node){
@@ -24035,59 +23933,42 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
             updatePath.exit().remove();
 
             // update
-            if (supportAnimation) {
-                updatePath
-                    .attr("display", function (d) { return d.name ? null : 'none';})
-                    .attr("opacity", function (d) {
-                        return d.depth ? 1 : 0;
-                    })// hide inner ring
-                    .style("stroke", function (d) {
-                        return d.borderColor;
-                    })
-                    .style("stroke-width", function (d) {
-                        return d.borderWidth;
-                    })
-                    .style("fill", function (d) {
-                        return d.color;
-                    })
-                    .transition()
-                    .ease(ease)
-                    .duration(aTime)
-                    .attrTween("d", function (a) {
-                        var self = this;
-                        var i = d3.interpolate(
-                            {
-                                x: self.x1,
-                                y: self.y1,
-                                dx: self.dx1,
-                                dy: self.dy1
-                            }, a);
-                        return function (t) {
-                            var b = i(t);
-                            self.x1 = b.x;
-                            self.y1 = b.y;
-                            self.dx1 = b.dx;
-                            self.dy1 = b.dy;
-                            return arc(b);
-                        };
-                    });
-            } else {
-                updatePath
-                    .attr("display", function (d) { return d.name ? null : 'none';})
-                    .attr("opacity", function (d) {
-                        return d.depth ? 1 : 0;
-                    })// hide inner ring
-                    .style("stroke", function (d) {
-                        return d.borderColor;
-                    })
-                    .style("stroke-width", function (d) {
-                        return d.borderWidth;
-                    })
-                    .style("fill", function (d) {
-                        return d.color;
-                    })
-                    .attr("d", arc);
-            }
+            updatePath
+                .attr("display", function (d) { return (d.name || !d.depth) ? null : 'none';})
+                .attr("opacity", function (d) {
+                    return d.depth ? 1 : 0;
+                })// hide inner ring
+                .style("stroke", function (d) {
+                    return d.borderColor;
+                })
+                .style("stroke-width", function (d) {
+                    return d.borderWidth;
+                })
+                .style("fill", function (d) {
+                    return d.color;
+                })
+                .transition()
+                .ease(ease)
+                .duration(supportAnimation ? aTime : 0)
+                .attrTween("d", function (a) {
+                    var self = this;
+                    var i = d3.interpolate(
+                        {
+                            x: self.x1,
+                            y: self.y1,
+                            dx: self.dx1,
+                            dy: self.dy1
+                        }, a);
+                    return function (t) {
+                        var b = i(t);
+                        self.x1 = b.x;
+                        self.y1 = b.y;
+                        self.dx1 = b.dx;
+                        self.dy1 = b.dy;
+                        return arc(b);
+                    };
+                });
+
 
             // enter
 
@@ -24101,7 +23982,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
 
             updatePath.enter()
                 .append("path")
-                .attr("display", function (d) { return d.name ? null : 'none';})
+                .attr("display", function (d) { return (d.name || !d.depth) ? null : 'none';})
                 .attr("opacity", function(d) { return d.depth ? 1 : 0;})// hide inner ring
                 .attr("d", arc)
                 .style("stroke", function (d) { return d.borderColor; })
@@ -29998,6 +29879,9 @@ define('render/RadiusAxisSvgRender',['require','./BaseRender','../utils/BaseUtil
                             .attrTween('d', function(d) {
                                 var prePos = this._currentPos_;
                                 this._currentPos_ = radiusAxis._getRadiusGridData(d.tickValue);
+
+                                prePos = prePos.length != this._currentPos_.length ? this._currentPos_ : prePos;
+
                                 var interpolate = d3.interpolate(prePos, this._currentPos_);
 
                                 return function (t) {
@@ -33806,7 +33690,7 @@ define('render/MultiPieVmlRender',['require','./BaseRender','../utils/BaseUtils'
                     })
                     .datum(point);
                 
-                slice.node.style.display = point.name ? '' : 'none';
+                slice.node.style.display = (point.name || !point.depth) ? '' : 'none';
 
                 this.addShapeEventHandler(slice);
 
