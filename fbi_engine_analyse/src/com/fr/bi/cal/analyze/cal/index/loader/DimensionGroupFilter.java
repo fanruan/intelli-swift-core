@@ -22,6 +22,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.manager.PlugManager;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.key.date.BIDay;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.*;
@@ -107,7 +108,9 @@ public class DimensionGroupFilter {
 
     private GroupValueIndex[] createAllEmptyIndex(int size) {
         GroupValueIndex[] retIndexes = new GroupValueIndex[size];
-        Arrays.fill(retIndexes, MergerInfo.ALL_EMPTY);
+        for (int i = 0; i < retIndexes.length; i++){
+            retIndexes[i] = GVIFactory.createAllEmptyIndexGVI();
+        }
         return retIndexes;
     }
 
@@ -531,7 +534,7 @@ public class DimensionGroupFilter {
             for (int j = 0; j < groupValueIndexArray.length; j++) {
                 if (groupValueIndexArray[j] != null) {
                     GroupValueIndex index = mergeNode.getGroupValueIndexArray()[j];
-                    groupValueIndexe2D[j][deep] = or(groupValueIndexe2D[j][deep], index);
+                    groupValueIndexe2D[j][deep].or(index);
                 }
             }
         } else {
@@ -539,18 +542,11 @@ public class DimensionGroupFilter {
         }
     }
 
-    private GroupValueIndex or(GroupValueIndex groupValueIndex, GroupValueIndex index) {
-        if (groupValueIndex == MergerInfo.ALL_EMPTY) {
-            groupValueIndex = tryToSmall(index);
-        } else {
-            groupValueIndex = groupValueIndex.OR(index);
-        }
-        return groupValueIndex;
+    private void or(GroupValueIndex groupValueIndex, GroupValueIndex index) {
+        groupValueIndex.or(index);
     }
 
-    private GroupValueIndex tryToSmall(GroupValueIndex index) {
-        return index;
-    }
+
 
     private void filter(GroupValueIndex[][] groupValueIndexe2D, RowCounter counter, int deep, GroupConnectionValue[] groupConnectionValueChildren, IMergerNode mergeNode) {
         if (allShowNode(getDimensionTraverseResultFilters(deep), mergeNode, targetsMap, deep)) {
@@ -559,7 +555,7 @@ public class DimensionGroupFilter {
                 if (groupConnectionValueChildren[j] != null) {
                     NoneDimensionGroup currentValue = groupConnectionValueChildren[j].getCurrentValue();
                     GroupValueIndex index = currentValue.getRoot().getGroupValueIndex();
-                    groupValueIndexe2D[j][deep] = or(groupValueIndexe2D[j][deep], index);
+                    groupValueIndexe2D[j][deep].or(index);
                 }
                 if (hasTargetSortByTargetKey()) {
                     buildSortedTree(counter, deep, groupConnectionValueChildren, mergeNode, j);
