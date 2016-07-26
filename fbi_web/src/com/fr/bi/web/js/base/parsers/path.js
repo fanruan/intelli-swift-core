@@ -282,7 +282,7 @@
      * @param {*} val
      */
 
-    function setPath(obj, path, val) {
+    function setPath(obj, path, val, cb) {
         var original = obj
         if (typeof path === 'string') {
             path = parse(path)
@@ -305,7 +305,11 @@
                     //set(last, key, obj)
                 }
             } else {
+                var v = obj[key];
                 obj[key] = val;
+                if (!BI.isEqual(v, val)) {
+                    cb(val, v);
+                }
                 //if (BI.isArray(obj)) {
                 //    obj.$set(key, val)
                 //} else if (key in obj) {
