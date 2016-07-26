@@ -111,9 +111,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
             }
             config.rangeLegend.continuous = false;
             config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
-            /*config.rangeLegend.formatter = function(){
-                return this.from;
-            }*/
+            config.rangeLegend.formatter = function(){
+                return this.to;
+            }
         }
 
         function formatToolTipAndDataLabel(format, numberLevel){
