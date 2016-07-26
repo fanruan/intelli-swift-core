@@ -318,7 +318,8 @@ public class SQLRegUtils {
     }
 
     public boolean isSql() {
-        return cols != null && tables != null;
+//        return cols != null && tables != null;
+        return true;
     }
     /**
      * 设置是否单行显示表，字段，条件等
