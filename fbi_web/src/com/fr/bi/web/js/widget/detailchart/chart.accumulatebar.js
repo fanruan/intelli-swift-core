@@ -187,7 +187,7 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
                     if (self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0) {
                         da.x = 0;
                     }
-                })
+                });
             })
         }
 
@@ -264,7 +264,7 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
                     }
                 }
             }
-            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
         }
     },
 
