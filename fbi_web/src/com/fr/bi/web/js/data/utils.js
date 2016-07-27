@@ -6,7 +6,7 @@ Data.Utils = {
      * @param {Object} op 配置信息
      * @returns {{types: Array, data: [], options: {}}} 转化后的图表类型信息,对应的数据信息,配置信息
      */
-    convertDataToChartData: function(data, widget, op){
+    convertDataToChartData: function (data, widget, op) {
         var res = this.convertDataToWidgetData(data, widget, op);
         return this.convertWidgetDataToChartData(widget.type, res.data, res.options, res.types);
     },
@@ -17,7 +17,7 @@ Data.Utils = {
      * @param widget 组件信息
      * @returns {{types: Array, data: [], options: {}}} 转化后的图表类型信息,对应的数据信息,配置信息
      */
-    convertDataToWidgetData: function(data, widget, op){
+    convertDataToWidgetData: function (data, widget, op) {
         var options = {};
         var type = widget.type;
         var dimsInfo = refreshDimsInfo();
@@ -33,10 +33,10 @@ Data.Utils = {
         var drillseriDimId = getDrillDimensionId(getDrill()[seriesDid]);
         var cataGroup = BI.isNull(widget.dimensions[cataDid]) ? null : widget.dimensions[cataDid].group;
         var seriesGroup = BI.isNull(widget.dimensions[seriesDid]) ? null : widget.dimensions[seriesDid].group;
-        if(BI.isNotNull(drillcataDimId)){
+        if (BI.isNotNull(drillcataDimId)) {
             cataGroup = widget.dimensions[drillcataDimId].group;
         }
-        if(BI.isNotNull(drillseriDimId)){
+        if (BI.isNotNull(drillseriDimId)) {
             seriesGroup = widget.dimensions[drillseriDimId].group;
         }
         var targetIds = getShowTarget();
@@ -79,10 +79,10 @@ Data.Utils = {
         }
         var dimensionIds = BI.keys(widget.dimensions);
         var lnglat = null;
-        if(dimensionIds.length !== 0){
+        if (dimensionIds.length !== 0) {
             lnglat = widget.dimensions[dimensionIds[0]].position;
         }
-        var click = function(obj){
+        var click = function (obj) {
             op.click(obj);
         };
         var ws = widget.settings || {};
@@ -137,7 +137,7 @@ Data.Utils = {
             }
         }
 
-        function getDrill(){
+        function getDrill() {
             var clicked = widget.clicked;
             var drills = {};
             var dIds = BI.keys(widget.dimensions);
@@ -149,7 +149,7 @@ Data.Utils = {
             return drills;
         }
 
-        function isDimensionByDimensionID(dId){
+        function isDimensionByDimensionID(dId) {
             var region = 0;
             BI.some(widget.view, function (reg, arr) {
                 if (arr.contains(dId)) {
@@ -184,25 +184,29 @@ Data.Utils = {
             BI.each(targetIds, function (idx, tId) {
                 if (BI.has(view, BICst.REGION.TARGET1) && BI.contains(view[BICst.REGION.TARGET1], tId)) {
                     array.length === 0 && array.push([]);
-                    if(checkSeriesExist()){
+                    if (checkSeriesExist()) {
                         array[0] = data;
-                    }else{
+                    } else {
                         array[0].push(data[idx])
                     }
                 }
-                if(BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)) {
-                    while (array.length < 2){array.push([]);}
-                    if(checkSeriesExist()){
+                if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)) {
+                    while (array.length < 2) {
+                        array.push([]);
+                    }
+                    if (checkSeriesExist()) {
                         array[1] = data;
-                    }else{
+                    } else {
                         array[1].push(data[idx])
                     }
                 }
-                if(BI.has(view, BICst.REGION.TARGET3) && BI.contains(view[BICst.REGION.TARGET3], tId)){
-                    while (array.length < 3){array.push([]);}
-                    if(checkSeriesExist()){
+                if (BI.has(view, BICst.REGION.TARGET3) && BI.contains(view[BICst.REGION.TARGET3], tId)) {
+                    while (array.length < 3) {
+                        array.push([]);
+                    }
+                    if (checkSeriesExist()) {
                         array[2] = data;
-                    }else{
+                    } else {
                         array[2].push(data[idx])
                     }
                 }
@@ -210,7 +214,7 @@ Data.Utils = {
             return array;
         }
 
-        function checkSeriesExist(){
+        function checkSeriesExist() {
             var view = widget.view;
             var result = BI.find(view[BICst.REGION.DIMENSION2], function (idx, dId) {
                 return widget.dimensions[dId].used;
@@ -219,13 +223,13 @@ Data.Utils = {
         }
 
         function getDrillDimensionId(drill) {
-            if(BI.isEmptyArray(drill) || BI.isNull(drill)){
+            if (BI.isEmptyArray(drill) || BI.isNull(drill)) {
                 return null;
             }
             return drill[drill.length - 1].dId;
         }
 
-        function refreshDimsInfo(){
+        function refreshDimsInfo() {
             var dimIds = [];
             var crossDimIds = [];
             var view = widget.view;
@@ -325,9 +329,9 @@ Data.Utils = {
                     return obj;
                 });
             }
-            if(BI.has(data, "s")){
+            if (BI.has(data, "s")) {
                 var type = widget.type;
-                if(type === BICst.WIDGET.PIE){
+                if (type === BICst.WIDGET.PIE) {
                     var adjustData = BI.map(data.s, function (idx, value) {
                         return {
                             x: widget.dimensions[targetIds[idx]].name,
@@ -338,7 +342,7 @@ Data.Utils = {
                     var obj = {};
                     obj.data = adjustData;
                     return [obj];
-                }else{
+                } else {
                     return BI.map(data.s, function (idx, value) {
                         return {
                             name: widget.dimensions[targetIds[idx]].name,
@@ -459,7 +463,7 @@ Data.Utils = {
                     var adjustData = BI.map(data.c, function (id, item) {
                         var res = {};
                         if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
-                            switch(type){
+                            switch (type) {
                                 case BICst.WIDGET.BUBBLE:
                                 case BICst.WIDGET.AXIS:
                                 case BICst.WIDGET.PIE:
@@ -472,7 +476,7 @@ Data.Utils = {
                                         drillDid: dimIds[currentLayer]
                                     };
                             }
-                        }else{
+                        } else {
                             res = {
                                 x: item.n,
                                 y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
@@ -481,7 +485,7 @@ Data.Utils = {
                                 drillDid: dimIds[currentLayer]
                             };
                         }
-                        if(BI.has(item, "c")){
+                        if (BI.has(item, "c")) {
                             res.drilldown = {};
                             res.drilldown.series = formatDataForMap(item, currentLayer);
                             res.drilldown.geo = {
@@ -501,15 +505,15 @@ Data.Utils = {
             return result;
         }
 
-        function formatDataForGISMap(data){
+        function formatDataForGISMap(data) {
             if (BI.has(data, "t")) {
                 var top = data.t, left = data.l;
                 var init = BI.map(top.c, function (id, tObj) {
                     var data = [];
                     BI.each(left.c, function (idx, obj) {
                         var x = obj.n;
-                        BI.each(obj.s.c[id].s, function(i, o){
-                            if(BI.isNotNull(o) && BI.isNotNull(x)){
+                        BI.each(obj.s.c[id].s, function (i, o) {
+                            if (BI.isNotNull(o) && BI.isNotNull(x)) {
                                 data.push({
                                     "x": x,
                                     "z": tObj.n,
@@ -527,12 +531,12 @@ Data.Utils = {
                 });
                 var result = [];
                 var size = 0;
-                if(init.length > 0){
+                if (init.length > 0) {
                     size = targetIds.length;
                 }
-                BI.each(BI.makeArray(size, null), function(idx, index){
+                BI.each(BI.makeArray(size, null), function (idx, index) {
                     var res = {data: [], name: widget.dimensions[targetIds[idx]].name};
-                    BI.each(init, function(id, obj){
+                    BI.each(init, function (id, obj) {
                         res.data.push(obj.data[idx]);
                     });
                     result.push(res);
@@ -560,7 +564,7 @@ Data.Utils = {
             return [];
         }
 
-        function getLinkageInfo(obj){
+        function getLinkageInfo(obj) {
             var DimsInfo = refreshDimsInfo();
             var crossDimIds = DimsInfo.crossDimIds;
             var dimIds = DimsInfo.dimIds;
@@ -602,18 +606,18 @@ Data.Utils = {
         function getToolTip() {
             switch (widget.type) {
                 case BICst.WIDGET.SCATTER:
-                    if(targetIds.length < 2){
+                    if (targetIds.length < 2) {
                         return "";
-                    }else{
-                        return "function(){ return this.seriesName+'<div>(X)" + widget.dimensions[targetIds[1]].name +":'+ this.x +'</div><div>(Y)"
-                            + widget.dimensions[targetIds[0]].name +":'+ this.y +'</div>'}";
+                    } else {
+                        return "function(){ return this.seriesName+'<div>(X)" + widget.dimensions[targetIds[1]].name + ":'+ this.x +'</div><div>(Y)"
+                            + widget.dimensions[targetIds[0]].name + ":'+ this.y +'</div>'}";
                     }
                 case BICst.WIDGET.BUBBLE:
-                    if(targetIds.length < 3){
+                    if (targetIds.length < 3) {
                         return "";
-                    }else{
-                        return "function(){ return this.seriesName+'<div>(X)" + widget.dimensions[targetIds[1]].name +":'+ this.x +'</div><div>(Y)"
-                            + widget.dimensions[targetIds[0]].name +":'+ this.y +'</div><div>(" + BI.i18nText("BI-Size") + ")" + widget.dimensions[targetIds[2]].name
+                    } else {
+                        return "function(){ return this.seriesName+'<div>(X)" + widget.dimensions[targetIds[1]].name + ":'+ this.x +'</div><div>(Y)"
+                            + widget.dimensions[targetIds[0]].name + ":'+ this.y +'</div><div>(" + BI.i18nText("BI-Size") + ")" + widget.dimensions[targetIds[2]].name
                             + ":'+ this.size +'</div>'}";
                     }
                 default:
@@ -621,14 +625,14 @@ Data.Utils = {
             }
         }
 
-        function getCordon(){
+        function getCordon() {
             var cordon = {};
             var result = [];
-            BI.each(BI.keys(widget.dimensions), function(idx, dId){
-                if(widget.dimensions[dId].used === false){
+            BI.each(BI.keys(widget.dimensions), function (idx, dId) {
+                if (widget.dimensions[dId].used === false) {
                     return;
                 }
-                var items = BI.map(widget.dimensions[dId].cordon, function(id, cor){
+                var items = BI.map(widget.dimensions[dId].cordon, function (id, cor) {
                     return {
                         text: cor.cordon_name,
                         value: cor.cordon_value,
@@ -636,23 +640,23 @@ Data.Utils = {
                     }
                 });
                 var regionType = getRegionTypeByDimensionID(dId);
-                if(BI.isNotEmptyArray(items)){
+                if (BI.isNotEmptyArray(items)) {
                     BI.has(cordon, regionType) === false && (cordon[regionType] = []);
                     cordon[regionType] = BI.concat(cordon[regionType], items);
                 }
             });
             var type = widget.type;
-            if(type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.BUBBLE){
+            if (type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.BUBBLE) {
                 result.push(BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2]);
                 result.push(BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1]);
                 return result;
             }
-            if(type === BICst.WIDGET.BAR || type ===BICst.WIDGET.ACCUMULATE_BAR){
+            if (type === BICst.WIDGET.BAR || type === BICst.WIDGET.ACCUMULATE_BAR) {
                 result.push(BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1]);
                 result.push(BI.isNull(cordon[BICst.REGION.DIMENSION1]) ? [] : cordon[BICst.REGION.DIMENSION1]);
                 return result;
             }
-            if(type === BICst.WIDGET.COMPARE_BAR){
+            if (type === BICst.WIDGET.COMPARE_BAR) {
                 var negativeAxis = BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1];
                 var positiveAxis = BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2];
                 result.push(BI.concat(negativeAxis, positiveAxis));
@@ -667,7 +671,7 @@ Data.Utils = {
         }
     },
 
-    convertWidgetDataToChartData: function(type, data, options, types){
+    convertWidgetDataToChartData: function (type, data, options, types) {
         options || (options = {});
         var constants = ChartConstants();
         var config = {
@@ -731,9 +735,9 @@ Data.Utils = {
         switch (type) {
             case BICst.WIDGET.ACCUMULATE_AXIS:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.AXIS);
                     });
                     t.push(type);
@@ -748,9 +752,9 @@ Data.Utils = {
                 return formatConfigForAccumulateAxisArea(opts[1], opts[0], BICst.WIDGET.AXIS);
             case BICst.WIDGET.ACCUMULATE_AREA:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.AREA);
                     });
                     t.push(type);
@@ -765,16 +769,16 @@ Data.Utils = {
                 return formatConfigForAccumulateAxisArea(opts[1], opts[0], BICst.WIDGET.AREA);
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.RADAR);
                     });
                     t.push(type);
                 });
-                var items = BI.map(data, function(idx, item){
+                var items = BI.map(data, function (idx, item) {
                     var i = BI.UUID();
-                    return BI.map(item, function(id, it){
+                    return BI.map(item, function (id, it) {
                         return BI.extend({}, it, {stack: i});
                     });
                 });
@@ -786,9 +790,9 @@ Data.Utils = {
                 return formatConfigForAxis(opts[1], opts[0]);
             case BICst.WIDGET.LINE:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.LINE);
                     });
                     t.push(type);
@@ -797,9 +801,9 @@ Data.Utils = {
                 return formatConfigForLine(opts[1], opts[0]);
             case BICst.WIDGET.AREA:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.AREA);
                     });
                     t.push(type);
@@ -808,16 +812,16 @@ Data.Utils = {
                 return formatConfigForArea(opts[1], opts[0]);
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.AXIS);
                     });
                     t.push(type);
                 });
-                var items = BI.map(data, function(idx, item){
+                var items = BI.map(data, function (idx, item) {
                     var i = BI.UUID();
-                    return BI.map(item, function(id, it){
+                    return BI.map(item, function (id, it) {
                         return BI.extend({}, it, {stack: i, stackByPercent: true});
                     });
                 });
@@ -825,16 +829,16 @@ Data.Utils = {
                 return formatConfigForPercent(opts[1], opts[0], BICst.WIDGET.AXIS);
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.AREA);
                     });
                     t.push(type);
                 });
-                var items = BI.map(data, function(idx, item){
+                var items = BI.map(data, function (idx, item) {
                     var i = BI.UUID();
-                    return BI.map(item, function(id, it){
+                    return BI.map(item, function (id, it) {
                         return BI.extend({}, it, {stack: i, stackByPercent: true});
                     });
                 });
@@ -842,18 +846,18 @@ Data.Utils = {
                 return formatConfigForPercent(opts[1], opts[0], BICst.WIDGET.AREA);
             case BICst.WIDGET.COMPARE_AXIS:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.AXIS);
                     });
                     t.push(type);
                 });
-                BI.each(data, function(idx, item){
-                    BI.each(item, function(id, it){
-                        if(idx > 0){
+                BI.each(data, function (idx, item) {
+                    BI.each(item, function (id, it) {
+                        if (idx > 0) {
                             BI.extend(it, {reversed: true, xAxis: 0});
-                        }else{
+                        } else {
                             BI.extend(it, {reversed: false, xAxis: 1});
                         }
                     });
@@ -862,18 +866,18 @@ Data.Utils = {
                 return formatConfigForCompare(opts[1], opts[0], BICst.WIDGET.AXIS);
             case BICst.WIDGET.COMPARE_AREA:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.AREA);
                     });
                     t.push(type);
                 });
-                BI.each(data, function(idx, item){
-                    BI.each(item, function(id, it){
-                        if(idx > 0){
+                BI.each(data, function (idx, item) {
+                    BI.each(item, function (id, it) {
+                        if (idx > 0) {
                             BI.extend(it, {reversed: true, xAxis: 0});
-                        }else{
+                        } else {
                             BI.extend(it, {reversed: false, xAxis: 1});
                         }
                     });
@@ -883,42 +887,42 @@ Data.Utils = {
             case BICst.WIDGET.FALL_AXIS:
                 var items = [];
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.AXIS);
                     });
                     t.push(type);
                 });
-                if(BI.isEmptyArray(data)){
-                }else{
+                if (BI.isEmptyArray(data)) {
+                } else {
                     items = data[0];
                     var tables = [], sum = 0;
                     var colors = config.chart_color || [];
-                    if(BI.isEmptyArray(colors)){
+                    if (BI.isEmptyArray(colors)) {
                         colors = ["rgb(152, 118, 170)", "rgb(0, 157, 227)"];
                     }
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(i, t){
-                            if(t.y < 0){
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (i, t) {
+                            if (t.y < 0) {
                                 tables.push([t.x, t.y, sum + t.y, t.targetIds]);
-                            }else{
+                            } else {
                                 tables.push([t.x, t.y, sum, t.targetIds]);
                             }
                             sum += t.y;
                         });
                     });
 
-                    items = [BI.map(BI.makeArray(2, null), function(idx, item){
+                    items = [BI.map(BI.makeArray(2, null), function (idx, item) {
                         return {
-                            "data": BI.map(tables, function(id, cell){
+                            "data": BI.map(tables, function (id, cell) {
                                 var axis = BI.extend({targetIds: cell[3]}, {
                                     x: cell[0],
                                     y: Math.abs(cell[2 - idx])
                                 });
-                                if(idx === 1){
+                                if (idx === 1) {
                                     axis.color = cell[2 - idx] < 0 ? colors[1] : colors[0];
-                                }else{
+                                } else {
                                     axis.color = "rgba(0,0,0,0)";
                                     axis.borderColor = "rgba(0,0,0,0)";
                                     axis.borderWidth = 0;
@@ -941,26 +945,26 @@ Data.Utils = {
                 var items = [];
                 var t = [];
                 var type = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     type.push(BICst.WIDGET.AREA);
                 });
-                if(BI.isNotEmptyArray(type)){
+                if (BI.isNotEmptyArray(type)) {
                     t.push(type);
                 }
-                BI.each(data, function(idx, item){
+                BI.each(data, function (idx, item) {
                     items = BI.concat(items, item);
                 });
-                if(BI.isEmptyArray(items)){
+                if (BI.isEmptyArray(items)) {
                     return [];
                 }
-                if(items.length === 1){
-                }else{
+                if (items.length === 1) {
+                } else {
                     var colors = config.chart_color || [];
-                    if(BI.isEmptyArray(colors)){
+                    if (BI.isEmptyArray(colors)) {
                         colors = ["#5caae4"];
                     }
                     var seriesMinus = [];
-                    BI.each(items[0].data, function(idx, item){
+                    BI.each(items[0].data, function (idx, item) {
                         var res = items[1].data[idx].y - item.y;
                         seriesMinus.push({
                             x: items[1].data[idx].x,
@@ -974,14 +978,14 @@ Data.Utils = {
                         stack: "stackedArea",
                         fillColor: colors[0]
                     };
-                    BI.each(items, function(idx, item){
-                        if(idx === 0){
+                    BI.each(items, function (idx, item) {
+                        if (idx === 0) {
                             BI.extend(item, {
                                 name: items[0].name,
                                 fillColorOpacity: 0,
                                 stack: "stackedArea",
                                 marker: {enabled: false},
-                                fillColor: false
+                                fillColor: "#000000"
                             });
                         }
                     });
@@ -1010,18 +1014,18 @@ Data.Utils = {
                 return formatConfigForBar(opts[1], opts[0]);
             case BICst.WIDGET.ACCUMULATE_BAR:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.BAR);
                     });
                     t.push(type);
                 });
-                BI.each(data, function(idx, item){
+                BI.each(data, function (idx, item) {
                     var stackId = BI.UUID();
-                    BI.each(item, function(id, it){
+                    BI.each(item, function (id, it) {
                         it.stack = stackId;
-                        BI.each(it.data, function(i, t){
+                        BI.each(it.data, function (i, t) {
                             var tmp = t.x;
                             t.x = t.y;
                             t.y = tmp;
@@ -1032,9 +1036,9 @@ Data.Utils = {
                 return formatConfigForAccumulateBar(opts[1], opts[0]);
             case BICst.WIDGET.COMPARE_BAR:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.BAR);
                     });
                     t.push(type);
@@ -1054,16 +1058,16 @@ Data.Utils = {
                         it.stack = i;
                     })
                 });
-                BI.each(data, function(idx, item){
+                BI.each(data, function (idx, item) {
                     result = BI.concat(result, item);
                 });
                 var opts = formatItems([result], t);
                 return formatConfigForCompareBar(opts[1], opts[0]);
             case BICst.WIDGET.DONUT:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.DONUT);
                     });
                     t.push(type);
@@ -1072,9 +1076,9 @@ Data.Utils = {
                 return formatConfigForDonut(opts[1], opts[0]);
             case BICst.WIDGET.RADAR:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.RADAR);
                     });
                     t.push(type);
@@ -1083,9 +1087,9 @@ Data.Utils = {
                 return formatConfigForRadar(opts[1], opts[0]);
             case BICst.WIDGET.PIE:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.PIE);
                     });
                     t.push(type);
@@ -1097,9 +1101,9 @@ Data.Utils = {
                 return formatConfigForMultiAxis(opts[1], opts[0]);
             case BICst.WIDGET.FORCE_BUBBLE:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.FORCE_BUBBLE);
                     });
                     t.push(type);
@@ -1108,12 +1112,12 @@ Data.Utils = {
                 return formatConfigForForceBubble(opts[1], opts[0]);
             case BICst.WIDGET.DASHBOARD:
                 var items = data;
-                if(data.length === 0){
-                }else{
-                    if(config.chart_dashboard_type === constants.NORMAL || config.chart_dashboard_type === constants.HALF_DASHBOARD){
+                if (data.length === 0) {
+                } else {
+                    if (config.chart_dashboard_type === constants.NORMAL || config.chart_dashboard_type === constants.HALF_DASHBOARD) {
                         var result = [];
-                        if(config.number_of_pointer === constants.ONE_POINTER && items[0].length === 1){//单个系列
-                            BI.each(items[0][0].data, function(idx, da){
+                        if (config.number_of_pointer === constants.ONE_POINTER && items[0].length === 1) {//单个系列
+                            BI.each(items[0][0].data, function (idx, da) {
                                 result.push({
                                     data: [{
                                         x: items[0][0].name,
@@ -1124,9 +1128,9 @@ Data.Utils = {
                             });
                             items = [result];
                         }
-                        if(config.number_of_pointer === constants.MULTI_POINTER && items[0].length > 1){//多个系列
-                            BI.each(items, function(idx, item){
-                                BI.each(item, function(id, it){
+                        if (config.number_of_pointer === constants.MULTI_POINTER && items[0].length > 1) {//多个系列
+                            BI.each(items, function (idx, item) {
+                                BI.each(item, function (id, it) {
                                     var data = it.data[0];
                                     data.x = it.name;
                                     result.push(data);
@@ -1137,10 +1141,10 @@ Data.Utils = {
                                 name: ""
                             }]];
                         }
-                    }else{
+                    } else {
                         var others = [];
-                        BI.each(items[0], function(idx, item){
-                            BI.each(item.data, function(id, da){
+                        BI.each(items[0], function (idx, item) {
+                            BI.each(item.data, function (id, da) {
                                 others.push({
                                     data: [{
                                         x: item.name,
@@ -1154,9 +1158,9 @@ Data.Utils = {
                     }
                 }
                 var t = [];
-                BI.each(items, function(idx, axisItems){
+                BI.each(items, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.DASHBOARD);
                     });
                     t.push(type);
@@ -1164,17 +1168,17 @@ Data.Utils = {
                 var opts = formatItems(items, t);
                 return formatConfigForDashboard(opts[1], opts[0]);
             case BICst.WIDGET.BUBBLE:
-                BI.each(data, function(idx, item){
-                    BI.each(item, function(id, it){
-                        BI.each(it.data, function(i, da){
+                BI.each(data, function (idx, item) {
+                    BI.each(item, function (id, it) {
+                        BI.each(it.data, function (i, da) {
                             da.size = da.z;
                         })
                     })
                 });
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.BUBBLE);
                     });
                     t.push(type);
@@ -1183,9 +1187,9 @@ Data.Utils = {
                 return formatConfigForBubble(opts[1], opts[0]);
             case BICst.WIDGET.SCATTER:
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.SCATTER);
                     });
                     t.push(type);
@@ -1193,32 +1197,32 @@ Data.Utils = {
                 var opts = formatItems(data, t);
                 return formatConfigForScatter(opts[1], opts[0]);
             case BICst.WIDGET.MAP:
-                BI.each(data, function(idx, item){
-                    BI.each(item, function(id, it){
-                        BI.each(it.data, function(i, da){
-                            if((BI.isNull(max) || da.y > max) && id === 0){
+                BI.each(data, function (idx, item) {
+                    BI.each(item, function (id, it) {
+                        BI.each(it.data, function (i, da) {
+                            if ((BI.isNull(max) || da.y > max) && id === 0) {
                                 max = da.y;
                             }
-                            if((BI.isNull(min) || da.y < min) && id === 0){
+                            if ((BI.isNull(min) || da.y < min) && id === 0) {
                                 min = da.y;
                             }
-                            if(BI.has(it, "type") && it.type == "bubble"){
+                            if (BI.has(it, "type") && it.type == "bubble") {
                                 da.name = da.x;
                                 da.size = da.y;
-                            }else{
+                            } else {
                                 da.name = da.x;
                                 da.value = da.y;
                             }
-                            if(BI.has(da, "drilldown")){
+                            if (BI.has(da, "drilldown")) {
                                 _formatDrillItems(da.drilldown);
                             }
                         })
                     })
                 });
                 var t = [];
-                BI.each(data, function(idx, axisItems){
+                BI.each(data, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(id, item){
+                    BI.each(axisItems, function (id, item) {
                         type.push(BICst.WIDGET.MAP);
                     });
                     t.push(type);
@@ -1227,13 +1231,13 @@ Data.Utils = {
                 return formatConfigForMap(opts[1], opts[0]);
             case BICst.WIDGET.GIS_MAP:
                 var results = [];
-                BI.each(data, function(idx, item){
+                BI.each(data, function (idx, item) {
                     var result = [];
-                    BI.each(item, function(id, it){
+                    BI.each(item, function (id, it) {
                         var res = [];
-                        BI.each(it.data, function(i, da){
+                        BI.each(it.data, function (i, da) {
                             var lnglat = da.x.split(",");
-                            if(config.lnglat === constants.LAT_FIRST){
+                            if (config.lnglat === constants.LAT_FIRST) {
                                 var lng = lnglat[1];
                                 lnglat[1] = lnglat[0];
                                 lnglat[0] = lng;
@@ -1241,24 +1245,24 @@ Data.Utils = {
                             da.lnglat = lnglat;
                             da.value = da.y;
                             da.name = BI.isNotNull(da.z) ? da.z : da.lnglat;
-                            if(_checkLngLatValid(da.lnglat)){
+                            if (_checkLngLatValid(da.lnglat)) {
                                 res.push(da);
                             }
                         });
-                        if(BI.isNotEmptyArray(res)){
+                        if (BI.isNotEmptyArray(res)) {
                             result.push(BI.extend(it, {
                                 data: res
                             }));
                         }
                     });
-                    if(BI.isNotEmptyArray(result)){
+                    if (BI.isNotEmptyArray(result)) {
                         results.push(result);
                     }
                 });
                 var t = [];
-                BI.each(items, function(idx, axisItems){
+                BI.each(items, function (idx, axisItems) {
                     var type = [];
-                    BI.each(axisItems, function(){
+                    BI.each(axisItems, function () {
                         type.push(BICst.WIDGET.GIS_MAP);
                     });
                     t.push(type);
@@ -1267,31 +1271,31 @@ Data.Utils = {
                 return formatConfigForGIS(opts[1], opts[0]);
         }
 
-        function _checkLngLatValid(lnglat){
-            if(lnglat.length < 2){
+        function _checkLngLatValid(lnglat) {
+            if (lnglat.length < 2) {
                 return false;
             }
             return lnglat[0] <= 180 && lnglat[0] >= -180 && lnglat[1] <= 90 && lnglat[1] >= -90;
         }
 
-        function _formatDrillItems(items){
-            BI.each(items.series, function(idx, da){
-                BI.each(da.data, function(idx, data){
-                    if(BI.has(da, "type") && da.type == "bubble"){
+        function _formatDrillItems(items) {
+            BI.each(items.series, function (idx, da) {
+                BI.each(da.data, function (idx, data) {
+                    if (BI.has(da, "type") && da.type == "bubble") {
                         data.name = data.x;
                         data.size = data.y;
-                    }else{
+                    } else {
                         data.name = data.x;
                         data.value = data.y;
                     }
-                    if(BI.has(data, "drilldown")){
+                    if (BI.has(data, "drilldown")) {
                         _formatDrillItems(data.drilldown);
                     }
                 })
             })
         }
 
-        function formatConfigForMap(configs, items){
+        function formatConfigForMap(configs, items) {
             formatRangeLegend();
             delete configs.legend;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
@@ -1299,25 +1303,25 @@ Data.Utils = {
             config.plotOptions.bubble.color = config.map_bubble_color;
             //config.plotOptions.color = BI.isArray(config.theme_color) ? config.theme_color : [config.theme_color];
             var formatterArray = [];
-            BI.backEach(items, function(idx, item){
-                if(BI.has(item, "settings")){
+            BI.backEach(items, function (idx, item) {
+                if (BI.has(item, "settings")) {
                     formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || constants.NORMAL));
                 }
             });
-            configs.plotOptions.tooltip.formatter = function(){
+            configs.plotOptions.tooltip.formatter = function () {
                 var tip = this.name;
-                BI.each(this.points, function(idx, point){
+                BI.each(this.points, function (idx, point) {
                     var value = point.size || point.y;
                     tip += ('<div>' + point.seriesName + ':' + (window.FR ? FR.contentFormat(value, formatterArray[idx]) : value) + '</div>');
                 });
                 return tip;
             };
-            configs.plotOptions.dataLabels.formatter.valueFormat = function(){
+            configs.plotOptions.dataLabels.formatter.valueFormat = function () {
                 return window.FR ? FR.contentFormat(arguments[0], formatterArray[0]) : arguments[0];
             };
 
             configs.geo = config.geo;
-            if(config.initDrillPath.length > 1){
+            if (config.initDrillPath.length > 1) {
                 configs.initDrillPath = config.initDrillPath;
             }
             configs.chartType = "areaMap";
@@ -1327,8 +1331,8 @@ Data.Utils = {
                 series: items
             });
 
-            function formatRangeLegend(){
-                switch (config.chart_legend){
+            function formatRangeLegend() {
+                switch (config.chart_legend) {
                     case BICst.CHART_LEGENDS.BOTTOM:
                         config.rangeLegend.enabled = true;
                         config.rangeLegend.visible = true;
@@ -1345,10 +1349,10 @@ Data.Utils = {
                         break;
                 }
                 configs.rangeLegend.continuous = false;
-                configs.rangeLegend.range = getRangeStyle(config.map_styles , config.auto_custom , config.theme_color);
+                configs.rangeLegend.range = getRangeStyle(config.map_styles, config.auto_custom, config.theme_color);
             }
 
-            function formatToolTipAndDataLabel(format, numberLevel){
+            function formatToolTipAndDataLabel(format, numberLevel) {
                 var formatter = '#.##';
                 switch (format) {
                     case constants.NORMAL:
@@ -1374,16 +1378,16 @@ Data.Utils = {
                 return formatter;
             }
 
-            function getRangeStyle (styles , change , defaultColor) {
+            function getRangeStyle(styles, change, defaultColor) {
                 var range = [], color = null, defaultStyle = {};
                 var conditionMax = null, conditionMin = null, max = null, min = null;
 
-                BI.each(items , function (idx , item) {
-                    BI.each(item.data , function (id , it) {
-                        if(BI.isNull(min) || min > it.y) {
+                BI.each(items, function (idx, item) {
+                    BI.each(item.data, function (id, it) {
+                        if (BI.isNull(min) || min > it.y) {
                             min = it.y
                         }
-                        if(BI.isNull(max) || max < it.y) {
+                        if (BI.isNull(max) || max < it.y) {
                             max = it.y
                         }
                     })
@@ -1394,7 +1398,7 @@ Data.Utils = {
                         defaultStyle.color = defaultColor;
                         return defaultStyle;
                     case BICst.SCALE_SETTING.CUSTOM:
-                        if(styles.length !== 0) {
+                        if (styles.length !== 0) {
                             BI.each(styles, function (idx, style) {
                                 range.push({
                                     color: style.color,
@@ -1425,7 +1429,7 @@ Data.Utils = {
 
                             }
                             return range;
-                        }  else {
+                        } else {
                             defaultStyle.color = defaultColor;
                             return defaultStyle;
                         }
@@ -1433,7 +1437,7 @@ Data.Utils = {
                 }
             }
 
-            function _calculateValueNiceDomain(minValue, maxValue){
+            function _calculateValueNiceDomain(minValue, maxValue) {
 
                 minValue = Math.min(0, minValue);
 
@@ -1442,7 +1446,7 @@ Data.Utils = {
                 return _linearNiceDomain(minValue, maxValue, tickInterval);
             }
 
-            function _linearTickInterval(minValue, maxValue, m){
+            function _linearTickInterval(minValue, maxValue, m) {
 
                 m = m || 5;
                 var span = maxValue - minValue;
@@ -1454,7 +1458,7 @@ Data.Utils = {
                 return step;
             }
 
-            function _linearNiceDomain(minValue, maxValue, tickInterval){
+            function _linearNiceDomain(minValue, maxValue, tickInterval) {
 
                 minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
 
@@ -1464,13 +1468,13 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForGIS(configs, items){
+        function formatConfigForGIS(configs, items) {
             delete configs.dataSheet;
             delete configs.legend;
             delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.useHtml = true;
-            configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">'+ "' + this.name + ','" + "+ this.value +'</div>'; return a;}";
+            configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">' + "' + this.name + ','" + "+ this.value +'</div>'; return a;}";
             configs.plotOptions.tooltip.shared = true;
             configs.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + (point.size || point.y) + '</div>');});return tip; }";
             configs.geo = {
@@ -1495,14 +1499,19 @@ Data.Utils = {
             });
         }
 
-        function formatConfigForScatter(configs, items){
+        function formatConfigForScatter(configs, items) {
             var xAxis = [{
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "bottom",
                 gridLineWidth: 0
@@ -1510,10 +1519,15 @@ Data.Utils = {
             var yAxis = [{
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "left",
                 gridLineWidth: 0
@@ -1524,7 +1538,7 @@ Data.Utils = {
             configs.style = formatChartStyle();
             configs.plotOptions.tooltip.formatter = config.tooltip;
             formatCordon();
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -1561,7 +1575,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -1571,23 +1585,27 @@ Data.Utils = {
                 }
             }
 
-            function formatCordon(){
-                BI.each(config.cordon, function(idx, cor){
-                    if(idx === 0 && xAxis.length > 0){
+            function formatCordon() {
+                BI.each(config.cordon, function (idx, cor) {
+                    if (idx === 0 && xAxis.length > 0) {
                         var magnify = calcMagnify(config.x_axis_number_level);
-                        xAxis[0].plotLines = BI.map(cor, function(i, t){
+                        xAxis[0].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px"
+                                    },
                                     "text": t.text,
                                     "align": "top"
                                 }
                             });
                         });
                     }
-                    if(idx > 0 && yAxis.length >= idx){
+                    if (idx > 0 && yAxis.length >= idx) {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
@@ -1600,12 +1618,16 @@ Data.Utils = {
                                 magnify = calcMagnify(config.right_y_axis_second_number_level);
                                 break;
                         }
-                        yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                        yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px"
+                                    },
                                     "text": t.text,
                                     "align": "left"
                                 }
@@ -1615,14 +1637,14 @@ Data.Utils = {
                 })
             }
 
-            function formatNumberLevelInXaxis(type){
+            function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
-                            if(constants.MINLIMIT.sub(da.x) > 0){
+                            if (constants.MINLIMIT.sub(da.x) > 0) {
                                 da.x = 0;
                             }
                         })
@@ -1630,27 +1652,27 @@ Data.Utils = {
                 }
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
                         })
                     })
                 }
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -1670,7 +1692,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -1686,19 +1708,19 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
-                if(position === constants.RIGHT_AXIS){
+                if (position === constants.RIGHT_AXIS) {
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -1714,20 +1736,20 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.LEFT_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.LEFT_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
                 }
-                if(position === constants.X_AXIS){
-                    if(config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.X_AXIS) {
+                    if (config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -1736,14 +1758,19 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForBubble(configs, items){
+        function formatConfigForBubble(configs, items) {
             var xAxis = [{
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "bottom",
                 gridLineWidth: 0
@@ -1751,10 +1778,15 @@ Data.Utils = {
             var yAxis = [{
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "left",
                 gridLineWidth: 0
@@ -1765,7 +1797,7 @@ Data.Utils = {
             configs.style = formatChartStyle();
             configs.plotOptions.tooltip.formatter = config.tooltip;
             formatCordon();
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -1801,7 +1833,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -1811,23 +1843,28 @@ Data.Utils = {
                 }
             }
 
-            function formatCordon(){
-                BI.each(config.cordon, function(idx, cor){
-                    if(idx === 0 && xAxis.length > 0){
+            function formatCordon() {
+                BI.each(config.cordon, function (idx, cor) {
+                    if (idx === 0 && xAxis.length > 0) {
                         var magnify = calcMagnify(config.x_axis_number_level);
-                        xAxis[0].plotLines = BI.map(cor, function(i, t){
+                        xAxis[0].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "top"
                                 }
                             });
                         });
                     }
-                    if(idx > 0 && yAxis.length >= idx){
+                    if (idx > 0 && yAxis.length >= idx) {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
@@ -1840,12 +1877,17 @@ Data.Utils = {
                                 magnify = calcMagnify(config.right_y_axis_second_number_level);
                                 break;
                         }
-                        yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                        yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "left"
                                 }
@@ -1855,14 +1897,14 @@ Data.Utils = {
                 })
             }
 
-            function formatNumberLevelInXaxis(type){
+            function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
-                            if(constants.MINLIMIT.sub(da.x) > 0){
+                            if (constants.MINLIMIT.sub(da.x) > 0) {
                                 da.x = 0;
                             }
                         })
@@ -1870,27 +1912,27 @@ Data.Utils = {
                 }
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
                         })
                     })
                 }
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     //config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -1910,7 +1952,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -1926,19 +1968,19 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
-                if(position === constants.RIGHT_AXIS){
+                if (position === constants.RIGHT_AXIS) {
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -1954,20 +1996,20 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.LEFT_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.LEFT_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
                 }
-                if(position === constants.X_AXIS){
-                    if(config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.X_AXIS) {
+                    if (config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -1976,7 +2018,7 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForDashboard(configs, items){
+        function formatConfigForDashboard(configs, items) {
             var gaugeAxis = [{
                 "minorTickColor": "rgb(226,226,226)",
                 "tickColor": "rgb(186,186,186)",
@@ -1994,63 +2036,63 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartDashboardStyle(){
+            function formatChartDashboardStyle() {
                 configs.gaugeAxis = gaugeAxis;
-                var bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                var bands = getBandsStyles(self.config.bands_styles, self.config.auto_custom_style);
                 var valueLabel = {
-                    formatter : {
-                        identifier : "${CATEGORY}${VALUE}"
+                    formatter: {
+                        identifier: "${CATEGORY}${VALUE}"
                     }
                 };
                 var percentageLabel = {
-                    enabled : false
+                    enabled: false
                 };
                 switch (config.chart_dashboard_type) {
                     case BICst.CHART_SHAPE.HALF_DASHBOARD:
-                        setPlotOptions("pointer_semi" , bands, configs.plotOptions.valueLabel);
+                        setPlotOptions("pointer_semi", bands, configs.plotOptions.valueLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
-                        setPlotOptions("ring" , bands , valueLabel , percentageLabel);
+                        setPlotOptions("ring", bands, valueLabel, percentageLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
-                        setPlotOptions("slot" , bands , valueLabel , percentageLabel);
+                        setPlotOptions("slot", bands, valueLabel, percentageLabel);
                         break;
                     case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
-                        BI.extend(valueLabel , {
-                            align : "bottom"
+                        BI.extend(valueLabel, {
+                            align: "bottom"
                         });
-                        BI.extend(percentageLabel , {
-                            align : "bottom"
+                        BI.extend(percentageLabel, {
+                            align: "bottom"
                         });
-                        setPlotOptions("thermometer" , bands , valueLabel , percentageLabel , "horizontal" , "vertical" );
+                        setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "horizontal", "vertical");
                         break;
                     case BICst.CHART_SHAPE.VERTICAL_TUBE:
-                        BI.extend(valueLabel , {
-                            align : "left"
+                        BI.extend(valueLabel, {
+                            align: "left"
                         });
-                        setPlotOptions("thermometer" , bands , valueLabel , percentageLabel , "vertical" , "vertical" );
+                        setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "vertical");
                         break;
                     case BICst.CHART_SHAPE.NORMAL:
                     default:
-                        setPlotOptions("pointer" , bands , configs.plotOptions.valueLabel);
+                        setPlotOptions("pointer", bands, configs.plotOptions.valueLabel);
                         break;
                 }
                 formatNumberLevelInYaxis(config.dashboard_number_level, self.constants.LEFT_AXIS);
-                if(config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    configs.plotOptions.valueLabel.formatter.valueFormat = function(){
+                if (config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    configs.plotOptions.valueLabel.formatter.valueFormat = function () {
                         return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]);
                     };
-                    configs.gaugeAxis[0].formatter = function(){
+                    configs.gaugeAxis[0].formatter = function () {
                         return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]) + getXYAxisUnit(config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                     };
-                }else{
-                    configs.gaugeAxis[0].formatter = function(){
+                } else {
+                    configs.gaugeAxis[0].formatter = function () {
                         return this + getXYAxisUnit(config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                     };
                 }
             }
 
-            function setPlotOptions (style , bands , valueLabel , percentageLabel , thermometerLayout , layout) {
+            function setPlotOptions(style, bands, valueLabel, percentageLabel, thermometerLayout, layout) {
                 configs.plotOptions.style = style;
                 configs.plotOptions.bands = bands;
                 configs.plotOptions.valueLabel = valueLabel;
@@ -2059,27 +2101,27 @@ Data.Utils = {
                 configs.plotOptions.layout = layout;
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
                         })
                     })
                 }
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -2099,7 +2141,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -2115,16 +2157,16 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.DASHBOARD_AXIS){
+                if (position === constants.DASHBOARD_AXIS) {
                     config.dashboard_unit !== "" && (unit = unit + config.dashboard_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function getBandsStyles (styles , change ) {
+            function getBandsStyles(styles, change) {
                 var min = 0, bands = [], color = null, max = null, conditionMax = null;
 
-                BI.each(items , function (idx , item) {
+                BI.each(items, function (idx, item) {
                     var data = item.data[0];
                     if ((BI.isNull(max) || data.y > max)) {
                         max = data.y
@@ -2136,9 +2178,9 @@ Data.Utils = {
                     case BICst.SCALE_SETTING.AUTO:
                         break;
                     case BICst.SCALE_SETTING.CUSTOM:
-                        if(styles.length === 0){
+                        if (styles.length === 0) {
                             return bands
-                        }else {
+                        } else {
                             BI.each(styles, function (idx, style) {
                                 bands.push({
                                     color: style.color,
@@ -2168,7 +2210,7 @@ Data.Utils = {
                 }
             }
 
-            function _calculateValueNiceDomain(minValue, maxValue){
+            function _calculateValueNiceDomain(minValue, maxValue) {
 
                 minValue = Math.min(0, minValue);
 
@@ -2177,7 +2219,7 @@ Data.Utils = {
                 return _linearNiceDomain(minValue, maxValue, tickInterval);
             }
 
-            function _linearTickInterval(minValue, maxValue, m){
+            function _linearTickInterval(minValue, maxValue, m) {
 
                 m = m || 5;
                 var span = maxValue - minValue;
@@ -2189,7 +2231,7 @@ Data.Utils = {
                 return step;
             }
 
-            function _linearNiceDomain(minValue, maxValue, tickInterval){
+            function _linearNiceDomain(minValue, maxValue, tickInterval) {
 
                 minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
 
@@ -2199,9 +2241,9 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForForceBubble(configs, items){
+        function formatConfigForForceBubble(configs, items) {
             configs.colors = config.chart_color;
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -2228,32 +2270,42 @@ Data.Utils = {
             });
         }
 
-        function formatConfigForMultiAxis(configs, items){
+        function formatConfigForMultiAxis(configs, items) {
 
             var xAxis = [{
                 type: "category",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "bottom",
                 gridLineWidth: 0
             }];
 
             var yAxis = [];
-            BI.each(types, function(idx, type){
-                if(BI.isEmptyArray(type)){
+            BI.each(types, function (idx, type) {
+                if (BI.isEmptyArray(type)) {
                     return;
                 }
                 var newYAxis = {
                     type: "value",
                     title: {
-                        style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                        style: {
+                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                            "color": "#808080",
+                            "fontSize": "12px",
+                            "fontWeight": ""
+                        }
                     },
                     labelStyle: {
-                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                     },
                     position: idx > 0 ? "right" : "left",
                     lineWidth: 1,
@@ -2269,7 +2321,7 @@ Data.Utils = {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatCordon();
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -2288,13 +2340,13 @@ Data.Utils = {
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.visible = config.show_zoom;
-            if(config.show_zoom === true){
+            if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
 
-            BI.each(configs.yAxis, function(idx, axis){
-                switch (axis.axisIndex){
+            BI.each(configs.yAxis, function (idx, axis) {
+                switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
                         axis.reversed = config.left_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
@@ -2335,11 +2387,11 @@ Data.Utils = {
 
             var lineItem = [];
             var otherItem = [];
-            BI.each(items, function(idx, item){
+            BI.each(items, function (idx, item) {
                 item.color = [configs.yAxis[idx].labelStyle.color];
-                if(item.type === "line"){
+                if (item.type === "line") {
                     lineItem.push(item);
-                }else{
+                } else {
                     otherItem.push(item);
                 }
             });
@@ -2348,7 +2400,7 @@ Data.Utils = {
                 series: BI.concat(otherItem, lineItem)
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -2358,23 +2410,28 @@ Data.Utils = {
                 }
             }
 
-            function formatCordon(){
-                BI.each(config.cordon, function(idx, cor){
-                    if(idx === 0 && xAxis.length > 0){
+            function formatCordon() {
+                BI.each(config.cordon, function (idx, cor) {
+                    if (idx === 0 && xAxis.length > 0) {
                         var magnify = calcMagnify(config.x_axis_number_level);
-                        xAxis[0].plotLines = BI.map(cor, function(i, t){
+                        xAxis[0].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "top"
                                 }
                             });
                         });
                     }
-                    if(idx > 0 && yAxis.length >= idx){
+                    if (idx > 0 && yAxis.length >= idx) {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
@@ -2387,12 +2444,17 @@ Data.Utils = {
                                 magnify = calcMagnify(config.right_y_axis_second_number_level);
                                 break;
                         }
-                        yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                        yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "left"
                                 }
@@ -2402,27 +2464,27 @@ Data.Utils = {
                 })
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
                         })
                     })
                 }
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -2442,7 +2504,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -2458,22 +2520,22 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
-                if(position === constants.RIGHT_AXIS){
+                if (position === constants.RIGHT_AXIS) {
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
                 }
-                if(position === constants.RIGHT_AXIS_SECOND){
+                if (position === constants.RIGHT_AXIS_SECOND) {
                     config.right_y_axis_second_unit !== "" && (unit = unit + config.right_y_axis_second_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -2489,29 +2551,29 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.LEFT_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.LEFT_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
                 }
-                if(position === constants.RIGHT_AXIS){
-                    if(config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.RIGHT_AXIS) {
+                    if (config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
                 }
-                if(position === constants.RIGHT_AXIS_SECOND){
-                    if(config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.RIGHT_AXIS_SECOND) {
+                    if (config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -2520,12 +2582,12 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForPie(configs, items){
+        function formatConfigForPie(configs, items) {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatChartPieStyle();
 
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -2553,7 +2615,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -2563,8 +2625,8 @@ Data.Utils = {
                 }
             }
 
-            function formatChartPieStyle(){
-                switch (config.chart_pie_type){
+            function formatChartPieStyle() {
+                switch (config.chart_pie_type) {
                     case BICst.CHART_SHAPE.EQUAL_ARC_ROSE:
                         configs.plotOptions.roseType = "sameArc";
                         break;
@@ -2581,11 +2643,11 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForDonut(configs, items){
+        function formatConfigForDonut(configs, items) {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
 
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -2614,7 +2676,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -2625,15 +2687,20 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForAccumulateBar(configs, items){
+        function formatConfigForAccumulateBar(configs, items) {
 
             var xAxis = [{
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 formatter: "function(){if(this>0) return this; else return this*(-1); }",
                 gridLineWidth: 0
@@ -2641,10 +2708,15 @@ Data.Utils = {
             var yAxis = [{
                 type: "category",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 gridLineWidth: 0,
                 position: "left"
@@ -2655,7 +2727,7 @@ Data.Utils = {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatCordon();
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -2674,7 +2746,7 @@ Data.Utils = {
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.visible = config.show_zoom;
-            if(config.show_zoom === true){
+            if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
@@ -2695,7 +2767,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -2705,23 +2777,28 @@ Data.Utils = {
                 }
             }
 
-            function formatCordon(){
-                BI.each(config.cordon, function(idx, cor){
-                    if(idx === 0 && xAxis.length > 0){
+            function formatCordon() {
+                BI.each(config.cordon, function (idx, cor) {
+                    if (idx === 0 && xAxis.length > 0) {
                         var magnify = calcMagnify(config.left_y_axis_number_level);
-                        xAxis[0].plotLines = BI.map(cor, function(i, t){
+                        xAxis[0].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "top"
                                 }
                             });
                         });
                     }
-                    if(idx > 0 && yAxis.length >= idx){
+                    if (idx > 0 && yAxis.length >= idx) {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
@@ -2734,12 +2811,17 @@ Data.Utils = {
                                 magnify = calcMagnify(config.right_y_axis_second_number_level);
                                 break;
                         }
-                        yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                        yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "left"
                                 }
@@ -2749,14 +2831,14 @@ Data.Utils = {
                 })
             }
 
-            function formatNumberLevelInXaxis(type){
+            function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
-                            if(constants.MINLIMIT.sub(da.x) > 0){
+                            if (constants.MINLIMIT.sub(da.x) > 0) {
                                 da.x = 0;
                             }
                         })
@@ -2764,7 +2846,7 @@ Data.Utils = {
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -2784,7 +2866,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -2800,19 +2882,19 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.RIGHT_AXIS){
+                if (position === constants.RIGHT_AXIS) {
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -2828,11 +2910,11 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.X_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.X_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -2841,228 +2923,8 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForCompareBar(configs, items){
+        function formatConfigForCompareBar(configs, items) {
 
-            var xAxis = [{
-                type: "value",
-                title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
-                },
-                labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-                },
-                formatter: "function(){if(this>0) return this; else return this*(-1); }",
-                gridLineWidth: 0
-            }];
-            var yAxis = [{
-                type: "category",
-                title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
-                },
-                labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-                },
-                gridLineWidth: 0,
-                position: "left"
-            }];
-            configs.yAxis = yAxis;
-            configs.xAxis = xAxis;
-            configs.colors = config.chart_color;
-            configs.style = formatChartStyle();
-            formatCordon();
-            switch (config.chart_legend){
-                case BICst.CHART_LEGENDS.BOTTOM:
-                    configs.legend.enabled = true;
-                    configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
-                    break;
-                case BICst.CHART_LEGENDS.RIGHT:
-                    configs.legend.enabled = true;
-                    configs.legend.position = "right";
-                    break;
-                case BICst.CHART_LEGENDS.NOT_SHOW:
-                default:
-                    configs.legend.enabled = false;
-                    break;
-            }
-            configs.plotOptions.dataLabels.enabled = config.show_data_label;
-            configs.dataSheet.enabled = config.show_data_table;
-            if(configs.dataSheet.enabled === true){
-                configs.xAxis[0].showLabel = false;
-            }
-            configs.zoom.zoomTool.visible = config.show_zoom;
-            if(configs.show_zoom === true){
-                delete configs.dataSheet;
-                delete configs.zoom.zoomType;
-            }
-            configs.plotOptions.tooltip.formatter.valueFormat = "function(){if(this > 0){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];} else {return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}}";
-
-
-            configs.yAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
-            configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
-            configs.yAxis[0].title.rotation = constants.ROTATION;
-
-            configs.yAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS);
-            formatNumberLevelInXaxis(config.left_y_axis_number_level);
-            configs.xAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
-            configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
-            configs.chartType = "bar";
-            return BI.extend(configs, {
-                series: items
-            });
-
-            function formatChartStyle(){
-                switch (config.chart_style) {
-                    case BICst.CHART_STYLE.STYLE_GRADUAL:
-                        return "gradual";
-                    case BICst.CHART_STYLE.STYLE_NORMAL:
-                    default:
-                        return "normal";
-                }
-            }
-
-            function formatCordon(){
-                BI.each(config.cordon, function(idx, cor){
-                    if(idx === 0 && xAxis.length > 0){
-                        var magnify = calcMagnify(config.left_y_axis_number_level);
-                        xAxis[0].plotLines = BI.map(cor, function(i, t){
-                            return BI.extend(t, {
-                                value: t.value.div(magnify),
-                                width: 1,
-                                label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
-                                    "text": t.text,
-                                    "align": "top"
-                                }
-                            });
-                        });
-                    }
-                    if(idx > 0 && yAxis.length >= idx){
-                        var magnify = 1;
-                        switch (idx - 1) {
-                            case constants.LEFT_AXIS:
-                                magnify = calcMagnify(config.x_axis_number_level);
-                                break;
-                            case constants.RIGHT_AXIS:
-                                magnify = calcMagnify(config.right_y_axis_number_level);
-                                break;
-                            case constants.RIGHT_AXIS_SECOND:
-                                magnify = calcMagnify(config.right_y_axis_second_number_level);
-                                break;
-                        }
-                        yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
-                            return BI.extend(t, {
-                                value: t.value.div(magnify),
-                                width: 1,
-                                label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
-                                    "text": t.text,
-                                    "align": "left"
-                                }
-                            });
-                        });
-                    }
-                })
-            }
-
-            function formatNumberLevelInXaxis(type){
-                var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
-                            da.x = da.x || 0;
-                            da.x = da.x.div(magnify);
-                            if(constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
-                                da.x = 0;
-                            }
-                        })
-                    })
-                }
-            }
-
-            function calcMagnify(type){
-                var magnify = 1;
-                switch (type) {
-                    case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                        magnify = 1;
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        magnify = 10000;
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        magnify = 1000000;
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        magnify = 100000000;
-                        break;
-                }
-                return magnify;
-            }
-
-            function getXYAxisUnit(numberLevelType, position){
-                var unit = "";
-                switch (numberLevelType) {
-                    case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                        unit = "";
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
-                        break;
-                }
-                if(position === constants.X_AXIS){
-                    config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
-                }
-                if(position === constants.LEFT_AXIS){
-                    config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
-                }
-                if(position === constants.RIGHT_AXIS){
-                    config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
-                }
-                return unit === "" ? unit : "(" + unit + ")";
-            }
-
-            function formatTickInXYaxis(type, position){
-                var formatter = '#.##';
-                switch (type) {
-                    case constants.NORMAL:
-                        formatter = '#.##';
-                        break;
-                    case constants.ZERO2POINT:
-                        formatter = '#0';
-                        break;
-                    case constants.ONE2POINT:
-                        formatter = '#0.0';
-                        break;
-                    case constants.TWO2POINT:
-                        formatter = '#0.00';
-                        break;
-                }
-                if(position === constants.X_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
-                            formatter = '#0%'
-                        }else{
-                            formatter += '%';
-                        }
-                        return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "').substring(1) : arguments[0].substring(1);}"
-                    }
-                }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (FR.contentFormat(arguments[0], '" + formatter + "') + '').substring(1) : (arguments[0] + '').substring(1);}"
-            }
-        }
-
-        function formatConfigForBar(configs, items){
             var xAxis = [{
                 type: "value",
                 title: {
@@ -3121,7 +2983,247 @@ Data.Utils = {
                 configs.xAxis[0].showLabel = false;
             }
             configs.zoom.zoomTool.visible = config.show_zoom;
-            if(config.show_zoom === true){
+            if (configs.show_zoom === true) {
+                delete configs.dataSheet;
+                delete configs.zoom.zoomType;
+            }
+            configs.plotOptions.tooltip.formatter.valueFormat = "function(){if(this > 0){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];} else {return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}}";
+
+
+            configs.yAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
+            configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            configs.yAxis[0].title.rotation = constants.ROTATION;
+
+            configs.yAxis[0].labelRotation = config.text_direction;
+            configs.xAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS);
+            formatNumberLevelInXaxis(config.left_y_axis_number_level);
+            configs.xAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
+            configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].title.align = "center";
+            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            configs.chartType = "bar";
+            return BI.extend(configs, {
+                series: items
+            });
+
+            function formatChartStyle() {
+                switch (config.chart_style) {
+                    case BICst.CHART_STYLE.STYLE_GRADUAL:
+                        return "gradual";
+                    case BICst.CHART_STYLE.STYLE_NORMAL:
+                    default:
+                        return "normal";
+                }
+            }
+
+            function formatCordon() {
+                BI.each(config.cordon, function (idx, cor) {
+                    if (idx === 0 && xAxis.length > 0) {
+                        var magnify = calcMagnify(config.left_y_axis_number_level);
+                        xAxis[0].plotLines = BI.map(cor, function (i, t) {
+                            return BI.extend(t, {
+                                value: t.value.div(magnify),
+                                width: 1,
+                                label: {
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
+                                    "text": t.text,
+                                    "align": "top"
+                                }
+                            });
+                        });
+                    }
+                    if (idx > 0 && yAxis.length >= idx) {
+                        var magnify = 1;
+                        switch (idx - 1) {
+                            case constants.LEFT_AXIS:
+                                magnify = calcMagnify(config.x_axis_number_level);
+                                break;
+                            case constants.RIGHT_AXIS:
+                                magnify = calcMagnify(config.right_y_axis_number_level);
+                                break;
+                            case constants.RIGHT_AXIS_SECOND:
+                                magnify = calcMagnify(config.right_y_axis_second_number_level);
+                                break;
+                        }
+                        yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
+                            return BI.extend(t, {
+                                value: t.value.div(magnify),
+                                width: 1,
+                                label: {
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
+                                    "text": t.text,
+                                    "align": "left"
+                                }
+                            });
+                        });
+                    }
+                })
+            }
+
+            function formatNumberLevelInXaxis(type) {
+                var magnify = calcMagnify(type);
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
+                            da.x = da.x || 0;
+                            da.x = da.x.div(magnify);
+                            if (constants.MINLIMIT.sub(Math.abs(da.x)) > 0) {
+                                da.x = 0;
+                            }
+                        })
+                    })
+                }
+            }
+
+            function calcMagnify(type) {
+                var magnify = 1;
+                switch (type) {
+                    case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                    case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                        magnify = 1;
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                        magnify = 10000;
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                        magnify = 1000000;
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                        magnify = 100000000;
+                        break;
+                }
+                return magnify;
+            }
+
+            function getXYAxisUnit(numberLevelType, position) {
+                var unit = "";
+                switch (numberLevelType) {
+                    case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                        unit = "";
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                        unit = BI.i18nText("BI-Wan");
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                        unit = BI.i18nText("BI-Million");
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                        unit = BI.i18nText("BI-Yi");
+                        break;
+                }
+                if (position === constants.X_AXIS) {
+                    config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
+                }
+                if (position === constants.LEFT_AXIS) {
+                    config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
+                }
+                if (position === constants.RIGHT_AXIS) {
+                    config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
+                }
+                return unit === "" ? unit : "(" + unit + ")";
+            }
+
+            function formatTickInXYaxis(type, position) {
+                var formatter = '#.##';
+                switch (type) {
+                    case constants.NORMAL:
+                        formatter = '#.##';
+                        break;
+                    case constants.ZERO2POINT:
+                        formatter = '#0';
+                        break;
+                    case constants.ONE2POINT:
+                        formatter = '#0.0';
+                        break;
+                    case constants.TWO2POINT:
+                        formatter = '#0.00';
+                        break;
+                }
+                if (position === constants.X_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
+                            formatter = '#0%'
+                        } else {
+                            formatter += '%';
+                        }
+                        return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "').substring(1) : arguments[0].substring(1);}"
+                    }
+                }
+                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (FR.contentFormat(arguments[0], '" + formatter + "') + '').substring(1) : (arguments[0] + '').substring(1);}"
+            }
+        }
+
+        function formatConfigForBar(configs, items) {
+            var xAxis = [{
+                type: "value",
+                title: {
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
+                },
+                labelStyle: {
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                },
+                formatter: "function(){if(this>0) return this; else return this*(-1); }",
+                gridLineWidth: 0
+            }];
+            var yAxis = [{
+                type: "category",
+                title: {
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
+                },
+                labelStyle: {
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                },
+                gridLineWidth: 0,
+                position: "left"
+            }];
+            configs.yAxis = yAxis;
+            configs.xAxis = xAxis;
+            configs.colors = config.chart_color;
+            configs.style = formatChartStyle();
+            formatCordon();
+            switch (config.chart_legend) {
+                case BICst.CHART_LEGENDS.BOTTOM:
+                    configs.legend.enabled = true;
+                    configs.legend.position = "bottom";
+                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    break;
+                case BICst.CHART_LEGENDS.RIGHT:
+                    configs.legend.enabled = true;
+                    configs.legend.position = "right";
+                    break;
+                case BICst.CHART_LEGENDS.NOT_SHOW:
+                default:
+                    configs.legend.enabled = false;
+                    break;
+            }
+            configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.dataSheet.enabled = config.show_data_table;
+            if (configs.dataSheet.enabled === true) {
+                configs.xAxis[0].showLabel = false;
+            }
+            configs.zoom.zoomTool.visible = config.show_zoom;
+            if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
@@ -3301,14 +3403,19 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForRange(configs, items){
+        function formatConfigForRange(configs, items) {
             var xAxis = [{
                 type: "category",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "bottom",
                 gridLineWidth: 0
@@ -3316,10 +3423,15 @@ Data.Utils = {
             var yAxis = [{
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "left",
                 gridLineWidth: 0
@@ -3329,7 +3441,7 @@ Data.Utils = {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatCordon();
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -3366,7 +3478,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -3376,23 +3488,28 @@ Data.Utils = {
                 }
             }
 
-            function formatCordon(){
-                BI.each(config.cordon, function(idx, cor){
-                    if(idx === 0 && xAxis.length > 0){
+            function formatCordon() {
+                BI.each(config.cordon, function (idx, cor) {
+                    if (idx === 0 && xAxis.length > 0) {
                         var magnify = calcMagnify(config.x_axis_number_level);
-                        xAxis[0].plotLines = BI.map(cor, function(i, t){
+                        xAxis[0].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "top"
                                 }
                             });
                         });
                     }
-                    if(idx > 0 && yAxis.length >= idx){
+                    if (idx > 0 && yAxis.length >= idx) {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
@@ -3405,12 +3522,17 @@ Data.Utils = {
                                 magnify = calcMagnify(config.right_y_axis_second_number_level);
                                 break;
                         }
-                        yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                        yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "left"
                                 }
@@ -3420,27 +3542,27 @@ Data.Utils = {
                 })
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
                         })
                     })
                 }
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -3460,7 +3582,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -3476,16 +3598,16 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -3501,11 +3623,11 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.LEFT_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.LEFT_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -3514,15 +3636,20 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForFall(configs, items){
+        function formatConfigForFall(configs, items) {
 
             var xAxis = [{
                 type: "category",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "bottom",
                 gridLineWidth: 0
@@ -3530,10 +3657,15 @@ Data.Utils = {
             var yAxis = [{
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "left",
                 gridLineWidth: 0
@@ -3546,11 +3678,11 @@ Data.Utils = {
             configs.legend.enabled = false;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
-            if(configs.dataSheet.enabled === true){
+            if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
             configs.zoom.zoomTool.visible = config.show_zoom;
-            if(configs.show_zoom === true){
+            if (configs.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
@@ -3574,7 +3706,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -3584,23 +3716,28 @@ Data.Utils = {
                 }
             }
 
-            function formatCordon(){
-                BI.each(config.cordon, function(idx, cor){
-                    if(idx === 0 && xAxis.length > 0){
+            function formatCordon() {
+                BI.each(config.cordon, function (idx, cor) {
+                    if (idx === 0 && xAxis.length > 0) {
                         var magnify = calcMagnify(config.x_axis_number_level);
-                        xAxis[0].plotLines = BI.map(cor, function(i, t){
+                        xAxis[0].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "top"
                                 }
                             });
                         });
                     }
-                    if(idx > 0 && yAxis.length >= idx){
+                    if (idx > 0 && yAxis.length >= idx) {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
@@ -3613,12 +3750,17 @@ Data.Utils = {
                                 magnify = calcMagnify(config.right_y_axis_second_number_level);
                                 break;
                         }
-                        yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                        yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "left"
                                 }
@@ -3628,27 +3770,27 @@ Data.Utils = {
                 })
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
                         })
                     })
                 }
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -3668,7 +3810,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -3684,19 +3826,19 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
-                if(position === constants.RIGHT_AXIS){
+                if (position === constants.RIGHT_AXIS) {
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -3712,20 +3854,20 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.LEFT_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.LEFT_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
                 }
-                if(position === constants.RIGHT_AXIS){
-                    if(config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.RIGHT_AXIS) {
+                    if (config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -3734,41 +3876,51 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForCompare(configs, items, cType){
+        function formatConfigForCompare(configs, items, cType) {
 
             var xAxis = [{
                 type: "category",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "bottom",
                 gridLineWidth: 0
             }];
 
             var types = [];
-            BI.each(items, function(idx, axisItems){
+            BI.each(items, function (idx, axisItems) {
                 var type = [];
-                BI.each(axisItems, function(id, item){
+                BI.each(axisItems, function (id, item) {
                     type.push(cType);
                 });
                 types.push(type);
             });
 
             var yAxis = [];
-            BI.each(types, function(idx, type){
-                if(BI.isEmptyArray(type)){
+            BI.each(types, function (idx, type) {
+                if (BI.isEmptyArray(type)) {
                     return;
                 }
                 var newYAxis = {
                     type: "value",
                     title: {
-                        style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                        style: {
+                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                            "color": "#808080",
+                            "fontSize": "12px",
+                            "fontWeight": ""
+                        }
                     },
                     labelStyle: {
-                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                     },
                     position: idx > 0 ? "right" : "left",
                     lineWidth: 1,
@@ -3784,7 +3936,7 @@ Data.Utils = {
             configs.style = formatChartStyle();
             formatChartLineStyle();
             formatCordon();
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -3803,14 +3955,14 @@ Data.Utils = {
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.visible = config.show_zoom;
-            if(config.show_zoom === true){
+            if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
 
 
-            BI.each(configs.yAxis, function(idx, axis){
-                switch (axis.axisIndex){
+            BI.each(configs.yAxis, function (idx, axis) {
+                switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
                         axis.reversed = true;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
@@ -3847,7 +3999,7 @@ Data.Utils = {
                 series: items
             });
 
-            function _calculateValueNiceDomain(minValue, maxValue){
+            function _calculateValueNiceDomain(minValue, maxValue) {
 
                 minValue = Math.min(0, minValue);
 
@@ -3856,7 +4008,7 @@ Data.Utils = {
                 return _linearNiceDomain(minValue, maxValue, tickInterval);
             }
 
-            function _linearTickInterval(minValue, maxValue, m){
+            function _linearTickInterval(minValue, maxValue, m) {
 
                 m = m || 5;
                 var span = maxValue - minValue;
@@ -3868,7 +4020,7 @@ Data.Utils = {
                 return step;
             }
 
-            function _linearNiceDomain(minValue, maxValue, tickInterval){
+            function _linearNiceDomain(minValue, maxValue, tickInterval) {
 
                 minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
 
@@ -3877,7 +4029,7 @@ Data.Utils = {
                 return [minValue, maxValue];
             }
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -3887,23 +4039,28 @@ Data.Utils = {
                 }
             }
 
-            function formatCordon(){
-                BI.each(config.cordon, function(idx, cor){
-                    if(idx === 0 && xAxis.length > 0){
+            function formatCordon() {
+                BI.each(config.cordon, function (idx, cor) {
+                    if (idx === 0 && xAxis.length > 0) {
                         var magnify = calcMagnify(config.x_axis_number_level);
-                        xAxis[0].plotLines = BI.map(cor, function(i, t){
+                        xAxis[0].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "top"
                                 }
                             });
                         });
                     }
-                    if(idx > 0 && yAxis.length >= idx){
+                    if (idx > 0 && yAxis.length >= idx) {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
@@ -3916,12 +4073,17 @@ Data.Utils = {
                                 magnify = calcMagnify(config.right_y_axis_second_number_level);
                                 break;
                         }
-                        yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                        yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "left"
                                 }
@@ -3931,7 +4093,7 @@ Data.Utils = {
                 })
             }
 
-            function formatChartLineStyle(){
+            function formatChartLineStyle() {
                 switch (config.chart_line_type) {
                     case BICst.CHART_SHAPE.RIGHT_ANGLE:
                         configs.plotOptions.curve = false;
@@ -3949,7 +4111,7 @@ Data.Utils = {
                 }
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
                 BI.each(items, function (idx, item) {
                     var max = null;
@@ -3960,21 +4122,21 @@ Data.Utils = {
                             if (constants.MINLIMIT.sub(da.y) > 0) {
                                 da.y = 0;
                             }
-                            if((BI.isNull(max) || da.y > max)){
+                            if ((BI.isNull(max) || da.y > max)) {
                                 max = da.y;
                             }
                         }
                     });
-                    if(BI.isNotNull(max)){
+                    if (BI.isNotNull(max)) {
                         maxes.push(max);
                     }
                 });
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -3994,7 +4156,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -4010,19 +4172,19 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
-                if(position === constants.RIGHT_AXIS){
+                if (position === constants.RIGHT_AXIS) {
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -4038,20 +4200,20 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.LEFT_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.LEFT_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
                 }
-                if(position === constants.RIGHT_AXIS){
-                    if(config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.RIGHT_AXIS) {
+                    if (config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -4060,14 +4222,19 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForPercent(configs, items, cType){
+        function formatConfigForPercent(configs, items, cType) {
             var xAxis = [{
                 type: "category",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "bottom",
                 gridLineWidth: 0
@@ -4075,10 +4242,15 @@ Data.Utils = {
             var yAxis = [{
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "left",
                 gridLineWidth: 0
@@ -4088,7 +4260,7 @@ Data.Utils = {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatCordon();
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -4107,7 +4279,7 @@ Data.Utils = {
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = configs.dataSheet.enabled;
             configs.zoom.zoomTool.visible = config.show_zoom;
-            if(config.show_zoom === true){
+            if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
@@ -4132,7 +4304,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -4142,23 +4314,28 @@ Data.Utils = {
                 }
             }
 
-            function formatCordon(){
-                BI.each(config.cordon, function(idx, cor){
-                    if(idx === 0 && xAxis.length > 0){
+            function formatCordon() {
+                BI.each(config.cordon, function (idx, cor) {
+                    if (idx === 0 && xAxis.length > 0) {
                         var magnify = calcMagnify(config.x_axis_number_level);
-                        xAxis[0].plotLines = BI.map(cor, function(i, t){
+                        xAxis[0].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "top"
                                 }
                             });
                         });
                     }
-                    if(idx > 0 && yAxis.length >= idx){
+                    if (idx > 0 && yAxis.length >= idx) {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
@@ -4171,12 +4348,17 @@ Data.Utils = {
                                 magnify = calcMagnify(config.right_y_axis_second_number_level);
                                 break;
                         }
-                        yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                        yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "left"
                                 }
@@ -4186,27 +4368,27 @@ Data.Utils = {
                 })
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
                         })
                     })
                 }
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -4226,7 +4408,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -4242,16 +4424,16 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -4267,11 +4449,11 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.LEFT_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.LEFT_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -4280,7 +4462,7 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForLine(configs, items){
+        function formatConfigForLine(configs, items) {
             var xAxis = [{
                 type: "category",
                 title: {
@@ -4299,26 +4481,31 @@ Data.Utils = {
             }];
 
             var types = [];
-            BI.each(items, function(idx, axisItems){
+            BI.each(items, function (idx, axisItems) {
                 var type = [];
-                BI.each(axisItems, function(id, item){
+                BI.each(axisItems, function (id, item) {
                     type.push(BICst.WIDGET.LINE);
                 });
                 types.push(type);
             });
 
             var yAxis = [];
-            BI.each(types, function(idx, type){
-                if(BI.isEmptyArray(type)){
+            BI.each(types, function (idx, type) {
+                if (BI.isEmptyArray(type)) {
                     return;
                 }
                 var newYAxis = {
                     type: "value",
                     title: {
-                        style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                        style: {
+                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                            "color": "#808080",
+                            "fontSize": "12px",
+                            "fontWeight": ""
+                        }
                     },
                     labelStyle: {
-                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                     },
                     position: idx > 0 ? "right" : "left",
                     lineWidth: 1,
@@ -4353,7 +4540,7 @@ Data.Utils = {
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.visible = config.show_zoom;
-            if(config.show_zoom === true){
+            if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
@@ -4558,7 +4745,7 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForArea(configs, items){
+        function formatConfigForArea(configs, items) {
             var xAxis = [{
                 type: "category",
                 title: {
@@ -4577,26 +4764,31 @@ Data.Utils = {
             }];
 
             var types = [];
-            BI.each(items, function(idx, axisItems){
+            BI.each(items, function (idx, axisItems) {
                 var type = [];
-                BI.each(axisItems, function(id, item){
+                BI.each(axisItems, function (id, item) {
                     type.push(BICst.WIDGET.AREA);
                 });
                 types.push(type);
             });
 
             var yAxis = [];
-            BI.each(types, function(idx, type){
-                if(BI.isEmptyArray(type)){
+            BI.each(types, function (idx, type) {
+                if (BI.isEmptyArray(type)) {
                     return;
                 }
                 var newYAxis = {
                     type: "value",
                     title: {
-                        style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                        style: {
+                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                            "color": "#808080",
+                            "fontSize": "12px",
+                            "fontWeight": ""
+                        }
                     },
                     labelStyle: {
-                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                     },
                     position: idx > 0 ? "right" : "left",
                     lineWidth: 1,
@@ -4631,7 +4823,7 @@ Data.Utils = {
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.visible = config.show_zoom;
-            if(config.show_zoom === true){
+            if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
@@ -4834,14 +5026,19 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForAccumulateRadar(configs, items){
+        function formatConfigForAccumulateRadar(configs, items) {
             var radiusAxis = [{
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 formatter: "function(){if(this>0) return this; else return this*(-1); }",
                 gridLineWidth: 0,
@@ -4851,7 +5048,7 @@ Data.Utils = {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatChartRadarStyle();
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -4882,7 +5079,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -4892,7 +5089,7 @@ Data.Utils = {
                 }
             }
 
-            function formatChartRadarStyle(){
+            function formatChartRadarStyle() {
                 switch (config.chart_radar_type) {
                     case BICst.CHART_SHAPE.POLYGON:
                         configs.plotOptions.shape = "polygon";
@@ -4903,27 +5100,27 @@ Data.Utils = {
                 }
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
-                            if(position === item.yAxis){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
+                            if (position === item.yAxis) {
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
                         })
                     })
                 }
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -4943,7 +5140,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -4959,19 +5156,19 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
-                if(position === constants.RIGHT_AXIS){
+                if (position === constants.RIGHT_AXIS) {
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -4987,20 +5184,20 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.LEFT_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.LEFT_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
                 }
-                if(position === constants.RIGHT_AXIS){
-                    if(config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.RIGHT_AXIS) {
+                    if (config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -5009,14 +5206,19 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForRadar(configs, items){
+        function formatConfigForRadar(configs, items) {
             var radiusAxis = [{
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 formatter: "function(){if(this>0) return this; else return this*(-1); }",
                 gridLineWidth: 0,
@@ -5026,7 +5228,7 @@ Data.Utils = {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatChartRadarStyle();
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -5056,7 +5258,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -5066,7 +5268,7 @@ Data.Utils = {
                 }
             }
 
-            function formatChartRadarStyle(){
+            function formatChartRadarStyle() {
                 switch (config.chart_radar_type) {
                     case BICst.CHART_SHAPE.POLYGON:
                         configs.plotOptions.shape = "polygon";
@@ -5077,27 +5279,27 @@ Data.Utils = {
                 }
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
-                            if(position === item.yAxis){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
+                            if (position === item.yAxis) {
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
                         })
                     })
                 }
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -5117,7 +5319,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -5133,19 +5335,19 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
-                if(position === constants.RIGHT_AXIS){
+                if (position === constants.RIGHT_AXIS) {
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -5161,20 +5363,20 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.LEFT_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.LEFT_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
                 }
-                if(position === constants.RIGHT_AXIS){
-                    if(config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.RIGHT_AXIS) {
+                    if (config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -5183,37 +5385,47 @@ Data.Utils = {
             }
         }
 
-        function formatConfigForAccumulateAxisArea(configs, items, ctype){
+        function formatConfigForAccumulateAxisArea(configs, items, ctype) {
             var xAxis = [{
                 type: "category",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 }
             }];
 
             var yAxis = [];
             var types = [];
-            BI.each(data, function(idx, axisItems){
+            BI.each(data, function (idx, axisItems) {
                 var type = [];
-                BI.each(axisItems, function(id, item){
+                BI.each(axisItems, function (id, item) {
                     type.push(ctype);
                 });
                 types.push(type);
             });
-            BI.each(types, function(idx, type){
-                if(BI.isEmptyArray(type)){
+            BI.each(types, function (idx, type) {
+                if (BI.isEmptyArray(type)) {
                     return;
                 }
                 var newYAxis = {
                     type: "value",
                     title: {
-                        style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                        style: {
+                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                            "color": "#808080",
+                            "fontSize": "12px",
+                            "fontWeight": ""
+                        }
                     },
                     labelStyle: {
-                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                     },
                     position: idx > 0 ? "right" : "left",
                     lineWidth: 1,
@@ -5230,7 +5442,7 @@ Data.Utils = {
             configs.style = formatChartStyle();
             formatChartLineStyle();
             formatCordon();
-            switch (config.chart_legend){
+            switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
@@ -5249,13 +5461,13 @@ Data.Utils = {
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.visible = config.show_zoom;
-            if(config.show_zoom === true){
+            if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
 
-            BI.each(configs.yAxis, function(idx, axis){
-                switch (axis.axisIndex){
+            BI.each(configs.yAxis, function (idx, axis) {
+                switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
                         axis.reversed = config.left_y_axis_reversed;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
@@ -5287,7 +5499,7 @@ Data.Utils = {
                 series: items
             });
 
-            function formatChartStyle(){
+            function formatChartStyle() {
                 switch (config.chart_style) {
                     case BICst.CHART_STYLE.STYLE_GRADUAL:
                         return "gradual";
@@ -5297,7 +5509,7 @@ Data.Utils = {
                 }
             }
 
-            function formatChartLineStyle(){
+            function formatChartLineStyle() {
                 switch (config.chart_line_type) {
                     case BICst.CHART_SHAPE.RIGHT_ANGLE:
                         configs.plotOptions.curve = false;
@@ -5315,27 +5527,27 @@ Data.Utils = {
                 }
             }
 
-            function formatNumberLevelInYaxis(type, position){
+            function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
                         })
                     })
                 }
-                if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
                 }
             }
 
-            function calcMagnify(type){
+            function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -5355,7 +5567,7 @@ Data.Utils = {
                 return magnify;
             }
 
-            function getXYAxisUnit(numberLevelType, position){
+            function getXYAxisUnit(numberLevelType, position) {
                 var unit = "";
                 switch (numberLevelType) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -5371,19 +5583,19 @@ Data.Utils = {
                         unit = BI.i18nText("BI-Yi");
                         break;
                 }
-                if(position === constants.X_AXIS){
+                if (position === constants.X_AXIS) {
                     config.x_axis_unit !== "" && (unit = unit + config.x_axis_unit)
                 }
-                if(position === constants.LEFT_AXIS){
+                if (position === constants.LEFT_AXIS) {
                     config.left_y_axis_unit !== "" && (unit = unit + config.left_y_axis_unit)
                 }
-                if(position === constants.RIGHT_AXIS){
+                if (position === constants.RIGHT_AXIS) {
                     config.right_y_axis_unit !== "" && (unit = unit + config.right_y_axis_unit)
                 }
                 return unit === "" ? unit : "(" + unit + ")";
             }
 
-            function formatTickInXYaxis(type, position){
+            function formatTickInXYaxis(type, position) {
                 var formatter = '#.##';
                 switch (type) {
                     case constants.NORMAL:
@@ -5399,20 +5611,20 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if(position === constants.LEFT_AXIS){
-                    if(config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.LEFT_AXIS) {
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
                 }
-                if(position === constants.RIGHT_AXIS){
-                    if(config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        if(type === constants.NORMAL){
+                if (position === constants.RIGHT_AXIS) {
+                    if (config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (type === constants.NORMAL) {
                             formatter = '#0%'
-                        }else{
+                        } else {
                             formatter += '%';
                         }
                     }
@@ -5420,23 +5632,28 @@ Data.Utils = {
                 return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
             }
 
-            function formatCordon(){
-                BI.each(config.cordon, function(idx, cor){
-                    if(idx === 0 && xAxis.length > 0){
+            function formatCordon() {
+                BI.each(config.cordon, function (idx, cor) {
+                    if (idx === 0 && xAxis.length > 0) {
                         var magnify = calcMagnify(config.x_axis_number_level);
-                        xAxis[0].plotLines = BI.map(cor, function(i, t){
+                        xAxis[0].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "top"
                                 }
                             });
                         });
                     }
-                    if(idx > 0 && yAxis.length >= idx){
+                    if (idx > 0 && yAxis.length >= idx) {
                         var magnify = 1;
                         switch (idx - 1) {
                             case constants.LEFT_AXIS:
@@ -5449,12 +5666,17 @@ Data.Utils = {
                                 magnify = calcMagnify(config.right_y_axis_second_number_level);
                                 break;
                         }
-                        yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                        yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
                                 value: t.value.div(magnify),
                                 width: 1,
                                 label: {
-                                    "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                    "style": {
+                                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                        "color": "#808080",
+                                        "fontSize": "12px",
+                                        "fontWeight": ""
+                                    },
                                     "text": t.text,
                                     "align": "left"
                                 }
@@ -5466,8 +5688,7 @@ Data.Utils = {
         }
 
 
-
-        function formatConfigForAxis(configs, items){
+        function formatConfigForAxis(configs, items) {
 
             var xAxis = [{
                 type: "category",
@@ -5535,7 +5756,7 @@ Data.Utils = {
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.visible = config.show_zoom;
-            if(config.show_zoom === true){
+            if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
@@ -5739,7 +5960,7 @@ Data.Utils = {
             }
         }
 
-        function ChartConstants(){
+        function ChartConstants() {
             return {
                 LEFT_AXIS: 0,
                 RIGHT_AXIS: 1,
@@ -5754,7 +5975,7 @@ Data.Utils = {
                 MINLIMIT: 1e-6,
                 LEGEND_HEIGHT: 80,
                 RIGHT_AXIS_SECOND: 2,
-                DASHBOARD_AXIS:4,
+                DASHBOARD_AXIS: 4,
                 ONE_POINTER: 1,
                 MULTI_POINTER: 2,
                 HALF_DASHBOARD: 9,
@@ -5789,14 +6010,14 @@ Data.Utils = {
             };
             return [result, config];
 
-            function combineChildItems(types, items){
+            function combineChildItems(types, items) {
                 var calItems = BI.values(items);
-                return BI.map(calItems, function(idx, item){
+                return BI.map(calItems, function (idx, item) {
                     return formatChildItem(types[idx], item);
                 });
             }
 
-            function formatChildItem(type, items){
+            function formatChildItem(type, items) {
                 var item = {};
                 switch (type) {
                     case BICst.WIDGET.BAR:
@@ -5854,7 +6075,7 @@ Data.Utils = {
                 return item;
             }
 
-            function combineConfig(){
+            function combineConfig() {
                 return {
                     "plotOptions": {
                         "rotatable": false,
@@ -5865,7 +6086,7 @@ Data.Utils = {
 
                         "layout": "horizontal",
                         "hinge": "rgb(101,107,109)",
-                        "dataLabels":{
+                        "dataLabels": {
                             "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
                             "formatter": {
                                 "identifier": "${VALUE}",
@@ -5889,7 +6110,9 @@ Data.Utils = {
                                 "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
                             },
                             "style": {
-                                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                "color": "#808080",
+                                "fontSize": "12px"
                             },
                             "align": "bottom",
                             "enabled": true
@@ -5904,7 +6127,9 @@ Data.Utils = {
                             },
                             "backgroundColor": "rgb(255,255,0)",
                             "style": {
-                                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                "color": "#808080",
+                                "fontSize": "12px"
                             },
                             "align": "inside",
                             "enabled": true
@@ -5919,7 +6144,9 @@ Data.Utils = {
                                 "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
                             },
                             "style": {
-                                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                "color": "#808080",
+                                "fontSize": "12px"
                             },
                             "align": "bottom",
                             "enabled": true
@@ -5955,7 +6182,12 @@ Data.Utils = {
                             "follow": false,
                             "enabled": true,
                             "animation": true,
-                            style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#c4c6c6","fontSize":"12px","fontWeight":""}
+                            style: {
+                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                "color": "#c4c6c6",
+                                "fontSize": "12px",
+                                "fontWeight": ""
+                            }
                         },
                         "maxSize": 70,
                         "fillColorOpacity": 0.5,
@@ -5971,7 +6203,7 @@ Data.Utils = {
                         "animation": true,
                         "lineWidth": 2,
 
-                        bubble:{
+                        bubble: {
                             "large": false,
                             "connectNulls": false,
                             "shadow": true,
@@ -5989,22 +6221,22 @@ Data.Utils = {
                             }
                         }
                     },
-                    dTools:{
-                        enabled:'true',
-                        style:{
+                    dTools: {
+                        enabled: 'true',
+                        style: {
                             fontFamily: "Microsoft YaHei, Hiragino Sans GB W3",
                             color: "#1a1a1a",
                             fontSize: "12px"
                         },
-                        backgroundColor:'white'
+                        backgroundColor: 'white'
                     },
                     dataSheet: {
                         enabled: false,
                         "borderColor": "rgb(0,0,0)",
                         "borderWidth": 1,
                         "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        style:{
-                            "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                        style: {
+                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                         }
                     },
                     "borderColor": "rgb(238,238,238)",
@@ -6016,7 +6248,7 @@ Data.Utils = {
                         "borderWidth": 0,
 
                         "style": {
-                            "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#1a1a1a","fontSize":"12px"
+                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#1a1a1a", "fontSize": "12px"
                         },
                         "position": "right",
                         "enabled": true
@@ -6062,5 +6294,4 @@ Data.Utils = {
             }
         }
     }
-
 };

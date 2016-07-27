@@ -307,7 +307,7 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
                     fillColorOpacity: 0,
                     stack: "stackedArea",
                     marker: {enabled: false},
-                    fillColor: false
+                    fillColor: "#000000"
                 });
             }
         });
