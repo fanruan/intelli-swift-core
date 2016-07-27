@@ -1996,50 +1996,67 @@ Data.Utils = {
 
             function formatChartDashboardStyle(){
                 configs.gaugeAxis = gaugeAxis;
+                var bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                var valueLabel = {
+                    formatter : {
+                        identifier : "${CATEGORY}${VALUE}"
+                    }
+                };
+                var percentageLabel = {
+                    enabled : false
+                };
                 switch (config.chart_dashboard_type) {
                     case BICst.CHART_SHAPE.HALF_DASHBOARD:
-                        configs.plotOptions.style = "pointer_semi";
-                        configs.plotOptions.bands = getBandsStyles(config.bands_styles , config.auto_custom_style);
+                        setPlotOptions("pointer_semi" , bands, configs.plotOptions.valueLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
-                        configs.plotOptions.style = "ring";
-                        configs.plotOptions.bands = getBandsStyles(config.bands_styles , config.auto_custom_style);
-                        configs.plotOptions.percentageLabel.enabled = false;
+                        setPlotOptions("ring" , bands , valueLabel , percentageLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
-                        configs.plotOptions.style = "slot";
-                        configs.plotOptions.bands = getBandsStyles(config.bands_styles , config.auto_custom_style);
-                        configs.plotOptions.percentageLabel.enabled = false;
+                        setPlotOptions("slot" , bands , valueLabel , percentageLabel);
                         break;
                     case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
-                        configs.plotOptions.style = "thermometer";
-                        configs.plotOptions.thermometerLayout = "horizontal";
-                        configs.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
-                        configs.plotOptions.valueLabel.align = "bottom";
-                        configs.plotOptions.percentageLabel.align = "bottom";
-                        configs.plotOptions.layout = "vertical";
-                        configs.plotOptions.bands = getBandsStyles(config.bands_styles , config.auto_custom_style);
-                        configs.plotOptions.percentageLabel.enabled = false;
+                        BI.extend(valueLabel , {
+                            align : "bottom"
+                        });
+                        BI.extend(percentageLabel , {
+                            align : "bottom"
+                        });
+                        setPlotOptions("thermometer" , bands , valueLabel , percentageLabel , "horizontal" , "vertical" );
                         break;
                     case BICst.CHART_SHAPE.VERTICAL_TUBE:
-                        configs.plotOptions.style = "thermometer";
-                        configs.plotOptions.thermometerLayout = "vertical";
-                        configs.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
-                        configs.plotOptions.valueLabel.align = "left";
-                        configs.plotOptions.percentageLabel.align = "left";
-                        configs.plotOptions.bands = getBandsStyles(config.bands_styles , config.auto_custom_style);
-                        configs.plotOptions.percentageLabel.enabled = false;
+                        BI.extend(valueLabel , {
+                            align : "left"
+                        });
+                        setPlotOptions("thermometer" , bands , valueLabel , percentageLabel , "vertical" , "vertical" );
                         break;
                     case BICst.CHART_SHAPE.NORMAL:
                     default:
-                        configs.plotOptions.style = "pointer";
-                        configs.plotOptions.bands = getBandsStyles(config.bands_styles , config.auto_custom_style);
+                        setPlotOptions("pointer" , bands , configs.plotOptions.valueLabel);
                         break;
                 }
-                formatNumberLevelInYaxis(config.dashboard_number_level, constants.LEFT_AXIS);
-                configs.gaugeAxis[0].formatter = function(){
-                    return this + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
-                };
+                formatNumberLevelInYaxis(config.dashboard_number_level, self.constants.LEFT_AXIS);
+                if(config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    configs.plotOptions.valueLabel.formatter.valueFormat = function(){
+                        return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]);
+                    };
+                    configs.gaugeAxis[0].formatter = function(){
+                        return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]) + getXYAxisUnit(config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                    };
+                }else{
+                    configs.gaugeAxis[0].formatter = function(){
+                        return this + getXYAxisUnit(config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                    };
+                }
+            }
+
+            function setPlotOptions (style , bands , valueLabel , percentageLabel , thermometerLayout , layout) {
+                configs.plotOptions.style = style;
+                configs.plotOptions.bands = bands;
+                configs.plotOptions.valueLabel = valueLabel;
+                configs.plotOptions.percentageLabel = percentageLabel;
+                configs.plotOptions.thermometerLayout = thermometerLayout;
+                configs.plotOptions.layout = layout;
             }
 
             function formatNumberLevelInYaxis(type, position){
