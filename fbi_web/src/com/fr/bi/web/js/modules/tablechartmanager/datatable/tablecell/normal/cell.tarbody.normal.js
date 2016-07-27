@@ -68,29 +68,21 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
     },
 
     _parseNumLevel: function (text, numLevel) {
-        if (text === Infinity || text !== text || !BI.isNumeric(text)) {
+        if (text === Infinity || text !== text || !BI.isNumber(text)) {
             return text;
         }
-        //解决丢精度问题
-        var pointSize = 1;
-        var pointArr = text.toString().split(".");
-        if (BI.isNotNull(pointArr[1])) {
-            pointSize = pointArr[1].length;
-        }
-        var pointLevel = Math.pow(10, pointSize);
         switch (numLevel) {
-            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                return text;
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                return text * pointLevel / (10000 * pointLevel);
+                return text.div(10000);
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                return text * pointLevel / (1000000 * pointLevel);
+                return text.div(1000000);
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                return text * pointLevel / (100000000 * pointLevel);
+                return text.div(100000000);
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return text * pointLevel * 100 / pointLevel;
+                return text.mul(100);
+            default:
+                return BI.parseFloat(FR.contentFormat(text, "#.##"));
         }
-        return text;
     },
 
     _parseFloatByDot: function (text, dot) {
