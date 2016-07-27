@@ -148,10 +148,10 @@ BI.MapChart = BI.inherit(BI.Widget, {
 
             BI.each(items , function (idx , item) {
                 BI.each(item.data , function (id , it) {
-                    if(BI.isNull(min) || min > it.y) {
+                    if(BI.isNull(min) || BI.parseFloat(min) > BI.parseFloat(it.y)) {
                         min = it.y
                     }
-                    if(BI.isNull(max) || max < it.y) {
+                    if(BI.isNull(max) || BI.parseFloat(max) < BI.parseFloat(it.y)) {
                         max = it.y
                     }
                 })

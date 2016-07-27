@@ -8194,7 +8194,7 @@
         res.span = R._g.doc.createElement("span");
         res.span.style.cssText = "position:absolute;left:-9999em;top:-9999em;padding:0;margin:0;line-height:1;";
         c.appendChild(res.span);
-        cs.cssText = R.format("top:0;left:0;width:{0};height:{1};display:inline-block;position:relative;clip:rect(0 {0} {1} 0);overflow:hidden", width, height);
+        cs.cssText = R.format("top:0;left:0;display:inline-block;position:absolute;clip:rect(0 {0} {1} 0);", width, height);
         if (container == 1) {
             R._g.doc.body.appendChild(c);
             cs.left = x + "px";

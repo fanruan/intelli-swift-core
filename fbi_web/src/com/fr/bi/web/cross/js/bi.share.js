@@ -14,7 +14,7 @@ FS.THEME.config4MenuTree.insertNodes = [
         text: BI.i18nText('FS-Generic-I_Created'),
         contentEl: $('<div class="fs_design_container">'),
         afterLoad: function ($tab, $content, entry) {
-            FS.createByMe.apply(this, [$tab, $content, entry]);
+            FS.createByMe.apply(this, [$tab, $content, entry, FS.config.isAdmin]);
         }
     },
     function () {
