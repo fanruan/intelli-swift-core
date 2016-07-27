@@ -20,7 +20,6 @@ import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
 import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTargetKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.manager.PlugManager;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -69,8 +68,8 @@ public class DimensionGroupFilter {
         iterators = getNodeIterators(mergerInfoList);
         sortedTrees = new SortedTree[mergerInfoList.size()];
         LoaderUtils.setAllExpander(mergerInfoList);
-        if(this.mergerInfoList != null){
-            for (MergerInfo m : this.mergerInfoList){
+        if (this.mergerInfoList != null) {
+            for (MergerInfo m : this.mergerInfoList) {
                 m.setHasTraverseResultFilter(hasTraverseResultFilter() || targetSort != null);
             }
         }
@@ -108,7 +107,7 @@ public class DimensionGroupFilter {
 
     private GroupValueIndex[] createAllEmptyIndex(int size) {
         GroupValueIndex[] retIndexes = new GroupValueIndex[size];
-        for (int i = 0; i < retIndexes.length; i++){
+        for (int i = 0; i < retIndexes.length; i++) {
             retIndexes[i] = GVIFactory.createAllEmptyIndexGVI();
         }
         return retIndexes;
@@ -285,10 +284,10 @@ public class DimensionGroupFilter {
                 if (!isStringDimension(rowDimension[deep])) {
                     continue;
                 }
-                DimensionFilter resultFilter =  rowDimension[deep].getFilter();
+                DimensionFilter resultFilter = rowDimension[deep].getFilter();
                 if (resultFilter != null && resultFilter.canCreateDirectFilter()) {
                     DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
-                    BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BITable.BI_EMPTY_TABLE())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
+                    BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BIBusinessTable.createEmptyTable())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
                     GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
                     ret[i] = and(ret[i], filterIndex);
                 }
@@ -322,7 +321,7 @@ public class DimensionGroupFilter {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
             for (int deep = firstChangeDeep; deep < rowDimension.length; deep++) {
-                count ++;
+                count++;
                 fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep, count);
             }
             lastRoots = roots;
@@ -374,9 +373,9 @@ public class DimensionGroupFilter {
                 mergeNode.setCk(groupConnectionValueChildren[j].getCk());
                 groupValueIndexArray[j] = currentValue.getRoot().getGroupValueIndex();
                 gviMap.put(mergerInfoList.get(j).getTargetGettingKey(), currentValue.getRoot().getGroupValueIndex());
-                if(MultiThreadManagerImpl.getInstance().isMultiCall() && count < 100) {
+                if (MultiThreadManagerImpl.getInstance().isMultiCall() && count < 100) {
                     MultiThreadManagerImpl.getInstance().getExecutorService().submit(new MergeSummaryCall(mergeNode, currentValue, mergerInfoList.get(j)));
-                }else {
+                } else {
                     Number summaryValue = currentValue.getSummaryValue(mergerInfoList.get(j).getSummary());
                     if (summaryValue != null) {
                         mergeNode.setSummaryValue(mergerInfoList.get(j).getTargetGettingKey(), summaryValue);
@@ -545,7 +544,6 @@ public class DimensionGroupFilter {
     private void or(GroupValueIndex groupValueIndex, GroupValueIndex index) {
         groupValueIndex.or(index);
     }
-
 
 
     private void filter(GroupValueIndex[][] groupValueIndexe2D, RowCounter counter, int deep, GroupConnectionValue[] groupConnectionValueChildren, IMergerNode mergeNode) {
