@@ -1411,7 +1411,7 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         min: 0,
         max: 100,
         closemin: true,
-        clasemax: false
+        closemax: false
     },
     color: "#65B3EE"
 }, {
@@ -1419,7 +1419,7 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         min: 100,
         max: 200,
         closemin: true,
-        clasemax: false
+        closemax: false
     },
     color: "#95E1AA"
 }, {
@@ -1427,7 +1427,7 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         min: 200,
         max: 300,
         closemin: true,
-        clasemax: true
+        closemax: true
     },
     color: "#F8D08E"
 }];
@@ -1437,7 +1437,7 @@ BICst.MAP_STYLE_CONDITIONS = [{
         min: 0,
         max: 100,
         closemin: true,
-        clasemax: false
+        closemax: false
     },
     color: "#65B3EE"
 }, {
@@ -1445,7 +1445,7 @@ BICst.MAP_STYLE_CONDITIONS = [{
         min: 100,
         max: 200,
         closemin: true,
-        clasemax: false
+        closemax: false
     },
     color: "#95E1AA"
 }, {
@@ -1453,7 +1453,7 @@ BICst.MAP_STYLE_CONDITIONS = [{
         min: 200,
         max: 300,
         closemin: false,
-        clasemax: true
+        closemax: true
     },
     color: "#F8D08E"
 }, {
@@ -1461,7 +1461,7 @@ BICst.MAP_STYLE_CONDITIONS = [{
         min: 300,
         max: 400,
         closemin: false,
-        clasemax: true
+        closemax: true
     },
     color: "#e697c8"
 }, {
@@ -1469,7 +1469,7 @@ BICst.MAP_STYLE_CONDITIONS = [{
         min: 400,
         max: 500,
         closemin: true,
-        clasemax: true
+        closemax: true
     },
     color: "#a484b9"
 }];
