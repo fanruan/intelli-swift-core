@@ -112,10 +112,10 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
             if(self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.valueLabel.formatter.valueFormat = function(){
-                    return (window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]);
+                    return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]);
                 };
                 config.gaugeAxis[0].formatter = function(){
-                    return (window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]) + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                    return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]) + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                 };
             }else{
                 config.gaugeAxis[0].formatter = function(){
@@ -138,7 +138,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                 })
             });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]}";
             }
         }
 
