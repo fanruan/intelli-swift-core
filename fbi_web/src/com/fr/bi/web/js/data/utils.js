@@ -2004,10 +2004,12 @@ Data.Utils = {
                     case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                         configs.plotOptions.style = "ring";
                         configs.plotOptions.bands = getBandsStyles(config.bands_styles , config.auto_custom_style);
+                        config.plotOptions.percentageLabel.enabled = false;
                         break;
                     case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                         configs.plotOptions.style = "slot";
                         configs.plotOptions.bands = getBandsStyles(config.bands_styles , config.auto_custom_style);
+                        config.plotOptions.percentageLabel.enabled = false;
                         break;
                     case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                         configs.plotOptions.style = "thermometer";
@@ -2017,6 +2019,7 @@ Data.Utils = {
                         configs.plotOptions.percentageLabel.align = "bottom";
                         configs.plotOptions.layout = "vertical";
                         configs.plotOptions.bands = getBandsStyles(config.bands_styles , config.auto_custom_style);
+                        config.plotOptions.percentageLabel.enabled = false;
                         break;
                     case BICst.CHART_SHAPE.VERTICAL_TUBE:
                         configs.plotOptions.style = "thermometer";
@@ -2025,6 +2028,7 @@ Data.Utils = {
                         configs.plotOptions.valueLabel.align = "left";
                         configs.plotOptions.percentageLabel.align = "left";
                         configs.plotOptions.bands = getBandsStyles(config.bands_styles , config.auto_custom_style);
+                        config.plotOptions.percentageLabel.enabled = false;
                         break;
                     case BICst.CHART_SHAPE.NORMAL:
                     default:
