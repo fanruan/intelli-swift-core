@@ -66,62 +66,68 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         return [items, config];
 
         function formatChartDashboardStyle(){
+            var bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+            var valueLabel = {
+                formatter : {
+                    identifier : "${CATEGORY}${VALUE}"
+                }
+            };
+            var percentageLabel = {
+                enabled : false
+            };
             config.gaugeAxis = self.gaugeAxis;
             switch (self.config.chart_dashboard_type) {
                 case BICst.CHART_SHAPE.HALF_DASHBOARD:
-                    config.plotOptions.style = "pointer_semi";
-                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                    setPlotOptions("pointer_semi" , bands, config.plotOptions.valueLabel);
                     break;
                 case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
-                    config.plotOptions.style = "ring";
-                    config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
-                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
-                    config.plotOptions.percentageLabel.enabled = false;
+                    setPlotOptions("ring" , bands , valueLabel , percentageLabel);
                     break;
                 case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
-                    config.plotOptions.style = "slot";
-                    config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
-                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
-                    config.plotOptions.percentageLabel.enabled = false;
+                    setPlotOptions("slot" , bands , valueLabel , percentageLabel);
                     break;
                 case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
-                    config.plotOptions.style = "thermometer";
-                    config.plotOptions.thermometerLayout = "horizontal";
-                    config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
-                    config.plotOptions.valueLabel.align = "bottom";
-                    config.plotOptions.percentageLabel.align = "bottom";
-                    config.plotOptions.layout = "vertical";
-                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
-                    config.plotOptions.percentageLabel.enabled = false;
+                    BI.extend(valueLabel , {
+                       align : "bottom"
+                    });
+                    BI.extend(percentageLabel , {
+                        align : "bottom"
+                    });
+                    setPlotOptions("thermometer" , bands , valueLabel , percentageLabel , "horizontal" , "vertical" );
                     break;
                 case BICst.CHART_SHAPE.VERTICAL_TUBE:
-                    config.plotOptions.style = "thermometer";
-                    config.plotOptions.thermometerLayout = "vertical";
-                    config.plotOptions.valueLabel.formatter.identifier = "${CATEGORY}${VALUE}";
-                    config.plotOptions.valueLabel.align = "left";
-                    config.plotOptions.percentageLabel.align = "left";
-                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
-                    config.plotOptions.percentageLabel.enabled = false;
+                    BI.extend(valueLabel , {
+                        align : "left"
+                    });
+                    setPlotOptions("thermometer" , bands , valueLabel , percentageLabel , "vertical" , "vertical" );
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
-                    config.plotOptions.style = "pointer";
-                    config.plotOptions.bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+                    setPlotOptions("pointer" , bands , config.plotOptions.valueLabel);
                     break;
             }
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
             if(self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.valueLabel.formatter.valueFormat = function(){
-                    return (window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]);
+                    return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]);
                 };
                 config.gaugeAxis[0].formatter = function(){
-                    return (window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]) + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                    return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]) + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                 };
             }else{
                 config.gaugeAxis[0].formatter = function(){
                     return this + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                 };
             }
+        }
+
+        function setPlotOptions (style , bands , valueLabel , percentageLabel , thermometerLayout , layout) {
+            config.plotOptions.style = style;
+            config.plotOptions.bands = bands;
+            config.plotOptions.valueLabel = valueLabel;
+            config.plotOptions.percentageLabel = percentageLabel;
+            config.plotOptions.thermometerLayout = thermometerLayout;
+            config.plotOptions.layout = layout;
         }
 
         function formatNumberLevelInYaxis(type, position){
@@ -141,7 +147,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                 })
             });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]}";
             }
         }
 
