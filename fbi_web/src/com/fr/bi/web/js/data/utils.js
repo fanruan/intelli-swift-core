@@ -67,9 +67,15 @@ Data.Utils = {
             });
         });
         if (type === BICst.WIDGET.MAP) {
+            var subType = widget.sub_type || BICst.MAP_TYPE.CHINA;
+            options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
+            var drill = BI.values(getDrill())[0];
+            BI.each(drill, function(idx, dri){
+                options.initDrillPath.push(dri.values[0].value[0]);
+            });
             options.geo = {
-                data: BICst.MAP_PATH[widget.sub_type] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
-                name: BICst.MAP_TYPE_NAME[widget.sub_type] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                data: BICst.MAP_PATH[subType],
+                name: BICst.MAP_TYPE_NAME[subType] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
             }
         }
         if (type === BICst.WIDGET.GIS_MAP) {
