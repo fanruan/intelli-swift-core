@@ -246,7 +246,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         GroupValueIndex gvi = super.createFilterGVI(row, targetKey, loader, userId);
         for (DimensionCalculator r : row) {
             GroupValueIndex n = r.createNoneSortNoneGroupValueMapGetter(targetKey, loader).getNULLIndex();
-            if (n.getRowsCountWithData() != 0){
+            if (n.getRowsCountWithData() != 0) {
                 gvi = GVIUtils.AND(gvi, n.NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
             }
         }
@@ -314,23 +314,22 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         //指标的关联关系
                         JSONArray targetRelationsJa = dimensionAndTargetPathsJa.getJSONArray(targetRelationIndex);
                         JSONObject primaryKeyJo = targetRelationsJa.optJSONObject(0).optJSONObject("primaryKey");
-                        JSONObject foreignKeyJo = targetRelationsJa.optJSONObject(0).optJSONObject("foreignKey");
+                        JSONObject foreignKeyJo = targetRelationsJa.optJSONObject(targetRelationsJa.length() - 1).optJSONObject("foreignKey");
                         String primaryFieldId = primaryKeyJo.optString("field_id");
                         String foreignFieldId = foreignKeyJo.optString("field_id");
                         String primaryTableId = primaryKeyJo.has("table_id") ? primaryKeyJo.getString("table_id") : null;
                         String foreignTableId = foreignKeyJo.has("table_id") ? foreignKeyJo.getString("table_id") : null;
 
                         JSONObject srcJo = dims.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-                        if (srcJo.has("target_relation")) {
-                            JSONArray selfRelationJa = srcJo.getJSONArray("target_relation");
-                            for (int i = 0; i < selfRelationJa.length(); i++) {
-                                BITableRelation selfRelation = BITableRelationHelper.getRelation(selfRelationJa.getJSONObject(i));
-                                if (BICubeConfigureCenter.getTableRelationManager().containTableRelation(userId, selfRelation)) {
-                                    relationList.add(selfRelation);
-                                }
-                            }
-
-                        }
+//                        if (srcJo.has("target_relation")) {
+//                            JSONArray selfRelationJa = srcJo.getJSONArray("target_relation");
+//                            for (int i = 0; i < selfRelationJa.length(); i++) {
+//                                BITableRelation selfRelation = BITableRelationHelper.getRelation(selfRelationJa.getJSONObject(i));
+//                                if (BICubeConfigureCenter.getTableRelationManager().containTableRelation(userId, selfRelation)) {
+//                                    relationList.add(selfRelation);
+//                                }
+//                            }
+//                        }
                         if (primaryTableId != null && foreignTableId != null) {
                             if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreignTableId)))) {
                                 relationMap.put(targetId, relationList);
@@ -341,7 +340,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                                 relationMap.put(targetId, relationList);
                             }
                         } else {
-                            if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo())) {
+                            if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo()) && !srcJo.has("target_relation")) {
                                 relationMap.put(targetId, relationList);
                             } else {
                                 for (int j = 0; j < targetRelationsJa.length(); j++) {
