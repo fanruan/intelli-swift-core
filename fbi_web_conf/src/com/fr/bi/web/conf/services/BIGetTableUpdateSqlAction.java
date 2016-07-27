@@ -106,9 +106,9 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
     private String parseSQL(String sql, Date date) {
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
         Matcher matcher = pat.matcher(sql);
-        String matchStr = matcher.group(0);
         String dateStr = DateUtils.DATETIMEFORMAT2.format(date);
         while (matcher.find()) {
+            String matchStr = matcher.group(0);
             sql = sql.replace(matchStr, dateStr);
         }
         return sql;
