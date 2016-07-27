@@ -126,7 +126,7 @@ public class ExcelCSVUtil {
                 columnTypes = new int[columnCount];
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
-                    if (oneRow.length - 1 > j) {
+                    if (oneRow.length > j) {
                         v = oneRow[j].toString();
                     }
                     currentRowData.add(v);

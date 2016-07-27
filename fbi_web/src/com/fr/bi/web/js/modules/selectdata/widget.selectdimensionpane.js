@@ -408,32 +408,32 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 break;
         }
         var id = BI.UUID();
-        dimTarIdMap[old.dId] = id;
         dimension.dId = id;
         if(BI.has(dimension, "filter_value")){
-            var success = true;
-            var filter = checkFilter(dimension.filter_value, dimTarIdMap[old.dId] || old.dId);
-            success === true && (dimension.filter_value = filter);
+            dimension.filter_value = checkFilter(dimension.filter_value, dimTarIdMap[old.dId] || old.dId);
         }
+        dimTarIdMap[old.dId] = id;
         result.push(dimension);
         return result;
 
-        function checkFilter(oldFilter, olddId, newdId){
+        function checkFilter(oldFilter, olddId){
             var filter = {};
             var filterType = oldFilter.filter_type, filterValue = oldFilter.filter_value;
             filter.filter_type = oldFilter.filter_type;
             if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
                 filter.filter_value = [];
                 BI.each(filterValue, function (i, value) {
-                    filter.filter_value.push(checkFilter(value));
+                    filter.filter_value.push(checkFilter(value, olddId));
                 });
             }else{
                 filter.filter_value = oldFilter.filter_value;
                 if(BI.has(oldFilter, "target_id")){
                     if(oldFilter.target_id === olddId){
-                        filter.target_id = newdId;
+                        delete filter.target_id;
                     }else{
-                        success = false;
+                        filter.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
+                        delete filter.target_id;
+                        delete filter.filter_value;
                     }
                 }
             }
