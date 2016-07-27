@@ -67,9 +67,15 @@ Data.Utils = {
             });
         });
         if (type === BICst.WIDGET.MAP) {
+            var subType = widget.sub_type || BICst.MAP_TYPE.CHINA;
+            options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
+            var drill = BI.values(getDrill())[0];
+            BI.each(drill, function(idx, dri){
+                options.initDrillPath.push(dri.values[0].value[0]);
+            });
             options.geo = {
-                data: BICst.MAP_PATH[widget.sub_type] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
-                name: BICst.MAP_TYPE_NAME[widget.sub_type] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                data: BICst.MAP_PATH[subType],
+                name: BICst.MAP_TYPE_NAME[subType] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
             }
         }
         if (type === BICst.WIDGET.GIS_MAP) {
@@ -1300,7 +1306,7 @@ Data.Utils = {
             delete configs.legend;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.tooltip.shared = true;
-            config.plotOptions.bubble.color = config.map_bubble_color;
+            configs.plotOptions.bubble.color = config.map_bubble_color;
             //config.plotOptions.color = BI.isArray(config.theme_color) ? config.theme_color : [config.theme_color];
             var formatterArray = [];
             BI.backEach(items, function (idx, item) {
@@ -1327,6 +1333,16 @@ Data.Utils = {
             configs.chartType = "areaMap";
             delete configs.xAxis;
             delete configs.yAxis;
+            var find = BI.find(items, function(idx, item){
+                return BI.has(item, "type") && item.type === "areaMap";
+            });
+            if(BI.isNull(find)){
+                items.push({
+                    type: "areaMap",
+                    data: []
+                })
+            }
+
             return BI.extend(configs, {
                 series: items
             });
@@ -1334,22 +1350,26 @@ Data.Utils = {
             function formatRangeLegend() {
                 switch (config.chart_legend) {
                     case BICst.CHART_LEGENDS.BOTTOM:
-                        config.rangeLegend.enabled = true;
-                        config.rangeLegend.visible = true;
-                        config.rangeLegend.position = "bottom";
+                        configs.rangeLegend.enabled = true;
+                        configs.rangeLegend.visible = true;
+                        configs.rangeLegend.position = "bottom";
                         break;
                     case BICst.CHART_LEGENDS.RIGHT:
-                        config.rangeLegend.enabled = true;
-                        config.rangeLegend.visible = true;
-                        config.rangeLegend.position = "right";
+                        configs.rangeLegend.enabled = true;
+                        configs.rangeLegend.visible = true;
+                        configs.rangeLegend.position = "right";
                         break;
                     case BICst.CHART_LEGENDS.NOT_SHOW:
-                        config.rangeLegend.enabled = true;
-                        config.rangeLegend.visible = false;
+                        configs.rangeLegend.enabled = true;
+                        configs.rangeLegend.visible = false;
                         break;
                 }
                 configs.rangeLegend.continuous = false;
-                configs.rangeLegend.range = getRangeStyle(config.map_styles, config.auto_custom, config.theme_color);
+
+                configs.rangeLegend.range = getRangeStyle(config.map_styles , config.auto_custom , config.theme_color);
+                configs.rangeLegend.formatter = function(){
+                    return this.to;
+                }
             }
 
             function formatToolTipAndDataLabel(format, numberLevel) {
@@ -1426,14 +1446,12 @@ Data.Utils = {
                                     from: conditionMax,
                                     to: maxScale
                                 });
-
                             }
                             return range;
                         } else {
                             defaultStyle.color = defaultColor;
                             return defaultStyle;
                         }
-
                 }
             }
 
@@ -1639,12 +1657,16 @@ Data.Utils = {
 
             function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if (magnify > 1) {
-                    BI.each(items, function (idx, item) {
-                        BI.each(item.data, function (id, da) {
+                if(magnify > 1){
+                    BI.each(items, function(idx, item){
+                        BI.each(item.data, function(id, da){
+                            if(!BI.isNumber(da.x)){
+                                da.x = BI.parseFloat(da.x);
+                            }
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
-                            if (constants.MINLIMIT.sub(da.x) > 0) {
+                            da.x = da.x.toFixed(constants.FIX_COUNT);
+                            if(constants.MINLIMIT.sub(da.x) > 0){
                                 da.x = 0;
                             }
                         })
@@ -1658,9 +1680,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if(constants.MINLIMIT.sub(da.y) > 0){
                                     da.y = 0;
                                 }
                             }
@@ -1899,12 +1925,16 @@ Data.Utils = {
 
             function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if (magnify > 1) {
-                    BI.each(items, function (idx, item) {
-                        BI.each(item.data, function (id, da) {
+                if(magnify > 1){
+                    BI.each(items, function(idx, item){
+                        BI.each(item.data, function(id, da){
+                            if(!BI.isNumber(da.x)){
+                                da.x = BI.parseFloat(da.x);
+                            }
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
-                            if (constants.MINLIMIT.sub(da.x) > 0) {
+                            da.x = da.x.toFixed(constants.FIX_COUNT);
+                            if(constants.MINLIMIT.sub(da.x) > 0){
                                 da.x = 0;
                             }
                         })
@@ -1918,9 +1948,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if(constants.MINLIMIT.sub(da.y) > 0){
                                     da.y = 0;
                                 }
                             }
@@ -2107,9 +2141,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if(constants.MINLIMIT.sub(da.y) > 0){
                                     da.y = 0;
                                 }
                             }
@@ -2168,7 +2206,7 @@ Data.Utils = {
 
                 BI.each(items, function (idx, item) {
                     var data = item.data[0];
-                    if ((BI.isNull(max) || data.y > max)) {
+                    if ((BI.isNull(max) || BI.parseFloat(data.y) > BI.parseFloat(max))) {
                         max = data.y
                     }
                 });
@@ -2470,9 +2508,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if(constants.MINLIMIT.sub(da.y) > 0){
                                     da.y = 0;
                                 }
                             }
@@ -2833,12 +2875,16 @@ Data.Utils = {
 
             function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if (magnify > 1) {
-                    BI.each(items, function (idx, item) {
-                        BI.each(item.data, function (id, da) {
+                if(magnify > 1){
+                    BI.each(items, function(idx, item){
+                        BI.each(item.data, function(id, da){
+                            if(!BI.isNumber(da.x)){
+                                da.x = BI.parseFloat(da.x);
+                            }
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
-                            if (constants.MINLIMIT.sub(da.x) > 0) {
+                            da.x = da.x.toFixed(constants.FIX_COUNT);
+                            if(constants.MINLIMIT.sub(da.x) > 0){
                                 da.x = 0;
                             }
                         })
@@ -3073,12 +3119,16 @@ Data.Utils = {
 
             function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if (magnify > 1) {
-                    BI.each(items, function (idx, item) {
-                        BI.each(item.data, function (id, da) {
+                if(magnify > 1){
+                    BI.each(items, function(idx, item){
+                        BI.each(item.data, function(id, da){
+                            if(!BI.isNumber(da.x)){
+                                da.x = BI.parseFloat(da.x);
+                            }
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
-                            if (constants.MINLIMIT.sub(Math.abs(da.x)) > 0) {
+                            da.x = da.x.toFixed(constants.FIX_COUNT);
+                            if(constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
                                 da.x = 0;
                             }
                         })
@@ -3316,8 +3366,12 @@ Data.Utils = {
                 if (magnify > 1) {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
+                            if(!BI.isNumber(da.x)){
+                                da.x = BI.parseFloat(da.x);
+                            }
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
+                            da.x = da.x.toFixed(constants.FIX_COUNT);
                             if (constants.MINLIMIT.sub(da.x) > 0) {
                                 da.x = 0;
                             }
@@ -3548,9 +3602,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if(constants.MINLIMIT.sub(da.y) > 0){
                                     da.y = 0;
                                 }
                             }
@@ -3776,9 +3834,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if(constants.MINLIMIT.sub(da.y) > 0){
                                     da.y = 0;
                                 }
                             }
@@ -4117,12 +4179,16 @@ Data.Utils = {
                     var max = null;
                     BI.each(item.data, function (id, da) {
                         if (position === item.yAxis) {
+                            if(!BI.isNumber(da.y)){
+                                da.y = BI.parseFloat(da.y);
+                            }
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
+                            da.y = da.y.toFixed(constants.FIX_COUNT);
                             if (constants.MINLIMIT.sub(da.y) > 0) {
                                 da.y = 0;
                             }
-                            if ((BI.isNull(max) || da.y > max)) {
+                            if((BI.isNull(max) || BI.parseFloat(da.y) > BI.parseFloat(max))){
                                 max = da.y;
                             }
                         }
@@ -4374,9 +4440,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if(constants.MINLIMIT.sub(da.y) > 0){
                                     da.y = 0;
                                 }
                             }
@@ -4645,8 +4715,12 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
                                 if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
@@ -4926,8 +5000,12 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
                                 if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
@@ -5102,13 +5180,17 @@ Data.Utils = {
 
             function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if (magnify > 1) {
-                    BI.each(items, function (idx, item) {
-                        BI.each(item.data, function (id, da) {
-                            if (position === item.yAxis) {
+                if(magnify > 1){
+                    BI.each(items, function(idx, item){
+                        BI.each(item.data, function(id, da){
+                            if(position === item.yAxis){
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if(constants.MINLIMIT.sub(da.y) > 0){
                                     da.y = 0;
                                 }
                             }
@@ -5281,13 +5363,17 @@ Data.Utils = {
 
             function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if (magnify > 1) {
-                    BI.each(items, function (idx, item) {
-                        BI.each(item.data, function (id, da) {
-                            if (position === item.yAxis) {
+                if(magnify > 1){
+                    BI.each(items, function(idx, item){
+                        BI.each(item.data, function(id, da){
+                            if(position === item.yAxis){
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if(constants.MINLIMIT.sub(da.y) > 0){
                                     da.y = 0;
                                 }
                             }
@@ -5533,9 +5619,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if(constants.MINLIMIT.sub(da.y) > 0){
                                     da.y = 0;
                                 }
                             }
@@ -5860,8 +5950,12 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
+                                if(!BI.isNumber(da.y)){
+                                    da.y = BI.parseFloat(da.y);
+                                }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
                                 if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
@@ -5984,7 +6078,8 @@ Data.Utils = {
                 VERTICAL_TUBE: 12,
                 HORIZONTAL_TUBE: 13,
                 LNG_FIRST: 3,
-                LAT_FIRST: 4
+                LAT_FIRST: 4,
+                FIX_COUNT: 6
             }
         }
 

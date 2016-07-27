@@ -566,13 +566,13 @@ BI.CustomScrollTable = BI.inherit(BI.Widget, {
     hasLeftHorizontalScroll: function () {
         var clients = this.table.getCalculateRegionColumnSize();
         var scrolls = this.table.getScrollRegionColumnSize();
-        return scrolls[0] > clients[0];
+        return scrolls[0] - clients[0] > 1.05;
     },
 
     hasRightHorizontalScroll: function () {
         var clients = this.table.getCalculateRegionColumnSize();
         var scrolls = this.table.getScrollRegionColumnSize();
-        return scrolls[1] > clients[1];
+        return scrolls[1] - clients[1] > 1.05;
     },
 
     getLeftHorizontalScroll: function () {

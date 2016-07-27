@@ -185,6 +185,9 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
             var magnify = calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
+                    if(!BI.isNumber(da.x)){
+                        da.x = BI.parseFloat(da.x);
+                    }
                     da.x = da.x || 0;
                     da.x = da.x.div(magnify).toFixed(self.constants.FIX_COUNT);
                     if (self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0) {
