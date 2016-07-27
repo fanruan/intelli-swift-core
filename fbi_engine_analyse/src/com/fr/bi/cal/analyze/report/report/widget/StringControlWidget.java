@@ -7,6 +7,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -70,9 +71,9 @@ public class StringControlWidget extends BISummaryWidget {
             return new JSONObject().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, list));
         }
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1) {
-            return getSearchResult(reader, selected_value, 0, list.size(), list);
+            return getSearchResult(reader, selected_value, 0, list.size(), list, calculator);
         } else {
-            return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP, list);
+            return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP, list, calculator);
         }
     }
 
@@ -173,7 +174,7 @@ public class StringControlWidget extends BISummaryWidget {
 
     }
 
-    private JSONObject getSearchResult(ICubeColumnIndexReader reader, Set selectedValue, int start, int end, List<Integer> list) throws JSONException {
+    private JSONObject getSearchResult(ICubeColumnIndexReader reader, Set selectedValue, int start, int end, List<Integer> list, DimensionCalculator calculator) throws JSONException {
         JSONArray ja = new JSONArray();
         JSONObject jo = new JSONObject();
         boolean hasNext = false;
@@ -183,6 +184,9 @@ public class StringControlWidget extends BISummaryWidget {
         String key = this.keyword.toLowerCase();
         for (int i = 0; i < list.size(); i++) {
             Object ob = reader.getGroupValue(list.get(i));
+            if (calculator instanceof DateDimensionCalculator && calculator.getGroup().getType() == BIReportConstant.GROUP.M) {
+                ob = ((Integer) ob) + 1;
+            }
             if (ob == null) {
                 continue;
             }
