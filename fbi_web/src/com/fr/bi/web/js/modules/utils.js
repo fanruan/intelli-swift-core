@@ -485,7 +485,7 @@
                 if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
                     filter.filter_value = [];
                     BI.each(filterValue, function (i, value) {
-                        filter.filter_value.push(checkFilter(value));
+                        filter.filter_value.push(checkFilter(value, dId));
                     });
                 } else {
                     filter.filter_value = oldFilter.filter_value;
