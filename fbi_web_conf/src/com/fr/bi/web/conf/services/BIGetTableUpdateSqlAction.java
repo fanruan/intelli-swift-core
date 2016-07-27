@@ -19,6 +19,7 @@ import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
+import com.fr.general.DateUtils;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -27,8 +28,6 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -107,10 +106,9 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
     private String parseSQL(String sql, Date date) {
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
         Matcher matcher = pat.matcher(sql);
+        String matchStr = matcher.group(0);
+        String dateStr = DateUtils.DATETIMEFORMAT2.format(date);
         while (matcher.find()) {
-            String matchStr = matcher.group(0);
-            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String dateStr = sdf.format(date);
             sql = sql.replace(matchStr, dateStr);
         }
         return sql;
