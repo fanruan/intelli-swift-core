@@ -1413,7 +1413,8 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         closemin: true,
         clasemax: false
     },
-    color: "#65B3EE"
+    color: "#65B3EE",
+    cid: BI.UUID()
 }, {
     range: {
         min: 100,
@@ -1421,7 +1422,8 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         closemin: true,
         clasemax: false
     },
-    color: "#95E1AA"
+    color: "#95E1AA",
+    cid: BI.UUID()
 }, {
     range: {
         min: 200,
@@ -1429,7 +1431,8 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         closemin: true,
         clasemax: true
     },
-    color: "#F8D08E"
+    color: "#F8D08E",
+    cid: BI.UUID()
 }];
 
 BICst.MAP_STYLE_CONDITIONS = [{
@@ -1439,7 +1442,8 @@ BICst.MAP_STYLE_CONDITIONS = [{
         closemin: true,
         clasemax: false
     },
-    color: "#09ABE9"
+    color: "#65B3EE",
+    cid: BI.UUID()
 }, {
     range: {
         min: 100,
@@ -1447,7 +1451,8 @@ BICst.MAP_STYLE_CONDITIONS = [{
         closemin: true,
         clasemax: false
     },
-    color: "#09ABE9"
+    color: "#95E1AA",
+    cid: BI.UUID()
 }, {
     range: {
         min: 200,
@@ -1455,7 +1460,8 @@ BICst.MAP_STYLE_CONDITIONS = [{
         closemin: true,
         clasemax: true
     },
-    color: "#09ABE9"
+    color: "#F8D08E",
+    cid: BI.UUID()
 }, {
     range: {
         min: 300,
@@ -1463,7 +1469,8 @@ BICst.MAP_STYLE_CONDITIONS = [{
         closemin: true,
         clasemax: true
     },
-    color: "#09ABE9"
+    color: "#e697c8",
+    cid: BI.UUID()
 }, {
     range: {
         min: 400,
@@ -1471,7 +1478,8 @@ BICst.MAP_STYLE_CONDITIONS = [{
         closemin: true,
         clasemax: true
     },
-    color: "#09ABE9"
+    color: "#a484b9",
+    cid: BI.UUID()
 }];
 
 BICst.CAL_TARGET_TYPE = [{

@@ -46,24 +46,6 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
         return getSortType() != BIReportConstant.SORT.NUMBER_DESC ? treeMap.iterator() : treeMap.previousIterator();
     }
 
-    @Override
-    public ICubeColumnIndexReader createNoneSortNoneGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader) {
-        if (getGroupDate() == BIReportConstant.GROUP.M) {
-            ICubeColumnIndexReader getter = createNoneSortNoneGroupValueMapGetter(target, loader);
-            Comparator comparator;
-            comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.NUMBER_ASC);
-            CubeTreeMap treeMap = new CubeTreeMap(comparator);
-            Iterator it = getter.iterator();
-            while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry) it.next();
-                treeMap.put(entry.getKey(), entry.getValue());
-            }
-            return treeMap;
-        } else {
-            return super.createNoneSortNoneGroupValueMapGetter(target, loader);
-        }
-    }
-
     public int getGroupDate() {
         return getGroup().getType();
     }
