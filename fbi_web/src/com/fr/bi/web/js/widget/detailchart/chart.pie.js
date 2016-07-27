@@ -65,6 +65,7 @@ BI.PieChart = BI.inherit(BI.Widget, {
         }
 
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
 
         config.chartType = "pie";
         delete config.xAxis;
