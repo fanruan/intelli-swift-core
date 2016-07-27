@@ -607,11 +607,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             });
             if(type === BICst.WIDGET.MAP){
-                options.geo = {
-                    data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
-                    name: BICst.MAP_TYPE_NAME[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
-                };
-
                 var subType = BI.Utils.getWidgetSubTypeByID(o.wId) || BICst.MAP_TYPE.CHINA;
                 options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
                 var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];

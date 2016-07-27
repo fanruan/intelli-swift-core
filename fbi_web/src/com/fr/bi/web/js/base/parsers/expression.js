@@ -168,8 +168,8 @@
     function compileSetter(exp) {
         var path = BI.parsePath(exp)
         if (path) {
-            return function (scope, val) {
-                BI.setPath(scope, path, val)
+            return function (scope, val, cb) {
+                BI.setPath(scope, path, val, cb)
             }
         } else {
             BI.warn(

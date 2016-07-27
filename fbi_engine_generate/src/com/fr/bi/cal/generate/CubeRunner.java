@@ -167,7 +167,7 @@ public class CubeRunner {
 
     private void start() {
         BackUpUtils.backup();
-        copyOldCubesToTempCubes();
+//        copyOldCubesToTempCubes();
     }
 
     private void finish() {
@@ -200,21 +200,21 @@ public class CubeRunner {
     }
 
 
-    private void copyOldCubesToTempCubes() {
-        try {
-            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
-            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-            if (new File(tempConf.getRootURI().getPath()).exists()){
-                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
-            }
-            if (new File(advancedConf.getRootURI().getPath()).exists()) {
-                BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
-            }
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
-        }
-
-    }
+//    private void copyOldCubesToTempCubes() {
+//        try {
+//            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
+//            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+//            if (new File(tempConf.getRootURI().getPath()).exists()){
+//                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
+//            }
+//            if (new File(advancedConf.getRootURI().getPath()).exists()) {
+//                BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
+//            }
+//        } catch (Exception e) {
+//            BILogger.getLogger().error(e.getMessage());
+//        }
+//
+//    }
 
     public CubeBuildStaff getCubeGeneratingObjects() {
         if (object == null) {

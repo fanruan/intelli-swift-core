@@ -63,6 +63,10 @@ if (!window.BI) {
             }
         },
 
+        warn: function (message) {
+            console.warn(message)
+        },
+
         UUID: function () {
             var f = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
             var str = "";
@@ -816,7 +820,7 @@ if (!window.BI) {
         }
     });
 
-    //字符串相关方�?
+    //字符串相关方法
     _.extend(BI, {
         trim: function () {
             return $.trim.apply($, arguments);
@@ -828,6 +832,19 @@ if (!window.BI) {
 
         toLowerCase: function (string) {
             return (string + "").toLocaleLowerCase();
+        },
+
+        isLiteral: function (exp) {
+            var literalValueRE = /^\s?(true|false|-?[\d\.]+|'[^']*'|"[^"]*")\s?$/
+            return literalValueRE.test(exp)
+        },
+
+        stripQuotes: function (str) {
+            var a = str.charCodeAt(0)
+            var b = str.charCodeAt(str.length - 1)
+            return a === b && (a === 0x22 || a === 0x27)
+                ? str.slice(1, -1)
+                : str
         },
 
         isNotEmptyString: function (str) {
