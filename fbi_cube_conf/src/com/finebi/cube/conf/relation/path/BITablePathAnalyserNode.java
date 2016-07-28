@@ -52,14 +52,14 @@ public class BITablePathAnalyserNode extends BISetContainer<BITablePathAnalyserN
      * @throws BITableRelationConfusionException
      * @throws BITablePathConfusionException
      */
-    protected Set<BITableRelationPath> getAllRelationPath(Map<BITablePathAnalyserNode,Integer> scannedNodes, BusinessTable targetTable)
+    protected Set<BITableRelationPath> getAllRelationPath(Map<BITablePathAnalyserNode, Integer> scannedNodes, BusinessTable targetTable)
             throws BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
         /**
          * 获得全部的直接子节点；
          */
         Iterator<BITablePathAnalyserNode> childNodesIt = getContainer().iterator();
         Set<BITableRelationPath> result = new HashSet<BITableRelationPath>();
-        registerScannedNode(scannedNodes,this);
+        registerScannedNode(scannedNodes, this);
         while (childNodesIt.hasNext()) {
             BITablePathAnalyserNode childNode = childNodesIt.next();
             if (isSpecificTable(childNode.currentNodeTable, targetTable)) {
@@ -96,18 +96,20 @@ public class BITablePathAnalyserNode extends BISetContainer<BITablePathAnalyserN
         return ComparatorUtils.equals(table, targetTable);
     }
 
-    private void registerScannedNode(Map<BITablePathAnalyserNode,Integer> scannedNodes, BITablePathAnalyserNode current){
-        if (scannedNodes.containsKey(current)){
-            Integer count = scannedNodes.get(current)+1;
-            scannedNodes.put(current,count);
-        }else {
-            scannedNodes.put(current,1);
+    private void registerScannedNode(Map<BITablePathAnalyserNode, Integer> scannedNodes, BITablePathAnalyserNode current) {
+        if (scannedNodes.containsKey(current)) {
+            Integer count = scannedNodes.get(current) + 1;
+            scannedNodes.put(current, count);
+        } else {
+            scannedNodes.put(current, 1);
         }
     }
-    private boolean isScanned(Map<BITablePathAnalyserNode,Integer> scannedNodes, BITablePathAnalyserNode currentNode) {
-        if( scannedNodes.containsKey(currentNode)){
-            return scannedNodes.get(currentNode)>1;
-        }else {
+
+    private boolean isScanned(Map<BITablePathAnalyserNode, Integer> scannedNodes, BITablePathAnalyserNode currentNode) {
+        if (scannedNodes.containsKey(currentNode)) {
+            /*蛋疼自循环，自循环时判断是否经过第二次，其他时候判断是否链到自身*/
+            return scannedNodes.get(currentNode) > 1 || (!ComparatorUtils.equals(currentNode, this) && scannedNodes.get(currentNode) > 0);
+        } else {
             return false;
         }
     }
