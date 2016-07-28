@@ -4700,9 +4700,6 @@ Data.Utils = {
                             case constants.RIGHT_AXIS:
                                 magnify = calcMagnify(config.right_y_axis_number_level);
                                 break;
-                            case self.constants.RIGHT_AXIS_SECOND:
-                                magnify = calcMagnify(self.config.right_y_axis_second_number_level);
-                                break;
                         }
                         yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                             return BI.extend(t, {
