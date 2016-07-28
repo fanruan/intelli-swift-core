@@ -1953,7 +1953,11 @@ BI.Table = BI.inherit(BI.Widget, {
     getScrollRegionRowSize: function () {
         var o = this.options;
         if (o.isNeedFreeze) {
-            return [this.scrollTopRight.element[0].scrollHeight, this.scrollBottomRight.element[0].scrollHeight];
+            if (o.freezeCols.length < o.columnSize.length) {
+                return [this.scrollTopRight.element[0].scrollHeight, this.scrollBottomRight.element[0].scrollHeight];
+            } else {
+                return [this.scrollTopLeft.element[0].scrollHeight, this.scrollBottomLeft.element[0].scrollHeight];
+            }
         }
         return [this.scrollContainer.element[0].scrollHeight];
     },
@@ -1961,10 +1965,7 @@ BI.Table = BI.inherit(BI.Widget, {
     hasVerticalScroll: function () {
         var o = this.options;
         if (o.isNeedFreeze) {
-            if (this._isRightFreeze()) {
-                return this.scrollBottomLeft.element.hasVerticalScroll();
-            }
-            return this.scrollBottomRight.element.hasVerticalScroll();
+            return this.scrollBottomRight.element.hasVerticalScroll() || this.scrollBottomLeft.element.hasVerticalScroll();
         }
         return this.scrollContainer.element.hasVerticalScroll();
     },
@@ -2014,7 +2015,7 @@ BI.Table = BI.inherit(BI.Widget, {
     getVerticalScroll: function () {
         var o = this.options;
         if (o.isNeedFreeze) {
-            return this.scrollBottomRight.element[0].scrollTop;
+            return this.scrollBottomRight.element[0].scrollTop || this.scrollBottomLeft.element[0].scrollTop;
         }
         return this.scrollContainer.element[0].scrollTop;
     },
