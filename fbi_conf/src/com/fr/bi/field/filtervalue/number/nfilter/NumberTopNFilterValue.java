@@ -8,7 +8,7 @@ import com.fr.bi.stable.report.result.LightNode;
 
 public class NumberTopNFilterValue extends NumberNFilterValue implements NFilterValue{
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -3103968806193045243L;
 	public static String XML_TAG = "NumberTopNFilterValue";
