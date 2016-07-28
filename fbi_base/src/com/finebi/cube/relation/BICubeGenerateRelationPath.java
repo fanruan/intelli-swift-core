@@ -1,6 +1,7 @@
 package com.finebi.cube.relation;
 
 import com.fr.bi.stable.exception.BITablePathEmptyException;
+import com.fr.bi.stable.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.HashSet;
@@ -28,7 +29,7 @@ public class BICubeGenerateRelationPath {
 
     public BICubeGenerateRelationPath(BITableSourceRelationPath biTableSourceRelationPath) {
         this.biTableSourceRelationPath = biTableSourceRelationPath;
-                if(biTableSourceRelationPath.size()<2){
+                if(biTableSourceRelationPath.size() ==  BIRelationUtils.PATH_NULL||biTableSourceRelationPath.size() ==  BIRelationUtils.PATH_RELATION){
             return;
         }
         try {

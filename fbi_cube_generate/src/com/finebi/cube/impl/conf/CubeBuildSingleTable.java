@@ -13,11 +13,15 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
+import com.fr.bi.stable.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by kary on 16/5/30.
@@ -120,7 +124,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         Set<BITableRelationPath> generatedRelationPaths = new HashSet<BITableRelationPath>();
         for (BITableRelationPath tableRelationPath : allRelationPathSet) {
             boolean flag = true;
-            if (tableRelationPath.size() < 2) {
+            if (tableRelationPath.size() ==  BIRelationUtils.PATH_NULL||tableRelationPath.size() ==  BIRelationUtils.PATH_RELATION) {
                 flag = false;
             }
             for (BITableRelation tableRelation : tableRelationPath.getAllRelations()) {
