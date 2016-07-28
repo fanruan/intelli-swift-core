@@ -107,7 +107,8 @@ public class BITablePathAnalyserNode extends BISetContainer<BITablePathAnalyserN
 
     private boolean isScanned(Map<BITablePathAnalyserNode, Integer> scannedNodes, BITablePathAnalyserNode currentNode) {
         if (scannedNodes.containsKey(currentNode)) {
-            return scannedNodes.get(currentNode) > 1;
+            /*蛋疼自循环，自循环时判断是否经过第二次，其他时候判断是否链到自身*/
+            return scannedNodes.get(currentNode) > 1 || (!ComparatorUtils.equals(currentNode, this) && scannedNodes.get(currentNode) > 0);
         } else {
             return false;
         }

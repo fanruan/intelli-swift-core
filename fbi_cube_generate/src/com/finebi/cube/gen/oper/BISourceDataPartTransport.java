@@ -128,7 +128,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 }
             }
         };
-
         rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount);
         return rowCount;
     }
