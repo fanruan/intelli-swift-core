@@ -4643,6 +4643,7 @@ Data.Utils = {
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            config.chartType = "line";
 
             return BI.extend(configs, {
                 series: items
@@ -4687,6 +4688,9 @@ Data.Utils = {
                                 break;
                             case constants.RIGHT_AXIS:
                                 magnify = calcMagnify(config.right_y_axis_number_level);
+                                break;
+                            case self.constants.RIGHT_AXIS_SECOND:
+                                magnify = calcMagnify(self.config.right_y_axis_second_number_level);
                                 break;
                         }
                         yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
