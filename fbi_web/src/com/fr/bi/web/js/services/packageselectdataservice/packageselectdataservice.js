@@ -356,6 +356,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
 
     _getSelfCircleFieldsByFieldId: function (fieldId, foregion, isRelation) {
         var self = this, o = this.options;
+        var usedPath = [];
         foregion || (foregion = []);
         var tableId = BI.Utils.getTableIdByFieldID(fieldId);
         var fieldStructure = [];
@@ -363,6 +364,12 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             var fid = f.id;
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
             var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+            BI.some(BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid), function (i, path) {
+                if (BI.Utils.getForeignIdFromRelation(path[0]) === fid) {
+                    usedPath = path;
+                }
+            });
+
             fieldStructure.push(BI.extend({
                 id: fid,
                 pId: tableId,
@@ -374,7 +381,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 title: title,
                 value: {
                     field_id: fieldId,
-                    target_relation: BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid)[0]
+                    target_relation: usedPath
                 },
                 drag: self._createDrag(fieldName)
             }, f));
@@ -618,8 +625,12 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         }
                     }
                     if (BI.has(fId, "target_relation")) {
+                        var name = BI.Utils.getFieldNameByID(fId.field_id);
+                        if(BI.Utils.getFieldIsCircleByID(fId.field_id) === true){
+                            name = BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.target_relation[0]));
+                        }
                         return {
-                            name: BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.target_relation[0])),
+                            name: name,
                             _src: {
                                 id: fId.field_id,
                                 field_id: fId.field_id,

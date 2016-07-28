@@ -1587,8 +1587,8 @@
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
             if (tableA === tableB) {        //同一张表
-                if (this.isSelfCircleTableByTableId(tableA) && !checkPathAvailable(path, from, to)) {      //是自循环表且字段包含层级字段
-                    return [getRelationOfselfCircle(from, to, path)];
+                if (this.isSelfCircleTableByTableId(tableA)) {      //是自循环表且字段包含层级字段
+                    return path;
                 } else {
                     return [[{
                         primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
@@ -2607,17 +2607,26 @@
                 case BICst.YEAR:
                     start = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), 0, 1);
                     end = new Date(start.getFullYear(), 11, 31);
-                    break;
+                    return {
+                        start: start.getTime(),
+                        end: end.getTime()
+                    };
                 case BICst.YEAR_QUARTER:
                     ydate = tool._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
                     start = tool._getQuarterStartDate(ydate);
                     end = tool._getQuarterEndDate(ydate);
-                    break;
+                    return {
+                        start: start.getTime(),
+                        end: end.getTime()
+                    };
                 case BICst.YEAR_MONTH:
                     ydate = tool._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
                     start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
                     end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
-                    break;
+                    return {
+                        start: start.getTime(),
+                        end: end.getTime()
+                    };
                 case BICst.YEAR_WEEK:
                     start = ydate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
                     end = start.getOffsetDate(7);

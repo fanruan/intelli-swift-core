@@ -24,6 +24,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this.pushButton.on(BI.DrillPushButton.EVENT_CHANGE, function () {
             self._onClickPush();
         });
+        this.pushButton.element.css("z-index", 1);
         this.outerWrapper = BI.createWidget({
             type: "bi.absolute",
             element: this.element,
