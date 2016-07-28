@@ -2,6 +2,11 @@
  * Created by fay on 2016/7/19.
  */
 BI.DataLabelTab = BI.inherit(BI.Widget, {
+    _constant: {
+        TEXT_TOOL_BAR_HEIGHT: 60,
+        IMAGE_SET_HEIGHT: 160
+    },
+
     _defaultConfig: function () {
         var conf = BI.DataLabelTab.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
@@ -18,7 +23,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 type: "bi.radio",
                 value: 1,
                 handler: function () {
-                    self.layout.setHeight(60);
+                    self.layout.setHeight(self._constant.TEXT_TOOL_BAR_HEIGHT);
                 }
             },{
                 type: "bi.label",
@@ -28,7 +33,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 type: "bi.radio",
                 value: 2,
                 handler: function () {
-                    self.layout.setHeight(160);
+                    self.layout.setHeight(self._constant.IMAGE_SET_HEIGHT);
                 }
             },{
                 type: "bi.label",
@@ -92,7 +97,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     },
 
     _createImageLabel: function () {
-        var self = this;
+        var self = this, o= this.options;
         this.imageset = BI.createWidget({
             type: "bi.data_label_image_set"
         });
@@ -102,6 +107,9 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         this.barchart = BI.createWidget({
             type: "bi.data_label_bar_chart"
         });
+        this.barchart.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
+        });
+        this.barchart.populate();
         return BI.createWidget({
                 type: "bi.absolute",
                 items: [{
@@ -116,7 +124,15 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             }
         );
     },
-
+    setValue: function (v) {
+        if( v.type === "img") {
+            this.layout.setHeight(this._constant.IMAGE_SET_HEIGHT);
+            this.tabs.setSelect(2);
+            this.imageset.setValue(v);
+        } else {
+            this.texttoolbar.setValue(v);
+        }
+    },
     getValue: function () {
         switch (this.tabs.getSelect()) {
             case 1:

@@ -39,28 +39,34 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
 
     populate: function () {
         var o = this.options;
-        var conditions = BI.Utils.getDimensionDatalabelByID(o.dId);
+        var conditions = BI.Utils.getDatalabelByID(o.dId);
         var items = [];
-        var item = {};
+        var config = [];
         BI.each(conditions, function (idx, cdt) {
             var type = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
             items.push({
                 type: type.type,
                 id: cdt.id,
                 _src: cdt._src,
+                field_id: BI.Utils.getFieldIDByDimensionID(o.dId),
                 filter_type: cdt.filter_type,
                 filter_value: cdt.filter_value,
-                style_setting: cdt.style_setting,
-                field_id: BI.Utils.getFieldIDByDimensionID(o.dId)
+                style_setting: cdt.style_setting
             });
-            item = {
+            config.push({
                 filter_type: cdt.filter_type,
                 filter_value: cdt.filter_value,
-                style_setting: cdt.style_setting,
-            };
+                style_setting: cdt.style_setting
+            });
         });
+
         this.buttonGroup.addItems(items);
         this.buttons = this.buttonGroup.getAllButtons();
+    },
+
+    getAllButtons: function () {
+        var buttons = this.buttonGroup.getAllButtons();
+        return buttons.splice(1, buttons.length);
     },
 
     getValue: function () {

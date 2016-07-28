@@ -932,7 +932,7 @@
                 BICst.DEFAULT_CHART_SETTING.show_data_label;
         },
 
-        getDimensionDatalabelByID: function (did) {
+        getDatalabelByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
                 return Data.SharingPool.get("dimensions", did, "data_label");
             }

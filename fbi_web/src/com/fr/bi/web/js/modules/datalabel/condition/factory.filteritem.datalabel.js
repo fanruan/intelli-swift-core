@@ -6,17 +6,14 @@ BI.DataLabelFilterItemFactory = {
         var filterType, type;
         switch (fieldType) {
             case BICst.COLUMN.STRING:
+            case BICst.COLUMN.DATE:
                 filterType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
-                type = "bi.target_string_field_filter_item";
+                type = "bi.data_label_string_field_filter_item";
                 break;
             case BICst.COLUMN.NUMBER:
             case BICst.COLUMN.COUNTER:
                 filterType = BICst.TARGET_FILTER_NUMBER.BELONG_VALUE;
                 type = "bi.data_label_number_field_filter_item";
-                break;
-            case BICst.COLUMN.DATE:
-                filterType = BICst.FILTER_DATE.BELONG_DATE_RANGE;
-                type = "bi.date_field_filter_item";
                 break;
             default :
                 type = "bi.data_label_condition_item";
@@ -41,7 +38,7 @@ BI.DataLabelFilterItemFactory = {
             case BICst.TARGET_FILTER_STRING.END_WITH:
             case BICst.TARGET_FILTER_STRING.NOT_BEGIN_WITH:
             case BICst.TARGET_FILTER_STRING.NOT_END_WITH:
-                type = "bi.target_string_field_filter_item";
+                type = "bi.data_label_string_field_filter_item";
                 break;
             case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
             case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:

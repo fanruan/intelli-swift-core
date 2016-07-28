@@ -39,8 +39,12 @@ BI.DataLabel = BI.inherit(BI.Widget, {
     },
     
     getValue: function () {
-        console.log(this.condition.getValue());
         return this.condition.getValue();
+    },
+
+    getStyle: function (data) {
+        var conditions = this.condition.getValue();
+
     }
 });
 

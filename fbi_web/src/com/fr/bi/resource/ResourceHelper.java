@@ -1810,12 +1810,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/image/button/size/image.button.size.css",
 
                 //数据标签
-                "com/fr/bi/web/css/widget/datalabel/datalabel.css",
-                "com/fr/bi/web/css/widget/datalabel/condition/datalabel.condition.css",
-                "com/fr/bi/web/css/widget/datalabel/condition/datalabel.conditionitem.css",
-                "com/fr/bi/web/css/widget/datalabel/tab/datalabel.imageset.css",
-                "com/fr/bi/web/css/widget/datalabel/tab/datalabel.texttoolbar.css",
-                "com/fr/bi/web/css/widget/datalabel/tab/datalabel.barchart.css",
+                "com/fr/bi/web/css/modules/datalabel/datalabel.css",
+                "com/fr/bi/web/css/modules/datalabel/condition/datalabel.condition.css",
+                "com/fr/bi/web/css/modules/datalabel/condition/datalabel.conditionitem.css",
+                "com/fr/bi/web/css/modules/datalabel/tab/datalabel.imageset.css",
+                "com/fr/bi/web/css/modules/datalabel/tab/datalabel.texttoolbar.css",
+                "com/fr/bi/web/css/modules/datalabel/tab/datalabel.barchart.css",
 
                 //可选下拉树
                 "com/fr/bi/web/css/widget/selecttree/combo.select.tree.css",
@@ -2602,17 +2602,19 @@ public class ResourceHelper {
 
                 //web组件
                 "com/fr/bi/web/js/widget/web/web.js",
-                "com/fr/bi/web/js/widget/datalabel/datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/tab/tab.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/tab/texttoolbar.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/tab/font.chooser.texttoolbar.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/condition/item.numberfield.js",
-                "com/fr/bi/web/js/widget/datalabel/condition/factory.filteritem.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/condition/condition.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/condition/group.condition.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/condition/item.condition.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/tab/imageset.datalabel.js",
-                "com/fr/bi/web/js/widget/datalabel/tab/barchart.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/tab.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/item.numberfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/item.stringfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/factory.filteritem.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/group.condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/item.condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/imageset.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/styleset.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/barchart.datalabel.js",
 
                 //布局
                 "com/fr/bi/web/js/widget/arrangement/arrangement.droppable.js",

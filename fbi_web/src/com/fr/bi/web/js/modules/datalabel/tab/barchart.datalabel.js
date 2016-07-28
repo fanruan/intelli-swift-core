@@ -18,7 +18,7 @@ BI.DataLabelBarChart = BI.inherit(BI.Widget, {
         });
         this.data = [[{
             "data": [
-                {"x": "孙林", "y": 90},
+                {"x": "孙林", "y": 40},
                 {"x": "金士鹏", "y": 70},
                 {"x": "张珊", "y": 100},
                 {"x": "孙阳", "y": 30},
@@ -50,7 +50,6 @@ BI.DataLabelBarChart = BI.inherit(BI.Widget, {
             width: 150,
             height: 130
         });
-        this.combineChart.populate(this.data);
     },
 
     _formatConfig: function (config, items) {
@@ -64,26 +63,26 @@ BI.DataLabelBarChart = BI.inherit(BI.Widget, {
         config.plotOptions.dataLabels.enabled = true;
         config.plotOptions.dataLabels.align = "inside";
         config.plotOptions.dataLabels.style = {
-            "color": "#ffffff"
+            color: "#ffffff"
         };
         return [items, config];
     },
 
-    _formatItems: function (items) {
-        BI.each(items, function (idx, item) {
-            BI.each(item, function (id, it) {
-                BI.each(it.data, function (i, t) {
-                    var tmp = t.x;
-                    t.x = t.y;
-                    t.y = tmp;
-                })
-            });
-        });
-        return items;
-    },
+    // _formatItems: function(items){
+    //     return BI.map(items, function(idx, item){
+    //         var i = BI.UUID();
+    //         return BI.map(item, function(id, it){
+    //             return BI.extend({}, it, {dataLabels: {
+    //                 style: {
+    //                     color: "red"
+    //                 }
+    //             }});
+    //         });
+    //     });
+    // },
 
-    populate: function (items) {
-        this.combineChart.populate(items, types);
+    populate: function () {
+        this.combineChart.populate(this.data);
     }
 });
 BI.DataLabelBarChart.EVENT_CHANGE = "BI.DataLabelBarChart.EVENT_CHANGE";

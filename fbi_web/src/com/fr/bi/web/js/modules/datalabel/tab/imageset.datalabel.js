@@ -18,20 +18,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png"
     ],
 
-    _img: [
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png"
-    ],
+    _img: [ ],
 
     _imageSelect: "",
 
@@ -132,7 +119,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     },
 
     _createHeader: function () {
-        var self = this;
+        var self = this, o = this.options;
         var headerLabel = BI.createWidget({
             type: "bi.label",
             text: BI.i18nText("BI-Added")
@@ -166,7 +153,6 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                     self._img.push(src);
                     self._refresh();
                     self.tabs.setSelect(2);
-                    self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, src);
                 }
             })
         });
@@ -226,7 +212,11 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 type: "bi.image_button",
                 src: "",
                 width: 50,
-                height: "90%"
+                height: "90%",
+                handler: function () {
+                    self._imageSelect = self._img[i];
+                    self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
+                }
             };
             img.src = src;
             var set = {
@@ -269,12 +259,19 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         this._createTab();
     },
 
-    setValue: function () {
-
+    setValue: function (v) {
+        v || (v = {});
+        this._img = v.urls;
+        this._imageSelect = v.src
     },
 
     getValue: function () {
-        return this._imageSelect;
+        var self = this;
+        return {
+            type: "img",
+            src: self._imageSelect,
+            urls: self._img
+        };
     }
 });
 
