@@ -4654,7 +4654,6 @@ Data.Utils = {
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
-            config.chartType = "line";
 
             return BI.extend(configs, {
                 series: items
