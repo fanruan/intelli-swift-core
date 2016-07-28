@@ -1,6 +1,8 @@
 package com.finebi.cube.gen.arrange;
 
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.*;
@@ -10,12 +12,15 @@ import com.finebi.cube.gen.oper.watcher.BIDataSourceBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIPathBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BITableSourceBuildWatcher;
 import com.finebi.cube.impl.operate.BIOperation;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.status.IStatusTag;
 import com.finebi.cube.router.topic.ITopicTag;
+import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
@@ -23,6 +28,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
@@ -400,7 +406,10 @@ public class BICubeOperationManager {
         CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
 /*若没有更新设置,按默认处理
 * 首次更新均为全局更新*/
-        if (null == tableUpdateSetting || !(cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable() && cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isCubeLastTimeAvailable())) {
+        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+        Cube advancedCube = new BICube(resourceRetrievalService, discovery);
+        if (null == tableUpdateSetting || !(advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable() && advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isCubeLastTimeAvailable())) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         }
         /*全局更新时该表不更新*/

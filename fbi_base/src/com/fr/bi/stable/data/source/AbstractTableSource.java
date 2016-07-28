@@ -138,7 +138,9 @@ public abstract class AbstractTableSource implements CubeTableSource {
             fieldValues.put(values);
             int count = Math.min(tableIndex.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
             for (int i = 0; i < count; i++) {
-                values.put(tableIndex.getColumnDetailReader(new IndexKey(column.getFieldName())).getValue(i));
+                if (tableIndex.getRemovedList().indexOf(i)<0) {
+                    values.put(tableIndex.getColumnDetailReader(new IndexKey(column.getFieldName())).getValue(i));
+                }
             }
         }
         return new JSONObject().put(BIJSONConstant.JSON_KEYS.FIELDS, allFieldNamesJo).put(BIJSONConstant.JSON_KEYS.VALUE, fieldValues).put(BIJSONConstant.JSON_KEYS.TYPE, fieldTypes);

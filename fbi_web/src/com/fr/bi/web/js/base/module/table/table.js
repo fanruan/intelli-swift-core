@@ -394,8 +394,10 @@ BI.Table = BI.inherit(BI.Widget, {
         }
 
         var regionColumnSize = o.regionColumnSize;
-        if (o.freezeCols.length === 0 || o.freezeCols.length >= o.columnSize.length) {
+        if (o.freezeCols.length === 0) {
             regionColumnSize = isRight ? ['fill', 0] : [0, 'fill'];
+        } else if (o.freezeCols.length >= o.columnSize.length) {
+            regionColumnSize = isRight ? [0, 'fill'] : ['fill', 0];
         }
         this.partitions = BI.createWidget(BI.extend({
             element: this.element
@@ -1888,7 +1890,14 @@ BI.Table = BI.inherit(BI.Widget, {
     setRegionColumnSize: function (columnSize) {
         var self = this, o = this.options;
         o.regionColumnSize = columnSize;
-        if (o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
+        if (o.freezeCols.length === 0) {
+            if (o.isNeedFreeze) {
+                this.partitions.attr("columnSize", this._isRightFreeze() ? ['fill', 0] : [0, 'fill']);
+                this.partitions.resize();
+            } else {
+                this.tableContainer.element.width(columnSize[0]);
+            }
+        } else if (o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
             if (o.isNeedFreeze) {
                 this.partitions.attr("columnSize", columnSize);
                 this.partitions.resize();
@@ -1897,7 +1906,7 @@ BI.Table = BI.inherit(BI.Widget, {
             }
         } else {
             if (o.isNeedFreeze) {
-                this.partitions.attr("columnSize", this._isRightFreeze() ? ['fill', 0] : [0, 'fill']);
+                this.partitions.attr("columnSize", this._isRightFreeze() ? [0, 'fill'] : ['fill', 0]);
                 this.partitions.resize();
             } else {
                 this.tableContainer.element.width(columnSize[0]);
@@ -1944,7 +1953,11 @@ BI.Table = BI.inherit(BI.Widget, {
     getScrollRegionRowSize: function () {
         var o = this.options;
         if (o.isNeedFreeze) {
-            return [this.scrollTopRight.element[0].scrollHeight, this.scrollBottomRight.element[0].scrollHeight];
+            if (o.freezeCols.length < o.columnSize.length) {
+                return [this.scrollTopRight.element[0].scrollHeight, this.scrollBottomRight.element[0].scrollHeight];
+            } else {
+                return [this.scrollTopLeft.element[0].scrollHeight, this.scrollBottomLeft.element[0].scrollHeight];
+            }
         }
         return [this.scrollContainer.element[0].scrollHeight];
     },
@@ -1952,10 +1965,7 @@ BI.Table = BI.inherit(BI.Widget, {
     hasVerticalScroll: function () {
         var o = this.options;
         if (o.isNeedFreeze) {
-            if (this._isRightFreeze()) {
-                return this.scrollBottomLeft.element.hasVerticalScroll();
-            }
-            return this.scrollBottomRight.element.hasVerticalScroll();
+            return this.scrollBottomRight.element.hasVerticalScroll() || this.scrollBottomLeft.element.hasVerticalScroll();
         }
         return this.scrollContainer.element.hasVerticalScroll();
     },
@@ -2005,7 +2015,7 @@ BI.Table = BI.inherit(BI.Widget, {
     getVerticalScroll: function () {
         var o = this.options;
         if (o.isNeedFreeze) {
-            return this.scrollBottomRight.element[0].scrollTop;
+            return this.scrollBottomRight.element[0].scrollTop || this.scrollBottomLeft.element[0].scrollTop;
         }
         return this.scrollContainer.element[0].scrollTop;
     },
