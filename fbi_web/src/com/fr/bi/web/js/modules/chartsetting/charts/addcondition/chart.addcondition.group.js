@@ -63,7 +63,7 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
         }
     },
 
-    _checkButtonEnable: function () {
+      _checkButtonEnable: function () {
         BI.each(this.buttongroup.getAllButtons() , function (idx , button) {
             if(idx !== 0) {
                 button.setSmallIntervalEnable(false);
@@ -148,7 +148,8 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
                 type: "bi.chart_add_condition_item",
                 onRemoveCondition: function (cid) {
                     self._removeCondition(cid)
-                }
+                },
+                cid: BI.UUID()
             });
         });
 
