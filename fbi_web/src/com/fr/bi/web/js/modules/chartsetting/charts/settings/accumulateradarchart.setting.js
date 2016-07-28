@@ -1,9 +1,9 @@
 /**
- * @class BI.RadarChartSetting
+ * @class BI.AccumulateRadarChartSetting
  * @extends BI.Widget
- * 雷达
+ * 堆积雷达样式
  */
-BI.RadarChartSetting = BI.inherit(BI.Widget, {
+BI.AccumulateRadarChartSetting = BI.inherit(BI.Widget, {
 
     constant: {
         SINGLE_LINE_HEIGHT: 60,
@@ -23,13 +23,13 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
     },
 
     _defaultConfig: function(){
-        return BI.extend(BI.RadarChartSetting.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.AccumulateRadarChartSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting"
         })
     },
 
     _init: function(){
-        BI.RadarChartSetting.superclass._init.apply(this, arguments);
+        BI.AccumulateRadarChartSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         this.colorSelect = BI.createWidget({
@@ -39,7 +39,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         this.colorSelect.populate();
 
         this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         this.chartStyleGroup = BI.createWidget({
@@ -63,7 +63,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
 
         this.chartTypeGroup = BI.createWidget({
             type: "bi.button_group",
-            items: BI.createItems(BICst.RADAR_CHART_STYLE_GROUP, {
+            items: BI.createItems(BICst.ACC_RADAR_CHART_STYLE_GROUP, {
                 type: "bi.icon_button",
                 extraCls: "chart-style-font",
                 width: this.constant.BUTTON_WIDTH,
@@ -140,7 +140,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         this.numberLevellY = BI.createWidget({
@@ -151,7 +151,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         //图例
@@ -163,7 +163,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         //数据标签
@@ -174,7 +174,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         //网格线
@@ -185,7 +185,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({
@@ -330,5 +330,5 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         this.gridLine.setSelected(v.show_grid_line);
     }
 });
-BI.RadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.radar_chart_setting", BI.RadarChartSetting);
+BI.AccumulateRadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.accumulate_radar_chart_setting", BI.AccumulateRadarChartSetting);

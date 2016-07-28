@@ -1297,6 +1297,15 @@ BICst.RADAR_CHART_STYLE_GROUP = [{
     value: BICst.CHART_SHAPE.CIRCLE
 }];
 
+//堆积雷达图类型
+BICst.ACC_RADAR_CHART_STYLE_GROUP = [{
+    cls: "acc_radar-chart-style-polygon-icon",
+    value: BICst.CHART_SHAPE.POLYGON
+}, {
+    cls: "acc_radar-chart-style-circle-icon",
+    value: BICst.CHART_SHAPE.CIRCLE
+}];
+
 //仪表盘类型
 BICst.DASHBOARD_CHART_STYLE_GROUP = [{
     cls: "dashboard-chart-style-360-icon",
@@ -1308,11 +1317,11 @@ BICst.DASHBOARD_CHART_STYLE_GROUP = [{
     value: BICst.CHART_SHAPE.HALF_DASHBOARD
 }, {
     cls: "dashboard-chart-style-percent-icon",
-    title: BI.i18nText("BI-Percent_Donut_Dashboard"),
+    title: BI.i18nText("BI-Percent_Scale_Slot_Dashboard"),
     value: BICst.CHART_SHAPE.PERCENT_SCALE_SLOT
 }, {
     cls: "dashboard-chart-style-percent-scale-slot-icon",
-    title: BI.i18nText("BI-Percent_Scale_Slot_Dashboard"),
+    title: BI.i18nText("BI-Percent_Donut_Dashboard"),
     value: BICst.CHART_SHAPE.PERCENT_DASHBOARD
 }, {
     cls: "dashboard-chart-style-vertical-tube-icon",
