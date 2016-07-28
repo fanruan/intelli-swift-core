@@ -24,7 +24,7 @@ public class BITablePathAnalyser {
 
     public Set<BITableRelationPath> getAllRelationPath(BusinessTable targetTailTable)
             throws BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
-        return currentNode.getAllRelationPath(new HashMap<>(), targetTailTable);
+        return currentNode.getAllRelationPath(new HashMap<BITablePathAnalyserNode,Integer>(), targetTailTable);
     }
 
     public void buildPathRelation(BITablePathAnalyser childPathAnalyser) {
