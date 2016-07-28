@@ -67,19 +67,16 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                 inUseRelations.add(tableRelation);
             }
         }
-        while (inUseRelations.size() != generatedRelations.size()) {
-            for (BITableRelationPath path : generatedPaths) {
-                for (BITableRelation tableRelation : path.getAllRelations()) {
-                    if (inUseRelations.contains(tableRelation)) {
-                        break;
-                    }
-                }
-                inUsePaths.add(path);
-                for (BITableRelation biTableRelation : path.getAllRelations()) {
-                    inUseRelations.add(biTableRelation);
+        for (BITableRelationPath path : generatedPaths) {
+            for (BITableRelation tableRelation : path.getAllRelations()) {
+                if (inUseRelations.contains(tableRelation)) {
+                    break;
                 }
             }
-
+            inUsePaths.add(path);
+            for (BITableRelation biTableRelation : path.getAllRelations()) {
+                inUseRelations.add(biTableRelation);
+            }
         }
         //设置路径（关联）的依赖关系
         setCubeGenerateRelationSet(inUseRelations, businessTable);
