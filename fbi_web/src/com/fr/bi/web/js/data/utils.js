@@ -859,12 +859,12 @@ Data.Utils = {
                     });
                     t.push(type);
                 });
-                BI.each(data, function (idx, item) {
-                    BI.each(item, function (id, it) {
-                        if (idx > 0) {
-                            BI.extend(it, {reversed: true, xAxis: 0});
-                        } else {
-                            BI.extend(it, {reversed: false, xAxis: 1});
+                BI.each(data, function(idx, item){
+                    BI.each(item, function(id, it){
+                        if(idx > 0){
+                            BI.extend(it, {reversed: true, xAxis: 1});
+                        }else{
+                            BI.extend(it, {reversed: false, xAxis: 0});
                         }
                     });
                 });
@@ -879,12 +879,12 @@ Data.Utils = {
                     });
                     t.push(type);
                 });
-                BI.each(data, function (idx, item) {
-                    BI.each(item, function (id, it) {
-                        if (idx > 0) {
-                            BI.extend(it, {reversed: true, xAxis: 0});
-                        } else {
-                            BI.extend(it, {reversed: false, xAxis: 1});
+                BI.each(data, function(idx, item){
+                    BI.each(item, function(id, it){
+                        if(idx > 0){
+                            BI.extend(it, {reversed: true, xAxis: 1});
+                        }else{
+                            BI.extend(it, {reversed: false, xAxis: 0});
                         }
                     });
                 });
@@ -3955,6 +3955,17 @@ Data.Utils = {
                 },
                 position: "bottom",
                 gridLineWidth: 0
+            }, {
+                title: {
+                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                },
+                labelStyle: {
+                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                },
+                position: "top",
+                gridLineWidth: 0,
+                type: "category",
+                showLabel: false
             }];
 
             var types = [];
@@ -4026,7 +4037,7 @@ Data.Utils = {
             BI.each(configs.yAxis, function (idx, axis) {
                 switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
-                        axis.reversed = true;
+                        axis.reversed = false;
                         axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
                         formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
@@ -4035,7 +4046,7 @@ Data.Utils = {
                         axis.title.rotation = constants.ROTATION;
                         break;
                     case constants.RIGHT_AXIS:
-                        axis.reversed = false;
+                        axis.reversed = true;
                         axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
                         formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
