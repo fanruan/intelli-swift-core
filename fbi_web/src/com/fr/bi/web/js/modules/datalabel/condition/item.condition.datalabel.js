@@ -101,17 +101,13 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
         //todo
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
-            _src: {
-                field_id: v
-            },
-            id: this.options.id
+            field_id: v
         });
     },
 
     getValue: function () {
         if (BI.isNotNull(this.typeSelectedItem)) {
             var result = this.typeSelectedItem.getValue();
-            // result.id = this.options.id;
             return result;
         }
         return {

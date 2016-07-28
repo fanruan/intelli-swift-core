@@ -60,10 +60,10 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _buildConditions: function () {
         var self = this, o = this.options;
-        if (BI.isNull(o._src)) {
+        if (BI.isNull(o.field_id)) {
             return [];
         }
-        this.fieldId = o._src.field_id;
+        this.fieldId = o.field_id;
         var fieldName = BI.Utils.getFieldNameByID(this.fieldId);
 
         this.fieldButton = BI.createWidget({
@@ -183,7 +183,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     getValue: function () {
         return {
-            _src: this.options._src,
+            filed_id: this.options.field_id,
             filter_type: this.filterType.getValue()[0],
             filter_value: this.filterWidget.getValue(),
             style_setting: this.style.getValue()
