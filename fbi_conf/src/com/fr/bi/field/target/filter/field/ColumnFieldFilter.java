@@ -22,6 +22,7 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
@@ -155,10 +156,17 @@ public class ColumnFieldFilter extends ColumnFilter {
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         if (dataColumn != null && filterValue != null) {
-            if (ComparatorUtils.equals(dimension.getField(), dataColumn)) {
-                return filterValue.createFilterIndex(dimension, target, loader, userId);
+            try {
+                JSONObject srcJo = valueJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+                //恶心的自循环列处理
+                if (ComparatorUtils.equals(dimension.getField(), dataColumn) && !srcJo.has("target_relation")) {
+                    return filterValue.createFilterIndex(dimension, target, loader, userId);
+                }
+                return createFilterIndex(target, loader, userId);
+            } catch (JSONException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
-            return createFilterIndex(target, loader, userId);
+
         }
         return null;
     }
