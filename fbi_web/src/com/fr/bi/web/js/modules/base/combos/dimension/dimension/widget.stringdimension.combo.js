@@ -85,7 +85,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
         ]
     },
 
-    _rebuildItems :function(){
+    /*_rebuildItems :function(){
         var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
         if(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP){
         }else{
@@ -94,7 +94,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
         }
         return items;
-    },
+    },*/
 
     typeConfig: function(){
         return this.config;

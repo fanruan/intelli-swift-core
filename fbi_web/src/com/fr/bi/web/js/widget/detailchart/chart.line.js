@@ -112,7 +112,7 @@ BI.LineChart = BI.inherit(BI.Widget, {
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? config.xAxis[0].title.text : "";
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
-        config.chartType = "area";
+        config.chartType = "line";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if(config.plotOptions.dataLabels.enabled === true){
