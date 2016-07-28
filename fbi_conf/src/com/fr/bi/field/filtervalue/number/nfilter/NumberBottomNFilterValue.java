@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.field.target.key.sum.AvgKey;
 
 
 public class NumberBottomNFilterValue extends NumberNFilterValue implements NFilterValue{
@@ -30,6 +31,20 @@ public class NumberBottomNFilterValue extends NumberNFilterValue implements NFil
         double nline = parentNode.getChildTOPNValueLine(targetKey, comparedRow);
 
         Number targetValue = node.getSummaryValue(targetKey);
+        //FIXME 汇总方式求平均时node.getSummaryValue(targetKey)拿不到值，只能算一下
+        if(targetKey.getTargetKey() instanceof AvgKey){
+            String targetName = targetKey.getTargetName();
+            AvgKey avgKey = (AvgKey) targetKey.getTargetKey();
+            TargetGettingKey sumGettingKey = new TargetGettingKey(avgKey.getSumKey(), targetName);
+            TargetGettingKey countGettingKey = new TargetGettingKey(avgKey.getCountKey(), targetName);
+            Number sumValue = node.getSummaryValue(sumGettingKey);
+            Number countValue = node.getSummaryValue(countGettingKey);
+            double avgValue = 0;
+            if (sumValue != null && countValue != null) {
+                avgValue = sumValue.doubleValue() / countValue.doubleValue();
+            }
+            targetValue = avgValue;
+        }
         return targetValue == null ? false : targetValue.doubleValue() <= nline;
     }
 }
