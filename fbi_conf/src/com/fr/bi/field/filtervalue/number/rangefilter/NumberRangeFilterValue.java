@@ -19,7 +19,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
-import com.fr.bi.field.target.key.sum.AvgKey;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -205,7 +204,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
 //        }
 //        return flag1 && flag2;
 //    }
-//    
+//
 
     /**
      * 是否显示记录
@@ -216,21 +215,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
      */
     @Override
     public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        //FIXME 汇总方式求平均时node.getSummaryValue(targetKey)拿不到值，只能算一下
         Number targetValue = node.getSummaryValue(targetKey);
-        if(targetKey.getTargetKey() instanceof AvgKey){
-            String targetName = targetKey.getTargetName();
-            AvgKey avgKey = (AvgKey) targetKey.getTargetKey();
-            TargetGettingKey sumGettingKey = new TargetGettingKey(avgKey.getSumKey(), targetName);
-            TargetGettingKey countGettingKey = new TargetGettingKey(avgKey.getCountKey(), targetName);
-            Number sumValue = node.getSummaryValue(sumGettingKey);
-            Number countValue = node.getSummaryValue(countGettingKey);
-            double avgValue = 0;
-            if (sumValue != null && countValue != null) {
-                avgValue = sumValue.doubleValue() / countValue.doubleValue();
-            }
-            targetValue = avgValue;
-        }
         if (targetValue == null) {
             return dealWithNullValue();
         }

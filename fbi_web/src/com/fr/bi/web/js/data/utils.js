@@ -4561,15 +4561,6 @@ Data.Utils = {
                 gridLineWidth: 0
             }];
 
-            var types = [];
-            BI.each(items, function (idx, axisItems) {
-                var type = [];
-                BI.each(axisItems, function (id, item) {
-                    type.push(BICst.WIDGET.LINE);
-                });
-                types.push(type);
-            });
-
             var yAxis = [];
             BI.each(types, function (idx, type) {
                 if (BI.isEmptyArray(type)) {
