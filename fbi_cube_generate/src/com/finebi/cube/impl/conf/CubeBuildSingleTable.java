@@ -83,24 +83,17 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
             }
         }
         //设置路径（关联）的依赖关系
-        setCubeGenerateRelationSet(inUseRelations, businessTable);
+        setCubeGenerateRelationSet(inUseRelations);
         setCubeGenerateRelationPathSet(inUsePaths);
     }
 
-    public void setCubeGenerateRelationSet(Set<BITableRelation> inUseRelations, BusinessTable businessTable) {
+    public void setCubeGenerateRelationSet(Set<BITableRelation> inUseRelations) {
         for (BITableRelation tableRelation : inUseRelations) {
             if (isRelationValid(tableRelation)) {
                 BITableSourceRelation convertRelation = convertRelation(tableRelation);
-                BICubeGenerateRelation generateRelation;
                 if (null != convertRelation) {
                     this.biTableSourceRelationSet.add(convertRelation);
-                    if (tableRelation.getPrimaryTable().getID().getIdentity().equals(businessTable.getID().getIdentity()) || tableRelation.getForeignTable().getID().getIdentity().equals(businessTable.getID().getIdentity())) {
-                        Set<CubeTableSource> dependTableSourceSet = new HashSet<CubeTableSource>();
-                        dependTableSourceSet.add(businessTable.getTableSource());
-                        generateRelation = new BICubeGenerateRelation(convertRelation, dependTableSourceSet);
-                    } else {
-                        generateRelation = new BICubeGenerateRelation(convertRelation);
-                    }
+                    BICubeGenerateRelation generateRelation = new BICubeGenerateRelation(convertRelation);
                     this.cubeGenerateRelationSet.add(generateRelation);
                 }
             }
