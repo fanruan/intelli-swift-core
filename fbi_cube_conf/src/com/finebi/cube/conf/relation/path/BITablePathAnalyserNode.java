@@ -58,7 +58,7 @@ public class BITablePathAnalyserNode extends BISetContainer<BITablePathAnalyserN
          * 获得全部的直接子节点；
          */
         Iterator<BITablePathAnalyserNode> childNodesIt = getContainer().iterator();
-        Set<BITableRelationPath> result = new HashSet<>();
+        Set<BITableRelationPath> result = new HashSet<BITableRelationPath>();
         registerScannedNode(scannedNodes,this);
         while (childNodesIt.hasNext()) {
             BITablePathAnalyserNode childNode = childNodesIt.next();
