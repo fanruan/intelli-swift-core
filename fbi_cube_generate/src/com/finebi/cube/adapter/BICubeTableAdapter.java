@@ -47,6 +47,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     private Map<BIKey, CubeColumnReaderService> columnReaderServiceMap = new ConcurrentHashMap<BIKey, CubeColumnReaderService>();
     private Map<BIKey, ICubeColumnDetailGetter> columnDetailReaderServiceMap = new ConcurrentHashMap<BIKey, ICubeColumnDetailGetter>();
     private static Map<String, Object> LOCKS = new ConcurrentHashMap<String, Object>();
+    private transient int rowCount = -1;
 
     public BICubeTableAdapter(Cube cube, CubeTableSource tableSource) {
         this.cube = cube;
@@ -177,7 +178,10 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public int getRowCount() {
-        return primaryTable.getRowCount();
+        if (rowCount == -1){
+            rowCount =  primaryTable.getRowCount();
+        }
+        return rowCount;
     }
 
     @Override
