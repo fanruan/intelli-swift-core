@@ -11,6 +11,7 @@ import com.finebi.cube.gen.arrange.BICubeOperationManager;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
+import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageTopic;
 import com.finebi.cube.impl.operate.BIOperationID;
@@ -84,7 +85,7 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
-        if (cubeBuild instanceof CubeBuildByPart) {
+        if (cubeBuild instanceof CubeBuildByPart||cubeBuild instanceof CubeBuildSingleTable) {
             copyOldCubesToTempCubes();
         }
     }

@@ -6,7 +6,7 @@ import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.stable.exception.*;
 import com.fr.bi.stable.utils.code.BILogger;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -24,7 +24,7 @@ public class BITablePathAnalyser {
 
     public Set<BITableRelationPath> getAllRelationPath(BusinessTable targetTailTable)
             throws BITableAbsentException, BITableRelationConfusionException, BITablePathConfusionException {
-        return currentNode.getAllRelationPath(new HashSet<BITablePathAnalyserNode>(), targetTailTable);
+        return currentNode.getAllRelationPath(new HashMap<>(), targetTailTable);
     }
 
     public void buildPathRelation(BITablePathAnalyser childPathAnalyser) {
