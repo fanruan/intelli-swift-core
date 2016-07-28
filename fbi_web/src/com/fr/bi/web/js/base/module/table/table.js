@@ -394,8 +394,10 @@ BI.Table = BI.inherit(BI.Widget, {
         }
 
         var regionColumnSize = o.regionColumnSize;
-        if (o.freezeCols.length === 0 || o.freezeCols.length >= o.columnSize.length) {
+        if (o.freezeCols.length === 0) {
             regionColumnSize = isRight ? ['fill', 0] : [0, 'fill'];
+        } else if (o.freezeCols.length >= o.columnSize.length) {
+            regionColumnSize = isRight ? [0, 'fill'] : ['fill', 0];
         }
         this.partitions = BI.createWidget(BI.extend({
             element: this.element
@@ -1888,7 +1890,14 @@ BI.Table = BI.inherit(BI.Widget, {
     setRegionColumnSize: function (columnSize) {
         var self = this, o = this.options;
         o.regionColumnSize = columnSize;
-        if (o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
+        if (o.freezeCols.length === 0) {
+            if (o.isNeedFreeze) {
+                this.partitions.attr("columnSize", this._isRightFreeze() ? ['fill', 0] : [0, 'fill']);
+                this.partitions.resize();
+            } else {
+                this.tableContainer.element.width(columnSize[0]);
+            }
+        } else if (o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
             if (o.isNeedFreeze) {
                 this.partitions.attr("columnSize", columnSize);
                 this.partitions.resize();
@@ -1897,7 +1906,7 @@ BI.Table = BI.inherit(BI.Widget, {
             }
         } else {
             if (o.isNeedFreeze) {
-                this.partitions.attr("columnSize", this._isRightFreeze() ? ['fill', 0] : [0, 'fill']);
+                this.partitions.attr("columnSize", this._isRightFreeze() ? [0, 'fill'] : ['fill', 0]);
                 this.partitions.resize();
             } else {
                 this.tableContainer.element.width(columnSize[0]);
