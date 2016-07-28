@@ -625,8 +625,12 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         }
                     }
                     if (BI.has(fId, "target_relation")) {
+                        var name = BI.Utils.getFieldNameByID(fId.field_id);
+                        if(BI.Utils.getFieldIsCircleByID(fId.field_id) === true){
+                            name = BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.target_relation[0]));
+                        }
                         return {
-                            name: BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.target_relation[0])),
+                            name: name,
                             _src: {
                                 id: fId.field_id,
                                 field_id: fId.field_id,
