@@ -10,8 +10,8 @@ import java.util.Set;
  * Created by kary on 2016/6/13.
  */
 public class BICubeGenerateRelationPath {
-    protected BITableSourceRelationPath biTableSourceRelationPath;
-    protected Set<BITableSourceRelationPath> dependRelationPathSet;
+    private BITableSourceRelationPath biTableSourceRelationPath;
+    private Set<BITableSourceRelationPath> dependRelationPathSet;
 
     public BITableSourceRelationPath getBiTableSourceRelationPath() {
         return biTableSourceRelationPath;
