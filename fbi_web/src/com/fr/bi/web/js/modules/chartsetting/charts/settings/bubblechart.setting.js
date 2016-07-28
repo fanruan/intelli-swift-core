@@ -143,6 +143,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             items: BI.createItems([{
                 type: "bi.label",
                 text: BI.i18nText("BI-Color_Setting"),
+                textHeight: this.constant.BUTTON_HEIGHT,
                 cls: "attr-names"
             }, {
                 type: "bi.center_adapt",
@@ -195,11 +196,10 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                         items: [this.rulesDisplay]
                     },
                    lgap: this.constant.SIMPLE_H_GAP
-                }, {
+                }, */{
                     type: "bi.center_adapt",
-                    items: [this.dimensionColor],
-                    lgap: 15
-                }, {
+                    items: [this.dimensionColor]
+                },/* {
                     type: "bi.center_adapt",
                     items: [this.addGradientButton],
                     lgap:15
@@ -628,21 +628,21 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
     _colorSettingChange: function (v) {
         switch(v) {
             case BICst.DISPLAY_RULES.DIMENSION:
-                this.dimensionColor.setVisible(true);
+                //this.dimensionColor.setVisible(true);
                 this.addConditionButton.setVisible(false);
                 this.fixedColorSetting.setVisible(false);
                 this.addGradientButton.setVisible(false);
                 this.gradientColorSetting.setVisible(false);
                 break;
             case BICst.DISPLAY_RULES.FIXED:
-                this.dimensionColor.setVisible(false);
+                //this.dimensionColor.setVisible(false);
                 this.addConditionButton.setVisible(true);
                 this.fixedColorSetting.setVisible(true);
                 this.addGradientButton.setVisible(false);
                 this.gradientColorSetting.setVisible(false);
                 break;
             case BICst.DISPLAY_RULES.GRADIENT:
-                this.dimensionColor.setVisible(false);
+                //this.dimensionColor.setVisible(false);
                 this.addConditionButton.setVisible(false);
                 this.fixedColorSetting.setVisible(false);
                 this.addGradientButton.setVisible(true);
