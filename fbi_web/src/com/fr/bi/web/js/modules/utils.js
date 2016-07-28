@@ -2072,7 +2072,8 @@
                                 type: BI.Selection.Multi,
                                 value: [value]
                             },
-                            _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
+                            // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
+                            _src: self.getDimensionSrcByID(dimensionIds[floor])
                         };
                         if (BI.isEmptyObject(child)) {
                             var filterObj = {
@@ -2177,7 +2178,7 @@
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
                 }
-                if(groupType === BICst.GROUP.ID_GROUP) {
+                if (groupType === BICst.GROUP.ID_GROUP) {
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
                         filter_value: {
@@ -2671,7 +2672,7 @@
                 case BICst.WIDGET.YMD:
                     if (BI.isNotNull(wValue)) {
                         var v = parseComplexDate(wValue);
-                        if(BI.isNotNull(v)){
+                        if (BI.isNotNull(v)) {
                             date = new Date(v);
                         }
                     }
