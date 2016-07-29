@@ -53,6 +53,10 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             type: BICst.SORT.ASC
                         };
                     }
+                    var tSort = self.get("sort");
+                    if(BI.isNotNull(tSort) && tSort.sort_target === key2) {
+                        self.set("sort", {}, {silent: true});
+                    }
                 }
             });
             var allIds = BI.keys(dimensions);

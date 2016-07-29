@@ -100,7 +100,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
                     axis.title.rotation = self.constants.ROTATION;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
-                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx);
+                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
 
                     break;
                 case self.constants.RIGHT_AXIS:
@@ -110,7 +110,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
                     axis.title.rotation = self.constants.ROTATION;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
-                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx);
+                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }
         });
@@ -143,7 +143,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
                         enabled: true,
                         formatter: {
                             identifier: "${VALUE}",
-                            valueFormat: "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}"
+                            valueFormat: config.yAxis[item.yAxis].formatter
                         }
                     };
                 }
@@ -233,7 +233,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
             })
         }
 
-        function formatNumberLevelInYaxis(type, position) {
+        function formatNumberLevelInYaxis(type, position, formatter) {
             var magnify = calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -250,7 +250,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.Widget, {
                 });
                 if (position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     item.tooltip = BI.deepClone(config.plotOptions.tooltip);
-                    item.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    item.tooltip.formatter.valueFormat = formatter;
                 }
             });
         }
