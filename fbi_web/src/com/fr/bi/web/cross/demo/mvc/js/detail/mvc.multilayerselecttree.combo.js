@@ -10,7 +10,7 @@ MultiLayerSelectTreeComboView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
-        var items = BI.deepClone(TREE);
+        var items = BI.deepClone(TREEWITHCHILDREN);
         var combo = BI.createWidget({
             type: "bi.multilayer_select_tree_combo"
         });
