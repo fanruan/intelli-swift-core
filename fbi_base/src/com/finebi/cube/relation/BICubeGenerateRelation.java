@@ -19,7 +19,9 @@ public class BICubeGenerateRelation {
 
     public BICubeGenerateRelation(BITableSourceRelation relation) {
         this.relation = relation;
-        this.dependTableSourceSet=new HashSet<CubeTableSource>();
+        this.dependTableSourceSet = new HashSet<CubeTableSource>();
+        this.dependTableSourceSet.add(relation.getForeignTable());
+        this.dependTableSourceSet.add(relation.getPrimaryTable());
     }
 
     public Set<CubeTableSource> getDependTableSourceSet() {

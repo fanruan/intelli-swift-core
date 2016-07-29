@@ -7,6 +7,7 @@ import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -38,7 +39,8 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     private Set<BITableSourceRelationPath> biTableSourceRelationPathSet = new HashSet<BITableSourceRelationPath>();
     private Set<BICubeGenerateRelationPath> cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
     private Set<BICubeGenerateRelation> cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
-
+    private Set<BITableRelation> inUseRelations = new HashSet<BITableRelation>();
+    private Set<BITableRelationPath> inUsePaths = new HashSet<BITableRelationPath>();
 
     public CubeBuildSingleTable(BusinessTable businessTable, long userId) {
         super(userId);
@@ -64,8 +66,13 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         Set<BITableRelation> generatedRelations = getGeneratedRelations();
         Set<BITableRelationPath> generatedPaths = getGeneratedPaths(generatedRelations);
         //遍历所有路径，能链到该表的关联（路径）都要被更新
-        Set<BITableRelation> inUseRelations = new HashSet<BITableRelation>();
-        Set<BITableRelationPath> inUsePaths = new HashSet<BITableRelationPath>();
+        calculateAllRelationsAndPaths(businessTable, generatedRelations, generatedPaths);
+        //设置路径（关联）的依赖关系
+        setCubeGenerateRelationSet(inUseRelations,businessTable);
+        setCubeGenerateRelationPathSet(inUsePaths);
+    }
+
+    private void calculateAllRelationsAndPaths(BusinessTable businessTable, Set<BITableRelation> generatedRelations, Set<BITableRelationPath> generatedPaths) {
         for (BITableRelation tableRelation : generatedRelations) {
             if (tableRelation.getPrimaryTable().getID().getIdentity().equals(businessTable.getID().getIdentity()) || tableRelation.getForeignTable().getID().getIdentity().equals(businessTable.getID().getIdentity())) {
                 inUseRelations.add(tableRelation);
@@ -82,25 +89,19 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                 inUseRelations.add(biTableRelation);
             }
         }
-        //设置路径（关联）的依赖关系
-        setCubeGenerateRelationSet(inUseRelations, businessTable);
-        setCubeGenerateRelationPathSet(inUsePaths);
     }
 
     public void setCubeGenerateRelationSet(Set<BITableRelation> inUseRelations, BusinessTable businessTable) {
         for (BITableRelation tableRelation : inUseRelations) {
             if (isRelationValid(tableRelation)) {
                 BITableSourceRelation convertRelation = convertRelation(tableRelation);
-                BICubeGenerateRelation generateRelation;
                 if (null != convertRelation) {
                     this.biTableSourceRelationSet.add(convertRelation);
-                    if (tableRelation.getPrimaryTable().getID().getIdentity().equals(businessTable.getID().getIdentity()) || tableRelation.getForeignTable().getID().getIdentity().equals(businessTable.getID().getIdentity())) {
+
                         Set<CubeTableSource> dependTableSourceSet = new HashSet<CubeTableSource>();
-                        dependTableSourceSet.add(businessTable.getTableSource());
-                        generateRelation = new BICubeGenerateRelation(convertRelation, dependTableSourceSet);
-                    } else {
-                        generateRelation = new BICubeGenerateRelation(convertRelation);
-                    }
+                        dependTableSourceSet.add(BusinessTableHelper.getTableDataSource(businessTable.getID()));
+                    BICubeGenerateRelation generateRelation = new BICubeGenerateRelation(convertRelation, dependTableSourceSet);
+
                     this.cubeGenerateRelationSet.add(generateRelation);
                 }
             }
@@ -124,7 +125,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         Set<BITableRelationPath> generatedRelationPaths = new HashSet<BITableRelationPath>();
         for (BITableRelationPath tableRelationPath : allRelationPathSet) {
             boolean flag = true;
-            if (tableRelationPath.size() ==  BIRelationUtils.PATH_NULL||tableRelationPath.size() ==  BIRelationUtils.PATH_RELATION) {
+            if (tableRelationPath.size() == BIRelationUtils.PATH_NULL || tableRelationPath.size() == BIRelationUtils.PATH_RELATION) {
                 flag = false;
             }
             for (BITableRelation tableRelation : tableRelationPath.getAllRelations()) {
@@ -190,7 +191,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
 
 
     public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
-        return new HashSet<BITableSourceRelationPath>();
+        return biTableSourceRelationPathSet;
     }
 
 
@@ -210,17 +211,17 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
 
     @Override
     public Set<BITableRelation> getTableRelationSet() {
-        return new HashSet<BITableRelation>();
+        return inUseRelations;
     }
 
     @Override
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
-        return new HashSet<BICubeGenerateRelationPath>();
+        return this.cubeGenerateRelationPathSet;
     }
 
     @Override
     public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
-        return new HashSet<BICubeGenerateRelation>();
+        return this.cubeGenerateRelationSet;
     }
 
     @Override
@@ -243,7 +244,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
      */
     @Override
     public Set<BITableSourceRelation> getTableSourceRelationSet() {
-        return new HashSet<BITableSourceRelation>();
+        return this.biTableSourceRelationSet;
     }
 
 
