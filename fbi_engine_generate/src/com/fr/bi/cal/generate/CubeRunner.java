@@ -1,17 +1,13 @@
 package com.fr.bi.cal.generate;
 
-import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
-import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -177,44 +173,14 @@ public class CubeRunner {
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         long start = System.currentTimeMillis();
         BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
-        replaceOldCubes();
+
         setStatue(Status.LOADED);
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
         BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
     }
 
-    private void replaceOldCubes() {
-        try {
-            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
-            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-            BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            BIFileUtils.moveFile(tempConf.getRootURI().getPath(), advancedConf.getRootURI().getPath());
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
-        } finally {
-            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
-//            BIFactoryHelper.getObject(ICubeDataLoader.class, UserControl.getInstance().getSuperManagerID()).clear();
-            CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
-        }
-    }
 
-
-//    private void copyOldCubesToTempCubes() {
-//        try {
-//            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
-//            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-//            if (new File(tempConf.getRootURI().getPath()).exists()){
-//                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
-//            }
-//            if (new File(advancedConf.getRootURI().getPath()).exists()) {
-//                BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
-//            }
-//        } catch (Exception e) {
-//            BILogger.getLogger().error(e.getMessage());
-//        }
-//
-//    }
 
     public CubeBuildStaff getCubeGeneratingObjects() {
         if (object == null) {
