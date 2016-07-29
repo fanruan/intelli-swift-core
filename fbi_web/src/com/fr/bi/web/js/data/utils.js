@@ -70,7 +70,7 @@ Data.Utils = {
             var subType = widget.sub_type || BICst.MAP_TYPE.CHINA;
             options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
             var drill = BI.values(getDrill())[0];
-            BI.each(drill, function(idx, dri){
+            BI.each(drill, function (idx, dri) {
                 options.initDrillPath.push(dri.values[0].value[0]);
             });
             options.geo = {
@@ -859,11 +859,11 @@ Data.Utils = {
                     });
                     t.push(type);
                 });
-                BI.each(data, function(idx, item){
-                    BI.each(item, function(id, it){
-                        if(idx > 0){
+                BI.each(data, function (idx, item) {
+                    BI.each(item, function (id, it) {
+                        if (idx > 0) {
                             BI.extend(it, {reversed: true, xAxis: 1});
-                        }else{
+                        } else {
                             BI.extend(it, {reversed: false, xAxis: 0});
                         }
                     });
@@ -879,11 +879,11 @@ Data.Utils = {
                     });
                     t.push(type);
                 });
-                BI.each(data, function(idx, item){
-                    BI.each(item, function(id, it){
-                        if(idx > 0){
+                BI.each(data, function (idx, item) {
+                    BI.each(item, function (id, it) {
+                        if (idx > 0) {
                             BI.extend(it, {reversed: true, xAxis: 1});
-                        }else{
+                        } else {
                             BI.extend(it, {reversed: false, xAxis: 0});
                         }
                     });
@@ -1333,10 +1333,10 @@ Data.Utils = {
             configs.chartType = "areaMap";
             delete configs.xAxis;
             delete configs.yAxis;
-            var find = BI.find(items, function(idx, item){
+            var find = BI.find(items, function (idx, item) {
                 return BI.has(item, "type") && item.type === "areaMap";
             });
-            if(BI.isNull(find)){
+            if (BI.isNull(find)) {
                 items.push({
                     type: "areaMap",
                     data: []
@@ -1366,8 +1366,8 @@ Data.Utils = {
                 }
                 configs.rangeLegend.continuous = false;
 
-                configs.rangeLegend.range = getRangeStyle(config.map_styles , config.auto_custom , config.theme_color);
-                configs.rangeLegend.formatter = function(){
+                configs.rangeLegend.range = getRangeStyle(config.map_styles, config.auto_custom, config.theme_color);
+                configs.rangeLegend.formatter = function () {
                     return this.to;
                 }
             }
@@ -1456,9 +1456,7 @@ Data.Utils = {
             }
 
             function _calculateValueNiceDomain(minValue, maxValue) {
-
                 minValue = Math.min(0, minValue);
-
                 var tickInterval = _linearTickInterval(minValue, maxValue);
 
                 return _linearNiceDomain(minValue, maxValue, tickInterval);
@@ -1477,11 +1475,8 @@ Data.Utils = {
             }
 
             function _linearNiceDomain(minValue, maxValue, tickInterval) {
-
                 minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
-
                 maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
-
                 return [minValue, maxValue];
             }
         }
@@ -1657,16 +1652,16 @@ Data.Utils = {
 
             function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
-                            if(!BI.isNumber(da.x)){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
+                            if (!BI.isNumber(da.x)) {
                                 da.x = BI.parseFloat(da.x);
                             }
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
                             da.x = da.x.toFixed(constants.FIX_COUNT);
-                            if(constants.MINLIMIT.sub(da.x) > 0){
+                            if (constants.MINLIMIT.sub(da.x) > 0) {
                                 da.x = 0;
                             }
                         })
@@ -1680,13 +1675,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                                 da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
@@ -1925,16 +1920,16 @@ Data.Utils = {
 
             function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
-                            if(!BI.isNumber(da.x)){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
+                            if (!BI.isNumber(da.x)) {
                                 da.x = BI.parseFloat(da.x);
                             }
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
                             da.x = da.x.toFixed(constants.FIX_COUNT);
-                            if(constants.MINLIMIT.sub(da.x) > 0){
+                            if (constants.MINLIMIT.sub(da.x) > 0) {
                                 da.x = 0;
                             }
                         })
@@ -1948,13 +1943,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                                 da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
@@ -2141,13 +2136,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                                 da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
@@ -2508,13 +2503,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                                 da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
@@ -2875,16 +2870,16 @@ Data.Utils = {
 
             function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
-                            if(!BI.isNumber(da.x)){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
+                            if (!BI.isNumber(da.x)) {
                                 da.x = BI.parseFloat(da.x);
                             }
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
                             da.x = da.x.toFixed(constants.FIX_COUNT);
-                            if(constants.MINLIMIT.sub(da.x) > 0){
+                            if (constants.MINLIMIT.sub(da.x) > 0) {
                                 da.x = 0;
                             }
                         })
@@ -3119,16 +3114,16 @@ Data.Utils = {
 
             function formatNumberLevelInXaxis(type) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
-                            if(!BI.isNumber(da.x)){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
+                            if (!BI.isNumber(da.x)) {
                                 da.x = BI.parseFloat(da.x);
                             }
                             da.x = da.x || 0;
                             da.x = da.x.div(magnify);
                             da.x = da.x.toFixed(constants.FIX_COUNT);
-                            if(constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
+                            if (constants.MINLIMIT.sub(Math.abs(da.x)) > 0) {
                                 da.x = 0;
                             }
                         })
@@ -3366,7 +3361,7 @@ Data.Utils = {
                 if (magnify > 1) {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
-                            if(!BI.isNumber(da.x)){
+                            if (!BI.isNumber(da.x)) {
                                 da.x = BI.parseFloat(da.x);
                             }
                             da.x = da.x || 0;
@@ -3602,13 +3597,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                                 da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
@@ -3834,13 +3829,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                                 da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
@@ -3957,10 +3952,15 @@ Data.Utils = {
                 gridLineWidth: 0
             }, {
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: "top",
                 gridLineWidth: 0,
@@ -4190,7 +4190,7 @@ Data.Utils = {
                     var max = null;
                     BI.each(item.data, function (id, da) {
                         if (position === item.yAxis) {
-                            if(!BI.isNumber(da.y)){
+                            if (!BI.isNumber(da.y)) {
                                 da.y = BI.parseFloat(da.y);
                             }
                             da.y = da.y || 0;
@@ -4199,7 +4199,7 @@ Data.Utils = {
                             if (constants.MINLIMIT.sub(da.y) > 0) {
                                 da.y = 0;
                             }
-                            if((BI.isNull(max) || BI.parseFloat(da.y) > BI.parseFloat(max))){
+                            if ((BI.isNull(max) || BI.parseFloat(da.y) > BI.parseFloat(max))) {
                                 max = da.y;
                             }
                         }
@@ -4451,13 +4451,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                                 da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
@@ -4561,15 +4561,6 @@ Data.Utils = {
                 gridLineWidth: 0
             }];
 
-            var types = [];
-            BI.each(items, function (idx, axisItems) {
-                var type = [];
-                BI.each(axisItems, function (id, item) {
-                    type.push(BICst.WIDGET.LINE);
-                });
-                types.push(type);
-            });
-
             var yAxis = [];
             BI.each(types, function (idx, type) {
                 if (BI.isEmptyArray(type)) {
@@ -4649,12 +4640,10 @@ Data.Utils = {
                         break;
                 }
             });
-            configs.xAxis[0].title.text = config.x_axis_title;
             configs.xAxis[0].labelRotation = config.text_direction;
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
-            config.chartType = "line";
 
             return BI.extend(configs, {
                 series: items
@@ -4727,7 +4716,7 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
@@ -5012,7 +5001,7 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
@@ -5192,17 +5181,17 @@ Data.Utils = {
 
             function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
-                            if(position === item.yAxis){
-                                if(!BI.isNumber(da.y)){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
+                            if (position === item.yAxis) {
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                                 da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
@@ -5375,17 +5364,17 @@ Data.Utils = {
 
             function formatNumberLevelInYaxis(type, position) {
                 var magnify = calcMagnify(type);
-                if(magnify > 1){
-                    BI.each(items, function(idx, item){
-                        BI.each(item.data, function(id, da){
-                            if(position === item.yAxis){
-                                if(!BI.isNumber(da.y)){
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
+                            if (position === item.yAxis) {
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                                 da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
@@ -5631,13 +5620,13 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;
                                 da.y = da.y.div(magnify);
                                 da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if(constants.MINLIMIT.sub(da.y) > 0){
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
                                     da.y = 0;
                                 }
                             }
@@ -5962,7 +5951,7 @@ Data.Utils = {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if(!BI.isNumber(da.y)){
+                                if (!BI.isNumber(da.y)) {
                                     da.y = BI.parseFloat(da.y);
                                 }
                                 da.y = da.y || 0;

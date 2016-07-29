@@ -2,6 +2,7 @@ package com.finebi.cube.relation;
 
 import com.fr.bi.stable.data.source.CubeTableSource;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -14,6 +15,13 @@ public class BICubeGenerateRelation {
     public BICubeGenerateRelation(BITableSourceRelation biTableSourceRelation, Set<CubeTableSource> cubeTableSourceSet) {
         this.relation = biTableSourceRelation;
         this.dependTableSourceSet = cubeTableSourceSet;
+    }
+
+    public BICubeGenerateRelation(BITableSourceRelation relation) {
+        this.relation = relation;
+        this.dependTableSourceSet = new HashSet<CubeTableSource>();
+        this.dependTableSourceSet.add(relation.getForeignTable());
+        this.dependTableSourceSet.add(relation.getPrimaryTable());
     }
 
     public Set<CubeTableSource> getDependTableSourceSet() {

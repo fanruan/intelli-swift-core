@@ -173,7 +173,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
             height: this.constants.INPUT_HEIGHT
         });
         oldCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
-            self.model.setOriginalCharsetName(this.getValue());
+            self.model.setOriginalCharsetName(this.getValue()[0]);
             self._toggleSchemaStatus(false);
         });
         oldCodeCombo.setValue(this.model.getOriginalCharsetName() || "");
@@ -187,7 +187,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
             height: this.constants.INPUT_HEIGHT
         });
         newCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
-            self.model.setNewCharsetName(this.getValue());
+            self.model.setNewCharsetName(this.getValue()[0]);
             self._toggleSchemaStatus(false);
         });
         newCodeCombo.setValue(this.model.getNewCharsetName() || "");
