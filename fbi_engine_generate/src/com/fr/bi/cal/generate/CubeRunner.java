@@ -181,7 +181,6 @@ public class CubeRunner {
     }
 
 
-
     public CubeBuildStaff getCubeGeneratingObjects() {
         if (object == null) {
             object = new CubeBuildStaff(biUser);
