@@ -20,7 +20,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         theme_color: "#65bce7",
         auto_custom: 1,
         FIX_COUNT: 6,
-        MINLIMIT: 1e-6
+        MINLIMIT: 1e-5
     },
 
     _defaultConfig: function () {

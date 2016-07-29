@@ -16,7 +16,7 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
         ZERO2POINT: 2,
         ONE2POINT: 3,
         TWO2POINT: 4,
-        MINLIMIT: 1e-6,
+        MINLIMIT: 1e-5,
         LEGEND_HEIGHT: 80,
         FIX_COUNT: 6
     },

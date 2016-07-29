@@ -17,7 +17,7 @@ BI.FallAxisChart = BI.inherit(BI.Widget, {
         ONE2POINT: 3,
         TWO2POINT: 4,
         STYLE_NORMAL: 21,
-        MINLIMIT: 1e-6,
+        MINLIMIT: 1e-5,
         FIX_COUNT: 6
     },
 

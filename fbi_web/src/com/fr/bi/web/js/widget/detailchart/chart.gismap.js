@@ -20,7 +20,7 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         LNG_FIRST: 3,
         LAT_FIRST: 4,
         FIX_COUNT: 6,
-        MINLIMIT: 1e-6
+        MINLIMIT: 1e-5
     },
 
     _defaultConfig: function () {
