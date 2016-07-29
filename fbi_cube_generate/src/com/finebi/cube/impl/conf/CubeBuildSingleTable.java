@@ -81,27 +81,27 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         for (BITableRelationPath path : generatedPaths) {
             for (BITableRelation tableRelation : path.getAllRelations()) {
                 if (inUseRelations.contains(tableRelation)) {
+                    inUsePaths.add(path);
+                    for (BITableRelation biTableRelation : path.getAllRelations()) {
+                        inUseRelations.add(biTableRelation);
+                    }
                     break;
                 }
             }
-            inUsePaths.add(path);
-            for (BITableRelation biTableRelation : path.getAllRelations()) {
-                inUseRelations.add(biTableRelation);
-            }
+
         }
     }
 
     public void setCubeGenerateRelationSet(Set<BITableRelation> inUseRelations, BusinessTable businessTable) {
         for (BITableRelation tableRelation : inUseRelations) {
             if (isRelationValid(tableRelation)) {
-                BITableSourceRelation convertRelation = convertRelation(tableRelation);
+                BITableRelation tempTableRelation=new BITableRelation(tableRelation.getPrimaryField(),tableRelation.getForeignField());
+                BITableSourceRelation convertRelation = convertRelation(tempTableRelation);
                 if (null != convertRelation) {
                     this.biTableSourceRelationSet.add(convertRelation);
-
                         Set<CubeTableSource> dependTableSourceSet = new HashSet<CubeTableSource>();
                         dependTableSourceSet.add(BusinessTableHelper.getTableDataSource(businessTable.getID()));
                     BICubeGenerateRelation generateRelation = new BICubeGenerateRelation(convertRelation, dependTableSourceSet);
-
                     this.cubeGenerateRelationSet.add(generateRelation);
                 }
             }
