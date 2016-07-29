@@ -176,9 +176,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 };
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
-                break;
             case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
                     el: item[this.constants.CordonPos][0],
@@ -188,6 +186,37 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+                break;
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                item[this.constants.CordonPos][0].cls = "";
+                item[this.constants.CordonPos][0] = {
+                    el: item[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                item[0][this.constants.CHART_TYPE_POSITION] = {
+                    el: {
+                        text: BI.i18nText("BI-Chart_Type"),
+                        value: BICst.TARGET_COMBO.CHART_TYPE,
+                        iconCls1: "",
+                        disabled: false
+                    },
+                    children: [{
+                        text: BI.i18nText("BI-Column_Chart"),
+                        value: BICst.WIDGET.AXIS,
+                        cls: "dot-e-font"
+                    }, {
+                        text: BI.i18nText("BI-Line_Chart"),
+                        value: BICst.WIDGET.LINE,
+                        cls: "dot-e-font"
+                    }, {
+                        text: BI.i18nText("BI-Area_Chart"),
+                        value: BICst.WIDGET.AREA,
+                        cls: "dot-e-font"
+                    }]
+                };
                 break;
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.BUBBLE:
