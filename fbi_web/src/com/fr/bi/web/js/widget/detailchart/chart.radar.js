@@ -78,7 +78,7 @@ BI.RadarChart = BI.inherit(BI.Widget, {
 
         config.radiusAxis = this.radiusAxis;
         config.radiusAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.LEFT_AXIS);
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
+        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.radiusAxis[0].formatter);
         config.radiusAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.radiusAxis[0].title.text : config.radiusAxis[0].title.text;
         config.radiusAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
@@ -95,7 +95,7 @@ BI.RadarChart = BI.inherit(BI.Widget, {
                         enabled: true,
                         formatter: {
                             identifier: "${VALUE}",
-                            valueFormat: "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}"
+                            valueFormat: config.radiusAxis[0].formatter
                         }
                     };
                 }
@@ -124,7 +124,7 @@ BI.RadarChart = BI.inherit(BI.Widget, {
             }
         }
 
-        function formatNumberLevelInYaxis(type, position){
+        function formatNumberLevelInYaxis(type, position, formatter){
             var magnify = calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -141,7 +141,7 @@ BI.RadarChart = BI.inherit(BI.Widget, {
                 })
             });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                config.plotOptions.tooltip.formatter.valueFormat = formatter;
             }
         }
 

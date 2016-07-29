@@ -69,7 +69,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             var bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
             var valueLabel = {
                 formatter : {
-                    identifier : "${CATEGORY}${VALUE}"
+                    identifier : "${CATEGORY}${SERIES}${VALUE}"
                 }
             };
             var percentageLabel = {
@@ -99,7 +99,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     BI.extend(valueLabel , {
                         align : "left"
                     });
-                    setPlotOptions("thermometer" , bands , valueLabel , percentageLabel , "vertical" , "vertical" );
+                    setPlotOptions("thermometer" , bands , valueLabel , percentageLabel , "vertical" , "horizontal" );
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:

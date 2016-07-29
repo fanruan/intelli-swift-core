@@ -83,8 +83,8 @@ BI.ChartCombineFormatItemFactory = {
                         "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                         "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
                     },
                     "align": "outside",
@@ -151,9 +151,9 @@ BI.ChartCombineFormatItemFactory = {
                         "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                         "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                        "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
                     },
                     "shared": false,
                     "padding": 5,
