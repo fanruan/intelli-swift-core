@@ -1266,7 +1266,7 @@ Data.Utils = {
                     }
                 });
                 var t = [];
-                BI.each(items, function (idx, axisItems) {
+                BI.each(results, function (idx, axisItems) {
                     var type = [];
                     BI.each(axisItems, function () {
                         type.push(BICst.WIDGET.GIS_MAP);
