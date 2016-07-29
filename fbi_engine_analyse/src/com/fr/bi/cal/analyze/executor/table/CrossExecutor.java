@@ -5,8 +5,6 @@ import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.field.BITargetAndDimensionUtils;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -14,6 +12,9 @@ import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
+import com.fr.bi.field.BITargetAndDimensionUtils;
+import com.fr.bi.field.dimension.dimension.BIAbstractDimension;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -285,12 +286,12 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             cell.setRow(i);
             cell.setColumnSpan(Math.max(1, this.rowDimension.length + widget.isOrder()));
             cell.setRowSpan(1);
-            cell.setValue(colDimension[i].getValue());
+            cell.setValue(((BIAbstractDimension) colDimension[i]).getText());
             cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(i));
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setName(colDimension[i].getValue());
+            cbox.setName(((BIAbstractDimension) colDimension[i]).getText());
             cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_X);
             if (!isColTargetSort) {
                 cbox.setSortType(colDimension[i].getSortType());
@@ -307,12 +308,12 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             cell.setRow(colDimension.length);
             cell.setColumnSpan(1);
             cell.setRowSpan(1);
-            cell.setValue(rowDimension[i].getValue());
+            cell.setValue(((BIAbstractDimension) rowDimension[i]).getText());
             cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(1));
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setName(rowDimension[i].getValue());
+            cbox.setName(((BIAbstractDimension) rowDimension[i]).getText());
             cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_Y);
             if (!isRowTargetSort) {
                 cbox.setSortType(rowDimension[i].getSortType());

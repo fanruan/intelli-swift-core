@@ -36,10 +36,15 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
             BI.each(filterValue, function (id, filter) {
                 !allIds.contains(id) && delete filterValue[id];
             });
+            var sortSequence = this.get("sort_sequence") || [];
+            BI.remove(sortSequence, function(i, item) {
+                return item === key2;
+            });
             this.set({
                 view: views,
                 dimensions: dimensions,
-                filter_value: filterValue
+                filter_value: filterValue,
+                sort_sequence: sortSequence
             });
         }
         if (key1 === "dimensions") {
