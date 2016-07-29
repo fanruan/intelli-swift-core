@@ -153,9 +153,12 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.COMPARE_AREA:
             case BICst.WIDGET.RANGE_AREA:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-                item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
-                    el: item[this.constants.CordonPos][0],
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
@@ -166,9 +169,12 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
-                item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
-                    el: item[this.constants.CordonPos][0],
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Vertical") + ")",
                         value: BICst.TARGET_COMBO.CORDON
@@ -177,9 +183,12 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
-                item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
-                    el: item[this.constants.CordonPos][0],
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
@@ -188,9 +197,12 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
                 break;
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
-                    el: item[this.constants.CordonPos][0],
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
@@ -233,9 +245,12 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                         return item;
                 }
-                item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
-                    el: item[this.constants.CordonPos][0],
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + text + ")",
                         value: BICst.TARGET_COMBO.CORDON
