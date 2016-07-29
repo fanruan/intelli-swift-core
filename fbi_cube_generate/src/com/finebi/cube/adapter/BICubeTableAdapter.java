@@ -59,6 +59,11 @@ public class BICubeTableAdapter implements ICubeTableService {
                 initial(tableSourceIterator.next());
             }
         }
+        initData();
+    }
+
+    private void initData() {
+        rowCount =  primaryTable.getRowCount();
     }
 
     private void initial(CubeTableSource tableSource) {
@@ -178,9 +183,6 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public int getRowCount() {
-        if (rowCount == -1){
-            rowCount =  primaryTable.getRowCount();
-        }
         return rowCount;
     }
 
