@@ -3,24 +3,7 @@
  * @extends BI.Widget
  * 柱状，堆积柱状，组合图样式
  */
-BI.MapSetting = BI.inherit(BI.Widget, {
-    constant: {
-        SINGLE_LINE_HEIGHT: 60,
-        SIMPLE_H_GAP: 10,
-        SIMPLE_L_GAP: 5,
-        SIMPLE_H_LGAP: 5,
-        CHECKBOX_WIDTH: 16,
-        EDITOR_WIDTH: 80,
-        EDITOR_HEIGHT: 26,
-        BUTTON_WIDTH: 40,
-        BUTTON_HEIGHT: 30,
-        ICON_WIDTH: 24,
-        ICON_HEIGHT: 24,
-        NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240,
-        LEGEND_SEGMENT_WIDTH: 180,
-        CONDITIONS_HEIGHT: 200
-    },
+BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.MapSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -30,7 +13,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.MapSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
 
         //主题颜色
         this.colorChooser = BI.createWidget({
@@ -60,7 +43,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Chart_Table_Style"),
-                lgap: this.constant.SIMPLE_L_GAP,
+                lgap: 5,
                 textAlign: "left",
                 textHeight: 60,
                 cls: "line-title"
@@ -70,7 +53,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
                 items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Theme_Color"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: 0,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -114,7 +97,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
             height: this.constant.BUTTON_HEIGHT
         });
 
-        this.addConditionButton.on(BI.Button.EVENT_CHANGE , function () {
+        this.addConditionButton.on( BI.Button.EVENT_CHANGE , function () {
             self.conditions.addItem();
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
@@ -153,7 +136,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Interval_Setting"),
                 textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
-                lgap: this.constant.SIMPLE_L_GAP,
+                lgap: 5,
                 cls: "line-title"
             } , interval]
         });

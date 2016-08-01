@@ -3,23 +3,7 @@
  * @extends BI.Widget
  * 范围面积样式
  */
-BI.RangeAreaChartsSetting = BI.inherit(BI.Widget, {
-
-    constant: {
-        SINGLE_LINE_HEIGHT: 60,
-        SIMPLE_H_GAP: 10,
-        SIMPLE_L_GAP: 2,
-        SIMPLE_H_LGAP: 5,
-        CHECKBOX_WIDTH: 16,
-        EDITOR_WIDTH: 80,
-        EDITOR_HEIGHT: 26,
-        BUTTON_WIDTH: 40,
-        BUTTON_HEIGHT: 30,
-        ICON_WIDTH: 24,
-        ICON_HEIGHT: 24,
-        NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240
-    },
+BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.RangeAreaChartsSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -29,7 +13,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.RangeAreaChartsSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -223,12 +207,11 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.Widget, {
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
+            cls: "single-line-settings",
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                lgap: this.constant.SIMPLE_H_LGAP,
-                textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -290,7 +273,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.Widget, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
                 lgap: this.constant.SIMPLE_H_LGAP,
                 text: BI.i18nText("BI-Value_Axis"),
@@ -352,7 +335,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.Widget, {
                 }, this.transferFilter]
             },
             height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            lhgap: 15
         });
 
         BI.createWidget({

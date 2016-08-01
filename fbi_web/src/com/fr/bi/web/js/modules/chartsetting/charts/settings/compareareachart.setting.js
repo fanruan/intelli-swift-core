@@ -3,24 +3,7 @@
  * @extends BI.Widget
  * 对比柱状样式
  */
-BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
-
-    constant: {
-        SINGLE_LINE_HEIGHT: 60,
-        SIMPLE_H_GAP: 10,
-        SIMPLE_L_GAP: 2,
-        SIMPLE_H_LGAP: 5,
-        CHECKBOX_WIDTH: 16,
-        EDITOR_WIDTH: 80,
-        EDITOR_HEIGHT: 26,
-        BUTTON_WIDTH: 40,
-        BUTTON_HEIGHT: 30,
-        ICON_WIDTH: 24,
-        ICON_HEIGHT: 24,
-        NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240,
-        LEGEND_SEGMENT_WIDTH: 180
-    },
+BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.CompareAreaChartsSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -30,7 +13,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.CompareAreaChartsSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -89,7 +72,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Sheet_Style"),
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
@@ -380,7 +363,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Element_Show"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -420,7 +403,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Category_Axis"),
                 lgap: this.constant.SIMPLE_H_LGAP,
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -458,7 +441,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 text: BI.i18nText("BI-Positive_Value_Axis"),
@@ -505,7 +488,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 text: BI.i18nText("BI-Negative_Value_Axis"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",

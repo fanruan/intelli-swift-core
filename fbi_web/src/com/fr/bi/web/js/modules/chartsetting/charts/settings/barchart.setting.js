@@ -3,24 +3,7 @@
  * @extends BI.Widget
  * 条形，堆积条形，对比条形样式
  */
-BI.BarChartsSetting = BI.inherit(BI.Widget, {
-
-    constant: {
-        SINGLE_LINE_HEIGHT: 60,
-        SIMPLE_H_GAP: 10,
-        SIMPLE_H_LGAP: 5,
-        SIMPLE_L_GAP: 2,
-        CHECKBOX_WIDTH: 16,
-        EDITOR_WIDTH: 80,
-        EDITOR_HEIGHT: 26,
-        BUTTON_WIDTH: 40,
-        BUTTON_HEIGHT: 30,
-        ICON_WIDTH: 24,
-        ICON_HEIGHT: 24,
-        NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240,
-        LEGEND_SEGMENT_WIDTH: 180
-    },
+BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.BarChartsSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -30,7 +13,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.BarChartsSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -243,7 +226,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Element_Show"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -277,7 +260,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Category_Axis"),
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 lgap: this.constant.SIMPLE_H_LGAP,
                 cls: "line-title"
             }, {
@@ -316,7 +299,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 height: "100%",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 text: BI.i18nText("BI-Value_Axis"),
                 textAlign: "left",
                 lgap: this.constant.SIMPLE_H_LGAP,

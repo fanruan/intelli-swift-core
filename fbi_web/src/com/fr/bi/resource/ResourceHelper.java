@@ -1313,7 +1313,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/dimensiontreecombo/dimensiontree.trigger.js",
 
                 //表格属性设置
-                "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart/addcondition/combo/chart.gradientcolor.combo.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/gradientcolor/chart.gradientcolor.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.item.js",
@@ -1329,6 +1329,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/widget.chartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/abstractchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/axischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/bubblechart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/multiaxischart.setting.js",
