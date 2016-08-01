@@ -3,20 +3,7 @@
  * Created by Fay on 2016/7/7.
  */
 BI.DataLabelImageSet = BI.inherit(BI.Widget, {
-    _defaultImg: [
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png",
-        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=a612d1c1-84c4-4263-a14e-e5dd47808134_QQ截图20160720153437.png"
-    ],
+    _defaultImg: [ ],
 
     _img: [ ],
 
@@ -96,10 +83,10 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     },
 
     _createPanelOne: function () {
-        var imgs = this._createDefaultImgs();
+        this.imgs = this._createDefaultImgs();
         return BI.createWidget({
             type: "bi.vertical",
-            items: [imgs],
+            items: [this.imgs],
             tgap: 2,
             lgap: 3
         })
@@ -107,11 +94,11 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
 
     _createPanelTwo: function () {
         var header = this._createHeader();
-        var imgs = this._createImgs();
+        this.imgs = this._createImgs();
         return BI.createWidget({
             type: "bi.vertical",
             items: [header, {
-                el: imgs,
+                el: this.imgs,
                 tgap: 2,
                 lgap: 3,
             }]
@@ -151,7 +138,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             }, function (res) {
                 if (self._img.length < 14) {
                     self._img.push(src);
-                    self._refresh();
+                    self.populate();
                     self.tabs.setSelect(2);
                 }
             })
@@ -233,7 +220,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                         height: 14,
                         handler: function () {
                             self._img.splice(i, 1);
-                            self._refresh();
+                            self.populate();
                             self.tabs.setSelect(2);
                         }
                     },
@@ -254,7 +241,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         });
     },
 
-    _refresh: function () {
+    populate: function () {
         this.empty();
         this._createTab();
     },

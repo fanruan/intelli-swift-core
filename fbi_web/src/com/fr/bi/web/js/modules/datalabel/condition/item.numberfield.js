@@ -5,7 +5,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
-        CONTAINER_WIDTH: 530,
         CONTAINER_HEIGHT: 40,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
@@ -39,16 +38,14 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.vertical",
             cls: "item-content",
             items: [{
-                el:{
-                    type: "bi.left_right_vertical_adapt",
-                    width: this._constant.CONTAINER_WIDTH,
-                    height: this._constant.CONTAINER_HEIGHT,
-                    items: {
-                        left: [left[0], left[1], left[2]],
-                        right: [this.styleSetting]
-                    },
-                    lhgap: this._constant.LEFT_ITEMS_H_GAP
-                }
+                type: "bi.left_right_vertical_adapt",
+                height: this._constant.CONTAINER_HEIGHT,
+                items: {
+                    left: [left[0], left[1], left[2]],
+                    right: [this.styleSetting]
+                },
+                lhgap: this._constant.LEFT_ITEMS_H_GAP,
+                width: 540
             }]
         });
         BI.createWidget({

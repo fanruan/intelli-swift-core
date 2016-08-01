@@ -16,7 +16,7 @@ BI.DataLabelFilterItemFactory = {
                 type = "bi.data_label_number_field_filter_item";
                 break;
             default :
-                type = "bi.data_label_condition_item";
+                type = "bi.data_label_no_type_field_filter_item";
                 break;
         }
         return {
@@ -79,10 +79,10 @@ BI.DataLabelFilterItemFactory = {
                 type = "bi.target_formula_empty_filter_item";
                 break;
             case BICst.FILTER_TYPE.EMPTY_CONDITION:
-                type = "bi.data_label_condition_item";
+                type = "bi.data_label_no_type_field_filter_item";
                 break;
             default :
-                type = "bi.data_label_condition_item";
+                type = "bi.data_label_no_type_field_filter_item";
                 break;
         }
         return {

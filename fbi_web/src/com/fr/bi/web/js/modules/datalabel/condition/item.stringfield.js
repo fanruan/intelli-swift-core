@@ -8,7 +8,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         LEFT_ITEMS_H_GAP: 5,
         CONTAINER_HEIGHT: 40,
         BUTTON_HEIGHT: 30,
-        COMBO_WIDTH: 90,
+        COMBO_WIDTH: 120,
         FIELD_NAME_BUTTON_WIDTH: 90,
         TEXT_BUTTON_H_GAP: 10,
         INPUT_WIDTH: 230
@@ -35,22 +35,34 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             BI.DataLabelStringFieldFilterItem.superclass.destroy.apply(this,arguments);
         });
 
-        BI.createWidget({
+        var leftContainer = BI.createWidget({
             type: "bi.vertical",
-            element: this.element,
+            cls: "item-content",
             items: [{
                 type: "bi.left_right_vertical_adapt",
                 height: this._constant.CONTAINER_HEIGHT,
                 items: {
                     left: [left[0], left[1], left[2]],
-                    right: [this.styleSetting, this.deleteButton]
+                    right: [this.styleSetting]
                 },
                 lhgap: this._constant.LEFT_ITEMS_H_GAP,
-                rhgap: this._constant.LEFT_ITEMS_H_GAP
-
+                width: 540
             }]
         });
-
+        BI.createWidget({
+            type: "bi.vertical",
+            element: this.element,
+            items: {
+                el: {
+                    type: "bi.left_right_vertical_adapt",
+                    height: 42,
+                    items: {
+                        left: [leftContainer],
+                        right: [this.deleteButton]
+                    }
+                }
+            }
+        })
     },
 
     populate: function (item) {
@@ -93,9 +105,6 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
-            self._setNodeData({
-                filter_type : this.getValue()[0]
-            });
             o.afterValueChange.apply(self, arguments);
         });
         this._refreshFilterWidget(o.filter_type, o.filter_value);
@@ -132,14 +141,11 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterWidget = BI.createWidget({
             type: "bi.select_field_data_combo",
             field_id: this.fieldId,
-            width: 200,
+            width: 230,
             height: this._constant.BUTTON_HEIGHT
         });
 
         this.filterWidget.on(BI.SelectFieldDataCombo.EVENT_CONFIRM, function () {
-            self._setNodeData({
-                filter_value : this.getValue()
-            });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
@@ -156,9 +162,6 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: this._constant.INPUT_WIDTH
         });
         this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self._setNodeData({
-                filter_value : this.getValue()
-            });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
@@ -174,11 +177,6 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             this.style.setValue(o.style_setting);
         }
         return this.style;
-    },
-
-    _setNodeData: function(v){
-        var o = this.options;
-        o.node.set("data", BI.extend(o.node.get("data"), v));
     },
 
     getValue: function () {
