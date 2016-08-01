@@ -847,6 +847,7 @@ if (!window.BI) {
                 : str
         },
 
+        //background-color => backgroundColor
         camelize: function (str) {
             return str.replace(/-(.)/g, function (_, character) {
                 return character.toUpperCase();
