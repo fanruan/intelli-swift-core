@@ -3,31 +3,7 @@
  * @class BI.DashboardChart
  * @extends BI.Widget
  */
-BI.DashboardChart = BI.inherit(BI.Widget, {
-
-    constants: {
-        LEFT_AXIS: 0,
-        RIGHT_AXIS: 1,
-        RIGHT_AXIS_SECOND: 2,
-        X_AXIS: 3,
-        DASHBOARD_AXIS:4,
-        ROTATION: -90,
-        NORMAL: 1,
-        LEGEND_BOTTOM: 4,
-        ZERO2POINT: 2,
-        ONE2POINT: 3,
-        TWO2POINT: 4,
-        STYLE_NORMAL: 21,
-        MINLIMIT: 1e-5,
-        ONE_POINTER: 1,
-        MULTI_POINTER: 2,
-        HALF_DASHBOARD: 9,
-        PERCENT_DASHBOARD: 10,
-        PERCENT_SCALE_SLOT: 11,
-        VERTICAL_TUBE: 12,
-        FIX_COUNT: 6,
-        HORIZONTAL_TUBE: 13
-    },
+BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DashboardChart.superclass._defaultConfig.apply(this, arguments), {
