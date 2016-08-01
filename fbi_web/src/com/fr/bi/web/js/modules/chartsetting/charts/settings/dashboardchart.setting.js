@@ -20,7 +20,6 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         NUMBER_LEVEL_SEGMENT_WIDTH: 300,
         FORMAT_SEGMENT_WIDTH: 240,
         RADIO_WIDTH: 100,
-        DASHBOARD_HEIGHT: 60,
         POINTER_SEGMENT_WIDTH: 150
     },
 

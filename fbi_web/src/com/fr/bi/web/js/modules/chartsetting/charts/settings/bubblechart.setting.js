@@ -6,7 +6,7 @@
 BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
     constant: {
-        SINGLE_LINE_HEIGHT: 60,
+        SINGLE_LINE_HEIGHT: 58,
         SIMPLE_H_GAP: 10,
         SIMPLE_H_LGAP: 5,
         SIMPLE_L_GAP: 2,
@@ -422,7 +422,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Uppercase_X_Axis"),
                 height: "100%",
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 lgap: this.constant.SIMPLE_H_LGAP
             }, {
                 type: "bi.left",
@@ -528,7 +528,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"

@@ -6,7 +6,7 @@
 BI.BarChartsSetting = BI.inherit(BI.Widget, {
 
     constant: {
-        SINGLE_LINE_HEIGHT: 60,
+        SINGLE_LINE_HEIGHT: 58,
         SIMPLE_H_GAP: 10,
         SIMPLE_H_LGAP: 5,
         SIMPLE_L_GAP: 2,
@@ -243,7 +243,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Element_Show"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -277,7 +277,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Category_Axis"),
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 lgap: this.constant.SIMPLE_H_LGAP,
                 cls: "line-title"
             }, {
@@ -316,7 +316,7 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 height: "100%",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 text: BI.i18nText("BI-Value_Axis"),
                 textAlign: "left",
                 lgap: this.constant.SIMPLE_H_LGAP,

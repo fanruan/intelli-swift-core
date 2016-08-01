@@ -195,7 +195,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Element_Show"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -223,7 +223,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 text: BI.i18nText("BI-Show_Param"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",

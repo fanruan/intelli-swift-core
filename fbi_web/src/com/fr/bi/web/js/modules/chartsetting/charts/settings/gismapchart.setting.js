@@ -5,7 +5,7 @@
  */
 BI.GISMapSetting = BI.inherit(BI.Widget, {
     constant: {
-        SINGLE_LINE_HEIGHT: 60,
+        SINGLE_LINE_HEIGHT: 58,
         SIMPLE_H_GAP: 10,
         SIMPLE_H_LARGE_GAP: 10,
         SIMPLE_L_GAP: 3,
@@ -52,7 +52,7 @@ BI.GISMapSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Element_Show"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",

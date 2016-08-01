@@ -6,7 +6,7 @@
 BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
 
     constant: {
-        SINGLE_LINE_HEIGHT: 60,
+        SINGLE_LINE_HEIGHT: 58,
         SIMPLE_H_GAP: 10,
         SIMPLE_L_GAP: 2,
         CHECKBOX_WIDTH: 16,
@@ -413,7 +413,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Element_Show"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -489,7 +489,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
             verticalAlign: "top",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 text: BI.i18nText("BI-Left_Value_Axis"),
                 textAlign: "left",
                 lgap: this.constant.SIMPLE_H_LGAP,
@@ -540,7 +540,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
             verticalAlign: "top",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 text: BI.i18nText("BI-Right_Value_Axis_One"),
@@ -591,7 +591,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 text: BI.i18nText("BI-Right_Value_Axis_Two"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 cls: "line-title",

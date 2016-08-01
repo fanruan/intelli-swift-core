@@ -6,7 +6,7 @@
 BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
 
     constant: {
-        SINGLE_LINE_HEIGHT: 60,
+        SINGLE_LINE_HEIGHT: 58,
         SIMPLE_H_GAP: 10,
         SIMPLE_H_GAP2: 20,
         SIMPLE_L_GAP: 2,
@@ -400,7 +400,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Element_Show"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -440,7 +440,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Category_Axis"),
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -477,7 +477,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
             verticalAlign: "top",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 text: BI.i18nText("BI-Left_Value_Axis"),
                 textAlign: "left",
                 lgap: this.constant.SIMPLE_H_LGAP,
@@ -528,7 +528,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.Widget, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 lgap: this.constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 text: BI.i18nText("BI-Right_Value_Axis"),
