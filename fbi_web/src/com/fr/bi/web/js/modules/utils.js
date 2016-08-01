@@ -846,6 +846,24 @@
                 BICst.DEFAULT_CHART_SETTING.dashboard_unit;
         },
 
+        getWSMaxScaleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.max_scale) ? ws.max_scale:
+                ""
+        },
+
+        getWSMinScaleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.min_scale) ? ws.min_scale:
+                ""
+        },
+
+        getWSShowPercentageByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_percentage) ? ws.show_percentage :
+                BICst.PERCENTAGE.SHOW
+        },
+
         getWSXAxisUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.x_axis_unit) ? ws.x_axis_unit :

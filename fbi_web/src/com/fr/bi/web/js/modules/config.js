@@ -1752,4 +1752,10 @@ BICst.CHART_LEGEND = [{
     value: BICst.CHART_LEGENDS.RIGHT
 }];
 
-
+BICst.PERCENTAGE_SHOW = [{
+    text: BI.i18nText("BI-Display"),
+    value: BICst.PERCENTAGE.SHOW
+}, {
+    text: BI.i18nText("BI-Hidden"),
+    value: BICst.PERCENTAGE.NOT_SHOW
+}];

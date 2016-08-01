@@ -32,7 +32,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.DashboardChartSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
 
         //联动传递指标过滤条件
         this.transferFilter = BI.createWidget({
