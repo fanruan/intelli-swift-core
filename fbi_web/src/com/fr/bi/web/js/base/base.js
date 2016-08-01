@@ -847,6 +847,18 @@ if (!window.BI) {
                 : str
         },
 
+        //background-color => backgroundColor
+        camelize: function (str) {
+            return str.replace(/-(.)/g, function (_, character) {
+                return character.toUpperCase();
+            });
+        },
+
+        //backgroundColor => background-color
+        hyphenate: function (str) {
+            return str.replace(/([A-Z])/g, '-$1').toLowerCase();
+        },
+
         isNotEmptyString: function (str) {
             return BI.isString(str) && !BI.isEmpty(str);
         },
