@@ -107,6 +107,36 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "scatter";
 
+        if(config.plotOptions.dataLabels.enabled === true){
+            BI.each(items, function(idx, item){
+                var isNeedFormatDataLabelX = false;
+                var isNeedFormatDataLabelY = false;
+                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    isNeedFormatDataLabelX = true;
+                }
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    isNeedFormatDataLabelY = true;
+                }
+                if(isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true){
+                    item.dataLabels = {
+                        "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                        "align": "outside",
+                        enabled: true,
+                        formatter: {
+                            identifier: "${X}${Y}${SIZE}",
+                            "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                            "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
+                        }
+                    };
+                    if(isNeedFormatDataLabelX === true){
+                        item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
+                    }
+                    if(isNeedFormatDataLabelY === true){
+                        item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
+                    }
+                }
+            });
+        }
         return [items, config];
 
         function formatChartStyle(){

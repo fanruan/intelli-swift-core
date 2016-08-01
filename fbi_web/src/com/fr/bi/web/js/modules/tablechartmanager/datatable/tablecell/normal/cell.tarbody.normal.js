@@ -73,13 +73,13 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         }
         switch (numLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                return text.div(10000);
+                return FR.contentFormat(text.div(10000), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                return text.div(1000000);
+                return FR.contentFormat(text.div(1000000), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                return text.div(100000000);
+                return FR.contentFormat(text.div(100000000), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return text.mul(100);
+                return FR.contentFormat(text, "#.##%");
             default:
                 return BI.parseFloat(FR.contentFormat(text, "#.##"));
         }

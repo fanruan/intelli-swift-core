@@ -13,7 +13,6 @@ import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
-import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageTopic;
 import com.finebi.cube.impl.operate.BIOperationID;
@@ -120,14 +119,14 @@ public class BuildCubeTask implements CubeTask {
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            if (cubeBuild instanceof CubeBuildStaff) {
+//            if (cubeBuild instanceof CubeBuildStaff) {
                 if (new File(advancedConf.getRootURI().getPath()).exists()) {
                     BIFileUtils.delete(new File(advancedConf.getRootURI().getPath()));
                 }
                 BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
-            } else {
-                BIFileUtils.moveFile(tempConf.getRootURI().getPath(), advancedConf.getRootURI().getPath());
-            }
+//            } else {
+//                BIFileUtils.moveFile(tempConf.getRootURI().getPath(), advancedConf.getRootURI().getPath());
+//            }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         } finally {
