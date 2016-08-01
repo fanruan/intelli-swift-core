@@ -71,11 +71,12 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             var bands = getBandsStyles(self.config.bands_styles, self.config.auto_custom_style);
             var valueLabel = {
                 formatter: {
-                    identifier: "${CATEGORY}${VALUE}"
+                    identifier: "${CATEGORY}${SERIES}${VALUE}"
                 }
             };
             var percentageLabel = BI.extend(config.plotOptions.percentageLabel , {
-                enabled: self.config.show_percentage === BICst.PERCENTAGE.SHOW
+                // enabled: self.config.show_percentage === BICst.PERCENTAGE.SHOW
+                enabled : false
             });
 
             config.gaugeAxis = self.gaugeAxis;
@@ -85,11 +86,11 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     break;
                 case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                     setPlotOptions("ring", bands, valueLabel, percentageLabel);
-                    changeMaxMinScale();
+                    //changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                     setPlotOptions("slot", bands, valueLabel, percentageLabel);
-                    changeMaxMinScale();
+                    //changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                     BI.extend(valueLabel, {
@@ -99,14 +100,14 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                         align: "bottom"
                     });
                     setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "horizontal", "vertical");
-                    changeMaxMinScale();
+                    //changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.VERTICAL_TUBE:
                     BI.extend(valueLabel, {
                         align: "left"
                     });
-                    setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "vertical");
-                    changeMaxMinScale();
+                    setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "horizontal");
+                    //changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
@@ -337,9 +338,9 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             number_of_pointer: options.number_of_pointer || c.ONE_POINTER,
             bands_styles: options.style_conditions,
             auto_custom_style: options.auto_custom,
-            max_scale: options.max_scale || "",
-            min_scale: options.min_scale || "",
-            show_percentage: options.show_percentage || c.SHOW
+            // max_scale: options.max_scale || "",
+            // min_scale: options.min_scale || "",
+            // show_percentage: options.show_percentage || c.SHOW
         };
         o.items = this._formatItems(items);
         var types = [];
