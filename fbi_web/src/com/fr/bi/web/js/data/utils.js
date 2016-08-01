@@ -720,8 +720,8 @@ Data.Utils = {
             dashboard_unit: options.dashboard_unit || "",
             chart_dashboard_type: options.chart_dashboard_type || constants.NORMAL,
             number_of_pointer: options.number_of_pointer || constants.ONE_POINTER,
-            bands_styles: options.style_conditions,
-            auto_custom_style: options.auto_custom,
+            bands_styles: options.style_conditions || [],
+            auto_custom_style: options.auto_custom || constants.AUTO,
             x_axis_style: options.x_axis_style || constants.NORMAL,
             x_axis_number_level: options.x_axis_number_level || constants.NORMAL,
             tooltip: options.tooltip || "",
@@ -6080,7 +6080,8 @@ Data.Utils = {
                 HORIZONTAL_TUBE: 13,
                 LNG_FIRST: 3,
                 LAT_FIRST: 4,
-                FIX_COUNT: 6
+                FIX_COUNT: 6,
+                AUTO: 1
             }
         }
 
