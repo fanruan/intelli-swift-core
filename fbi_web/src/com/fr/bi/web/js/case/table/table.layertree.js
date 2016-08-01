@@ -62,10 +62,18 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
             result.push(c.concat(node || []));
         });
         var newHeader = this._formatColumns(header);
-        newHeader[0] = {
-            cls: "layer-tree-table-title",
-            text: "行表头"
-        };
+        var deep = this._getHDeep();
+        if (deep <= 0) {
+            newHeader.unshift({
+                cls: "layer-tree-table-title",
+                text: BI.i18nText("BI-Row_Header")
+            });
+        } else {
+            newHeader[0] = {
+                cls: "layer-tree-table-title",
+                text: BI.i18nText("BI-Row_Header")
+            };
+        }
         result.push(newHeader);
         return result;
     },
@@ -112,7 +120,7 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
     _formatColumns: function (columns, deep) {
         if (BI.isNotEmptyArray(columns)) {
             deep = deep || this._getHDeep();
-            return columns.slice(deep - 1);
+            return columns.slice(Math.max(0, deep - 1));
         }
         return columns;
     },
@@ -285,7 +293,7 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
                 value = value.length > 0 ? [0] : [];
                 break;
             case "mergeCols":
-                value = [0];
+                value = value.length > 0 ? [0] : [];
                 break;
         }
         this.table.attr.apply(this.table, [key, value]);

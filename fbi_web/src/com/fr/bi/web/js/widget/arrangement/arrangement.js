@@ -2074,11 +2074,10 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                         BI.extend(clone[region.id], region);
                     });
                     this._modifyRegion(clone);
-                    this._deleteRegionByName(name);
-                    this._populate(this.getAllRegions());
-                    return true;
                 }
-                break;
+                this._deleteRegionByName(name);
+                this._populate(this.getAllRegions());
+                return true;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 this._deleteRegionByName(name);
                 this._populate(this.getAllRegions());

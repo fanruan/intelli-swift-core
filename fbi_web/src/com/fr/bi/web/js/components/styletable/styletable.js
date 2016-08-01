@@ -185,6 +185,8 @@ BI.StyleTable = BI.inherit(BI.Widget, {
         var $bottomLeftSum = $bottomLeft.find(".summary-cell"), $bottomRightSum = $bottomRight.find(">tbody .summary-cell"),
             $bottomLeftSumLast = $bottomLeft.find(".summary-cell.last"), $bottomRightSumLast = $bottomRight.find(">tbody .summary-cell.last"),
             $sequenceSum = $table.find(".sequence-table-summary"), $sequenceSumLast = $table.find(".sequence-table-summary.last");
+
+        var $rowHeader = $table.find(".layer-tree-table-title");
         switch (style) {
             case BI.StyleTable.STYLE1:
                 var oddColor = this._parseHEXAlpha2HEX(color, 0.2),
@@ -228,6 +230,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 $bottomLeftSumLast.css("fontWeight", "bold");
                 $bottomRightSumLast.css("fontWeight", "bold");
                 $sequenceSumLast.css("fontWeight", "bold");
+                $rowHeader.css("fontWeight", "bold");
 
                 break;
             case BI.StyleTable.STYLE2:
@@ -262,6 +265,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 $bottomLeftSumLast.css("fontWeight", "bold");
                 $bottomRightSumLast.css("fontWeight", "bold");
                 $sequenceSumLast.css("fontWeight", "bold");
+                $rowHeader.css("fontWeight", "bold");
 
                 break;
             case BI.StyleTable.STYLE3:
@@ -296,6 +300,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 $bottomLeftSumLast.css("fontWeight", "bold");
                 $bottomRightSumLast.css("fontWeight", "bold");
                 $sequenceSumLast.css("fontWeight", "bold");
+                $rowHeader.css("fontWeight", "bold");
 
                 break;
         }
