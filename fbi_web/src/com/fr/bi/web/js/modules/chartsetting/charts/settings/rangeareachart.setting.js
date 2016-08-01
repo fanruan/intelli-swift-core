@@ -208,11 +208,10 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.Widget, {
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
+            cls: "single-line-settings",
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                lgap: this.constant.SIMPLE_H_LGAP,
-                textAlign: "left",
                 textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
@@ -337,7 +336,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.Widget, {
                 }, this.transferFilter]
             },
             height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            lhgap: 15
         });
 
         BI.createWidget({

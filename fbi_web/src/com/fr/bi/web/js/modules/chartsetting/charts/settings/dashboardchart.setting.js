@@ -15,6 +15,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         BI.DashboardChartSetting.superclass._init.apply(this, arguments);
         var self = this;
         this.constant = BI.extend(BICst.CHART.CONSTANT, {
+            SIMPLE_H_GAP2: 20,
             RADIO_WIDTH: 100,
             POINTER_SEGMENT_WIDTH: 150,
             PERCENTAGE_SEGMENT_WIDTH: 160
@@ -264,10 +265,11 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
                     cls: "attr-names",
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: this.constant.SIMPLE_H_GAP2
                 }, {
                     type: "bi.center_adapt",
-                    items: [this.numberLevellY]
+                    items: [this.numberLevellY],
+                    lgap: this.constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
