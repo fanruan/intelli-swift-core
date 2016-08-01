@@ -34,8 +34,7 @@ BI.CubeLogExpander = BI.inherit(BI.Widget, {
     },
 
     populate: function (items, keyword, context, options) {
-        this.expander.populate(items);
-        this.trigger.populate(context.el);
+        this.expander.populate(items, keyword, context, options);
     }
 });
 $.shortcut("bi.cube_log_expander", BI.CubeLogExpander);

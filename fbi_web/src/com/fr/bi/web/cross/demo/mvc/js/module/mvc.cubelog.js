@@ -20,8 +20,8 @@ CubeLogView = BI.inherit(BI.View, {
             {id: 22, pId: 2, text: "A1>B1>C1"},
             {id: 31, pId: 3, text: "A>B>C"},
             {id: 32, pId: 3, text: "A1>B1>C1"},
-            {id: 41, pId: 4, text: "A>B>C"},
-            {id: 42, pId: 4, text: "A1>B1>C1"}
+            //{id: 41, pId: 4, text: "A>B>C"},
+            //{id: 42, pId: 4, text: "A1>B1>C1"}
         ];
 
         var cubelog = BI.createWidget({
