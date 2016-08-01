@@ -429,7 +429,6 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
         BI.delay(function () {
             self._assertPager();
-            self.pager.refresh();
             if (self._hideChecker()) {
                 self.pager.setVisible(false);
                 self.tipPager.setVisible(false);
@@ -534,6 +533,8 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     refresh: function () {
         this.table.populate.apply(this.table, arguments);
+        this._assertPager();
+        this.pager.refresh();
         this._dealWithPager();
     },
 
