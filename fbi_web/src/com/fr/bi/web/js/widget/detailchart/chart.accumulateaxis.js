@@ -92,8 +92,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
                     axis.reversed = self.config.left_y_axis_reversed;
                     axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
                     formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
-                    axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
+                    axis.title.text = getTitleText(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS, self.config.show_left_y_axis_title, self.config.left_y_axis_title);
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
                     break;
@@ -101,8 +100,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
                     axis.reversed = self.config.right_y_axis_reversed;
                     axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
                     formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
-                    axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
+                    axis.title.text = getTitleText(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS, self.config.show_right_y_axis_title, self.config.right_y_axis_title);
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
                     break;
@@ -212,7 +210,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
             }
         }
 
-        function formatNumberLevelInYaxis(type, position, formatter){
+        function formatNumberLevelInYaxis(type, position, formatter) {
             var magnify = calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -254,8 +252,9 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
             return magnify;
         }
 
-        function getXYAxisUnit(numberLevelType, position) {
+        function getTitleText(numberLevelType, position, show, title) {
             var unit = "";
+
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
                     unit = "";
@@ -279,7 +278,10 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
             if (position === self.constants.RIGHT_AXIS) {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
-            return unit === "" ? unit : "(" + unit + ")";
+
+            unit = unit === "" ? unit : "(" + unit + ")";
+
+            return show === true ? title + unit : unit;
         }
 
         function formatTickInXYaxis(type, position) {

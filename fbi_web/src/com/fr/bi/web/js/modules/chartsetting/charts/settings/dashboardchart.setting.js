@@ -6,7 +6,7 @@
 BI.DashboardChartSetting = BI.inherit(BI.Widget, {
 
     constant: {
-        SINGLE_LINE_HEIGHT: 60,
+        SINGLE_LINE_HEIGHT: 58,
         SIMPLE_H_GAP: 10,
         SIMPLE_L_GAP: 2,
         SIMPLE_H_LGAP: 5,
@@ -33,9 +33,6 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.DashboardChartSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-
-        var items = o.conditions;
-
 
         //联动传递指标过滤条件
         this.transferFilter = BI.createWidget({

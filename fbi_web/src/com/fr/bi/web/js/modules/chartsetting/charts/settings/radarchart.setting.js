@@ -6,7 +6,7 @@
 BI.RadarChartSetting = BI.inherit(BI.Widget, {
 
     constant: {
-        SINGLE_LINE_HEIGHT: 60,
+        SINGLE_LINE_HEIGHT: 58,
         SIMPLE_H_GAP: 10,
         SIMPLE_L_GAP: 2,
         SIMPLE_H_LGAP: 5,
