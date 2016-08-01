@@ -4,24 +4,6 @@
  * 柱状，堆积柱状，组合图样式
  */
 BI.MapSetting = BI.inherit(BI.Widget, {
-    constant: {
-        LEFT_GAP: 5,
-        CONDITIONS_HEIGHT: 200,
-        SINGLE_LINE_HEIGHT: BICst.CHART.SINGLE_LINE_HIGHT,
-        SIMPLE_H_GAP: BICst.CHART.SIMPLE_H_GAP,
-        SIMPLE_L_GAP: BICst.CHART.SIMPLE_L_GAP,
-        SIMPLE_H_LGAP: BICst.CHART.SIMPLE_H_LGAP,
-        CHECKBOX_WIDTH: BICst.CHART.CHECKBOX_WIDTH,
-        EDITOR_WIDTH: BICst.CHART.EDITOR_WIDTH,
-        EDITOR_HEIGHT: BICst.CHART.EDITOR_HEIGHT,
-        BUTTON_WIDTH: BICst.CHART.BUTTON_WIDTH,
-        BUTTON_HEIGHT: BICst.CHART.BUTTON_HEIGHT,
-        ICON_WIDTH: BICst.CHART.ICON_WIDTH,
-        ICON_HEIGHT: BICst.CHART.ICON_HEIGHT,
-        NUMBER_LEVEL_SEGMENT_WIDTH: BICst.CHART.NUMBER_LEVEL_SEGMENT_WIDTH,
-        FORMAT_SEGMENT_WIDTH: BICst.CHART.FORMAT_SEGMENT_WIDTH,
-        LEGEND_SEGMENT_WIDTH: BICst.CHART.LEGEND_SEGMENT_WIDTH
-    },
 
     _defaultConfig: function(){
         return BI.extend(BI.MapSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -31,7 +13,8 @@ BI.MapSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.MapSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
+        this.constant = BICst.CHART.CONSTANT;
 
         //主题颜色
         this.colorChooser = BI.createWidget({
@@ -61,7 +44,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Chart_Table_Style"),
-                lgap: this.constant.LEFT_GAP,
+                lgap: 5,
                 textAlign: "left",
                 textHeight: 60,
                 cls: "line-title"
@@ -154,7 +137,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Interval_Setting"),
                 textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
-                lgap: this.constant.LEFT_GAP,
+                lgap: 5,
                 cls: "line-title"
             } , interval]
         });

@@ -5,24 +5,6 @@
  */
 BI.PieChartSetting = BI.inherit(BI.Widget, {
 
-    constant: {
-        CHART_TYPE_SEGMENT_WIDTH: 180,
-        SINGLE_LINE_HEIGHT: BICst.CHART.SINGLE_LINE_HIGHT,
-        SIMPLE_H_GAP: BICst.CHART.SIMPLE_H_GAP,
-        SIMPLE_L_GAP: BICst.CHART.SIMPLE_L_GAP,
-        SIMPLE_H_LGAP: BICst.CHART.SIMPLE_H_LGAP,
-        CHECKBOX_WIDTH: BICst.CHART.CHECKBOX_WIDTH,
-        EDITOR_WIDTH: BICst.CHART.EDITOR_WIDTH,
-        EDITOR_HEIGHT: BICst.CHART.EDITOR_HEIGHT,
-        BUTTON_WIDTH: BICst.CHART.BUTTON_WIDTH,
-        BUTTON_HEIGHT: BICst.CHART.BUTTON_HEIGHT,
-        ICON_WIDTH: BICst.CHART.ICON_WIDTH,
-        ICON_HEIGHT: BICst.CHART.ICON_HEIGHT,
-        NUMBER_LEVEL_SEGMENT_WIDTH: BICst.CHART.NUMBER_LEVEL_SEGMENT_WIDTH,
-        FORMAT_SEGMENT_WIDTH: BICst.CHART.FORMAT_SEGMENT_WIDTH,
-        LEGEND_SEGMENT_WIDTH: BICst.CHART.LEGEND_SEGMENT_WIDTH
-    },
-
     _defaultConfig: function(){
         return BI.extend(BI.PieChartSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting"
@@ -31,7 +13,8 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.PieChartSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
+        this.constant = BICst.CHART.CONSTANT;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -154,7 +137,7 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
         //总角度
         this.totalAngle = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.CHART_TYPE_SEGMENT_WIDTH,
+            width: 180,
             height: this.constant.BUTTON_HEIGHT,
             items: BICst.PIE_TOTAL_ANGLE
         });

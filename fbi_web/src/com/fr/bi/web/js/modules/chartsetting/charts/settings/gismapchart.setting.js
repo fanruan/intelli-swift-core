@@ -4,23 +4,6 @@
  * 柱状，堆积柱状，组合图样式
  */
 BI.GISMapSetting = BI.inherit(BI.Widget, {
-    constant: {
-        SIMPLE_H_LARGE_GAP: 10,
-        SINGLE_LINE_HEIGHT: BICst.CHART.SINGLE_LINE_HIGHT,
-        SIMPLE_H_GAP: BICst.CHART.SIMPLE_H_GAP,
-        SIMPLE_L_GAP: BICst.CHART.SIMPLE_L_GAP,
-        SIMPLE_H_LGAP: BICst.CHART.SIMPLE_H_LGAP,
-        CHECKBOX_WIDTH: BICst.CHART.CHECKBOX_WIDTH,
-        EDITOR_WIDTH: BICst.CHART.EDITOR_WIDTH,
-        EDITOR_HEIGHT: BICst.CHART.EDITOR_HEIGHT,
-        BUTTON_WIDTH: BICst.CHART.BUTTON_WIDTH,
-        BUTTON_HEIGHT: BICst.CHART.BUTTON_HEIGHT,
-        ICON_WIDTH: BICst.CHART.ICON_WIDTH,
-        ICON_HEIGHT: BICst.CHART.ICON_HEIGHT,
-        NUMBER_LEVEL_SEGMENT_WIDTH: BICst.CHART.NUMBER_LEVEL_SEGMENT_WIDTH,
-        FORMAT_SEGMENT_WIDTH: BICst.CHART.FORMAT_SEGMENT_WIDTH,
-        LEGEND_SEGMENT_WIDTH: BICst.CHART.LEGEND_SEGMENT_WIDTH
-    },
 
     _defaultConfig: function(){
         return BI.extend(BI.GISMapSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -30,7 +13,8 @@ BI.GISMapSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.GISMapSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
+        this.constant = BICst.CHART.CONSTANT;
 
         //数据标签
         this.showDataLabel = BI.createWidget({
