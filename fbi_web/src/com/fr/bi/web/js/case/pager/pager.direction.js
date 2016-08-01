@@ -233,6 +233,11 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
     populate: function () {
         this.vpager.populate();
         this.hpager.populate();
+    },
+    
+    refresh: function () {
+        this.vpager.refresh();
+        this.hpager.refresh();
     }
 });
 BI.DirectionPager.EVENT_CHANGE = "EVENT_CHANGE";
