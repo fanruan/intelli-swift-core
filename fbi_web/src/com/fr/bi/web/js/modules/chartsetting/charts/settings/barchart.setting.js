@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 条形，堆积条形，对比条形样式
  */
-BI.BarChartsSetting = BI.inherit(BI.Widget, {
+BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.BarChartsSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.BarChartsSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.BarChartsSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",

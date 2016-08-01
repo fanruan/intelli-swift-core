@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 雷达
  */
-BI.RadarChartSetting = BI.inherit(BI.Widget, {
+BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.RadarChartSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.RadarChartSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",

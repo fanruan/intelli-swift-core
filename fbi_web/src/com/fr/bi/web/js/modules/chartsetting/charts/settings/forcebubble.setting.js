@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 百分比堆积，百分比柱状样式
  */
-BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
+BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.ForceBubbleSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.ForceBubbleSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",

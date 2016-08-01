@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 对比柱状样式
  */
-BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
+BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.CompareAreaChartsSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.CompareAreaChartsSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",

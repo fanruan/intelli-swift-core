@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 堆积雷达样式
  */
-BI.AccumulateRadarChartSetting = BI.inherit(BI.Widget, {
+BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.AccumulateRadarChartSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.AccumulateRadarChartSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",

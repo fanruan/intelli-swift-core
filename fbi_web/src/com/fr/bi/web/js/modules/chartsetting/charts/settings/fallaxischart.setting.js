@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 瀑布图样式
  */
-BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
+BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.FallAxisChartSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.FallAxisChartSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.FallAxisChartSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",

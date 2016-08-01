@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 多值轴组合图样式
  */
-BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
+BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.MultiAxisChartSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.MultiAxisChartSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",

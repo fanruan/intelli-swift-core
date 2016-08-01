@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 柱状，堆积柱状，组合图样式
  */
-BI.PieChartSetting = BI.inherit(BI.Widget, {
+BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.PieChartSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.PieChartSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.PieChartSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",

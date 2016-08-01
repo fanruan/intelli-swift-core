@@ -92,24 +92,6 @@ BICst.WIDGET.Heights[BICst.WIDGET.GENERAL_QUERY] = 250;
 BICst.WIDGET.Heights[BICst.WIDGET.QUERY] = 40;
 BICst.WIDGET.Heights[BICst.WIDGET.RESET] = 40;
 
-//chart style setting
-BICst.CHART.CONSTANT = {
-    SINGLE_LINE_HEIGHT: 58,
-    SIMPLE_H_GAP: 10,
-    SIMPLE_L_GAP: 2,
-    SIMPLE_H_LGAP: 5,
-    CHECKBOX_WIDTH: 16,
-    EDITOR_WIDTH: 80,
-    EDITOR_HEIGHT: 26,
-    BUTTON_WIDTH: 40,
-    BUTTON_HEIGHT: 30,
-    ICON_WIDTH: 24,
-    ICON_HEIGHT: 24,
-    NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-    FORMAT_SEGMENT_WIDTH: 240,
-    LEGEND_SEGMENT_WIDTH: 180
-};
-
 //etl pane card names (empty tip, only one tip, pane)
 BICst.CONF_ETL_DATA_SET_EMPTY_TIP = "data_set_empty_tip";
 BICst.CONF_ETL_DATA_SET_ONLY_ONE_TIP = "data_set_only_one_tip";

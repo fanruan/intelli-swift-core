@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 柱状，堆积柱状，组合图样式
  */
-BI.GISMapSetting = BI.inherit(BI.Widget, {
+BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.GISMapSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.GISMapSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.GISMapSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         //数据标签
         this.showDataLabel = BI.createWidget({

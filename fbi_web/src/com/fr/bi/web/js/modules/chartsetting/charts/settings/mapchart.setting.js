@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 柱状，堆积柱状，组合图样式
  */
-BI.MapSetting = BI.inherit(BI.Widget, {
+BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.MapSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.MapSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.MapSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         //主题颜色
         this.colorChooser = BI.createWidget({

@@ -3,7 +3,14 @@
  * @extends BI.Widget
  * 仪表盘样式
  */
-BI.DashboardChartSetting = BI.inherit(BI.Widget, {
+BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
+
+    _constant: {
+        SIMPLE_H_GAP2: 20,
+        RADIO_WIDTH: 100,
+        POINTER_SEGMENT_WIDTH: 150,
+        PERCENTAGE_SEGMENT_WIDTH: 160
+    },
 
     _defaultConfig: function(){
         return BI.extend(BI.DashboardChartSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,12 +21,6 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.DashboardChartSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BI.extend(BICst.CHART.CONSTANT, {
-            SIMPLE_H_GAP2: 20,
-            RADIO_WIDTH: 100,
-            POINTER_SEGMENT_WIDTH: 150,
-            PERCENTAGE_SEGMENT_WIDTH: 160
-        });
 
         //联动传递指标过滤条件
         this.transferFilter = BI.createWidget({
@@ -54,7 +55,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         //单指针，多指针
         this.pointer = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.POINTER_SEGMENT_WIDTH,
+            width: this._constant.POINTER_SEGMENT_WIDTH,
             height: this.constant.BUTTON_HEIGHT,
             items: BICst.POINTERS
         });
@@ -91,7 +92,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             items: BI.createItems(BICst.CHART_SCALE_SETTING, {
                 type: "bi.single_select_radio_item",
-                width: this.constant.RADIO_WIDTH ,
+                width: this._constant.RADIO_WIDTH ,
                 height: this.constant.BUTTON_HEIGHT
             }),
             layouts: [{
@@ -155,7 +156,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
         this.percentage = BI.createWidget({
             type: "bi.segment",
             height: 28,
-            width: this.constant.PERCENTAGE_SEGMENT_WIDTH,
+            width: this._constant.PERCENTAGE_SEGMENT_WIDTH,
             items: BICst.PERCENTAGE_SHOW
         });
 
@@ -180,7 +181,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),
                     cls: "attr-names",
-                    lgap: this.constant.SIMPLE_H_GAP2
+                    lgap: this._constant.SIMPLE_H_GAP2
                 }, {
                     el: {
                         type: "bi.center_adapt",
@@ -265,7 +266,7 @@ BI.DashboardChartSetting = BI.inherit(BI.Widget, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
                     cls: "attr-names",
-                    lgap: this.constant.SIMPLE_H_GAP2
+                    lgap: this._constant.SIMPLE_H_GAP2
                 }, {
                     type: "bi.center_adapt",
                     items: [this.numberLevellY],

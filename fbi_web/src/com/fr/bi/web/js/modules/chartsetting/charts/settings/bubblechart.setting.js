@@ -3,7 +3,7 @@
  * @extends BI.Widget
  * 柱状，堆积柱状，组合图样式
  */
-BI.BubbleChartSetting = BI.inherit(BI.Widget, {
+BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.BubbleChartSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -14,7 +14,6 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
     _init: function(){
         BI.BubbleChartSetting.superclass._init.apply(this, arguments);
         var self = this;
-        this.constant = BICst.CHART.CONSTANT;
 
         this.rulesDisplay = BI.createWidget({
             type: "bi.segment",
