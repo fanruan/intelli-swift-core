@@ -473,7 +473,7 @@ BICst.SVG_MAP_TYPE = [{
     text: BI.i18nText("BI-CHONGQINGSHI"),
     title: BI.i18nText("BI-CHONGQINGSHI"),
     value: BICst.MAP_TYPE.CHONGQINGSHI,
-    cls: "drag-map-china-icon"
+    cls: "drag-map-svg-icon"
 }, {
     text: BI.i18nText("BI-SHANGHAISHI"),
     title: BI.i18nText("BI-SHANGHAISHI"),
