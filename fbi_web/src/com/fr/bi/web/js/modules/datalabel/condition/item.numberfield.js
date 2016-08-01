@@ -5,9 +5,10 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
+        CONTAINER_WIDTH: 530,
         CONTAINER_HEIGHT: 40,
         BUTTON_HEIGHT: 30,
-        COMBO_WIDTH: 90,
+        COMBO_WIDTH: 120,
         FIELD_NAME_BUTTON_WIDTH: 90,
         TEXT_BUTTON_H_GAP: 10,
         INPUT_WIDTH: 230
@@ -34,24 +35,36 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             BI.DataLabelNumberFieldFilterItem.superclass.destroy.apply(this,arguments);
         });
 
+        var leftContainer = BI.createWidget({
+            type: "bi.vertical",
+            cls: "item-content",
+            items: [{
+                el:{
+                    type: "bi.left_right_vertical_adapt",
+                    width: this._constant.CONTAINER_WIDTH,
+                    height: this._constant.CONTAINER_HEIGHT,
+                    items: {
+                        left: [left[0], left[1], left[2]],
+                        right: [this.styleSetting]
+                    },
+                    lhgap: this._constant.LEFT_ITEMS_H_GAP
+                }
+            }]
+        });
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
             items: [{
-                el:{
+                el: {
                     type: "bi.left_right_vertical_adapt",
-                    height: this._constant.CONTAINER_HEIGHT,
+                    height: 42,
                     items: {
-                        left: [left[0], left[1], left[2]],
-                        right: [this.styleSetting,this.deleteButton]
-                    },
-                    lhgap: this._constant.LEFT_ITEMS_H_GAP,
-
-                    rhgap: this._constant.LEFT_ITEMS_H_GAP
+                        left: [leftContainer],
+                        right: [this.deleteButton]
+                    }
                 }
             }]
-        });
-
+        })
     },
 
     populate: function(item){
@@ -95,9 +108,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function(){
             self._refreshFilterWidget(self.filterType.getValue()[0]);
-            // self._setNodeData({
-            //     filter_type : self.filterType.getValue()[0]
-            // });
             o.afterValueChange.apply(self, arguments);
         });
 

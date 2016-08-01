@@ -42,9 +42,7 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
                 left: [left],
 
                 right: [this.deleteButton]
-            },
-            lhgap: this._constant.LEFT_ITEMS_H_GAP,
-            rhgap: this._constant.LEFT_ITEMS_H_GAP
+            }
         });
 
         BI.createWidget({
@@ -75,6 +73,7 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
             el: {
                 type: "bi.button",
                 level: "common",
+                width: 90,
                 height: this._constant.BUTTON_HEIGHT,
                 text: BI.i18nText("BI-Please_Select_Field")
             },
@@ -88,7 +87,12 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
         selectFieldPane.on(BI.TargetFilterSelectField.EVENT_CLICK_ITEM, function (v) {
             self._onTypeSelected(v);
         });
-        return this.addCondition;
+        return BI.createWidget({
+            type: "bi.vertical",
+            cls: "item-content",
+            items: [this.addCondition],
+            width: 530
+        });
     },
 
     _onTypeSelected: function (v) {
@@ -107,11 +111,11 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
 
     getValue: function () {
         if (BI.isNotNull(this.typeSelectedItem)) {
-            var result = this.typeSelectedItem.getValue();
-            return result;
+            return this.typeSelectedItem.getValue()
         }
         return {
-            filter_type: BICst.FILTER_TYPE.EMPTY_CONDITION
+            filter_type: BICst.FILTER_TYPE.EMPTY_CONDITION,
+            field_id: this.options.field_id
         }
     }
 });

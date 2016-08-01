@@ -14,14 +14,14 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         this.textTrigger = BI.createWidget({
             type: "bi.text_button",
             text: "设置样式",
-            width: 80,
-            height: 38,
+            width: 52,
+            height: 40,
             cls: "condition-trigger"
         });
         this.imgTrigger = BI.createWidget({
             type: "bi.image_button",
-            width: 80,
-            height: 38,
+            width: 52,
+            height: 40,
             cls: "condition-trigger"
         });
         this.styleTab = BI.createWidget({

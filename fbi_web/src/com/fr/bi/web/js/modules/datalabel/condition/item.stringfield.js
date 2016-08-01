@@ -183,7 +183,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     getValue: function () {
         return {
-            filed_id: this.options.field_id,
+            field_id: this.options.field_id,
             filter_type: this.filterType.getValue()[0],
             filter_value: this.filterWidget.getValue(),
             style_setting: this.style.getValue()

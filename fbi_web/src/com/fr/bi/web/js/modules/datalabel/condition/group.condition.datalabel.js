@@ -30,8 +30,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
         var o = this.options;
         var item = {
             type: "bi.data_label_condition_item",
-            field_id: BI.Utils.getFieldIDByDimensionID(o.dId),
-            id: BI.UUID()
+            field_id: BI.Utils.getFieldIDByDimensionID(o.dId)
         };
         this.buttonGroup.addItems([item]);
         this.buttons = this.buttonGroup.getAllButtons();
@@ -45,7 +44,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
             var type = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
             items.push({
                 type: type.type,
-                filed_id: cdt.field_id,
+                field_id: cdt.field_id,
                 filter_type: cdt.filter_type,
                 filter_value: cdt.filter_value,
                 style_setting: cdt.style_setting
