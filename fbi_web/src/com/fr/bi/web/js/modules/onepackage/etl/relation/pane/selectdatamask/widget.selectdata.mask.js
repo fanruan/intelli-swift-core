@@ -193,6 +193,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                     type: "bi.select_data_level0_item",
                     fieldType: fieldType,
                     text: translations[field.id] || field.field_name,
+                    title: translations[field.id] || field.field_name,
                     value: {
                         field_id: field.id
                     }
@@ -210,6 +211,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                                     type: "bi.select_data_level0_item",
                                     fieldType: fieldType,
                                     text: translations[field.id] || field.field_name,
+                                    title: translations[field.id] || field.field_name,
                                     value: {
                                         field_id: field.id
                                     }
