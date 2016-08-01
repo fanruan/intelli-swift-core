@@ -1,9 +1,19 @@
 @import "../../../bibase";
 .data-label-condition-item {
-  background-color: @background-color-default;
-  border: 1px solid @border-color-normal;
-  border-radius: @radius-2;
-  .condition-trigger {
+  border: 0;
+  .item-content {
     border: 1px solid @border-color-normal;
+    border-radius: @radius-2;
+  }
+  .condition-trigger {
+    border-left: 1px solid @border-color-normal;
+  }
+  .close-h-font {
+    color: @color-bi-text-dark;
+    font-size: @font-size-16;
+    display: none;
+  }
+  &:hover .close-h-font {
+    display: block;
   }
 }
