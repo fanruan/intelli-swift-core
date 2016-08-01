@@ -169,7 +169,6 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
 
         BI.createWidget({
             type: "bi.horizontal_auto",
-            scrollable: false,
             scrolly: true,
             element: this.element,
             items: [{

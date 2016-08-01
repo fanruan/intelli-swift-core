@@ -25,6 +25,9 @@ BI.MultiLayerSelectLevelTree = BI.inherit(BI.Widget, {
         BI.each(nodes, function (i, node) {
             var extend = {};
             node.layer = layer;
+            if (!BI.isKey(node.id)) {
+                node.id = BI.UUID();
+            }
             if (node.isParent === true || BI.isNotEmptyArray(node.children)) {
                 switch (i) {
                     case 0 :
@@ -38,7 +41,6 @@ BI.MultiLayerSelectLevelTree = BI.inherit(BI.Widget, {
                         break;
                 }
                 BI.defaults(node, extend);
-                node.id = node.id || BI.UUID();
 
                 self._formatItems(node.children, layer + 1);
             } else {
