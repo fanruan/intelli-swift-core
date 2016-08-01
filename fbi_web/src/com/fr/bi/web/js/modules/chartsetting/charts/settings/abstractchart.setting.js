@@ -1,7 +1,9 @@
 /**
+ * 图表样式设置
  * Created by AstronautOO7 on 2016/8/1.
  */
-BI.AbstractChartSetting = BI.inherit(BI.widget, {
+BI.AbstractChartSetting = BI.inherit(BI.Widget, {
+
     constant: {
         SINGLE_LINE_HEIGHT: 58,
         SIMPLE_H_GAP: 10,
