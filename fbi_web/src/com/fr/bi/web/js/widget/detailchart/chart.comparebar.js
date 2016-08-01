@@ -93,7 +93,6 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
-        config.plotOptions.tooltip.formatter.valueFormat = "function(){if(this > 0){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];} else {return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}}";
 
         config.yAxis = this.yAxis;
         config.yAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
@@ -119,12 +118,13 @@ BI.CompareBarChart = BI.inherit(BI.Widget, {
                         enabled: true,
                         formatter: {
                             identifier: "${VALUE}",
-                            valueFormat: "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}"
+                            valueFormat: config.xAxis[0].formatter
                         }
                     };
                 }
             });
         }
+        config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
         return [items, config];
 
         function formatChartStyle(){

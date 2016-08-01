@@ -137,12 +137,13 @@ BI.BarChart = BI.inherit(BI.Widget, {
                         enabled: true,
                         formatter: {
                             identifier: "${VALUE}",
-                            valueFormat: "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}"
+                            valueFormat: config.xAxis[0].formatter
                         }
                     };
                 }
             });
         }
+        config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
 
         return [items, config];
 

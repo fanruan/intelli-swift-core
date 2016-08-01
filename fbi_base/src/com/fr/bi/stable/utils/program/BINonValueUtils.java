@@ -1,5 +1,7 @@
 package com.fr.bi.stable.utils.program;
 
+import com.fr.bi.exception.BIRuntimeException;
+
 /**
  * Created by Connery on 2015/12/7.
  */
@@ -13,23 +15,29 @@ public class BINonValueUtils {
         }
     }
 
-    public static RuntimeException beyondControl() {
-        return new RuntimeException("the status of FineBI analytic tool is confusion and beyond retrieve");
+    public static BIRuntimeException beyondControl() {
+        return new BIRuntimeException("the status of FineBI analytic tool is confusion and beyond retrieve");
     }
 
-    public static RuntimeException beyondControl(String message) {
-        return new RuntimeException("the status of FineBI analytic tool is confusion and beyond retrieve.\r\n" + message);
+    public static BIRuntimeException beyondControl(String message) {
+        return new BIRuntimeException("the status of FineBI analytic tool is confusion and beyond retrieve.\r\n" + message);
     }
 
-    public static RuntimeException beyondControl(String message, Throwable throwable) {
-        return new RuntimeException("the status of FineBI analytic tool is confusion and beyond retrieve.\r\n" + message, throwable);
+    public static BIRuntimeException beyondControl(String message, Throwable throwable) {
+        return new BIRuntimeException("the status of FineBI analytic tool is confusion and beyond retrieve.\r\n" + message, throwable);
     }
 
-    public static RuntimeException beyondControl(Throwable throwable) {
+    public static BIRuntimeException beyondControl(Throwable throwable) {
+        if (throwable instanceof BIRuntimeException) {
+            Throwable cause = throwable.getCause();
+            return beyondControl(cause.getMessage(), cause);
+        }
         return beyondControl(throwable.getMessage(), throwable);
     }
 
-    public static RuntimeException illegalArgument(String message) {
-        return new IllegalArgumentException(message);
+    public static BIRuntimeException illegalArgument(String message) {
+        return new BIRuntimeException(message);
     }
+
+
 }

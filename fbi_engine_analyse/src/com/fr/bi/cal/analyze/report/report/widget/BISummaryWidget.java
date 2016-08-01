@@ -268,10 +268,12 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     private void parseSortFilter(JSONObject jo, long userId) throws Exception {
         if (jo.has("sort")) {
             JSONObject targetSort = (JSONObject) jo.get("sort");
-            int sortType = targetSort.getInt("type");
-            this.targetSort = new TargetSort(targetSort.getString("sort_target"), sortType);
-            if (sortType == BIReportConstant.SORT.NONE) {
-                this.targetSort = null;
+            if(targetSort.has("type") && targetSort.has("target_sort")) {
+                int sortType = targetSort.getInt("type");
+                this.targetSort = new TargetSort(targetSort.getString("sort_target"), sortType);
+                if (sortType == BIReportConstant.SORT.NONE) {
+                    this.targetSort = null;
+                }
             }
         }
         if (jo.has("filter_value")) {

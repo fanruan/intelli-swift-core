@@ -108,9 +108,7 @@ public class BuildCubeTask implements CubeTask {
         } finally {
             try {
                 cube.addVersion(System.currentTimeMillis());
-
                 replaceOldCubes();
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

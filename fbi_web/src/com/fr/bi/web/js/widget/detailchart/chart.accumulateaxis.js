@@ -91,7 +91,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed;
                     axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
-                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx);
+                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
                     axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -100,7 +100,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed;
                     axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
-                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx);
+                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
                     axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -139,7 +139,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
                         enabled: true,
                         formatter: {
                             identifier: "${VALUE}",
-                            valueFormat: "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}"
+                            valueFormat: config.yAxis[item.yAxis].formatter
                         }
                     };
                 }
@@ -212,7 +212,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
             }
         }
 
-        function formatNumberLevelInYaxis(type, position) {
+        function formatNumberLevelInYaxis(type, position, formatter){
             var magnify = calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -229,7 +229,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
                 });
                 if (position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     item.tooltip = BI.deepClone(config.plotOptions.tooltip);
-                    item.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    item.tooltip.formatter.valueFormat = formatter;
                 }
             });
         }

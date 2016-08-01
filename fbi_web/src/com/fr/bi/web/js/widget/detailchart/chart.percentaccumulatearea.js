@@ -95,7 +95,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.Widget, {
 
         config.yAxis[0].reversed = this.config.left_y_axis_reversed;
         config.yAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.LEFT_AXIS);
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
+        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
@@ -108,6 +108,24 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.Widget, {
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "area";
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
+
+        //为了给数据标签加个%,还要遍历所有的系列，唉
+        if (config.plotOptions.dataLabels.enabled === true) {
+            BI.each(items, function (idx, item) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    item.dataLabels = {
+                        "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                        "align": "outside",
+                        enabled: true,
+                        formatter: {
+                            identifier: "${VALUE}",
+                            valueFormat: config.yAxis[0].formatter
+                        }
+                    };
+                }
+            });
+        }
+
         return [items, config];
 
         function formatChartStyle(){
@@ -164,7 +182,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.Widget, {
             })
         }
 
-        function formatNumberLevelInYaxis(type, position){
+        function formatNumberLevelInYaxis(type, position, formatter){
             var magnify = calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -181,7 +199,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.Widget, {
                 });
                 if(position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                     item.tooltip = BI.deepClone(config.plotOptions.tooltip);
-                    item.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    item.tooltip.formatter.valueFormat = formatter;
                 }
             });
         }
