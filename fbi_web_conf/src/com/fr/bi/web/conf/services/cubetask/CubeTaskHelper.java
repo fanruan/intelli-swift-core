@@ -29,7 +29,7 @@ import java.util.Set;
 /**
  * Created by kary on 16/5/30.
  */
-public class CubeTaskGenerate {
+public class CubeTaskHelper {
 
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
