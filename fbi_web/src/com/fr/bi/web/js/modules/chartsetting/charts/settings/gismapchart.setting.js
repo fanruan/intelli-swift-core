@@ -13,7 +13,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _init: function(){
         BI.GISMapSetting.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, constant = BI.AbstractChartSetting;
 
         //数据标签
         this.showDataLabel = BI.createWidget({
@@ -33,9 +33,9 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: this.constant.SINGLE_LINE_HEIGHT,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -44,9 +44,9 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.center_adapt",
                     items: [this.showDataLabel]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_L_GAP
+                lgap: constant.SIMPLE_L_GAP
             }]
         });
 
@@ -70,8 +70,8 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "line-title"
                 }, this.transferFilter]
             },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
         });
 
         BI.createWidget({
