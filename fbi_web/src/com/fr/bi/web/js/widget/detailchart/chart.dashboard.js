@@ -10,7 +10,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         RIGHT_AXIS: 1,
         RIGHT_AXIS_SECOND: 2,
         X_AXIS: 3,
-        DASHBOARD_AXIS:4,
+        DASHBOARD_AXIS: 4,
         ROTATION: -90,
         NORMAL: 1,
         LEGEND_BOTTOM: 4,
@@ -26,7 +26,9 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         PERCENT_SCALE_SLOT: 11,
         VERTICAL_TUBE: 12,
         FIX_COUNT: 6,
-        HORIZONTAL_TUBE: 13
+        HORIZONTAL_TUBE: 13,
+        AUTO: 1,
+        SHOW: 1
     },
 
     _defaultConfig: function () {
@@ -57,7 +59,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this, o = this.options;
         formatChartDashboardStyle();
         config.chartType = "dashboard";
@@ -65,63 +67,68 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         delete config.yAxis;
         return [items, config];
 
-        function formatChartDashboardStyle(){
-            var bands = getBandsStyles(self.config.bands_styles , self.config.auto_custom_style);
+        function formatChartDashboardStyle() {
+            var bands = getBandsStyles(self.config.bands_styles, self.config.auto_custom_style);
             var valueLabel = {
-                formatter : {
-                    identifier : "${CATEGORY}${VALUE}"
+                formatter: {
+                    identifier: "${CATEGORY}${VALUE}"
                 }
             };
-            var percentageLabel = {
-                enabled : false
-            };
+            var percentageLabel = BI.extend(config.plotOptions.percentageLabel , {
+                enabled: self.config.show_percentage === BICst.PERCENTAGE.SHOW
+            });
+
             config.gaugeAxis = self.gaugeAxis;
             switch (self.config.chart_dashboard_type) {
                 case BICst.CHART_SHAPE.HALF_DASHBOARD:
-                    setPlotOptions("pointer_semi" , bands, config.plotOptions.valueLabel);
+                    setPlotOptions("pointer_semi", bands, config.plotOptions.valueLabel);
                     break;
                 case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
-                    setPlotOptions("ring" , bands , valueLabel , percentageLabel);
+                    setPlotOptions("ring", bands, valueLabel, percentageLabel);
+                    changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
-                    setPlotOptions("slot" , bands , valueLabel , percentageLabel);
+                    setPlotOptions("slot", bands, valueLabel, percentageLabel);
+                    changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
-                    BI.extend(valueLabel , {
-                       align : "bottom"
+                    BI.extend(valueLabel, {
+                        align: "bottom"
                     });
-                    BI.extend(percentageLabel , {
-                        align : "bottom"
+                    BI.extend(percentageLabel, {
+                        align: "bottom"
                     });
-                    setPlotOptions("thermometer" , bands , valueLabel , percentageLabel , "horizontal" , "vertical" );
+                    setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "horizontal", "vertical");
+                    changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.VERTICAL_TUBE:
-                    BI.extend(valueLabel , {
-                        align : "left"
+                    BI.extend(valueLabel, {
+                        align: "left"
                     });
-                    setPlotOptions("thermometer" , bands , valueLabel , percentageLabel , "vertical" , "vertical" );
+                    setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "vertical");
+                    changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
-                    setPlotOptions("pointer" , bands , config.plotOptions.valueLabel);
+                    setPlotOptions("pointer", bands, config.plotOptions.valueLabel);
                     break;
             }
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
-            if(self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.valueLabel.formatter.valueFormat = function(){
+            if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                config.plotOptions.valueLabel.formatter.valueFormat = function () {
                     return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]);
                 };
-                config.gaugeAxis[0].formatter = function(){
+                config.gaugeAxis[0].formatter = function () {
                     return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]) + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                 };
-            }else{
-                config.gaugeAxis[0].formatter = function(){
+            } else {
+                config.gaugeAxis[0].formatter = function () {
                     return this + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                 };
             }
         }
 
-        function setPlotOptions (style , bands , valueLabel , percentageLabel , thermometerLayout , layout) {
+        function setPlotOptions(style, bands, valueLabel, percentageLabel, thermometerLayout, layout) {
             config.plotOptions.style = style;
             config.plotOptions.bands = bands;
             config.plotOptions.valueLabel = valueLabel;
@@ -130,12 +137,17 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             config.plotOptions.layout = layout;
         }
 
-        function formatNumberLevelInYaxis(type, position){
+        function changeMaxMinScale() {
+            self.gaugeAxis[0].max = self.config.max_scale === "" ? self.gaugeAxis[0].max : self.config.max_scale;
+            self.gaugeAxis[0].min = self.config.min_scale === "" ? self.gaugeAxis[0].min : self.config.min_scale;
+        }
+
+        function formatNumberLevelInYaxis(type, position) {
             var magnify = calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
                     if (position === item.yAxis) {
-                        if(!BI.isNumber(da.y)){
+                        if (!BI.isNumber(da.y)) {
                             da.y = BI.parseFloat(da.y);
                         }
                         da.y = da.y || 0;
@@ -146,12 +158,12 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     }
                 })
             });
-            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]}";
             }
         }
 
-        function calcMagnify(type){
+        function calcMagnify(type) {
             var magnify = 1;
             switch (type) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -171,7 +183,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             return magnify;
         }
 
-        function getXYAxisUnit(numberLevelType, position){
+        function getXYAxisUnit(numberLevelType, position) {
             var unit = "";
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -187,20 +199,20 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     unit = BI.i18nText("BI-Yi");
                     break;
             }
-            if(position === self.constants.DASHBOARD_AXIS){
+            if (position === self.constants.DASHBOARD_AXIS) {
                 self.config.dashboard_unit !== "" && (unit = unit + self.config.dashboard_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
         }
 
-        function getBandsStyles (styles , change ) {
+        function getBandsStyles(styles, change) {
             var min = 0, bands = [], color = null, max = null, conditionMax = null;
 
-            BI.each(items , function (idx , item) {
-                    var data = item.data[0];
-                    if ((BI.isNull(max) || data.y > max)) {
-                        max = data.y
-                    }
+            BI.each(items, function (idx, item) {
+                var data = item.data[0];
+                if ((BI.isNull(max) || data.y > max)) {
+                    max = data.y
+                }
             });
 
             switch (change) {
@@ -208,9 +220,9 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                 case BICst.SCALE_SETTING.AUTO:
                     break;
                 case BICst.SCALE_SETTING.CUSTOM:
-                    if(styles.length === 0){
+                    if (styles.length === 0) {
                         return bands
-                    }else {
+                    } else {
                         BI.each(styles, function (idx, style) {
                             bands.push({
                                 color: style.color,
@@ -240,46 +252,40 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             }
         }
 
-        function _calculateValueNiceDomain(minValue, maxValue){
-
+        function _calculateValueNiceDomain(minValue, maxValue) {
             minValue = Math.min(0, minValue);
-
             var tickInterval = _linearTickInterval(minValue, maxValue);
 
             return _linearNiceDomain(minValue, maxValue, tickInterval);
         }
 
-        function _linearTickInterval(minValue, maxValue, m){
-
+        function _linearTickInterval(minValue, maxValue, m) {
             m = m || 5;
             var span = maxValue - minValue;
             var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
             var err = m / span * step;
-
             if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
 
             return step;
         }
 
-        function _linearNiceDomain(minValue, maxValue, tickInterval){
-
+        function _linearNiceDomain(minValue, maxValue, tickInterval) {
             minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
-
             maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
 
             return [minValue, maxValue];
         }
     },
 
-    _formatItems: function(items){
-        if(items.length === 0){
+    _formatItems: function (items) {
+        if (items.length === 0) {
             return [];
         }
         var c = this.constants;
-        if(this.config.chart_dashboard_type === c.NORMAL || this.config.chart_dashboard_type === c.HALF_DASHBOARD){
+        if (this.config.chart_dashboard_type === c.NORMAL || this.config.chart_dashboard_type === c.HALF_DASHBOARD) {
             var result = [];
-            if(this.config.number_of_pointer === c.ONE_POINTER && items[0].length === 1){//单个系列
-                BI.each(items[0][0].data, function(idx, da){
+            if (this.config.number_of_pointer === c.ONE_POINTER && items[0].length === 1) {//单个系列
+                BI.each(items[0][0].data, function (idx, da) {
                     result.push({
                         data: [{
                             x: items[0][0].name,
@@ -290,9 +296,9 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                 });
                 return [result];
             }
-            if(this.config.number_of_pointer === c.MULTI_POINTER && items[0].length > 1){//多个系列
-                BI.each(items, function(idx, item){
-                    BI.each(item, function(id, it){
+            if (this.config.number_of_pointer === c.MULTI_POINTER && items[0].length > 1) {//多个系列
+                BI.each(items, function (idx, item) {
+                    BI.each(item, function (id, it) {
                         var data = it.data[0];
                         data.x = it.name;
                         result.push(data);
@@ -303,10 +309,10 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
                     name: ""
                 }]];
             }
-        }else{
+        } else {
             var others = [];
-            BI.each(items[0], function(idx, item){
-                BI.each(item.data, function(id, da){
+            BI.each(items[0], function (idx, item) {
+                BI.each(item.data, function (id, da) {
                     others.push({
                         data: [{
                             x: item.name,
@@ -330,13 +336,16 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
             chart_dashboard_type: options.chart_dashboard_type || c.NORMAL,
             number_of_pointer: options.number_of_pointer || c.ONE_POINTER,
             bands_styles: options.style_conditions,
-            auto_custom_style: options.auto_custom
+            auto_custom_style: options.auto_custom,
+            max_scale: options.max_scale || "",
+            min_scale: options.min_scale || "",
+            show_percentage: options.show_percentage || c.SHOW
         };
         o.items = this._formatItems(items);
         var types = [];
-        BI.each(o.items, function(idx, axisItems){
+        BI.each(o.items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.DASHBOARD);
             });
             types.push(type);
@@ -349,7 +358,7 @@ BI.DashboardChart = BI.inherit(BI.Widget, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });
