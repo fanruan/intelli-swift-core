@@ -6067,7 +6067,7 @@ Data.Utils = {
                 ONE2POINT: 3,
                 TWO2POINT: 4,
                 STYLE_NORMAL: 21,
-                MINLIMIT: 1e-6,
+                MINLIMIT: 1e-5,
                 LEGEND_HEIGHT: 80,
                 RIGHT_AXIS_SECOND: 2,
                 DASHBOARD_AXIS: 4,
