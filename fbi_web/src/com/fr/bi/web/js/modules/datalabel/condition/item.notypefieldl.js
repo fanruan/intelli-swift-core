@@ -1,7 +1,7 @@
 /**
  * Created by lfhli on 2016/7/15.
  */
-BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
+BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
@@ -15,14 +15,14 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.DataLabelConditionItem.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.DataLabelNoTypeFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "data-label-condition-item",
             afterValueChange: BI.emptyFn
         })
     },
 
     _init: function () {
-        BI.DataLabelConditionItem.superclass._init.apply(this, arguments);
+        BI.DataLabelNoTypeFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         var left = this._buildConditionsNoType();
@@ -32,7 +32,7 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.destroy();
-            BI.DataLabelConditionItem.superclass.destroy.apply(this,arguments);
+            BI.DataLabelNoTypeFieldFilterItem.superclass.destroy.apply(this,arguments);
         });
         this.itemContainer = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
@@ -49,7 +49,6 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.vertical",
             element: this.element,
             items: [this.itemContainer]
-
         });
     },
 
@@ -62,18 +61,18 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
     _buildConditionsNoType: function () {
         var self = this, o = this.options;
         var selectFieldPane = BI.createWidget({
-            type: "bi.target_filter_select_field",
+            type: "bi.data_label_filter_select_field",
             height: this._constant.MAX_HEIGHT,
-            field_id: o.field_id
+            field_id: o.field_id,
+            dId: o.dId
         });
-        this.addCondition = BI.createWidget({
+        this.selectCondition = BI.createWidget({
             type: "bi.combo",
             isNeedAdjustHeight: true,
             adjustLength: this._constant.CONDITION_TYPE_COMBO_ADJUST,
             el: {
                 type: "bi.button",
                 level: "common",
-                width: 90,
                 height: this._constant.BUTTON_HEIGHT,
                 text: BI.i18nText("BI-Please_Select_Field")
             },
@@ -84,13 +83,19 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
             }
         });
 
-        selectFieldPane.on(BI.TargetFilterSelectField.EVENT_CLICK_ITEM, function (v) {
+        selectFieldPane.on(BI.DataLabelFilterSelectField.EVENT_CLICK_ITEM, function (v) {
             self._onTypeSelected(v);
         });
         return BI.createWidget({
             type: "bi.vertical",
             cls: "item-content",
-            items: [this.addCondition],
+            items: [{
+                type: "bi.vertical_adapt",
+                items: [this.selectCondition],
+                width: 90,
+                height: 38,
+                lgap: 5
+            }],
             width: 530
         });
     },
@@ -119,5 +124,5 @@ BI.DataLabelConditionItem = BI.inherit(BI.AbstractFilterItem, {
         }
     }
 });
-BI.DataLabelConditionItem.EVENT_CHANGE = "BI.DataLabelConditionItem.EVENT_CHANGE";
-$.shortcut("bi.data_label_condition_item", BI.DataLabelConditionItem);
+BI.DataLabelNoTypeFieldFilterItem.EVENT_CHANGE = "BI.DataLabelNoTypeFieldFilterItem.EVENT_CHANGE";
+$.shortcut("bi.data_label_no_type_field_filter_item", BI.DataLabelNoTypeFieldFilterItem);
