@@ -15,12 +15,21 @@ MultiLayerSelectTreeComboView = BI.inherit(BI.View, {
             type: "bi.multilayer_select_tree_combo"
         });
 
+        new BI.Tree();
+
         combo.populate(items);
 
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            items: [combo],
+            items: [combo, {
+                type: "bi.button",
+                width: 100,
+                text: "getValue",
+                handler: function () {
+                    BI.Msg.alert("", JSON.stringify(combo.getValue()));
+                }
+            }],
             vgap: 100
         })
     }
