@@ -5,21 +5,22 @@
  */
 BI.MapSetting = BI.inherit(BI.Widget, {
     constant: {
-        SINGLE_LINE_HEIGHT: 58,
-        SIMPLE_H_GAP: 10,
-        SIMPLE_L_GAP: 5,
-        SIMPLE_H_LGAP: 5,
-        CHECKBOX_WIDTH: 16,
-        EDITOR_WIDTH: 80,
-        EDITOR_HEIGHT: 26,
-        BUTTON_WIDTH: 40,
-        BUTTON_HEIGHT: 30,
-        ICON_WIDTH: 24,
-        ICON_HEIGHT: 24,
-        NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240,
-        LEGEND_SEGMENT_WIDTH: 180,
-        CONDITIONS_HEIGHT: 200
+        LEFT_GAP: 5,
+        CONDITIONS_HEIGHT: 200,
+        SINGLE_LINE_HEIGHT: BICst.CHART.SINGLE_LINE_HIGHT,
+        SIMPLE_H_GAP: BICst.CHART.SIMPLE_H_GAP,
+        SIMPLE_L_GAP: BICst.CHART.SIMPLE_L_GAP,
+        SIMPLE_H_LGAP: BICst.CHART.SIMPLE_H_LGAP,
+        CHECKBOX_WIDTH: BICst.CHART.CHECKBOX_WIDTH,
+        EDITOR_WIDTH: BICst.CHART.EDITOR_WIDTH,
+        EDITOR_HEIGHT: BICst.CHART.EDITOR_HEIGHT,
+        BUTTON_WIDTH: BICst.CHART.BUTTON_WIDTH,
+        BUTTON_HEIGHT: BICst.CHART.BUTTON_HEIGHT,
+        ICON_WIDTH: BICst.CHART.ICON_WIDTH,
+        ICON_HEIGHT: BICst.CHART.ICON_HEIGHT,
+        NUMBER_LEVEL_SEGMENT_WIDTH: BICst.CHART.NUMBER_LEVEL_SEGMENT_WIDTH,
+        FORMAT_SEGMENT_WIDTH: BICst.CHART.FORMAT_SEGMENT_WIDTH,
+        LEGEND_SEGMENT_WIDTH: BICst.CHART.LEGEND_SEGMENT_WIDTH
     },
 
     _defaultConfig: function(){
@@ -60,7 +61,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Chart_Table_Style"),
-                lgap: this.constant.SIMPLE_L_GAP,
+                lgap: this.constant.LEFT_GAP,
                 textAlign: "left",
                 textHeight: 60,
                 cls: "line-title"
@@ -70,7 +71,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
                 items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Theme_Color"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: 0,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -114,7 +115,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
             height: this.constant.BUTTON_HEIGHT
         });
 
-        this.addConditionButton.on(BI.Button.EVENT_CHANGE , function () {
+        this.addConditionButton.on( BI.Button.EVENT_CHANGE , function () {
             self.conditions.addItem();
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
@@ -153,7 +154,7 @@ BI.MapSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Interval_Setting"),
                 textHeight: this.constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
-                lgap: this.constant.SIMPLE_L_GAP,
+                lgap: this.constant.LEFT_GAP,
                 cls: "line-title"
             } , interval]
         });
