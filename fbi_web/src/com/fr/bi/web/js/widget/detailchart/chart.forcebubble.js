@@ -3,24 +3,7 @@
  * @class BI.ForceBubbleChart
  * @extends BI.Widget
  */
-BI.ForceBubbleChart = BI.inherit(BI.Widget, {
-
-    constants: {
-        LEFT_AXIS: 0,
-        RIGHT_AXIS: 1,
-        RIGHT_AXIS_SECOND: 2,
-        X_AXIS: 3,
-        ROTATION: -90,
-        NORMAL: 1,
-        LEGEND_BOTTOM: 4,
-        ZERO2POINT: 2,
-        ONE2POINT: 3,
-        TWO2POINT: 4,
-        STYLE_NORMAL: 21,
-        MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80,
-        FIX_COUNT: 6
-    },
+BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.ForceBubbleChart.superclass._defaultConfig.apply(this, arguments), {

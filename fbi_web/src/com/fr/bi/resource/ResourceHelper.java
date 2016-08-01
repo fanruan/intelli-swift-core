@@ -2315,6 +2315,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/date/combo.date.js",
 
                 //图控件
+                "com/fr/bi/web/js/widget/detailchart/chart.abstract.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulatearea.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulateaxis.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulatebar.js",
