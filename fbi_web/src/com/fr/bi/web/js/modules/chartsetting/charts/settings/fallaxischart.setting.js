@@ -262,7 +262,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: this.constant.SIMPLE_H_LGAP
             }]
         });
 
@@ -373,7 +373,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, this.transferFilter]
             },
             height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            lhgap: 11
         });
 
         BI.createWidget({

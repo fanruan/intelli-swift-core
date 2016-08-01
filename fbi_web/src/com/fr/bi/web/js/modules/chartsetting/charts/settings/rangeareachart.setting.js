@@ -225,7 +225,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }], {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: this.constant.SIMPLE_H_LGAP
             }]
         });
 
@@ -335,7 +335,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, this.transferFilter]
             },
             height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: 15
+            lhgap: 11
         });
 
         BI.createWidget({

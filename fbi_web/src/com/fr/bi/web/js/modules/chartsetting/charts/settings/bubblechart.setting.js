@@ -139,10 +139,11 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.button_group",
             items: BI.createItems(BICst.BUBBLE_CHART_STYLE_GROUP, {
                 type: "bi.icon_button",
-                width: 30,
-                height: 30,
-                iconWidth: 24,
-                iconHeight: 24
+                extraCls: "chart-style-font",
+                width: this.constant.BUTTON_WIDTH,
+                height: this.constant.BUTTON_HEIGHT,
+                iconWidth: this.constant.ICON_WIDTH,
+                iconHeight: this.constant.ICON_HEIGHT
             }),
             layouts: [{
                 type: "bi.left",
