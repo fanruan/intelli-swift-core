@@ -16,21 +16,6 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
 
     _init: function () {
         BIDezi.DetailModel.superclass._init.apply(this, arguments);
-        //var selectDimensionMap = {};
-        //
-        //BI.each(widgetType, function(idx, type){
-        //    switch (type) {
-        //        case BICst.WIDGET.MAP:
-        //            break;
-        //        case BICst.WIDGET.GIS_MAP:
-        //            break;
-        //
-        //    }
-        //
-        //});
-        //BI.each(regions, function(idx, region){
-        //
-        //})
     },
 
     similar: function (ob, key) {
