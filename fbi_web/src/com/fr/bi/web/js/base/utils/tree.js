@@ -393,14 +393,20 @@
             var r = [];
             if (BI.isArray(nodes)) {
                 for (var i = 0, l = nodes.length; i < l; i++) {
-                    r.push(nodes[i]);
-                    if (nodes[i]["children"])
+                    var node = BI.clone(nodes[i]);
+                    delete node.children;
+                    r.push(node);
+                    if (nodes[i]["children"]) {
                         r = r.concat(BI.Tree.transformToArrayFormat(nodes[i]["children"]));
+                    }
                 }
             } else {
-                r.push(nodes);
-                if (nodes["children"])
+                var newNodes = BI.clone(nodes);
+                delete newNodes.children;
+                r.push(newNodes);
+                if (nodes["children"]) {
                     r = r.concat(BI.Tree.transformToArrayFormat(nodes["children"]));
+                }
             }
             return r;
         },
@@ -415,7 +421,7 @@
                 var r = [];
                 var tmpMap = [];
                 for (i = 0, l = sNodes.length; i < l; i++) {
-                    tmpMap[sNodes[i].id] = sNodes[i];
+                    tmpMap[sNodes[i].id] = BI.clone(sNodes[i]);
                 }
                 for (i = 0, l = sNodes.length; i < l; i++) {
                     if (tmpMap[sNodes[i].pId] && sNodes[i].id != sNodes[i].pId) {
@@ -424,8 +430,9 @@
                         }
                         tmpMap[sNodes[i].pId].children.push(sNodes[i]);
                     } else {
-                        r.push(sNodes[i]);
+                        r.push(tmpMap[sNodes[i].id]);
                     }
+                    delete tmpMap[sNodes[i].id].pId;
                 }
                 return r;
             } else {
