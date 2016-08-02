@@ -81,7 +81,8 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
                 el: this.dataLinksTable,
                 left: 20,
                 right: 20,
-                top: 10
+                top: 10,
+                bottom: 10
             }, {
                 el: newDataLink,
                 top: -40,
