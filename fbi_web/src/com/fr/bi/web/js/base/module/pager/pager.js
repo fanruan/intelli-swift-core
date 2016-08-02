@@ -56,6 +56,10 @@ BI.Pager = BI.inherit(BI.Widget, {
         this.currPage = BI.result(this.options, "curr");
         this._populate();
     },
+    
+    refresh: function () {
+        this._populate();  
+    },
 
     _populate: function () {
         var self = this, o = this.options, view = [], dict = {};

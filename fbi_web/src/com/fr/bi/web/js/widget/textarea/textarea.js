@@ -97,12 +97,10 @@ BI.TextArea = BI.inherit(BI.Widget, {
     },
 
     _showInput: function () {
-        this.combo.setVisible(true);
         this.label.setVisible(false);
     },
 
     _showLabel: function () {
-        this.combo.setVisible(false);
         this.label.setVisible(true);
     },
 

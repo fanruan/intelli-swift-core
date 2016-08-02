@@ -13,7 +13,7 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _init: function(){
         BI.PercentChartsSetting.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -31,14 +31,14 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
                 type: "bi.icon_button",
                 extraCls: "chart-style-font",
-                width: this.constant.BUTTON_WIDTH,
-                height: this.constant.BUTTON_HEIGHT,
-                iconWidth: this.constant.ICON_WIDTH,
-                iconHeight: this.constant.ICON_HEIGHT
+                width: constant.BUTTON_WIDTH,
+                height: constant.BUTTON_HEIGHT,
+                iconWidth: constant.ICON_WIDTH,
+                iconHeight: constant.ICON_HEIGHT
             }),
             layouts: [{
                 type: "bi.vertical_adapt",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                height: constant.SINGLE_LINE_HEIGHT
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
@@ -52,7 +52,7 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Sheet_Style"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -67,20 +67,20 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                         type: "bi.center_adapt",
                         items: [this.colorSelect]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names",
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }, {
                     el: {
                         type: "bi.center_adapt",
                         items: [this.chartStyleGroup]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 })
             }]
         });
@@ -88,8 +88,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //格式和数量级
         this.lYAxisStyle = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.FORMAT_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_FORMAT
         });
 
@@ -99,8 +99,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.numberLevellY = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_LEVEL
         });
 
@@ -111,8 +111,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //单位
         this.LYUnit = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input",
             watermark: BI.i18nText("BI-Custom_Input")
         });
@@ -135,8 +135,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.editTitleLY = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
         this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
@@ -146,8 +146,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //横轴文本方向
         this.text_direction = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input",
             allowBlank: false,
             value: "0",
@@ -173,8 +173,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.editTitleX = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
 
@@ -185,8 +185,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //图例
         this.legend = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.LEGEND_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.LEGEND_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.CHART_LEGEND
         });
 
@@ -251,9 +251,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: this.constant.SINGLE_LINE_HEIGHT,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -278,9 +278,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.center_adapt",
                     items: [this.showZoom]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -291,7 +291,7 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Category_Axis"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -308,7 +308,7 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: "。",
                     textHeight: 30,
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleX]
@@ -316,9 +316,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.center_adapt",
                     items: [this.editTitleX]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -328,9 +328,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: this.constant.SINGLE_LINE_HEIGHT,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 text: BI.i18nText("BI-Value_Axis"),
                 cls: "line-title"
             }, {
@@ -346,7 +346,7 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -354,7 +354,7 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -363,9 +363,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -389,8 +389,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "line-title"
                 }, this.transferFilter]
             },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
         });
 
         BI.createWidget({

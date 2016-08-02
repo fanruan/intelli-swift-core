@@ -310,8 +310,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             dashboard_unit: options.dashboard_unit || "",
             chart_dashboard_type: options.chart_dashboard_type || c.NORMAL,
             number_of_pointer: options.number_of_pointer || c.ONE_POINTER,
-            bands_styles: options.style_conditions,
-            auto_custom_style: options.auto_custom,
+            bands_styles: options.style_conditions || [],
+            auto_custom_style: options.auto_custom || c.AUTO,
             max_scale: options.max_scale || "",
             min_scale: options.min_scale || "",
             show_percentage: options.show_percentage || c.SHOW

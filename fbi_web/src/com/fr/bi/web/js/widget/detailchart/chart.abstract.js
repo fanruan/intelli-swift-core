@@ -33,7 +33,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         LAT_FIRST: 4,
         theme_color: "#65bce7",
         auto_custom: 1,
-        POLYGON: 7
+        POLYGON: 7,
+        AUTO_CUSTOM: 1,
+        AUTO: 1
     },
 
     _defaultConfig: function () {

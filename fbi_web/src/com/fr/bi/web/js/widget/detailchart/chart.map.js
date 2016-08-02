@@ -271,10 +271,10 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
             initDrillPath: options.initDrillPath || [],
             tooltip: options.tooltip || "",
-            theme_color: options.theme_color || c.theme_color,
+            theme_color: options.theme_color || "#65bce7",
             map_styles: options.map_styles || [],
-            auto_custom: options.auto_custom || c.auto_custom,
-            map_bubble_color: options.map_bubble_color || c.theme_color
+            auto_custom: options.auto_custom || c.AUTO_CUSTOM,
+            map_bubble_color: options.map_bubble_color || "#65bce7"
         };
         this.options.items = items;
 

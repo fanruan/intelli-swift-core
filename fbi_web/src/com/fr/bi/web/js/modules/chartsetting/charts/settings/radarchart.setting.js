@@ -13,7 +13,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _init: function(){
         BI.RadarChartSetting.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -30,14 +30,14 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
                 type: "bi.icon_button",
                 extraCls: "chart-style-font",
-                width: this.constant.BUTTON_WIDTH,
-                height: this.constant.BUTTON_HEIGHT,
-                iconWidth: this.constant.ICON_WIDTH,
-                iconHeight: this.constant.ICON_HEIGHT
+                width: constant.BUTTON_WIDTH,
+                height: constant.BUTTON_HEIGHT,
+                iconWidth: constant.ICON_WIDTH,
+                iconHeight: constant.ICON_HEIGHT
             }),
             layouts: [{
                 type: "bi.vertical_adapt",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                height: constant.SINGLE_LINE_HEIGHT
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
@@ -49,14 +49,14 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BI.createItems(BICst.RADAR_CHART_STYLE_GROUP, {
                 type: "bi.icon_button",
                 extraCls: "chart-style-font",
-                width: this.constant.BUTTON_WIDTH,
-                height: this.constant.BUTTON_HEIGHT,
-                iconWidth: this.constant.ICON_WIDTH,
-                iconHeight: this.constant.ICON_HEIGHT
+                width: constant.BUTTON_WIDTH,
+                height: constant.BUTTON_HEIGHT,
+                iconWidth: constant.ICON_WIDTH,
+                iconHeight: constant.ICON_HEIGHT
             }),
             layouts: [{
                 type: "bi.vertical_adapt",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                height: constant.SINGLE_LINE_HEIGHT
             }]
         });
         this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
@@ -70,7 +70,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Sheet_Style"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -85,31 +85,31 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                         type: "bi.center_adapt",
                         items: [this.colorSelect]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names",
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }, {
                     el: {
                         type: "bi.center_adapt",
                         items: [this.chartStyleGroup]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),
                     cls: "attr-names",
-                    lgap: this.constant.SIMPLE_H_GAP2
+                    lgap: constant.SIMPLE_H_GAP2
                 }, {
                     el: {
                         type: "bi.center_adapt",
                         items: [this.chartTypeGroup]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 })
             }]
         });
@@ -117,8 +117,8 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //格式和数量级
         this.lYAxisStyle = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.FORMAT_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_FORMAT
         });
 
@@ -128,8 +128,8 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.numberLevellY = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_LEVEL
         });
 
@@ -140,8 +140,8 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //图例
         this.legend = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.LEGEND_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.LEGEND_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.CHART_LEGEND
         });
 
@@ -178,9 +178,9 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: this.constant.SINGLE_LINE_HEIGHT,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -199,9 +199,9 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.center_adapt",
                     items: [this.gridLine]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -212,8 +212,8 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: this.constant.SINGLE_LINE_HEIGHT,
-                lgap: this.constant.SIMPLE_H_LGAP,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 text: BI.i18nText("BI-Value_Axis"),
                 cls: "line-title"
@@ -230,15 +230,15 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
                     items: [this.numberLevellY]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -262,8 +262,8 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "line-title"
                 }, this.transferFilter]
             },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
         });
 
         BI.createWidget({

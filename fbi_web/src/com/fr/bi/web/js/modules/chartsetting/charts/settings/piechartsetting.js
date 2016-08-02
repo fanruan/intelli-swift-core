@@ -13,7 +13,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _init: function(){
         BI.PieChartSetting.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -30,14 +30,14 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
                 type: "bi.icon_button",
                 extraCls: "chart-style-font",
-                width: this.constant.BUTTON_WIDTH,
-                height: this.constant.BUTTON_HEIGHT,
-                iconWidth: this.constant.ICON_WIDTH,
-                iconHeight: this.constant.ICON_HEIGHT
+                width: constant.BUTTON_WIDTH,
+                height: constant.BUTTON_HEIGHT,
+                iconWidth: constant.ICON_WIDTH,
+                iconHeight: constant.ICON_HEIGHT
             }),
             layouts: [{
                 type: "bi.vertical_adapt",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                height: constant.SINGLE_LINE_HEIGHT
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
@@ -49,14 +49,14 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BI.createItems(BICst.PIE_CHART_STYLE_GROUP, {
                 type: "bi.icon_button",
                 extraCls: "chart-style-font",
-                width: this.constant.BUTTON_WIDTH,
-                height: this.constant.BUTTON_HEIGHT,
-                iconWidth: this.constant.ICON_WIDTH,
-                iconHeight: this.constant.ICON_HEIGHT
+                width: constant.BUTTON_WIDTH,
+                height: constant.BUTTON_HEIGHT,
+                iconWidth: constant.ICON_WIDTH,
+                iconHeight: constant.ICON_HEIGHT
             }),
             layouts: [{
                 type: "bi.vertical_adapt",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                height: constant.SINGLE_LINE_HEIGHT
             }]
         });
         this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
@@ -70,7 +70,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Sheet_Style"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -85,31 +85,31 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                         type: "bi.center_adapt",
                         items: [this.colorSelect]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names",
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }, {
                     el: {
                         type: "bi.center_adapt",
                         items: [this.chartStyleGroup]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),
                     cls: "attr-names",
-                    lgap: this.constant.SIMPLE_H_GAP2
+                    lgap: constant.SIMPLE_H_GAP2
                 }, {
                     el: {
                         type: "bi.center_adapt",
                         items: [this.chartTypeGroup]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 })
             }]
         });
@@ -117,8 +117,8 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //内径大小
         this.innerRadius = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input",
             errorText: BI.i18nText("BI-Please_Enter_Number_1_To_100"),
             validationChecker: function(v){
@@ -137,7 +137,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.totalAngle = BI.createWidget({
             type: "bi.segment",
             width: 180,
-            height: this.constant.BUTTON_HEIGHT,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.PIE_TOTAL_ANGLE
         });
 
@@ -148,8 +148,8 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //图例
         this.legend = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.LEGEND_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.LEGEND_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.CHART_LEGEND
         });
 
@@ -175,9 +175,9 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: this.constant.SINGLE_LINE_HEIGHT,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -193,9 +193,9 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.center_adapt",
                     items: [this.showDataLabel]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -205,9 +205,9 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: this.constant.SINGLE_LINE_HEIGHT,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 text: BI.i18nText("BI-Show_Param"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -223,15 +223,15 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Total_Angle"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
                     items: [this.totalAngle]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -255,8 +255,8 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "line-title"
                 }, this.transferFilter]
             },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
         });
 
         BI.createWidget({
