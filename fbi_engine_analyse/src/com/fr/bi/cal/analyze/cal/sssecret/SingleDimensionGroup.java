@@ -365,7 +365,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     public Iterator getTreeMapSortIterator(final ICubeValueEntryGetter getter) {
-        final TreeSet<Integer> set = new TreeSet<Integer>(column.getComparator());
+        final TreeSet<Integer> set = column.getSortType() == BIReportConstant.SORT.DESC ? new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.DESC) : new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         root.getGroupValueIndex().Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
