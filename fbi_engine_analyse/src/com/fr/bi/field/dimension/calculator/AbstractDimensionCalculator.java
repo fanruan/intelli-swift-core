@@ -163,7 +163,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         }
         ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);
-        if (useRealData && isNoGroup()) {
+        if (useRealData && isNoGroup() && getSortType() != BIReportConstant.SORT.CUSTOM) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }
         return dimension.getSort().createGroupedMap(getter).iterator();
