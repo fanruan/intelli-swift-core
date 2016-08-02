@@ -2365,6 +2365,9 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 if (!this._isArrangeFine()) {
                     var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].scrollHeight;
                     var clone = BI.toArray(this._cloneRegion());
+                    clone.sort(function (r1, r2) {
+                        return r1.top - r2.top;
+                    });
                     var count = clone.length;
                     var cols = 3, rows = Math.floor((count - 1) / 3 + 1);
                     var w = width / cols, h = height / rows;
