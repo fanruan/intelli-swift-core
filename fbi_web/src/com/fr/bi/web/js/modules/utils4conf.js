@@ -170,7 +170,7 @@ BI.extend(BI.Utils, {
     },
 
     getPackageNameByID4Conf: function (packageId) {
-        return Data.SharingPool.get("packages")[packageId].name;
+        return Data.SharingPool.cat("packages")[packageId].name;
     },
 
     getTableIDsOfPackageID4Conf: function (packageId) {
