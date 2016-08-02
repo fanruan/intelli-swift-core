@@ -2106,7 +2106,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                         region.width = region.width - offset;
                         region.left = region.left + offset;
                     });
-                    if (this._test(cloned)) {
+                    if (this._test(cloned) && this._isArrangeFine(cloned)) {
                         this._modifyRegion(cloned);
                         flag = true;
                     }
@@ -2125,7 +2125,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                         region.height = region.height - offset;
                         region.top = region.top + offset;
                     });
-                    if (this._test(cloned)) {
+                    if (this._test(cloned) && this._isArrangeFine(cloned)) {
                         this._modifyRegion(cloned);
                         flag = true;
                     }
@@ -2145,6 +2145,9 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         }
         this._locationRegion();
         this._applyRegion();
+        if (flag === true) {
+            this.resize();
+        }
         return flag;
     },
 
