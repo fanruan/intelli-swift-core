@@ -146,7 +146,12 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         if (sort_target != null ? !ComparatorUtils.equals(sort_target, that.sort_target) : that.sort_target != null) {
             return false;
         }
-
+        if (group != null ? !ComparatorUtils.equals(group, that.group) : that.group != null) {
+            return false;
+        }
+        if (sort != null ? !ComparatorUtils.equals(sort, that.sort) : that.sort != null) {
+            return false;
+        }
         return true;
     }
 
@@ -156,6 +161,8 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         result = 31 * result + (sort_target != null ? sort_target.hashCode() : 0);
         result = 31 * result + (column != null ? column.hashCode() : 0);
         result = 31 * result + (filter != null ? filter.hashCode() : 0);
+        result = 31 * result + (group != null ? group.hashCode() : 0);
+        result = 31 * result + (sort != null ? sort.hashCode() : 0);
         return result;
     }
 
