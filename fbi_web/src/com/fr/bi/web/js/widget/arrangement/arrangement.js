@@ -2145,9 +2145,6 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         }
         this._locationRegion();
         this._applyRegion();
-        if (flag === true) {
-            this.resize();
-        }
         return flag;
     },
 
