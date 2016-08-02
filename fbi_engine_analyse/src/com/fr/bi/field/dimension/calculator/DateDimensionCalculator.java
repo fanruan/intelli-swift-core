@@ -53,10 +53,10 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
 
     @Override
     public Comparator getComparator() {
-        if (getSortType() == BIReportConstant.SORT.NUMBER_ASC) {
-            return BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
-        } else{
+        if (getSortType() == BIReportConstant.SORT.NUMBER_DESC) {
             return BIBaseConstant.COMPARATOR.COMPARABLE.DESC;
+        } else{
+            return BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
         }
     }
 }
