@@ -80,6 +80,9 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     BI.extend(valueLabel, {
                         align: "left"
                     });
+                    BI.extend(percentageLabel, {
+                        align: "left"
+                    });
                     setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "horizontal");
                     changeMaxMinScale();
                     break;
