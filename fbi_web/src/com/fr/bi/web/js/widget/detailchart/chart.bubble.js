@@ -81,7 +81,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].title.rotation = this.constants.ROTATION;
 
         config.xAxis[0].formatter = formatTickInXYaxis(this.config.x_axis_style, this.constants.X_AXIS);
-        formatNumberLevelInXaxis(this.config.x_axis_number_level);
+        self.formatNumberLevelInXaxis(items, this.config.x_axis_number_level);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
@@ -177,22 +177,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             })
         }
 
-        function formatNumberLevelInXaxis(type){
-            var magnify = calcMagnify(type);
-            BI.each(items, function (idx, item) {
-                BI.each(item.data, function (id, da) {
-                    if(!BI.isNumber(da.x)){
-                        da.x = BI.parseFloat(da.x);
-                    }
-                    da.x = da.x || 0;
-                    da.x = da.x.div(magnify).toFixed(self.constants.FIX_COUNT);
-                    if (self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0) {
-                        da.x = 0;
-                    }
-                })
-            })
-        }
-
         function formatNumberLevelInYaxis(type, position){
             var magnify = calcMagnify(type);
             BI.each(items, function (idx, item) {
@@ -202,10 +186,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             da.y = BI.parseFloat(da.y);
                         }
                         da.y = da.y || 0;
-                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
-                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
-                            da.y = 0;
-                        }
+                        da.y = FR.contentFormat(da.y.div(magnify), "#.##");
                     }
                 })
             })
