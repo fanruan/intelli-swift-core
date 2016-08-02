@@ -42,7 +42,6 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         JSONObject jsonObject = new JSONObject().put("result", cubeBuild);
         WebUtils.printAsJSON(res, jsonObject);
-
     }
 
 }

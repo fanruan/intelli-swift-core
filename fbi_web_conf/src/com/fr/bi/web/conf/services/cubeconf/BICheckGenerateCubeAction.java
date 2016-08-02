@@ -2,6 +2,8 @@ package com.fr.bi.web.conf.services.cubeconf;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.TableSourceFactory;
@@ -30,7 +32,8 @@ public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
         if (tableExisted) {
             ICubeDataLoader dataLoader = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId));
             ICubeTableService tableService = dataLoader.getTableIndex(source);
-            jo.put("isGenerated", tableService.isDataAvailable());
+            BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
+            jo.put("isGenerated", tableService.isDataAvailable() && !cubeManager.hasTask(userId));
         } else {
             jo.put("isGenerated", false);
         }
