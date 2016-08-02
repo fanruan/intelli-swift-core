@@ -27,7 +27,7 @@ BI.DataLabelFilterItemFactory = {
 
     createFilterItemByFilterType: function (filterType) {
         var type = "";
-        switch (filterType){
+        switch (filterType) {
             case BICst.TARGET_FILTER_STRING.BELONG_VALUE:
             case BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE:
             case BICst.TARGET_FILTER_STRING.CONTAIN:

@@ -9,9 +9,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         var conf = BI.DataLabelTab.superclass._defaultConfig.apply(this, arguments);
-        return BI.extend(conf, {
-
-        });
+        return BI.extend(conf, {});
     },
 
     _init: function () {
@@ -25,17 +23,17 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 handler: function () {
                     self.layout.setHeight(self._constant.TEXT_TOOL_BAR_HEIGHT);
                 }
-            },{
+            }, {
                 type: "bi.label",
                 text: "文字标签",
                 rgap: 20
-            },{
+            }, {
                 type: "bi.radio",
                 value: 2,
                 handler: function () {
                     self.layout.setHeight(self._constant.IMAGE_SET_HEIGHT);
                 }
-            },{
+            }, {
                 type: "bi.label",
                 text: "图片标签"
             }],
@@ -73,7 +71,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     },
 
     _createPanel: function (v) {
-        switch (v){
+        switch (v) {
             case 1:
                 return this._createTextLabel();
             case 2:
@@ -82,8 +80,12 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     },
 
     _createTextLabel: function () {
+        var self = this;
         this.texttoolbar = BI.createWidget({
             type: "bi.data_label_text_toolbar"
+        });
+        this.texttoolbar.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
+            self._value = self.texttoolbar.getValue();
         });
         return BI.createWidget({
             type: "bi.absolute",
@@ -97,12 +99,14 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     },
 
     _createImageLabel: function () {
-        var self = this, o= this.options;
+        var self = this, o = this.options;
         this.imageset = BI.createWidget({
             type: "bi.data_label_image_set"
         });
+        this.imageset.setValue(this._value);
         this.imageset.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
-            self.fireEvent(BI.DataLabelTab.IMG_CHANGE,arguments);
+            self._value = self.imageset.getValue();
+            self.fireEvent(BI.DataLabelTab.IMG_CHANGE, arguments);
         });
         this.barchart = BI.createWidget({
             type: "bi.data_label_bar_chart"
@@ -115,7 +119,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 items: [{
                     el: this.barchart,
                     top: 30
-                },{
+                }, {
                     el: this.imageset,
                     top: 30,
                     left: 150
@@ -125,21 +129,14 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         );
     },
     setValue: function (v) {
-        if( v.type === "img") {
-            this.layout.setHeight(this._constant.IMAGE_SET_HEIGHT);
-            this.tabs.setSelect(2);
-            this.imageset.setValue(v);
+        if (v.type === "img") {
+            this._value = v;
         } else {
             this.texttoolbar.setValue(v);
         }
     },
     getValue: function () {
-        switch (this.tabs.getSelect()) {
-            case 1:
-                return this.texttoolbar.getValue();
-            case 2:
-                return this.imageset.getValue();
-        }
+        return this._value;
     }
 });
 BI.DataLabelTab.IMG_CHANGE = "BI.DataLabelTab.IMG_CHANGE";

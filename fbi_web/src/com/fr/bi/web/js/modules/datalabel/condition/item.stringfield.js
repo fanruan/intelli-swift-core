@@ -25,14 +25,14 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         BI.TargetStringFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var left = this._buildConditions();
-        this.styleSetting = this._createStyle();
+        this.styleSetting = this._createStyle(o.style_setting);
         this.deleteButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "close-h-font"
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.destroy();
-            BI.DataLabelStringFieldFilterItem.superclass.destroy.apply(this,arguments);
+            BI.DataLabelStringFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
 
         var leftContainer = BI.createWidget({
@@ -161,21 +161,19 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             height: this._constant.BUTTON_HEIGHT,
             width: this._constant.INPUT_WIDTH
         });
-        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function () {
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
         return this.filterWidget;
     },
 
-    _createStyle: function () {
+    _createStyle: function (initData) {
         var self = this, o = this.options;
         this.style = BI.createWidget({
             type: "bi.data_label_style_set"
         });
-        if(o.style_setting) {
-            this.style.setValue(o.style_setting);
-        }
+        BI.isNotNull(initData) && this.style.setValue(initData);
         return this.style;
     },
 

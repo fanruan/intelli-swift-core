@@ -32,7 +32,7 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.destroy();
-            BI.DataLabelNoTypeFieldFilterItem.superclass.destroy.apply(this,arguments);
+            BI.DataLabelNoTypeFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
         this.itemContainer = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
@@ -96,7 +96,7 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 height: 38,
                 lgap: 5
             }],
-            width: 530
+            width: 540
         });
     },
 
@@ -110,7 +110,8 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         //todo
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
-            field_id: v
+            field_id: v,
+            dId: o.dId
         });
     },
 

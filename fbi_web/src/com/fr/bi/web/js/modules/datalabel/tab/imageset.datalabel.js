@@ -3,9 +3,9 @@
  * Created by Fay on 2016/7/7.
  */
 BI.DataLabelImageSet = BI.inherit(BI.Widget, {
-    _defaultImg: [ ],
+    _defaultImg: [],
 
-    _img: [ ],
+    _img: [],
 
     _imageSelect: "",
 
@@ -248,8 +248,8 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         v || (v = {});
-        this._img = v.urls;
-        this._imageSelect = v.src
+        this._img = v.urls || [];
+        this._imageSelect = v.src || "";
     },
 
     getValue: function () {

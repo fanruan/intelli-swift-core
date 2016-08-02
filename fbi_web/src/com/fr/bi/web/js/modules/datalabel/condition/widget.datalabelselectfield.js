@@ -47,8 +47,8 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                         pId: self._constant.SELF_FIELD,
                         type: "bi.select_data_level0_item",
                         fieldType: BI.Utils.getFieldTypeByID(fieldId),
-                        text: BI.Utils.getFieldNameByID(fieldId),
-                        title: BI.Utils.getFieldNameByID(fieldId),
+                        text: "自身",
+                        title: "自身",
                         value: fieldId
                     }]
                 } else {

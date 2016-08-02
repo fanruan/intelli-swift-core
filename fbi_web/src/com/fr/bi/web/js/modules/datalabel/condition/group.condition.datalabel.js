@@ -4,9 +4,7 @@
 BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         var conf = BI.DataLabelConditionGroup.superclass._defaultConfig.apply(this, arguments);
-        return BI.extend(conf, {
-
-        });
+        return BI.extend(conf, {});
     },
 
     _init: function () {
@@ -59,7 +57,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
     getValue: function () {
         var result = [];
         BI.each(this.buttons, function (i, el) {
-            if (el.getValue() !== ""){
+            if (el.getValue() !== "") {
                 result.push(el.getValue());
             }
         });

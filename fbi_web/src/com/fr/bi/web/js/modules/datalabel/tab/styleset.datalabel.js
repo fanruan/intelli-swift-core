@@ -3,9 +3,7 @@
  */
 BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.DataLabelStyleSet.superclass._defaultConfig.apply(this, arguments), {
-
-        });
+        return BI.extend(BI.DataLabelStyleSet.superclass._defaultConfig.apply(this, arguments), {});
     },
 
     _init: function () {
@@ -33,7 +31,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         this.imgTrigger.setVisible(false);
         this.styleTrigger = BI.createWidget({
             type: "bi.vertical",
-            items: [this.textTrigger,this.imgTrigger]
+            items: [this.textTrigger, this.imgTrigger]
         });
         this.style = BI.createWidget({
             type: "bi.combo",
@@ -50,7 +48,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
                 self.imgTrigger.setSrc(self.styleTab.getValue().src);
                 self.imgTrigger.setVisible(true);
                 self.textTrigger.setVisible(false);
-            }  else {
+            } else {
                 self.textTrigger.setValue("text");
                 $(self.textTrigger.element[0].childNodes[0].childNodes[0]).css(self.styleTab.getValue());
                 self.imgTrigger.setVisible(false);
@@ -59,7 +57,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         });
     },
 
-    setValue: function (v) {
+    _checkVisible: function (v) {
         if (v.type === "img") {
             this.imgTrigger.setSrc(v.src);
             this.imgTrigger.element.css({"display": "block"});
@@ -70,6 +68,10 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             //todo
             $(this.textTrigger.element[0].childNodes[0].childNodes[0]).css(v);
         }
+    },
+
+    setValue: function (v) {
+        this._checkVisible(v);
         this.styleTab.setValue(v);
     },
 

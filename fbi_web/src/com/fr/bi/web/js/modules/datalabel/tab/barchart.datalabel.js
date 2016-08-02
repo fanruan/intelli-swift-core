@@ -9,7 +9,7 @@ BI.DataLabelBarChart = BI.inherit(BI.Widget, {
             baseCls: ""
         });
     },
-    
+
     _init: function () {
         BI.DataLabelBarChart.superclass._init.apply(this, arguments);
         var title = BI.createWidget({
@@ -42,9 +42,9 @@ BI.DataLabelBarChart = BI.inherit(BI.Widget, {
                 el: this.combineChart,
                 left: -5,
                 top: 10
-            },{
+            }, {
                 el: title,
-                left:20,
+                left: 20,
                 top: 5
             }],
             width: 150,

@@ -13,7 +13,7 @@ BI.DataLabelTextToolbarFontChooser = BI.inherit(BI.Widget, {
     _items: [{
         value: "Microsoft YaHei",
         font: "微软雅黑"
-    },{
+    }, {
         value: "SimHei",
         font: "黑体"
     }],
@@ -25,7 +25,7 @@ BI.DataLabelTextToolbarFontChooser = BI.inherit(BI.Widget, {
             type: "bi.editor_trigger",
             height: o.height,
             triggerWidth: 12,
-            value : "Microsoft YaHei"
+            value: "Microsoft YaHei"
         });
         this.trigger.on(BI.EditorTrigger.EVENT_CHANGE, function () {
             self.setValue(this.getValue());
