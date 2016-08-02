@@ -108,7 +108,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         });
 
         this.img.on(BI.ImageButton.EVENT_CHANGE, function () {
-            window.open(self._dealWithSrc(self.href.getValue()));
+            window.open(BI.Func.formatAddress(self.href.getValue()));
         });
 
         BI.createWidget({
@@ -197,18 +197,6 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {href: this.href.getValue(), size: this.size.getValue(), src: this.img.getSrc()}
-    },
-
-    _dealWithSrc: function (address) {
-        var temp = '';
-        var url1 = /[a-zA-z]+:\/\/[^\s]*/;
-        var url2 = /\/[^\s]*/;
-        if (address.match(url1) || address.match(url2)) {
-            temp = address;
-        } else {
-            temp = "http://" + address;
-        }
-        return temp;
     },
 
     setValue: function (v) {
