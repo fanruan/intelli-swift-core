@@ -421,6 +421,9 @@
                 var r = [];
                 var tmpMap = [];
                 for (i = 0, l = sNodes.length; i < l; i++) {
+                    if(BI.isNull(sNodes[i].id)) {
+                        return sNodes;
+                    }
                     tmpMap[sNodes[i].id] = BI.clone(sNodes[i]);
                 }
                 for (i = 0, l = sNodes.length; i < l; i++) {
