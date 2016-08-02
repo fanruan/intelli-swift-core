@@ -334,7 +334,7 @@ public class BICubeOperationManager {
                             getRelationBuilder(cube, relation.getRelation()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    if (null != relation.getDependTableSourceSet()&&relation.getDependTableSourceSet().size()!=0) {
+                    if (null != relation.getDependTableSourceSet()||relation.getDependTableSourceSet().size()!=0) {
                         for (CubeTableSource cubeTableSource : relation.getDependTableSourceSet()) {
                             operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, cubeTableSource.getSourceID()));
                         }
