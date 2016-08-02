@@ -3,24 +3,7 @@
  * @extends BI.Widget
  * 柱状，堆积柱状，组合图样式
  */
-BI.BubbleChartSetting = BI.inherit(BI.Widget, {
-
-    constant: {
-        SINGLE_LINE_HEIGHT: 60,
-        SIMPLE_H_GAP: 10,
-        SIMPLE_H_LGAP: 5,
-        SIMPLE_L_GAP: 2,
-        CHECKBOX_WIDTH: 16,
-        EDITOR_WIDTH: 80,
-        EDITOR_HEIGHT: 26,
-        BUTTON_WIDTH: 40,
-        BUTTON_HEIGHT: 30,
-        ICON_WIDTH: 24,
-        ICON_HEIGHT: 24,
-        NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240,
-        LEGEND_SEGMENT_WIDTH: 180
-    },
+BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.BubbleChartSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -30,13 +13,13 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.BubbleChartSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this, constant = BI.AbstractChartSetting;
 
         this.rulesDisplay = BI.createWidget({
             type: "bi.segment",
             whiteSpace: "normal",
             height: 40,
-            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
             items: BICst.BUBBLE_DISPLAY_RULES
         });
 
@@ -82,7 +65,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         this.addGradientButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Add_Condition"),
-            height: this.constant.BUTTON_HEIGHT
+            height: constant.BUTTON_HEIGHT
         });
 
         this.addGradientButton.on(BI.Button.EVENT_CHANGE, function() {
@@ -111,7 +94,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         this.addConditionButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Add_Condition"),
-            height: this.constant.BUTTON_HEIGHT
+            height: constant.BUTTON_HEIGHT
         });
 
         this.addConditionButton.on(BI.Button.EVENT_CHANGE, function() {
@@ -143,12 +126,12 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             items: BI.createItems([{
                 type: "bi.label",
                 text: BI.i18nText("BI-Color_Setting"),
-                textHeight: this.constant.BUTTON_HEIGHT,
+                textHeight: constant.BUTTON_HEIGHT,
                 cls: "attr-names"
             }, {
                 type: "bi.center_adapt",
                 items: [this.colorSelect],
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }])
         });
 
@@ -156,10 +139,11 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             items: BI.createItems(BICst.BUBBLE_CHART_STYLE_GROUP, {
                 type: "bi.icon_button",
-                width: 30,
-                height: 30,
-                iconWidth: 24,
-                iconHeight: 24
+                extraCls: "chart-style-font",
+                width: constant.BUTTON_WIDTH,
+                height: constant.BUTTON_HEIGHT,
+                iconWidth: constant.ICON_WIDTH,
+                iconHeight: constant.ICON_HEIGHT
             }),
             layouts: [{
                 type: "bi.left",
@@ -179,8 +163,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Sheet_Style"),
-                textHeight: this.constant.SINGLE_LINE_HEIGHT,
-                lgap: this.constant.SIMPLE_H_LGAP,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -195,7 +179,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                         type: "bi.center_adapt",
                         items: [this.rulesDisplay]
                     },
-                   lgap: this.constant.SIMPLE_H_GAP
+                   lgap: constant.SIMPLE_H_GAP
                 }, */{
                     type: "bi.center_adapt",
                     items: [this.dimensionColor]
@@ -217,9 +201,9 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                         type: "bi.center_adapt",
                         items: [this.bubbleStyleGroup]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }/*, this.fixedColorSetting, this.gradientColorSetting*/], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 })
             }]
         });
@@ -227,8 +211,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         //格式和数量级
         this.lYAxisStyle = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.FORMAT_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_FORMAT
         });
 
@@ -238,8 +222,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
         this.numberLevellY = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_LEVEL
         });
 
@@ -249,8 +233,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
         this.XAxisStyle = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.FORMAT_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_FORMAT
         });
 
@@ -260,8 +244,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
         this.numberLevelX = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_LEVEL
         });
 
@@ -272,8 +256,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         //单位
         this.LYUnit = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input",
             watermark: BI.i18nText("BI-Custom_Input")
         });
@@ -284,8 +268,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
         this.XUnit = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input",
             watermark: BI.i18nText("BI-Custom_Input")
         });
@@ -308,8 +292,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
         this.editTitleLY = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
         this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
@@ -329,8 +313,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
         this.editTitleX = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
 
@@ -367,9 +351,9 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 height: "100%",
-                textHeight: this.constant.SINGLE_LINE_HEIGHT,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 text: BI.i18nText("BI-Uppercase_Y_Axis"),
                 cls: "line-title"
             }, {
@@ -385,7 +369,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -393,7 +377,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -405,9 +389,9 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                     type: "bi.center_adapt",
                     items: [this.YScale]
                 }*/], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -422,8 +406,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Uppercase_X_Axis"),
                 height: "100%",
                 textAlign: "left",
-                textHeight: 60,
-                lgap: this.constant.SIMPLE_H_LGAP
+                textHeight: constant.SINGLE_LINE_HEIGHT,
+                lgap: constant.SIMPLE_H_LGAP
             }, {
                 type: "bi.left",
                 cls: "detail-style",
@@ -437,7 +421,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -445,7 +429,7 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -457,17 +441,17 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                     type: "bi.center_adapt",
                     items: [this.XScale]
                 }*/], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
         //图例
         this.legend = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.LEGEND_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.LEGEND_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.CHART_LEGEND
         });
 
@@ -500,8 +484,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
         //气泡大小
         this.bubbleSizeFrom = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
 
@@ -511,8 +495,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
 
         this.bubbleSizeTo = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
 
@@ -528,8 +512,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                textHeight: 60,
-                lgap: this.constant.SIMPLE_H_LGAP,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -562,9 +546,9 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                     }],
                     hgap: 3
                 }*/], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -588,8 +572,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                     cls: "line-title"
                 }, this.transferFilter]
             },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
         });
 
         //大数据模式
@@ -613,8 +597,8 @@ BI.BubbleChartSetting = BI.inherit(BI.Widget, {
                     cls: "line-title"
                 }, this.bigDataMode]
             },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
         });
 
         BI.createWidget({

@@ -3,25 +3,7 @@
  * @class BI.GISMapChart
  * @extends BI.Widget
  */
-BI.GISMapChart = BI.inherit(BI.Widget, {
-
-    constants: {
-        LEFT_AXIS: 0,
-        RIGHT_AXIS: 1,
-        RIGHT_AXIS_SECOND: 2,
-        X_AXIS: 3,
-        ROTATION: -90,
-        NORMAL: 1,
-        LEGEND_BOTTOM: 4,
-        ZERO2POINT: 2,
-        ONE2POINT: 3,
-        TWO2POINT: 4,
-        STYLE_NORMAL: 21,
-        LNG_FIRST: 3,
-        LAT_FIRST: 4,
-        FIX_COUNT: 6,
-        MINLIMIT: 1e-6
-    },
+BI.GISMapChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.GISMapChart.superclass._defaultConfig.apply(this, arguments), {
@@ -49,9 +31,9 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
         delete config.zoom;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.useHtml = true;
-        config.plotOptions.dataLabels.formatter = "function() { console.log(this); var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">'+ "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ this.value +'</div>'; return a;}";
+        config.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">'+ "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ FR.contentFormat(this.value, '#.##') +'</div>'; return a;}";
         config.plotOptions.tooltip.shared = true;
-        config.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + (point.size || point.y) + '</div>');});return tip; }";
+        config.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + FR.contentFormat((point.size || point.y), '#.##') + '</div>');});return tip; }";
         config.geo = {
             "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
         };
@@ -88,10 +70,7 @@ BI.GISMapChart = BI.inherit(BI.Widget, {
             BI.each(item, function(id, it){
                 var res = [];
                 BI.each(it.data, function(i, da){
-                    da.y = da.y.toFixed(self.constants.FIX_COUNT);
-                    if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
-                        da.y = 0;
-                    }
+                    da.y = FR.contentFormat(da.y, "#.##");
                     var lnglat = da.x.split(",");
                     if(self.config.lnglat === self.constants.LAT_FIRST){
                         var lng = lnglat[1];

@@ -533,6 +533,8 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     refresh: function () {
         this.table.populate.apply(this.table, arguments);
+        this._assertPager();
+        BI.isFunction(this.pager.refresh) && this.pager.refresh();
         this._dealWithPager();
     },
 

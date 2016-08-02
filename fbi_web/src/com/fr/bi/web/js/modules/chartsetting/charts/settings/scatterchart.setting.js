@@ -3,24 +3,7 @@
  * @extends BI.Widget
  * 柱状，堆积柱状，组合图样式
  */
-BI.ScatterChartSetting = BI.inherit(BI.Widget, {
-
-    constant: {
-        SINGLE_LINE_HEIGHT: 60,
-        SIMPLE_H_GAP: 10,
-        SIMPLE_L_GAP: 2,
-        SIMPLE_H_LGAP: 5,
-        CHECKBOX_WIDTH: 16,
-        EDITOR_WIDTH: 80,
-        EDITOR_HEIGHT: 26,
-        BUTTON_WIDTH: 40,
-        BUTTON_HEIGHT: 30,
-        ICON_WIDTH: 24,
-        ICON_HEIGHT: 24,
-        NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240,
-        LEGEND_SEGMENT_WIDTH: 180
-    },
+BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.ScatterChartSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -30,7 +13,7 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.ScatterChartSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -50,7 +33,7 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Sheet_Style"),
                 textAlign: "left",
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -64,9 +47,9 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                         type: "bi.center_adapt",
                         items: [this.colorSelect]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 })
             }]
         });
@@ -74,8 +57,8 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
         //格式和数量级
         this.lYAxisStyle = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.FORMAT_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_FORMAT
         });
 
@@ -85,8 +68,8 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
 
         this.numberLevellY = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_LEVEL
         });
 
@@ -96,8 +79,8 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
 
         this.XAxisStyle = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.FORMAT_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_FORMAT
         });
 
@@ -107,8 +90,8 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
 
         this.numberLevelX = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_LEVEL
         });
 
@@ -119,8 +102,8 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
         //单位
         this.LYUnit = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input",
             watermark: BI.i18nText("BI-Custom_Input")
         });
@@ -131,8 +114,8 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
 
         this.XUnit = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input",
             watermark: BI.i18nText("BI-Custom_Input")
         });
@@ -155,8 +138,8 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
 
         this.editTitleLY = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
         this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
@@ -176,8 +159,8 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
 
         this.editTitleX = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
-            height: this.constant.EDITOR_HEIGHT,
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
 
@@ -188,8 +171,8 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
         //图例
         this.legend = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.LEGEND_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.LEGEND_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.CHART_LEGEND
         });
 
@@ -226,9 +209,9 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 textAlign: "left",
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 text: BI.i18nText("BI-Element_Show"),
-                textHeight: 60,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -247,9 +230,9 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                     type: "bi.center_adapt",
                     items: [this.gridLine]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -259,9 +242,9 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 text: BI.i18nText("BI-Y_Axis"),
                 cls: "line-title"
             }, {
@@ -277,7 +260,7 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -285,7 +268,7 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -294,9 +277,9 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -306,9 +289,9 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                textHeight: 60,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 text: BI.i18nText("BI-X_Axis"),
                 cls: "line-title"
             }, {
@@ -324,7 +307,7 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -332,7 +315,7 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
-                    lgap: this.constant.SIMPLE_H_GAP,
+                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
@@ -341,9 +324,9 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleX, this.editTitleX]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -367,8 +350,8 @@ BI.ScatterChartSetting = BI.inherit(BI.Widget, {
                     cls: "line-title"
                 }, this.transferFilter]
             },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
         });
 
         BI.createWidget({

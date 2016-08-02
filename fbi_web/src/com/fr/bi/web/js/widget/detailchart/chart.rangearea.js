@@ -4,24 +4,7 @@
  * @extends BI.Widget
  * 范围面积图的构造范围的两组item的必须有对应y值item1完全大于item2
  */
-BI.RangeAreaChart = BI.inherit(BI.Widget, {
-
-    constants: {
-        LEFT_AXIS: 0,
-        RIGHT_AXIS: 1,
-        RIGHT_AXIS_SECOND: 2,
-        X_AXIS: 3,
-        ROTATION: -90,
-        NORMAL: 1,
-        LEGEND_BOTTOM: 4,
-        ZERO2POINT: 2,
-        ONE2POINT: 3,
-        TWO2POINT: 4,
-        STYLE_NORMAL: 21,
-        MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80,
-        FIX_COUNT: 6
-    },
+BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.RangeAreaChart.superclass._defaultConfig.apply(this, arguments), {
@@ -186,10 +169,7 @@ BI.RangeAreaChart = BI.inherit(BI.Widget, {
                             da.y = BI.parseFloat(da.y);
                         }
                         da.y = da.y || 0;
-                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
-                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
-                            da.y = 0;
-                        }
+                        da.y = FR.contentFormat(da.y.div(magnify), "#.##");
                     }
                 })
             });

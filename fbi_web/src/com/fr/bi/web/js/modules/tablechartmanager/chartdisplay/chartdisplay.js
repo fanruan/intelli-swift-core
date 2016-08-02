@@ -352,17 +352,20 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                     transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId),
                     map_bubble_color: BI.Utils.getWSMapBubbleColorByID(o.wId),
                     rules_display: BI.Utils.getWSShowRulesByID(o.wId),
-                    bubble_style: BI.Utils.getWSBubbleStyleByID(o.wId)
+                    bubble_style: BI.Utils.getWSBubbleStyleByID(o.wId),
+                    max_scale: BI.Utils.getWSMaxScaleByID(o.wId) ,
+                    min_scale: BI.Utils.getWSMinScaleByID(o.wId),
+                    show_percentage: BI.Utils.getWSShowPercentageByID(o.wId)
                 }, {
                     cordon: self.model.getCordon(),
                     tooltip: self.model.getToolTip(type),
                     lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
                 });
                 selectedTab.populate(data, op, types);
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate chart: " + e);
-                self.errorPane.setVisible(true);
-            }
+             } catch (e) {
+                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+                 self.errorPane.setVisible(true);
+             }
         });
     },
 

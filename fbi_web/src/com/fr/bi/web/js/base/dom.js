@@ -84,13 +84,38 @@ BI.extend(jQuery.fn, {
         return this.width() > 0 && this[0].clientHeight < this[0].offsetHeight;
     },
 
+    //获取计算后的样式
     getStyle: function (name) {
-        var obj = this[0];
-        if (obj.currentStyle) {
-            return obj.currentStyle[name];
-        } else {
-            return getComputedStyle(obj, false)[name];
+        var node = this[0];
+        var computedStyle = void 0;
+
+        // W3C Standard
+        if (window.getComputedStyle) {
+            // In certain cases such as within an iframe in FF3, this returns null.
+            computedStyle = window.getComputedStyle(node, null);
+            if (computedStyle) {
+                return computedStyle.getPropertyValue(BI.hyphenate(name));
+            }
         }
+        // Safari
+        if (document.defaultView && document.defaultView.getComputedStyle) {
+            computedStyle = document.defaultView.getComputedStyle(node, null);
+            // A Safari bug causes this to return null for `display: none` elements.
+            if (computedStyle) {
+                return computedStyle.getPropertyValue(BI.hyphenate(name));
+            }
+            if (name === 'display') {
+                return 'none';
+            }
+        }
+        // Internet Explorer
+        if (node.currentStyle) {
+            if (name === 'float') {
+                return node.currentStyle.cssFloat || node.currentStyle.styleFloat;
+            }
+            return node.currentStyle[BI.camelize(name)];
+        }
+        return node.style && node.style[BI.camelize(name)];
     },
 
     __isMouseInBounds__: function (e) {

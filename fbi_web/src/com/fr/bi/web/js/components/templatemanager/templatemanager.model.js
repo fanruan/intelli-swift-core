@@ -239,7 +239,35 @@ BI.TemplateManagerModel = BI.inherit(FR.OB, {
             folders = BI.sortBy(folders, "lastModify").reverse();
             files = BI.sortBy(files, "lastModify").reverse();
         }
-        this.tree.initTree(BI.Tree.transformToTreeFormat(BI.concat(folders, files)));
+        this.tree.initTree(this._transformToTreeFormat(BI.concat(folders, files)));
+    },
+
+    _transformToTreeFormat: function (sNodes) {
+        var i, l;
+        if (!sNodes) {
+            return [];
+        }
+
+        if (BI.isArray(sNodes)) {
+            var r = [];
+            var tmpMap = [];
+            for (i = 0, l = sNodes.length; i < l; i++) {
+                tmpMap[sNodes[i].id] = sNodes[i];
+            }
+            for (i = 0, l = sNodes.length; i < l; i++) {
+                if (tmpMap[sNodes[i].pId] && sNodes[i].id != sNodes[i].pId) {
+                    if (!tmpMap[sNodes[i].pId].children) {
+                        tmpMap[sNodes[i].pId].children = [];
+                    }
+                    tmpMap[sNodes[i].pId].children.push(sNodes[i]);
+                } else {
+                    r.push(sNodes[i]);
+                }
+            }
+            return r;
+        } else {
+            return [sNodes];
+        }
     },
 
     createDistinctFolderName: function () {

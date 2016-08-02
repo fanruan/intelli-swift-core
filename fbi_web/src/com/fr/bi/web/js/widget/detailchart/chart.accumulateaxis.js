@@ -3,23 +3,7 @@
  * @class BI.AccumulateAxisChart
  * @extends BI.Widget
  */
-BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
-
-    constants: {
-        LEFT_AXIS: 0,
-        RIGHT_AXIS: 1,
-        RIGHT_AXIS_SECOND: 2,
-        X_AXIS: 3,
-        ROTATION: -90,
-        NORMAL: 1,
-        LEGEND_BOTTOM: 4,
-        ZERO2POINT: 2,
-        ONE2POINT: 3,
-        TWO2POINT: 4,
-        MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80,
-        FIX_COUNT: 6
-    },
+BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.AccumulateAxisChart.superclass._defaultConfig.apply(this, arguments), {
@@ -29,14 +13,19 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.AccumulateAxisChart.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
         this.xAxis = [{
             type: "category",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: {
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                    "color": "#808080",
+                    "fontSize": "12px",
+                    "fontWeight": ""
+                }
             },
             labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
             }
         }];
         this.yAxis = [];
@@ -51,12 +40,12 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
-        switch (this.config.chart_legend){
+        switch (this.config.chart_legend) {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
@@ -75,29 +64,27 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        if(this.config.show_zoom === true){
+        if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
 
         config.yAxis = this.yAxis;
-        BI.each(config.yAxis, function(idx, axis){
-            switch (axis.axisIndex){
+        BI.each(config.yAxis, function (idx, axis) {
+            switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed;
                     axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
-                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
-                    axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
+                    self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
+                    axis.title.text = getTitleText(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS, self.config.show_left_y_axis_title, self.config.left_y_axis_title);
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
                     break;
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed;
                     axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
-                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
-                    axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
+                    self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
+                    axis.title.text = getTitleText(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS, self.config.show_right_y_axis_title, self.config.right_y_axis_title);
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
                     break;
@@ -112,22 +99,22 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
         config.chartType = "column";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if(config.plotOptions.dataLabels.enabled === true){
-            BI.each(items, function(idx, item){
+        if (config.plotOptions.dataLabels.enabled === true) {
+            BI.each(items, function (idx, item) {
                 var isNeedFormatDataLabel = false;
                 switch (config.yAxis[item.yAxis].axisIndex) {
                     case self.constants.LEFT_AXIS:
-                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                        if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                             isNeedFormatDataLabel = true;
                         }
                         break;
                     case self.constants.RIGHT_AXIS:
-                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                        if (self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                             isNeedFormatDataLabel = true;
                         }
                         break;
                 }
-                if(isNeedFormatDataLabel === true){
+                if (isNeedFormatDataLabel === true) {
                     item.dataLabels = {
                         "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
                         "align": "outside",
@@ -143,23 +130,28 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
 
         return [items, config];
 
-        function formatCordon(){
-            BI.each(self.config.cordon, function(idx, cor){
-                if(idx === 0 && self.xAxis.length > 0){
+        function formatCordon() {
+            BI.each(self.config.cordon, function (idx, cor) {
+                if (idx === 0 && self.xAxis.length > 0) {
                     var magnify = calcMagnify(self.config.x_axis_number_level);
-                    self.xAxis[0].plotLines = BI.map(cor, function(i, t){
+                    self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": {
+                                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                    "color": "#808080",
+                                    "fontSize": "12px",
+                                    "fontWeight": ""
+                                },
                                 "text": t.text,
                                 "align": "top"
                             }
                         });
                     });
                 }
-                if(idx > 0 && self.yAxis.length >= idx){
+                if (idx > 0 && self.yAxis.length >= idx) {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
@@ -172,12 +164,17 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
                             magnify = calcMagnify(self.config.right_y_axis_second_number_level);
                             break;
                     }
-                    self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                    self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": {
+                                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                    "color": "#808080",
+                                    "fontSize": "12px",
+                                    "fontWeight": ""
+                                },
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -187,7 +184,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
             })
         }
 
-        function formatChartStyle(){
+        function formatChartStyle() {
             switch (self.config.chart_style) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
@@ -197,29 +194,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
             }
         }
 
-        function formatNumberLevelInYaxis(type, position, formatter){
-            var magnify = calcMagnify(type);
-            BI.each(items, function (idx, item) {
-                BI.each(item.data, function (id, da) {
-                    if (position === item.yAxis) {
-                        if(!BI.isNumber(da.y)){
-                            da.y = BI.parseFloat(da.y);
-                        }
-                        da.y = da.y || 0;
-                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
-                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
-                            da.y = 0;
-                        }
-                    }
-                });
-                if(position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    item.tooltip = BI.deepClone(config.plotOptions.tooltip);
-                    item.tooltip.formatter.valueFormat = formatter;
-                }
-            });
-        }
-
-        function calcMagnify(type){
+        function calcMagnify(type) {
             var magnify = 1;
             switch (type) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -239,8 +214,9 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
             return magnify;
         }
 
-        function getXYAxisUnit(numberLevelType, position){
+        function getTitleText(numberLevelType, position, show, title) {
             var unit = "";
+
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
                     unit = "";
@@ -255,19 +231,22 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
                     unit = BI.i18nText("BI-Yi");
                     break;
             }
-            if(position === self.constants.X_AXIS){
+            if (position === self.constants.X_AXIS) {
                 self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
-            if(position === self.constants.LEFT_AXIS){
+            if (position === self.constants.LEFT_AXIS) {
                 self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
-            if(position === self.constants.RIGHT_AXIS){
+            if (position === self.constants.RIGHT_AXIS) {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
-            return unit === "" ? unit : "(" + unit + ")";
+
+            unit = unit === "" ? unit : "(" + unit + ")";
+
+            return show === true ? title + unit : unit;
         }
 
-        function formatTickInXYaxis(type, position){
+        function formatTickInXYaxis(type, position) {
             var formatter = '#.##';
             switch (type) {
                 case self.constants.NORMAL:
@@ -283,20 +262,20 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
                     formatter = '#0.00';
                     break;
             }
-            if(position === self.constants.LEFT_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
+            if (position === self.constants.LEFT_AXIS) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    if (type === self.constants.NORMAL) {
                         formatter = '#0%'
-                    }else{
+                    } else {
                         formatter += '%';
                     }
                 }
             }
-            if(position === self.constants.RIGHT_AXIS){
-                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
+            if (position === self.constants.RIGHT_AXIS) {
+                if (self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    if (type === self.constants.NORMAL) {
                         formatter = '#0%'
-                    }else{
+                    } else {
                         formatter += '%';
                     }
                 }
@@ -305,10 +284,10 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
         }
     },
 
-    _formatItems: function(items){
-        return BI.map(items, function(idx, item){
+    _formatItems: function (items) {
+        return BI.map(items, function (idx, item) {
             var i = BI.UUID();
-            return BI.map(item, function(id, it){
+            return BI.map(item, function (id, it) {
                 return BI.extend({}, it, {stack: i});
             });
         });
@@ -330,7 +309,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
             left_y_axis_reversed: options.left_y_axis_reversed || false,
             right_y_axis_reversed: options.right_y_axis_reversed || false,
             left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
-            right_y_axis_number_level:  options.right_y_axis_number_level || c.NORMAL,
+            right_y_axis_number_level: options.right_y_axis_number_level || c.NORMAL,
             x_axis_unit: options.x_axis_unit || "",
             left_y_axis_unit: options.left_y_axis_unit || "",
             right_y_axis_unit: options.right_y_axis_unit || "",
@@ -346,24 +325,29 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
         this.options.items = items;
         this.yAxis = [];
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.AXIS);
             });
             types.push(type);
         });
-        BI.each(types, function(idx, type){
-            if(BI.isEmptyArray(type)){
+        BI.each(types, function (idx, type) {
+            if (BI.isEmptyArray(type)) {
                 return;
             }
             var newYAxis = {
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#808080",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
                 position: idx > 0 ? "right" : "left",
                 lineWidth: 1,
@@ -379,7 +363,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.Widget, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

@@ -6,6 +6,7 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
@@ -50,4 +51,12 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
         return getGroup().getType();
     }
 
+    @Override
+    public Comparator getComparator() {
+        if (getSortType() == BIReportConstant.SORT.NUMBER_ASC) {
+            return BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
+        } else{
+            return BIBaseConstant.COMPARATOR.COMPARABLE.DESC;
+        }
+    }
 }
