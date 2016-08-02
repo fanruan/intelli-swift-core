@@ -190,10 +190,8 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             if (self.getTableIdByFieldId(kId) === tableId) {
                 delete primaryKeyMap[kId];
             } else {
-                BI.each(maps, function (i, keys) {
-                    if (tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id)) {
-                        primaryKeyMap[kId].splice(i, 1);
-                    }
+                BI.remove(maps, function(i, keys) {
+                    return tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id);
                 });
                 if (primaryKeyMap[kId].length === 0) {
                     delete primaryKeyMap[kId];
@@ -204,10 +202,8 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             if (tableId === self.getTableIdByFieldId(kId)) {
                 delete foreignKeyMap[kId];
             } else {
-                BI.each(maps, function (i, keys) {
-                    if (tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id)) {
-                        foreignKeyMap[kId].splice(i, 1);
-                    }
+                BI.remove(maps, function(i, keys) {
+                    return tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id);
                 });
                 if (foreignKeyMap[kId].length === 0) {
                     delete foreignKeyMap[kId];
