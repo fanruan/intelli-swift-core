@@ -2076,7 +2076,7 @@ Data.Utils = {
                         identifier: "${CATEGORY}${SERIES}${VALUE}"
                     }
                 };
-                var percentageLabel = BI.extend(config.plotOptions.percentageLabel , {
+                var percentageLabel = BI.extend(configs.plotOptions.percentageLabel , {
                     enabled: config.show_percentage === BICst.PERCENTAGE.SHOW
                 });
                 switch (config.chart_dashboard_type) {

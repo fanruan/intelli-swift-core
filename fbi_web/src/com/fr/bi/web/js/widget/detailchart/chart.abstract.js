@@ -48,6 +48,59 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         BI.AbstractChart.superclass._init.apply(this, arguments);
     },
 
+    formatNumberLevelInYaxis: function (config, items, type, position, formatter) {
+        var self = this;
+        var magnify = this._calcMagnify(type);
+        BI.each(items, function (idx, item) {
+            BI.each(item.data, function (id, da) {
+                if (position === item.yAxis) {
+                    if (!BI.isNumber(da.y)) {
+                        da.y = BI.parseFloat(da.y);
+                    }
+                    da.y = da.y || 0;
+                    da.y = FR.contentFormat(da.y.div(magnify), "#.##");
+                }
+            });
+            if (position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                item.tooltip = BI.deepClone(config.plotOptions.tooltip);
+                item.tooltip.formatter.valueFormat = formatter;
+            }
+        });
+    },
+
+    formatNumberLevelInXaxis: function(items, type){
+        var magnify = this._calcMagnify(type);
+        BI.each(items, function (idx, item) {
+            BI.each(item.data, function (id, da) {
+                if(!BI.isNumber(da.x)){
+                    da.x = BI.parseFloat(da.x);
+                }
+                da.x = da.x || 0;
+                da.x = FR.contentFormat(da.x.div(magnify), "#.##");
+            });
+        })
+    },
+
+    _calcMagnify: function (type) {
+        var magnify = 1;
+        switch (type) {
+            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                magnify = 1;
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                magnify = 10000;
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                magnify = 1000000;
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                magnify = 100000000;
+                break;
+        }
+        return magnify;
+    },
+
     _formatItems: function (items) {
         return items;
     },

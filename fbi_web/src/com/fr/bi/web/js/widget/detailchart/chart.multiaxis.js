@@ -73,7 +73,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed;
                     axis.formatter = self.formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
-                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
+                    self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
                     axis.title.text = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -83,7 +83,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed;
                     axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
-                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
+                    self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     axis.title.text = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -93,7 +93,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                 case self.constants.RIGHT_AXIS_SECOND:
                     axis.reversed = self.config.right_y_axis_second_reversed;
                     axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_second_style, self.constants.RIGHT_AXIS_SECOND);
-                    formatNumberLevelInYaxis(self.config.right_y_axis_second_number_level, idx, axis.formatter);
+                    self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_second_number_level, idx, axis.formatter);
                     axis.title.text = self.getXYAxisUnit(self.config.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
                     axis.title.text = self.config.show_right_y_axis_second_title === true ? self.config.right_y_axis_second_title + axis.title.text : axis.title.text;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -157,28 +157,6 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         }
 
         return [BI.concat(otherItem, lineItem), config];
-
-        function formatNumberLevelInYaxis(type, position, formatter){
-            var magnify = self.calcMagnify(type);
-            BI.each(items, function (idx, item) {
-                BI.each(item.data, function (id, da) {
-                    if (position === item.yAxis) {
-                        if(!BI.isNumber(da.y)){
-                            da.y = BI.parseFloat(da.y);
-                        }
-                        da.y = da.y || 0;
-                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
-                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
-                            da.y = 0;
-                        }
-                    }
-                });
-                if(position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    item.tooltip = BI.deepClone(config.plotOptions.tooltip);
-                    item.tooltip.formatter.valueFormat = formatter;
-                }
-            });
-        }
     },
 
     formatChartStyle: function () {
