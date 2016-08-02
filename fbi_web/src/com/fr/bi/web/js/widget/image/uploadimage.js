@@ -108,7 +108,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         });
 
         this.img.on(BI.ImageButton.EVENT_CHANGE, function () {
-            window.open(self.href.getValue());
+            window.open(BI.Func.formatAddress(self.href.getValue()));
         });
 
         BI.createWidget({

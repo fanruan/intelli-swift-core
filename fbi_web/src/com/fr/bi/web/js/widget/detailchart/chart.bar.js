@@ -104,7 +104,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
 
         //值轴
         config.xAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.X_AXIS);
-        formatNumberLevelInXaxis(this.config.left_y_axis_number_level);
+        self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
@@ -189,22 +189,6 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
                         });
                     });
                 }
-            })
-        }
-
-        function formatNumberLevelInXaxis(type) {
-            var magnify = calcMagnify(type);
-            BI.each(items, function (idx, item) {
-                BI.each(item.data, function (id, da) {
-                    if(!BI.isNumber(da.x)){
-                        da.x = BI.parseFloat(da.x);
-                    }
-                    da.x = da.x || 0;
-                    da.x = da.x.div(magnify).toFixed(self.constants.FIX_COUNT);
-                    if (self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0) {
-                        da.x = 0;
-                    }
-                })
             })
         }
 

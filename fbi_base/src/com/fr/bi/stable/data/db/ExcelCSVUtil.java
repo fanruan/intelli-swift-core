@@ -10,8 +10,10 @@ import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.stable.StringUtils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +61,7 @@ public class ExcelCSVUtil {
         synchronized (lock) {
             BufferedReader r = null;
             try {
-                r = new BufferedReader(new FileReader(filePath));
+                r = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), codeString(filePath)));
                 int row = 0;
                 while (true) {
                     String ln = r.readLine();
@@ -159,5 +161,30 @@ public class ExcelCSVUtil {
                 rowDataList.add(currentRowData.toArray());
             }
         }
+    }
+
+    public static String codeString(String filePath) throws Exception {
+
+        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(filePath));
+        int p = (bin.read() << 8) + bin.read();
+        String code = null;
+        //其中的 0xefbb、0xfffe、0xfeff、0x5c75这些都是这个文件的前面两个字节的16进制数
+        switch (p) {
+            case 0xefbb:
+                code = "UTF-8";
+                break;
+            case 0xfffe:
+                code = "Unicode";
+                break;
+            case 0xfeff:
+                code = "UTF-16BE";
+                break;
+            case 0x5c75:
+                code = "ANSI|ASCII";
+                break;
+            default:
+                code = "GBK";
+        }
+        return code;
     }
 }

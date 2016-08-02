@@ -8,6 +8,7 @@ import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.Executor.Executor;
 import com.fr.bi.cal.analyze.cal.Executor.ILazyExecutorOperation;
 import com.fr.bi.cal.analyze.cal.result.*;
@@ -19,6 +20,8 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.SortTool;
+import com.fr.bi.stable.engine.SortToolUtils;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -147,19 +150,22 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
         BusinessTable target = getRealTableKey4Calculate();
-        int groupSize = column.getOriginGroupSize(target, getLoader());
-        if (groupSize < BIBaseConstant.SMALL_GROUP) {
-            return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
-        } else if (needCalAll(target)) {
-            return getIterByAllCal(target);
-        } else {
+        double validPercent = 0.75;
+        int wholeRowCount = getLoader().getTableIndex(target.getTableSource()).getRowCount();
+        int currentRowCount = root.getGroupValueIndex().getRowsCountWithData();
+        if (ckIndex != 0) {
+            return getIterByAllCal(wholeRowCount, currentRowCount);
+        }
+        if (currentRowCount * 1.0 / wholeRowCount > validPercent) {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
+        return getIterByAllCal(wholeRowCount, currentRowCount);
+
     }
 
-    private boolean hasSpecialGroup(){
+    private boolean hasSpecialGroup() {
         int groupType = column.getGroup().getType();
-        if (groupType == BIReportConstant.GROUP.AUTO_GROUP) {
+        if (groupType == BIReportConstant.GROUP.AUTO_GROUP || column.getSortType() == BIReportConstant.SORT.CUSTOM) {
             return true;
         }
         if (groupType == BIReportConstant.GROUP.CUSTOM_GROUP ||
@@ -169,38 +175,41 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         return false;
     }
 
-    private boolean needCalAll(BusinessTable target){
-        double validPercent = 0.75;
-        if (ckIndex != 0) {
-            return true;
-        }
-        int wholeRowCount = getLoader().getTableIndex(target.getTableSource()).getRowCount();
-        int currentRowCount = root.getGroupValueIndex().getRowsCountWithData();
-        if (currentRowCount * 1.0 / wholeRowCount > validPercent) {
-            return false;
-        }
-        return true;
-    }
 
     private BusinessTable getRealTableKey4Calculate() {
         return ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
     }
 
-    private Iterator getIterByAllCal(BusinessTable target){
+    private Iterator getIterByAllCal(int wholeRowCount, int currentRowCount) {
         ICubeTableService ti = getLoader().getTableIndex(column.getField().getTableBelongTo().getTableSource());
-        final ICubeValueEntryGetter getter = ti.getValueEntryGetter(column.createKey(), column.getRelationList());
+        ICubeValueEntryGetter getter = ti.getValueEntryGetter(column.createKey(), column.getRelationList());
+        SortTool tool = SortToolUtils.getSortTool(getter.getGroupSize(), wholeRowCount, currentRowCount);
+        switch (tool) {
+            case INT_ARRAY:
+                return getArraySortIterator(getter);
+            case DIRECT:
+                return getOneKeyIterator(getter);
+            case TREE_MAP:
+                return getTreeMapSortIterator(getter);
+            default:
+                return getArraySortIterator(getter);
+        }
+    }
+
+
+    public Iterator getArraySortIterator(final ICubeValueEntryGetter getter) {
         final int[] groupIndex = new int[getter.getGroupSize()];
         Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
         root.getGroupValueIndex().Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
                 int groupRow = getter.getPositionOfGroupByRow(row);
-                if (groupRow != NIOConstant.INTEGER.NULL_VALUE){
+                if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
                     groupIndex[groupRow] = groupRow;
                 }
             }
         });
-        return column.getSortType() == BIReportConstant.SORT.ASC  || column.getSortType() == BIReportConstant.SORT.NUMBER_ASC ? new Iterator() {
+        return column.getSortType() == BIReportConstant.SORT.ASC || column.getSortType() == BIReportConstant.SORT.NUMBER_ASC ? new Iterator() {
 
             private int index = 0;
 
@@ -211,8 +220,8 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
             @Override
             public boolean hasNext() {
-                while ( index < groupIndex.length && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE ){
-                    index ++;
+                while (index < groupIndex.length && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE) {
+                    index++;
                 }
                 return index < groupIndex.length;
             }
@@ -260,8 +269,8 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
             @Override
             public boolean hasNext() {
-                while ( index >= 0 && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE ){
-                    index --;
+                while (index >= 0 && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE) {
+                    index--;
                 }
                 return index >= 0;
             }
@@ -298,8 +307,120 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 index--;
                 return entry;
             }
-        } ;
+        };
     }
+
+    public Iterator getOneKeyIterator(final ICubeValueEntryGetter getter) {
+        final FinalInt i = new FinalInt();
+        root.getGroupValueIndex().Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                i.value = getter.getPositionOfGroupByRow(row);
+            }
+        });
+        return new Iterator() {
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+
+            @Override
+            public boolean hasNext() {
+                return i.value != NIOConstant.INTEGER.NULL_VALUE;
+            }
+
+            @Override
+            public Object next() {
+                final CubeValueEntry gve = getter.getEntryByGroupRow(i.value);
+                Map.Entry entry = new Entry() {
+                    @Override
+                    public Object getKey() {
+                        return gve.getT();
+                    }
+
+                    @Override
+                    public Object getValue() {
+                        return gve.getGvi();
+                    }
+
+                    @Override
+                    public Object setValue(Object value) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean equals(Object o) {
+                        return false;
+                    }
+
+                    @Override
+                    public int hashCode() {
+                        return 0;
+                    }
+                };
+                i.value = NIOConstant.INTEGER.NULL_VALUE;
+                return entry;
+            }
+        };
+    }
+
+    public Iterator getTreeMapSortIterator(final ICubeValueEntryGetter getter) {
+        final TreeSet<Integer> set = column.getSortType() == BIReportConstant.SORT.DESC ? new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.DESC) : new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+        root.getGroupValueIndex().Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                int groupRow = getter.getPositionOfGroupByRow(row);
+                if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
+                    set.add(groupRow);
+                }
+            }
+        });
+        final Iterator<Integer> it  = set.iterator();
+        return new Iterator() {
+            @Override
+            public void remove() {
+                it.remove();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public Object next() {
+                final CubeValueEntry gve = getter.getEntryByGroupRow(it.next());
+                Map.Entry entry = new Entry() {
+                    @Override
+                    public Object getKey() {
+                        return gve.getT();
+                    }
+
+                    @Override
+                    public Object getValue() {
+                        return gve.getGvi();
+                    }
+
+                    @Override
+                    public Object setValue(Object value) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean equals(Object o) {
+                        return false;
+                    }
+
+                    @Override
+                    public int hashCode() {
+                        return 0;
+                    }
+                };
+                return entry;
+            }
+        };
+    }
+
 
     private NewRootNodeChild getCurrentNodeChild(Entry entry) {
         Object keyValue = entry.getKey();

@@ -163,10 +163,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                             da.y = BI.parseFloat(da.y);
                         }
                         da.y = da.y || 0;
-                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
-                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
-                            da.y = 0;
-                        }
+                        da.y = FR.contentFormat(da.y.div(magnify), "#.##");
                     }
                 })
             })
