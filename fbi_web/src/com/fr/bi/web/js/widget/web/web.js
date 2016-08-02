@@ -89,6 +89,18 @@ BI.WebPage = BI.inherit(BI.Widget, {
         return this.href.getValue()
     },
 
+    _dealWithSrc: function (address) {
+        var temp = '';
+        var url1 = /[a-zA-z]+:\/\/[^\s]*/;
+        var url2 = /\/[^\s]*/;
+        if (address.match(url1) || address.match(url2)) {
+            temp = address;
+        } else {
+            temp = "http://" + address;
+        }
+        return temp;
+    },
+
     setValue: function (url) {
         var self = this;
         if (BI.isNotEmptyString(url)) {
@@ -97,7 +109,7 @@ BI.WebPage = BI.inherit(BI.Widget, {
             self._showLabel();
         }
         this.href.setValue(url);
-        this.iframe.setSrc(url)
+        this.iframe.setSrc(this._dealWithSrc(url))
     }
 });
 
