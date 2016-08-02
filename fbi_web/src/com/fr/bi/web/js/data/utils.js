@@ -2067,24 +2067,26 @@ Data.Utils = {
 
             function formatChartDashboardStyle() {
                 configs.gaugeAxis = gaugeAxis;
-                var bands = getBandsStyles(self.config.bands_styles, self.config.auto_custom_style);
+                var bands = getBandsStyles(config.bands_styles, config.auto_custom_style);
                 var valueLabel = {
                     formatter: {
-                        identifier: "${CATEGORY}${VALUE}"
+                        identifier: "${CATEGORY}${SERIES}${VALUE}"
                     }
                 };
-                var percentageLabel = {
-                    enabled: false
-                };
+                var percentageLabel = BI.extend(config.plotOptions.percentageLabel , {
+                    enabled: config.show_percentage === BICst.PERCENTAGE.SHOW
+                });
                 switch (config.chart_dashboard_type) {
                     case BICst.CHART_SHAPE.HALF_DASHBOARD:
                         setPlotOptions("pointer_semi", bands, configs.plotOptions.valueLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                         setPlotOptions("ring", bands, valueLabel, percentageLabel);
+                        changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                         setPlotOptions("slot", bands, valueLabel, percentageLabel);
+                        changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                         BI.extend(valueLabel, {
@@ -2094,29 +2096,31 @@ Data.Utils = {
                             align: "bottom"
                         });
                         setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "horizontal", "vertical");
+                        changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.VERTICAL_TUBE:
                         BI.extend(valueLabel, {
                             align: "left"
                         });
-                        setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "vertical");
+                        setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "horizontal");
+                        changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.NORMAL:
                     default:
                         setPlotOptions("pointer", bands, configs.plotOptions.valueLabel);
                         break;
                 }
-                formatNumberLevelInYaxis(config.dashboard_number_level, self.constants.LEFT_AXIS);
+                formatNumberLevelInYaxis(config.dashboard_number_level, constants.LEFT_AXIS);
                 if (config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.valueLabel.formatter.valueFormat = function () {
                         return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]);
                     };
                     configs.gaugeAxis[0].formatter = function () {
-                        return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]) + getXYAxisUnit(config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                        return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]) + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
                     };
                 } else {
                     configs.gaugeAxis[0].formatter = function () {
-                        return this + getXYAxisUnit(config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                        return this + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
                     };
                 }
             }
@@ -2128,6 +2132,11 @@ Data.Utils = {
                 configs.plotOptions.percentageLabel = percentageLabel;
                 configs.plotOptions.thermometerLayout = thermometerLayout;
                 configs.plotOptions.layout = layout;
+            }
+
+            function changeMaxMinScale() {
+                gaugeAxis[0].max = config.max_scale === "" ? gaugeAxis[0].max : config.max_scale;
+                gaugeAxis[0].min = config.min_scale === "" ? gaugeAxis[0].min : config.min_scale;
             }
 
             function formatNumberLevelInYaxis(type, position) {
