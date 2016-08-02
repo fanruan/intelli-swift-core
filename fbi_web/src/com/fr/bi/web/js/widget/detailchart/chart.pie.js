@@ -35,7 +35,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
-                //config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
+                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
