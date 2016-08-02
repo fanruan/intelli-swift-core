@@ -16,7 +16,7 @@ BI.UploadExcelButton = BI.inherit(BI.Button, {
             type: "bi.upload_file_with_progress",
             progressEL: this.options.progressEL,
             accept: "*.csv;*.xls;*.xlsx",
-            maxSize: 50 * 1024 * 1024
+            maxSize: 500 * 1024 * 1024
         });
         this.file.on(BI.UploadFileWithProgress.EVENT_CHANGE, function(){
             this.upload();
