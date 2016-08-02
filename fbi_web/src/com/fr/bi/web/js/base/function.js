@@ -106,6 +106,18 @@ $(function () {
                 }
             });
             return formulaString;
+        },
+
+        formatAddress: function (address) {
+            var temp = '';
+            var url1 = /[a-zA-z]+:\/\/[^\s]*/;
+            var url2 = /\/[^\s]*/;
+            if (address.match(url1) || address.match(url2)) {
+                temp = address;
+            } else {
+                temp = "http://" + address;
+            }
+            return temp;
         }
 
     });
