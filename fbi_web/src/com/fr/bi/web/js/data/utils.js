@@ -732,7 +732,10 @@ Data.Utils = {
             initDrillPath: options.initDrillPath || [],
             lnglat: options.lnglat || constants.LNG_FIRST,
             click: options.click,
-            map_bubble_color: options.map_bubble_color || constants.theme_color
+            map_bubble_color: options.map_bubble_color || "#65bce7",
+            max_scale: options.max_scale || "",
+            min_scale: options.min_scale || "",
+            show_percentage: options.show_percentage || constants.SHOW
         };
 
         var maxes = [];
@@ -6090,7 +6093,8 @@ Data.Utils = {
                 LNG_FIRST: 3,
                 LAT_FIRST: 4,
                 FIX_COUNT: 6,
-                AUTO: 1
+                AUTO: 1,
+                SHOW: 1
             }
         }
 
