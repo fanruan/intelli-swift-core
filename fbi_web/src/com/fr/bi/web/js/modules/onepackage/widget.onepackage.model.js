@@ -143,14 +143,13 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     },
 
     getTableTranName: function (tId) {
-        var tableData = this.getTablesData()[tId];
+        var tableData = this.tablesData[tId];
         var tableNameText = tableData.table_name;
         //ETL 表
-        var translations = this.getTranslations();
         if (tableData.connection_name === BICst.CONNECTION.ETL_CONNECTION) {
-            tableNameText = translations[tId];
-        } else if (BI.isNotNull(translations[tId]) && translations[tId] !== tableNameText) {
-            tableNameText = translations[tId] + "(" + tableNameText + ")";
+            tableNameText = this.translations[tId];
+        } else if (BI.isNotNull(this.translations[tId]) && this.translations[tId] !== tableNameText) {
+            tableNameText = this.translations[tId] + "(" + tableNameText + ")";
         }
         return tableNameText;
     },
@@ -173,13 +172,9 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         var self = this;
 
         delete this.tablesData[tableId];
-        BI.some(this.getTables(), function (i, table) {
-            if (table.id === tableId) {
-                self.tables.splice(i, 1);
-                return true;
-            }
+        BI.remove(this.tables, function(i, table) {
+            return table.id === tableId;
         });
-
 
         //删除相关关联
         var connectionSet = this.relations.connectionSet, primaryKeyMap = this.relations.primKeyMap, foreignKeyMap = this.relations.foreignKeyMap;
@@ -331,11 +326,10 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
 
     createDistinctTableTranName: function (v) {
         var self = this;
-        var tableIds = this.getTables();
         var currentPackTrans = [];
-        BI.each(tableIds, function (i, table) {
+        BI.each(this.tables, function (i, table) {
             currentPackTrans.push({
-                name: self.getTranslations()[table.id]
+                name: self.translations[table.id]
             })
         });
         return BI.Func.createDistinctName(currentPackTrans, v);
@@ -380,9 +374,9 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     _getCurrentPackTrans: function (id) {
         var self = this;
         var currentTrans = [];
-        BI.each(this.getTables(), function (i, table) {
+        BI.each(this.tables, function (i, table) {
             //去掉本身
-            table.id !== id && currentTrans.push({name: self.getTranslations()[table.id]});
+            table.id !== id && currentTrans.push({name: self.translations[table.id]});
         });
         return currentTrans;
     },
