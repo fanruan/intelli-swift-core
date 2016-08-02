@@ -898,8 +898,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             var pValues = [];
             var tempLayer = currentLayer, tempNodeId = nodeId;
             while (tempLayer > 0) {
+                var dId = self.crossDimIds[tempLayer - 1];
                 pValues.push({
-                    value: [self.crossTree.search(tempNodeId).get("name")],
+                    value: [self._parseClickedValue4Group(self.crossTree.search(tempNodeId).get("name"), dId)],
                     dId: self.crossDimIds[tempLayer - 1]
                 });
                 tempNodeId = self.crossTree.search(tempNodeId).getParent().get("id");
