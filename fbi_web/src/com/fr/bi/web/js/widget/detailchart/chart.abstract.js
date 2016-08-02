@@ -34,6 +34,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         theme_color: "#65bce7",
         auto_custom: 1,
         POLYGON: 7,
+        AUTO_CUSTOM: 1,
         AUTO: 1
     },
 
