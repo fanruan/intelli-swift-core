@@ -2688,7 +2688,7 @@ Data.Utils = {
                         delete configs.plotOptions.roseType;
                         break;
                 }
-                configs.plotOptions.innerRadius = config.chart_inner_radius;
+                configs.plotOptions.innerRadius = config.chart_inner_radius + "%";
                 configs.plotOptions.endAngle = config.chart_total_angle;
             }
         }

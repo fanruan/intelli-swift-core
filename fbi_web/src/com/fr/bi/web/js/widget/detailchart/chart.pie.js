@@ -86,7 +86,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
                     delete config.plotOptions.roseType;
                     break;
             }
-            config.plotOptions.innerRadius = self.config.chart_inner_radius;
+            config.plotOptions.innerRadius = self.config.chart_inner_radius + "%";
             config.plotOptions.endAngle = self.config.chart_total_angle;
         }
 
