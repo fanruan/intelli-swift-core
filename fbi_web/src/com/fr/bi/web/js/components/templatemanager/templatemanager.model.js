@@ -9,11 +9,28 @@ BI.TemplateManagerModel = BI.inherit(FR.OB, {
         this.sortType = BI.TemplateManager.SORT_BY_TIME;
         this.currentNodeId = BI.FileManagerNav.ROOT_CREATE_BY_ME;
         this.tree = new BI.Tree();
+        this._check4NoFolder();
         this.sortAndRefreshTree();
+    },
+
+    //常常会发生一些外部因素导致的文件夹丢失 引起我创建的完全没法用问题
+    _check4NoFolder: function() {
+        var allFolders = ["-1"];
+        BI.each(this.allItems, function(i, item) {
+            if(BI.isNull(item.buildUrl) && BI.isNotNull(item.id)) {
+                allFolders.push(item.id);
+            }
+        });
+        BI.each(this.allItems, function(i, item) {
+            if(!allFolders.contains(item.pId)) {
+                item.pId = "-1";
+            }
+        });
     },
     
     resetAllItems: function(items) {
         this.allItems = items;
+        this._check4NoFolder();
         this.sortAndRefreshTree();
     },
 
