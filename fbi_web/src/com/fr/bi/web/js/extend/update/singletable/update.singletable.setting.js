@@ -17,6 +17,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.UpdateSingleTableSetting.superclass._init.apply(this, arguments);
+        this.taskAdding = false;
         var self = this, o = this.options;
         this.model = new BI.UpdateSingleTableSettingModel({
             update_setting: o.update_setting,
@@ -85,6 +86,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     tableInfo.ETLTable = self.model.currentTable;
                 }
                 self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, tableInfo);
+                self.taskAdding = true;
                 self._createCheckInterval();
             }
         });
@@ -433,9 +435,10 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         var self = this;
         self.cubeInterval = setInterval(function () {
             BI.Utils.checkCubeStatusByTable(self.model.table, function (data) {
-                    if (data.isGenerated == true) {
+                    if (data.isGenerated == true && self.taskAdding == true) {
                         self.immediateButton.setEnable(true);
                         self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
+                        self.taskAdding = false;
                         clearInterval(self.cubeInterval);
                     }
                 }
