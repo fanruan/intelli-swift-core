@@ -19,6 +19,7 @@ import java.util.Map;
 public class XMLNormalValueWriter extends XMLValueWriter {
 
     public static boolean IS_IGNORED_FIELD_USABLE = true;
+    public static boolean USE_CONTENT_SAVE_VALUE = true;
 
     @Override
     protected String getDisposedUUID(Object obj) {

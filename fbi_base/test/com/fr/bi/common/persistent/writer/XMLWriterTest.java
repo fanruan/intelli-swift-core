@@ -284,6 +284,7 @@ public class XMLWriterTest extends TestCase {
 
         checkEquals(arrayPart, "testGroupValueIndex");
     }
+
     public void testArrayEmpty() {
         ArrayPart arrayPart = new ArrayPart();
         Integer[] array = new Integer[0];
@@ -308,5 +309,18 @@ public class XMLWriterTest extends TestCase {
 
         GroupValueIndex groupValueIndex = RoaringGroupValueIndex.createGroupValueIndex(array);
         checkEquals(groupValueIndex, "testGroupValueIndex");
+    }
+
+    public void testUseAttrSaveValue() {
+        NormalString4SpecialChar test = new NormalString4SpecialChar();
+        XMLNormalValueWriter.USE_CONTENT_SAVE_VALUE = false;
+        test.value = "abcabc";
+        checkEquals(test, "testUseAttrSaveValue");
+    }
+
+    public void testUseContentSaveValue() {
+        NormalString4SpecialChar test = new NormalString4SpecialChar();
+        test.value = "abc\nabc";
+        checkEquals(test, "testUseAttrSaveValue");
     }
 }
