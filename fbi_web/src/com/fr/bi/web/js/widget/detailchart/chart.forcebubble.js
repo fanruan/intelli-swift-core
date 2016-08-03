@@ -52,8 +52,11 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
         delete config.yAxis;
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
+                if(!BI.isNumber(da.y)){
+                    da.y = BI.parseFloat(da.y);
+                }
                 da.y = da.y || 0;
-                da.y = FR.contentFormat(da.y.div(magnify), "#.##");
+                da.y = FR.contentFormat(BI.parseFloat(da.y.toFixed(4)), "#.####");
             })
         });
         return [items, config];

@@ -70,7 +70,10 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
             BI.each(item, function(id, it){
                 var res = [];
                 BI.each(it.data, function(i, da){
-                    da.y = FR.contentFormat(da.y, "#.##");
+                    if(!BI.isNumber(da.y)){
+                        da.y = BI.parseFloat(da.y);
+                    }
+                    da.y = FR.contentFormat(BI.parseFloat(da.y.toFixed(4)), "#.####");
                     var lnglat = da.x.split(",");
                     if(self.config.lnglat === self.constants.LAT_FIRST){
                         var lng = lnglat[1];

@@ -186,7 +186,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             da.y = BI.parseFloat(da.y);
                         }
                         da.y = da.y || 0;
-                        da.y = FR.contentFormat(da.y.div(magnify), "#.##");
+                        da.y = FR.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####");
                     }
                 })
             })
