@@ -173,21 +173,6 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP;
     }
 
-    @Override
-    public int getOriginGroupSize(BusinessTable table, ICubeDataLoader loader) {
-        CubeTableSource usedTableSource = getTableSourceFromField();
-        BIKey usedColumnKey = dimension.createKey(field);
-        //多对多处理,这里默认relationList的第一个关联是公共主表关联
-        if (getDirectToDimensionRelationList().size() > 0) {
-            ICubeFieldSource primaryField = getDirectToDimensionRelationList().get(0).getPrimaryField();
-            CubeTableSource primaryTableSource = primaryField.getTableBelongTo();
-            usedTableSource = primaryTableSource;
-            usedColumnKey = new IndexKey(primaryField.getFieldName());
-        }
-        ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList());
-        return getter.sizeOfGroup();
-    }
-
     private CubeTableSource getTableSourceFromField() {
         return field.getTableBelongTo().getTableSource();
     }

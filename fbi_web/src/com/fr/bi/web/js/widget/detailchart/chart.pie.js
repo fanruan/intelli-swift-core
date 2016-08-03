@@ -35,7 +35,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
-                //config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
+                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
@@ -59,10 +59,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 da.y = da.y || 0;
-                da.y = da.y.toFixed(self.constants.FIX_COUNT);
-                if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
-                    da.y = 0;
-                }
+                da.y = FR.contentFormat(da.y, "#.##");
             })
         });
         return [items, config];
