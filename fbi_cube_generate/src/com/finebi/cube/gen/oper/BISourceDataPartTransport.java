@@ -109,7 +109,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
             rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
         }
-        if (null != sortRemovedList) {
+        if (null != sortRemovedList&&sortRemovedList.size()!=0) {
             tableEntityService.recordRemovedLine(sortRemovedList);
         }
 
