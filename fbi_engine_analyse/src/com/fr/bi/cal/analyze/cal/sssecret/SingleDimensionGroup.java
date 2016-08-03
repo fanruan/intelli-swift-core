@@ -165,7 +165,10 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
     private boolean hasSpecialGroup() {
         int groupType = column.getGroup().getType();
-        if (groupType == BIReportConstant.GROUP.AUTO_GROUP || column.getSortType() == BIReportConstant.SORT.CUSTOM) {
+        if (groupType != BIReportConstant.GROUP.NO_GROUP || groupType != BIReportConstant.GROUP.ID_GROUP) {
+            return true;
+        }
+        if (column.getSortType() == BIReportConstant.SORT.CUSTOM) {
             return true;
         }
         if (groupType == BIReportConstant.GROUP.CUSTOM_GROUP ||
