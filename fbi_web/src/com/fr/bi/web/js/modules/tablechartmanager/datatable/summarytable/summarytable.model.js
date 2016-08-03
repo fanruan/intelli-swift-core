@@ -424,10 +424,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             });
         } else if (BI.isObject(sums)) {
             var c = sums.c, s = sums.s;
-            //是否显示列汇总
+            //是否显示列汇总 并且有指标
             if (BI.isNotNull(c) && BI.isNotNull(s)) {
                 summary = summary.concat(self._getOneRowSummary(c));
-                if (this.showColTotal === true) {
+                if (this.showColTotal === true && self.targetIds.length > 0) {
                     summary = summary.concat(self._getOneRowSummary(s));
                 }
             } else if (BI.isNotNull(s)) {

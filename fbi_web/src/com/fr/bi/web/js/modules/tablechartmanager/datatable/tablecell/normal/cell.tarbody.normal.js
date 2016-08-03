@@ -148,8 +148,10 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var self = this;
         var o = this.options;
         var dId = o.dId, clicked = o.clicked;
-        var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
-        var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
+        if(BI.isNotNull(dId)) {
+            var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
+            var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
+        }
         var linkedWidgets = [];
         BI.each(linkage, function (i, link) {
             if (link.from === dId) {
