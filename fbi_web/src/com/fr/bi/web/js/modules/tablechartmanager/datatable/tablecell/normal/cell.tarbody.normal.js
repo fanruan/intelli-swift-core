@@ -16,7 +16,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var text = o.text;
         var iconCls = "", color = "";
         var format = styleSettings.format, numLevel = styleSettings.num_level;
-        text = this._parseNumLevel(text, numLevel);
+        text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
         text = this._parseFloatByDot(text, format);
         var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
@@ -64,24 +64,6 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 element: this.element,
                 items: [textLabel]
             })
-        }
-    },
-
-    _parseNumLevel: function (text, numLevel) {
-        if (text === Infinity || text !== text || !BI.isNumber(text)) {
-            return text;
-        }
-        switch (numLevel) {
-            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                return FR.contentFormat(BI.parseFloat(text.div(10000).toFixed(2)), "#.##");
-            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                return FR.contentFormat(BI.parseFloat(text.div(1000000).toFixed(2)), "#.##");
-            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                return FR.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##");
-            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return FR.contentFormat(text, "#.##%");
-            default:
-                return BI.parseFloat(FR.contentFormat(text, "#.##"));
         }
     },
 
@@ -148,8 +130,10 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var self = this;
         var o = this.options;
         var dId = o.dId, clicked = o.clicked;
-        var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
-        var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
+        if(BI.isNotNull(dId)) {
+            var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
+            var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
+        }
         var linkedWidgets = [];
         BI.each(linkage, function (i, link) {
             if (link.from === dId) {
@@ -201,3 +185,22 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
     }
 });
 $.shortcut("bi.target_body_normal_cell", BI.TargetBodyNormalCell);
+BI.extend(BI.TargetBodyNormalCell, {
+    parseNumByLevel: function(text, numLevel) {
+        if (text === Infinity || text !== text || !BI.isNumber(text)) {
+            return text;
+        }
+        switch (numLevel) {
+            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                return FR.contentFormat(BI.parseFloat(text.div(10000).toFixed(2)), "#.##");
+            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                return FR.contentFormat(BI.parseFloat(text.div(1000000).toFixed(2)), "#.##");
+            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                return FR.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##");
+            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                return FR.contentFormat(text, "#.##%");
+            default:
+                return BI.parseFloat(FR.contentFormat(text, "#.##"));
+        }
+    } 
+});
