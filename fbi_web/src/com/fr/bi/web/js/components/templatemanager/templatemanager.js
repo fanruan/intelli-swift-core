@@ -312,6 +312,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
                 shareBox.on(BI.ShareReportPane.EVENT_SHARE, function (users) {
                     self.fireEvent(BI.TemplateManager.EVENT_SHARE, selectedItems, users);
                     BI.Popovers.remove(id);
+                    self.folderAndFileList.setValue([]);
                 });
                 BI.Popovers.create(id, shareBox, {width: 600, height: 500}).open(id);
             }
