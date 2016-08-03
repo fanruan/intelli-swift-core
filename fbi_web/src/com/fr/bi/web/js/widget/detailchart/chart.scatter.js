@@ -181,14 +181,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             var magnify = calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
-                    if(!BI.isNumber(da.x)){
-                        da.x = BI.parseFloat(da.x);
-                    }
-                    da.x = da.x || 0;
-                    da.x = da.x.div(magnify).toFixed(self.constants.FIX_COUNT);
-                    if (self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0) {
-                        da.x = 0;
-                    }
+                    da.x = self.formatXYDataWithMagnify(da.x, magnify);
                 })
             })
         }
@@ -198,14 +191,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
                     if (position === item.yAxis) {
-                        if(!BI.isNumber(da.y)){
-                            da.y = BI.parseFloat(da.y);
-                        }
-                        da.y = da.y || 0;
-                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
-                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
-                            da.y = 0;
-                        }
+                        da.y = self.formatXYDataWithMagnify(da.y, magnify);
                     }
                 })
             });

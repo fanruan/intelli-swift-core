@@ -58,7 +58,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                         da.y = BI.parseFloat(da.y);
                     }
                     da.y = da.y || 0;
-                    da.y = FR.contentFormat(da.y.div(magnify), "#.##");
+                    da.y = FR.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####");
                 }
             });
             if (position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
@@ -76,9 +76,17 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                     da.x = BI.parseFloat(da.x);
                 }
                 da.x = da.x || 0;
-                da.x = FR.contentFormat(da.x.div(magnify), "#.##");
+                da.x = FR.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####");
             });
         })
+    },
+
+    formatXYDataWithMagnify: function(number, magnify){
+        if(!BI.isNumber(number)){
+            number = BI.parseFloat(number);
+        }
+        number = number || 0;
+        return FR.contentFormat(BI.parseFloat(number.div(magnify).toFixed(4)), "#.####");
     },
 
     _calcMagnify: function (type) {

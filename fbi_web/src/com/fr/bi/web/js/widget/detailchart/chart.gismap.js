@@ -35,7 +35,8 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.tooltip.shared = true;
         config.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + FR.contentFormat((point.size || point.y), '#.##') + '</div>');});return tip; }";
         config.geo = {
-            "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
+            "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+            "attribution": "<a><img src='http://webapi.amap.com/theme/v1.3/mapinfo_05.png'>&copy; 2016 AutoNavi</a>"
         };
         config.chartType = "pointMap";
         config.plotOptions.icon = {
@@ -70,7 +71,7 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
             BI.each(item, function(id, it){
                 var res = [];
                 BI.each(it.data, function(i, da){
-                    da.y = FR.contentFormat(da.y, "#.##");
+                    da.y = self.formatXYDataWithMagnify(da.y, 1);
                     var lnglat = da.x.split(",");
                     if(self.config.lnglat === self.constants.LAT_FIRST){
                         var lng = lnglat[1];

@@ -4,7 +4,7 @@
 .bi-input {
   border: none;
   outline: none;
-  background-color: inherit;
+  background-color: transparent;
   padding: 0;
   margin: 0;
   width: 100%;
@@ -16,4 +16,7 @@
 .bi-input.bi-input-error {
   border: none;
   color: #e85050 !important;
+}
+.bi-input.disabled {
+  background-color: white;
 }

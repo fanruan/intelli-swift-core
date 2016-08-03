@@ -192,11 +192,11 @@ BI.extend(BI.TargetBodyNormalCell, {
         }
         switch (numLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                return FR.contentFormat(text.div(10000), "#.##");
+                return FR.contentFormat(BI.parseFloat(text.div(10000).toFixed(2)), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                return FR.contentFormat(text.div(1000000), "#.##");
+                return FR.contentFormat(BI.parseFloat(text.div(1000000).toFixed(2)), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                return FR.contentFormat(text.div(100000000), "#.##");
+                return FR.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 return FR.contentFormat(text, "#.##%");
             default:
