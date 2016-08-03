@@ -68,7 +68,7 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
             return ti.getAllShowIndex();
         }
         GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
-        Iterator it = dimension.createValueMapIterator(target, loader);
+        Iterator it = dimension.createNoneSortNoneGroupValueMapGetter(target, loader).iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Number v = (Number) entry.getKey();

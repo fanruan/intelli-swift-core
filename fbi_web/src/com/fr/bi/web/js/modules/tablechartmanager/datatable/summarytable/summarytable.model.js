@@ -424,10 +424,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             });
         } else if (BI.isObject(sums)) {
             var c = sums.c, s = sums.s;
-            //是否显示列汇总
+            //是否显示列汇总 并且有指标
             if (BI.isNotNull(c) && BI.isNotNull(s)) {
                 summary = summary.concat(self._getOneRowSummary(c));
-                if (this.showColTotal === true) {
+                if (this.showColTotal === true && self.targetIds.length > 0) {
                     summary = summary.concat(self._getOneRowSummary(s));
                 }
             } else if (BI.isNotNull(s)) {
@@ -727,8 +727,11 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     });
                 });
                 item.children.push({
-                    type: "bi.page_table_cell",
-                    text: this.data.s[0],
+                    type: "bi.target_body_normal_cell",
+                    text:  this.data.s[0],
+                    dId: self.targetIds[0],
+                    cls: "summary-cell",
+                    clicked: [{}],
                     tag: BI.UUID(),
                     isSum: true,
                     values: outerValues
