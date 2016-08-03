@@ -700,6 +700,7 @@ Data.Utils = {
             right_y_axis_unit: options.right_y_axis_unit || "",
             x_axis_title: options.x_axis_title || "",
             chart_legend: options.chart_legend || constants.LEGEND_BOTTOM,
+            chart_legend_limit_height: options.chart_legend_limit_height || constants.LEGEND_HEIGHT,
             show_data_label: options.show_data_label || false,
             show_data_table: options.show_data_table || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
@@ -1558,7 +1559,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -1825,7 +1826,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -2292,7 +2293,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -2370,7 +2371,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -2640,7 +2641,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    //config.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -2687,7 +2688,7 @@ Data.Utils = {
                         delete configs.plotOptions.roseType;
                         break;
                 }
-                configs.plotOptions.innerRadius = config.chart_inner_radius;
+                configs.plotOptions.innerRadius = config.chart_inner_radius + "%";
                 configs.plotOptions.endAngle = config.chart_total_angle;
             }
         }
@@ -2700,7 +2701,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -2780,7 +2781,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -3019,7 +3020,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -3263,7 +3264,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -3506,7 +3507,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -4025,7 +4026,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -4353,7 +4354,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -4609,7 +4610,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -4895,7 +4896,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -5143,7 +5144,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -5327,7 +5328,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -5545,7 +5546,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -5844,7 +5845,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;

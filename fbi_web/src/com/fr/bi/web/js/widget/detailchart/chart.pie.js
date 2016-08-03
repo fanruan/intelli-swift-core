@@ -58,8 +58,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
-                da.y = da.y || 0;
-                da.y = FR.contentFormat(da.y, "#.##");
+                da.y = self.formatXYDataWithMagnify(da.y, 1);
             })
         });
         return [items, config];
@@ -87,7 +86,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
                     delete config.plotOptions.roseType;
                     break;
             }
-            config.plotOptions.innerRadius = self.config.chart_inner_radius;
+            config.plotOptions.innerRadius = self.config.chart_inner_radius + "%";
             config.plotOptions.endAngle = self.config.chart_total_angle;
         }
 
