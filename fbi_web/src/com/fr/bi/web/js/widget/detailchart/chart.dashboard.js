@@ -45,10 +45,10 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         function formatChartDashboardStyle() {
             var bands = getBandsStyles(self.config.bands_styles, self.config.auto_custom_style);
             var valueLabel = {
-                formatter: {
-                    identifier: "${CATEGORY}${SERIES}${VALUE}"
-                }
+                formatter: config.plotOptions.valueLabel.formatter
             };
+            valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
+            valueLabel.style = config.plotOptions.valueLabel.style;
             var percentageLabel = BI.extend(config.plotOptions.percentageLabel , {
                 enabled: self.config.show_percentage === BICst.PERCENTAGE.SHOW
             });
@@ -58,6 +58,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 formatter: function(){
                     return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
                 },
+                style: config.plotOptions.valueLabel.style,
                 useHtml: true
             };
             switch (self.config.chart_dashboard_type) {
