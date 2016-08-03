@@ -220,11 +220,7 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
                 var max = null;
                 BI.each(item.data, function (id, da) {
                     if (position === item.yAxis) {
-                        if(!BI.isNumber(da.y)){
-                            da.y = BI.parseFloat(da.y);
-                        }
-                        da.y = da.y || 0;
-                        da.y = FR.contentFormat(BI.parseFloat(da.y.div(magnify)).toFixed(4), "#.####");
+                        da.y = self.formatXYDataWithMagnify(da.y, magnify);
                         if((BI.isNull(max) || BI.parseFloat(da.y) > BI.parseFloat(max))){
                             max = da.y;
                         }

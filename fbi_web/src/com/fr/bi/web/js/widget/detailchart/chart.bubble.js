@@ -182,14 +182,10 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
                     if (position === item.yAxis) {
-                        if(!BI.isNumber(da.y)){
-                            da.y = BI.parseFloat(da.y);
-                        }
-                        da.y = da.y || 0;
-                        da.y = FR.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####");
+                        da.y = self.formatXYDataWithMagnify(da.y, magnify);
                     }
                 })
-            })
+            });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 //config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }

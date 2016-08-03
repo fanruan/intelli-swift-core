@@ -81,6 +81,14 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         })
     },
 
+    formatXYDataWithMagnify: function(number, magnify){
+        if(!BI.isNumber(number)){
+            number = BI.parseFloat(number);
+        }
+        number = number || 0;
+        return FR.contentFormat(BI.parseFloat(number.div(magnify).toFixed(4)), "#.####");
+    },
+
     _calcMagnify: function (type) {
         var magnify = 1;
         switch (type) {
