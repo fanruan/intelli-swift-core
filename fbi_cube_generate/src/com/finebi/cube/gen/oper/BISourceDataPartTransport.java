@@ -96,13 +96,13 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
         }
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
+          /*remove*/
+        if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
+            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader);
+        }
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
             rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
-        }
-        /*remove*/
-        if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader);
         }
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {

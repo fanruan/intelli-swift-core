@@ -433,12 +433,13 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         ICubeIntegerReaderWrapper removedListReader = getRemovedListReader();
         IntList removedList = new IntList();
         int i = 0;
+
         try {
             while (removedListReader.getSpecificValue(i)<removedListReader.getSpecificValue(i+1)) {
                 removedList.add(removedListReader.getSpecificValue(i));
                 i++;
             }
-            if(i>0){
+            if(i==0){
                 removedList.add(removedListReader.getSpecificValue(i));
             }
         } catch (BIResourceInvalidException e) {
