@@ -727,8 +727,11 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     });
                 });
                 item.children.push({
-                    type: "bi.page_table_cell",
-                    text: this.data.s[0],
+                    type: "bi.target_body_normal_cell",
+                    text:  this.data.s[0],
+                    dId: self.targetIds[0],
+                    cls: "summary-cell",
+                    clicked: [{}],
                     tag: BI.UUID(),
                     isSum: true,
                     values: outerValues
