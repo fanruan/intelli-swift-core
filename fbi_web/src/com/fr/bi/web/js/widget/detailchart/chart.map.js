@@ -241,14 +241,13 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
     _formatDrillItems: function (items) {
         var self = this;
-        BI.each(items.series, function (idx, da) {
-            BI.each(da.data, function (idx, data) {
+        BI.each(items.series, function(idx, da){
+            BI.each(da.data, function(idx, data){
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
                 if (BI.has(da, "settings")) {
                     data.y = self._formatNumberLevel(da.settings.num_level || self.constants.NORMAL, data.y);
                 }
-                if (BI.has(da, "type") && da.type == "bubble") {
-
+                if(BI.has(da, "type") && da.type == "bubble"){
                     data.name = data.x;
                     data.size = data.y;
                 } else {
@@ -266,31 +265,33 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this;
         this.max = null;
         this.min = null;
-        BI.each(items, function (idx, item) {
-            BI.each(item, function (id, it) {
-                BI.each(it.data, function (i, da) {
+        BI.each(items, function(idx, item){
+            BI.each(item, function(id, it){
+                BI.each(it.data, function(i, da){
                     da.y = self.formatXYDataWithMagnify(da.y, 1);
                     if (BI.has(it, "settings")) {
                         da.y = self._formatNumberLevel(it.settings.num_level || self.constants.NORMAL, da.y);
                     }
-                    self.max = da.y;
-                });
-                if ((BI.isNull(self.min) || BI.parseFloat(da.y) > BI.parseFloat(self.min)) && id === 0) {
-                    self.min = da.y;
-                }
-                if (BI.has(it, "type") && it.type == "bubble") {
-                    da.name = da.x;
-                    da.size = da.y;
-                } else {
-                    da.name = da.x;
-                    da.value = da.y;
-                }
-                if (BI.has(da, "drilldown")) {
-                    self._formatDrillItems(da.drilldown);
-                }
+                    if((BI.isNull(self.max) || BI.parseFloat(da.y) > BI.parseFloat(self.max)) && id === 0){
+
+                        self.max = da.y;
+                    }
+                    if ((BI.isNull(self.min) || BI.parseFloat(da.y) > BI.parseFloat(self.min)) && id === 0) {
+                        self.min = da.y;
+                    }
+                    if (BI.has(it, "type") && it.type == "bubble") {
+                        da.name = da.x;
+                        da.size = da.y;
+                    } else {
+                        da.name = da.x;
+                        da.value = da.y;
+                    }
+                    if (BI.has(da, "drilldown")) {
+                        self._formatDrillItems(da.drilldown);
+                    }
+                })
             })
         });
-
         return items;
     },
 
@@ -314,8 +315,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         y = BI.parseFloat(y);
         y = FR.contentFormat(BI.parseFloat(y.div(magnify).toFixed(2)), "#.####");
         return y;
-    }
-    ,
+    },
 
     populate: function (items, options) {
         options || (options = {});
@@ -342,19 +342,16 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         });
 
         this.combineChart.populate(this._formatItems(items), types);
-    }
-    ,
+    },
 
     resize: function () {
         this.combineChart.resize();
-    }
-    ,
+    },
 
     magnify: function () {
         this.combineChart.magnify();
     }
-})
-;
+});
 BI.MapChart.EVENT_CHANGE = "EVENT_CHANGE";
 BI.MapChart.EVENT_CLICK_DTOOL = "EVENT_CLICK_DTOOL";
 $.shortcut('bi.map_chart', BI.MapChart);
