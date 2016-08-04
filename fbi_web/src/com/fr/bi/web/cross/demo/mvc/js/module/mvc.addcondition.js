@@ -14,7 +14,7 @@ AddConditionView = BI.inherit(BI.View, {
 
         this.styleRadio = BI.createWidget({
             type: "bi.button_group",
-            items: BI.createItems(BICst.CHART_SCALE_SETTING , {
+            items: BI.createItems(BICst.CHART_SCALE_SETTING, {
                 type: "bi.single_select_radio_item",
                 width: 100,
                 height: 60
@@ -31,12 +31,13 @@ AddConditionView = BI.inherit(BI.View, {
             height: 30
         });
 
-        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function() {
-           self.conditions.addItem()
+        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function () {
+            self.conditions.addItem();
+            self.conditions.setNumTip("万");
         });
 
         this.conditions = BI.createWidget({
-            type: "bi.chart_add_gradient_condition_group"
+            type: "bi.chart_add_condition_group"
         });
 
         var interval = BI.createWidget({
@@ -49,13 +50,13 @@ AddConditionView = BI.inherit(BI.View, {
                     type: "bi.left",
                     items: BI.createItems([{
                         type: "bi.center_adapt",
-                        items: [this.styleRadio , this.addConditionButton]
-                    }] , {
+                        items: [this.styleRadio, this.addConditionButton]
+                    }], {
                         height: 60
                     }),
                     lgap: 10
                 }
-            } , {
+            }, {
                 height: 240,
                 el: {
                     type: "bi.vertical",
@@ -70,22 +71,22 @@ AddConditionView = BI.inherit(BI.View, {
             width: 120
         });
 
-        var svg = BI.createWidget({
-            type: "bi.svg_custom_scale",
-            height: 350,
-            width: 650
-        });
-
         var formula = BI.createWidget({
             type: "bi.combo_custom_scale",
             height: 30,
             width: 200
         });
 
+        var customScale = BI.createWidget({
+            type: "bi.custom_scale",
+            width: 600,
+            height: 30
+        });
+
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            items: [interval , formulaTrigger , svg , formula],
+            items: [interval, formulaTrigger, formula, customScale],
             hgap: 10,
             vgap: 10
         });

@@ -132,7 +132,10 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: constant.EDITOR_WIDTH,
             height: constant.EDITOR_HEIGHT,
             cls: "unit-input",
-            watermark: BI.i18nText("BI-Default_Data")
+            watermark: BI.i18nText("BI-Default_Data"),
+            validationChecker: function(v){
+                return !(v < self.minScale.getValue())
+            }
         });
 
         this.maxScale.on(BI.SignEditor.EVENT_CONFIRM, function() {
@@ -145,7 +148,10 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: constant.EDITOR_WIDTH,
             height: constant.EDITOR_HEIGHT,
             cls: "unit-input",
-            watermark: BI.i18nText("BI-Default_Data")
+            watermark: BI.i18nText("BI-Default_Data"),
+            validationChecker: function(v){
+                return !(v > self.maxScale.getValue())
+            }
         });
 
         this.minScale.on(BI.SignEditor.EVENT_CONFIRM, function() {
@@ -341,14 +347,12 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             case BICst.CHART_SHAPE.NORMAL:
             case BICst.CHART_SHAPE.HALF_DASHBOARD:
                 this.pointers.setVisible(true);
-                this.dashboardScale.setVisible(false);
                 break;
             case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
             case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
             case BICst.CHART_SHAPE.VERTICAL_TUBE:
             case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                 this.pointers.setVisible(false);
-                this.dashboardScale.setVisible(true);
                 break;
         }
     },
