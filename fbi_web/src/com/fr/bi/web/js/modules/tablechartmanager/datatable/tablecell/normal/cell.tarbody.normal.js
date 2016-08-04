@@ -198,7 +198,7 @@ BI.extend(BI.TargetBodyNormalCell, {
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
                 return FR.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return FR.contentFormat(text, "#.##%");
+                return FR.contentFormat(text, "#.##");
             default:
                 return BI.parseFloat(FR.contentFormat(text, "#.##"));
         }
