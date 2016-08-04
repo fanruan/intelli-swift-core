@@ -5,34 +5,24 @@
  */
 BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.MapSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.MapSetting.superclass._init.apply(this, arguments);
         var self = this, constant = BI.AbstractChartSetting;
 
         //主题颜色
         this.colorChooser = BI.createWidget({
             type: "bi.color_chooser",
-            width:  constant.BUTTON_HEIGHT,
+            width: constant.BUTTON_HEIGHT,
             height: constant.BUTTON_HEIGHT
         });
 
-        this.colorChooser.on(BI.ColorChooser.EVENT_CHANGE, function() {
-            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
-        });
-
-        this.bubbleColorChooser = BI.createWidget({
-            type: "bi.color_chooser",
-            width:  constant.BUTTON_HEIGHT,
-            height: constant.BUTTON_HEIGHT
-        });
-
-        this.bubbleColorChooser.on(BI.ColorChooser.EVENT_CHANGE, function() {
+        this.colorChooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
@@ -47,7 +37,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 textAlign: "left",
                 textHeight: 60,
                 cls: "line-title"
-            } , {
+            }, {
                 type: "bi.left",
                 cls: "detail-style",
                 items: BI.createItems([{
@@ -58,15 +48,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.colorChooser]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Bubble_Color"),
-                    lgap: constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.bubbleColorChooser]
-                }] , {
+                }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_H_GAP
@@ -75,7 +57,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.styleRadio = BI.createWidget({
             type: "bi.button_group",
-            items: BI.createItems(BICst.CHART_SCALE_SETTING , {
+            items: BI.createItems(BICst.CHART_SCALE_SETTING, {
                 type: "bi.single_select_radio_item",
                 width: 100,
                 height: constant.BUTTON_HEIGHT
@@ -86,7 +68,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        this.styleRadio.on(BI.ButtonGroup.EVENT_CHANGE , function (v) {
+        this.styleRadio.on(BI.ButtonGroup.EVENT_CHANGE, function (v) {
             self._doClickButton(v);
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
@@ -97,7 +79,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.BUTTON_HEIGHT
         });
 
-        this.addConditionButton.on( BI.Button.EVENT_CHANGE , function () {
+        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function () {
             self.conditions.addItem();
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
@@ -107,7 +89,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             width: "100%"
         });
 
-        this.conditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE , function () {
+        this.conditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
 
@@ -115,12 +97,12 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.left",
             cls: "detail-style",
             items: BI.createItems([{
-                    type: "bi.center_adapt",
-                    items: [this.styleRadio]
-                } , {
-                    type: "bi.center_adapt",
-                    items: [this.addConditionButton]
-                } , this.conditions] , {
+                type: "bi.center_adapt",
+                items: [this.styleRadio]
+            }, {
+                type: "bi.center_adapt",
+                items: [this.addConditionButton]
+            }, this.conditions], {
                 height: constant.SINGLE_LINE_HEIGHT
             }),
             lgap: constant.SIMPLE_H_GAP
@@ -138,7 +120,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 textAlign: "left",
                 lgap: 5,
                 cls: "line-title"
-            } , interval]
+            }, interval]
         });
 
         //图例
@@ -149,7 +131,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.CHART_LEGEND
         });
 
-        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+        this.legend.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
@@ -160,7 +142,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 115
         });
 
-        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
@@ -202,7 +184,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             value: BI.i18nText("BI-Bind_Target_Condition"),
             width: 170
         });
-        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
@@ -214,11 +196,11 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 text: BI.i18nText("BI-Interactive_Attr"),
                 cls: "line-title",
                 lgap: constant.SIMPLE_H_GAP
-            } , {
+            }, {
                 type: "bi.center_adapt",
                 items: [this.transferFilter],
                 lgap: 30
-            }] , {
+            }], {
                 height: constant.SINGLE_LINE_HEIGHT
             })
         });
@@ -226,13 +208,13 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [theme , intervalSetting , showElement , otherAttr],
+            items: [theme, intervalSetting, showElement, otherAttr],
             hgap: constant.SIMPLE_H_GAP
         })
     },
 
     _doClickButton: function (v) {
-        switch(v) {
+        switch (v) {
             case BICst.SCALE_SETTING.AUTO:
                 this.addConditionButton.setVisible(false);
                 this.conditions.setVisible(false);
@@ -244,22 +226,44 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
-    populate: function(){
+    _setNumberLevel: function () {
+        var wId = this.options.wId;
+        var targetIDs = BI.Utils.getAllUsableTargetDimensionIDs(wId);
+        var styleSettings = BI.Utils.getDimensionSettingsByID(targetIDs[0]);
+        switch (styleSettings.num_level) {
+            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                this.conditions.setNumTip("");
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                this.conditions.setNumTip(BI.i18nText("BI-Wan"));
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                this.conditions.setNumTip(BI.i18nText("BI-Million"));
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                this.conditions.setNumTip(BI.i18nText("BI-Yi"));
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                this.conditions.setNumTip(BI.i18nText("%"));
+                break;
+        }
+    },
+
+    populate: function () {
         var wId = this.options.wId;
         this.colorChooser.setValue(BI.Utils.getWSThemeColorByID(wId));
-        this.bubbleColorChooser.setValue(BI.Utils.getWSMapBubbleColorByID(wId));
         this.styleRadio.setValue(BI.Utils.getWSScaleByID(wId));
         this._doClickButton(BI.Utils.getWSScaleByID(wId));
         this.conditions.setValue(BI.Utils.getWSMapStylesByID(wId));
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this._setNumberLevel()
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             theme_color: this.colorChooser.getValue(),
-            map_bubble_color: this.bubbleColorChooser.getValue(),
             auto_custom: this.styleRadio.getValue()[0],
             map_styles: this.conditions.getValue(),
             transfer_filter: this.transferFilter.isSelected(),
@@ -268,15 +272,15 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.colorChooser.setValue(v.theme_color);
-        this.bubbleColorChooser.setValue(v.map_bubble_color);
         this.styleRadio.setValue(v.auto_custom);
         this._doClickButton(v.auto_custom);
         this.conditions.setValue(v.map_styles);
         this.transferFilter.setSelected(v.transfer_filter);
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
+        this._setNumberLevel()
     }
 });
 BI.MapSetting.EVENT_CHANGE = "EVENT_CHANGE";

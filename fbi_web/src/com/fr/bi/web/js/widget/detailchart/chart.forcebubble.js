@@ -44,6 +44,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
         }
 
         config.plotOptions.force = true;
+        config.plotOptions.shadow = this.config.bubble_style !== this.constants.NO_PROJECT;
         config.plotOptions.dataLabels.enabled = true;
         config.plotOptions.dataLabels.align = "inside";
         config.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
@@ -63,7 +64,8 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
         var self = this, c = this.constants;
         this.config = {
             chart_color: options.chart_color || [],
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM
+            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
+            bubble_style: options.bubble_style || c.NO_PROJECT
         };
         this.options.items = items;
 
