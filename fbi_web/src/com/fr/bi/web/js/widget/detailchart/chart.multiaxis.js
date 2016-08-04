@@ -227,28 +227,6 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         })
     },
 
-    calcMagnify: function (type) {
-        var magnify = 1;
-        switch (type) {
-            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                magnify = 1;
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                magnify = 10000;
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                magnify = 1000000;
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                magnify = 100000000;
-                break;
-            default:
-                break;
-        }
-        return magnify;
-    },
-
     getXYAxisUnit: function (numberLevelType, position) {
         var unit = "";
         switch (numberLevelType) {

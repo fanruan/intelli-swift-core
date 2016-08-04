@@ -116,7 +116,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         }
 
         function formatNumberLevelInYaxis(type, position, formatter){
-            var magnify = calcMagnify(type);
+            var magnify = self.calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
                     if (position === item.yAxis) {
@@ -127,26 +127,6 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.tooltip.formatter.valueFormat = formatter;
             }
-        }
-
-        function calcMagnify(type){
-            var magnify = 1;
-            switch (type) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    magnify = 1;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    magnify = 10000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    magnify = 1000000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    magnify = 100000000;
-                    break;
-            }
-            return magnify;
         }
 
         function getXYAxisUnit(numberLevelType, position){
