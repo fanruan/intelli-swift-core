@@ -1834,9 +1834,9 @@ Data.Utils = {
                     configs.legend.enabled = false;
                     break;
             }
+            configs.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
             configs.plotOptions.shadow = config.bubble_style !== this.constants.NO_PROJECT;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
-            configs.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
 
             configs.yAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
