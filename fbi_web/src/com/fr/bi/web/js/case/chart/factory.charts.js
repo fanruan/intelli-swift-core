@@ -76,7 +76,7 @@ BI.ChartCombineFormatItemFactory = {
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
                 "dataLabels":{
-                    "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                    "style": {fontFamily: "inherit", color: "#808080", fontSize: "12px"},
                     "formatter": {
                         "identifier": "${VALUE}",
                         "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",

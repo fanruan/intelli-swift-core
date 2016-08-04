@@ -35,7 +35,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         auto_custom: 1,
         POLYGON: 7,
         AUTO_CUSTOM: 1,
-        AUTO: 1
+        AUTO: 1,
+        FONT_STYLE: {
+            "fontFamily": "inherit",
+            "color": "#808080",
+            "fontSize": "12px"
+        }
     },
 
     _defaultConfig: function () {
