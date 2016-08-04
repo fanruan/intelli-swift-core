@@ -17,11 +17,9 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         this.radiusAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: this.constants.FONT_STYLE
             },
-            labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             formatter: "function(){if(this>0) return this; else return this*(-1); }",
             gridLineWidth: 0,
             position: "bottom"
@@ -83,7 +81,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             BI.each(items, function(idx, item){
                 if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                     item.dataLabels = {
-                        "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                        "style": self.constants.FONT_STYLE,
                         "align": "outside",
                         enabled: true,
                         formatter: {

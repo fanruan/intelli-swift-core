@@ -18,9 +18,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         this.gaugeAxis = [{
             "minorTickColor": "rgb(226,226,226)",
             "tickColor": "rgb(186,186,186)",
-            labelStyle: {
-                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             "step": 0,
             "showLabel": true
         }];

@@ -855,7 +855,7 @@
         getWSShowPercentageByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_percentage) ? ws.show_percentage :
-                BICst.PERCENTAGE.SHOW
+                BICst.PERCENTAGE.NOT_SHOW
         },
 
         getWSXAxisUnitByID: function (wid) {

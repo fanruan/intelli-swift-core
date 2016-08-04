@@ -25,6 +25,12 @@ public class XMLBasicValueReader extends XMLValueReader {
                 if (!isCompatible(strValue)) {
                     strValue = xmLableReader.getElementValue();
                 }
+                /**
+                 * 空字符串读出来是Null
+                 */
+                if (strValue == null && ComparatorUtils.equals(String.class, beanWrapper.getBeanClass())) {
+                    strValue = "";
+                }
                 Object value = BITypeUtils.stringConvert2BasicType(beanWrapper.getBeanClass(), strValue);
 
                 beanWrapper.setBean(value);

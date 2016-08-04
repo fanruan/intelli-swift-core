@@ -2072,19 +2072,27 @@ Data.Utils = {
                 configs.gaugeAxis = gaugeAxis;
                 var bands = getBandsStyles(config.bands_styles, config.auto_custom_style);
                 var valueLabel = {
-                    formatter: {
-                        identifier: "${CATEGORY}${SERIES}${VALUE}"
-                    }
+                    formatter: configs.plotOptions.valueLabel.formatter
                 };
-                var percentageLabel = BI.extend(configs.plotOptions.percentageLabel, {
+
+                valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
+                valueLabel.style = configs.plotOptions.valueLabel.style;
+                var percentageLabel = BI.extend(configs.plotOptions.percentageLabel , {
                     enabled: config.show_percentage === BICst.PERCENTAGE.SHOW
                 });
+                var slotValueLAbel = {
+                    formatter: function(){
+                        return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
+                    },
+                    style: configs.plotOptions.valueLabel.style,
+                    useHtml: true
+                };
                 switch (config.chart_dashboard_type) {
                     case BICst.CHART_SHAPE.HALF_DASHBOARD:
                         setPlotOptions("pointer_semi", bands, configs.plotOptions.valueLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
-                        setPlotOptions("ring", bands, valueLabel, percentageLabel);
+                        setPlotOptions("ring", bands, slotValueLAbel, percentageLabel);
                         changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
@@ -2105,7 +2113,7 @@ Data.Utils = {
                         BI.extend(valueLabel, {
                             align: "left"
                         });
-                        setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "horizontal");
+                        setPlotOptions("thermometer", bands, slotValueLAbel, percentageLabel, "vertical", "horizontal");
                         changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.NORMAL:
