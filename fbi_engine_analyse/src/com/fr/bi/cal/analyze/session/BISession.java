@@ -118,7 +118,7 @@ public class BISession extends BIAbstractSession {
                     SessionIDInfor ss = SessionDealWith.getSessionIDInfor(l.getSessionId());
                     if(ss instanceof  BISession) {
                         long t = ((BISession)ss).lastTime;
-                        //45- 30 超过15-45秒还没翻译可能是没有心跳
+                        //45- 30 超过15-45秒还没反應可能是没有心跳
                         if(System.currentTimeMillis() - t < 45000) {
                             doForce = false;
                             break;
