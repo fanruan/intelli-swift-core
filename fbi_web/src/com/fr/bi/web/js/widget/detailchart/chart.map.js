@@ -296,24 +296,8 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
     },
 
     _formatNumberLevel: function (numberLevel, y) {
-        var magnify = 1;
-        switch (numberLevel) {
-            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                magnify = 1;
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                magnify = 10000;
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                magnify = 1000000;
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                magnify = 100000000;
-                break;
-        }
         y = BI.parseFloat(y);
-        y = FR.contentFormat(BI.parseFloat(y.div(magnify).toFixed(2)), "#.####");
+        y = FR.contentFormat(BI.parseFloat(y.div(this._calcMagnify(numberLevel)).toFixed(2)), "#.####");
         return y;
     },
 
