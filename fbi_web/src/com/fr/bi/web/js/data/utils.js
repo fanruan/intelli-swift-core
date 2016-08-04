@@ -1546,6 +1546,8 @@ Data.Utils = {
                 position: "left",
                 gridLineWidth: 0
             }];
+            var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+            var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -1572,15 +1574,13 @@ Data.Utils = {
 
             configs.yAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + yText : yText;
             configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.yAxis[0].title.rotation = constants.ROTATION;
 
             configs.xAxis[0].formatter = formatTickInXYaxis(config.x_axis_style, constants.X_AXIS);
             formatNumberLevelInXaxis(config.x_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + xText : xText;
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "scatter";
