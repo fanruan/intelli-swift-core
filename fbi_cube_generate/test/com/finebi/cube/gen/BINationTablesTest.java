@@ -1,13 +1,16 @@
 package com.finebi.cube.gen;
 
 import com.finebi.cube.BICubeTestBase;
+import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
 import com.finebi.cube.gen.oper.BISourceDataAllTransport;
 import com.finebi.cube.gen.oper.BISourceDataTransport;
+import com.finebi.cube.gen.subset.BISourceDataPartTransport4Test;
 import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.CubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.tools.BINationDataFactory;
@@ -31,6 +34,7 @@ import java.util.*;
 public class BINationTablesTest extends BICubeTestBase {
     private BISourceDataTransport dataTransport;
     private Set<CubeTableSource> cubeTableSourceSet;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -38,14 +42,14 @@ public class BINationTablesTest extends BICubeTestBase {
 
     public BINationTablesTest() throws Exception {
         super.setUp();
-       
+
         init();
     }
 
     private void init() {
         CubeTableSource tableNation = BINationDataFactory.createTableNation();
         CubeTableSource tablePerson = BINationDataFactory.createTablePerson();
-        this.cubeTableSourceSet=new HashSet<CubeTableSource>();
+        this.cubeTableSourceSet = new HashSet<CubeTableSource>();
         cubeTableSourceSet.add(tableNation);
         cubeTableSourceSet.add(tablePerson);
     }
@@ -53,6 +57,35 @@ public class BINationTablesTest extends BICubeTestBase {
 
     public int getTablesAmount() {
         return cubeTableSourceSet.size();
+    }
+
+    public void testAddValue() {
+        transport(BINationDataFactory.createTableNation());
+        transport(BINationDataFactory.createTableNation());
+
+    }
+
+    /*增量更新：
+    * 先插入：{id：1，name：China;ID:2,name：US}
+    * 再加入:{id:3,name:Japan,id:4,name:Canada，id：5，name：Mexio}*/
+    public void testPartUpdate() throws BICubeColumnAbsentException {
+        CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(BINationDataFactory.createTableNationByPart()));
+        transport(BINationDataFactory.createTableNation());
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(0).equals("China"));
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(1).equals("US"));
+        assertTrue(tableEntityService.getRowCount() == 2);
+        transportByPart(BINationDataFactory.createTableNationByPart(), 2);
+
+//        for (ICubeFieldSource fieldSource : BINationDataFactory.createTableNation().getSelfFields(null)) {
+//            CubeColumnReaderService column = cube.getCubeColumn(BITableKeyUtils.convert(BINationDataFactory.createTableNation()), BIColumnKey.covertColumnKey(fieldSource));
+//            if (fieldSource.getFieldName().equals("name")) {
+//                column.getOriginalObjectValueByRow(0).equals("China");
+//
+//            }
+//        }
+        assertTrue(tableEntityService.getRowCount() == 5);
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(0).equals("China"));
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(1).equals("US"));
     }
 
     public void testFieldPathIndex() {
@@ -119,7 +152,17 @@ public class BINationTablesTest extends BICubeTestBase {
      */
     public void transport(CubeTableSource tableSource) {
         try {
-            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(),1);
+            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1);
+            dataTransport.mainTask(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    public void transportByPart(CubeTableSource tableSource, int oldCount) {
+        try {
+            dataTransport = new BISourceDataPartTransport4Test(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), oldCount);
             dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();

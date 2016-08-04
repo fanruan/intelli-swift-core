@@ -93,8 +93,18 @@ public class BINationDataSourceTool extends AbstractCubeTableSource{
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
-        return 0;
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long oldRowCount) {
+        for (int i = 0; i < rowCount; i++) {
+            Iterator<Map.Entry<Integer, List>> it = contents.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Integer, List> entry = it.next();
+                Integer columnNumber = entry.getKey();
+                List value = entry.getValue();
+                traversal.actionPerformed(new BIDataValue((int) (i+oldRowCount), columnNumber, value.get(i)));
+            }
+        }
+        return rowCount+oldRowCount;
+
     }
 
     @Override

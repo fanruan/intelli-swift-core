@@ -45,21 +45,28 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         function formatChartDashboardStyle() {
             var bands = getBandsStyles(self.config.bands_styles, self.config.auto_custom_style);
             var valueLabel = {
-                formatter: {
-                    identifier: "${CATEGORY}${SERIES}${VALUE}"
-                }
+                formatter: config.plotOptions.valueLabel.formatter
             };
+            valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
+            valueLabel.style = config.plotOptions.valueLabel.style;
             var percentageLabel = BI.extend(config.plotOptions.percentageLabel , {
                 enabled: self.config.show_percentage === BICst.PERCENTAGE.SHOW
             });
 
             config.gaugeAxis = self.gaugeAxis;
+            var slotValueLAbel = {
+                formatter: function(){
+                    return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
+                },
+                style: config.plotOptions.valueLabel.style,
+                useHtml: true
+            };
             switch (self.config.chart_dashboard_type) {
                 case BICst.CHART_SHAPE.HALF_DASHBOARD:
                     setPlotOptions("pointer_semi", bands, config.plotOptions.valueLabel);
                     break;
                 case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
-                    setPlotOptions("ring", bands, valueLabel, percentageLabel);
+                    setPlotOptions("ring", bands, slotValueLAbel, percentageLabel);
                     changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
@@ -83,7 +90,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     BI.extend(percentageLabel, {
                         align: "left"
                     });
-                    setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "horizontal");
+                    setPlotOptions("thermometer", bands, slotValueLAbel, percentageLabel, "vertical", "horizontal");
                     changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
@@ -125,14 +132,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
                     if (position === item.yAxis) {
-                        if (!BI.isNumber(da.y)) {
-                            da.y = BI.parseFloat(da.y);
-                        }
-                        da.y = da.y || 0;
-                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
-                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
-                            da.y = 0;
-                        }
+                        da.y = self.formatXYDataWithMagnify(da.y, magnify);
                     }
                 })
             });
