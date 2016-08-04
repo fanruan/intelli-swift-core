@@ -56,7 +56,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
 
     formatNumberLevelInYaxis: function (config, items, type, position, formatter) {
         var self = this;
-        var magnify = this._calcMagnify(type);
+        var magnify = this.calcMagnify(type);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 if (position === item.yAxis) {
@@ -75,7 +75,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     formatNumberLevelInXaxis: function(items, type){
-        var magnify = this._calcMagnify(type);
+        var magnify = this.calcMagnify(type);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 if(!BI.isNumber(da.x)){
@@ -95,7 +95,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return FR.contentFormat(BI.parseFloat(number.div(magnify).toFixed(4)), "#.####");
     },
 
-    _calcMagnify: function (type) {
+    calcMagnify: function (type) {
         var magnify = 1;
         switch (type) {
             case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
