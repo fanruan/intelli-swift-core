@@ -25,6 +25,26 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
         });
 
+        this.bubbleStyleGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.BUBBLE_CHART_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: constant.BUTTON_WIDTH,
+                height: constant.BUTTON_HEIGHT,
+                iconWidth: constant.ICON_WIDTH,
+                iconHeight: constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.left",
+                lgap: 2
+            }]
+        });
+
+        this.bubbleStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
+        });
+
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [100],
@@ -46,6 +66,17 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                     el: {
                         type: "bi.center_adapt",
                         items: [this.colorSelect]
+                    },
+                    lgap: constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Total_Style"),
+                    cls: "attr-names",
+                    lgap: 15
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.bubbleStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
                 }], {
@@ -131,13 +162,15 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
+        this.bubbleStyleGroup.setValue(BI.Utils.getWSBubbleStyleByID(wId))
     },
 
     getValue: function(){
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
-            chart_legend: this.legend.getValue()[0]
+            chart_legend: this.legend.getValue()[0],
+            bubble_style: this.bubbleStyleGroup.getValue()[0]
         }
     },
 
@@ -145,6 +178,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
         this.legend.setValue(v.chart_legend);
+        this.bubbleStyleGroup.setValue(v.bubble_style)
     }
 });
 BI.ForceBubbleSetting.EVENT_CHANGE = "EVENT_CHANGE";
