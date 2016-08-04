@@ -621,7 +621,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             }
             if(type === BICst.WIDGET.GIS_MAP){
                 options.geo = {
-                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
+                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+                    "attribution": "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>"
                 };
             }
             //var opts = Data.Utils.getWidgetData(jsonData.data, {
