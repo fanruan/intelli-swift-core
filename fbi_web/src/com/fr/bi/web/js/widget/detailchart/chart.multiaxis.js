@@ -20,10 +20,10 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         this.xAxis = [{
             type: "category",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: {"fontFamily":"inherit","color":"#808080","fontSize":"12px","fontWeight":""}
             },
             labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                "fontFamily":"inherit","color":"#808080","fontSize":"12px"
             },
             position: "bottom",
             gridLineWidth: 0
@@ -144,7 +144,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                 }
                 if(isNeedFormatDataLabel === true){
                     item.dataLabels = {
-                        "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                        "style": "{fontFamily:inherit, color: #808080, fontSize: 12px}",
                         "align": "outside",
                         enabled: true,
                         formatter: {
@@ -181,7 +181,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         width: 1,
                         label: {
                             "style": {
-                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                "fontFamily": "inherit",
                                 "color": "#808080",
                                 "fontSize": "12px",
                                 "fontWeight": ""
@@ -213,7 +213,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         width: 1,
                         label: {
                             "style": {
-                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                                "fontFamily": "inherit",
                                 "color": "#808080",
                                 "fontSize": "12px",
                                 "fontWeight": ""
@@ -374,10 +374,10 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             var newYAxis = {
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {"fontFamily":"inherit","color":"#808080","fontSize":"12px","fontWeight":""}
                 },
                 labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                    "fontFamily":"inherit","color":"#808080","fontSize":"12px"
                 },
                 position: idx > 0 ? "right" : "left",
                 lineWidth: 1,

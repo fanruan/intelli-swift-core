@@ -17,11 +17,9 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
         this.xAxis = [{
             type: "category",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: this.constants.FONT_STYLE
             },
-            labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             position: "bottom",
             gridLineWidth: 0
         }];
@@ -124,7 +122,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
                 }
                 if(isNeedFormatDataLabel === true){
                     item.dataLabels = {
-                        "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                        "style": self.constants.FONT_STYLE,
                         "align": "outside",
                         enabled: true,
                         formatter: {
@@ -157,7 +155,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": self.constants.FONT_STYLE,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -182,7 +180,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": self.constants.FONT_STYLE,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -351,11 +349,9 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
             var newYAxis = {
                 type: "value",
                 title: {
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: self.constants.FONT_STYLE
                 },
-                labelStyle: {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-                },
+                labelStyle: self.constants.FONT_STYLE,
                 position: idx > 0 ? "right" : "left",
                 lineWidth: 1,
                 axisIndex: idx,

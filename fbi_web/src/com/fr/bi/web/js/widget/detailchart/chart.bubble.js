@@ -17,22 +17,18 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         this.xAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: this.constants.FONT_STYLE
             },
-            labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             position: "bottom",
             gridLineWidth: 0
         }];
         this.yAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: this.constants.FONT_STYLE
             },
-            labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             position: "left",
             gridLineWidth: 0
         }];
@@ -101,7 +97,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 }
                 if(isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true){
                     item.dataLabels = {
-                        "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                        "style": self.constants.FONT_STYLE,
                         "align": "outside",
                         enabled: true,
                         formatter: {
@@ -142,7 +138,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": self.constants.FONT_STYLE,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -167,7 +163,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": self.constants.FONT_STYLE,
                                 "text": t.text,
                                 "align": "left"
                             }
