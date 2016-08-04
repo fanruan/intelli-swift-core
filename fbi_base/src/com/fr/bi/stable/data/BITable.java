@@ -3,7 +3,6 @@ package com.fr.bi.stable.data;
 
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
 import java.io.Serializable;
@@ -94,7 +93,7 @@ public class BITable implements Serializable, Table {
 
         BITable biTable = (BITable) o;
 
-        if (!ComparatorUtils.equals(ID, biTable.ID)) {
+        if (!ID.getIdentity().equals(biTable.ID.getIdentity())) {
             return false;
         }
         return true;
