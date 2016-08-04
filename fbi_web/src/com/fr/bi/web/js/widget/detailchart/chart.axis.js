@@ -151,7 +151,7 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
         function formatCordon() {
             BI.each(self.config.cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
-                    var magnify = calcMagnify(self.config.x_axis_number_level);
+                    var magnify = self.calcMagnify(self.config.x_axis_number_level);
                     self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
@@ -168,10 +168,10 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = calcMagnify(self.config.left_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.left_y_axis_number_level);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
@@ -187,26 +187,6 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                     });
                 }
             })
-        }
-
-        function calcMagnify(type) {
-            var magnify = 1;
-            switch (type) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    magnify = 1;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    magnify = 10000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    magnify = 1000000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    magnify = 100000000;
-                    break;
-            }
-            return magnify;
         }
 
         function getXYAxisUnit(numberLevelType, position) {

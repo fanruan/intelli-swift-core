@@ -60,9 +60,9 @@ BI.DimensionNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
     },
 
-    populate: function(items){
+    populate: function(){
         if (BI.isNotNull(this.typeSelectedItem)) {
-            this.typeSelectedItem.populate(items);
+            this.typeSelectedItem.populate.apply(this.typeSelectedItem, arguments);
         }
     },
 
