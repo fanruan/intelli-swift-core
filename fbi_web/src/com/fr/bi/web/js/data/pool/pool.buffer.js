@@ -46,12 +46,12 @@
         },
 
         getTablesByPackId: function (packId, callback) {
-            var cache = Buffer["TABLES"] || (Buffer["TABLES"] = {});
-            if (BI.isNotNull(cache[packId])) {
-                return cache[packId];
-            }
+            // var cache = Buffer["TABLES"] || (Buffer["TABLES"] = {});
+            // if (BI.isNotNull(cache[packId])) {
+            //     return cache[packId];
+            // }
             BIReq.reqTablesByPackId(packId, function (res) {
-                Buffer["TABLES"][packId] = res;
+                // Buffer["TABLES"][packId] = res;
                 callback(res);
             })
         },
