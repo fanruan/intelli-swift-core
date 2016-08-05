@@ -13,6 +13,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -79,27 +80,68 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     k++;
                 }
                 ICubeColumnDetailGetter getter = ti.getColumnDetailReader(new IndexKey(idFieldName));
+//                for (int i = 0; i < rowCount; i++) {
+//                    Object ob = getter.getValue(i);
+//                    if (ob == null){
+//                        continue;
+//                    }
+//                    String v = ob.toString();
+//                    v = dealWithLayerValue(v, groupLength);
+//                    String[] res = new String[columnLength];
+//                    if (v != null) {
+//                        for (int j = 0; j < columnLength; j++) {
+//                            if (v.length() >= groupLength[j]) {
+//                                String result = v.substring(0, groupLength[j]);
+//                                res[j] = dealWithValue(result);
+//                            }
+//                        }
+//                    }
+//                    for (int j = 0; j < columnLength; j++) {
+//                        travel.actionPerformed(new BIDataValue(i, j + startCol, res[j]));
+//                    }
+//                }
+                Map<String, Integer> valueIndexMap = new HashMap<String, Integer>();
                 for (int i = 0; i < rowCount; i++) {
                     Object ob = getter.getValue(i);
-                    if (ob == null){
+                    if (ob == null) {
                         continue;
                     }
                     String v = ob.toString();
+                    valueIndexMap.put(v, i);
+                }
+                for (int i = 0; i < rowCount; i++) {
+                    Object ob = getter.getValue(i);
+                    if (ob == null) {
+                        continue;
+                    }
+                    int index = 0;
+                    String v = ob.toString();
                     v = dealWithLayerValue(v, groupLength);
-                    String[] res = new String[columnLength];
+                    String[] res = new String[columnLength * showFields.size()];
                     if (v != null) {
-                        for (int j = 0; j < columnLength; j++) {
-                            if (v.length() >= groupLength[j]) {
-                                String result = v.substring(0, groupLength[j]);
-                                res[j] = dealWithValue(result);
+                        for (String s : showFields) {
+                            ICubeColumnDetailGetter showGetter = ti.getColumnDetailReader(new IndexKey(s));
+                            for (int j = 0; j < columnLength; j++) {
+                                if (v.length() >= groupLength[j]) {
+                                    String result = v.substring(0, groupLength[j]);
+                                    String layer = dealWithValue(result);
+                                    int r = valueIndexMap.get(layer);
+                                    if (r >= 0) {
+                                        Object showOb = showGetter.getValue(r);
+                                        res[index++] = showOb.toString();
+                                    }
+                                }
                             }
                         }
                     }
-                    for (int j = 0; j < columnLength; j++) {
-                        travel.actionPerformed(new BIDataValue(i, j + startCol, res[j]));
+                    index = 0;
+                    int start = startCol;
+                    for (String s : showFields) {
+                        for (int j = 0; j < columnLength; j++) {
+                            travel.actionPerformed(new BIDataValue(i, start++, res[index++]));
+                        }
                     }
                 }
-
             }
         }
         return rowCount;
