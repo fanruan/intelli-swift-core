@@ -104,13 +104,14 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
     @Override
     public IPersistentTable getBITable(IPersistentTable[] tables) {
         IPersistentTable persistentTable = getBITable();
-        Iterator<Map.Entry<String, Integer>> it = fields.entrySet().iterator();
+        Iterator<Map.Entry<String, Integer>> it;
         for (IPersistentTable t : tables) {
             int type = DBConstant.CLASS.INTEGER;
             if (t.getField(idFieldName) != null) {
                 type = t.getField(idFieldName).getBIType();
             }
             for (String s : showFields) {
+                it = fields.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry<String, Integer> entry = it.next();
                     persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), BIDBUtils.biTypeToSql(type), entry.getValue()));
