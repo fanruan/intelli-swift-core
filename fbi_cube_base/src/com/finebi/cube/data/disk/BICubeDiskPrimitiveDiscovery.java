@@ -34,7 +34,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     private BIResourceSimpleCache<ICubePrimitiveWriter> writerCache;
     private boolean releasingResource = false;
 
-    public static BICubeDiskPrimitiveDiscovery getInstance() {
+    public static synchronized BICubeDiskPrimitiveDiscovery getInstance() {
         if (instance != null) {
             return instance;
         } else {
@@ -56,7 +56,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     }
 
     @Override
-    public ICubePrimitiveReader getCubeReader(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildReaderException {
+    public synchronized ICubePrimitiveReader getCubeReader(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildReaderException {
         if (releasingResource) {
             throw new RuntimeException("Current can't get the resource reader");
         }
@@ -86,7 +86,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     }
 
     @Override
-    public ICubePrimitiveWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException {
+    public synchronized ICubePrimitiveWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException {
         if (releasingResource) {
             throw new RuntimeException("Current can't get the resource reader");
         }

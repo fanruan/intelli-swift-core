@@ -94,7 +94,7 @@ public class BITable implements Serializable, Table {
 
         BITable biTable = (BITable) o;
 
-        if (!ComparatorUtils.equals(ID, biTable.ID)) {
+        if (!ComparatorUtils.equals(ID.getIdentity(), biTable.ID.getIdentity())) {
             return false;
         }
         return true;

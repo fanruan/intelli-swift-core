@@ -252,14 +252,14 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 var tableId = table.id;
                 //转义、关联都是用sharing pool中的，相当于复制一份
                 self.translations[id] = self.createDistinctTableTranName(self.translations[tableId]);
-                var relations = self.getRelations();
-                var connectionSet = relations.connectionSet, primaryKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
+                var connectionSet = self.relations.connectionSet, primaryKeyMap = self.relations.primKeyMap, foreignKeyMap = self.relations.foreignKeyMap;
                 BI.each(connectionSet, function (i, keys) {
                     var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
-                    if (self.getTableIdByFieldId(primKey.field_id) || self.getTableIdByFieldId(foreignKey.field_id)) {
+                    if (self.getTableIdByFieldId(primKey.field_id) === tableId || self.getTableIdByFieldId(foreignKey.field_id) === tableId) {
+                        var nPK = BI.deepClone(primKey), nFK = BI.deepClone(foreignKey);
                         self.relations.connectionSet.push({
-                            primaryKey: primKey.table_id === tableId ? BI.extend(primKey, {table_id: id}) : primKey,
-                            foreignKey: foreignKey.table_id === tableId ? BI.extend(foreignKey, {table_id: id}) : foreignKey
+                            primaryKey: nPK.table_id === tableId ? BI.extend(nPK, {table_id: id}) : nPK,
+                            foreignKey: nFK.table_id === tableId ? BI.extend(nFK, {table_id: id}) : nFK
                         })
                     }
                 });
@@ -267,9 +267,10 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     if (kId === tableId) {
                         var tmpMaps = [];
                         BI.each(maps, function (i, keys) {
+                            var nPK = keys.primaryKey, nFK = keys.foreignKey;
                             tmpMaps.push({
-                                primaryKey: keys.primaryKey.table_id === tableId ? BI.extend(keys.primaryKey, {table_id: id}) : keys.primaryKey,
-                                foreignKey: keys.foreignKey.table_id === tableId ? BI.extend(keys.foreignKey, {table_id: id}) : keys.foreignKey
+                                primaryKey: nPK.table_id === tableId ? BI.extend(nPK, {table_id: id}) : nPK,
+                                foreignKey: nFK.table_id === tableId ? BI.extend(nFK, {table_id: id}) : nFK
                             })
                         });
                         self.relations.primKeyMap[id] = tmpMaps;
@@ -279,9 +280,10 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     if (kId === tableId) {
                         var tmpMaps = [];
                         BI.each(maps, function (i, keys) {
+                            var nPK = keys.primaryKey, nFK = keys.foreignKey;
                             tmpMaps.push({
-                                primaryKey: keys.primaryKey.table_id === tableId ? BI.extend(keys.primaryKey, {table_id: id}) : keys.primaryKey,
-                                foreignKey: keys.foreignKey.table_id === tableId ? BI.extend(keys.foreignKey, {table_id: id}) : keys.foreignKey
+                                primaryKey: nPK.table_id === tableId ? BI.extend(nPK, {table_id: id}) : nPK,
+                                foreignKey: nFK.table_id === tableId ? BI.extend(nFK, {table_id: id}) : nFK
                             })
                         });
                         self.relations.foreignKeyMap[id] = tmpMaps;
