@@ -54,14 +54,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         BI.AbstractChart.superclass._init.apply(this, arguments);
     },
 
-    /**
-     * 格式化坐标轴数量级及其所影响的系列的各项属性
-     * @param config  配置信息
-     * @param items  系列数据
-     * @param type  坐标轴数量级
-     * @param position 坐标轴位置
-     * @param formatter 系列tooltip格式化内容
-     */
     formatNumberLevelInYaxis: function (config, items, type, position, formatter) {
         var self = this;
         var magnify = this.calcMagnify(type);
@@ -121,69 +113,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 break;
         }
         return magnify;
-    },
-
-    formatChartLegend: function(config, chart_legend){
-        switch (chart_legend) {
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = this.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
-    },
-
-    getXYAxisUnit: function (numberLevelType, axis_unit) {
-        var unit = "";
-        switch (numberLevelType) {
-            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                unit = "";
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                unit = BI.i18nText("BI-Wan");
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                unit = BI.i18nText("BI-Million");
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                unit = BI.i18nText("BI-Yi");
-                break;
-        }
-        return unit === "" ? unit : "(" + unit + axis_unit + ")";
-    },
-
-    formatTickInXYaxis: function (type, number_level) {
-        var formatter = '#.##';
-        switch (type) {
-            case this.constants.NORMAL:
-                formatter = '#.##';
-                break;
-            case this.constants.ZERO2POINT:
-                formatter = '#0';
-                break;
-            case this.constants.ONE2POINT:
-                formatter = '#0.0';
-                break;
-            case this.constants.TWO2POINT:
-                formatter = '#0.00';
-                break;
-        }
-        if (number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-            if (type === this.constants.NORMAL) {
-                formatter = '#0%'
-            } else {
-                formatter += '%';
-            }
-        }
-        return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
     },
 
     _formatItems: function (items) {
