@@ -14,10 +14,12 @@ BI.ComboCustomScale = BI.inherit(BI.Widget , {
         var self = this;
 
         this.pane = BI.createWidget({
-            type: "bi.popup_custom_scale"
+            type: "bi.calculate_target_formula_pane",
+            width: 600,
+            height: 300
         });
 
-        this.pane.on(BI.PopupCustomScale.EVENT_CHANGE , function () {
+        this.pane.on(BI.CalculateTargetFormulaPane.EVENT_CHANGE , function () {
             self.trigger.setValue(self.pane.getValue().formula_value);
             self.fireEvent(BI.ComboCustomScale.EVENT_CHANGE)
         });
@@ -39,11 +41,9 @@ BI.ComboCustomScale = BI.inherit(BI.Widget , {
             isNeedAdjustHeight: false,
             el: this.trigger,
             popup: {
-                el:this.pane,
-                height: 300,
-                width: 603
+                el:this.pane
             },
-            adjustYOffset: 10
+            adjustYOffset: 5
         });
     },
 
