@@ -6,6 +6,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.IteratorManager;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.NormalIteratorManager;
 import com.fr.bi.cal.analyze.cal.multithread.MergeSummaryCall;
+import com.fr.bi.cal.analyze.cal.multithread.MergeSummaryCallList;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
@@ -317,17 +318,29 @@ public class DimensionGroupFilter {
         TreeBuilder nodeBuilder = new TreeBuilder();
         setRootIndexMap(nodeBuilder);
         boolean shouldBuildTree = shouldBuildTree();
+        List<MergeSummaryCall> list = new ArrayList<MergeSummaryCall>();
         while (!GroupUtils.isAllEmpty(roots)) {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
             for (int deep = firstChangeDeep; deep < rowDimension.length; deep++) {
-                fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep, shouldBuildTree);
+                fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep, shouldBuildTree, list);
             }
             lastRoots = roots;
             roots = next();
         }
         if (shouldBuildTree) {
-            MultiThreadManagerImpl.getInstance().awaitExecutor();
+            if (MultiThreadManagerImpl.getInstance().isMultiCall()){
+                int size = (list.size() >> 3) + 1;
+                for (int i = 0; i < 8; i++){
+                    int start = i * size;
+                    if (start > list.size()){
+                        break;
+                    }
+                    int end = Math.min(start + i, list.size());
+                    MultiThreadManagerImpl.getInstance().getExecutorService().submit(new MergeSummaryCallList(list.subList(start, end)));
+                }
+                MultiThreadManagerImpl.getInstance().awaitExecutor();
+            }
             buildTree(groupValueIndexe2D, counter, nodeBuilder);
         }
         createFinalIndexes(groupValueIndexes, groupValueIndexe2D);
@@ -358,7 +371,7 @@ public class DimensionGroupFilter {
         }
     }
 
-    private void fillValueIndex(GroupValueIndex[][] groupValueIndexe2D, GroupConnectionValue[] roots, RowCounter counter, TreeBuilder nodeBuilder, int deep, boolean shouldBuildTree) {
+    private void fillValueIndex(GroupValueIndex[][] groupValueIndexe2D, GroupConnectionValue[] roots, RowCounter counter, TreeBuilder nodeBuilder, int deep, boolean shouldBuildTree, List<MergeSummaryCall> list) {
         GroupConnectionValue[] groupConnectionValueChildren = getDeepChildren(roots, deep + 1);
 
         IMergerNode mergeNode = new MergerNode();
@@ -373,7 +386,7 @@ public class DimensionGroupFilter {
                 groupValueIndexArray[j] = currentValue.getRoot().getGroupValueIndex();
                 gviMap.put(mergerInfoList.get(j).getTargetGettingKey(), currentValue.getRoot().getGroupValueIndex());
                 if (MultiThreadManagerImpl.getInstance().isMultiCall() && shouldBuildTree) {
-                    MultiThreadManagerImpl.getInstance().getExecutorService().submit(new MergeSummaryCall(mergeNode, currentValue, mergerInfoList.get(j)));
+                    list.add(new MergeSummaryCall(mergeNode, currentValue, mergerInfoList.get(j)));
                 } else {
                     Number summaryValue = currentValue.getSummaryValue(mergerInfoList.get(j).getSummary());
                     if (summaryValue != null) {

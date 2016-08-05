@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -71,15 +72,18 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
     @Override
     public IPersistentTable getBITable(IPersistentTable[] tables) {
         IPersistentTable persistentTable = getBITable();
-        Iterator<Map.Entry<String, Integer>> it = fields.entrySet().iterator();
+        Iterator<Map.Entry<String, Integer>> it;
         for (int i = 0; i < tables.length; i++) {
             IPersistentTable ptalbe = tables[i];
             int size = ptalbe.getField(idFieldName).getColumnSize();
 //            int columnType = ptalbe.getField(idFieldName).getBIType();
-            while (it.hasNext()) {
-                Map.Entry<String, Integer> entry = it.next();
+            for (String s : showFields) {
+                it = fields.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<String, Integer> entry = it.next();
 //                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
-                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), ptalbe.getField(idFieldName).getSqlType(), size, ptalbe.getField(idFieldName).getScale()));
+                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), ptalbe.getField(idFieldName).getSqlType(), size, ptalbe.getField(idFieldName).getScale()));
+                }
             }
         }
         return persistentTable;
@@ -93,6 +97,15 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
         ICubeFieldSource pidColumn = ti.getColumns().get(new IndexKey(parentIdFieldName));
         int columnLength = fields.size();
         if (idColumn != null && pidColumn != null && idColumn.getFieldType() == pidColumn.getFieldType()) {
+            ICubeColumnDetailGetter getter = ti.getColumnDetailReader(new IndexKey(idFieldName));
+            Map<Object, Integer> valueIndexMap = new HashMap<Object, Integer>();
+            for (int i = 0; i < rowCount; i++) {
+                Object ob = getter.getValue(i);
+                if (ob == null) {
+                    continue;
+                }
+                valueIndexMap.put(ob, i);
+            }
             for (int i = 0; i < rowCount; i++) {
                 try {
                     ArrayList<Number> list = new ArrayList<Number>();
@@ -101,8 +114,29 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     for (int k = list.size(), index = 0; k > 0 && index < list.size(); k--, index++) {
                         res[index] = list.get(k - 1);
                     }
-                    for (int j = 0; j < columnLength; j++) {
-                        travel.actionPerformed(new BIDataValue(i, j + startCol, res[j] == null ? null : res[j]));
+                    Object[] vals = idmap.createKey(columnLength * showFields.size());
+                    int cnt = 0;
+                    for (String s : showFields) {
+                        ICubeColumnDetailGetter showGetter = ti.getColumnDetailReader(new IndexKey(s));
+                        for (int j = 0; j < columnLength; j++) {
+                            if (res[j] != null) {
+                                int r = valueIndexMap.get(res[j]);
+                                if (r >= 0) {
+                                    Object showOb = showGetter.getValue(r);
+                                    if (showOb != null) {
+                                        vals[cnt] = showOb.toString();
+                                    }
+                                }
+                            }
+                            cnt++;
+                        }
+                    }
+                    cnt = 0;
+                    int start = startCol;
+                    for (String s : showFields) {
+                        for (int j = 0; j < columnLength; j++) {
+                            travel.actionPerformed(new BIDataValue(i, start++, vals[cnt++]));
+                        }
                     }
                 } catch (StackOverflowError e) {
                     FRContext.getLogger().error("dead circle at row:" + i, e);

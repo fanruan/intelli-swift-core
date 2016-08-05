@@ -47,13 +47,13 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             };
             valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
             valueLabel.style = config.plotOptions.valueLabel.style;
-            var percentageLabel = BI.extend(config.plotOptions.percentageLabel , {
+            var percentageLabel = BI.extend(config.plotOptions.percentageLabel, {
                 enabled: self.config.show_percentage === BICst.PERCENTAGE.SHOW
             });
 
             config.gaugeAxis = self.gaugeAxis;
             var slotValueLAbel = {
-                formatter: function(){
+                formatter: function () {
                     return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
                 },
                 style: config.plotOptions.valueLabel.style,
@@ -65,11 +65,9 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     break;
                 case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                     setPlotOptions("ring", bands, slotValueLAbel, percentageLabel);
-                    changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                     setPlotOptions("slot", bands, valueLabel, percentageLabel);
-                    changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                     BI.extend(valueLabel, {
@@ -79,7 +77,6 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                         align: "bottom"
                     });
                     setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "horizontal", "vertical");
-                    changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.VERTICAL_TUBE:
                     BI.extend(valueLabel, {
@@ -89,13 +86,13 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                         align: "left"
                     });
                     setPlotOptions("thermometer", bands, slotValueLAbel, percentageLabel, "vertical", "horizontal");
-                    changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
                     setPlotOptions("pointer", bands, config.plotOptions.valueLabel);
                     break;
             }
+            changeMaxMinScale();
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
             if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.plotOptions.valueLabel.formatter.valueFormat = function () {
