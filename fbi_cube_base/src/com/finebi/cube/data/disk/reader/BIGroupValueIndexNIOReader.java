@@ -3,6 +3,7 @@ package com.finebi.cube.data.disk.reader;
 import com.finebi.cube.data.input.ICubeByteArrayReader;
 import com.finebi.cube.data.input.ICubeGroupValueIndexReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
+import com.fr.bi.manager.PlugManager;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexCreator;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -19,8 +20,6 @@ import java.util.concurrent.TimeUnit;
  * Created by naleite on 16/3/15.
  */
 public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
-    //最多缓存100w行的索引
-    private static final long MAX_ROW = 1l << 20;
 
     protected ICubeByteArrayReader byteArray;
 
@@ -35,7 +34,7 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
                         return groupValueIndex.getRowsCountWithData();
                     }
                 })
-                .maximumWeight(MAX_ROW)
+                .maximumWeight(PlugManager.getPerformancePlugManager().getMaxGVICacheCount())
                 .expireAfterWrite(2, TimeUnit.MINUTES)
                 .expireAfterAccess(2, TimeUnit.MINUTES)
                 .build(new CacheLoader<Integer, GroupValueIndex>() {

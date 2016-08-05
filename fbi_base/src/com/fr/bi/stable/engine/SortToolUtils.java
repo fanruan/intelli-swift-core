@@ -19,7 +19,7 @@ public class SortToolUtils {
         int groupCount = gviCount * groupSize / rowCount;
         double treeMap = gviCount * Math.log(gviCount) * N_LOG_N;
         double intArray = groupSize * GROUP_SIZE + GROUP_COUNT * groupCount;
-        return treeMap < intArray ? SortTool.TREE_MAP : SortTool.DIRECT;
+        return treeMap < intArray ? SortTool.TREE_MAP : SortTool.INT_ARRAY;
     }
 
 }
