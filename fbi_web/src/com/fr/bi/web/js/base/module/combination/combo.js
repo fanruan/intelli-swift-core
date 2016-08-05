@@ -296,12 +296,12 @@ BI.Combo = BI.inherit(BI.Widget, {
 
     resetListHeight: function (h) {
         this._assertPopupView();
-        this.popupView.resetHeight(h);
+        this.popupView.resetHeight && this.popupView.resetHeight(h);
     },
 
     resetListWidth: function (w) {
         this._assertPopupView();
-        this.popupView.resetWidth(w);
+        this.popupView.resetWidth && this.popupView.resetWidth(w);
     },
 
     populate: function (items) {

@@ -1954,8 +1954,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/third/jquery.ui.draggable.js",
                 "com/fr/bi/web/js/third/jquery.ui.droppable.js",
                 "com/fr/bi/web/js/third/jquery.ui.sortable.js",
-                "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/es5-sham.js",
+                "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/raphael.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/third/leaflet.js"
@@ -2705,6 +2705,7 @@ public class ResourceHelper {
     public static String[] getFoundationJs() {
         String[] base = getBaseJs();
         String[] third = new String[]{
+                "com/fr/bi/web/js/third/es5-sham.js",
                 "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/third/leaflet.js",

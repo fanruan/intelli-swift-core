@@ -317,7 +317,7 @@ BI.extend(jQuery, {
             }
         }
         if (needAdaptHeight === true) {
-            popup.resetHeight(BI.MAX);
+            popup.resetHeight && popup.resetHeight(BI.MAX);
             var currentHeight = Math.min(popup.attr("maxHeight") || BI.MAX, popEl.outerHeight());
             if (currentHeight === 0) {
                 currentHeight = 20;
@@ -378,7 +378,7 @@ BI.extend(jQuery, {
             }
         }
         if (needAdaptHeight === true) {
-            popup.resetHeight(BI.MAX);
+            popup.resetHeight && popup.resetHeight(BI.MAX);
             var currentHeight = Math.min(popup.attr("maxHeight") || BI.MAX, popEl.outerHeight());
             if (currentHeight === 0) {
                 currentHeight = 20;
