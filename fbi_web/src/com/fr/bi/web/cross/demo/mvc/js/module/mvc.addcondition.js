@@ -79,8 +79,7 @@ AddConditionView = BI.inherit(BI.View, {
 
         var customScale = BI.createWidget({
             type: "bi.custom_scale",
-            width: 600,
-            height: 30
+            width: 600
         });
 
         BI.createWidget({

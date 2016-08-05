@@ -13,24 +13,27 @@ BI.CustomScale = BI.inherit(BI.Widget, {
         BI.CustomScale.superclass._init.apply(this, arguments);
         var self = this;
 
-        this.maxScale = BI.createWidget({
-            type: "bi.combo_custom_scale"
-        });
-
-        this.maxScale.on(BI.ComboCustomScale.EVENT_CHANGE, function () {
-            self.fireEvent(BI.CustomScale.EVENT_CHANGE)
-        });
-
         this.minScale = BI.createWidget({
-            type: "bi.combo_custom_scale"
+            type: "bi.combo_custom_scale",
+            text: BI.i18nText("BI-Min")
         });
 
         this.minScale.on(BI.ComboCustomScale.EVENT_CHANGE, function () {
             self.fireEvent(BI.CustomScale.EVENT_CHANGE)
         });
 
+        this.maxScale = BI.createWidget({
+            type: "bi.combo_custom_scale",
+            text: BI.i18nText("BI-Max")
+        });
+
+        this.maxScale.on(BI.ComboCustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.CustomScale.EVENT_CHANGE)
+        });
+
         this.interval = BI.createWidget({
-            type: "bi.combo_custom_scale"
+            type: "bi.combo_custom_scale",
+            text: BI.i18nText("BI-Interval_Number")
         });
 
         this.interval.on(BI.ComboCustomScale.EVENT_CHANGE, function () {
@@ -40,23 +43,22 @@ BI.CustomScale = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.left",
             element: this.element,
-            items: [this.maxScale, this.minScale, this.interval],
-            lgap: 10
+            items: [this.minScale, this.maxScale, this.interval]
         });
     },
 
     getValue: function () {
         return {
-            maxScale: this.maxScale.getValue(),
             minScale: this.minScale.getValue(),
+            maxScale: this.maxScale.getValue(),
             interval: this.interval.getValue()
         }
     },
 
     setValue: function (v) {
+        this.minScale.setValue(v.minScale);
         this.maxScale.setValue(v.maxScale);
-        this.maxScale.getValue(v.minScale);
-        this.interval.getValue(v.interval)
+        this.interval.setValue(v.interval)
     }
 });
 BI.CustomScale.EVENT_CHANGE = "EVENT_CHANGE";
