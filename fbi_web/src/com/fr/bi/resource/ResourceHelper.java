@@ -87,6 +87,24 @@ public class ResourceHelper {
         try {
             JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
+            //从分组中去掉allPacks没有的业务包
+            Iterator<String> gIds = allGroups.keys();
+            while (gIds.hasNext()) {
+                String gId = gIds.next();
+                JSONObject oneGroup = allGroups.getJSONObject(gId);
+                JSONArray nChildren = new JSONArray();
+                if(oneGroup.has("children")) {
+                    JSONArray children = oneGroup.getJSONArray("children");
+                    for(int i = 0; i < children.length(); i++) {
+                        JSONObject child = children.getJSONObject(i);
+                        if(allPacks.has(child.getString("id"))) {
+                            nChildren.put(child);
+                        }
+                    }
+                    oneGroup.put("children", nChildren);
+                }
+                allGroups.put(gId, oneGroup);
+            }
             //管理员
             if (manageId == userId) {
                 packages = allPacks;
@@ -1319,8 +1337,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/combo.customscale.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/popup.customscale.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/svg.customscale.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/trigger.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/combo.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/wrap.item.selectcolor.js",

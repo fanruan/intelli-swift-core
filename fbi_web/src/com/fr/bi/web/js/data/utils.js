@@ -700,6 +700,7 @@ Data.Utils = {
             right_y_axis_unit: options.right_y_axis_unit || "",
             x_axis_title: options.x_axis_title || "",
             chart_legend: options.chart_legend || constants.LEGEND_BOTTOM,
+            chart_legend_limit_height: options.chart_legend_limit_height || constants.LEGEND_HEIGHT,
             show_data_label: options.show_data_label || false,
             show_data_table: options.show_data_table || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
@@ -732,7 +733,6 @@ Data.Utils = {
             initDrillPath: options.initDrillPath || [],
             lnglat: options.lnglat || constants.LNG_FIRST,
             click: options.click,
-            map_bubble_color: options.map_bubble_color || "#65bce7",
             max_scale: options.max_scale || "",
             min_scale: options.min_scale || "",
             show_percentage: options.show_percentage || constants.SHOW
@@ -1309,8 +1309,6 @@ Data.Utils = {
             delete configs.legend;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.tooltip.shared = true;
-            configs.plotOptions.bubble.color = config.map_bubble_color;
-            //config.plotOptions.color = BI.isArray(config.theme_color) ? config.theme_color : [config.theme_color];
             var formatterArray = [];
             BI.backEach(items, function (idx, item) {
                 if (BI.has(item, "settings")) {
@@ -1548,6 +1546,8 @@ Data.Utils = {
                 position: "left",
                 gridLineWidth: 0
             }];
+            var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+            var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -1558,7 +1558,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -1574,15 +1574,13 @@ Data.Utils = {
 
             configs.yAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + yText : yText;
             configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.yAxis[0].title.rotation = constants.ROTATION;
 
             configs.xAxis[0].formatter = formatTickInXYaxis(config.x_axis_style, constants.X_AXIS);
             formatNumberLevelInXaxis(config.x_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + xText : xText;
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "scatter";
@@ -1815,6 +1813,8 @@ Data.Utils = {
                 position: "left",
                 gridLineWidth: 0
             }];
+            var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+            var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -1825,7 +1825,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -1836,19 +1836,19 @@ Data.Utils = {
                     configs.legend.enabled = false;
                     break;
             }
+            configs.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
+            configs.plotOptions.shadow = config.bubble_style !== this.constants.NO_PROJECT;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
 
             configs.yAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + yText : yText;
             configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.yAxis[0].title.rotation = constants.ROTATION;
 
             configs.xAxis[0].formatter = formatTickInXYaxis(config.x_axis_style, constants.X_AXIS);
             formatNumberLevelInXaxis(config.x_axis_number_level);
-            configs.xAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + xText : xText;
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "bubble";
@@ -2072,19 +2072,27 @@ Data.Utils = {
                 configs.gaugeAxis = gaugeAxis;
                 var bands = getBandsStyles(config.bands_styles, config.auto_custom_style);
                 var valueLabel = {
-                    formatter: {
-                        identifier: "${CATEGORY}${SERIES}${VALUE}"
-                    }
+                    formatter: configs.plotOptions.valueLabel.formatter
                 };
+
+                valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
+                valueLabel.style = configs.plotOptions.valueLabel.style;
                 var percentageLabel = BI.extend(configs.plotOptions.percentageLabel , {
                     enabled: config.show_percentage === BICst.PERCENTAGE.SHOW
                 });
+                var slotValueLAbel = {
+                    formatter: function(){
+                        return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
+                    },
+                    style: configs.plotOptions.valueLabel.style,
+                    useHtml: true
+                };
                 switch (config.chart_dashboard_type) {
                     case BICst.CHART_SHAPE.HALF_DASHBOARD:
                         setPlotOptions("pointer_semi", bands, configs.plotOptions.valueLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
-                        setPlotOptions("ring", bands, valueLabel, percentageLabel);
+                        setPlotOptions("ring", bands, slotValueLAbel, percentageLabel);
                         changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
@@ -2105,7 +2113,7 @@ Data.Utils = {
                         BI.extend(valueLabel, {
                             align: "left"
                         });
-                        setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "horizontal");
+                        setPlotOptions("thermometer", bands, slotValueLAbel, percentageLabel, "vertical", "horizontal");
                         changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.NORMAL:
@@ -2292,7 +2300,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -2305,6 +2313,7 @@ Data.Utils = {
             }
 
             configs.plotOptions.force = true;
+            configs.plotOptions.shadow = config.bubble_style !== constants.NO_PROJECT;
             configs.plotOptions.dataLabels.enabled = true;
             configs.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
             configs.chartType = "bubble";
@@ -2370,7 +2379,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -2640,7 +2649,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    //config.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -2687,7 +2696,7 @@ Data.Utils = {
                         delete configs.plotOptions.roseType;
                         break;
                 }
-                configs.plotOptions.innerRadius = config.chart_inner_radius;
+                configs.plotOptions.innerRadius = config.chart_inner_radius + "%";
                 configs.plotOptions.endAngle = config.chart_total_angle;
             }
         }
@@ -2700,7 +2709,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -2780,7 +2789,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -3019,7 +3028,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -3263,7 +3272,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -3506,7 +3515,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -4025,7 +4034,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -4353,7 +4362,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -4609,7 +4618,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -4895,7 +4904,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -5143,7 +5152,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -5327,7 +5336,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -5545,7 +5554,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -5844,7 +5853,7 @@ Data.Utils = {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
                     configs.legend.position = "bottom";
-                    configs.legend.maxHeight = constants.LEGEND_HEIGHT;
+                    configs.legend.maxHeight = config.chart_legend_limit_height;
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     configs.legend.enabled = true;
@@ -6069,32 +6078,33 @@ Data.Utils = {
 
         function ChartConstants() {
             return {
-                LEFT_AXIS: 0,
-                RIGHT_AXIS: 1,
+                SHOW: 1,
+                AUTO: 1,
                 X_AXIS: 3,
-                ROTATION: -90,
                 NORMAL: 1,
-                LEGEND_BOTTOM: 4,
-                ZERO2POINT: 2,
                 ONE2POINT: 3,
                 TWO2POINT: 4,
-                STYLE_NORMAL: 21,
-                MINLIMIT: 1e-5,
-                LEGEND_HEIGHT: 80,
-                RIGHT_AXIS_SECOND: 2,
-                DASHBOARD_AXIS: 4,
-                ONE_POINTER: 1,
-                MULTI_POINTER: 2,
-                HALF_DASHBOARD: 9,
-                PERCENT_DASHBOARD: 10,
-                PERCENT_SCALE_SLOT: 11,
-                VERTICAL_TUBE: 12,
-                HORIZONTAL_TUBE: 13,
+                LEFT_AXIS: 0,
                 LNG_FIRST: 3,
                 LAT_FIRST: 4,
                 FIX_COUNT: 6,
-                AUTO: 1,
-                SHOW: 1
+                ROTATION: -90,
+                RIGHT_AXIS: 1,
+                ZERO2POINT: 2,
+                NO_PROJECT: 16,
+                MINLIMIT: 1e-5,
+                ONE_POINTER: 1,
+                MULTI_POINTER: 2,
+                LEGEND_BOTTOM: 4,
+                STYLE_NORMAL: 21,
+                LEGEND_HEIGHT: 80,
+                HALF_DASHBOARD: 9,
+                VERTICAL_TUBE: 12,
+                DASHBOARD_AXIS: 4,
+                HORIZONTAL_TUBE: 13,
+                RIGHT_AXIS_SECOND: 2,
+                PERCENT_DASHBOARD: 10,
+                PERCENT_SCALE_SLOT: 11
             }
         }
 

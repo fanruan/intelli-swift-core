@@ -47,8 +47,8 @@ BI.TargetFormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
     },
 
-    populate: function(item){
-        this.formula.setValue(item.filter_value);
+    populate: function(items, keyword, context){
+        this.formula.setValue(context.filter_value);
     },
 
     _buildFormula: function(value){

@@ -24,11 +24,8 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         });
         BI.Utils.getAllPackages(function(packs){
             self.packs = packs;
-            var ids = BI.Utils.getAllPackageIDs4Conf();
-            if(BI.isEmptyArray(ids)) {
-                ids = [BI.Utils.getCurrentPackageId4Conf()]
-            }
-            self.selectDataPane.setPackage(ids[0]);
+            //选中当前业务包
+            self.selectDataPane.setPackage(BI.Utils.getCurrentPackageId4Conf());
             mask.destroy();
         });
 

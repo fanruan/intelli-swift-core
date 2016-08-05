@@ -72,7 +72,23 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             }, this.cubeTree],
             vgap: 10
         });
-        this.refreshLog();
+        this._refreshLog4Init();
+    },
+
+    _refreshLog4Init: function() {
+        var self = this;
+        BI.Utils.getCubeLog(function (data) {
+            if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
+                self.interval && clearInterval(self.interval);
+                self.interval = null;
+            } else {
+                self.interval = setInterval(function () {
+                    self.refreshLog();
+                }, 5000);
+            }
+            self._refreshProcess(data);
+            self.cubeTree.populate(self._formatItems(data));
+        });
     },
 
     refreshLog: function (isStart) {

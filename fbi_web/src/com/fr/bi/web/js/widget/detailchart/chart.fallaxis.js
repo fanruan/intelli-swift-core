@@ -17,22 +17,18 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         this.xAxis = [{
             type: "category",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: this.constants.FONT_STYLE
             },
-            labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             position: "bottom",
             gridLineWidth: 0
         }];
         this.yAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: this.constants.FONT_STYLE
             },
-            labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             position: "left",
             gridLineWidth: 0
         }];
@@ -87,7 +83,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     return;
                 }
                 item.dataLabels = {
-                    "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                    "style": self.constants.FONT_STYLE,
                     "align": "outside",
                     enabled: true,
                     formatter: {
@@ -113,13 +109,13 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         function formatCordon(){
             BI.each(self.config.cordon, function(idx, cor){
                 if(idx === 0 && self.xAxis.length > 0){
-                    var magnify = calcMagnify(self.config.x_axis_number_level);
+                    var magnify = self.calcMagnify(self.config.x_axis_number_level);
                     self.xAxis[0].plotLines = BI.map(cor, function(i, t){
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": self.constants.FONT_STYLE,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -130,13 +126,13 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = calcMagnify(self.config.left_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.left_y_axis_number_level);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
                             break;
                         case self.constants.RIGHT_AXIS_SECOND:
-                            magnify = calcMagnify(self.config.right_y_axis_second_number_level);
+                            magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
@@ -144,7 +140,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": self.constants.FONT_STYLE,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -155,41 +151,17 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         }
 
         function formatNumberLevelInYaxis(type, position, formatter){
-            var magnify = calcMagnify(type);
+            var magnify = self.calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
                     if (position === item.yAxis) {
-                        if(!BI.isNumber(da.y)){
-                            da.y = BI.parseFloat(da.y);
-                        }
-                        da.y = da.y || 0;
-                        da.y = FR.contentFormat(da.y.div(magnify), "#.##");
+                        da.y = self.formatXYDataWithMagnify(da.y, magnify);
                     }
                 })
             })
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.tooltip.formatter.valueFormat = formatter;
             }
-        }
-
-        function calcMagnify(type){
-            var magnify = 1;
-            switch (type) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    magnify = 1;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    magnify = 10000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    magnify = 1000000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    magnify = 100000000;
-                    break;
-            }
-            return magnify;
         }
 
         function getXYAxisUnit(numberLevelType, position){

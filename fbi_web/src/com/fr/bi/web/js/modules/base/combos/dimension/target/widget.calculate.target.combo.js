@@ -10,13 +10,13 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     defaultItems: function () {
         return [
             [{
+                text: BI.i18nText("BI-Modify_Cal_Target"),
+                value: BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET
+            }],
+            [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
                 cls: "style-set-h-font"
-            }],
-            [{
-                text: BI.i18nText("BI-Modify_Cal_Target"),
-                value: BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET
             }],
             [{
                 el: {
@@ -131,7 +131,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                BI.remove(item, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -166,10 +166,10 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                BI.remove(item, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
             default:
-                BI.remove(item, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
         }
         return item;

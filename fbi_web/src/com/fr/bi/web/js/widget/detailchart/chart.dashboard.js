@@ -18,9 +18,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         this.gaugeAxis = [{
             "minorTickColor": "rgb(226,226,226)",
             "tickColor": "rgb(186,186,186)",
-            labelStyle: {
-                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             "step": 0,
             "showLabel": true
         }];
@@ -45,26 +43,31 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         function formatChartDashboardStyle() {
             var bands = getBandsStyles(self.config.bands_styles, self.config.auto_custom_style);
             var valueLabel = {
-                formatter: {
-                    identifier: "${CATEGORY}${SERIES}${VALUE}"
-                }
+                formatter: config.plotOptions.valueLabel.formatter
             };
-            var percentageLabel = BI.extend(config.plotOptions.percentageLabel , {
+            valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
+            valueLabel.style = config.plotOptions.valueLabel.style;
+            var percentageLabel = BI.extend(config.plotOptions.percentageLabel, {
                 enabled: self.config.show_percentage === BICst.PERCENTAGE.SHOW
             });
 
             config.gaugeAxis = self.gaugeAxis;
+            var slotValueLAbel = {
+                formatter: function () {
+                    return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
+                },
+                style: config.plotOptions.valueLabel.style,
+                useHtml: true
+            };
             switch (self.config.chart_dashboard_type) {
                 case BICst.CHART_SHAPE.HALF_DASHBOARD:
                     setPlotOptions("pointer_semi", bands, config.plotOptions.valueLabel);
                     break;
                 case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
-                    setPlotOptions("ring", bands, valueLabel, percentageLabel);
-                    changeMaxMinScale();
+                    setPlotOptions("ring", bands, slotValueLAbel, percentageLabel);
                     break;
                 case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                     setPlotOptions("slot", bands, valueLabel, percentageLabel);
-                    changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                     BI.extend(valueLabel, {
@@ -74,7 +77,6 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                         align: "bottom"
                     });
                     setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "horizontal", "vertical");
-                    changeMaxMinScale();
                     break;
                 case BICst.CHART_SHAPE.VERTICAL_TUBE:
                     BI.extend(valueLabel, {
@@ -83,14 +85,14 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     BI.extend(percentageLabel, {
                         align: "left"
                     });
-                    setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "vertical", "horizontal");
-                    changeMaxMinScale();
+                    setPlotOptions("thermometer", bands, slotValueLAbel, percentageLabel, "vertical", "horizontal");
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
                     setPlotOptions("pointer", bands, config.plotOptions.valueLabel);
                     break;
             }
+            changeMaxMinScale();
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
             if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.plotOptions.valueLabel.formatter.valueFormat = function () {
@@ -121,44 +123,17 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         }
 
         function formatNumberLevelInYaxis(type, position) {
-            var magnify = calcMagnify(type);
+            var magnify = self.calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
                     if (position === item.yAxis) {
-                        if (!BI.isNumber(da.y)) {
-                            da.y = BI.parseFloat(da.y);
-                        }
-                        da.y = da.y || 0;
-                        da.y = da.y.div(magnify).toFixed(self.constants.FIX_COUNT);
-                        if (self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0) {
-                            da.y = 0;
-                        }
+                        da.y = self.formatXYDataWithMagnify(da.y, magnify);
                     }
                 })
             });
             if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]}";
             }
-        }
-
-        function calcMagnify(type) {
-            var magnify = 1;
-            switch (type) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    magnify = 1;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    magnify = 10000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    magnify = 1000000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    magnify = 100000000;
-                    break;
-            }
-            return magnify;
         }
 
         function getXYAxisUnit(numberLevelType, position) {

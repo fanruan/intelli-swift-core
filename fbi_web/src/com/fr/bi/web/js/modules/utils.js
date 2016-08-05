@@ -574,12 +574,6 @@
                 BICst.DEFAULT_CHART_SETTING.theme_color;
         },
 
-        getWSMapBubbleColorByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.map_bubble_color) ? ws.map_bubble_color :
-                BICst.DEFAULT_CHART_SETTING.theme_color;
-        },
-
         getWSTableStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.table_style) ? ws.table_style :
@@ -861,7 +855,7 @@
         getWSShowPercentageByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_percentage) ? ws.show_percentage :
-                BICst.PERCENTAGE.SHOW
+                BICst.PERCENTAGE.NOT_SHOW
         },
 
         getWSXAxisUnitByID: function (wid) {

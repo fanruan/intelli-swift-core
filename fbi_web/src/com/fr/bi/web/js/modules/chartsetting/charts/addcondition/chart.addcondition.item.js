@@ -2,14 +2,14 @@
  * Created by GameJian on 2016/7/4.
  */
 BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.ChartAddConditionItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-chart-add-condition-item",
             color: ""
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.ChartAddConditionItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var range = o.range, color = o.color;
@@ -22,7 +22,7 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
             closemax: range.closemax
         });
 
-        this.numberRange.on(BI.NumericalInterval.EVENT_CHANGE , function () {
+        this.numberRange.on(BI.NumericalInterval.EVENT_CHANGE, function () {
             self.fireEvent(BI.ChartAddConditionItem.EVENT_CHANGE);
         });
 
@@ -34,7 +34,7 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
 
         this.colorChooser.setValue(color);
 
-        this.colorChooser.on(BI.ColorChooser.EVENT_CHANGE , function () {
+        this.colorChooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.ChartAddConditionItem.EVENT_CHANGE)
         });
 
@@ -65,7 +65,7 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
         })
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             range: this.numberRange.getValue(),
             color: this.colorChooser.getValue(),
@@ -73,7 +73,12 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
         }
     },
 
-    setValue: function(v){
+    setNumTip: function (numTip) {
+        this.numberRange.showNumTip();
+        this.numberRange.setNumTip(numTip)
+    },
+
+    setValue: function (v) {
         this.numberRange.setValue(v.range);
         this.colorChooser.setValue(v.color);
     },

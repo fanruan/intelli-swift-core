@@ -165,12 +165,15 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
     private boolean hasSpecialGroup() {
         int groupType = column.getGroup().getType();
-        if (groupType == BIReportConstant.GROUP.AUTO_GROUP || column.getSortType() == BIReportConstant.SORT.CUSTOM) {
-            return true;
-        }
         if (groupType == BIReportConstant.GROUP.CUSTOM_GROUP ||
                 groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP) {
             return column.hasSelfGroup();
+        }
+        if (groupType != BIReportConstant.GROUP.NO_GROUP && groupType != BIReportConstant.GROUP.ID_GROUP ) {
+            return true;
+        }
+        if (column.getSortType() == BIReportConstant.SORT.CUSTOM) {
+            return true;
         }
         return false;
     }
@@ -209,56 +212,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 }
             }
         });
-        return column.getSortType() == BIReportConstant.SORT.ASC || column.getSortType() == BIReportConstant.SORT.NUMBER_ASC ? new Iterator() {
-
-            private int index = 0;
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("remove");
-            }
-
-            @Override
-            public boolean hasNext() {
-                while (index < groupIndex.length && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE) {
-                    index++;
-                }
-                return index < groupIndex.length;
-            }
-
-            @Override
-            public Object next() {
-                final CubeValueEntry gve = getter.getEntryByGroupRow(index);
-                Map.Entry entry = new Entry() {
-                    @Override
-                    public Object getKey() {
-                        return gve.getT();
-                    }
-
-                    @Override
-                    public Object getValue() {
-                        return gve.getGvi();
-                    }
-
-                    @Override
-                    public Object setValue(Object value) {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean equals(Object o) {
-                        return false;
-                    }
-
-                    @Override
-                    public int hashCode() {
-                        return 0;
-                    }
-                };
-                index++;
-                return entry;
-            }
-        } : new Iterator() {
+        return column.getSortType() == BIReportConstant.SORT.DESC || column.getSortType() == BIReportConstant.SORT.NUMBER_DESC ? new Iterator() {
 
             private int index = groupIndex.length - 1;
 
@@ -305,6 +259,55 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                     }
                 };
                 index--;
+                return entry;
+            }
+        } : new Iterator() {
+
+            private int index = 0;
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+
+            @Override
+            public boolean hasNext() {
+                while (index < groupIndex.length && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE) {
+                    index++;
+                }
+                return index < groupIndex.length;
+            }
+
+            @Override
+            public Object next() {
+                final CubeValueEntry gve = getter.getEntryByGroupRow(index);
+                Map.Entry entry = new Entry() {
+                    @Override
+                    public Object getKey() {
+                        return gve.getT();
+                    }
+
+                    @Override
+                    public Object getValue() {
+                        return gve.getGvi();
+                    }
+
+                    @Override
+                    public Object setValue(Object value) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean equals(Object o) {
+                        return false;
+                    }
+
+                    @Override
+                    public int hashCode() {
+                        return 0;
+                    }
+                };
+                index++;
                 return entry;
             }
         };

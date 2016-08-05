@@ -17,8 +17,8 @@ BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
             type: "bi.text_button",
             cls: "trigger-text-button",
             text: "",
-            height: 29,
-            textHeight: 29,
+            height: 24,
+            textHeight: 24,
             width: 80
         });
 
@@ -29,8 +29,8 @@ BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
         this.fomulaIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: "calculate-function-font view-button",
-            height: 30,
-            width: 30
+            height: 25,
+            width: 25
         });
 
         this.fomulaIcon.on(BI.IconButton.EVENT_CHANGE , function() {

@@ -35,7 +35,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         auto_custom: 1,
         POLYGON: 7,
         AUTO_CUSTOM: 1,
-        AUTO: 1
+        AUTO: 1,
+        SHOW: 2,
+        FONT_STYLE: {
+            "fontFamily": "inherit",
+            "color": "#808080",
+            "fontSize": "12px"
+        }
     },
 
     _defaultConfig: function () {
@@ -50,7 +56,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
 
     formatNumberLevelInYaxis: function (config, items, type, position, formatter) {
         var self = this;
-        var magnify = this._calcMagnify(type);
+        var magnify = this.calcMagnify(type);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 if (position === item.yAxis) {
@@ -58,7 +64,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                         da.y = BI.parseFloat(da.y);
                     }
                     da.y = da.y || 0;
-                    da.y = FR.contentFormat(da.y.div(magnify), "#.##");
+                    da.y = FR.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####");
                 }
             });
             if (position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
@@ -69,19 +75,27 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     formatNumberLevelInXaxis: function(items, type){
-        var magnify = this._calcMagnify(type);
+        var magnify = this.calcMagnify(type);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 if(!BI.isNumber(da.x)){
                     da.x = BI.parseFloat(da.x);
                 }
                 da.x = da.x || 0;
-                da.x = FR.contentFormat(da.x.div(magnify), "#.##");
+                da.x = FR.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####");
             });
         })
     },
 
-    _calcMagnify: function (type) {
+    formatXYDataWithMagnify: function(number, magnify){
+        if(!BI.isNumber(number)){
+            number = BI.parseFloat(number);
+        }
+        number = number || 0;
+        return FR.contentFormat(BI.parseFloat(number.div(magnify).toFixed(4)), "#.####");
+    },
+
+    calcMagnify: function (type) {
         var magnify = 1;
         switch (type) {
             case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
