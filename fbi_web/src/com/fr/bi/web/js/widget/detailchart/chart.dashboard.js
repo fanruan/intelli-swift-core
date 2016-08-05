@@ -54,7 +54,13 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             config.gaugeAxis = self.gaugeAxis;
             var slotValueLAbel = {
                 formatter: function () {
-                    return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
+                    if(self.config.chart_dashboard_type === BICst.CHART_SHAPE.VERTICAL_TUBE){
+                        return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
+                    }else{
+                        console.log(getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS));
+                        return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value +
+                            getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) +'</div>';
+                    }
                 },
                 style: config.plotOptions.valueLabel.style,
                 useHtml: true
@@ -67,7 +73,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     setPlotOptions("ring", bands, slotValueLAbel, percentageLabel);
                     break;
                 case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
-                    setPlotOptions("slot", bands, valueLabel, percentageLabel);
+                    setPlotOptions("slot", bands, slotValueLAbel, percentageLabel);
                     break;
                 case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                     BI.extend(valueLabel, {

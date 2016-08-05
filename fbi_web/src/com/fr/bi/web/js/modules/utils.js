@@ -2469,7 +2469,9 @@
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
-            return parseComplexDateCommon(offset, new Date(paramdate));
+            if(BI.isNotNull(paramdate)){
+                return parseComplexDateCommon(offset, new Date(paramdate));
+            }
         }
 
         function parseComplexDateCommon(v, consultedDate) {
