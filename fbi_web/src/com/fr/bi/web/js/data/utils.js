@@ -2113,6 +2113,9 @@ Data.Utils = {
                         BI.extend(valueLabel, {
                             align: "left"
                         });
+                        BI.extend(percentageLabel, {
+                            align: "left"
+                        });
                         setPlotOptions("thermometer", bands, slotValueLAbel, percentageLabel, "vertical", "horizontal");
                         changeMaxMinScale();
                         break;

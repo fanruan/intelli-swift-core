@@ -2921,12 +2921,12 @@
 }
 .calculate-function-font .b-font:before {
   content: "\e6a3";
-  color: #ffffff;
+  color: #1a1a1a;
 }
 .calculate-function-font.native .b-font:before,
 .calculate-function-font.disabled .b-font:before {
   content: "\e6a3";
-  color: #ffffff;
+  color: #1a1a1a;
 }
 .path-set-doubt .b-font:before {
   content: "\e69a";

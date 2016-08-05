@@ -1409,6 +1409,7 @@ BICst.DEFAULT_CHART_SETTING = {
     show_data_label: false,
     show_data_table: false,
     show_grid_line: true,
+    show_custom_scale: false,
     show_zoom: false,
     null_continue: true,
     bubble_display: BICst.DISPLAY_RULES.DIMENSION,
