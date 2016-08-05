@@ -966,16 +966,22 @@
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
         },
 
+        getWSShowCustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_custom_scale) ? ws.show_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_custom_scale;
+        },
+
+        getWSCustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.custom_scale) ? ws.custom_scale :
+            {}
+        },
+
         getWSShowZoomByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
                 BICst.DEFAULT_CHART_SETTING.show_zoom;
-        },
-
-        getWSNullContinueByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
-                BICst.DEFAULT_CHART_SETTING.nullContinue;
         },
 
         getWSTextDirectionByID: function (wid) {

@@ -48,21 +48,6 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
         });
     },
 
-    _getSelfCircleFieldsByFieldId: function (fieldId, circleForeignIds) {
-        var self = this, o = this.options;
-        circleForeignIds || (circleForeignIds = []);
-        return BI.map(circleForeignIds, function (i, f) {
-            var fieldName = BI.Utils.getFieldNameByID(f) || "";
-            return {
-                id: f,
-                pId: fieldId,
-                text: fieldName,
-                title: fieldName,
-                value: f
-            };
-        });
-    },
-
     _createItemsByTargetIds: function (targetIds) {
         var o = this.options, self = this;
         if (BI.isEmpty(targetIds)) {
@@ -81,33 +66,6 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
             var fieldIds = BI.filter(initialFieldIds, function (idx, ids) {
                 return BI.Utils.getFieldTypeByID(ids) === BI.Utils.getFieldTypeByDimensionID(o.dId);
             });
-            var pIds = [], fIds = [];
-            if (BI.Utils.isSelfCircleTableByTableId(tId)) {
-                var map = {};
-                var relations = BI.Utils.getPathsFromTableAToTableB(tId, tId);
-                BI.each(relations, function (i, path) {
-                    var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
-                    var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
-                    fIds.push(fId);
-                    pIds.push(pId);
-                });
-                var newFields = [];
-                BI.each(fieldIds, function (i, id) {
-                    var isCircle = BI.Utils.getFieldIsCircleByID(id);
-                    if (isCircle !== true && !fIds.contains(id)) {
-                        newFields.push(id);
-                    }
-                    //TODO
-                    if (isCircle === true) {
-                        newFields.push(id);
-                    }
-                    //if (isCircle === true) {
-                    //    map[id] = BI.clone(fIds);
-                    //}
-                });
-            } else {
-                newFields = fieldIds;
-            }
             var node, pId;
             var dimensionTableId = BI.Utils.getTableIDByDimensionID(o.dId);
             //推荐表： 1.是维度所在表且维度与指标有路径；2.维度与指标无路径时是指标所在表
@@ -135,27 +93,7 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
                 pId = idx + 1;
             }
             var items = [];
-            //TODO 这个代码有问题
-            //if (BI.Utils.isSelfCircleTableByTableId(tId)) {
-            //    BI.each(fieldIds, function (i, fId) {
-            //        var id = fId;
-            //        if (BI.Utils.getFieldIsCircleByID(id) === true) {
-            //            var fieldName = BI.Utils.getFieldNameByID(id) || "";
-            //            items.push({
-            //                id: id,
-            //                pId: pId,
-            //                text: fieldName,
-            //                title: fieldName,
-            //                value: id
-            //            });
-            //            items = BI.concat(items, self._getSelfCircleFieldsByFieldId(id, map[id] || []))
-            //        }
-            //    });
-            //}
             BI.each(fieldIds, function (id, fId) {
-                if (fIds.contains(fId)) {
-                    return;
-                }
                 items.push({
                     pId: pId,
                     id: fId,

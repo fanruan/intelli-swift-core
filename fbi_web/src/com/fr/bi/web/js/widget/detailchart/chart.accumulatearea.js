@@ -42,21 +42,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.style = formatChartStyle(this.config.chart_style);
         formatChartLineStyle(this.config.chart_line_type);
         formatCordon(this.config.cordon);
-        switch (this.config.chart_legend) {
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
@@ -69,24 +55,25 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.yAxis = this.yAxis;
 
         BI.each(config.yAxis, function (idx, axis) {
+            var unit = "";
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed;
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
-                    axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    unit = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.config.left_y_axis_unit);
+                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + unit : unit;
                     axis.title.rotation = self.constants.ROTATION;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
-                    axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
+                    axis.formatter = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level);
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
 
                     break;
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed;
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
-                    axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    unit = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.config.right_y_axis_unit);
+                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + unit : unit;
                     axis.title.rotation = self.constants.ROTATION;
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
-                    axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
+                    axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level);
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }
@@ -198,71 +185,6 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                     });
                 }
             })
-        }
-
-        function getXYAxisUnit(numberLevelType, position) {
-            var unit = "";
-            switch (numberLevelType) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    unit = "";
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    unit = BI.i18nText("BI-Wan");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    unit = BI.i18nText("BI-Million");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    unit = BI.i18nText("BI-Yi");
-                    break;
-            }
-            if (position === self.constants.X_AXIS) {
-                self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
-            }
-            if (position === self.constants.LEFT_AXIS) {
-                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
-            }
-            if (position === self.constants.RIGHT_AXIS) {
-                self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
-            }
-            return unit === "" ? unit : "(" + unit + ")";
-        }
-
-        function formatTickInXYaxis(type, position) {
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
-            }
-            if (position === self.constants.LEFT_AXIS) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    if (type === self.constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
-                }
-            }
-            if (position === self.constants.RIGHT_AXIS) {
-                if (self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    if (type === self.constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
-                }
-            }
-            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
         }
     },
 

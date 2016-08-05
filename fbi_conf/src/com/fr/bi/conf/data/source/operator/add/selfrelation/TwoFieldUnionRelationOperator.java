@@ -72,12 +72,13 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
     @Override
     public IPersistentTable getBITable(IPersistentTable[] tables) {
         IPersistentTable persistentTable = getBITable();
-        Iterator<Map.Entry<String, Integer>> it = fields.entrySet().iterator();
+        Iterator<Map.Entry<String, Integer>> it;
         for (int i = 0; i < tables.length; i++) {
             IPersistentTable ptalbe = tables[i];
             int size = ptalbe.getField(idFieldName).getColumnSize();
 //            int columnType = ptalbe.getField(idFieldName).getBIType();
             for (String s : showFields) {
+                it = fields.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry<String, Integer> entry = it.next();
 //                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
@@ -122,7 +123,9 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                                 int r = valueIndexMap.get(res[j]);
                                 if (r >= 0) {
                                     Object showOb = showGetter.getValue(r);
-                                    vals[cnt] = showOb.toString();
+                                    if (showOb != null) {
+                                        vals[cnt] = showOb.toString();
+                                    }
                                 }
                             }
                             cnt++;

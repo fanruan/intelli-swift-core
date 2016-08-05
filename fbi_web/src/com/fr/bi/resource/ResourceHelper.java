@@ -701,6 +701,7 @@ public class ResourceHelper {
 
                 //图样式
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/popup.customscale.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/customscale/combo.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",

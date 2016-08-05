@@ -1,5 +1,5 @@
 /**
- * trigger of customscale
+ * trigger of custom scale
  * Created by AstronautOO7 on 2016/7/18.
  */
 BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
@@ -41,7 +41,8 @@ BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
             type: "bi.left",
             element: this.element,
             items: [this.formulaRecord , this.fomulaIcon]
-        })
+        });
+
     },
 
     getValue: function() {
