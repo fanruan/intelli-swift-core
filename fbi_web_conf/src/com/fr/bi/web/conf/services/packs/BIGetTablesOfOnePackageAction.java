@@ -75,7 +75,7 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
                     field.put("id", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).getFieldID().getIdentityValue());
                     field.put("table_id", tableId);
                     field.put("is_usable", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).isUsable());
-                    field.put("isCircle", ((BIBusinessField)BusinessTableHelper.getSpecificField(table, field.getString("field_name"))).isCircle());
+//                    field.put("isCircle", ((BIBusinessField)BusinessTableHelper.getSpecificField(table, field.getString("field_name"))).isCircle());
                     nFields.put(field);
                 }catch (BIFieldAbsentException exception){
                     BILogger.getLogger().error(exception.getMessage());

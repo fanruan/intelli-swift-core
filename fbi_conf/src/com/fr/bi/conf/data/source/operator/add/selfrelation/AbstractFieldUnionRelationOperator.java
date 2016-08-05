@@ -33,7 +33,7 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
     AbstractFieldUnionRelationOperator() {
     }
 
-    protected void readFields(XMLableReader reader){
+    protected void readFields(XMLableReader reader) {
         if (ComparatorUtils.equals(reader.getTagName(), "floor")) {
             String floorName = reader.getAttrAsString("name", "");
             int length = reader.getAttrAsInt("length", 0);
@@ -45,7 +45,7 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
         }
     }
 
-    protected void writeFields(XMLPrintWriter writer){
+    protected void writeFields(XMLPrintWriter writer) {
         Iterator<String> floorIterator = this.fields.keySet().iterator();
         while (floorIterator.hasNext()) {
             writer.startTAG("floor");
@@ -53,7 +53,7 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
             writer.attr("name", floorName);
             writer.end();
         }
-        for (String s : showFields){
+        for (String s : showFields) {
             writer.startTAG("showfield");
             writer.attr("name", s);
             writer.end();
@@ -69,9 +69,9 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
      */
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        if (jo.has("showfields")){
+        if (jo.has("showfields")) {
             JSONArray ja = jo.getJSONArray("showfields");
-            for (int i = 0; i < ja.length(); i++){
+            for (int i = 0; i < ja.length(); i++) {
                 showFields.add(ja.getString(i));
             }
         }
@@ -82,13 +82,13 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
         JSONObject jo = new JSONObject();
         JSONArray ja = new JSONArray();
         jo.put("showfields", ja);
-        for (String s : showFields){
+        for (String s : showFields) {
             ja.put(s);
         }
         return jo;
     }
 
-    protected void digestFields(MessageDigest digest){
+    protected void digestFields(MessageDigest digest) {
         digest.update(idFieldName.getBytes());
         Iterator<Map.Entry<String, Integer>> iter = fields.entrySet().iterator();
         while (iter.hasNext()) {
@@ -96,7 +96,7 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
             digest.update(entry.getKey().getBytes());
             digest.update(String.valueOf(entry.getValue()).getBytes());
         }
-        for (String s : showFields){
+        for (String s : showFields) {
             digest.update(s.getBytes());
         }
     }
@@ -110,9 +110,11 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
             if (t.getField(idFieldName) != null) {
                 type = t.getField(idFieldName).getBIType();
             }
-            while (it.hasNext()) {
-                Map.Entry<String, Integer> entry = it.next();
-                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(type), entry.getValue()));
+            for (String s : showFields) {
+                while (it.hasNext()) {
+                    Map.Entry<String, Integer> entry = it.next();
+                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), BIDBUtils.biTypeToSql(type), entry.getValue()));
+                }
             }
         }
         return persistentTable;

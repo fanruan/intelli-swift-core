@@ -54,7 +54,7 @@ public class BIBusinessField implements BusinessField {
         this.classType = classType;
         this.isUsable = isUsable;
         this.canSetUsable = canSetUsable;
-        this.isCircle = isCircle;
+//        this.isCircle = isCircle;
     }
 
     public BIBusinessField(BusinessTable tableBelongTo, BIFieldID fieldID, String fieldName, int classType, int fieldSize, boolean isUsable, boolean canSetUsable) {
@@ -176,9 +176,9 @@ public class BIBusinessField implements BusinessField {
         if (jo.has("is_enable")) {
             canSetUsable = jo.optBoolean("is_enable", true);
         }
-        if (jo.has("isCircle")){
-            isCircle = jo.optBoolean("isCircle", false);
-        }
+//        if (jo.has("isCircle")){
+//            isCircle = jo.optBoolean("isCircle", false);
+//        }
     }
 
     /**
@@ -196,8 +196,8 @@ public class BIBusinessField implements BusinessField {
         jo.put("field_type", fieldType)
                 .put("field_size", fieldSize)
                 .put("is_usable", isUsable)
-                .put("is_enable", canSetUsable)
-                .put("isCircle", isCircle);
+                .put("is_enable", canSetUsable);
+//                .put("isCircle", isCircle);
         return jo;
     }
 
