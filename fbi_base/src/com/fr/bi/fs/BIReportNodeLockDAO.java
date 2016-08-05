@@ -23,7 +23,7 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
 	
 	public static BIReportNodeLockDAO getInstance(){
 		SC = BIConstructorUtils.constructObject(BIReportNodeLockDAO.class, SC);
-		SC.clearLocks();
+		//SC.clearLocks();
 		return SC;
 	}
 	
