@@ -128,9 +128,12 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                                     int r = valueIndexMap.get(layer);
                                     if (r >= 0) {
                                         Object showOb = showGetter.getValue(r);
-                                        res[index++] = showOb.toString();
+                                        if (showOb != null) {
+                                            res[index] = showOb.toString();
+                                        }
                                     }
                                 }
+                                index++;
                             }
                         }
                     }
