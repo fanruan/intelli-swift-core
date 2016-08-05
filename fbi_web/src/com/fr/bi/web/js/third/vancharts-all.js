@@ -14365,6 +14365,13 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 this._leaflet.on('zoom', viewreset, this._leaflet);
                 this._leaflet.vanchart = this;
 
+                if(option.geo.attribution){
+                    L.control
+                        .attribution({position:'bottomright'})
+                        .addTo(this._leaflet)
+                        .addAttribution(option.geo.attribution);
+                }
+
                 BaseUtils.setDomBackground(dom, {
                     backgroundColor:option.backgroundColor,
                     borderColor:option.borderColor,
@@ -27394,7 +27401,8 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
 
                 var startY = d.labelPos.y;
 
-                var text = gElement.append('text').style('opacity', 0);
+                var text = gElement.append('text')
+                    .style('opacity', 0).style("pointer-events", 'none');
 
                 for(var i = 0, count = labelContent.length; i < count; i++){
                     var label = labelContent[i];
