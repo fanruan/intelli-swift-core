@@ -329,14 +329,14 @@ public class DimensionGroupFilter {
             roots = next();
         }
         if (shouldBuildTree) {
-            if (MultiThreadManagerImpl.getInstance().isMultiCall()){
+            if (MultiThreadManagerImpl.getInstance().isMultiCall()) {
                 int size = (list.size() >> 3) + 1;
-                for (int i = 0; i < 8; i++){
+                for (int i = 0; i < 8; i++) {
                     int start = i * size;
-                    if (start > list.size()){
+                    if (start > list.size()) {
                         break;
                     }
-                    int end = Math.min(start + i, list.size());
+                    int end = Math.min(start + size, list.size());
                     MultiThreadManagerImpl.getInstance().getExecutorService().submit(new MergeSummaryCallList(list.subList(start, end)));
                 }
                 MultiThreadManagerImpl.getInstance().awaitExecutor();
