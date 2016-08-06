@@ -130,7 +130,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var self = this;
         var o = this.options;
         var dId = o.dId, clicked = o.clicked;
-        if(BI.isNotNull(dId)) {
+        if (BI.isNotNull(dId)) {
             var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
             var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
         }
@@ -186,7 +186,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
 });
 $.shortcut("bi.target_body_normal_cell", BI.TargetBodyNormalCell);
 BI.extend(BI.TargetBodyNormalCell, {
-    parseNumByLevel: function(text, numLevel) {
+    parseNumByLevel: function (text, numLevel) {
         if (text === Infinity || text !== text || !BI.isNumber(text)) {
             return text;
         }
@@ -198,9 +198,9 @@ BI.extend(BI.TargetBodyNormalCell, {
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
                 return FR.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return FR.contentFormat(text, "#.##");
+                return FR.contentFormat(text * 100, "#.##");
             default:
                 return BI.parseFloat(FR.contentFormat(text, "#.##"));
         }
-    } 
+    }
 });
