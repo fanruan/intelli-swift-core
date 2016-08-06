@@ -1,6 +1,7 @@
 package com.fr.bi.web.conf.services.packs;
 
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.table.BusinessTableHelper;
@@ -14,6 +15,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public class BIGetBriefTablesOfOnePackageAction extends AbstractBIConfigureAction {
 
@@ -39,7 +41,16 @@ public class BIGetBriefTablesOfOnePackageAction extends AbstractBIConfigureActio
             JSONArray tables = packJSON.getJSONArray("tables");
             for (int i = 0; i < tables.length(); i++) {
                 String tableId = tables.getJSONObject(i).getString("id");
-                tableData.put(tableId, BusinessTableHelper.getTableDataSource(new BITableID(tableId)).createJSON());
+                JSONObject sourceTable = BusinessTableHelper.getTableDataSource(new BITableID(tableId)).createJSON();
+                List<BusinessField> fieldList = BusinessTableHelper.getTableFields(BusinessTableHelper.getBusinessTable(new BITableID(tableId)));
+                JSONArray fields = new JSONArray();
+                for(int j = 0; j < fieldList.size(); j++) {
+                    fields.put(fieldList.get(j).createJSON());
+                }
+                JSONArray allFields = new JSONArray();
+                allFields.put(fields).put(new JSONArray()).put(new JSONArray());
+                sourceTable.put("fields", allFields);
+                tableData.put(tableId, sourceTable);
             }
             WebUtils.printAsJSON(res, tableData);
         }

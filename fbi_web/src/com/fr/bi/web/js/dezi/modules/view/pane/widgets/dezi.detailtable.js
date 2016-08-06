@@ -107,7 +107,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 height: 25,
                 allowBlank: false,
                 errorText: function (v) {
-                    if (BI.isNotNull(v) && v.trim() !== "") {
+                    if (BI.isNotNull(v) && BI.trim(v) !== "") {
                         return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
                     }
                     return BI.i18nText("BI-Widget_Name_Can_Not_Null");

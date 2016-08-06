@@ -172,7 +172,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         var self = this;
 
         delete this.tablesData[tableId];
-        BI.remove(this.tables, function(i, table) {
+        BI.remove(this.tables, function (i, table) {
             return table.id === tableId;
         });
 
@@ -190,7 +190,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             if (self.getTableIdByFieldId(kId) === tableId) {
                 delete primaryKeyMap[kId];
             } else {
-                BI.remove(maps, function(i, keys) {
+                BI.remove(maps, function (i, keys) {
                     return tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id);
                 });
                 if (primaryKeyMap[kId].length === 0) {
@@ -202,7 +202,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             if (tableId === self.getTableIdByFieldId(kId)) {
                 delete foreignKeyMap[kId];
             } else {
-                BI.remove(maps, function(i, keys) {
+                BI.remove(maps, function (i, keys) {
                     return tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id);
                 });
                 if (foreignKeyMap[kId].length === 0) {
@@ -226,12 +226,18 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         //添加表的时候就应该把原始表的名称作为当前业务包表的转义，同理删除也删掉
         //对于业务包表逻辑：保存当前表的转义（当前业务包转义不可重名）、关联，但id是一个新的，
         //暂时根据 id 属性区分 source 表和 package 表
+        var packTIds = [];
         BI.each(tables, function (i, table) {
             var id = BI.UUID();
             BI.each(table.fields, function (j, fs) {
                 BI.each(fs, function (k, field) {
-                    // field.id = id + field.field_name;
-                    field.id = BI.UUID();
+                    var fId = BI.UUID();
+                    //字段的转义
+                    if (BI.isNotNull(field.id) && BI.isNotNull(self.translations[field.id])) {
+                        self.translations[fId] = self.translations[field.id];
+                    }
+
+                    field.id = fId;
                     field.table_id = id;
                     //这里简单维护一下field信息（包括table_id,table_name,field_name,field_type即可）
                     self.allFields[field.id] = {
@@ -249,6 +255,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 self.translations[id] = self.createDistinctTableTranName(table.table_name);
             } else {
                 //业务包表
+                packTIds.push(id);
                 var tableId = table.id;
                 //转义、关联都是用sharing pool中的，相当于复制一份
                 self.translations[id] = self.createDistinctTableTranName(self.translations[tableId]);
@@ -292,33 +299,40 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             }
             newTables[id] = self.tablesData[id] = BI.extend(table, {id: id});
         });
-        //添加完之后需要读关联转义信息
-        var mask = BI.createWidget({
-            type: "bi.loading_mask",
-            masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
-        });
 
+        //添加完之后需要读关联转义信息
         //读关联的时候去除来自于服务器的
         var oTables = {}, nTables = {};
-        BI.each(oldTables, function(id, t) {
+        BI.each(oldTables, function (id, t) {
             t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (oTables[id] = t);
         });
-        BI.each(newTables, function(id, t) {
-            t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (nTables[id] = t);
+        BI.each(newTables, function (id, t) {
+            if (!packTIds.contains(t.id) &&
+                t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION) {
+                nTables[id] = t;
+            }
         });
         var data = {
             oldTables: oTables,
             newTables: nTables
         };
-        BI.Utils.getRelationAndTransByTables(data, function (res) {
-            var relations = res.relations, translations = res.translations;
-            BI.Msg.toast(BI.i18nText("BI-Auto_Read_Relation_Translation_Toast", relations.length, BI.keys(translations.table).length, BI.keys(translations.field).length));
-            self._setReadRelations(relations);
-            self._setReadTranslations(translations);
+        if(nTables.length > 0) {
+            var mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: BICst.BODY_ELEMENT,
+                text: BI.i18nText("BI-Loading")
+            });
+            BI.Utils.getRelationAndTransByTables(data, function (res) {
+                var relations = res.relations, translations = res.translations;
+                BI.Msg.toast(BI.i18nText("BI-Auto_Read_Relation_Translation_Toast", relations.length, BI.keys(translations.table).length, BI.keys(translations.field).length));
+                self._setReadRelations(relations);
+                self._setReadTranslations(translations);
+                callback();
+                mask.destroy();
+            });
+        } else {
             callback();
-            mask.destroy();
-        });
+        }
         this._syncSharedPackages();
     },
 
