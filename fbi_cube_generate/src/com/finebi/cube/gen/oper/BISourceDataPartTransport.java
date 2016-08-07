@@ -55,6 +55,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
         try {
+            copyFromOldCubes();
             super.recordTableInfo();
             long count = transport();
             if (count >= 0) {
