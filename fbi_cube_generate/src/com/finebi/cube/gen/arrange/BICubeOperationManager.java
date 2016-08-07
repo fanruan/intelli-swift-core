@@ -423,7 +423,8 @@ public class BICubeOperationManager {
                     return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                 }
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
-                    return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version);
+//                    return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version);
+                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                 }
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
                     return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
