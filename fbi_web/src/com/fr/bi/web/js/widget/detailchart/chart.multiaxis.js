@@ -72,7 +72,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             switch (axis.axisIndex){
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed;
-                    axis.formatter = self.formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
+                    axis.formatter = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level);
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
                     axis.title.text = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
@@ -82,7 +82,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     break;
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed;
-                    axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
+                    axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level);
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     axis.title.text = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
@@ -92,7 +92,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     break;
                 case self.constants.RIGHT_AXIS_SECOND:
                     axis.reversed = self.config.right_y_axis_second_reversed;
-                    axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_second_style, self.constants.RIGHT_AXIS_SECOND);
+                    axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_second_style, self.config.right_y_axis_second_number_level);
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_second_number_level, idx, axis.formatter);
                     axis.title.text = self.getXYAxisUnit(self.config.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
                     axis.title.text = self.config.show_right_y_axis_second_title === true ? self.config.right_y_axis_second_title + axis.title.text : axis.title.text;
@@ -258,54 +258,6 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             this.config.right_y_axis_second_unit !== "" && (unit = unit + this.config.right_y_axis_second_unit)
         }
         return unit === "" ? unit : "(" + unit + ")";
-    },
-
-    formatTickInXYaxis: function (type, position) {
-        var formatter = '#.##';
-        switch (type) {
-            case this.constants.NORMAL:
-                formatter = '#.##';
-                break;
-            case this.constants.ZERO2POINT:
-                formatter = '#0';
-                break;
-            case this.constants.ONE2POINT:
-                formatter = '#0.0';
-                break;
-            case this.constants.TWO2POINT:
-                formatter = '#0.00';
-                break;
-            default:
-                break;
-        }
-        if (position === this.constants.LEFT_AXIS) {
-            if (this.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                if (type === this.constants.NORMAL) {
-                    formatter = '#0%'
-                } else {
-                    formatter += '%';
-                }
-            }
-        }else{
-            if (position === this.constants.RIGHT_AXIS) {
-                if (this.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    if (type === this.constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
-                }
-            }else{
-                if (this.config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    if (type === this.constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
-                }
-            }
-        }
-        return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
     },
 
     populate: function (items, options, types) {

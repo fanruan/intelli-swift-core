@@ -67,7 +67,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
                     axis.reversed = self.config.left_y_axis_reversed;
-                    axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
+                    axis.formatter = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level);
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
                     axis.title.text = getTitleText(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS, self.config.show_left_y_axis_title, self.config.left_y_axis_title);
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -75,7 +75,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                     break;
                 case self.constants.RIGHT_AXIS:
                     axis.reversed = self.config.right_y_axis_reversed;
-                    axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
+                    axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level);
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     axis.title.text = getTitleText(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS, self.config.show_right_y_axis_title, self.config.right_y_axis_title);
                     axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
@@ -207,43 +207,6 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             unit = unit === "" ? unit : "(" + unit + ")";
 
             return show === true ? title + unit : unit;
-        }
-
-        function formatTickInXYaxis(type, position) {
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
-            }
-            if (position === self.constants.LEFT_AXIS) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    if (type === self.constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
-                }
-            }
-            if (position === self.constants.RIGHT_AXIS) {
-                if (self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    if (type === self.constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
-                }
-            }
-            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
         }
     },
 

@@ -297,7 +297,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
     _formatNumberLevel: function (numberLevel, y) {
         y = BI.parseFloat(y);
-        y = BI.contentFormat(BI.parseFloat(y.div(this.calcMagnify(numberLevel)).toFixed(2)), "#.####");
+        y = BI.contentFormat(BI.parseFloat(y.div(this.calcMagnify(numberLevel)).toFixed(2)), "#.####;-#.####");
         return y;
     },
 
