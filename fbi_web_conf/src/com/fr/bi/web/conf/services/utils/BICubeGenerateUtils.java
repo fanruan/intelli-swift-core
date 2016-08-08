@@ -64,7 +64,9 @@ public class BICubeGenerateUtils {
         ICubeResourceRetrievalService retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         BICube iCube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         ITableKey iTableKey = new BITableKey(source);
-        return iCube.exist(iTableKey);
+        boolean isExsited = iCube.getCubeTableWriter(iTableKey).isVersionAvailable() && iCube.getCubeTableWriter(iTableKey).isCubeLastTimeAvailable();
+//        return iCube.exist(iTableKey);
+        return isExsited;
     }
 
     private static boolean isRelationValid(BITableRelation relation) {

@@ -15,10 +15,12 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -108,6 +110,37 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         return false;
     }
 
+    @Override
+    public boolean copyFileFromOldCubes() {
+        try {
+            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
+            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
+            if (new File(tempConf.getRootURI().getPath()).exists()) {
+                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
+            }
+            if (new File(advancedConf.getRootURI().getPath()).exists()) {
+                BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean replaceOldCubes() {
+        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
+        if (new File(advancedConf.getRootURI().getPath()).exists()) {
+            BIFileUtils.delete(new File(advancedConf.getRootURI().getPath()));
+        }
+        try {
+            BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
+        } catch (IOException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return false;
+    }
 
     public void setSources() {
         for (Object biBusinessTable : allBusinessTable) {

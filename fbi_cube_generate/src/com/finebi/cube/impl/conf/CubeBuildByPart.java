@@ -8,7 +8,10 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by kary on 2016/6/8.
@@ -27,9 +30,11 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     private Set<BICubeGenerateRelation> cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
     private Set<BITableSourceRelationPath> biTableSourceRelationPathSet = new HashSet<BITableSourceRelationPath>();
     private Set<BICubeGenerateRelationPath> cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
+    private long userId;
 
     public CubeBuildByPart(long userId, Set<BIBusinessTable> newTables, Set<BITableRelation> newRelations) {
         super(userId);
+        this.userId=userId;
         this.newRelations = newRelations;
         this.newTables = newTables;
         try {
@@ -125,6 +130,5 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
         return this.cubeGenerateRelationSet;
     }
-
 
 }

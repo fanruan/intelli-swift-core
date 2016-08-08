@@ -26,7 +26,6 @@ public class BICubeTestBase extends TestCase {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     protected BICubeTableEntity tableEntity;
-    protected BILogManager biLogManager;
 
     @Override
     protected void setUp() throws Exception {

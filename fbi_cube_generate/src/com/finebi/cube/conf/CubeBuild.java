@@ -37,4 +37,8 @@ public interface CubeBuild {
     boolean preConditionsCheck();
     
     boolean isSingleTable();
+
+    boolean copyFileFromOldCubes();
+
+    boolean replaceOldCubes();
 }

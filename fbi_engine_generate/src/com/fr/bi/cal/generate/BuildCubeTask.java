@@ -1,7 +1,6 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.data.ICubeResourceDiscovery;
@@ -11,8 +10,6 @@ import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
 import com.finebi.cube.gen.arrange.BICubeOperationManager;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
-import com.finebi.cube.impl.conf.CubeBuildByPart;
-import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageTopic;
 import com.finebi.cube.impl.operate.BIOperationID;
@@ -30,12 +27,10 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -59,7 +54,6 @@ public class BuildCubeTask implements CubeTask {
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
     private String uuid;
-//    private int updateTypes = DBConstant.SINGLE_TABLE_UPDATE.NEVER;
 
 
     public BuildCubeTask(BIUser biUser, CubeBuild cubeBuild) {
@@ -87,9 +81,7 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
-        if (cubeBuild instanceof CubeBuildByPart || cubeBuild instanceof CubeBuildSingleTable) {
-            copyOldCubesToTempCubes();
-        }
+        cubeBuild.copyFileFromOldCubes();
     }
 
     @Override
@@ -109,24 +101,15 @@ public class BuildCubeTask implements CubeTask {
                 cube.addVersion(System.currentTimeMillis());
                 replaceOldCubes();
             } catch (Exception e) {
-                e.printStackTrace();
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         }
     }
 
     private void replaceOldCubes() {
         try {
-            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
-            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-//            if (cubeBuild instanceof CubeBuildStaff) {
-                if (new File(advancedConf.getRootURI().getPath()).exists()) {
-                    BIFileUtils.delete(new File(advancedConf.getRootURI().getPath()));
-                }
-                BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
-//            } else {
-//                BIFileUtils.moveFile(tempConf.getRootURI().getPath(), advancedConf.getRootURI().getPath());
-//            }
+            cubeBuild.replaceOldCubes();
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         } finally {
@@ -173,21 +156,6 @@ public class BuildCubeTask implements CubeTask {
         return result;
     }
 
-    private void copyOldCubesToTempCubes() {
-        try {
-            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId()));
-            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-            if (new File(tempConf.getRootURI().getPath()).exists()) {
-                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
-            }
-            if (new File(advancedConf.getRootURI().getPath()).exists()) {
-                BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
-            }
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
-        }
-
-    }
 
     public static IMessage generateMessageDataSourceStart() {
         return buildTopic(new BIMessageTopic(BICubeBuildTopicTag.START_BUILD_CUBE));
