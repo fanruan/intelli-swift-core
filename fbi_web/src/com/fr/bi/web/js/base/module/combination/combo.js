@@ -231,7 +231,7 @@ BI.Combo = BI.inherit(BI.Widget, {
         this.popupView.visible();
         switch (o.direction) {
             case "bottom":
-                p = $.getComboPosition(this.combo, this.popupView, o.isNeedAdjustHeight, o.adjustYOffset || o.adjustLength, o.offsetStyle);
+                p = $.getComboPosition(this.combo, this.popupView, o.adjustYOffset || o.adjustLength, o.isNeedAdjustHeight, o.offsetStyle);
                 break;
             case "top":
                 p = $.getComboTopPosition(this.combo, this.popupView, o.isNeedAdjustHeight, o.adjustYOffset || o.adjustLength, o.offsetStyle);

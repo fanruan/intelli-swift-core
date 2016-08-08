@@ -240,6 +240,15 @@ BI.extend(jQuery, {
         }
     },
 
+    getLeftAdaptPosition: function (combo, popup, extraWidth) {
+        if ($.isLeftSpaceEnough(combo, popup, extraWidth)) {
+            return $.getLeftPosition(combo, popup, extraWidth);
+        }
+        return {
+            left: 0
+        }
+    },
+
     getRightAlignPosition: function (combo, popup, extraWidth) {
         var comboBounds = combo.element.bounds(), viewBounds = popup.element.bounds();
         var left = combo.element.offset().left + comboBounds.width - viewBounds.width - extraWidth;
@@ -251,17 +260,29 @@ BI.extend(jQuery, {
         }
     },
 
+    getRightAdaptPosition: function (combo, popup, extraWidth) {
+        if ($.isRightSpaceEnough(combo, popup, extraWidth)) {
+            return $.getRightPosition(combo, popup, extraWidth);
+        }
+        return {
+            left: $("body").bounds().width - popup.element.bounds().width - extraWidth
+        }
+    },
+
     getTopAlignPosition: function (combo, popup, extraHeight, needAdaptHeight) {
         var comboOffset = combo.element.offset();
         var comboBounds = combo.element.bounds(), popupBounds = popup.element.bounds(), windowBounds = $("body").bounds();
         var top, adaptHeight;
         if ($.isBottomSpaceEnough(combo, popup, -1 * comboBounds.height + extraHeight)) {
-            top = comboOffset.top;
+            top = comboOffset.top + extraHeight;
         } else if (needAdaptHeight) {
-            top = comboOffset.top;
+            top = comboOffset.top + extraHeight;
             adaptHeight = windowBounds.height - top - extraHeight;
         } else {
             top = windowBounds.height - popupBounds.height - extraHeight;
+            if (top < 0) {
+                adaptHeight = windowBounds.height - extraHeight;
+            }
         }
         if (top < 0) {
             top = 0;
@@ -274,9 +295,31 @@ BI.extend(jQuery, {
         }
     },
 
+    getTopAdaptPosition: function (combo, popup, extraHeight, needAdaptHeight) {
+        var popupBounds = popup.element.bounds(), windowBounds = $("body").bounds();
+        if ($.isTopSpaceEnough(combo, popup, extraHeight)) {
+            return $.getTopPosition(combo, popup, extraHeight);
+        }
+        if (needAdaptHeight) {
+            return {
+                top: 0,
+                adaptHeight: combo.element.offset().top - extraHeight
+            }
+        }
+        if (popupBounds.height + extraHeight > windowBounds.height) {
+            return {
+                top: 0,
+                adaptHeight: windowBounds.height - extraHeight
+            }
+        }
+        return {
+            top: 0
+        }
+    },
+
     getBottomAlignPosition: function (combo, popup, extraHeight, needAdaptHeight) {
         var comboOffset = combo.element.offset();
-        var comboBounds = combo.element.bounds(), popupBounds = popup.element.bounds();
+        var comboBounds = combo.element.bounds(), popupBounds = popup.element.bounds(), windowBounds = $("body").bounds();
         var top, adaptHeight;
         if ($.isTopSpaceEnough(combo, popup, -1 * comboBounds.height + extraHeight)) {
             top = comboOffset.top + comboBounds.height - popupBounds.height - extraHeight;
@@ -285,6 +328,9 @@ BI.extend(jQuery, {
             adaptHeight = comboOffset.top + comboBounds.height - extraHeight;
         } else {
             top = 0;
+            if (popupBounds.height + extraHeight > windowBounds.height) {
+                adaptHeight = windowBounds.height - extraHeight;
+            }
         }
         if (top < 0) {
             top = 0;
@@ -295,6 +341,158 @@ BI.extend(jQuery, {
         } : {
             top: top
         }
+    },
+
+    getBottomAdaptPosition: function (combo, popup, extraHeight, needAdaptHeight) {
+        var comboOffset = combo.element.offset();
+        var comboBounds = combo.element.bounds(), popupBounds = popup.element.bounds(), windowBounds = $("body").bounds();
+        if ($.isBottomSpaceEnough(combo, popup, extraHeight)) {
+            return $.getBottomPosition(combo, popup, extraHeight);
+        }
+        if (needAdaptHeight) {
+            return {
+                top: comboOffset.top + extraHeight,
+                adaptHeight: windowBounds.height - comboOffset.top - comboBounds.height - extraHeight
+            }
+        }
+        if (popupBounds.height + extraHeight > windowBounds.height) {
+            return {
+                top: 0,
+                adaptHeight: windowBounds.height - extraHeight
+            }
+        }
+        return {
+            top: windowBounds.height - popupBounds.height - extraHeight
+        }
+    },
+
+    getComboPositionByDirections: function (combo, popup, extraWidth, extraHeight, needAdaptHeight, directions) {
+        extraWidth || (extraWidth = 0);
+        extraHeight || (extraHeight = 0);
+        var space = "", i, direct;
+        var leftRight = [], topBottom = [];
+        var isNeedAdaptHeight = false;
+        var left, top, pos;
+        for (i = 0; i < directions.length; i++) {
+            direct = directions[i];
+            switch (direct) {
+                case "left":
+                    leftRight.push(direct);
+                    break;
+                case "right":
+                    leftRight.push(direct);
+                    break;
+                case "top":
+                    topBottom.push(direct);
+                    break;
+                case "bottom":
+                    topBottom.push(direct);
+                    break;
+            }
+        }
+        for (i = 0; i < directions.length; i++) {
+            direct = directions[i];
+            switch (direct) {
+                case "left":
+                    if (!isNeedAdaptHeight && $.isLeftSpaceEnough(combo, popup, extraWidth)) {
+                        left = $.getLeftPosition(combo, popup, extraWidth).left;
+                        if (topBottom[0] === "bottom") {
+                            pos = $.getTopAlignPosition(combo, popup, extraHeight, needAdaptHeight);
+                            pos.left = left;
+                            return pos;
+                        }
+                        pos = $.getBottomAlignPosition(combo, popup, extraHeight, needAdaptHeight);
+                        pos.left = left;
+                        return pos;
+                    }
+                    break;
+                case "right":
+                    if (!isNeedAdaptHeight && $.isRightSpaceEnough(combo, popup, extraWidth)) {
+                        left = $.getRightPosition(combo, popup, extraWidth).left;
+                        if (topBottom[0] === "bottom") {
+                            pos = $.getTopAlignPosition(combo, popup, extraHeight, needAdaptHeight);
+                            pos.left = left;
+                            return pos;
+                        }
+                        pos = $.getBottomAlignPosition(combo, popup, extraHeight, needAdaptHeight);
+                        pos.left = left;
+                        return pos;
+                    }
+                    break;
+                case "top":
+                    if ($.isTopSpaceEnough(combo, popup, extraHeight)) {
+                        top = $.getTopPosition(combo, popup, extraWidth).top;
+                        if (leftRight[0] === "right") {
+                            pos = $.getLeftAlignPosition(combo, popup, extraWidth, needAdaptHeight);
+                            pos.top = top;
+                            return pos;
+                        }
+                        pos = $.getRightAlignPosition(combo, popup, extraWidth);
+                        pos.top = top;
+                        return pos;
+                    }
+                    if (needAdaptHeight) {
+                        isNeedAdaptHeight = true;
+                    }
+                    break;
+                case "bottom":
+                    if ($.isBottomSpaceEnough(combo, popup, extraHeight)) {
+                        top = $.getBottomPosition(combo, popup, extraWidth).top;
+                        if (leftRight[0] === "right") {
+                            pos = $.getLeftAlignPosition(combo, popup, extraWidth, needAdaptHeight);
+                            pos.top = top;
+                            return pos;
+                        }
+                        pos = $.getRightAlignPosition(combo, popup, extraWidth);
+                        pos.top = top;
+                        return pos;
+                    }
+                    if (needAdaptHeight) {
+                        isNeedAdaptHeight = true;
+                    }
+                    break;
+            }
+        }
+
+        switch (directions[0]) {
+            case "left":
+            case "right":
+                if ($.isRightSpaceLarger(combo)) {
+                    left = $.getRightAdaptPosition(combo, popup, extraWidth).left;
+                } else {
+                    left = $.getLeftAdaptPosition(combo, popup, extraWidth).left;
+                }
+                if (topBottom[0] === "bottom") {
+                    pos = $.getTopAlignPosition(combo, popup, extraHeight, needAdaptHeight);
+                    pos.left = left;
+                    return pos;
+                }
+                pos = $.getBottomAlignPosition(combo, popup, extraHeight, needAdaptHeight);
+                pos.left = left;
+                return pos;
+            default :
+                if ($.isBottomSpaceLarger(combo)) {
+                    top = $.getBottomAdaptPosition(combo, popup, extraHeight, needAdaptHeight).top;
+                } else {
+                    top = $.getTopAdaptPosition(combo, popup, extraHeight, needAdaptHeight).top;
+                }
+                if (leftRight[0] === "right") {
+                    pos = $.getLeftAlignPosition(combo, popup, extraWidth, needAdaptHeight);
+                    pos.top = top;
+                    return pos;
+                }
+                pos = $.getRightAlignPosition(combo, popup, extraWidth);
+                pos.top = top;
+                return pos;
+        }
+    },
+
+
+    getComboPosition: function (combo, popup, extraHeight, needAdaptHeight) {
+        extraHeight || (extraHeight = 0);
+        var maxHeight = popup.attr("maxHeight") || $("body").bounds().height - extraHeight;
+        popup.resetHeight && popup.resetHeight(maxHeight);
+        return $.getComboPositionByDirections(combo, popup, 0, extraHeight, needAdaptHeight, ['bottom', 'top', 'right', 'left'])
     },
 
     /**
@@ -378,67 +576,67 @@ BI.extend(jQuery, {
      * //adaptHeight: 220,
      * }
      */
-    getComboPosition: function (combo, popup, needAdaptHeight, extraHeight, offsetStyle) {
-        extraHeight = extraHeight || 0;
-        var el = combo.element, popEl = popup.element,
-            el_offset = el.offset(), view_offset = popEl.offset(),
-            comboBound = el.bounds(), viewBound = popEl.bounds(), windowBounds = $("body").bounds(),
-            leftPosition = el_offset.left, topPosition, windowHeight = windowBounds.height,
-            maxHeight = Math.min(windowHeight, popup.attr("maxHeight") || windowHeight), currentHeight, viewHeight;
-
-        if ((leftPosition + viewBound.width) > windowBounds.width) {
-            leftPosition = windowBounds.width - viewBound.width;
-            if (leftPosition < 0) {
-                leftPosition = 0;
-            }
-        }
-        if ("center" === offsetStyle) {
-            leftPosition = el_offset.left + (comboBound.width - viewBound.width) / 2;
-            if (leftPosition < 0) {
-                leftPosition = 0;
-            }
-        }
-        if ("right" === offsetStyle) {
-            leftPosition = el_offset.left + comboBound.width - viewBound.width;
-            if (leftPosition < 0) {
-                leftPosition = 0;
-            }
-        }
-        if (needAdaptHeight === true) {
-            popup.resetHeight && popup.resetHeight(maxHeight);
-            currentHeight = Math.min(maxHeight, popEl.outerHeight());
-            viewHeight = currentHeight + extraHeight;
-            currentHeight = maxHeight;
-        } else {
-            viewHeight = viewBound.height + extraHeight;
-        }
-
-        if (el_offset.top + el.outerHeight() + viewHeight < windowHeight) {
-            topPosition = el_offset.top + el.outerHeight() + extraHeight;
-        } else if (el_offset.top - viewHeight > 0 || !needAdaptHeight) {
-            topPosition = el_offset.top - viewHeight - extraHeight;
-        } else {
-            //如果上面下面都放不下的话, 则比较下面和下面哪个地方剩下的位置大
-            if (el_offset.top > windowHeight - ( el_offset.top + el.outerHeight() )) {
-                topPosition = 0;
-                currentHeight = el_offset.top - extraHeight;
-            } else {
-                topPosition = el_offset.top + el.outerHeight() + extraHeight;
-                currentHeight = windowHeight - el_offset.top - el.outerHeight() - extraHeight;
-            }
-        }
-
-        var ob = {
-            left: leftPosition,
-            top: topPosition
-        };
-
-        if (currentHeight != null) {
-            ob.adaptHeight = currentHeight;
-        }
-
-        return ob;
-    },
+    //getComboPosition: function (combo, popup, needAdaptHeight, extraHeight, offsetStyle) {
+    //    extraHeight = extraHeight || 0;
+    //    var el = combo.element, popEl = popup.element,
+    //        el_offset = el.offset(), view_offset = popEl.offset(),
+    //        comboBound = el.bounds(), viewBound = popEl.bounds(), windowBounds = $("body").bounds(),
+    //        leftPosition = el_offset.left, topPosition, windowHeight = windowBounds.height,
+    //        maxHeight = Math.min(windowHeight, popup.attr("maxHeight") || windowHeight), currentHeight, viewHeight;
+    //
+    //    if ((leftPosition + viewBound.width) > windowBounds.width) {
+    //        leftPosition = windowBounds.width - viewBound.width;
+    //        if (leftPosition < 0) {
+    //            leftPosition = 0;
+    //        }
+    //    }
+    //    if ("center" === offsetStyle) {
+    //        leftPosition = el_offset.left + (comboBound.width - viewBound.width) / 2;
+    //        if (leftPosition < 0) {
+    //            leftPosition = 0;
+    //        }
+    //    }
+    //    if ("right" === offsetStyle) {
+    //        leftPosition = el_offset.left + comboBound.width - viewBound.width;
+    //        if (leftPosition < 0) {
+    //            leftPosition = 0;
+    //        }
+    //    }
+    //    if (needAdaptHeight === true) {
+    //        popup.resetHeight && popup.resetHeight(maxHeight);
+    //        currentHeight = Math.min(maxHeight, popEl.outerHeight());
+    //        viewHeight = currentHeight + extraHeight;
+    //        currentHeight = maxHeight;
+    //    } else {
+    //        viewHeight = viewBound.height + extraHeight;
+    //    }
+    //
+    //    if (el_offset.top + el.outerHeight() + viewHeight < windowHeight) {
+    //        topPosition = el_offset.top + el.outerHeight() + extraHeight;
+    //    } else if (el_offset.top - viewHeight > 0 || !needAdaptHeight) {
+    //        topPosition = el_offset.top - viewHeight - extraHeight;
+    //    } else {
+    //        //如果上面下面都放不下的话, 则比较下面和下面哪个地方剩下的位置大
+    //        if (el_offset.top > windowHeight - ( el_offset.top + el.outerHeight() )) {
+    //            topPosition = 0;
+    //            currentHeight = el_offset.top - extraHeight;
+    //        } else {
+    //            topPosition = el_offset.top + el.outerHeight() + extraHeight;
+    //            currentHeight = windowHeight - el_offset.top - el.outerHeight() - extraHeight;
+    //        }
+    //    }
+    //
+    //    var ob = {
+    //        left: leftPosition,
+    //        top: topPosition
+    //    };
+    //
+    //    if (currentHeight != null) {
+    //        ob.adaptHeight = currentHeight;
+    //    }
+    //
+    //    return ob;
+    //},
 
     getComboTopPosition: function (combo, popup, needAdaptHeight, extraHeight, offsetStyle) {
         extraHeight = extraHeight || 0;
