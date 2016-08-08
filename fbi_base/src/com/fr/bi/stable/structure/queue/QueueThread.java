@@ -132,10 +132,12 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
             while (!stop) {
                 if (generatorQueue.size() == 0) {
                     synchronized (this) {
-                        try {
-                            this.wait();
-                        } catch (InterruptedException e) {
-                            continue;
+                        if (generatorQueue.size() == 0) {
+                            try {
+                                this.wait();
+                            } catch (InterruptedException e) {
+                                continue;
+                            }
                         }
                     }
                 }
