@@ -52,6 +52,21 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
                         rgap: 10,
                         vgap: 5
                     }]
+                },
+                matcher: {
+                    type: "bi.button_group",
+                    chooseType: BI.Selection.Multi,
+                    behaviors: {
+                        redmark: function () {
+                            return true;
+                        }
+                    },
+                    items: [],
+                    layouts: [{
+                        type: "bi.left",
+                        rgap: 10,
+                        vgap: 5
+                    }]
                 }
             }
         });
