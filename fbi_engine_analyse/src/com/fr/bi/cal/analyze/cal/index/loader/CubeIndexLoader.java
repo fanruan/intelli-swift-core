@@ -118,9 +118,6 @@ public class CubeIndexLoader {
         int size = calculateTargets.size();
         Set<TargetGettingKey> set = new HashSet<TargetGettingKey>();
         Iterator<TargetCalculator> cit = targetCalculator.iterator();
-        while (cit.hasNext()) {
-            set.add(cit.next().createTargetGettingKey());
-        }
         while (!calculateTargets.isEmpty() && n != null) {
             Iterator<CalCalculator> iter = calculateTargets.iterator();
             while (iter.hasNext()) {
