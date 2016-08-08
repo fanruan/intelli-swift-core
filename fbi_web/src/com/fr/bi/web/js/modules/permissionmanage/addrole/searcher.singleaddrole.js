@@ -52,6 +52,21 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
                         rgap: 10,
                         vgap: 5
                     }]
+                },
+                matcher: {
+                    type: "bi.button_group",
+                    chooseType: BI.Selection.Multi,
+                    behaviors: {
+                        redmark: function () {
+                            return true;
+                        }
+                    },
+                    items: [],
+                    layouts: [{
+                        type: "bi.left",
+                        rgap: 10,
+                        vgap: 5
+                    }]
                 }
             }
         });
@@ -123,7 +138,7 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
             if (found === true) {
                 return;
             }
-            var roleName = role.text || (role.department_name + ", " + role.post_name);
+            var roleName = role.text || (role.department_name + "," + role.post_name);
             items.push({
                 type: "bi.text_button",
                 cls: "role-item",

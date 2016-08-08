@@ -42,4 +42,12 @@ public class BICubeTableRelationIndexReader implements ICubeTableIndexReader {
     public void clear() {
 
     }
+
+    public GroupValueIndex getNullIndex(){
+        try {
+            return getterService.getNULLIndex(0);
+        } catch (BICubeIndexException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
 }
