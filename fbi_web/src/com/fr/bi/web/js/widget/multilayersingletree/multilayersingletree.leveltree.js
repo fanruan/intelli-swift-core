@@ -90,8 +90,7 @@ BI.MultiLayerSingleLevelTree = BI.inherit(BI.Widget, {
                 type: "bi.button_tree",
                 chooseType: BI.Selection.Single,
                 layouts: [{
-                    type: "bi.vertical",
-                    scrolly: false
+                    type: "bi.vertical"
                 }]
             }
         });
