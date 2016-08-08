@@ -431,7 +431,7 @@
                         if (!tmpMap[sNodes[i].pId].children) {
                             tmpMap[sNodes[i].pId].children = [];
                         }
-                        tmpMap[sNodes[i].pId].children.push(sNodes[i]);
+                        tmpMap[sNodes[i].pId].children.push(tmpMap[sNodes[i].id]);
                     } else {
                         r.push(tmpMap[sNodes[i].id]);
                     }
