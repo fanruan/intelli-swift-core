@@ -245,7 +245,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
         GroupValueIndex gvi = super.createFilterGVI(row, targetKey, loader, userId);
         for (DimensionCalculator r : row) {
-            GroupValueIndex n = r.createNoneSortNoneGroupValueMapGetter(targetKey, loader).getNULLIndex();
+            GroupValueIndex n = loader.getTableIndex(r.getField().getTableBelongTo().getTableSource()).ensureBasicIndex(r.getRelationList()).getNullIndex();
             if (n.getRowsCountWithData() != 0) {
                 gvi = GVIUtils.AND(gvi, n.NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
             }
