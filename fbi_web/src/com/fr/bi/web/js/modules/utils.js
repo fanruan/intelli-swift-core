@@ -1605,14 +1605,10 @@
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
             if (tableA === tableB) {        //同一张表
-                if (this.isSelfCircleTableByTableId(tableA)) {      //是自循环表且字段包含层级字段
-                    return path;
-                } else {
-                    return [[{
-                        primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
-                        foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
-                    }]]
-                }
+                return [[{
+                    primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
+                    foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
+                }]]
             }
             return path;
 
@@ -2473,7 +2469,9 @@
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
-            return parseComplexDateCommon(offset, new Date(paramdate));
+            if(BI.isNotNull(paramdate)){
+                return parseComplexDateCommon(offset, new Date(paramdate));
+            }
         }
 
         function parseComplexDateCommon(v, consultedDate) {

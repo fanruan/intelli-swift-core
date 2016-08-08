@@ -128,7 +128,11 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
                 this.group = valueJo.getInt("group");
             }
             if (valueJo.has("value")) {
-                JSONObject filterValueJo = valueJo.getJSONObject("value");
+                JSONObject filterValueJo = valueJo.optJSONObject("value");
+                //todo 统一value的数据结构 value值可能为object,也可能为int,
+                if(filterValueJo == null){
+                    return;
+                }
                 if(filterValueJo.has("year")){
                     this.year = filterValueJo.getInt("year");
                 }
