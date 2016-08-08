@@ -62,7 +62,6 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             fieldList.get(i).setTableBelongTo(tableSource);
             cubeFieldSources[i] = fieldList.get(i);
         }
-
         return this.tableSource.read(new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {

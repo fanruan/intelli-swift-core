@@ -22,6 +22,15 @@ public class BISourceDataNeverTransport extends BISourceDataTransport{
      */
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        return null;
+        try {
+            copyFromOldCubes();
+            recordTableInfo();
+            tableEntityService.addVersion(version);
+        } catch (Exception e) {
+        } finally {
+            return null;
+        }
     }
+
+
 }

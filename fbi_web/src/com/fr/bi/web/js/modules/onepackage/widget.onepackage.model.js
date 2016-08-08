@@ -316,7 +316,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             oldTables: oTables,
             newTables: nTables
         };
-        if(nTables.length > 0) {
+        if(BI.size(nTables) > 0) {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: BICst.BODY_ELEMENT,

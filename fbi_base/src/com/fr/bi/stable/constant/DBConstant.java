@@ -7,10 +7,6 @@ import java.util.Calendar;
  */
 public class DBConstant {
 
-public static final class CUBE_UPDATE_TYPE {
-    public static final String GLOBAL_UPDATE = "__global_update__";
-    public static final String SINGLETABLE_UPDATE = "__singleTable_update__";
-}
     /**
      * 数据库返回的数据类型
      *
@@ -123,6 +119,8 @@ public static final class CUBE_UPDATE_TYPE {
 
         public static final int NEVER = 0x1;
     }
+
+
 
     public static final String SYSTEM_USER_NAME = "__system_user_name__";
 }

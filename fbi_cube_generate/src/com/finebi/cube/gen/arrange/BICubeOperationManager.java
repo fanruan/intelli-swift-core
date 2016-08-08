@@ -415,7 +415,7 @@ public class BICubeOperationManager {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         }
         /*全局更新时该表不更新*/
-        else if (currentTask.getTaskType() != CubeTaskType.SINGLE && tableUpdateSetting.getTogetherOrNever() == DBConstant.SINGLE_TABLE_UPDATE.NEVER) {
+        else if (currentTask.getTaskType() == CubeTaskType.ALL && tableUpdateSetting.getTogetherOrNever() == DBConstant.SINGLE_TABLE_UPDATE.NEVER) {
             return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
         } else {
             switch (tableUpdateSetting.getUpdateType()) {

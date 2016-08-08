@@ -1,6 +1,8 @@
 package com.finebi.cube.impl.conf;
 
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.AbstractCubeBuild;
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.relation.*;
@@ -11,8 +13,10 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.*;
 
@@ -23,7 +27,7 @@ import java.util.*;
  * @since 4.0
  * kary 这个是真正意义上完整的全局更新，无论是否有数据，更新所有能更新的
  */
-public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
+public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
     /**
      *
      */
@@ -102,7 +106,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
 
     public void setTableRelationSet(Set<BITableRelation> tableRelationSet) {
         this.tableRelationSet = filterRelation(tableRelationSet);
-        this.tableSourceRelationSet =removeDuplicateRelations(convertRelations(this.tableRelationSet));
+        this.tableSourceRelationSet = removeDuplicateRelations(convertRelations(this.tableRelationSet));
     }
 
     public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
@@ -118,7 +122,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         for (BITableRelation relation : connectionSet) {
             try {
                 BITableSourceRelation tableSourceRelation = convertRelation(relation);
-                if (null!=tableSourceRelation) {
+                if (null != tableSourceRelation) {
                     set.add(tableSourceRelation);
                 }
             } catch (NullPointerException e) {
@@ -130,21 +134,19 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
     }
 
 
-
-
     private Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> paths) {
         Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
         for (BITableRelationPath path : paths) {
             try {
                 BITableSourceRelationPath relationPath = convert(path);
-                if (null!=relationPath) {
+                if (null != relationPath) {
                     set.add(relationPath);
                 }
             } catch (Exception e) {
                 continue;
             }
         }
-        set=removeDuplicateRelationPaths(set);
+        set = removeDuplicateRelationPaths(set);
         return set;
     }
 
@@ -152,6 +154,16 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
     public Set<CubeTableSource> getAllSingleSources() {
         BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(allSingleSources, biUser.getUserId());
         return allSingleSources;
+    }
+
+    @Override
+    public boolean copyFileFromOldCubes() {
+        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(biUser.getUserId()));
+        if (new File(tempConf.getRootURI().getPath()).exists()) {
+            BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
+        }
+        new File(tempConf.getRootURI().getPath()).mkdirs();
+        return true;
     }
 
     public void setAllSingleSources(Set<CubeTableSource> allSingleSources) {
@@ -177,10 +189,6 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
     public void setDependTableResource(Set<List<Set<CubeTableSource>>> dependTableResource) {
         this.dependTableResource = dependTableResource;
     }
-
-
-
-
 
 
     /**
@@ -240,7 +248,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable  {
         CalculateDependTool cal = new CalculateDependManager();
         cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
         for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
-            this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation,this.getAllSingleSources()));
+            this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation, this.getAllSingleSources()));
         }
         cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
         for (BITableSourceRelationPath biTableSourceRelationPath : this.getBiTableSourceRelationPathSet()) {
