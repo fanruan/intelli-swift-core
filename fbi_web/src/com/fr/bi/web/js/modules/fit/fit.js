@@ -413,6 +413,7 @@ BI.Fit = BI.inherit(BI.Widget, {
         this.arrangement.populate(result);
         BI.nextTick(function () {
             self.arrangement.zoom(layoutRatio);
+            self.fireEvent(BI.Fit.EVENT_CHANGE);
         });
     },
 

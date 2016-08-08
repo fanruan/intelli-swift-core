@@ -96,7 +96,7 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
             }
         }
         if (!this.bounds) {
-            this.bounds = Data.SharingPool.cat("widgets");
+            this.bounds = Data.SharingPool.get("widgets");
         } else {
             //这里特别恶心， 自适应布局的时候高度又不能让它变化，但宽度又要resize
             var widgets = Data.SharingPool.cat("widgets");
