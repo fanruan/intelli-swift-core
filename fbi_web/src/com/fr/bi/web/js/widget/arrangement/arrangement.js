@@ -2315,13 +2315,13 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         if (this._isArrangeFine()) {
             var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].clientHeight;
             var xRatio = ratio.x * width / (occupied.left + occupied.width);
-            var yRatio = ratio.y * height / (occupied.top + occupied.height);
+            //var yRatio = ratio.y * height / (occupied.top + occupied.height);
             var regions = this._cloneRegion();
             BI.each(regions, function (i, region) {
                 region.left = region.left * xRatio;
-                region.top = region.top * yRatio;
+                //region.top = region.top * yRatio;
                 region.width = region.width * xRatio;
-                region.height = region.height * yRatio;
+                //region.height = region.height * yRatio;
             });
             if (this._test(regions)) {
                 this._modifyRegion(regions);
