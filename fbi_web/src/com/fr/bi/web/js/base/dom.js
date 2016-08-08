@@ -216,6 +216,16 @@ BI.extend(jQuery, {
         return $.getBottomPosition(combo, popup, extraHeight).top + viewBounds.height <= windowBounds.height;
     },
 
+    isRightSpaceLarger: function (combo) {
+        var windowBounds = $("body").bounds();
+        return windowBounds.width - combo.element.offset().left - combo.element.bounds().width >= combo.element.offset().left;
+    },
+
+    isBottomSpaceLarger: function (combo) {
+        var windowBounds = $("body").bounds();
+        return windowBounds.height - combo.element.offset().top - combo.element.bounds().height >= combo.element.offset().top;
+    },
+
     getLeftAlignPosition: function (combo, popup, extraWidth) {
         var viewBounds = popup.element.bounds(), windowBounds = $("body").bounds();
         var left = combo.element.offset().left;
@@ -243,10 +253,47 @@ BI.extend(jQuery, {
 
     getTopAlignPosition: function (combo, popup, extraHeight, needAdaptHeight) {
         var comboOffset = combo.element.offset();
-        var comboBounds = combo.element.bounds(), popupBounds = popup.element.bounds();
+        var comboBounds = combo.element.bounds(), popupBounds = popup.element.bounds(), windowBounds = $("body").bounds();
         var top, adaptHeight;
         if ($.isBottomSpaceEnough(combo, popup, -1 * comboBounds.height + extraHeight)) {
             top = comboOffset.top;
+        } else if (needAdaptHeight) {
+            top = comboOffset.top;
+            adaptHeight = windowBounds.height - top - extraHeight;
+        } else {
+            top = windowBounds.height - popupBounds.height - extraHeight;
+        }
+        if (top < 0) {
+            top = 0;
+        }
+        return adaptHeight ? {
+            top: top,
+            adaptHeight: adaptHeight
+        } : {
+            top: top
+        }
+    },
+
+    getBottomAlignPosition: function (combo, popup, extraHeight, needAdaptHeight) {
+        var comboOffset = combo.element.offset();
+        var comboBounds = combo.element.bounds(), popupBounds = popup.element.bounds();
+        var top, adaptHeight;
+        if ($.isTopSpaceEnough(combo, popup, -1 * comboBounds.height + extraHeight)) {
+            top = comboOffset.top + comboBounds.height - popupBounds.height - extraHeight;
+        } else if (needAdaptHeight) {
+            top = 0;
+            adaptHeight = comboOffset.top + comboBounds.height - extraHeight;
+        } else {
+            top = 0;
+        }
+        if (top < 0) {
+            top = 0;
+        }
+        return adaptHeight ? {
+            top: top,
+            adaptHeight: adaptHeight
+        } : {
+            top: top
         }
     },
 
