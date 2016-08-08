@@ -735,7 +735,7 @@ if (!window.BI) {
             try {
                 return parseInt(number, radix);
             } catch (e) {
-                throw new Error("转成数�?�类型失�?");
+                throw new Error("转成int类型失败");
                 return NaN;
             }
         },
@@ -744,7 +744,7 @@ if (!window.BI) {
             try {
                 return parseFloat(number);
             } catch (e) {
-                throw new Error("转成Float类型失败");
+                throw new Error("转成float类型失败");
                 return NaN;
             }
         },
@@ -865,6 +865,10 @@ if (!window.BI) {
 
         isEmptyString: function (str) {
             return BI.isString(str) && BI.isEmpty(str);
+        },
+
+        contentFormat: function () {
+            return FR.contentFormat.apply(FR, arguments);
         },
 
         /**

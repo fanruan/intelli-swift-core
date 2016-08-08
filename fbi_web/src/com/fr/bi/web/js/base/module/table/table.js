@@ -1992,6 +1992,9 @@ BI.Table = BI.inherit(BI.Widget, {
             if (this.scrollBottomLeft.element[0].scrollLeft !== scrollLeft) {
                 this.scrollBottomLeft.element[0].scrollLeft = scrollLeft;
             }
+            if (this.scrollTopLeft.element[0].scrollLeft !== scrollLeft) {
+                this.scrollTopLeft.element[0].scrollLeft = scrollLeft;
+            }
         } else {
             if (this.scrollContainer.element[0].scrollLeft !== scrollLeft) {
                 this.scrollContainer.element[0].scrollLeft = scrollLeft;
@@ -2004,6 +2007,9 @@ BI.Table = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             if (this.scrollBottomRight.element[0].scrollLeft !== scrollLeft) {
                 this.scrollBottomRight.element[0].scrollLeft = scrollLeft;
+            }
+            if (this.scrollTopRight.element[0].scrollLeft !== scrollLeft) {
+                this.scrollTopRight.element[0].scrollLeft = scrollLeft;
             }
         } else {
             if (this.scrollContainer.element[0].scrollLeft !== scrollLeft) {
