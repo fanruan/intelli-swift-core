@@ -37,7 +37,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                 !allIds.contains(id) && delete filterValue[id];
             });
             var sortSequence = this.get("sort_sequence") || [];
-            BI.remove(sortSequence, function(i, item) {
+            BI.remove(sortSequence, function (i, item) {
                 return item === key2;
             });
             this.set({
@@ -67,7 +67,10 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                 var result = BI.find(changed.dimensions, function (did, dimension) {
                     return !BI.has(prev.dimensions, did);
                 });
-                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+                if (BI.isNotNull(result)) {
+                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+                }
+
             }
         }
     },

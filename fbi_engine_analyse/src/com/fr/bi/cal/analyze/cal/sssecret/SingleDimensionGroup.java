@@ -167,9 +167,9 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         int groupType = column.getGroup().getType();
         if (groupType == BIReportConstant.GROUP.CUSTOM_GROUP ||
                 groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP) {
-            return column.hasSelfGroup();
+            return true;
         }
-        if (groupType != BIReportConstant.GROUP.NO_GROUP && groupType != BIReportConstant.GROUP.ID_GROUP ) {
+        if (groupType != BIReportConstant.GROUP.NO_GROUP && groupType != BIReportConstant.GROUP.ID_GROUP) {
             return true;
         }
         if (column.getSortType() == BIReportConstant.SORT.CUSTOM) {
@@ -378,7 +378,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 }
             }
         });
-        final Iterator<Integer> it  = set.iterator();
+        final Iterator<Integer> it = set.iterator();
         return new Iterator() {
             @Override
             public void remove() {
