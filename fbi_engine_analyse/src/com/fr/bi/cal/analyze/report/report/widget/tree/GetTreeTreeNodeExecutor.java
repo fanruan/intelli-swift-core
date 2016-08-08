@@ -167,7 +167,7 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 try {
                     nodeJa.put("isParent", hasChild);
                     if (id == null) {
-                        nodeJa.put("id", (i + 1));
+                        nodeJa.put("id", times + "_" + (i + 1));
                     } else {
                         nodeJa.put("id", id + "_" + times + "_" + (i + 1));
                     }

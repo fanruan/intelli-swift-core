@@ -4,7 +4,7 @@
  * @type {*|void|Object}
  */
 BI.MidTreeLeafItem = BI.inherit(BI.BasicButton, {
-    _defaultConfig: function() {
+    _defaultConfig: function () {
         return BI.extend(BI.MidTreeLeafItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-mid-tree-leaf-item bi-list-item-active",
             logic: {
@@ -12,11 +12,11 @@ BI.MidTreeLeafItem = BI.inherit(BI.BasicButton, {
             },
             id: "",
             pId: "",
-            isFront: false,
+            layer: 0,
             height: 25
         })
     },
-    _init : function() {
+    _init: function () {
         BI.MidTreeLeafItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.checkbox = BI.createWidget({
@@ -33,14 +33,14 @@ BI.MidTreeLeafItem = BI.inherit(BI.BasicButton, {
             value: o.value,
             py: o.py
         });
-        this.checkbox.on(BI.Controller.EVENT_CHANGE, function(type){
-            if(type ===  BI.Events.CLICK) {
+        this.checkbox.on(BI.Controller.EVENT_CHANGE, function (type) {
+            if (type === BI.Events.CLICK) {
                 self.setSelected(self.isSelected());
             }
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
         var type = BI.LogicFactory.createLogicTypeByDirection(BI.Direction.Left);
-        var items = BI.LogicFactory.createLogicItemsByDirection(BI.Direction.Left, (this.options.isFront ? "" : {
+        var items = BI.LogicFactory.createLogicItemsByDirection(BI.Direction.Left, ((o.layer === 0) ? "" : {
             width: 13,
             el: {
                 type: "bi.layout",
@@ -66,36 +66,36 @@ BI.MidTreeLeafItem = BI.inherit(BI.BasicButton, {
         }))));
     },
 
-    doRedMark: function(){
+    doRedMark: function () {
         this.text.doRedMark.apply(this.text, arguments);
     },
 
-    unRedMark: function(){
+    unRedMark: function () {
         this.text.unRedMark.apply(this.text, arguments);
     },
 
-    doHighLight: function(){
+    doHighLight: function () {
         this.text.doHighLight.apply(this.text, arguments);
     },
 
-    unHighLight: function(){
+    unHighLight: function () {
         this.text.unHighLight.apply(this.text, arguments);
     },
 
-    getId: function(){
+    getId: function () {
         return this.options.id;
     },
 
-    getPId: function(){
+    getPId: function () {
         return this.options.pId;
     },
 
-    doClick: function(){
+    doClick: function () {
         BI.MidTreeLeafItem.superclass.doClick.apply(this, arguments);
         this.checkbox.setSelected(this.isSelected());
     },
 
-    setSelected: function(v){
+    setSelected: function (v) {
         BI.MidTreeLeafItem.superclass.setSelected.apply(this, arguments);
         this.checkbox.setSelected(v);
     }
