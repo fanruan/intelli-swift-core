@@ -2,6 +2,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.PaneModel.superclass._defaultConfig.apply(this), {
             layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
+            layoutRatio: {},
             widgets: {}
         });
     },
@@ -48,8 +49,8 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
             var dashboard = this.get("dashboard");
             var widgets = this.get("widgets");
             var newWidgets = {};
-            var layoutType = dashboard.layoutType;
             var regions = dashboard.regions;
+            delete dashboard.regions;
             BI.each(regions, function (i, region) {
                 if (BI.isNotNull(widgets[region.id])) {
                     widgets[region.id].bounds = {
@@ -61,7 +62,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                     newWidgets[region.id] = widgets[region.id];
                 }
             });
-            this.set({"widgets": newWidgets, layoutType: layoutType});
+            this.set(BI.extend({"widgets": newWidgets}, dashboard));
             return true;
         }
         if (this.has("addWidget")) {
@@ -160,6 +161,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("dimensions", dims);
         Data.SharingPool.put("widgets", widgets);
         Data.SharingPool.put("layoutType", this.get("layoutType"));
+        Data.SharingPool.put("layoutRatio", this.get("layoutRatio"));
 
         //用于undo redo
         this.saveDebounce(widgets, dims, this.get("layoutType"));

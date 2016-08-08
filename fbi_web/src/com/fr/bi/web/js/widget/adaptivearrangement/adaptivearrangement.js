@@ -366,6 +366,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         return this.arrangement.setRegionPosition(name, position);
     },
 
+    zoom: function (ratio) {
+        this.arrangement.zoom(ratio);
+    },
+
     resize: function () {
         this.arrangement.resize();
     },
@@ -396,6 +400,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
 
     getLayoutType: function () {
         return this.arrangement.getLayoutType();
+    },
+
+    getLayoutRatio: function () {
+        return this.arrangement.getLayoutRatio();
     },
 
     getHelper: function () {

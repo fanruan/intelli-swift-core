@@ -280,10 +280,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         });
         this.dashboard.on(BI.Fit.EVENT_CHANGE, function () {
             var value = this.getValue();
-            self.set("dashboard", {
-                layoutType: value.layoutType,
-                regions: value.regions
-            })
+            self.set("dashboard", value)
         });
 
         return this.dashboard;

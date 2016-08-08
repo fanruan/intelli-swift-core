@@ -22,7 +22,8 @@ BI.UploadImage = BI.inherit(BI.Widget, {
 
         this.file = BI.createWidget({
             type: "bi.multifile_editor",
-            accept: "*.jpg;*.png;*.gif;"
+            accept: "*.jpg;*.png;*.gif;*.bmp;*.jpeg;",
+            maxSize: 1024 * 1024 * 100
         });
 
         this.img = BI.createWidget({

@@ -594,16 +594,19 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
     //布局是否是优良的
     _isArrangeFine: function (regions) {
-        if (this._isRegionOverlay()) {
-            return false;
+        if (this.options.layoutType === BI.Arrangement.LAYOUT_TYPE.ADAPTIVE) {
+            if (this._isRegionOverlay()) {
+                return false;
+            }
+            var maxRegion = this._getRegionOccupied(regions);
+            var area = maxRegion.width * maxRegion.height;
+            var all = 0;
+            BI.each(regions || this.regions, function (id, region) {
+                all += region.width * region.height;
+            });
+            return Math.abs(area - all) < 8;
         }
-        var maxRegion = this._getRegionOccupied(regions);
-        var area = maxRegion.width * maxRegion.height;
-        var all = 0;
-        BI.each(regions || this.regions, function (id, region) {
-            all += region.width * region.height;
-        });
-        return Math.abs(area - all) < 8;
+        return true;
     },
 
     _getRegionNames: function (regions) {
@@ -2026,6 +2029,15 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         return this.options.layoutType;
     },
 
+    getLayoutRatio: function () {
+        var occupied = this._getRegionOccupied();
+        var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].clientHeight;
+        return {
+            x: BI.parseFloat(BI.contentFormat((occupied.left + occupied.width) / width, "#.##")),
+            y: BI.parseFloat(BI.contentFormat((occupied.top + occupied.height) / height, "#.##"))
+        }
+    },
+
     addRegion: function (region, position) {
         if (position) {
             this.setPosition(position, region);
@@ -2295,6 +2307,30 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 break;
         }
         this.resize();
+    },
+
+    zoom: function (ratio) {
+        var self = this, o = this.options;
+        var occupied = this._applyContainer();
+        if (this._isArrangeFine()) {
+            var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].clientHeight;
+            var xRatio = ratio.x * width / (occupied.left + occupied.width);
+            var yRatio = ratio.y * height / (occupied.top + occupied.height);
+            var regions = this._cloneRegion();
+            BI.each(regions, function (i, region) {
+                region.left = region.left * xRatio;
+                region.top = region.top * yRatio;
+                region.width = region.width * xRatio;
+                region.height = region.height * yRatio;
+            });
+            if (this._test(regions)) {
+                this._modifyRegion(regions);
+                this._applyRegion();
+            }
+            this.resize();
+        } else {
+            this.relayout();
+        }
     },
 
     resize: function () {

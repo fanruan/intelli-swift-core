@@ -316,6 +316,10 @@ BI.Fit = BI.inherit(BI.Widget, {
         return this.arrangement.getLayoutType();
     },
 
+    getLayoutRatio: function () {
+        return this.arrangement.getLayoutRatio();
+    },
+
     getAllRegions: function () {
         var regions = this.arrangement.getAllRegions();
         var result = [];
@@ -333,6 +337,7 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
+            layoutRatio: this.getLayoutRatio(),
             layoutType: this.getLayoutType(),
             regions: this.getAllRegions()
         }
@@ -386,6 +391,7 @@ BI.Fit = BI.inherit(BI.Widget, {
     populate: function () {
         var self = this;
         var layoutType = Data.SharingPool.get("layoutType");
+        var layoutRatio = Data.SharingPool.get("layoutRatio");
         if (BI.isNull(layoutType)) {
             layoutType = BI.Arrangement.LAYOUT_TYPE.FREE;
         }
@@ -405,10 +411,13 @@ BI.Fit = BI.inherit(BI.Widget, {
         this._changeLayoutType(layoutType);
         this.setLayoutType(layoutType);
         this.arrangement.populate(result);
+        BI.nextTick(function () {
+            self.arrangement.zoom(layoutRatio);
+        });
     },
 
     destroy: function () {
-        BI.Resizers.remove(this.getName());
+        this.arrangement.destroy();
         BI.Fit.superclass.destroy.apply(this, arguments);
     }
 });
