@@ -434,7 +434,6 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 BI.nextTick(function () {
                     self.arrangement.resize();
-                    self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
                 });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
