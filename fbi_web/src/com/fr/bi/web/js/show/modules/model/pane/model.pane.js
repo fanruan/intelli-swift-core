@@ -30,5 +30,6 @@ BIShow.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("dimensions", dims);
         Data.SharingPool.put("widgets", widgets);
         Data.SharingPool.put("layoutType", this.get("layoutType"));
+        Data.SharingPool.put("layoutRatio", this.get("layoutRatio"));
     }
 });

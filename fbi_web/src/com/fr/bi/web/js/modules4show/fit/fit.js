@@ -136,18 +136,13 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
         BI.each(items, function (i, item) {
             self._initResizable(item.el);
         });
+        var layoutRatio = Data.SharingPool.get("layoutRatio") || {};
         this.arrangement.setLayoutType(this.layoutType);
         this.arrangement.populate(items);
-        switch (this.layoutType) {
-            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                BI.nextTick(function () {
-                    self.arrangement.resize();
-                    self.fireEvent(BI.Fit4Show.EVENT_RESIZE);
-                });
-                break;
-            case BI.Arrangement.LAYOUT_TYPE.FREE:
-                break;
-        }
+        BI.nextTick(function () {
+            self.arrangement.zoom(layoutRatio);
+            self.fireEvent(BI.Fit4Show.EVENT_RESIZE);
+        });
     }
 });
 BI.Fit4Show.EVENT_RESIZE = "EVENT_RESIZE";
