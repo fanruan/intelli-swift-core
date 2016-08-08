@@ -117,7 +117,6 @@ public class CubeIndexLoader {
     public static void calculateTargets(List targetCalculator, List<CalCalculator> calculateTargets, LightNode n, boolean calConfig) {
         int size = calculateTargets.size();
         Set<TargetGettingKey> set = new HashSet<TargetGettingKey>();
-        Iterator<TargetCalculator> cit = targetCalculator.iterator();
         while (!calculateTargets.isEmpty() && n != null) {
             Iterator<CalCalculator> iter = calculateTargets.iterator();
             while (iter.hasNext()) {
