@@ -8,7 +8,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DataLabelStyleSet.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.textTrigger = BI.createWidget({
             type: "bi.text_button",
             text: "设置样式",
@@ -23,7 +23,8 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             cls: "condition-trigger"
         });
         this.styleTab = BI.createWidget({
-            type: "bi.data_label_tab"
+            type: "bi.data_label_tab",
+            chartType: o.chartType
         });
         this.styleTab.on(BI.DataLabelTab.IMG_CHANGE, function () {
             self.style.hideView();
@@ -61,34 +62,39 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             offsetStyle: "right"
         });
         this.style.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
-            if (self.styleTab.getValue().type === "img") {
-                self.imgTrigger.setSrc(self.styleTab.getValue().src);
-                self.imgTrigger.setVisible(true);
-                self.textTrigger.setVisible(false);
-            } else {
-                self.textTrigger.setValue("text");
-                $(self.textTrigger.element).css(self.styleTab.getValue());
-                self.imgTrigger.setVisible(false);
-                self.textTrigger.setVisible(true);
+            var style = self.styleTab.getValue();
+            switch (style.type) {
+                case 1:
+                    self.textTrigger.setValue("text");
+                    $(self.textTrigger.element).css(style.textStyle.style);
+                    self.imgTrigger.setVisible(false);
+                    self.textTrigger.setVisible(true);
+                    break;
+                case 2:
+                    self.imgTrigger.setSrc(style.imgStyle.src);
+                    self.imgTrigger.setVisible(true);
+                    self.textTrigger.setVisible(false);
             }
         });
     },
 
-    _checkVisible: function (v) {
-        if (v.type === "img") {
-            this.imgTrigger.setSrc(v.src);
-            this.imgTrigger.element.css({"display": "block"});
-            this.imgTrigger.setVisible(true);
-            this.textTrigger.setVisible(false);
-        } else {
-            this.textTrigger.setValue("text");
-            //todo
-            $(this.textTrigger.element).css(v);
+    _checkStyle: function (v) {
+        switch (v.type) {
+            case 1:
+                this.textTrigger.setValue("text");
+                //todo
+                $(this.textTrigger.element).css(v.textStyle.style);
+                break;
+            case 2:
+                this.imgTrigger.setSrc(v.imgStyle.src);
+                this.imgTrigger.element.css({"display": "block"});
+                this.imgTrigger.setVisible(true);
+                this.textTrigger.setVisible(false);
         }
     },
 
     setValue: function (v) {
-        this._checkVisible(v);
+        this._checkStyle(v);
         this.styleTab.setValue(v);
     },
 

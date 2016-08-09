@@ -79,11 +79,14 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            "font-family": this.family.getValue(),
-            "font-size": this.size.getValue(),
-            "font-weight": this.bold.isSelected() ? "bold" : "normal",
-            "font-style": this.italic.isSelected() ? "italic" : "normal",
-            "color": this.colorchooser.getValue()
+            "type": "text",
+            "style": {
+                "font-family": this.family.getValue(),
+                "font-size": this.size.getValue(),
+                "font-weight": this.bold.isSelected() ? "bold" : "normal",
+                "font-style": this.italic.isSelected() ? "italic" : "normal",
+                "color": this.colorchooser.getValue()
+            }
         }
     }
 });

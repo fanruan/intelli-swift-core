@@ -2615,7 +2615,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalabel/condition/widget.datalabelselectfield.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/imageset.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/styleset.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/tab/barchart.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/chart.datalabel.js",
 
                 //布局
                 "com/fr/bi/web/js/widget/arrangement/arrangement.droppable.js",

@@ -3,7 +3,19 @@
  * Created by Fay on 2016/7/7.
  */
 BI.DataLabelImageSet = BI.inherit(BI.Widget, {
-    _defaultImg: [],
+    _defaultImg: [
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+        "/WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=bd37722e-2c57-4f9e-9418-a5c053617bfd_black.png",
+    ],
 
     _img: [],
 
