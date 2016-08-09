@@ -61,11 +61,11 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
         }
         boolean hasChild = (values.length + 1 < floors);
         List<String> vl;
-        if (values.length > 0) {
-            vl = createData(values, -1);
-        } else {
+//        if (values.length > 0) {
+//            vl = createData(values, -1);
+//        } else {
             vl = createData(values, times);
-        }
+//        }
 
 
         //如果结果为空，直接返回
