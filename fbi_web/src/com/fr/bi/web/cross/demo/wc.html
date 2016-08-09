@@ -26,35 +26,19 @@
 
     <script type="text/javascript">
         $(function () {
-            var triggerButton = BI.createWidget({
-                type: "bi.trigger_icon_button",
-                width: 10
-            });
-            var textTrigger = BI.createWidget({
-                type: "bi.text_button",
-                textAlign: "left",
-                text: "设置样式",
-                height: 40
-            });
-            var trigger = BI.createWidget({
-                type: "bi.htape",
-                items: [{
-                    el: textTrigger,
-                    width: 50
-                }, {
-                    el: triggerButton,
-                    width: 10
-                }]
-            });
             BI.createWidget({
                 type: "bi.absolute",
                 element: "body",
                 items: [{
-                    el: trigger,
+                    el: {
+                        type: "bi.button",
+                        text: "测试",
+                        height: 25,
+                        width: 100
+                    },
                     left: 100,
                     top: 100
-                }],
-                width:100
+                }]
             })
         });
     </script>
