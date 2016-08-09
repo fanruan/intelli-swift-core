@@ -30,7 +30,7 @@ public class BISourceDataPartTransport4Test extends BISourceDataPartTransport {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        super.recordTableInfo();
+//        super.recordTableInfo();
         long count = transport();
         if (count >= 0) {
             tableEntityService.recordRowCount(count);
