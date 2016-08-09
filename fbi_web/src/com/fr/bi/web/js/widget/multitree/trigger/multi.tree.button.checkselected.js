@@ -35,7 +35,7 @@ BI.MultiTreeCheckSelectedButton = BI.inherit(BI.Single, {
             hgap: 4,
             text: this._const.checkSelected,
             textAlign: 'center',
-            textHeight: 14
+            textHeight: 15
         });
         this.checkSelected.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
