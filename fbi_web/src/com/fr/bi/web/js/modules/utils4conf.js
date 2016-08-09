@@ -84,11 +84,15 @@ BI.extend(BI.Utils, {
      * @returns {Array}
      */
     getAllGroupedPackagesTree: function () {
-        var groups = Data.SharingPool.get("groups"), packages = Data.SharingPool.get("packages");
+        var groupMap = Data.SharingPool.get("groups"), packages = Data.SharingPool.get("packages");
         var packStructure = [], groupedPacks = [];
-        BI.each(groups, function (id, group) {
+        //排个序
+        var groups = BI.sortBy(groupMap, function(id, item) {
+            return item.init_time;
+        });
+        BI.each(groups, function (i, group) {
             packStructure.push({
-                id: id,
+                id: group.id,
                 text: group.name,
                 value: group.name,
                 open: true,
@@ -99,7 +103,7 @@ BI.extend(BI.Utils, {
                     id: item.id,
                     text: packages[item.id].name,
                     value: item.id,
-                    pId: id,
+                    pId: group.id,
                     open: true
                 });
                 groupedPacks.push(item.id);
