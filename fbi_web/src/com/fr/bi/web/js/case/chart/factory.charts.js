@@ -169,7 +169,6 @@ BI.ChartCombineFormatItemFactory = {
                 },
                 "maxSize": 80,
                 "fillColorOpacity": 0.5,
-                "marker": {"symbol": "circle", "radius": 4.5, "enabled": true},
                 "step": false,
                 "force": false,
                 "minSize": 15,
