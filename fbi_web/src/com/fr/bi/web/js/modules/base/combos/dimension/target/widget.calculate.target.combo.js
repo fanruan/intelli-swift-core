@@ -5,7 +5,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     constants: {
         CHART_TYPE_POSITION: 2,
-        CordonPos: 0
+        CordonPos: 1
     },
     defaultItems: function () {
         return [
