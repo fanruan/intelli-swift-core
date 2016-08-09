@@ -63,12 +63,12 @@ public class CubeSecurityCheck {
 
     public boolean check(String cubePath) {
         Map<String, Long> currentResult = compute(cubePath);
-boolean result=true;
+        boolean result = true;
         for (Map.Entry<String, Long> entry : sumCheck.entrySet()) {
             if (currentResult.containsKey(entry.getKey())) {
-                if (currentResult.get(entry.getKey()).longValue() != entry.getValue().longValue()&&(entry.getKey().indexOf("version")<0&&entry.getKey().indexOf("timestamp")<0)) {
+                if (currentResult.get(entry.getKey()).longValue() != entry.getValue().longValue() && (entry.getKey().indexOf("version") < 0 && entry.getKey().indexOf("timestamp") < 0)) {
                     BILogger.getLogger().info(entry.getKey());
-                    result=false;
+                    result = false;
                 }
             }
         }

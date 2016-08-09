@@ -110,6 +110,9 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         assertTrue(tableEntityService.getRowCount() == 5);
         assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(0).equals("China"));
         assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(1).equals("US"));
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(2).equals("Japan"));
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(3).equals("Canada"));
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(4).equals("Mexio"));
     }
 
     /**

@@ -4,9 +4,9 @@ import com.finebi.cube.data.input.ICubeByteArrayReaderBuilder;
 import com.finebi.cube.data.output.*;
 
 /**
- * This class created on 2016/3/16.
+ * This class created on 2016/8/06.
  *
- * @author Connery
+ * @author kary
  * @since 4.0
  */
 public class BINIOWriterIncreaseManager extends BIBasicNIOWriterManager<ICubeWriter> {
@@ -28,7 +28,6 @@ public class BINIOWriterIncreaseManager extends BIBasicNIOWriterManager<ICubeWri
     private BINIOWriterIncreaseManager() {
         super();
         tag2Builder.put(ICubeStringWriterBuilder.FRAGMENT_TAG, new BIStringNIOIncreaseWriterBuilder());
-//        tag2Builder.put(ICubeStringWriterBuilder.FRAGMENT_TAG, new BIStringNIOWriterBuilder());
         tag2Builder.put(ICubeByteArrayReaderBuilder.FRAGMENT_TAG, new BIByteArrayNIOWriterIncreaseBuilder());
         tag2Builder.put(ICubeGroupValueIndexWriterBuilder.FRAGMENT_TAG, new BIGroupValueIndexWriterBuilder());
         tag2Builder.put(ICubeByteWriterWrapperBuilder.FRAGMENT_TAG, new BICubeByteWriterWrapperBuilder());
