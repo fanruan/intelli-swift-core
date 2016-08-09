@@ -5,9 +5,8 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.IteratorManager;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.NormalIteratorManager;
-import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
-import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
 import com.fr.bi.cal.analyze.cal.multithread.MergeSummaryCall;
+import com.fr.bi.cal.analyze.cal.multithread.MergeSummaryCallList;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
@@ -320,7 +319,7 @@ public class DimensionGroupFilter {
         TreeBuilder nodeBuilder = new TreeBuilder();
         setRootIndexMap(nodeBuilder);
         boolean shouldBuildTree = shouldBuildTree();
-        List<BISingleThreadCal> list = new ArrayList<BISingleThreadCal>();
+        List<MergeSummaryCall> list = new ArrayList<MergeSummaryCall>();
         while (!GroupUtils.isAllEmpty(roots)) {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
@@ -332,7 +331,16 @@ public class DimensionGroupFilter {
         }
         if (shouldBuildTree) {
             if (MultiThreadManagerImpl.getInstance().isMultiCall()) {
-                BIMultiThreadExecutor.execute(list);
+                int size = (list.size() >> 3) + 1;
+                for (int i = 0; i < 8; i++) {
+                    int start = i * size;
+                    if (start > list.size()) {
+                        break;
+                    }
+                    int end = Math.min(start + size, list.size());
+                    MultiThreadManagerImpl.getInstance().getExecutorService().submit(new MergeSummaryCallList(list.subList(start, end)));
+                }
+                MultiThreadManagerImpl.getInstance().awaitExecutor();
             }
             buildTree(groupValueIndexe2D, counter, nodeBuilder);
         }
@@ -364,7 +372,7 @@ public class DimensionGroupFilter {
         }
     }
 
-    private void fillValueIndex(GroupValueIndex[][] groupValueIndexe2D, GroupConnectionValue[] roots, RowCounter counter, TreeBuilder nodeBuilder, int deep, boolean shouldBuildTree, List<BISingleThreadCal> list) {
+    private void fillValueIndex(GroupValueIndex[][] groupValueIndexe2D, GroupConnectionValue[] roots, RowCounter counter, TreeBuilder nodeBuilder, int deep, boolean shouldBuildTree, List<MergeSummaryCall> list) {
         GroupConnectionValue[] groupConnectionValueChildren = getDeepChildren(roots, deep + 1);
 
         IMergerNode mergeNode = new MergerNode();
