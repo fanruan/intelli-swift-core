@@ -2314,7 +2314,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         var occupied = this._applyContainer();
         if (this._isArrangeFine()) {
             var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].clientHeight;
-            var xRatio = ratio.x * width / (occupied.left + occupied.width);
+            var xRatio = (ratio.x || 1) * width / (occupied.left + occupied.width);
             //var yRatio = ratio.y * height / (occupied.top + occupied.height);
             var regions = this._cloneRegion();
             BI.each(regions, function (i, region) {
