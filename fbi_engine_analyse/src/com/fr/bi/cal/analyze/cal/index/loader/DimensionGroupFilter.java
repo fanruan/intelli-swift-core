@@ -5,8 +5,9 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.IteratorManager;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.NormalIteratorManager;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
 import com.fr.bi.cal.analyze.cal.multithread.MergeSummaryCall;
-import com.fr.bi.cal.analyze.cal.multithread.MergeSummaryCallList;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
@@ -21,6 +22,7 @@ import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
 import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTargetKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.manager.PlugManager;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -219,7 +221,7 @@ public class DimensionGroupFilter {
     private boolean isNotStringDimensionFilter(DimensionFilter filter) {
         for (int i = 0; i < rowDimension.length; i++) {
             if (rowDimension[i].getFilter() == filter) {
-                if (!isStringDimension(rowDimension[i])) {
+                if ((!isStringDimension(rowDimension[i])) || rowDimension[i].getGroup().getType() == BIReportConstant.GROUP.CUSTOM_GROUP) {
                     return true;
                 }
             }
@@ -286,7 +288,7 @@ public class DimensionGroupFilter {
                     continue;
                 }
                 DimensionFilter resultFilter = rowDimension[deep].getFilter();
-                if (resultFilter != null && resultFilter.canCreateDirectFilter()) {
+                if (resultFilter != null && isDirectFilter(resultFilter)) {
                     DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
                     BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BIBusinessTable.createEmptyTable())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
                     GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
@@ -318,7 +320,7 @@ public class DimensionGroupFilter {
         TreeBuilder nodeBuilder = new TreeBuilder();
         setRootIndexMap(nodeBuilder);
         boolean shouldBuildTree = shouldBuildTree();
-        List<MergeSummaryCall> list = new ArrayList<MergeSummaryCall>();
+        List<BISingleThreadCal> list = new ArrayList<BISingleThreadCal>();
         while (!GroupUtils.isAllEmpty(roots)) {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
@@ -330,16 +332,7 @@ public class DimensionGroupFilter {
         }
         if (shouldBuildTree) {
             if (MultiThreadManagerImpl.getInstance().isMultiCall()) {
-                int size = (list.size() >> 3) + 1;
-                for (int i = 0; i < 8; i++) {
-                    int start = i * size;
-                    if (start > list.size()) {
-                        break;
-                    }
-                    int end = Math.min(start + size, list.size());
-                    MultiThreadManagerImpl.getInstance().getExecutorService().submit(new MergeSummaryCallList(list.subList(start, end)));
-                }
-                MultiThreadManagerImpl.getInstance().awaitExecutor();
+                BIMultiThreadExecutor.execute(list);
             }
             buildTree(groupValueIndexe2D, counter, nodeBuilder);
         }
@@ -371,7 +364,7 @@ public class DimensionGroupFilter {
         }
     }
 
-    private void fillValueIndex(GroupValueIndex[][] groupValueIndexe2D, GroupConnectionValue[] roots, RowCounter counter, TreeBuilder nodeBuilder, int deep, boolean shouldBuildTree, List<MergeSummaryCall> list) {
+    private void fillValueIndex(GroupValueIndex[][] groupValueIndexe2D, GroupConnectionValue[] roots, RowCounter counter, TreeBuilder nodeBuilder, int deep, boolean shouldBuildTree, List<BISingleThreadCal> list) {
         GroupConnectionValue[] groupConnectionValueChildren = getDeepChildren(roots, deep + 1);
 
         IMergerNode mergeNode = new MergerNode();
