@@ -2,8 +2,8 @@
  * Created by fay on 2016/7/21.
  */
 BI.DataLabelPopup = BI.inherit(BI.BarPopoverSection, {
-    _defaultConfig: function(){
-        return BI.extend( BI.DataLabelPopup.superclass._defaultConfig.apply(this, arguments), {
+    _defaultConfig: function () {
+        return BI.extend(BI.DataLabelPopup.superclass._defaultConfig.apply(this, arguments), {
             width: 600,
             height: 500
         })
@@ -13,7 +13,7 @@ BI.DataLabelPopup = BI.inherit(BI.BarPopoverSection, {
         BI.DataLabelPopup.superclass._init.apply(this, arguments);
     },
 
-    rebuildNorth : function(north) {
+    rebuildNorth: function (north) {
         var o = this.options;
         var name = BI.Utils.getDimensionNameByID(o.dId);
         BI.createWidget({
@@ -27,7 +27,7 @@ BI.DataLabelPopup = BI.inherit(BI.BarPopoverSection, {
         return true;
     },
 
-    rebuildCenter : function(center) {
+    rebuildCenter: function (center) {
         var o = this.options;
         this.dataLabelPane = BI.createWidget({
             type: "bi.data_label",
@@ -37,11 +37,11 @@ BI.DataLabelPopup = BI.inherit(BI.BarPopoverSection, {
         return true;
     },
 
-    populate: function(){
+    populate: function () {
         this.dataLabelPane.populate();
     },
 
-    end: function(){
+    end: function () {
         this.fireEvent(BI.DataLabelPopup.EVENT_CHANGE, this.dataLabelPane.getValue());
     }
 });

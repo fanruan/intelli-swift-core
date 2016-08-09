@@ -12,14 +12,14 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         this.textTrigger = BI.createWidget({
             type: "bi.text_button",
             text: "设置样式",
-            width: 52,
             height: 40,
             cls: "condition-trigger"
         });
         this.imgTrigger = BI.createWidget({
             type: "bi.image_button",
-            width: 52,
             height: 40,
+            iconWidth: 20,
+            iconHeight: 20,
             cls: "condition-trigger"
         });
         this.styleTab = BI.createWidget({
@@ -29,9 +29,26 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             self.style.hideView();
         });
         this.imgTrigger.setVisible(false);
-        this.styleTrigger = BI.createWidget({
+        this.triggerButton = BI.createWidget({
             type: "bi.vertical",
             items: [this.textTrigger, this.imgTrigger]
+        });
+        this.triggerIcon = BI.createWidget({
+            type: "bi.trigger_icon_button",
+            cls: "trigger-icon",
+            width: 20
+        });
+        this.styleTrigger = BI.createWidget({
+            type: "bi.htape",
+            items: [{
+                el: this.triggerButton,
+                width: 50
+            }, {
+                el: this.triggerIcon,
+                width: 12
+            }],
+            width: 62,
+            height: 40
         });
         this.style = BI.createWidget({
             type: "bi.combo",
@@ -50,7 +67,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
                 self.textTrigger.setVisible(false);
             } else {
                 self.textTrigger.setValue("text");
-                $(self.textTrigger.element[0].childNodes[0].childNodes[0]).css(self.styleTab.getValue());
+                $(self.textTrigger.element).css(self.styleTab.getValue());
                 self.imgTrigger.setVisible(false);
                 self.textTrigger.setVisible(true);
             }
@@ -66,7 +83,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         } else {
             this.textTrigger.setValue("text");
             //todo
-            $(this.textTrigger.element[0].childNodes[0].childNodes[0]).css(v);
+            $(this.textTrigger.element).css(v);
         }
     },
 

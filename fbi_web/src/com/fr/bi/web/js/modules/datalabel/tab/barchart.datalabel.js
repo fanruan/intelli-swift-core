@@ -81,7 +81,16 @@ BI.DataLabelBarChart = BI.inherit(BI.Widget, {
     //     });
     // },
 
-    populate: function () {
+    populate: function (src) {
+        if (src) {
+            var formatter = "function() { return '<div><img width="+"20px"+" height="+"20px"+" src="+src+"></div>'}";
+            this.data[0][0].data[0].dataLabels = {
+                enabled: true,
+                align: "outside",
+                useHtml: true,
+                formatter: formatter
+            };
+        }
         this.combineChart.populate(this.data);
     }
 });

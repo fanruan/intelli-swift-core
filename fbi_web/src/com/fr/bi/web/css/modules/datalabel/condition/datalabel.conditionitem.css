@@ -19,3 +19,9 @@
 .data-label-condition-item:hover .close-h-font {
   display: block;
 }
+.data-label-condition-item .trigger-icon {
+  color: #009de3;
+}
+.data-label-condition-item img {
+  display: block;
+}

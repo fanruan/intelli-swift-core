@@ -106,14 +106,14 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         this.imageset.setValue(this._value);
         this.imageset.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
             self._value = self.imageset.getValue();
+            var src = self.imageset.getValue().src;
+            self.barchart.populate(src);
             self.fireEvent(BI.DataLabelTab.IMG_CHANGE, arguments);
         });
         this.barchart = BI.createWidget({
             type: "bi.data_label_bar_chart"
         });
-        this.barchart.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
-        });
-        this.barchart.populate();
+        this.barchart.populate(this._value.src);
         return BI.createWidget({
                 type: "bi.absolute",
                 items: [{

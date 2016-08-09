@@ -157,7 +157,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
         if (this._isSelf) {
             this.filterRange = this._createRange();
-            this.filterRange.setValue(100001);
             return [this.fieldButton, this.filterType, this.filterWidgetContainer, this.filterRange];
         }
         return [this.fieldButton, this.filterType, this.filterWidgetContainer];
@@ -280,7 +279,8 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _createRange: function () {
-        return BI.createWidget({
+        var self = this, o = this.options;
+        var range = BI.createWidget({
             type: "bi.text_value_down_list_combo",
             width: this.size.COMBO_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
@@ -298,6 +298,8 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 cls: "dot-e-font"
             }]]
         });
+        o.filter_range ? range.setValue(o.filter_range) : range.setValue(100001);
+        return range;
     },
 
     _createStyle: function (initData) {
@@ -319,6 +321,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             field_id: this.options.field_id,
             filter_type: this.filterType.getValue()[0],
             filter_value: this.filterWidget.getValue(),
+            filter_range: this.filterRange.getValue(),
             style_setting: this.style.getValue()
         }
     }

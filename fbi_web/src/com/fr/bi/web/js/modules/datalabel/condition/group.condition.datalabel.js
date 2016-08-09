@@ -4,7 +4,9 @@
 BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         var conf = BI.DataLabelConditionGroup.superclass._defaultConfig.apply(this, arguments);
-        return BI.extend(conf, {});
+        return BI.extend(conf, {
+            baseCls: "data-label-group"
+        });
     },
 
     _init: function () {
@@ -46,6 +48,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
                 field_id: cdt.field_id,
                 filter_type: cdt.filter_type,
                 filter_value: cdt.filter_value,
+                filter_range: cdt.filter_range,
                 style_setting: cdt.style_setting
             });
         });
