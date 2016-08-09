@@ -38,6 +38,7 @@ Combo2View = BI.inherit(BI.View, {
             type: "bi.combo",
             adjustXOffset: 25,
             adjustYOffset: 5,
+            direction: "bottom,left",
             el: this._createEl(),
             popup: {
                 el: {
@@ -52,7 +53,6 @@ Combo2View = BI.inherit(BI.View, {
     threeCombo: function () {
         return BI.createWidget({
             type: "bi.combo",
-            adjustXOffset: 25,
             adjustYOffset: 5,
             el: this._createEl(),
             isNeedAdjustHeight: false,

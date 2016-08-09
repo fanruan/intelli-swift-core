@@ -362,6 +362,40 @@ BI.extend(jQuery, {
         }
     },
 
+    getCenterAdaptPosition: function (combo, popup) {
+        var comboOffset = combo.element.offset();
+        var comboBounds = combo.element.bounds(), popupBounds = popup.element.bounds(), windowBounds = $("body").bounds();
+        var left;
+        if (comboOffset.left + comboBounds.width / 2 + popupBounds.width / 2 > windowBounds.width) {
+            left = windowBounds.width - popupBounds.width;
+        } else {
+            left = comboOffset.left + comboBounds.width / 2 - popupBounds.width / 2;
+        }
+        if (left < 0) {
+            left = 0;
+        }
+        return {
+            left: left
+        }
+    },
+
+    getMiddleAdaptPosition: function (combo, popup) {
+        var comboOffset = combo.element.offset();
+        var comboBounds = combo.element.bounds(), popupBounds = popup.element.bounds(), windowBounds = $("body").bounds();
+        var top;
+        if (comboOffset.top + comboBounds.height / 2 + popupBounds.height / 2 > windowBounds.height) {
+            top = windowBounds.height - popupBounds.height;
+        } else {
+            top = comboOffset.top + comboBounds.height / 2 - popupBounds.height / 2;
+        }
+        if (top < 0) {
+            top = 0;
+        }
+        return {
+            top: top
+        }
+    },
+
     getComboPositionByDirections: function (combo, popup, extraWidth, extraHeight, needAdaptHeight, directions) {
         extraWidth || (extraWidth = 0);
         extraHeight || (extraHeight = 0);
@@ -396,10 +430,12 @@ BI.extend(jQuery, {
                             left = $.getLeftPosition(combo, popup, tW).left;
                             if (topBottom[0] === "bottom") {
                                 pos = $.getTopAlignPosition(combo, popup, tH, needAdaptHeight);
-                                pos.left = left;
-                                return pos;
+                            } else {
+                                pos = $.getBottomAlignPosition(combo, popup, tH, needAdaptHeight);
                             }
-                            pos = $.getBottomAlignPosition(combo, popup, tH, needAdaptHeight);
+                            if (tbFirst) {
+                                pos.change = "left";
+                            }
                             pos.left = left;
                             return pos;
                         }
@@ -413,10 +449,12 @@ BI.extend(jQuery, {
                             left = $.getRightPosition(combo, popup, tW).left;
                             if (topBottom[0] === "bottom") {
                                 pos = $.getTopAlignPosition(combo, popup, tH, needAdaptHeight);
-                                pos.left = left;
-                                return pos;
+                            } else {
+                                pos = $.getBottomAlignPosition(combo, popup, tH, needAdaptHeight);
                             }
-                            pos = $.getBottomAlignPosition(combo, popup, tH, needAdaptHeight);
+                            if (tbFirst) {
+                                pos.change = "right";
+                            }
                             pos.left = left;
                             return pos;
                         }
@@ -429,10 +467,12 @@ BI.extend(jQuery, {
                         top = $.getTopPosition(combo, popup, tH).top;
                         if (leftRight[0] === "right") {
                             pos = $.getLeftAlignPosition(combo, popup, tW, needAdaptHeight);
-                            pos.top = top;
-                            return pos;
+                        } else {
+                            pos = $.getRightAlignPosition(combo, popup, tW);
                         }
-                        pos = $.getRightAlignPosition(combo, popup, tW);
+                        if (lrFirst) {
+                            pos.change = "top";
+                        }
                         pos.top = top;
                         return pos;
                     }
@@ -447,10 +487,12 @@ BI.extend(jQuery, {
                         top = $.getBottomPosition(combo, popup, tH).top;
                         if (leftRight[0] === "right") {
                             pos = $.getLeftAlignPosition(combo, popup, tW, needAdaptHeight);
-                            pos.top = top;
-                            return pos;
+                        } else {
+                            pos = $.getRightAlignPosition(combo, popup, tW);
                         }
-                        pos = $.getRightAlignPosition(combo, popup, tW);
+                        if (lrFirst) {
+                            pos.change = "bottom";
+                        }
                         pos.top = top;
                         return pos;
                     }
@@ -501,19 +543,18 @@ BI.extend(jQuery, {
         extraHeight || (extraHeight = 0);
         var maxHeight = popup.attr("maxHeight") || $("body").bounds().height - extraHeight;
         popup.resetHeight && popup.resetHeight(maxHeight);
-        return $.getComboPositionByDirections(combo, popup, extraWidth, extraHeight, needAdaptHeight, directions || ['bottom', 'top', 'right', 'left'])
-    },
-
-    /**
-     **获取相对目标的左边平行位置
-     **
-     */
-    getComboLeftPosition: function (combo, popup, extraWidth) {
-        extraWidth || (extraWidth = 0);
-        if ($.isLeftSpaceEnough(combo, popup, extraWidth)) {
-            return $.getLeftPosition(combo, popup, extraWidth);
+        var position = $.getComboPositionByDirections(combo, popup, extraWidth, extraHeight, needAdaptHeight, directions || ['bottom', 'top', 'right', 'left'])
+        switch (offsetStyle) {
+            case "center":
+                if (position.change) {
+                    var p = $.getMiddleAdaptPosition(combo, popup);
+                    position.top = p.top;
+                } else {
+                    var p = $.getCenterAdaptPosition(combo, popup);
+                    position.left = p.left;
+                }
+                break;
         }
-        return $.getRightPosition(combo, popup, extraWidth);
-
+        return position;
     }
 });
