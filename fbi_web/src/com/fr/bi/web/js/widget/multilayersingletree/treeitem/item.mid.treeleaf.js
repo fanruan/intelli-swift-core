@@ -27,7 +27,6 @@ BI.MultiLayerSingleTreeMidTreeLeafItem = BI.inherit(BI.BasicButton, {
             },
             id: o.id,
             pId: o.pId,
-            isFront: true,
             height: o.height,
             hgap: o.hgap,
             text: o.text,

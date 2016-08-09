@@ -12,7 +12,7 @@ BI.FirstTreeLeafItem = BI.inherit(BI.BasicButton, {
             },
             id: "",
             pId: "",
-            isFront: false,
+            layer: 0,
             height: 25
         })
     },
@@ -40,7 +40,7 @@ BI.FirstTreeLeafItem = BI.inherit(BI.BasicButton, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
         var type = BI.LogicFactory.createLogicTypeByDirection(BI.Direction.Left);
-        var items = BI.LogicFactory.createLogicItemsByDirection(BI.Direction.Left, (this.options.isFront ? "" : {
+        var items = BI.LogicFactory.createLogicItemsByDirection(BI.Direction.Left, ((o.layer === 0) ? "" : {
             width: 13,
             el: {
                 type: "bi.layout",

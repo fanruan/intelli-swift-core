@@ -136,7 +136,7 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
         BI.each(items, function (i, item) {
             self._initResizable(item.el);
         });
-        var layoutRatio = Data.SharingPool.get("layoutRatio") || {};
+        var layoutRatio = Data.SharingPool.get("layoutRatio");
         this.arrangement.setLayoutType(this.layoutType);
         this.arrangement.populate(items);
         BI.nextTick(function () {

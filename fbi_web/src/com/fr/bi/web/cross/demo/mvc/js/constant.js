@@ -162,6 +162,8 @@ var _JS = [
 
     "widget/mvc.combo.js",
 
+    "widget/mvc.combo2.js",
+
     "widget/mvc.expander.js",
 
     "widget/mvc.switcher.js",
@@ -503,6 +505,7 @@ var _Routes = {
     "/parttree": "PartTreeView",
     "/displaytree": "DisplayTreeView",
     "/combo": "ComboView",
+    "/combo2": "Combo2View",
     "/expander": "ExpanderView",
     "/switcher": "SwitcherView",
     "/formula": "FormulaView",
@@ -819,6 +822,10 @@ _Models.widget = [{
     pId: 6,
     text: "bi.combo",
     value: "combo"
+}, {
+    pId: 6,
+    text: "bi.combo(各种位置)",
+    value: "combo2"
 }, {
     pId: 6,
     text: "bi.expander",

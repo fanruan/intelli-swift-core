@@ -18,7 +18,7 @@ BI.FolderFileSortCombo = BI.inherit(BI.Widget, {
             items: o.items,
             width: o.width,
             height: o.height,
-            offsetStyle: "right"
+            direction: "bottom,left"
         });
         this.iconCombo.on(BI.IconCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.FolderFileSortCombo.EVENT_CHANGE);
