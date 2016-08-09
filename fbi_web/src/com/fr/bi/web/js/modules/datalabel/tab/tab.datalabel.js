@@ -139,6 +139,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     },
     setValue: function (v) {
         this._style = v;
+        this.textToolbar.setValue(v.textStyle);
     },
     getValue: function () {
         return this._style;

@@ -66,7 +66,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             switch (style.type) {
                 case 1:
                     self.textTrigger.setValue("text");
-                    $(self.textTrigger.element).css(style.textStyle.style);
+                    $(self.textTrigger.element).css(style.textStyle);
                     self.imgTrigger.setVisible(false);
                     self.textTrigger.setVisible(true);
                     break;
@@ -83,7 +83,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             case 1:
                 this.textTrigger.setValue("text");
                 //todo
-                $(this.textTrigger.element).css(v.textStyle.style);
+                $(this.textTrigger.element).css(v.textStyle);
                 break;
             case 2:
                 this.imgTrigger.setSrc(v.imgStyle.src);

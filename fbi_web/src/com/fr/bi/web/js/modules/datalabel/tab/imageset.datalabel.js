@@ -267,7 +267,6 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     getValue: function () {
         var self = this;
         return {
-            type: "img",
             src: self._imageSelect,
             urls: self._img
         };
