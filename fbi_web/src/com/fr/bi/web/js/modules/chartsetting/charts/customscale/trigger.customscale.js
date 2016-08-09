@@ -16,8 +16,9 @@ BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
         this.formulaRecord = BI.createWidget({
             type: "bi.text_button",
             cls: "trigger-text-button",
-            text: "AstronautOO7",
-            textHeight: 30,
+            text: "",
+            height: 29,
+            textHeight: 29,
             width: 80
         });
 
@@ -41,6 +42,14 @@ BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
             element: this.element,
             items: [this.formulaRecord , this.fomulaIcon]
         })
+    },
+
+    getValue: function() {
+        return this.formulaRecord.getValue()
+    },
+
+    setValue: function(v) {
+        this.formulaRecord.setValue(v)
     }
 
 });

@@ -143,7 +143,7 @@ public interface BILogManagerProvider {
     /**
      * 获取所有需要更新的relation信息
      */
-    void reLationPathSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet, long userId);
+    void relationPathSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet, long userId);
 
     /**
      * 获取所有需要更新的tableSource信息

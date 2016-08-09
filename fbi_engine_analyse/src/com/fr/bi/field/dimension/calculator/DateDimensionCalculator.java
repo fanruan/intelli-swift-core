@@ -46,29 +46,6 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
         return getSortType() != BIReportConstant.SORT.NUMBER_DESC ? treeMap.iterator() : treeMap.previousIterator();
     }
 
-    /**
-     * 是否为超级大分组
-     *
-     * @param targetTable 指标表
-     * @param loader      注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader) {
-        return false;
-    }
-
-    /**
-     * 是否为超级大分组
-     *
-     * @param loader 注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(ICubeDataLoader loader) {
-        return false;
-    }
-
     public int getGroupDate() {
         return getGroup().getType();
     }

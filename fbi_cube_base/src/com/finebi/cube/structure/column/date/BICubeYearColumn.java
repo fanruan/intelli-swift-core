@@ -29,4 +29,8 @@ public class BICubeYearColumn extends BICubeDateSubColumn<Integer> {
 
     }
 
+    public int getGroupValue(int position) {
+        return ((BICubeIntegerColumn)selfColumnEntity).getGroupValue(position);
+    }
+
 }

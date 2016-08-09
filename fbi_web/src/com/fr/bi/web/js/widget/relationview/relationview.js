@@ -134,6 +134,7 @@ BI.RelationView = BI.inherit(BI.Widget, {
                 views[i][j] = storeViews[region] = BI.createWidget({
                     type: "bi.relation_view_region",
                     value: region,
+                    header: items[0].regionTitle,
                     text: items.length > 0 ? items[0].regionText : "",
                     handler: items.length > 0 ? items[0].regionHandler : BI.emptyFn,
                     items: items

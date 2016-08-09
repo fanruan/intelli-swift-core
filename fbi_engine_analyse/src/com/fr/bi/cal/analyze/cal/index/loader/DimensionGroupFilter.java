@@ -394,6 +394,7 @@ public class DimensionGroupFilter {
             nodeBuilder.addLastNode(deep, mergeNode);
         } else {
             calCalculateTarget(mergeNode);
+            MultiThreadManagerImpl.getInstance().awaitExecutor();
             filter(groupValueIndexe2D, counter, deep, groupConnectionValueChildren, mergeNode);
         }
     }

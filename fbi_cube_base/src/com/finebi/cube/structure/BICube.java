@@ -77,7 +77,9 @@ public class BICube implements Cube {
             ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey);
             if (isResourceExist(location)) {
                 CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
-                return tableEntityGetterService.tableDataAvailable();
+               boolean result =  tableEntityGetterService.tableDataAvailable();
+                tableEntityGetterService.clear();
+                return result;
             }
             return false;
 
@@ -100,6 +102,7 @@ public class BICube implements Cube {
     @Override
     public void addVersion(long version) {
         cubeVersion.addVersion(version);
+        cubeVersion.forceRelease();
     }
 
     @Override

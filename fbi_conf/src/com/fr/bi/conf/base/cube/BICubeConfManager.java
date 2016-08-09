@@ -17,6 +17,7 @@ import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
@@ -104,7 +105,7 @@ public class BICubeConfManager {
                             return true;
                         }
                     });
-                    if (o.value != null) {
+                    if (o.value != NIOConstant.INTEGER.NULL_VALUE) {
                         ICubeTableService cti = loader.getTableIndex(ck.getTableBelongTo().getTableSource());
                         return cti.getColumnDetailReader(cti.getColumnIndex(ck.getFieldName())).getValue(o.value);
                     }

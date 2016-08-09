@@ -76,9 +76,6 @@ public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> 
     void recordSizeOfGroup(int size);
 
 
-
-
-
     /**
      * 在对应位置添加空值
      *

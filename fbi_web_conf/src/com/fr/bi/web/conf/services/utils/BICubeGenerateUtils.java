@@ -45,12 +45,14 @@ public class BICubeGenerateUtils {
         for (BITableRelation relation : currentRelations) {
             try {
                 if (!BICubeConfigureCenter.getTableRelationManager().isRelationGenerated(userId,relation)) {
-                    newRelationSet.add(relation);
+                    if (isRelationValid(relation)) {
+                        newRelationSet.add(relation);
+                    }
                 }
             } catch (BITableAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());;
+                BILogger.getLogger().error(e.getMessage());
             } catch (BIRelationAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());;
+                BILogger.getLogger().error(e.getMessage());
             }
         }
         return newRelationSet;
@@ -63,5 +65,11 @@ public class BICubeGenerateUtils {
         BICube iCube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         ITableKey iTableKey = new BITableKey(source);
         return iCube.exist(iTableKey);
+    }
+
+    private static boolean isRelationValid(BITableRelation relation) {
+        boolean checkNull= null!=relation.getPrimaryTable()&&null!=relation.getForeignTable()&&null!=relation.getPrimaryField()&&null!=relation.getForeignField();
+        boolean isTableValid=relation.getForeignField().getTableBelongTo().getID().getIdentity().equals(relation.getForeignTable().getID().getIdentity())&&relation.getPrimaryField().getTableBelongTo().getID().getIdentity().equals(relation.getPrimaryTable().getID().getIdentity());
+        return checkNull&&isTableValid;
     }
 }

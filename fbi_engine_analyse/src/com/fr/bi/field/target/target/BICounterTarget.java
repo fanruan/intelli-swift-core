@@ -56,6 +56,12 @@ public class BICounterTarget extends BISummaryTarget {
     }
 
 
+    //BUG 这里不需要刷新column
+    @Override
+    public void refreshColumn() {
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

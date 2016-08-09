@@ -59,11 +59,11 @@ public class BISourceDataTransportTest extends BICubeTestBase {
             CubeColumnReaderService col5 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[4]));
 
             for (int i = 0; i < tableSource.getRowNumber(); i++) {
-                assertEquals(col1.getOriginalValueByRow(i), tableSource.getDateData().get(i));
-                assertEquals(col2.getOriginalValueByRow(i), tableSource.getStringData().get(i));
-                assertEquals(col3.getOriginalValueByRow(i), tableSource.getFloatData().get(i));
-                assertEquals(col4.getOriginalValueByRow(i), tableSource.getLongData().get(i));
-                assertEquals(col5.getOriginalValueByRow(i), tableSource.getDoubleData().get(i));
+                assertEquals(col1.getOriginalObjectValueByRow(i), tableSource.getDateData().get(i));
+                assertEquals(col2.getOriginalObjectValueByRow(i), tableSource.getStringData().get(i));
+                assertEquals(col3.getOriginalObjectValueByRow(i), tableSource.getFloatData().get(i));
+                assertEquals(col4.getOriginalObjectValueByRow(i), tableSource.getLongData().get(i));
+                assertEquals(col5.getOriginalObjectValueByRow(i), tableSource.getDoubleData().get(i));
             }
             assertEquals(cube.getCubeTable(BITableKeyUtils.convert(tableSource)).getRowCount(), tableSource.getRowNumber());
         } catch (Exception e) {
@@ -94,10 +94,10 @@ public class BISourceDataTransportTest extends BICubeTestBase {
             CubeColumnReaderService col4 = compoundTable.getColumnDataGetter(BIColumnKey.covertColumnKey(fields[3]));
 
             for (int i = 0; i < memoryDataSource.rowCount; i++) {
-                assertEquals(col1.getOriginalValueByRow(i), memoryDataSource.contents.get(0).get(i));
-                assertEquals(col2.getOriginalValueByRow(i), memoryDataSource.contents.get(1).get(i));
-                assertEquals(col3.getOriginalValueByRow(i), memoryDataSource.contents.get(2).get(i));
-                assertEquals(col4.getOriginalValueByRow(i), memoryDataSource.contents.get(3).get(i));
+                assertEquals(col1.getOriginalObjectValueByRow(i), memoryDataSource.contents.get(0).get(i));
+                assertEquals(col2.getOriginalObjectValueByRow(i), memoryDataSource.contents.get(1).get(i));
+                assertEquals(col3.getOriginalObjectValueByRow(i), memoryDataSource.contents.get(2).get(i));
+                assertEquals(col4.getOriginalObjectValueByRow(i), memoryDataSource.contents.get(3).get(i));
             }
 
         } catch (Exception e) {

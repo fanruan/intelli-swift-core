@@ -61,6 +61,7 @@ BI.ForceBubbleChart = BI.inherit(BI.Widget, {
 
         config.plotOptions.force = true;
         config.plotOptions.dataLabels.enabled = true;
+        config.plotOptions.dataLabels.align = "inside";
         config.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
         config.chartType = "bubble";
         delete config.xAxis;

@@ -48,10 +48,6 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
         });
     },
 
-    _isSelfCircleTable: function (tableId) {
-        return BI.Utils.getPathsFromTableAToTableB(tableId, tableId).length > 0;
-    },
-
     _getSelfCircleFieldsByFieldId: function (fieldId, circleForeignIds) {
         var self = this, o = this.options;
         circleForeignIds || (circleForeignIds = []);
@@ -67,44 +63,47 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
         });
     },
 
-    _createItemsByTargetIds: function(targetIds){
+    _createItemsByTargetIds: function (targetIds) {
         var o = this.options, self = this;
-        if(BI.isEmpty(targetIds)){
+        if (BI.isEmpty(targetIds)) {
             return [];
         }
         var targetId = targetIds[0];
         var tableIds = [BI.Utils.getTableIDByDimensionID(targetId)];
         tableIds = BI.concat(tableIds, BI.Utils.getPrimaryRelationTablesByTableID(tableIds[0]));
         var foreignTableIds = [];
-        BI.each(tableIds, function(id, tableId){
+        BI.each(tableIds, function (id, tableId) {
             foreignTableIds = BI.concat(foreignTableIds, BI.Utils.getForeignRelationTablesByTableID(tableId));
         });
         tableIds = BI.concat(tableIds, foreignTableIds);
-        return BI.map(BI.uniq(tableIds), function(idx, tId){
+        return BI.map(BI.uniq(tableIds), function (idx, tId) {
             var initialFieldIds = BI.Utils.getFieldIDsOfTableID(tId);
-            var fieldIds = BI.filter(initialFieldIds, function(idx, ids){
+            var fieldIds = BI.filter(initialFieldIds, function (idx, ids) {
                 return BI.Utils.getFieldTypeByID(ids) === BI.Utils.getFieldTypeByDimensionID(o.dId);
             });
             var pIds = [], fIds = [];
-            if (self._isSelfCircleTable(tId)) {
+            if (BI.Utils.isSelfCircleTableByTableId(tId)) {
                 var map = {};
                 var relations = BI.Utils.getPathsFromTableAToTableB(tId, tId);
                 BI.each(relations, function (i, path) {
                     var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
                     var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
-                    pIds.push(pId);
-                    if (!map[pId]) {
-                        map[pId] = [];
-                    }
-                    map[pId].push(fId);
                     fIds.push(fId);
+                    pIds.push(pId);
                 });
                 var newFields = [];
                 BI.each(fieldIds, function (i, id) {
-                    if (pIds.contains(id)) {
-                    } else if (!fIds.contains(id)) {
+                    var isCircle = BI.Utils.getFieldIsCircleByID(id);
+                    if (isCircle !== true && !fIds.contains(id)) {
                         newFields.push(id);
                     }
+                    //TODO
+                    if (isCircle === true) {
+                        newFields.push(id);
+                    }
+                    //if (isCircle === true) {
+                    //    map[id] = BI.clone(fIds);
+                    //}
                 });
             } else {
                 newFields = fieldIds;
@@ -112,8 +111,8 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
             var node, pId;
             var dimensionTableId = BI.Utils.getTableIDByDimensionID(o.dId);
             //推荐表： 1.是维度所在表且维度与指标有路径；2.维度与指标无路径时是指标所在表
-            if((BI.contains(initialFieldIds, BI.Utils.getFieldIDByDimensionID(o.dId)) && !BI.isEmpty(BI.Utils.getPathsFromTableAToTableB(dimensionTableId, tableIds[0])))
-                || (BI.isEmpty(BI.Utils.getPathsFromTableAToTableB(dimensionTableId, tableIds[0])) && BI.contains(initialFieldIds, BI.Utils.getFieldIDByDimensionID(targetId)))){
+            if ((BI.contains(initialFieldIds, BI.Utils.getFieldIDByDimensionID(o.dId)) && !BI.isEmpty(BI.Utils.getPathsFromTableAToTableB(dimensionTableId, tableIds[0])))
+                || (BI.isEmpty(BI.Utils.getPathsFromTableAToTableB(dimensionTableId, tableIds[0])) && BI.contains(initialFieldIds, BI.Utils.getFieldIDByDimensionID(targetId)))) {
                 node = {
                     id: 0,
                     text: BI.Utils.getTableNameByID(tId) + "(" + BI.i18nText("BI-Recommend") + ")",
@@ -124,7 +123,7 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
                     title: BI.Utils.getTableNameByID(tId)
                 };
                 pId = 0;
-            }else{
+            } else {
                 node = {
                     id: idx + 1,
                     text: BI.Utils.getTableNameByID(tId),
@@ -136,24 +135,25 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
                 pId = idx + 1;
             }
             var items = [];
-            if(self._isSelfCircleTable(tId)){
-                BI.each(fieldIds, function (i, fId) {
-                    var id = fId;
-                    if (pIds.contains(id)) {
-                        var fieldName = BI.Utils.getFieldNameByID(id) || "";
-                        items.push({
-                            id: id,
-                            pId: pId,
-                            text: fieldName,
-                            title: fieldName,
-                            value: id
-                        });
-                        items = BI.concat(items, self._getSelfCircleFieldsByFieldId(id, map[id] || []))
-                    }
-                });
-            }
-            BI.each(fieldIds, function(id, fId){
-                if(pIds.contains(fId) || fIds.contains(fId)){
+            //TODO 这个代码有问题
+            //if (BI.Utils.isSelfCircleTableByTableId(tId)) {
+            //    BI.each(fieldIds, function (i, fId) {
+            //        var id = fId;
+            //        if (BI.Utils.getFieldIsCircleByID(id) === true) {
+            //            var fieldName = BI.Utils.getFieldNameByID(id) || "";
+            //            items.push({
+            //                id: id,
+            //                pId: pId,
+            //                text: fieldName,
+            //                title: fieldName,
+            //                value: id
+            //            });
+            //            items = BI.concat(items, self._getSelfCircleFieldsByFieldId(id, map[id] || []))
+            //        }
+            //    });
+            //}
+            BI.each(fieldIds, function (id, fId) {
+                if (fIds.contains(fId)) {
                     return;
                 }
                 items.push({

@@ -67,7 +67,8 @@ public class BICubeLongGroupTest extends TestCase {
             assertTrue(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());
             assertFalse(groupData.isLengthWriterAvailable());
-            assertEquals(value, groupData.getGroupValueByPosition(position));
+            assertEquals(value, groupData.getGroupObjectValueByPosition(position));
+            assertEquals(value.longValue(), groupData.getGroupValueByPosition(position));
             assertTrue(groupData.isGroupReaderAvailable());
             assertTrue(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());

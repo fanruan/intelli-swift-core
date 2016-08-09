@@ -44,9 +44,9 @@ public class BIByteNIOReaderTest extends TestCase {
             writer.recordSpecificPositionValue(0, Byte.valueOf("1"));
             writer.recordSpecificPositionValue(2, Byte.valueOf("1"));
             writer.recordSpecificPositionValue(3, Byte.valueOf("1"));
-            assertEquals(reader.getSpecificValue(0l), Byte.valueOf("1"));
-            assertEquals(reader.getSpecificValue(2l), Byte.valueOf("1"));
-            assertEquals(reader.getSpecificValue(3l), Byte.valueOf("1"));
+            assertEquals(reader.getSpecificValue(0l), Byte.valueOf("1").byteValue());
+            assertEquals(reader.getSpecificValue(2l), Byte.valueOf("1").byteValue());
+            assertEquals(reader.getSpecificValue(3l), Byte.valueOf("1").byteValue());
 
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);

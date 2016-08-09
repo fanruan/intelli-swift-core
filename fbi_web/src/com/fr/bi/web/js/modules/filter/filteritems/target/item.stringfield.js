@@ -171,9 +171,7 @@ BI.TargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     getValue: function () {
         return {
-            _src: {
-                field_id: this.fieldId
-            },
+            _src: this.options._src,
             filter_type: this.filterType.getValue()[0],
             filter_value: this.filterWidget.getValue()
         }

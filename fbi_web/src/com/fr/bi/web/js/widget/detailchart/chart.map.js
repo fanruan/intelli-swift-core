@@ -46,7 +46,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
-        config.plotOptions.bubble.color = this.config.bubble_color;
+        config.plotOptions.bubble.color = this.config.map_bubble_color;
         //config.plotOptions.color = BI.isArray(this.config.theme_color) ? this.config.theme_color : [this.config.theme_color];
         var formatterArray = [];
         BI.backEach(items, function(idx, item){
@@ -70,6 +70,11 @@ BI.MapChart = BI.inherit(BI.Widget, {
         if(this.config.initDrillPath.length > 1){
             config.initDrillPath = this.config.initDrillPath;
         }
+        config.dTools.click = function(point){
+            point = point || {};
+            var pointOption = point.pointOption || {};
+            self.fireEvent(BI.MapChart.EVENT_CLICK_DTOOL, pointOption);
+        };
         config.chartType = "areaMap";
         delete config.xAxis;
         delete config.yAxis;
@@ -89,10 +94,12 @@ BI.MapChart = BI.inherit(BI.Widget, {
             switch (self.config.chart_legend){
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.enabled = true;
+                    config.rangeLegend.visible = true;
                     config.rangeLegend.position = "bottom";
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
                     config.rangeLegend.enabled = true;
+                    config.rangeLegend.visible = true;
                     config.rangeLegend.position = "right";
                     break;
                 case BICst.CHART_LEGENDS.NOT_SHOW:
@@ -102,6 +109,9 @@ BI.MapChart = BI.inherit(BI.Widget, {
             }
             config.rangeLegend.continuous = false;
             config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
+            /*config.rangeLegend.formatter = function(){
+                return this.from;
+            }*/
         }
 
         function formatToolTipAndDataLabel(format, numberLevel){
@@ -178,14 +188,12 @@ BI.MapChart = BI.inherit(BI.Widget, {
                                 from: conditionMax,
                                 to: maxScale
                             });
-
                         }
                         return range;
                     } else {
                         defaultStyle.color = defaultColor;
                         return defaultStyle;
                     }
-
             }
         }
 
@@ -274,7 +282,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
             theme_color: options.theme_color || c.theme_color,
             map_styles: options.map_styles || [],
             auto_custom: options.auto_custom || c.auto_custom,
-            bubble_color: options.map_bubble_color || c.theme_color
+            map_bubble_color: options.map_bubble_color || c.theme_color
         };
         this.options.items = items;
 
@@ -299,4 +307,5 @@ BI.MapChart = BI.inherit(BI.Widget, {
     }
 });
 BI.MapChart.EVENT_CHANGE = "EVENT_CHANGE";
+BI.MapChart.EVENT_CLICK_DTOOL = "EVENT_CLICK_DTOOL";
 $.shortcut('bi.map_chart', BI.MapChart);

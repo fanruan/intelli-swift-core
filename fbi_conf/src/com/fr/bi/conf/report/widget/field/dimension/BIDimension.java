@@ -1,6 +1,7 @@
 package com.fr.bi.conf.report.widget.field.dimension;
 
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -49,4 +50,6 @@ public interface BIDimension extends BITargetAndDimension {
                      Map<String, TargetCalculator> targetsMap);
 
     Object getValueByType(Object data);
+
+    BITableRelationPath getSelfToSelfRelationPath();
 }

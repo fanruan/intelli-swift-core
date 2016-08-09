@@ -7,6 +7,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detail-table",
+            overlap: false,
             wId: ""
         })
     },
@@ -25,6 +26,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.table = BI.createWidget({
             type: "bi.style_table",
             isNeedFreeze: null,
+            regionColumnSize: this.getStoredRegionColumnSize(),
             el: {
                 type: "bi.page_table",
                 el: {
@@ -52,6 +54,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
         this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: self.table.getColumnSize()})});
+        });
+        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+            var columnSize = this.getCalculateRegionColumnSize();
+            self.setStoredRegionColumnSize(columnSize[0]);
         });
         this.errorPane = BI.createWidget({
             type: "bi.table_chart_error_pane",
@@ -244,6 +250,20 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     _isNeedFreeze: function () {
         var wId = this.options.wId;
         return BI.Utils.getWSFreezeFirstColumnById(wId);
+    },
+
+    getStoredRegionColumnSize: function () {
+        var columnSize = BI.Cache.getItem(BICst.CACHE.REGION_COLUMN_SIZE_PREFIX + this.options.wId);
+        if (BI.isKey(columnSize)) {
+            return [BI.parseInt(columnSize), ""];
+        }
+        return false;
+    },
+
+    setStoredRegionColumnSize: function (columnSize) {
+        if (BI.isKey(columnSize)) {
+            BI.Cache.setItem(BICst.CACHE.REGION_COLUMN_SIZE_PREFIX + this.options.wId, columnSize);
+        }
     },
 
 

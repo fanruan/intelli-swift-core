@@ -2168,3 +2168,33 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/bubble_projector.png');
   _background: none;
 }
+.drill-push-down-icon .x-icon,
+.drill-push-down-icon:hover .x-icon,
+.drill-push-down-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/push_down.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/push_down.png');
+  _background: none;
+}
+.drill-push-down-icon.native .x-icon,
+.drill-push-down-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/push_down.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/push_down.png');
+  _background: none;
+}
+.drill-push-up-icon .x-icon,
+.drill-push-up-icon:hover .x-icon,
+.drill-push-up-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/push_up.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/push_up.png');
+  _background: none;
+}
+.drill-push-up-icon.native .x-icon,
+.drill-push-up-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/push_up.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/push_up.png');
+  _background: none;
+}

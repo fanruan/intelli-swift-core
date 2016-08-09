@@ -28,7 +28,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
     private Paging paging;
     private BISession session;
     //索引起始行数
-    private transient int row;
+    private transient int row = 0;
     //临时变量，当前分组已经遍历的行数
     private transient int currentIndex = -1;
 
@@ -38,9 +38,11 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
         this.paging = paging;
         this.session = session;
         paras = new DetailParas(widget, gvi, loader);
-        index = new DetailSortGviIndex(session.getDetailLastValue(paras.getSortKey(), paging.getCurrentPage()), paras.getCubeIndexGetters(), paras.getAsc());
-        row = paging.getStartRow() - session.getDetailLastIndex(paras.getSortKey(), paging.getCurrentPage());
-        ;
+        Object[] lastValue = session.getDetailLastValue(paras.getSortKey(), paging.getCurrentPage());
+        index = new DetailSortGviIndex(lastValue, paras.getCubeIndexGetters(), paras.getAsc());
+        if (lastValue != null && lastValue.length > 0){
+            row = paging.getStartRow() - session.getDetailLastIndex(paras.getSortKey(), paging.getCurrentPage());
+        }
         row--;
     }
 
@@ -76,9 +78,9 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
             @Override
             public boolean actionPerformed(int rowIndex) {
                 checkAndSetSession();
-                Boolean x = checkPage();
+                PageStatus x = checkPage();
                 if (x != null) {
-                    return x;
+                    return x.getStatus();
                 }
                 Object[] ob = getRowValue(rowIndex);
                 boolean end = action.actionPerformed(new BIRowValue(row, ob));
@@ -122,9 +124,9 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
             @Override
             public boolean actionPerformed(int rowIndex) {
                 checkAndSetSession();
-                Boolean x = checkPage();
+                PageStatus x = checkPage();
                 if (x != null) {
-                    return x;
+                    return x.getStatus();
                 }
                 set.add(new BIRowValue(row, getRowValue(rowIndex)));
                 return false;
@@ -140,12 +142,26 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
         return false;
     }
 
-    private Boolean checkPage() {
+    private enum PageStatus{
+        BEFORE(false),AFTER(true);
+
+        public boolean getStatus() {
+            return status;
+        }
+
+        boolean status;
+        PageStatus(boolean b) {
+            this.status = b;
+        }
+
+    }
+
+    private PageStatus checkPage() {
         if (paging.getStartRow() > row) {
-            return false;
+            return PageStatus.BEFORE;
         }
         if (paging.getEndRow() <= row) {
-            return true;
+            return PageStatus.AFTER;
         }
         return null;
     }
@@ -153,7 +169,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
     private void checkAndSetSession() {
         currentIndex++;
         row++;
-        if ((row) % paging.getPageSize() == 0) {
+        if ((index.getValue().length != 0) && (row) % paging.getPageSize() == 0) {
             try {
                 Object[] values = index.getValue().clone();
                 int page = row / paging.getPageSize() + 1;

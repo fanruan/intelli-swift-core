@@ -12,30 +12,29 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BIDoubleNIOReader extends BIBasicNIOReader<Double> implements ICubeDoubleReader {
+public class BIDoubleNIOReader extends BIBasicNIOReader implements ICubeDoubleReader {
 
-    private Map<Long, DoubleBuffer> doubleBuffers = new ConcurrentHashMap<Long, DoubleBuffer>();
+    private Map<Integer, DoubleBuffer> doubleBuffers = new ConcurrentHashMap<Integer, DoubleBuffer>();
+
+    private transient DoubleBuffer[] doubleBufferArray = new DoubleBuffer[1];
 
     public BIDoubleNIOReader(File cacheFile) {
         super(cacheFile);
     }
 
+
     public BIDoubleNIOReader(String cacheFilePath) {
         super(cacheFilePath);
     }
 
-    @Override
-    protected Double getValue(Long page, int index) throws  BIResourceInvalidException {
-        if(isValid) {
-            return read(page, index);
-        } else {
-            throw new BIResourceInvalidException();
-        }
-    }
 
-    private Double read (Long page, int index) {
-        Double result = doubleBuffers.get(page).get(index);
-        return Double.isNaN(result) ? null : result;
+    public double getSpecificValue(long filePosition) throws BIResourceInvalidException {
+        try {
+            return doubleBufferArray[getPage(filePosition)].get(getIndex(filePosition));
+        } catch (IndexOutOfBoundsException e) {
+            throw new RuntimeException("the expect page value is:", e);
+        } finally {
+        }
     }
 
 
@@ -48,12 +47,13 @@ public class BIDoubleNIOReader extends BIBasicNIOReader<Double> implements ICube
     protected void releaseChild() {
         readWriteLock.writeLock().lock();
         try {
-            Iterator<Entry<Long, DoubleBuffer>> iter = doubleBuffers.entrySet().iterator();
+            Iterator<Entry<Integer, DoubleBuffer>> iter = doubleBuffers.entrySet().iterator();
             while (iter.hasNext()) {
-                Entry<Long, DoubleBuffer> entry = iter.next();
+                Entry<Integer, DoubleBuffer> entry = iter.next();
                 entry.getValue().clear();
                 iter.remove();
             }
+            doubleBufferArray = new DoubleBuffer[1];
         } finally {
             readWriteLock.writeLock().unlock();
         }
@@ -65,10 +65,16 @@ public class BIDoubleNIOReader extends BIBasicNIOReader<Double> implements ICube
     }
 
     @Override
-    protected void initChild(Long index, MappedByteBuffer buffer) {
+    protected void initChild(int index, MappedByteBuffer buffer) {
         readWriteLock.writeLock().lock();
         try {
             doubleBuffers.put(index, buffer.asDoubleBuffer());
+            if (doubleBufferArray.length < index){
+                DoubleBuffer[] temp = new DoubleBuffer[index];
+                System.arraycopy(doubleBufferArray, 0, temp, 0, doubleBufferArray.length);
+                doubleBufferArray = temp;
+            }
+            doubleBufferArray[index] = doubleBuffers.get(index);
         } finally {
             readWriteLock.writeLock().unlock();
         }

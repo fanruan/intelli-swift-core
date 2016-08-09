@@ -59,7 +59,7 @@ BI.DonutChartSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -121,7 +121,7 @@ BI.DonutChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
         });
 
         //数据标签
@@ -132,7 +132,7 @@ BI.DonutChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({

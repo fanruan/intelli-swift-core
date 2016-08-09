@@ -163,7 +163,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
         //数据标签
@@ -174,7 +174,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
         //网格线
@@ -185,7 +185,7 @@ BI.RadarChartSetting = BI.inherit(BI.Widget, {
         });
 
         this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({

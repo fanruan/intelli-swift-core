@@ -84,7 +84,7 @@ public class BINationTablesTest extends BICubeTestBase {
             //获取本表对应位置索引值
             assertEquals(iCubeColumnReaderService.getIndexByGroupValue("nameA"), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0, 2}));
             //根据行号(rowId来查询value
-            assertEquals(iCubeColumnReaderService.getOriginalValueByRow(1), "nameB");
+            assertEquals(iCubeColumnReaderService.getOriginalObjectValueByRow(1), "nameB");
 
 
             //select rowId from persons where name='nameA'
@@ -101,8 +101,8 @@ public class BINationTablesTest extends BICubeTestBase {
 
             //select name from persons where rowId in (0,1)
             final List<String> idList = new ArrayList<String>();
-            idList.add((String) iCubeColumnReaderService.getOriginalValueByRow(0));
-            idList.add((String) iCubeColumnReaderService.getOriginalValueByRow(1));
+            idList.add((String) iCubeColumnReaderService.getOriginalObjectValueByRow(0));
+            idList.add((String) iCubeColumnReaderService.getOriginalObjectValueByRow(1));
             assertTrue(ComparatorUtils.equals(idList.toArray(), new String[]{"nameA", "nameB"}));
 
 

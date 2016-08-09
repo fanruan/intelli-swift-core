@@ -56,7 +56,8 @@ BI.UploadFileWithProgress = BI.inherit(BI.Widget, {
             self.fireEvent(BI.UploadFileWithProgress.EVENT_ERROR, arguments);
         });
         this.file.on(BI.MultifileEditor.EVENT_PROGRESS, function (data) {
-            self.progressBar.setValue((data.loaded/data.total) * 100);
+            var process = Math.ceil(data.loaded/data.total) * 100;
+            self.progressBar.setValue(process > 100 ? 100 : process);
             self.fireEvent(BI.UploadFileWithProgress.EVENT_PROGRESS, arguments);
         });
         this.file.on(BI.MultifileEditor.EVENT_UPLOADED, function () {

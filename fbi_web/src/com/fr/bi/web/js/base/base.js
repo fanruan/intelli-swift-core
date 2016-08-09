@@ -360,7 +360,11 @@ if (!window.BI) {
         makeArray: function (length, value) {
             var res = [];
             for (var i = 0; i < length; i++) {
-                res.push(BI.deepClone(value));
+                if (BI.isNull(value)) {
+                    res.push(i);
+                } else {
+                    res.push(BI.deepClone(value));
+                }
             }
             return res;
         },
@@ -368,7 +372,11 @@ if (!window.BI) {
         makeObject: function (array, value) {
             var map = {};
             for (var i = 0; i < array.length; i++) {
-                map[array[i]] = BI.deepClone(value);
+                if (BI.isNull(value)) {
+                    map[array[i]] = array[i];
+                } else {
+                    map[array[i]] = BI.deepClone(value);
+                }
             }
             return map;
         },

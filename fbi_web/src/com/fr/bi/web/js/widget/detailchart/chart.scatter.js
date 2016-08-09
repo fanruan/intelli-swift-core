@@ -169,7 +169,7 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
                     BI.each(item.data, function(id, da){
                         da.x = da.x || 0;
                         da.x = da.x.div(magnify);
-                        if(self.constants.MINLIMIT.sub(da.x) > 0){
+                        if(self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
                             da.x = 0;
                         }
                     })
@@ -185,7 +185,7 @@ BI.ScatterChart = BI.inherit(BI.Widget, {
                         if (position === item.yAxis) {
                             da.y = da.y || 0;
                             da.y = da.y.div(magnify);
-                            if(self.constants.MINLIMIT.sub(da.y) > 0){
+                            if(self.constants.MINLIMIT.sub(Math.abs(da.y)) > 0){
                                 da.y = 0;
                             }
                         }

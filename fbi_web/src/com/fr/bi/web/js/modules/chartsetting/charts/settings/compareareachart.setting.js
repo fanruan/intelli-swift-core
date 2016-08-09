@@ -59,7 +59,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.Widget, {
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.chartTypeGroup = BI.createWidget({

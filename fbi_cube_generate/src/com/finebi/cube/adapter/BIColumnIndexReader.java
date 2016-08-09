@@ -98,7 +98,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
     @Override
     public T getGroupValue(int groupValuePosition) {
-        return columnReaderService.getGroupValue(groupValuePosition);
+        return columnReaderService.getGroupObjectValue(groupValuePosition);
     }
 
     private GroupValueIndex getGroupValueIndex(int groupValuePosition) {
@@ -111,7 +111,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
     @Override
     public T getOriginalValue(int rowNumber) {
-        return columnReaderService.getOriginalValueByRow(rowNumber);
+        return columnReaderService.getOriginalObjectValueByRow(rowNumber);
     }
 
     @Override

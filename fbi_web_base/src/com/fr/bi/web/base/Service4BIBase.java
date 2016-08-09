@@ -9,12 +9,9 @@ import com.fr.bi.web.base.services.BIGetTableAction;
 import com.fr.bi.web.base.services.BIGetTransNameAction;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
-import com.fr.fs.control.UserControl;
 import com.fr.fs.privilege.auth.FSAuthentication;
 import com.fr.fs.privilege.auth.FSAuthenticationManager;
-import com.fr.fs.web.FSConstants;
 import com.fr.fs.web.service.AbstractFSAuthService;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.privilege.base.PrivilegeVote;
 import com.fr.stable.fun.impl.NoSessionIDService;
 import com.fr.web.core.WebActionsDispatcher;
@@ -71,10 +68,10 @@ public class Service4BIBase extends NoSessionIDService {
             vote.action(req, res);
             return;
         }
-        long userId = ServiceUtils.getCurrentUserID(req);
-        if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.BI)) {
+//        long userId = ServiceUtils.getCurrentUserID(req);
+//        if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.BI)) {
             WebActionsDispatcher.dealForActionNoSessionIDCMD(req, res, actions);
-        }
+//        }
     }
 
     private PrivilegeVote getFSVote(HttpServletRequest req, HttpServletResponse res) throws Exception {

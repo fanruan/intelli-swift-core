@@ -39,7 +39,7 @@ BIDezi.DateRangeDetailModel = BI.inherit(BI.Model, {
             var views = this.get("view");
             BI.each(views, function (region, arr) {
                 BI.remove(arr, function (i, id) {
-                    return key2 == id;
+                    return key2 === id;
                 })
             });
             this.set("view", views);

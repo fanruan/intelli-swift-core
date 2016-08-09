@@ -42,7 +42,13 @@ BI.Pager = BI.inherit(BI.Widget, {
     },
     _init: function () {
         BI.Pager.superclass._init.apply(this, arguments);
+        var self = this;
         this.currPage = BI.result(this.options, "curr");
+        //翻页太灵敏
+        this._lock = false;
+        this._debouce = BI.debounce(function () {
+            self._lock = false;
+        }, 300);
         this._populate();
     },
 
@@ -183,6 +189,11 @@ BI.Pager = BI.inherit(BI.Widget, {
             layouts: o.layouts
         });
         this.button_group.on(BI.Controller.EVENT_CHANGE, function (type, value, obj) {
+            if (self._lock === true) {
+                return;
+            }
+            self._lock = true;
+            self._debouce();
             if (type === BI.Events.CLICK) {
                 var v = self.button_group.getValue()[0];
                 switch (v) {

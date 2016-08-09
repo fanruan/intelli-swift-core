@@ -19,7 +19,7 @@ BIShow.Model = BI.inherit(BI.Model, {
         Data.SharingPool.put("reportId", this.get('reportId'));
         Data.SharingPool.put("sessionID", this.get('sessionID'));
         Data.SharingPool.put("show", this.get('show') === '_bi_show_');
-
+        
         this._initSessionBeater();
     },
     _initSessionBeater: function () {
@@ -29,11 +29,17 @@ BIShow.Model = BI.inherit(BI.Model, {
                 _t: new Date()
             }, BI.emptyFn);
         }, 30000);
-        window.onbeforeunload = function () {
-            BI.requestSync("closesessionid", "", {
-                sessionID: Data.SharingPool.get("sessionID"),
-                _t: new Date()
+        $(window).unload(function () {
+            $(window).unbind('unload');
+            FR.ajax({
+                async: false,
+                url: FR.servletURL,
+                data: {
+                    op: 'closesessionid',
+                    sessionID: Data.SharingPool.get("sessionID"),
+                    _t: new Date()
+                }
             })
-        };
+        })
     },
 });

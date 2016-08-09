@@ -263,6 +263,16 @@
             return views[tableId];
         },
 
+        isSelfCircleTableByTableId: function (tableId) {
+            var paths = BI.Utils.getPathsFromTableAToTableB(tableId, tableId);
+            if (paths.length === 0) {
+                return false;
+            }
+            return !BI.find(paths, function (idx, path) {
+                return path.length > 1;
+            });
+        },
+
         /**
          * 字段相关
          */
@@ -630,7 +640,7 @@
                 BICst.DEFAULT_CHART_SETTING.freeze_first_column;
         },
 
-        getWSShowRulesByID: function(wid) {
+        getWSShowRulesByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.rules_display) ? ws.rules_display :
                 BICst.DEFAULT_CHART_SETTING.bubble_display;
@@ -1584,7 +1594,7 @@
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
             if (tableA === tableB) {        //同一张表
-                if (isSelfCircle(path) && !checkPathAvailable(path, from, to)) {      //是自循环表且字段包含层级字段
+                if (this.isSelfCircleTableByTableId(tableA) && !checkPathAvailable(path, from, to)) {      //是自循环表且字段包含层级字段
                     return [getRelationOfselfCircle(from, to, path)];
                 } else {
                     return [[{
@@ -1596,37 +1606,13 @@
             return path;
 
             //获取自循环生成的层级所在的关联
-            function getRelationOfselfCircle(from, to, paths){
-                return BI.find(paths, function(idx, path){
+            function getRelationOfselfCircle(from, to, paths) {
+                return BI.find(paths, function (idx, path) {
                     return BI.find(path, function (id, relation) {
                         var foreignId = self.getForeignIdFromRelation(relation);
                         return foreignId === from || foreignId === to;
                     });
                 })
-            }
-
-            function hasSelfCircleInHeadOrTail(paths){
-                var result = BI.find(paths, function (idx, path) {
-                    return BI.find(path, function (id, relation) {
-                        if(idx === 0 || idx === path.length - 1){
-                            return self.getTableIdByFieldID(self.getPrimaryIdFromRelation(relation))
-                                === self.getTableIdByFieldID(self.getForeignIdFromRelation(relation));
-                        }
-                        return false;
-                    });
-                });
-                return BI.isNull(result);
-            }
-
-            //是自循环还是循环路径
-            function isSelfCircle(paths) {
-                if (path.length === 0) {
-                    return false;
-                }
-                var result = BI.find(paths, function (idx, path) {
-                    return path.length > 1;
-                });
-                return BI.isNull(result);
             }
 
             //对自循环表检测路径合法依据：路径中的a个关联中是否存在外键为primKey
@@ -1732,13 +1718,13 @@
             var self = this;
             var fields = this.getSortedFieldIdsOfOneTableByTableId(tableId);
             var dimensions = {}, view = {10000: []};
-            BI.each(fields, function(i, fieldId) {
+            BI.each(fields, function (i, fieldId) {
                 var id = BI.UUID();
                 var dimensionMap = {}, group = {};
                 dimensionMap[tableId] = {
                     target_relation: []
                 };
-                if(self.getFieldTypeByID(fieldId) === BICst.COLUMN.DATE) {
+                if (self.getFieldTypeByID(fieldId) === BICst.COLUMN.DATE) {
                     group.type = BICst.GROUP.YMDHMS;
                 }
                 var dType = BICst.TARGET_TYPE.STRING;
@@ -2198,6 +2184,18 @@
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
                 }
+                if(groupType === BICst.GROUP.ID_GROUP) {
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: {
+                            min: BI.parseFloat(value),
+                            max: BI.parseFloat(value),
+                            closemin: true,
+                            closemax: true
+                        },
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    }
+                }
                 var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
                 var oMin, oMax;
                 BI.each(groupNodes, function (i, node) {
@@ -2216,7 +2214,7 @@
                         filter_value: groupMap[value],
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
-                } else if (useOther === value) {
+                } else if (value === BICst.UNGROUP_TO_OTHER) {
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
                         filter_value: {
@@ -2480,7 +2478,7 @@
                 case BICst.MULTI_DATE_YEAR_AFTER:
                     return new Date(currY + 1 * value, currM, currD).getTime();
                 case BICst.MULTI_DATE_YEAR_BEGIN:
-                    return new Date(currY, 1, 1).getTime();
+                    return new Date(currY, 0, 1).getTime();
                 case BICst.MULTI_DATE_YEAR_END:
                     return new Date(currY, 11, 31).getTime();
 
@@ -2679,10 +2677,12 @@
                     break;
                 case BICst.WIDGET.YMD:
                     if (BI.isNotNull(wValue)) {
-                        date = new Date(parseComplexDate(wValue));
+                        var v = parseComplexDate(wValue);
+                        if(BI.isNotNull(v)){
+                            date = new Date(v);
+                        }
                     }
                     break;
-
             }
             return date;
         }

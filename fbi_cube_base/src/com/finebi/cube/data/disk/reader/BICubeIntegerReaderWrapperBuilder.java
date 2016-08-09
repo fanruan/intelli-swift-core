@@ -3,6 +3,7 @@ package com.finebi.cube.data.disk.reader;
 import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.data.input.ICubeIntegerReaderWrapper;
 import com.finebi.cube.data.input.ICubeIntegerReaderWrapperBuilder;
+import com.finebi.cube.data.input.primitive.ICubeIntegerReader;
 import com.finebi.cube.location.ICubeResourceLocation;
 
 import java.io.File;
@@ -25,7 +26,7 @@ public class BICubeIntegerReaderWrapperBuilder extends BINIOReaderBuilder<ICubeI
         contentLocation.setReaderSourceLocation();
         contentLocation.setIntegerType();
         try {
-            return new BICubeIntegerReaderWrapper(BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(contentLocation));
+            return new BICubeIntegerReaderWrapper((ICubeIntegerReader) BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(contentLocation));
         } catch (Exception ignore) {
             throw new RuntimeException(ignore.getMessage(), ignore);
         }

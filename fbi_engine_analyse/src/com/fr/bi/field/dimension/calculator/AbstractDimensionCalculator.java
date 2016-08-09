@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
@@ -20,7 +21,6 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -99,32 +99,9 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return dimension.getGroup().createGroupedMap(createNoneSortNoneGroupValueMapGetter(target, loader));
     }
 
-    /**
-     * 是否为超级大分组
-     *
-     * @param targetTable 指标表
-     * @param loader      注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader) {
-        return false;
-    }
-
     @Override
     public boolean hasSelfGroup() {
         return dimension.getGroup().isNullGroup();
-    }
-
-    /**
-     * 是否为超级大分组
-     *
-     * @param loader 注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(ICubeDataLoader loader) {
-        return false;
     }
 
     @Override
@@ -166,7 +143,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader) {
         ICubeColumnIndexReader getter = createNoneSortGroupValueMapGetter(table, loader);
-        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
+        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }
         return dimension.getSort().createGroupedMap(getter).iterator();
@@ -186,20 +163,14 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         }
         ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);
-        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP) {
+        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }
         return dimension.getSort().createGroupedMap(getter).iterator();
     }
 
     @Override
-    public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader) {
-        return createValueMap(table, loader, true, 0);
-    }
-
-    @Override
-    public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
-        //默认设置field本身为关联主键
+    public int getOriginGroupSize(BusinessTable table, ICubeDataLoader loader) {
         CubeTableSource usedTableSource = getTableSourceFromField();
         BIKey usedColumnKey = dimension.createKey(field);
         //多对多处理,这里默认relationList的第一个关联是公共主表关联
@@ -209,9 +180,8 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
             usedTableSource = primaryTableSource;
             usedColumnKey = new IndexKey(primaryField.getFieldName());
         }
-        ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
-        getter = dimension.getGroup().createGroupedMap(getter);
-        return dimension.getSort().createGroupedMap(getter);
+        ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList());
+        return getter.sizeOfGroup();
     }
 
     private CubeTableSource getTableSourceFromField() {
@@ -247,17 +217,25 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (o == null || getClass() != o.getClass()) return false;
+
         AbstractDimensionCalculator that = (AbstractDimensionCalculator) o;
-        return ComparatorUtils.equals(fetchObjectCore(), that.fetchObjectCore());
+
+        if (relations != null ? !relations.equals(that.relations) : that.relations != null) return false;
+        if (directToDimenRelations != null ? !directToDimenRelations.equals(that.directToDimenRelations) : that.directToDimenRelations != null)
+            return false;
+        if (dimension != null ? !dimension.equals(that.dimension) : that.dimension != null) return false;
+        return field != null ? field.equals(that.field) : that.field == null;
 
     }
 
     @Override
     public int hashCode() {
-        return fetchObjectCore().hashCode();
+        int result = relations != null ? relations.hashCode() : 0;
+        result = 31 * result + (directToDimenRelations != null ? directToDimenRelations.hashCode() : 0);
+        result = 31 * result + (dimension != null ? dimension.hashCode() : 0);
+        result = 31 * result + (field != null ? field.hashCode() : 0);
+        return result;
     }
 
     public class BIDimensionCore extends BICoreWrapper {
@@ -267,6 +245,10 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
                     dimension == null ? null : dimension.getGroup(),
                     dimension == null ? null : dimension.getSort());
         }
+    }
+
+    public BITableRelationPath getSelfToSelfRelationPath() {
+        return dimension.getSelfToSelfRelationPath();
     }
 
 

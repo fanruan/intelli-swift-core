@@ -100,25 +100,25 @@ public class ResourceHelper {
                 }
 
                 //分组
-                Iterator<String> groupNames = groups.keys();
+                Iterator<String> groupNames = allGroups.keys();
                 while (groupNames.hasNext()) {
                     String groupName = groupNames.next();
-                    JSONArray pIds = allGroups.getJSONArray(groupName);
-                    JSONArray singleGroup = new JSONArray();
-                    for (int i = 0; i < pIds.length(); i++) {
-                        if (packages.getJSONObject(pIds.getString(i)) != null) {
-                            singleGroup.put(pIds.getString(i));
+                    JSONObject group = allGroups.getJSONObject(groupName);
+                    JSONArray children = group.getJSONArray("children");
+                    for(int i = 0; i < children.length(); i++) {
+                        JSONObject child = children.getJSONObject(i);
+                        String childId = child.getString("id");
+                        if(packages.has(childId)) {
+                            groups.put(groupName, group);
+                            break;
                         }
-                    }
-                    if (singleGroup.length() > 0) {
-                        groups.put(groupName, singleGroup);
                     }
                 }
             }
 
             translations = BIModuleUtils.createAliasJSON(userId);
-            relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(userId);
-            excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(userId);
+            relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(manageId);
+            excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(manageId);
             Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
             for (IBusinessPackageGetterService p : packs) {
                 if (manageId != userId && !authPacks.contains(p.getID())) {
@@ -1318,6 +1318,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.group.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/combo.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/popup.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/svg.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/trigger.customscale.js",
@@ -1541,6 +1542,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules4realtime/selectdata/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules4realtime/selectdata/widget.selectdata.js",
+                //实时报表拖拽
+                "com/fr/bi/web/js/modules4realtime/drag/widget.dragicongroup.js",
                 //实时报表文本选择字段
                 "com/fr/bi/web/js/modules4realtime/selectstring/widget.selectstring.js",
                 //实时报表数值选择字段
@@ -1883,6 +1886,9 @@ public class ResourceHelper {
                 //布局
                 "com/fr/bi/web/css/widget/arrangement/arrangement.droppable.css",
                 "com/fr/bi/web/css/widget/arrangement/arrangement.css",
+
+
+                "com/fr/bi/web/css/widget/interactivearrangement/interactivearrangement.css",
 
                 "com/fr/bi/web/css/widget/timesetting/timesetting.day.css",
                 "com/fr/bi/web/css/widget/timesetting/timesetting.hour.css",
@@ -2295,6 +2301,7 @@ public class ResourceHelper {
 
                 //mask
                 "com/fr/bi/web/js/widget/base/mask/loading.mask.js",
+                "com/fr/bi/web/js/widget/base/mask/loading.background.js",
                 "com/fr/bi/web/js/widget/base/mask/cancel.loading.mask.js",
 
                 //toolbar
@@ -2624,6 +2631,9 @@ public class ResourceHelper {
                 //自适应布局
                 "com/fr/bi/web/js/widget/adaptivearrangement/adaptivearrangement.js",
 
+                //交互式布局
+                "com/fr/bi/web/js/widget/interactivearrangement/interactivearrangement.js",
+
                 "com/fr/bi/web/js/widget/uploadfile/progress.uploadfile.js",
 
                 /**
@@ -2631,6 +2641,7 @@ public class ResourceHelper {
                  */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
+                "com/fr/bi/web/js/components/pane.loading.2.js",
 
                 //选值
                 "com/fr/bi/web/js/components/valuechooser/combo.valuechooser.js",
@@ -2707,14 +2718,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/mobile/mobile.jQuery.js",
                 "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
-                "com/fr/bi/web/js/data/constant/biconst.js",
-                "com/fr/bi/web/js/data/constant/enums.js",
                 "com/fr/bi/web/js/core/underscore.js",
                 "com/fr/bi/web/js/base/base.js",
+                "com/fr/bi/web/mobile/mobile.data.js",
+                "com/fr/bi/web/js/data/data.js",
+                "com/fr/bi/web/js/data/constant/biconst.js",
+                "com/fr/bi/web/js/data/constant/enums.js",
                 "com/fr/bi/web/js/base/proto/number.js",
                 "com/fr/bi/web/js/base/proto/array.js",
                 "com/fr/bi/web/js/base/proto/date.js",
-                "com/fr/bi/web/js/data/data.js",
                 "com/fr/bi/web/js/data/utils.js"
         };
     }

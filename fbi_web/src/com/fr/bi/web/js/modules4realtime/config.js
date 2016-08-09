@@ -41,3 +41,10 @@ BI.Plugin.registerWidget("bi.tree_select_data", function (w) {
         return w;
     }
 });
+
+BI.Plugin.registerWidget("bi.drag_icon_group", function (w) {
+    if (BI.Utils.isRealTime()) {
+        w.type = "bi.drag_icon_group_4_real_time";
+        return w;
+    }
+});

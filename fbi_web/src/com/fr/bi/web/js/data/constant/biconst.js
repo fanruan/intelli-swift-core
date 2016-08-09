@@ -366,6 +366,7 @@ BICst.CLASS.ROW = 16;
 BICst.CUBE_UPDATE_TYPE = {};
 BICst.CUBE_UPDATE_TYPE.GLOBAL_UPDATE = "__global_update__";
 BICst.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE = "__singleTable_update__";
+BICst.SYSTEM_USER_NAME = "__system_user_name__";
 
 BICst.FUNCTION = {};
 BICst.FUNCTION.TEXT = 1;

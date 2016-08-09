@@ -42,6 +42,4 @@ public class BICubeDateColumn extends BICubeLongColumn {
         super.addNULLIndex(position, groupValueIndex);
     }
 
-
-
 }

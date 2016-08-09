@@ -43,25 +43,9 @@ BI.TableChartErrorPane = BI.inherit(BI.Widget, {
                 }]
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Error_Comment_Page_Not_Found"),
+                text: BI.i18nText("BI-Error_Concat_Us"),
                 cls: "error-comment-page-not-found",
                 height: 30
-            }, {
-                type: "bi.flexbox_center_adapt",
-                items: [{
-                    type: "bi.left",
-                    items: [{
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Error_Problem_Is"),
-                        cls: "error-comment-problem-is",
-                        height: 30
-                    }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Error_Concat_Us"),
-                        cls: "error-comment-concat-us",
-                        height: 30
-                    }]
-                }]
             }, detailInfoButton, self.errorInfo],
             vgap: 10
         })

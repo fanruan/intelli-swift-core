@@ -13,7 +13,7 @@ import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BICubeColumnEntity;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.structure.object.CubeValueEntry;
+import com.fr.bi.stable.io.newio.NIOConstant;
 
 import java.util.Comparator;
 
@@ -100,7 +100,7 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
-    public Integer getPositionOfGroupByRow(int row) throws BIResourceInvalidException {
+    public int getPositionOfGroupByRow(int row) throws BIResourceInvalidException {
         return selfColumnEntity.getPositionOfGroupByRow(row);
     }
 
@@ -110,9 +110,10 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     }
 
     @Override
-    public T getGroupValue(int position) {
-        return selfColumnEntity.getGroupValue(position);
+    public T getOriginalObjectValueByRow(int rowNumber) {
+        return (T)getOriginalValueByRow(rowNumber);
     }
+
 
     @Override
     public CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException {
@@ -134,16 +135,27 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
         selfColumnEntity.clear();
     }
 
-    @Override
-    public T getOriginalValueByRow(int rowNumber) {
-        return convertDate(hostDataColumn.getOriginalValueByRow(rowNumber));
+    /**
+     * 根据行号获得对应的原始值。
+     *
+     * @param rowNumber 数据库中的行号
+     * @return 原始值
+     */
+    public Number getOriginalValueByRow(int rowNumber) {
+        long value = hostDataColumn.getOriginalValueByRow(rowNumber);
+        return convertDate(value == NIOConstant.LONG.NULL_VALUE ? null : value);
     }
 
-    protected abstract T convertDate(Long date);
+    protected abstract Number convertDate(Long date);
 
     @Override
     public GroupValueIndex getIndexByGroupValue(T groupValues) throws BIResourceInvalidException, BICubeIndexException {
         return selfColumnEntity.getIndexByGroupValue(groupValues);
+    }
+
+    @Override
+    public T getGroupObjectValue(int position) {
+        return selfColumnEntity.getGroupObjectValue(position);
     }
 
     @Override

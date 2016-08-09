@@ -23,6 +23,21 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/loading.gif');
   _background: none;
 }
+.loading-background-f25 {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/F.25.gif') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/F.25.gif');
+  _background: none;
+}
+.loading-background-e50 {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/E.50.gif') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/E.50.gif');
+  _background: none;
+}
+.loading-background-d100 {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/D.100.gif') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/D.100.gif');
+  _background: none;
+}
 .axis-tip-background {
   background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis.png') no-repeat center center;
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/axis.png');

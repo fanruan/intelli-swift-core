@@ -8,6 +8,8 @@ BIShow.PaneModel = BI.inherit(BI.Model, {
 
     _init: function () {
         BIShow.PaneModel.superclass._init.apply(this, arguments);
+        //放一份原始数据 非必要情况不要改里面的值
+        Data.SharingPool.put("original_show_widgets", this.cat("widgets"));
     },
 
     local: function () {

@@ -1,5 +1,35 @@
 //放置用户可以配置的常量
 
+//full week names
+BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Monday"),
+    BI.i18nText("BI-Tuesday"),
+    BI.i18nText("BI-Wednesday"),
+    BI.i18nText("BI-Thursday"),
+    BI.i18nText("BI-Friday"),
+    BI.i18nText("BI-Saturday"),
+    BI.i18nText("BI-Sunday")];
+
+//full month names
+BICst.FULL_MONTH_NAMES = [
+    BI.i18nText("BI-January"),
+    BI.i18nText("BI-February"),
+    BI.i18nText("BI-March"),
+    BI.i18nText("BI-April"),
+    BI.i18nText("BI-May"),
+    BI.i18nText("BI-June"),
+    BI.i18nText("BI-July"),
+    BI.i18nText("BI-August"),
+    BI.i18nText("BI-September"),
+    BI.i18nText("BI-October"),
+    BI.i18nText("BI-November"),
+    BI.i18nText("BI-December")];
+
+//full quarter names
+BICst.FULL_QUARTER_NAMES = [BI.i18nText("BI-Quarter_1"),
+    BI.i18nText("BI-Quarter_2"),
+    BI.i18nText("BI-Quarter_3"),
+    BI.i18nText("BI-Quarter_4")];
+
 BICst.CONFIG = {
     SHOW_DASHBOARD_TITLE: true
 };
@@ -1270,21 +1300,27 @@ BICst.RADAR_CHART_STYLE_GROUP = [{
 //仪表盘类型
 BICst.DASHBOARD_CHART_STYLE_GROUP = [{
     cls: "dashboard-chart-style-360-icon",
+    title: BI.i18nText("BI-Multi_Pointer_Dashboard_360"),
     value: BICst.CHART_SHAPE.NORMAL
 }, {
     cls: "dashboard-chart-style-180-icon",
+    title: BI.i18nText("BI-Multi_Pointer_Dashboard_180"),
     value: BICst.CHART_SHAPE.HALF_DASHBOARD
 }, {
     cls: "dashboard-chart-style-percent-icon",
+    title: BI.i18nText("BI-Percent_Donut_Dashboard"),
     value: BICst.CHART_SHAPE.PERCENT_DASHBOARD
 }, {
     cls: "dashboard-chart-style-percent-scale-slot-icon",
+    title: BI.i18nText("BI-Percent_Scale_Slot_Dashboard"),
     value: BICst.CHART_SHAPE.PERCENT_SCALE_SLOT
 }, {
     cls: "dashboard-chart-style-vertical-tube-icon",
+    title: BI.i18nText("BI-Vertical_Tube"),
     value: BICst.CHART_SHAPE.VERTICAL_TUBE
 }, {
     cls: "dashboard-chart-style-horizontal-tube-icon",
+    title: BI.i18nText("BI-Horizontal_Tube"),
     value: BICst.CHART_SHAPE.HORIZONTAL_TUBE
 }];
 

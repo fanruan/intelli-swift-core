@@ -28,7 +28,7 @@ public class ConnectionRowGetter {
      * @param currentRow 当前外键的行号
      * @return 主键行的行号
      */
-    public Integer getConnectedRow(final int currentRow) {
+    public int getConnectedRow(final int currentRow) {
         return reader == null ? currentRow : reader.getReverse(currentRow);
     }
 

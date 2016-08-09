@@ -9,6 +9,7 @@ BI.SelectDataLevel0Node = BI.inherit(BI.NodeButton, {
             extraCls: "bi-select-data-level0-node bi-list-item",
             id: "",
             pId: "",
+            layer: 0,
             open: false,
             height: 25
         })
@@ -55,6 +56,11 @@ BI.SelectDataLevel0Node = BI.inherit(BI.NodeButton, {
             type: "bi.htape",
             element: this.element,
             items: [{
+                el: {
+                    type: "bi.layout"
+                },
+                width: o.layer * 20
+            }, {
                 width: 23,
                 el: this.checkbox
             }, {
