@@ -503,6 +503,10 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
         return this.arrangement.setRegionPosition(name, position);
     },
 
+    zoom: function (ratio) {
+        this.arrangement.zoom(ratio);
+    },
+
     resize: function () {
         return this.arrangement.resize();
     },
@@ -517,6 +521,10 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
 
     getLayoutType: function () {
         return this.arrangement.getLayoutType();
+    },
+
+    getLayoutRatio: function () {
+        return this.arrangement.getLayoutRatio();
     },
 
     getHelper: function () {

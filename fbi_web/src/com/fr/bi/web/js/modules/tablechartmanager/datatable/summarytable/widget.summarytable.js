@@ -204,7 +204,8 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             self.model.setStoredRegionColumnSize(columnSize[0]);
         });
         this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: this.getColumnSize()})});
+            var columnSize = BI.clone(this.getColumnSize());
+            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: columnSize})});
         });
         this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_INIT, function () {
             self._resizeTableColumnSize();

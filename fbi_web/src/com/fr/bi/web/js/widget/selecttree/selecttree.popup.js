@@ -13,10 +13,10 @@ BI.SelectTreePopup = BI.inherit(BI.Pane, {
         });
     },
 
-    _formatItems: function (nodes) {
+    _formatItems: function (nodes, layer) {
         var self = this;
         BI.each(nodes, function (i, node) {
-            var extend = {};
+            var extend = {layer: layer};
             node.id = node.id || BI.UUID();
             if (node.isParent === true || BI.isNotEmptyArray(node.children)) {
                 switch (i) {
@@ -31,7 +31,6 @@ BI.SelectTreePopup = BI.inherit(BI.Pane, {
                         break;
                 }
                 BI.defaults(node, extend);
-
                 self._formatItems(node.children);
             } else {
                 switch (i) {
@@ -40,9 +39,6 @@ BI.SelectTreePopup = BI.inherit(BI.Pane, {
                         break;
                     default :
                         extend.type = "bi.mid_tree_leaf_item";
-                }
-                if (BI.isNull(node.pId)) {
-                    extend.isFront = true;
                 }
                 BI.defaults(node, extend);
             }

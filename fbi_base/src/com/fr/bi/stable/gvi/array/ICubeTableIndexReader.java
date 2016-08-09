@@ -13,4 +13,5 @@ public interface ICubeTableIndexReader extends Release {
 
     int getReverse(int row);
 
+    GroupValueIndex getNullIndex();
 }

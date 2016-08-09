@@ -264,10 +264,11 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         }
         BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), mes, function (flag) {
             if (flag === true) {
-                self.model.removeNode(id, type);
-                self._refreshNavTreeData();
-                self.populate();
-                self.fireEvent(BI.TemplateManager.EVENT_DELETE, id, type);
+                self.fireEvent(BI.TemplateManager.EVENT_DELETE, id, type, function() {
+                    self.model.removeNode(id, type);
+                    self._refreshNavTreeData();
+                    self.populate();
+                });
             }
         });
     },

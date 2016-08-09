@@ -77,7 +77,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                 } else {
                     var dragIcon = BI.createWidget({
                         type: "bi.combo",
-                        direction: "top,right",
+                        direction: "right,top",
                         adjustXOffset: -1,
                         adjustYOffset: -10,
                         isNeedAdjustWidth: false,
