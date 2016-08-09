@@ -47,7 +47,7 @@ BI.PartTree = BI.inherit(BI.SyncTree, {
         } else {
             o.itemsCreator(BI.extend({}, o.paras, {
                 type: BI.TreeView.REQ_TYPE_CALCULATE_SELECT_DATA,
-                selected_values: this.selected_values || BI.deepClone(o.paras.selected_values),
+                selected_values: this.selected_values,
                 not_selected_value: name,
                 parent_values: parent_values
             }), function (new_values) {
