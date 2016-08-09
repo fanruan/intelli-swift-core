@@ -4,6 +4,8 @@ import com.fr.fs.FSConfig;
 import com.fr.fs.FSRegisterForBI;
 import com.fr.privilege.PrivilegeManager;
 import com.fr.stable.StringUtils;
+import com.fr.stable.fun.RequestInterceptor;
+import com.fr.stable.fun.impl.AbstractRequestInterceptor;
 import com.fr.web.core.ActionNoSessionCMD;
 import com.fr.web.utils.WebUtils;
 
@@ -15,7 +17,7 @@ import java.util.Map;
 /**
  * Created by 小灰灰 on 2016/6/21.
  */
-public class BISignInAction extends ActionNoSessionCMD {
+public class BISignInAction extends AbstractRequestInterceptor {
     /**
      * fs_signin's cmd
      * @return
@@ -47,5 +49,10 @@ public class BISignInAction extends ActionNoSessionCMD {
                 WebUtils.writeOutTemplate("/com/fr/bi/web/html/bi_login.html", res, map);
             }
         }
+    }
+
+    @Override
+    public int layerIndex() {
+        return DEFAULT_LAYER_INDEX;
     }
 }
