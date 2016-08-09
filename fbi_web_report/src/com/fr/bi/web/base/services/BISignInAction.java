@@ -4,9 +4,7 @@ import com.fr.fs.FSConfig;
 import com.fr.fs.FSRegisterForBI;
 import com.fr.privilege.PrivilegeManager;
 import com.fr.stable.StringUtils;
-import com.fr.stable.fun.RequestInterceptor;
 import com.fr.stable.fun.impl.AbstractRequestInterceptor;
-import com.fr.web.core.ActionNoSessionCMD;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
