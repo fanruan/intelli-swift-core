@@ -44,8 +44,7 @@ Combo2View = BI.inherit(BI.View, {
                 el: {
                     type: "bi.layout",
                     height: 1200
-                },
-                maxHeight: 2000
+                }
             }
         });
     },
@@ -60,8 +59,7 @@ Combo2View = BI.inherit(BI.View, {
                 el: {
                     type: "bi.layout",
                     height: 1200
-                },
-                maxHeight: 2000
+                }
             }
         });
     },
@@ -78,8 +76,7 @@ Combo2View = BI.inherit(BI.View, {
                 el: {
                     type: "bi.layout",
                     height: 1200
-                },
-                maxHeight: 2000
+                }
             }
         })
     },
@@ -114,8 +111,7 @@ Combo2View = BI.inherit(BI.View, {
                 el: {
                     type: "bi.layout",
                     height: 1200
-                },
-                maxHeight: 2000
+                }
             }
         })
     },

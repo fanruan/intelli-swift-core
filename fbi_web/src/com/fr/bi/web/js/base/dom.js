@@ -541,7 +541,8 @@ BI.extend(jQuery, {
     getComboPosition: function (combo, popup, extraWidth, extraHeight, needAdaptHeight, directions, offsetStyle) {
         extraWidth || (extraWidth = 0);
         extraHeight || (extraHeight = 0);
-        var maxHeight = popup.attr("maxHeight") || $("body").bounds().height - extraHeight;
+        var maxHeight = $("body").bounds().height - extraHeight;
+        maxHeight = Math.min(popup.attr("maxHeight") || maxHeight, maxHeight);
         popup.resetHeight && popup.resetHeight(maxHeight);
         var position = $.getComboPositionByDirections(combo, popup, extraWidth, extraHeight, needAdaptHeight, directions || ['bottom', 'top', 'right', 'left'])
         switch (offsetStyle) {

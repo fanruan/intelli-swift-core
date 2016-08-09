@@ -9,7 +9,7 @@ BI.PopupView = BI.inherit(BI.Widget, {
             baseCls: "bi-list-view",
             maxWidth: 'auto',
             minWidth: 100,
-            maxHeight: 200,
+            //maxHeight: 200,
             minHeight: 25,
             lgap: 0,
             rgap: 0,
