@@ -22,6 +22,7 @@ import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
 import com.fr.data.TableDataSource;
+import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.GeneralContext;
 import com.fr.main.FineBook;
@@ -145,9 +146,6 @@ public class BISession extends BIAbstractSession {
             lockDAO.release(lock);
         }
     }
-
-
-
 
     public CubeGenerateStatusProvider getProvider() {
         return provider;
