@@ -8,6 +8,7 @@ BI.GeneralQuerySelectDataItem = BI.inherit(BI.Single, {
             height: 25,
             hgap: 0,
             fieldType: BICst.COLUMN.STRING,
+            layer: 0,
             lgap: 10,
             rgap: 10
         })
@@ -33,7 +34,7 @@ BI.GeneralQuerySelectDataItem = BI.inherit(BI.Single, {
             type: "bi.blank_icon_text_item",
             trigger: "mousedown",
             cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
-            blankWidth: 20,
+            blankWidth: o.layer * 20,
             text: o.text,
             value: o.value,
             height: 25,
@@ -81,7 +82,7 @@ BI.GeneralQuerySelectDataItem = BI.inherit(BI.Single, {
         this.bottomLine.invisible();
     },
 
-    setEnable : function (v) {
+    setEnable: function (v) {
         BI.GeneralQuerySelectDataItem.superclass.setEnable.apply(this, arguments)
         this.button.setEnable(v);
     },

@@ -11,6 +11,7 @@ BI.SelectNumberLevel0Item = BI.inherit(BI.Single, {
             height: 25,
             hgap: 0,
             fieldType: BICst.COLUMN.STRING,
+            layer: 0,
             warningTitle: BI.i18nText("BI-Field_Already_In_Dimension"),
             lgap: 0,
             rgap: 35
@@ -37,7 +38,7 @@ BI.SelectNumberLevel0Item = BI.inherit(BI.Single, {
             type: "bi.blank_icon_text_item",
             trigger: "mousedown",
             cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
-            blankWidth: 20,
+            blankWidth: o.layer * 20,
             text: o.text,
             value: o.value,
             height: 25,
