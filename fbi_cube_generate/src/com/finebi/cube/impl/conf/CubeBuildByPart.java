@@ -34,7 +34,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
 
     public CubeBuildByPart(long userId, Set<BIBusinessTable> newTables, Set<BITableRelation> newRelations) {
         super(userId);
-        this.userId=userId;
+        this.userId = userId;
         this.newRelations = newRelations;
         this.newTables = newTables;
         try {
@@ -75,7 +75,8 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
         Iterator<BITableRelation> iterator = newRelations.iterator();
         while (iterator.hasNext()) {
             BITableRelation relation = iterator.next();
-            BITableSourceRelation sourceRelation = convertRelation(relation);
+            BITableSourceRelation sourceRelation = null;
+            sourceRelation = convertRelation(relation);
             biTableSourceRelationSet.add(sourceRelation);
             newTableSources.add(sourceRelation.getForeignTable());
             newTableSources.add(sourceRelation.getPrimaryTable());
@@ -94,7 +95,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
                 continue;
             }
         }
-        biTableSourceRelationPathSet=removeDuplicateRelationPaths(biTableSourceRelationPathSet);
+        biTableSourceRelationPathSet = removeDuplicateRelationPaths(biTableSourceRelationPathSet);
     }
 
 

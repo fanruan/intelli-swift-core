@@ -161,7 +161,7 @@ return true;
         }
     }
 
-    protected BITableSourceRelation convertRelation(BITableRelation relation) throws BIKeyAbsentException {
+    protected BITableSourceRelation convertRelation(BITableRelation relation) {
         CubeTableSource primaryTable;
         CubeTableSource foreignTable;
         try {
@@ -174,7 +174,11 @@ return true;
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
         if (!isRelationValid(relation) || !isSourceRelationValid) {
+            try {
                 throw new BIKeyAbsentException("tableSourceRelation key absent");
+            } catch (BIKeyAbsentException e) {
+                BILogger.getLogger().error(e.getMessage());
+            }
         }
         BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
                 primaryField,
@@ -198,12 +202,8 @@ return true;
         BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
         for (BITableRelation biTableRelation : path.getAllRelations()) {
             BITableSourceRelation biTableSourceRelation = null;
-            try {
-                biTableSourceRelation = convertRelation(biTableRelation);
-                tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
-            } catch (BIKeyAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());
-            }
+            biTableSourceRelation = convertRelation(biTableRelation);
+            tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
         }
         return tableSourceRelationPath;
     }
