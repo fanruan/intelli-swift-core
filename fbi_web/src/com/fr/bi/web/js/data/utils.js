@@ -735,7 +735,7 @@ Data.Utils = {
             click: options.click,
             max_scale: options.max_scale || "",
             min_scale: options.min_scale || "",
-            show_percentage: options.show_percentage || constants.SHOW
+            show_percentage: options.show_percentage || constants.NOT_SHOW
         };
 
         var maxes = [];
@@ -2078,7 +2078,7 @@ Data.Utils = {
                 valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
                 valueLabel.style = configs.plotOptions.valueLabel.style;
                 var percentageLabel = BI.extend(configs.plotOptions.percentageLabel , {
-                    enabled: config.show_percentage === BICst.PERCENTAGE.NOT_SHOW
+                    enabled: config.show_percentage === BICst.PERCENTAGE.SHOW
                 });
                 var slotValueLAbel = {
                     formatter: function(){
@@ -6082,11 +6082,11 @@ Data.Utils = {
 
         function ChartConstants() {
             return {
-                SHOW: 1,
                 AUTO: 1,
                 X_AXIS: 3,
                 NORMAL: 1,
                 POLYGON: 7,
+                NOT_SHOW: 2,
                 ONE2POINT: 3,
                 TWO2POINT: 4,
                 LEFT_AXIS: 0,
