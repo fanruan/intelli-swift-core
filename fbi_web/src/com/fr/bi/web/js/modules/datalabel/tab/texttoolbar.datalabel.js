@@ -14,10 +14,13 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
         var self = this;
         BI.DataLabelTextToolBar.superclass._init.apply(this, arguments);
         this.family = BI.createWidget({
-            type: "bi.data_label_text_toolbar_font_chooser",
+            type: "bi.text_toolbar_font_chooser",
             height: 24,
             width: 80,
             cls: "text-toolbar-size-chooser-trigger"
+        });
+        this.family.on(BI.TextToolbarFontChooser.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DataLabelTextToolBar.EVENT_CHANGE, arguments);
         });
         this.size = BI.createWidget({
             type: "bi.text_toolbar_size_chooser",

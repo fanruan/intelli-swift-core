@@ -2641,7 +2641,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalabel/datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/tab.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/texttoolbar.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/item.numberfield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/item.stringfield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/factory.filteritem.datalabel.js",
