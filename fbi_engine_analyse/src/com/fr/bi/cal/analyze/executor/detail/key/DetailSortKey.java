@@ -13,6 +13,8 @@ import java.util.List;
 public class DetailSortKey {
     private List<BIDetailTarget> sortList;
 
+    private boolean[] asc;
+
     private GroupValueIndex gvi;
 
     private BusinessTable table;
@@ -38,6 +40,9 @@ public class DetailSortKey {
         if (table != null ? !ComparatorUtils.equals(table, that.table) : that.table != null) {
             return false;
         }
+        if (asc != null ? !ComparatorUtils.equals(asc, that.asc) : that.asc != null) {
+            return false;
+        }
 
         return true;
     }
@@ -52,13 +57,15 @@ public class DetailSortKey {
         int result = sortList != null ? sortList.hashCode() : 0;
         result = 31 * result + (gvi != null ? gvi.hashCode() : 0);
         result = 31 * result + (table != null ? table.hashCode() : 0);
+        result = 31 * result + (asc != null ? asc.hashCode() : 0);
         return result;
     }
 
-    public DetailSortKey(GroupValueIndex gvi, BusinessTable table, List<BIDetailTarget> sortList) {
+    public DetailSortKey(GroupValueIndex gvi, BusinessTable table, List<BIDetailTarget> sortList, boolean[] asc) {
         this.gvi = gvi;
         this.table = table;
         this.sortList = sortList;
+        this.asc = asc;
     }
 
 }

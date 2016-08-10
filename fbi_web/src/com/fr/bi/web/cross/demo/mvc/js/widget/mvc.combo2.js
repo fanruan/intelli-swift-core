@@ -116,6 +116,46 @@ Combo2View = BI.inherit(BI.View, {
         })
     },
 
+    sevenCombo: function () {
+        return BI.createWidget({
+            type: "bi.combo",
+            adjustXOffset: 25,
+            adjustYOffset: 5,
+            direction: "bottom",
+            isNeedAdjustWidth: false,
+            //isNeedAdjustHeight: false,
+            offsetStyle: "center",
+            el: this._createEl(),
+            popup: {
+                el: {
+                    type: "bi.layout",
+                    width: 200,
+                    height: 1200
+                }
+            }
+        })
+    },
+
+    eightCombo: function () {
+        return BI.createWidget({
+            type: "bi.combo",
+            adjustXOffset: 25,
+            adjustYOffset: 5,
+            direction: "right",
+            isNeedAdjustWidth: false,
+            //isNeedAdjustHeight: false,
+            offsetStyle: "middle",
+            el: this._createEl(),
+            popup: {
+                el: {
+                    type: "bi.layout",
+                    width: 200,
+                    height: 200
+                }
+            }
+        })
+    },
+
     _render: function (vessel) {
         BI.createWidget({
             type: "bi.grid",
@@ -123,7 +163,8 @@ Combo2View = BI.inherit(BI.View, {
             hgap: 10,
             vgap: 5,
             items: [[this.oneCombo(), this.twoCombo(), this.threeCombo()],
-                [this.fourCombo(), this.fiveCombo(), this.sixCombo()]]
+                [this.fourCombo(), this.fiveCombo(), this.sixCombo()],
+                [this.sevenCombo(), this.eightCombo()]]
         });
     }
 });
