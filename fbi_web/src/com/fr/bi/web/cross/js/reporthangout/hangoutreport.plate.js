@@ -141,7 +141,7 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
         this.valueMap = {};
         BI.each(allReports, function (userId, reports) {
             //普通用户
-            if (BI.isNotNull(users[userId])) {
+            if (BI.isNotNull(users[userId]) && reports.length > 0) {
                 items.push({
                     id: userId,
                     pId: self._constant.ALL_REPORT_NODE,
