@@ -101,13 +101,13 @@ public class DetailParas {
             }
         }
         List<BIDetailTarget> sortList = getTargetSortMap();
-        sortKey = new DetailSortKey(gvi, target, sortList);
         asc = new boolean[sortList.size()];
         getters = new ICubeColumnIndexReader[sortList.size()];
         for (int i = 0; i < sortList.size(); i++) {
             getters[i] = sortList.get(i).createGroupValueMapGetter(target, loader, biUser.getUserId());
             asc[i] = (sortList.get(i).getSort().getSortType() == BIReportConstant.SORT.ASC) || (sortList.get(i).getSort().getSortType() == BIReportConstant.SORT.NUMBER_ASC);
         }
+        sortKey = new DetailSortKey(gvi, target, sortList, asc);
     }
 
     /**

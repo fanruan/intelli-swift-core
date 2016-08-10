@@ -26,6 +26,7 @@ BI.DetailSelectDataLevel2Node = BI.inherit(BI.Widget, {
             open: o.open,
             text: o.text,
             value: o.value,
+            keyword: o.keyword,
             title: o.title
         });
         this.node.on(BI.Controller.EVENT_CHANGE, function () {

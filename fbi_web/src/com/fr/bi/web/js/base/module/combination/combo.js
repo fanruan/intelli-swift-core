@@ -231,48 +231,50 @@ BI.Combo = BI.inherit(BI.Widget, {
         this.popupView.visible();
         switch (o.direction) {
             case "bottom":
-                p = $.getComboPosition(this.combo, this.popupView, o.isNeedAdjustHeight, o.adjustYOffset || o.adjustLength, o.offsetStyle);
+            case "bottom,right":
+                p = $.getComboPosition(this.combo, this.popupView, o.adjustXOffset, o.adjustYOffset || o.adjustLength, o.isNeedAdjustHeight, ['bottom', 'top', 'right', 'left'], o.offsetStyle);
                 break;
             case "top":
-                p = $.getComboTopPosition(this.combo, this.popupView, o.isNeedAdjustHeight, o.adjustYOffset || o.adjustLength, o.offsetStyle);
+            case "top,right":
+                p = $.getComboPosition(this.combo, this.popupView, o.adjustYOffset || o.adjustLength,o.isNeedAdjustHeight, ['top', 'bottom', 'right', 'left'], o.offsetStyle);
                 break;
             case "left":
-            case "bottom,left":
             case "left,bottom":
-                p = $.getComboLeftPosition(this.combo, this.popupView, o.adjustXOffset || o.adjustLength, o.adjustYOffset);
+                p = $.getComboPosition(this.combo, this.popupView, o.adjustXOffset|| o.adjustLength, o.adjustYOffset,o.isNeedAdjustHeight, ['left', 'right', 'bottom', 'top'], o.offsetStyle);
                 break;
             case "right":
-            case "bottom,right":
             case "right,bottom":
-                p = $.getComboRightPosition(this.combo, this.popupView, o.adjustXOffset || o.adjustLength, o.adjustYOffset);
+                p = $.getComboPosition(this.combo, this.popupView, o.adjustXOffset|| o.adjustLength, o.adjustYOffset,o.isNeedAdjustHeight, ['right', 'left', 'bottom', 'top'], o.offsetStyle);
                 break;
             case "top,left":
-            case "left,top":
-                p = $.getComboTopLeftPosition(this.combo, this.popupView, o.adjustXOffset || o.adjustLength, o.adjustYOffset);
+                p = $.getComboPosition(this.combo, this.popupView,  o.adjustXOffset, o.adjustYOffset|| o.adjustLength,o.isNeedAdjustHeight, ['top', 'bottom', 'left', 'right'], o.offsetStyle);
                 break;
-            case "top,right":
+            case "bottom,left":
+                p = $.getComboPosition(this.combo, this.popupView,  o.adjustXOffset, o.adjustYOffset|| o.adjustLength,o.isNeedAdjustHeight, ['bottom', 'top', 'left', 'right'], o.offsetStyle);
+                break;
+            case "left,top":
+                p = $.getComboPosition(this.combo, this.popupView,  o.adjustXOffset|| o.adjustLength, o.adjustYOffset,o.isNeedAdjustHeight, ['left', 'right', 'top', 'bottom'], o.offsetStyle);
+                break;
             case "right,top":
-                p = $.getComboTopRightPosition(this.combo, this.popupView, o.adjustXOffset || o.adjustLength, o.adjustYOffset);
+                p = $.getComboPosition(this.combo, this.popupView, o.adjustXOffset|| o.adjustLength, o.adjustYOffset,o.isNeedAdjustHeight, ['right', 'left', 'top', 'bottom'], o.offsetStyle);
                 break;
             case "top,custom":
             case "custom,top":
-                p = $.getComboTopPosition(this.combo, this.popupView, o.isNeedAdjustHeight, o.adjustYOffset || o.adjustLength, o.offsetStyle);
-                delete p.left;
+                p = $.getTopAdaptPosition(this.combo, this.popupView, o.adjustYOffset || o.adjustLength,o.isNeedAdjustHeight);
                 break;
             case "custom,bottom":
             case "bottom,custom":
-                p = $.getComboPosition(this.combo, this.popupView, o.isNeedAdjustHeight, o.adjustYOffset || o.adjustLength, o.offsetStyle);
-                delete p.left;
+                p = $.getBottomAdaptPosition(this.combo, this.popupView, o.adjustYOffset || o.adjustLength,o.isNeedAdjustHeight);
                 break;
             case "left,custom":
             case "custom,left":
-                p = $.getComboLeftPosition(this.combo, this.popupView, o.adjustXOffset || o.adjustLength, o.adjustYOffset);
+                p = $.getLeftAdaptPosition(this.combo, this.popupView, o.adjustXOffset || o.adjustLength);
                 delete p.top;
                 delete p.adaptHeight;
                 break;
             case "custom,right":
             case "right,custom":
-                p = $.getComboRightPosition(this.combo, this.popupView, o.adjustXOffset || o.adjustLength, o.adjustYOffset);
+                p = $.getRightAdaptPosition(this.combo, this.popupView, o.adjustXOffset || o.adjustLength);
                 delete p.top;
                 delete p.adaptHeight;
                 break;

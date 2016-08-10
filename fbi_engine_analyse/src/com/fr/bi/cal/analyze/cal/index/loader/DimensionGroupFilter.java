@@ -21,6 +21,7 @@ import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
 import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTargetKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.manager.PlugManager;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -219,7 +220,7 @@ public class DimensionGroupFilter {
     private boolean isNotStringDimensionFilter(DimensionFilter filter) {
         for (int i = 0; i < rowDimension.length; i++) {
             if (rowDimension[i].getFilter() == filter) {
-                if (!isStringDimension(rowDimension[i])) {
+                if ((!isStringDimension(rowDimension[i])) || rowDimension[i].getGroup().getType() == BIReportConstant.GROUP.CUSTOM_GROUP) {
                     return true;
                 }
             }
@@ -286,7 +287,7 @@ public class DimensionGroupFilter {
                     continue;
                 }
                 DimensionFilter resultFilter = rowDimension[deep].getFilter();
-                if (resultFilter != null && resultFilter.canCreateDirectFilter()) {
+                if (resultFilter != null && isDirectFilter(resultFilter)) {
                     DimensionCalculator c = mergerInfoList.get(i).createColumnKey()[deep];
                     BusinessTable t = (ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BIBusinessTable.createEmptyTable())) ? c.getField().getTableBelongTo() : mergerInfoList.get(i).getRoot().getTableKey();
                     GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());

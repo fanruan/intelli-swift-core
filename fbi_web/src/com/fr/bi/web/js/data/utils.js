@@ -706,7 +706,7 @@ Data.Utils = {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             show_zoom: options.show_zoom || false,
             text_direction: options.text_direction || 0,
-            chart_radar_type: options.chart_radar_type || constants.NORMAL,
+            chart_radar_type: options.chart_radar_type || constants.POLYGON,
             cordon: options.cordon || [],
             right_y_axis_second_title: options.right_y_axis_second_title || "",
             right_y_axis_second_style: options.right_y_axis_second_style || constants.NORMAL,
@@ -735,7 +735,7 @@ Data.Utils = {
             click: options.click,
             max_scale: options.max_scale || "",
             min_scale: options.min_scale || "",
-            show_percentage: options.show_percentage || constants.SHOW
+            show_percentage: options.show_percentage || constants.NOT_SHOW
         };
 
         var maxes = [];
@@ -2665,6 +2665,7 @@ Data.Utils = {
             }
 
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
 
             configs.chartType = "pie";
             delete configs.xAxis;
@@ -6081,10 +6082,11 @@ Data.Utils = {
 
         function ChartConstants() {
             return {
-                SHOW: 1,
                 AUTO: 1,
                 X_AXIS: 3,
                 NORMAL: 1,
+                POLYGON: 7,
+                NOT_SHOW: 2,
                 ONE2POINT: 3,
                 TWO2POINT: 4,
                 LEFT_AXIS: 0,

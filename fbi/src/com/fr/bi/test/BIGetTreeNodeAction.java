@@ -169,7 +169,7 @@ public class BIGetTreeNodeAction extends ActionNoSessionCMD {
                 try {
                     nodeJa.put("isParent", hasChild);
                     if (id == null) {
-                        nodeJa.put("id", (i + 1));
+                        nodeJa.put("id", times + "_" + (i + 1));
                     } else {
                         nodeJa.put("id", id + "_" + times + "_" + (i + 1));
                     }
@@ -238,7 +238,7 @@ public class BIGetTreeNodeAction extends ActionNoSessionCMD {
 
     private List<String> randomData(String[] parentValues, int times, String selectedValuesString) throws JSONException {
         List<String> res = new ArrayList<String>();
-        if(times == -1){
+        if (times == -1) {
             String v = StableUtils.join(parentValues, ",");
             for (int i = 0; i < 20; i++) {
                 res.add(v + "_" + i);

@@ -1,5 +1,6 @@
 package com.fr.bi.stable.gvi.array;
 
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexCreator;
 import com.fr.bi.stable.io.newio.NIOReader;
@@ -34,6 +35,11 @@ public class GroupValueIndexArrayReader implements NIOReader<GroupValueIndex>, I
     @Override
     public int getReverse(int row) {
         return 0;
+    }
+
+    @Override
+    public GroupValueIndex getNullIndex() {
+        return GVIFactory.createAllEmptyIndexGVI();
     }
 
     @Override

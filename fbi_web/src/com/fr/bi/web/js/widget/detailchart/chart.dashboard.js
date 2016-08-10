@@ -102,10 +102,10 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
             if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.plotOptions.valueLabel.formatter.valueFormat = function () {
-                    return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]);
+                    return BI.contentFormat(arguments[0], '#0.00%');
                 };
                 config.gaugeAxis[0].formatter = function () {
-                    return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]) + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                    return BI.contentFormat(arguments[0], '#0.00%') + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                 };
             } else {
                 config.gaugeAxis[0].formatter = function () {
@@ -298,7 +298,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             auto_custom_style: options.auto_custom || c.AUTO,
             max_scale: options.max_scale || "",
             min_scale: options.min_scale || "",
-            show_percentage: options.show_percentage || c.SHOW
+            show_percentage: options.show_percentage || c.NOT_SHOW
         };
         o.items = this._formatItems(items);
         var types = [];

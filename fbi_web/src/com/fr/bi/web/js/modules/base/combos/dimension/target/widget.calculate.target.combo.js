@@ -5,7 +5,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     constants: {
         CHART_TYPE_POSITION: 2,
-        CordonPos: 0
+        CordonPos: 1
     },
     defaultItems: function () {
         return [
@@ -156,7 +156,9 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        return;
+                        BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
+                        BI.removeAt(item, this.constants.CordonPos);
+                        return item;
                 }
                 item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
@@ -167,6 +169,15 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
+                break;
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, 1);
                 break;
             default:
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
