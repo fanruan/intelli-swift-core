@@ -1,9 +1,9 @@
 /**
  * Created by Fay on 2016/7/14.
  */
-BI.DataLabelTextToolbarFontChooser = BI.inherit(BI.Widget, {
+BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.DataLabelTextToolbarFontChooser.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.TextToolbarFontChooser.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-data-tab-text-toolbar-font-chooser",
             width: 50,
             height: 20
@@ -12,14 +12,14 @@ BI.DataLabelTextToolbarFontChooser = BI.inherit(BI.Widget, {
 
     _items: [{
         value: "Microsoft YaHei",
-        font: "微软雅黑"
+        text: "微软雅黑"
     }, {
         value: "SimHei",
-        font: "黑体"
+        text: "黑体"
     }],
 
     _init: function () {
-        BI.DataLabelTextToolbarFontChooser.superclass._init.apply(this, arguments);
+        BI.TextToolbarFontChooser.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.trigger = BI.createWidget({
             type: "bi.editor_trigger",
@@ -28,8 +28,7 @@ BI.DataLabelTextToolbarFontChooser = BI.inherit(BI.Widget, {
             value: "Microsoft YaHei"
         });
         this.trigger.on(BI.EditorTrigger.EVENT_CHANGE, function () {
-            self.setValue(this.getValue());
-            self.fireEvent(BI.DataLabelTextToolbarFontChooser.EVENT_CHANGE, arguments);
+            self.fireEvent(BI.TextToolbarFontChooser.EVENT_CHANGE, arguments);
         });
 
         this.combo = BI.createWidget({
@@ -51,8 +50,9 @@ BI.DataLabelTextToolbarFontChooser = BI.inherit(BI.Widget, {
             }
         });
         this.combo.on(BI.Combo.EVENT_CHANGE, function () {
+            console.log(this)
             this.hideView();
-            self.fireEvent(BI.DataLabelTextToolbarFontChooser.EVENT_CHANGE, arguments);
+            self.fireEvent(BI.TextToolbarFontChooser.EVENT_CHANGE, arguments);
         })
     },
 
@@ -61,8 +61,8 @@ BI.DataLabelTextToolbarFontChooser = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this.trigger.getValue();
+        return this.combo.getValue();
     }
 });
-BI.DataLabelTextToolbarFontChooser.EVENT_CHANGE = "BI.DataLabelTextToolbarFontChooser.EVENT_CHANGE";
-$.shortcut('bi.data_label_text_toolbar_font_chooser', BI.DataLabelTextToolbarFontChooser);
+BI.TextToolbarFontChooser.EVENT_CHANGE = "BI.TextToolbarFontChooser.EVENT_CHANGE";
+$.shortcut('bi.text_toolbar_font_chooser', BI.TextToolbarFontChooser);

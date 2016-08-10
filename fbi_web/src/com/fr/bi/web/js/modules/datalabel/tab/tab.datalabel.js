@@ -89,7 +89,6 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         this.textToolbar = BI.createWidget({
             type: "bi.data_label_text_toolbar"
         });
-        this.textToolbar.setValue(this._style.textStyle);
         this.textToolbar.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
             self._style.type = 1;
             self._style.textStyle = self.textToolbar.getValue();
