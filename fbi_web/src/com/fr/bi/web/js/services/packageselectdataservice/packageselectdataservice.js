@@ -490,7 +490,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             }
         });
 
-        if(BI.isNotEmptyObject(map)){
+        if (BI.isNotEmptyObject(map)) {
             BI.each(fields, function (i, field) {
                 var id = field.id;
                 if (BI.isNotEmptyArray(map[id])) {
@@ -744,12 +744,14 @@ BI.extend(BI.PackageSelectDataService, {
         var sset = new Set(), store = [], map2Id = {}, res = {};
         BI.each(fields, function (i, field) {
             var fieldName = BI.Utils.getOriginalFieldNameByID(field.id);
-            var name = fieldName.split("-")[0];
-            map2Id[fieldName] = field.id;
-            if (sset.has(name)) {
-                store.push(name);
-            } else {
-                sset.add(name);
+            if (fieldName) {
+                var name = fieldName.split("-")[0];
+                map2Id[fieldName] = field.id;
+                if (sset.has(name)) {
+                    store.push(name);
+                } else {
+                    sset.add(name);
+                }
             }
         });
         if (store.length > 0) {
