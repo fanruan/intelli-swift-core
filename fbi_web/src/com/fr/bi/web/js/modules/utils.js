@@ -64,7 +64,7 @@
         getAllGroupedPackagesTreeJSON: function () {
             var groupMap = Pool.groups, packages = Pool.packages;
             var packStructure = [], groupedPacks = [];
-            var groups = BI.sortBy(groupMap, function(id, item) {
+            var groups = BI.sortBy(groupMap, function (id, item) {
                 return item.init_time;
             });
             BI.each(groups, function (i, group) {
@@ -110,15 +110,15 @@
         },
 
         getWidgetsByTemplateId: function (tId, callback) {
-            Data.Req.reqWidgetsByTemplateId(tId, function (data) {
-                callback(data);
-            });
+            if (tId === this.getCurrentTemplateId()) {
+                callback(Data.SharingPool.cat("widgets"));
+            } else {
+                Data.BufferPool.getWidgetsByTemplateId(tId, callback);
+            }
         },
 
         getAllTemplates: function (callback) {
-            Data.Req.reqAllTemplates(function (data) {
-                callback(data);
-            });
+            Data.BufferPool.getAllTemplates(callback);
         },
 
         getAllReportsData: function (callback) {
@@ -845,13 +845,13 @@
 
         getWSMaxScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.max_scale) ? ws.max_scale:
+            return BI.isNotNull(ws.max_scale) ? ws.max_scale :
                 ""
         },
 
         getWSMinScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.min_scale) ? ws.min_scale:
+            return BI.isNotNull(ws.min_scale) ? ws.min_scale :
                 ""
         },
 
@@ -2478,7 +2478,7 @@
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
-            if(BI.isNotNull(paramdate)){
+            if (BI.isNotNull(paramdate)) {
                 return parseComplexDateCommon(offset, new Date(paramdate));
             }
         }

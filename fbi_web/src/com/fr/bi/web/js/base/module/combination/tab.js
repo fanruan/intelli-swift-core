@@ -105,7 +105,7 @@ BI.Tab = BI.inherit(BI.Widget, {
     populate: function () {
         var card = this.layout.getShowingCard();
         if (card) {
-            return card.populate.apply(card, arguments);
+            return card.populate && card.populate.apply(card, arguments);
         }
     },
 

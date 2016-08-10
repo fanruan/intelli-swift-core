@@ -16,4 +16,6 @@ BICst.BROADCAST = {
     PACKAGE_PREFIX: "package_", //业务包增删事件 + wId || ""
 
     WIDGET_SELECTED_PREFIX: "widget_selected_", //组件选中广播事件
+
+    DETAIL_EDIT_PREFIX: "detail_edit_", //进入编辑界面 + wId
 };
