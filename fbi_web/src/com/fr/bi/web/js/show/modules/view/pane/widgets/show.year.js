@@ -4,6 +4,11 @@
  * @type {*|void|Object}
  */
 BIShow.YearWidgetView = BI.inherit(BI.View, {
+    _constants: {
+        TOOL_ICON_WIDTH: 20,
+        TOOL_ICON_HEIGHT: 20
+    },
+    
     _defaultConfig: function () {
         return BI.extend(BIShow.YearWidgetView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget"
@@ -85,10 +90,10 @@ BIShow.YearWidgetView = BI.inherit(BI.View, {
         var self = this;
         this.tools = BI.createWidget({
             type: "bi.icon_button",
-            cls: "widget-tools-clear-font show-tools",
+            cls: "widget-tools-clear-font dashboard-title-detail",
             title: BI.i18nText("BI-Clear_Selected_Value"),
-            width: 16,
-            height: 16
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT
         });
         this.tools.on(BI.IconButton.EVENT_CHANGE, function(){
             self._resetValue();

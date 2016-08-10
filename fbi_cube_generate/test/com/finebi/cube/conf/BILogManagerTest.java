@@ -57,7 +57,7 @@ public class BILogManagerTest extends TestCase {
             biLogManager.cubeTableSourceSet(dataSourceSet, -999);
             Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
             pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
-            biLogManager.reLationPathSet(pathSet, -999);
+            biLogManager.relationPathSet(pathSet, -999);
             biLogManager.logEnd(-999);
             JSONObject json = biLogManager.createJSON(-999);
             JSONArray tablesJa= (JSONArray) json.get("tables");

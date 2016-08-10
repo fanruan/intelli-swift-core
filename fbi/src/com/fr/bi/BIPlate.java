@@ -6,6 +6,8 @@ import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.utils.CubeUpdateUtils;
+import com.fr.base.FRContext;
+import com.fr.bi.cal.generate.TimerRunner;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
@@ -31,6 +33,7 @@ import com.fr.data.dao.FieldColumnMapper;
 import com.fr.data.dao.MToMRelationFCMapper;
 import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.dao.RelationFCMapper;
+import com.fr.dav.LocalEnv;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.base.entity.PlatformManageModule;
 import com.fr.fs.control.EntryPoolFactory;
@@ -40,6 +43,7 @@ import com.fr.fs.dao.EntryDAO;
 import com.fr.fs.dao.FSDAOManager;
 import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.plugin.ExtraClassManager;
 import com.fr.stable.*;
@@ -63,7 +67,11 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public void initData() {
-//        SystemFactoryRegister.systemRegister();
+        try{
+            ((LocalEnv) FRContext.getCurrentEnv()).setBuildFilePath("bibuild.txt");
+        } catch(Throwable e){
+        }
+        System.out.println("FINE BI :" + GeneralUtils.readBuildNO());
         initModules();
         super.initData();
         startModules();
@@ -72,6 +80,9 @@ public class BIPlate extends AbstractFSPlate {
         initOOMKillerForLinux();
         BICubeManagerProvider markedObject = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
         loadMemoryData();
+        /*载入定时任务*/
+        TimerRunner timerRunner = new TimerRunner(UserControl.getInstance().getSuperManagerID());
+        timerRunner.reGenerateTimeTasks();
         /*若发现cube需要更新的话,更新cube*/
         BIConfigureManagerCenter.getLogManager().logStart(UserControl.getInstance().getSuperManagerID());
         if (CubeUpdateUtils.cubeStatusCheck(UserControl.getInstance().getSuperManagerID())) {
@@ -95,10 +106,10 @@ public class BIPlate extends AbstractFSPlate {
         }
     }
 
-    private void  loadResources () {
-        if(!StableUtils.isDebug()) {
+    private void loadResources() {
+        if (!StableUtils.isDebug()) {
             Locale[] locales = new Locale[]{Locale.CHINA, Locale.US};
-            for(Locale locale : locales) {
+            for (Locale locale : locales) {
                 try {
                     com.fr.web.ResourceHelper.createDefaultJs(locale);
                 } catch (Exception e) {
@@ -108,7 +119,7 @@ public class BIPlate extends AbstractFSPlate {
                 com.fr.web.ResourceHelper.createDefaultCss();
             } catch (Exception e) {
             }
-            for(BIModule module : BIModuleManager.getModules()) {
+            for (BIModule module : BIModuleManager.getModules()) {
                 module.loadResources(locales);
             }
         }
@@ -121,22 +132,22 @@ public class BIPlate extends AbstractFSPlate {
         EntryPoolFactory.registerMobileEntryTableNames(new String[]{BIReportEntry.TABLE_NAME});
     }
 
-    private void addBITableColumn4NewConnection(){
+    private void addBITableColumn4NewConnection() {
         Connection cn = null;
         String tableName = BIReportEntry.TABLE_NAME;
         try {
             cn = PlatformDB.getDB().createConnection();
-            try{
+            try {
                 cn.setAutoCommit(false);
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
-            Dialect dialect = DialectFactory.generateDialect(cn,PlatformDB.getDB().getDriver());
+            Dialect dialect = DialectFactory.generateDialect(cn, PlatformDB.getDB().getDriver());
             FSDAOManager.addTableColumn(cn, dialect,
                     new Column("createBy", Types.BIGINT, new ColumnSize(10)), tableName);
             cn.commit();
         } catch (Exception e) {
-            if(cn != null) {
+            if (cn != null) {
                 try {
                     cn.rollback();
                 } catch (SQLException e1) {
@@ -173,7 +184,7 @@ public class BIPlate extends AbstractFSPlate {
 
     private void initModules() {
         BIModuleManager.registModule(new BICoreModule());
-        Set<Class<?>> set =  BIClassUtils.getClasses("com.fr.bi.module");
+        Set<Class<?>> set = BIClassUtils.getClasses("com.fr.bi.module");
         set.addAll(BIClassUtils.getClasses("com.fr.bi.test.module"));
         for (Class c : set) {
             if (BIModule.class.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers())) {

@@ -34,7 +34,7 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
             items.push({
                 text: BI.i18nText("BI-System_Username"),
                 id: -1,
-                value: BI.LoginInfoCombo.SYSTEM_USER
+                value: BICst.SYSTEM_USER_NAME
             });
         }
         //可能设置了，但是这个字段又已经不存在了
@@ -120,9 +120,6 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
     getValue: function () {
         return this.combo.getValue()[0];
     }
-});
-BI.extend(BI.LoginInfoCombo, {
-    SYSTEM_USER: "__system_user__"
 });
 BI.LoginInfoCombo.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.login_info_combo", BI.LoginInfoCombo);

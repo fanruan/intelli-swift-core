@@ -75,12 +75,18 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
             }
             if (times > 0 && (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE < dataReader.sizeOfGroup()) {
                 int start = (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE;
-                int end = Math.min(dataReader.sizeOfGroup(), start + 100);
-                for (int i = start; i < end; i++) {
+                int count = 0;
+                for (int i = 0; i < dataReader.sizeOfGroup(); i++) {
+                    if (count >= start + BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE) {
+                        break;
+                    }
                     Object[] rowValue = new Object[1];
                     rowValue[0] = dataReader.getGroupValue(i);
                     if (!filterGvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
-                        dataList.add(dataReader.getGroupValue(i).toString());
+                        count++;
+                        if (count > start) {
+                            dataList.add(dataReader.getGroupValue(i).toString());
+                        }
                     }
                 }
                 if (dimension.getSortType() == BIReportConstant.SORT.DESC) {

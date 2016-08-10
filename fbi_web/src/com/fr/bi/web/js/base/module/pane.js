@@ -12,6 +12,7 @@ BI.Pane = BI.inherit(BI.Widget, {
         return BI.extend(BI.Pane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-pane",
             tipText: BI.i18nText("BI-No_Selected_Item"),
+            overlap: true,
             onLoaded: BI.emptyFn
         })
     },
@@ -39,26 +40,47 @@ BI.Pane = BI.inherit(BI.Widget, {
     },
 
     loading: function () {
-        var self = this;
-        if (!BI.Maskers.has(this.getName())) {
-            BI.createWidget({
-                type: 'bi.vtape',
-                items: [{
-                    el: {
-                        type: "bi.layout",
-                        cls: "loading-background"
-                    },
-                    height: 30
-                }],
-                element: BI.Maskers.make(this.getName(), this)
+        var self = this, o = this.options;
+        if (o.overlap === true) {
+            if (!BI.Maskers.has(this.getName())) {
+                BI.createWidget({
+                    type: 'bi.vtape',
+                    items: [{
+                        el: {
+                            type: "bi.layout",
+                            cls: "loading-background"
+                        },
+                        height: 30
+                    }],
+                    element: BI.Maskers.make(this.getName(), this)
+                });
+            }
+            BI.Maskers.show(self.getName());
+        } else {
+            this._loading = BI.createWidget({
+                type: "bi.layout",
+                cls: "loading-background",
+                height: 30
             });
+            this._loading.element.css("zIndex", 1);
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.element,
+                items: [{
+                    el: this._loading,
+                    left: 0,
+                    right: 0,
+                    top: 0
+                }]
+            })
         }
-        BI.Maskers.show(self.getName());
     },
 
     loaded: function () {
         var self = this, o = this.options;
         BI.Maskers.remove(self.getName());
+        this._loading && this._loading.destroy();
+        this._loading && (this._loading = null);
         o.onLoaded();
         self.fireEvent(BI.Pane.EVENT_LOADED);
     },

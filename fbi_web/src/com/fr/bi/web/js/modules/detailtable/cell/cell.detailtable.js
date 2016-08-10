@@ -52,26 +52,6 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         return hyperlink.used || false
     },
 
-    _parseNumLevel: function (text, numLevel) {
-        if (text === Infinity || text !== text) {
-            return text;
-        }
-        switch (numLevel) {
-            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                return text;
-            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                return text / 10000;
-            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                return text / 1000000;
-            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                return text / 100000000;
-            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return text * 100;
-        }
-        return text;
-    },
-
-
     _parseFloatByDot: function (text, dot) {
         if (text === Infinity || text !== text) {
             return text;
@@ -140,7 +120,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
 
         var format = styleSettings.format, numLevel = styleSettings.num_level,
             iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
-        text = this._parseNumLevel(text, numLevel);
+        text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
         text = this._parseFloatByDot(text, format);
 
         if (text === Infinity) {

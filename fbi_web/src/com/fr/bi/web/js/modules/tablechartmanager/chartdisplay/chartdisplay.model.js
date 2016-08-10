@@ -44,8 +44,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                     type = BICst.WIDGET.BUBBLE;
                 }
-                var adjustData = BI.map(data.c, function (id, item) {
+                var adjustData = [];
+                BI.each(data.c, function (id, item) {
                     var res = {};
+                    if(BI.isNull(assertValue(item.s[idx]))){
+                        return;
+                    }
                     if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                         switch(type){
                             case BICst.WIDGET.BUBBLE:
@@ -78,7 +82,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             name: res.x
                         };
                     }
-                    return res;
+                    adjustData.push(res);
                 });
                 var obj = {};
                 obj.data = adjustData;
@@ -89,6 +93,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             });
         }
         return result;
+
+        function assertValue(v){
+            if(BI.isNull(v)){
+                return;
+            }
+            if(!BI.isFinite(v)){
+                return 0;
+            }
+            return v;
+        }
     },
 
     _formatDataForGISMap: function(data){
@@ -279,6 +293,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if (BI.has(data, "t")) {
             var top = data.t, left = data.l;
             return BI.map(top.c, function (id, tObj) {
+                if(BI.isNull(tObj.c)){
+                    return {
+                        data: [],
+                        name: BI.Utils.getDimensionNameByID(tObj.n)
+                    };
+                }
                 var name = tObj.n, seriesName = tObj.n;
                 if (BI.isNotNull(seriesGroup) && seriesGroup.type === BICst.GROUP.YMD) {
                     var date = new Date(BI.parseInt(name));
@@ -493,10 +513,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
                 return this._formatDataForAxis(data);
-            case BICst.WIDGET.DASHBOARD:
-                return this._formatDataForDashBoard(data);
+
+                //return this._formatDataForDashBoard(data);
             case BICst.WIDGET.BUBBLE:
                 return this._formatDataForBubble(data);
             case BICst.WIDGET.SCATTER:
@@ -543,6 +564,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             }
         });
+        
     },
 
     getWidgetData: function(type, callback){
@@ -586,25 +608,21 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             });
             if(type === BICst.WIDGET.MAP){
+                var subType = BI.Utils.getWidgetSubTypeByID(o.wId) || BICst.MAP_TYPE.CHINA;
+                options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
+                var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];
+                BI.each(drill, function(idx, dri){
+                    options.initDrillPath.push(dri.values[0].value[0]);
+                });
                 options.geo = {
-                    data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
-                    name: BICst.MAP_TYPE_NAME[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
-                };
-
-                //var subType = BI.Utils.getWidgetSubTypeByID(o.wId) || BICst.MAP_TYPE.CHINA;
-                //options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
-                //var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];
-                //BI.each(drill, function(idx, dri){
-                //    options.initDrillPath.push(dri.values[0].value[0]);
-                //});
-                //options.geo = {
-                //    data: BICst.MAP_PATH[subType],
-                //    name: BICst.MAP_TYPE_NAME[subType] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
-                //}
+                    data: BICst.MAP_PATH[subType],
+                    name: BICst.MAP_TYPE_NAME[subType] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                }
             }
             if(type === BICst.WIDGET.GIS_MAP){
                 options.geo = {
-                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
+                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+                    "attribution": "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>"
                 };
             }
             //var opts = Data.Utils.getWidgetData(jsonData.data, {
@@ -669,7 +687,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 }
                 break;
         }
-        return {dId: dId, clicked: clicked};
+        if(BI.isNull(dId) || BI.isNull(clicked)){
+            return {};
+        }else{
+            return {dId: dId, clicked: clicked};
+        }
     }
 
 });

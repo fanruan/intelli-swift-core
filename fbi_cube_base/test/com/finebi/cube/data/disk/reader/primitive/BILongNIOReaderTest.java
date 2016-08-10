@@ -41,9 +41,9 @@ public class BILongNIOReaderTest extends TestCase {
             writer.recordSpecificPositionValue(0, Long.valueOf(1));
             writer.recordSpecificPositionValue(2, Long.valueOf(1));
             writer.recordSpecificPositionValue(3, Long.valueOf(1));
-            assertEquals(reader.getSpecificValue(0l), Long.valueOf(1));
-            assertEquals(reader.getSpecificValue(2l), Long.valueOf(1));
-            assertEquals(reader.getSpecificValue(3l), Long.valueOf(1));
+            assertEquals(reader.getSpecificValue(0l), 1);
+            assertEquals(reader.getSpecificValue(2l), 1);
+            assertEquals(reader.getSpecificValue(3l), 1);
 
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);

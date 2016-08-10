@@ -169,7 +169,7 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
             self.fireEvent(BI.MultiDateParamPopup.CALENDAR_EVENT_CHANGE);
         });
         this.param.on(BI.MultiDateParamPane.EVENT_CHANGE, function(){
-            self.fireEvent(BI.MultiDateParamPopup.EVENT_PARAM_CHANGE);
+            self._setInnerValue(self.param);
         });
         this.dateTab.on(BI.Tab.EVENT_CHANGE, function () {
             var v = self.dateTab.getSelect();
@@ -206,7 +206,8 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
                     break;
                 case BICst.MULTI_DATE_PARAM_CARD:
                     self.param.setValue(self.param.getValue());
-                    self.textButton.setVisible(false);
+                    self._setInnerValue(self.param);
+                    self.textButton.setVisible(true);
                     break;
             }
         });
@@ -249,7 +250,11 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
             this.textButton.setEnable(true);
         } else {
             var date = obj.getCalculationValue();
-            date = date.print("%Y-%x-%e");
+            if(BI.isNull(date)){
+                date = BI.i18nText("BI-Null");
+            }else{
+                date = date.print("%Y-%x-%e");
+            }
             this.textButton.setValue(date);
             this.textButton.setEnable(false);
         }

@@ -36,7 +36,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     self.set("clicked", linkageValues);
                 }
                 BI.remove(arr, function (i, id) {
-                    if(key2 == id){
+                    if(key2 === id){
                         isTarget = true;
                         return true;
                     }
@@ -52,6 +52,10 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         dimension.sort = {
                             type: BICst.SORT.ASC
                         };
+                    }
+                    var tSort = self.get("sort");
+                    if(BI.isNotNull(tSort) && tSort.sort_target === key2) {
+                        self.set("sort", {}, {silent: true});
                     }
                 }
             });
@@ -94,7 +98,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             var views = this.get("view"), dimensions = this.get("dimensions");
             BI.each(views, function (region, arr) {
                 BI.each(arr, function (i, id) {
-                    if (key2 == id) {
+                    if (key2 === id) {
                         regionType = region;
                         arr = arr.splice(i + 1, 0, copy);
                         return false;
@@ -374,7 +378,22 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 this.set("dimensions", dims);
             }
         }
-        if (BI.has(changed, "view") && !BI.has(changed, "dimensions")) {
+
+        //这边不能光靠changed中是否包含dimensions来确定是不是增加减少了dimension
+        //因为指标复制会改变dimension的dimensionmap
+        var hasDifferentDimension = true;
+        if(!BI.has(changed, "dimensions")){
+            hasDifferentDimension = false;
+        }else{
+            if(BI.size(changed.dimensions) !== BI.size(prev.dimensions)){
+            }else{
+                var dimensionIds = BI.keys(changed.dimensions);
+                hasDifferentDimension = BI.isNotNull(BI.find(prev.dimensions, function(dId, dimension){
+                    return !BI.contains(dimensionIds, dId);
+                }));
+            }
+        }
+        if (BI.has(changed, "view") && hasDifferentDimension === false) {
             var wType = this.get("type");
             if (wType !== BICst.WIDGET.TABLE &&
                 wType !== BICst.WIDGET.CROSS_TABLE &&

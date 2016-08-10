@@ -14,4 +14,11 @@ public class BITableSourceRelation extends BIBasicRelation<CubeTableSource, ICub
     public BITableSourceRelation(ICubeFieldSource primaryField, ICubeFieldSource foreignField, CubeTableSource primaryTable, CubeTableSource foreignTable) {
         super(primaryField, foreignField, primaryTable, foreignTable);
     }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(getPrimaryTable().toString()).append(getForeignTable().toString()).append(getPrimaryField().toString()).append(getForeignField().toString());
+        return sb.toString();
+    }
 }

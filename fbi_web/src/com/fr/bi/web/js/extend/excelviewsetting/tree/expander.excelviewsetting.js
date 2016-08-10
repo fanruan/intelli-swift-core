@@ -63,9 +63,9 @@ BI.ExcelViewSettingExpander = BI.inherit(BI.Widget, {
         return this.table.getMarkedFields();
     },
 
-    populate: function (op) {
-        this.node.setValue(op.tableName);
-        this.table.populate(op.fields);
+    populate: function (items, keyword, context) {
+        this.node.setValue(context.tableName);
+        this.table.populate(context.fields);
     }
 });
 $.shortcut('bi.excel_view_setting_expander', BI.ExcelViewSettingExpander);

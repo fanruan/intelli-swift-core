@@ -24,7 +24,7 @@ BI.AuthorityFilter = BI.inherit(BI.Widget, {
                     t.type = "bi.authority_no_type_field_filter_item";
                 }
                 item.type = t.type;
-            },
+            },  
             expander: {
                 type: "bi.andor_filter_expander"
             }

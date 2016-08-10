@@ -30,7 +30,7 @@ public class BICubeTableRelationIndexReader implements ICubeTableIndexReader {
     }
 
     @Override
-    public Integer getReverse(int row) {
+    public int getReverse(int row) {
         try {
             return getterService.getReverseIndex(row);
         } catch (BIResourceInvalidException e) {
@@ -41,5 +41,13 @@ public class BICubeTableRelationIndexReader implements ICubeTableIndexReader {
     @Override
     public void clear() {
 
+    }
+
+    public GroupValueIndex getNullIndex(){
+        try {
+            return getterService.getNULLIndex(0);
+        } catch (BICubeIndexException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
     }
 }

@@ -23,7 +23,10 @@ BIDezi.NumberDetailModel = BI.inherit(BI.Model, {
                 var result = BI.find(changed.dimensions, function (did, dimension) {
                     return !BI.has(prev.dimensions, did);
                 });
-                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+                if (BI.isNotNull(result)) {
+                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+                }
+
             }
         }
     },
@@ -33,7 +36,7 @@ BIDezi.NumberDetailModel = BI.inherit(BI.Model, {
             var views = this.get("view");
             BI.each(views, function (region, arr) {
                 BI.remove(arr, function (i, id) {
-                    return key2 == id;
+                    return key2 === id;
                 })
             });
             this.set("view", views);

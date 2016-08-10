@@ -15,4 +15,9 @@ public class MinCalculator extends AllDataCompare {
     protected double compare(double sum, double rowValue) {
         return Math.min(sum, rowValue);
     }
+
+    @Override
+    protected long compare(long sum, long rowValue) {
+        return Math.min(sum, rowValue);
+    }
 }

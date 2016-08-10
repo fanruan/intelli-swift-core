@@ -22,7 +22,7 @@ public class BICubeReverseRelationService extends BICubeIntegerProperty implemen
     }
 
     @Override
-    public Integer getReverseRow(int row) throws BIResourceInvalidException {
+    public int getReverseRow(int row) throws BIResourceInvalidException {
         return getReader().getSpecificValue(row);
     }
 

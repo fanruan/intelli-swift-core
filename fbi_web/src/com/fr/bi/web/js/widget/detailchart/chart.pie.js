@@ -3,23 +3,7 @@
  * @class BI.PieChart
  * @extends BI.Widget
  */
-BI.PieChart = BI.inherit(BI.Widget, {
-
-    constants: {
-        LEFT_AXIS: 0,
-        RIGHT_AXIS: 1,
-        RIGHT_AXIS_SECOND: 2,
-        X_AXIS: 3,
-        ROTATION: -90,
-        NORMAL: 1,
-        LEGEND_BOTTOM: 4,
-        ZERO2POINT: 2,
-        ONE2POINT: 3,
-        TWO2POINT: 4,
-        STYLE_NORMAL: 21,
-        MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80
-    },
+BI.PieChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.PieChart.superclass._defaultConfig.apply(this, arguments), {
@@ -51,7 +35,7 @@ BI.PieChart = BI.inherit(BI.Widget, {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
-                //config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
+                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
@@ -64,6 +48,7 @@ BI.PieChart = BI.inherit(BI.Widget, {
         }
 
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
 
         config.chartType = "pie";
         delete config.xAxis;
@@ -71,6 +56,11 @@ BI.PieChart = BI.inherit(BI.Widget, {
         config.plotOptions.dataLabels.align = "outside";
         config.plotOptions.dataLabels.connectorWidth = "outside";
         config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+        BI.each(items, function (idx, item) {
+            BI.each(item.data, function (id, da) {
+                da.y = self.formatXYDataWithMagnify(da.y, 1);
+            })
+        });
         return [items, config];
 
         function formatChartStyle(){
@@ -96,7 +86,7 @@ BI.PieChart = BI.inherit(BI.Widget, {
                     delete config.plotOptions.roseType;
                     break;
             }
-            config.plotOptions.innerRadius = self.config.chart_inner_radius;
+            config.plotOptions.innerRadius = self.config.chart_inner_radius + "%";
             config.plotOptions.endAngle = self.config.chart_total_angle;
         }
 

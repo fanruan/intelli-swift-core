@@ -8,6 +8,7 @@ BI.DetailSelectDataLevel0Item = BI.inherit(BI.Single, {
         return BI.extend(BI.DetailSelectDataLevel0Item.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-detail-select-data-level0-item bi-select-data-level0-item",
             height: 25,
+            layer: 1,
             hgap: 0,
             fieldType: BICst.COLUMN.STRING,
             lgap: 0,
@@ -37,7 +38,7 @@ BI.DetailSelectDataLevel0Item = BI.inherit(BI.Single, {
             type: "bi.blank_icon_text_item",
             trigger: "mousedown",
             cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
-            blankWidth: 20,
+            blankWidth: o.layer * 20,
             text: o.text,
             value: o.value,
             height: 25,

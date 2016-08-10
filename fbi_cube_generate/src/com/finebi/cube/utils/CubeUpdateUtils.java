@@ -26,10 +26,10 @@ public class CubeUpdateUtils {
     private static boolean forceCheck=false;
     /*是否需要更新cube*/
     public static boolean cubeStatusCheck(long userId) {
-        return isPart(userId)&&forceCheck;
+        return isNeedUpdate(userId)&&forceCheck;
     }
 
-    private static boolean isPart(long userId) {
+    private static boolean isNeedUpdate(long userId) {
         return getNewTables(userId).size() > 0 || getNewRelations(userId).size() > 0;
     }
 

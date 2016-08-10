@@ -36,6 +36,9 @@ BI.YearCombo = BI.inherit(BI.Widget, {
             self.combo.isViewVisible() && self.combo.hideView();
         });
         this.trigger.on(BI.YearTrigger.EVENT_CONFIRM, function () {
+            if(self.combo.isViewVisible()) {
+                return;
+            }
             if (this.getKey() && this.getKey() !== self.storeValue) {
                 self.setValue(this.getKey());
             } else if (!this.getKey()) {

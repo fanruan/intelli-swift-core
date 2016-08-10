@@ -60,10 +60,10 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.FUNNEL:
                 this.chartSetting = BI.createWidget({
-                    type: "bi.charts_setting",
+                    type: "bi.axis_charts_setting",
                     wId: wId
                 });
-                this.chartSetting.on(BI.ChartsSetting.EVENT_CHANGE, function () {
+                this.chartSetting.on(BI.AxisChartsSetting.EVENT_CHANGE, function () {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
@@ -163,12 +163,20 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                 });
                 break;
             case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.ACCUMULATE_RADAR:
                 this.chartSetting = BI.createWidget({
                     type: "bi.radar_chart_setting",
                     wId: wId
                 });
                 this.chartSetting.on(BI.RadarChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.accumulate_radar_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.AccumulateRadarChartSetting.EVENT_CHANGE, function () {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;

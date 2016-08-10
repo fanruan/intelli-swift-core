@@ -54,11 +54,16 @@ BI.TemplateManagerButtonGroup = BI.inherit(BI.Widget, {
             } else {
                 BI.extend(item, {
                     type: self.viewType === BI.TemplateManager.LIST_VIEW ? "bi.report_list_view_item" : "bi.report_card_view_item",
+                    isAdmin: o.isAdmin,
                     onClickReport: function(){
-                        FS.tabPane.addItem({
-                            title: item.text,
-                            src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
-                        });
+                        if(BI.isNotNull(FS) && BI.isNotNull(FS.tabPane)) {
+                            FS.tabPane.addItem({
+                                title: item.text,
+                                src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
+                            });
+                        } else {
+                            window.open(FR.servletURL + item.buildUrl + "&edit=_bi_edit_", "_blank");
+                        }
                     },
                     onRenameReport: function(name){
                         self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_FOLDER_RENAME, item.id, name, BI.TemplateManagerButtonGroup.RENAME_REPORT);

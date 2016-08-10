@@ -107,18 +107,18 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
         }
         BI.each(value, function (i, v) {
             if (!map[v]) {
-                map[v] = true;
+                map[v] = v;
             }
         });
         BI.each(assist, function (i, v) {
             delete map[v];
         });
-        self.storeValue.value = BI.keys(map);
+        self.storeValue.value = BI.values(map);
 
     },
 
     _makeMap: function (values) {
-        return BI.makeObject(values || [], true);
+        return BI.makeObject(values || []);
     },
 
     setValue: function (value) {

@@ -89,9 +89,9 @@ public class BIClassUtils {
                             // 去掉后面的".class" 获取真正的类名
                             String className = name.substring(packageName.length() + 1, name.length() - 6);
                             try {
-                            	Thread.currentThread().getClass().getClassLoader();
+                                Thread.currentThread().getClass().getClassLoader();
                                 // 添加到classes
-                            	classes.add(BIClassUtils.class.getClassLoader().loadClass(packageName + '.' + className));
+                                classes.add(BIClassUtils.class.getClassLoader().loadClass(packageName + '.' + className));
                             } catch (ClassNotFoundException e) {
                                 BILogDelegate.errorDelegate(e.getMessage(), e);
                             }
@@ -127,7 +127,7 @@ public class BIClassUtils {
         File[] dirfiles = dir.listFiles(new FileFilter() {
             // 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
             @Override
-			public boolean accept(File file) {
+            public boolean accept(File file) {
                 return (recursive && file.isDirectory())
                         || (file.getName().endsWith(".class"));
             }
@@ -154,6 +154,5 @@ public class BIClassUtils {
             }
         }
     }
-
 
 }

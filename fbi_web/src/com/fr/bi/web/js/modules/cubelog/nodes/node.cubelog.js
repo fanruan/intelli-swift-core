@@ -52,10 +52,8 @@ BI.CubeLogNode = BI.inherit(BI.Widget, {
         return text + ": " + ((second >= 1000 ? Math.floor(second / 1000) : second) + (second >= 1000 ? "秒" : "毫秒"));
     },
 
-    populate: function (node) {
-        if (BI.isPlainObject(node)) {
-            this.node.setText(this._formatText(node.text, node.second));
-        }
+    populate: function (items, keyword, context) {
+        this.node.setText(this._formatText(context.el.text, context.el.second));
     },
 
     isSelected: function () {

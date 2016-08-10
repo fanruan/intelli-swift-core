@@ -37,7 +37,7 @@ public class BIIntegerNIOWriter extends BIBasicNIOWriter<Integer> implements ICu
 
     @Override
     protected void addValue(int row, Integer value) {
-        intBuffer.put(row, value == null ? Integer.MIN_VALUE : value);
+        intBuffer.put(row, value == null ? Integer.MIN_VALUE : value.intValue());
     }
 
     @Override

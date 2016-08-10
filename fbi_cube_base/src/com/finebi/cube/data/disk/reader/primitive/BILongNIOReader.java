@@ -3,7 +3,6 @@ package com.finebi.cube.data.disk.reader.primitive;
 import com.finebi.cube.data.input.primitive.ICubeLongReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
-import com.fr.general.ComparatorUtils;
 
 import java.io.File;
 import java.nio.LongBuffer;
@@ -13,8 +12,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BILongNIOReader extends BIBasicNIOReader<Long> implements ICubeLongReader {
-    private Map<Long, LongBuffer> longBuffers = new ConcurrentHashMap<Long, LongBuffer>();
+public class BILongNIOReader extends BIBasicNIOReader implements ICubeLongReader {
+    private Map<Integer, LongBuffer> longBuffers = new ConcurrentHashMap<Integer, LongBuffer>();
+    private transient LongBuffer[] longBufferArray = new LongBuffer[1];
+
 
     public BILongNIOReader(File cacheFile) {
         super(cacheFile);
@@ -24,39 +25,44 @@ public class BILongNIOReader extends BIBasicNIOReader<Long> implements ICubeLong
         super(cacheFilePath);
     }
 
-    @Override
-    protected Long getValue(Long page, int index) throws BIResourceInvalidException {
-        if(isValid) {
-            try {
-                long value = longBuffers.get(page).get(index);
-                return value == Long.MIN_VALUE ? null : value;
-            } finally {
-            }
-        } else {
-            throw new BIResourceInvalidException();
+
+    public long getSpecificValue(long filePosition) throws BIResourceInvalidException {
+        try {
+            return longBufferArray[getPage(filePosition)].get(getIndex(filePosition));
+        } catch (IndexOutOfBoundsException e) {
+            throw new RuntimeException("the expect page value is:" + e);
+        } finally {
         }
+
     }
 
     @Override
     protected void releaseChild() {
         readWriteLock.writeLock().lock();
         try {
-            Iterator<Entry<Long, LongBuffer>> iter = longBuffers.entrySet().iterator();
+            Iterator<Entry<Integer, LongBuffer>> iter = longBuffers.entrySet().iterator();
             while (iter.hasNext()) {
-                Entry<Long, LongBuffer> entry = iter.next();
+                Entry<Integer, LongBuffer> entry = iter.next();
                 entry.getValue().clear();
                 iter.remove();
             }
+            longBufferArray = new LongBuffer[1];
         } finally {
             readWriteLock.writeLock().unlock();
         }
     }
 
     @Override
-    protected void initChild(Long index, MappedByteBuffer buffer) {
+    protected void initChild(int index, MappedByteBuffer buffer) {
         readWriteLock.writeLock().lock();
         try {
             longBuffers.put(index, buffer.asLongBuffer());
+            if (longBufferArray.length < index){
+                LongBuffer[] temp = new LongBuffer[index];
+                System.arraycopy(longBufferArray, 0, temp, 0, longBufferArray.length);
+                longBufferArray = temp;
+            }
+            longBufferArray[index] = longBuffers.get(index);
         } finally {
             readWriteLock.writeLock().unlock();
         }

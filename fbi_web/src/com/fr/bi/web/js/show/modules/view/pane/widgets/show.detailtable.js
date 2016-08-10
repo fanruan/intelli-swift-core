@@ -7,7 +7,9 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
 
     _constants: {
         SHOW_CHART: 1,
-        SHOW_FILTER: 2
+        SHOW_FILTER: 2,
+        TOOL_ICON_WIDTH: 20,
+        TOOL_ICON_HEIGHT: 20
     },
 
     _defaultConfig: function () {
@@ -100,7 +102,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
                 height: 25,
                 allowBlank: false,
                 errorText: function(v) {
-                    if(BI.isNotNull(v) && v.trim() !== "") {
+                    if(BI.isNotNull(v) && BI.trim(v) !== "") {
                         return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
                     }
                     return BI.i18nText("BI-Widget_Name_Can_Not_Null");
@@ -121,8 +123,8 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
         var self = this;
         var expand = BI.createWidget({
             type: "bi.icon_button",
-            width: 16,
-            height: 16,
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT,
             title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
@@ -134,8 +136,8 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             cls: "widget-tools-filter-font dashboard-title-detail",
             title: BI.i18nText("BI-Show_Filters"),
-            width: 16,
-            height: 16
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT
         });
         filterIcon.on(BI.IconButton.EVENT_CHANGE, function () {
             if (BI.isNull(self.filterPane)) {
@@ -166,8 +168,8 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             cls: "widget-tools-export-excel-font dashboard-title-detail",
             title: BI.i18nText("BI-Export_As_Excel"),
-            width: 16,
-            height: 16
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT
         });
         excel.on(BI.IconButton.EVENT_CHANGE, function () {
             window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="

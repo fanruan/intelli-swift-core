@@ -22,6 +22,23 @@ public class BICubeStringColumn extends BICubeColumnEntity<String> {
         groupDataService = new BICubeStringGroupData(discovery, currentLocation);
     }
 
+    /**
+     * 根据行号获得对应的原始值。
+     *
+     * @param rowNumber 数据库中的行号
+     * @return 原始值
+     */
+    public String getOriginalValueByRow(int rowNumber) {
+        return ((BICubeStringDetailData)detailDataService).getOriginalValueByRow(rowNumber);
+    }
 
+    public String getGroupValue(int position) {
+        return ((BICubeStringGroupData)groupDataService).getGroupValueByPosition(position);
+    }
+
+    @Override
+    public String getOriginalObjectValueByRow(int rowNumber) {
+        return getOriginalValueByRow(rowNumber);
+    }
 }
 

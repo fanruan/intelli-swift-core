@@ -6,6 +6,7 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
@@ -46,31 +47,16 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
         return getSortType() != BIReportConstant.SORT.NUMBER_DESC ? treeMap.iterator() : treeMap.previousIterator();
     }
 
-    /**
-     * 是否为超级大分组
-     *
-     * @param targetTable 指标表
-     * @param loader      注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader) {
-        return false;
-    }
-
-    /**
-     * 是否为超级大分组
-     *
-     * @param loader 注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(ICubeDataLoader loader) {
-        return false;
-    }
-
     public int getGroupDate() {
         return getGroup().getType();
     }
 
+    @Override
+    public Comparator getComparator() {
+        if (getSortType() == BIReportConstant.SORT.NUMBER_DESC) {
+            return BIBaseConstant.COMPARATOR.COMPARABLE.DESC;
+        } else{
+            return BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
+        }
+    }
 }

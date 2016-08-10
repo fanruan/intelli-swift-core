@@ -72,13 +72,29 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             }, this.cubeTree],
             vgap: 10
         });
-        this.refreshLog();
+        this._refreshLog4Init();
+    },
+
+    _refreshLog4Init: function() {
+        var self = this;
+        BI.Utils.getCubeLog(function (data) {
+            if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
+                self.interval && clearInterval(self.interval);
+                self.interval = null;
+            } else {
+                self.interval = setInterval(function () {
+                    self.refreshLog();
+                }, 5000);
+            }
+            self._refreshProcess(data);
+            self.cubeTree.populate(self._formatItems(data));
+        });
     },
 
     refreshLog: function (isStart) {
         var self = this;
         if (isStart) {
-            this.processBar.setValue(0);
+            this.processBar.setValue(10);
         }
         if (BI.isNull(this.interval)) {
             this.interval = setInterval(function () {
@@ -89,7 +105,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         BI.Utils.getCubeLog(function (data) {
             if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
                 self.interval && clearInterval(self.interval);
-                delete self.interval;
+                self.interval = null;
             }
             self._refreshProcess(data);
             self.cubeTree.populate(self._formatItems(data));
@@ -107,11 +123,12 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 generated += table.column.length;
             });
             var process = 1;
-            if(BI.isNull(data.cube_end)) {
-                if(allFields === 0) {
+            if (BI.isNull(data.cube_end)) {
+                if (allFields === 0) {
                     return;
                 }
                 process = generated / allFields;
+                process = process > 0.9 ? 0.9 : process;
             }
             process = Math.ceil(process * 100);
             process = process < 10 ? 10 : process;

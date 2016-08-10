@@ -95,7 +95,7 @@ public class BICubeDBUtils {
     }
 
     public static long runSQL(SQLStatement sql, ICubeFieldSource[] columns, Traversal<BIDataValue> traversal, Long row) {
-        return runSQL(sql, columns, traversal, row.intValue());
+        return runSQL(sql, columns, traversal, new Integer(row.intValue()));
     }
 
     /**

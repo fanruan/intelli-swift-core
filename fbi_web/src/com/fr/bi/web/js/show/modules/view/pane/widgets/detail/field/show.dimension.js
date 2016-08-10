@@ -40,6 +40,12 @@ BIShow.DimensionView = BI.inherit(BI.View, {
         this.usedCheck.on(BI.Checkbox.EVENT_CHANGE, function () {
             self.model.set("used", self.usedCheck.isSelected());
         });
+        this.usedRadio = BI.createWidget({
+            type: "bi.radio"
+        });
+        this.usedRadio.on(BI.Radio.EVENT_CHANGE, function () {
+            self.model.set("used", self.usedRadio.isSelected());
+        });
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
@@ -82,7 +88,7 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.center_adapt",
-                    items: [this.usedCheck]
+                    items: [this.usedCheck, this.usedRadio]
                 },
                 width: this.constants.COMBO_WIDTH
             }, this.editor, {el: this.iconButton, width: 0},
@@ -104,18 +110,55 @@ BIShow.DimensionView = BI.inherit(BI.View, {
         });
     },
 
+    _refreshCheckType: function(){
+        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.model.get("id")));
+        if (wType === BICst.WIDGET.TABLE ||
+            wType === BICst.WIDGET.CROSS_TABLE ||
+            wType === BICst.WIDGET.COMPLEX_TABLE ||
+            wType === BICst.WIDGET.MAP) {
+            this.usedCheck.setVisible(true);
+            this.usedRadio.setVisible(false);
+            return;
+        }
+        this.usedCheck.setVisible(false);
+        this.usedRadio.setVisible(true);
+    },
+
+    _checkDimensionValid: function(){
+        var dimensionMap = this.model.get("dimension_map");
+        var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(this.model.get("id")));
+        var res = BI.find(tIds, function(idx, tId){
+            return !BI.has(dimensionMap, tId) && !BI.Utils.isCalculateTargetByDimensionID(tId);
+        });
+        if(BI.isNull(res)){
+            this.editor.element.removeClass("dimension-invalid");
+        }else{
+            this.editor.element.addClass("dimension-invalid");
+        }
+    },
+
     _checkUsedEnable: function () {
         var isUsed = this.model.get("used");
         var wId = BI.Utils.getWidgetIDByDimensionID(this.model.get("id"));
         this.usedCheck.setEnable(true);
         this.usedCheck.setSelected(isUsed);
+        this.usedRadio.setEnable(true);
+        this.usedRadio.setSelected(isUsed);
         var wType = BI.Utils.getWidgetTypeByID(wId);
         if ((wType !== BICst.WIDGET.TABLE &&
             wType !== BICst.WIDGET.CROSS_TABLE &&
-            wType !== BICst.WIDGET.COMPLEX_TABLE)
+            wType !== BICst.WIDGET.COMPLEX_TABLE &&
+            wType !== BICst.WIDGET.GIS_MAP)
             && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION2
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
+            this.usedRadio.setEnable(false);
+        }
+        if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
+            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION1
+            && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
+            this.usedCheck.setEnable(false);
+            this.usedRadio.setEnable(false);
         }
     },
 
@@ -332,6 +375,7 @@ BIShow.DimensionView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._checkUsedEnable();
+        this._checkDimensionValid();
         this.editor.setValue(this.model.get("name"));
         this.editor.setState(this.model.get("name"));
         var filterIconWidth = BI.isEmpty(this.model.get("filter_value")) ? 0 : this.constants.ICON_BUTTON_WIDTH;
@@ -339,5 +383,6 @@ BIShow.DimensionView = BI.inherit(BI.View, {
         items[this.constants.ICON_BUTTON_POS].width = filterIconWidth;
         this.htape.attr("items", items);
         this.htape.resize();
+        this._refreshCheckType();
     }
 });

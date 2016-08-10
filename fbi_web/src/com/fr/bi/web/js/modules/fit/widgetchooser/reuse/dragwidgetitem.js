@@ -177,10 +177,10 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
         if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
             filter.filter_value = [];
             BI.each(filterValue, function (i, value) {
-                filter.filter_value.push(this._checkFilter(value));
+                filter.filter_value.push(this._checkFilter(value, dId));
             });
         }else{
-            filter.filter_value = oldFilter.filter_value;
+            BI.extend(filter, oldFilter);
             if(BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId){
                 var result = this._createDimensionsAndTargets(oldFilter.target_id);
                 filter.target_id = result.id;

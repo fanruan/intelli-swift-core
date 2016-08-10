@@ -15,6 +15,7 @@ import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.exception.*;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
@@ -45,6 +46,7 @@ public class BIUserTableRelationManager implements Release {
     }
 
     protected BIUserTableRelationManager(long userId) {
+        userId = UserControl.getInstance().getSuperManagerID();
         biUser = new BIUser(userId);
         oldAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);
         currentAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);

@@ -16,4 +16,9 @@ public class MaxCalculator extends AllDataCompare {
         return Math.max(sum, rowValue);
     }
 
+    @Override
+    protected long compare(long sum, long rowValue) {
+        return Math.max(sum, rowValue);
+    }
+
 }

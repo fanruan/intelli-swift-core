@@ -217,7 +217,7 @@ public class BILogManager implements BILogManagerProvider {
      * 获取所有需要更新的relation信息
      */
     @Override
-    public void reLationPathSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet, long userId) {
+    public void relationPathSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet, long userId) {
         getInstance(userId).reLationSet(biTableSourceRelationHashSet);
     }
 

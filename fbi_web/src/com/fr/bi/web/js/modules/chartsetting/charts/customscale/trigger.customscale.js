@@ -1,5 +1,5 @@
 /**
- * trigger of customscale
+ * trigger of custom scale
  * Created by AstronautOO7 on 2016/7/18.
  */
 BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
@@ -16,8 +16,9 @@ BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
         this.formulaRecord = BI.createWidget({
             type: "bi.text_button",
             cls: "trigger-text-button",
-            text: "AstronautOO7",
-            textHeight: 30,
+            text: "",
+            height: 24,
+            textHeight: 24,
             width: 80
         });
 
@@ -28,8 +29,8 @@ BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
         this.fomulaIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: "calculate-function-font view-button",
-            height: 30,
-            width: 30
+            height: 25,
+            width: 25
         });
 
         this.fomulaIcon.on(BI.IconButton.EVENT_CHANGE , function() {
@@ -40,7 +41,16 @@ BI.CustomScaleTrigger = BI.inherit(BI.Trigger , {
             type: "bi.left",
             element: this.element,
             items: [this.formulaRecord , this.fomulaIcon]
-        })
+        });
+
+    },
+
+    getValue: function() {
+        return this.formulaRecord.getValue()
+    },
+
+    setValue: function(v) {
+        this.formulaRecord.setValue(v)
     }
 
 });

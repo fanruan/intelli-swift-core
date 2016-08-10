@@ -112,7 +112,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
 
         var start = 0;
         BI.each(nodes, function (i, node) {
-            if (BI.isNotEmptyArray(node.children)) {
+            if (BI.isArray(node.children)) {
                 BI.each(node.children, function (index, child) {
                     var cnt = getLeafCount(child);
                     result.push({

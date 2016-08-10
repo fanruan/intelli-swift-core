@@ -28,7 +28,11 @@ public class XMLBasicValueWriter extends XMLValueWriter {
 //            }
             writer.attr("class", beanWrapper.getBean().getClass().getName());
             writer.startTAG(BASIC_TAG);
-            writer.attr("value", beanWrapper.getBean().toString());
+            if (XMLNormalValueWriter.USE_CONTENT_SAVE_VALUE) {
+                writer.textNode(beanWrapper.getBean().toString());
+            } else {
+                writer.attr("value", beanWrapper.getBean().toString());
+            }
             writer.end();
         }
     }

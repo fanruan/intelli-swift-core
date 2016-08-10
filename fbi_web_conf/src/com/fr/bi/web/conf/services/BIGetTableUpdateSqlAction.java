@@ -1,12 +1,25 @@
 package com.fr.bi.web.conf.services;
 
+import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.structure.BICube;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.CubeTableEntityService;
+import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.DatasourceManager;
-import com.fr.fs.web.service.ServiceUtils;
+import com.fr.fs.control.UserControl;
+import com.fr.general.DateUtils;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -32,16 +45,31 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String stringSql = WebUtils.getHTTPRequestParameter(req, "sql");
         String tableString = WebUtils.getHTTPRequestParameter(req, "table");
-        long userId = ServiceUtils.getCurrentUserID(req);
-
-//        Date lastUpdateDate = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId)).getTableIndex(BIBasicCore.generateValueCore(sourceId)).getLastTime();
+        JSONObject table = new JSONObject(tableString);
         Date lastUpdateDate = new Date();
+        long threeDaysAgo = lastUpdateDate.getTime() - 24 * 3600 * 1000 * 3;
+        lastUpdateDate.setTime(threeDaysAgo);
+        String tableId = (String) table.get("id");
+        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+        CubeTableSource tableSource = null;
+        Cube cube = new BICube(resourceRetrievalService, discovery);
+        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(UserControl.getInstance().getSuperManagerID())) {
+            if (businessTable.getID().getIdentity().equals(tableId)) {
+                tableSource = businessTable.getTableSource();
+            }
+        }
+        if (null != tableSource) {
+            CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+            if (tableEntityService.isCubeLastTimeAvailable()) {
+                lastUpdateDate = tableEntityService.getCubeLastTime();
+            }
+        }
         String sql = parseSQL(stringSql, lastUpdateDate);
         JSONObject jo = new JSONObject();
         jo.put("sql", sql);
         jo.put("last_update_time", lastUpdateDate);
 
-        JSONObject table = new JSONObject(tableString);
         if (StringUtils.isNotEmpty(sql)) {
             com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(table.getString("connection_name"));
             DBTableData dbTableData = new DBTableData(dbc, sql);
@@ -78,9 +106,10 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
     private String parseSQL(String sql, Date date) {
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
         Matcher matcher = pat.matcher(sql);
+        String dateStr = DateUtils.DATETIMEFORMAT2.format(date);
         while (matcher.find()) {
             String matchStr = matcher.group(0);
-            sql = sql.replace(matchStr, date.toString());
+            sql = sql.replace(matchStr, dateStr);
         }
         return sql;
     }

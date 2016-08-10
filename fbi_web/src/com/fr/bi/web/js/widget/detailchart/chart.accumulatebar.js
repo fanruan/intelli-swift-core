@@ -3,22 +3,7 @@
  * @class BI.AccumulateBarChart
  * @extends BI.Widget
  */
-BI.AccumulateBarChart = BI.inherit(BI.Widget, {
-
-    constants: {
-        LEFT_AXIS: 0,
-        RIGHT_AXIS: 1,
-        RIGHT_AXIS_SECOND: 2,
-        X_AXIS: 3,
-        ROTATION: -90,
-        NORMAL: 1,
-        LEGEND_BOTTOM: 4,
-        ZERO2POINT: 2,
-        ONE2POINT: 3,
-        TWO2POINT: 4,
-        MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80
-    },
+BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.AccumulateBarChart.superclass._defaultConfig.apply(this, arguments), {
@@ -32,22 +17,18 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         this.xAxis = [{
             type: "value",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: this.constants.FONT_STYLE
             },
-            labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             formatter: "function(){if(this>0) return this; else return this*(-1); }",
             gridLineWidth: 0
         }];
         this.yAxis = [{
             type: "category",
             title: {
-                style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: this.constants.FONT_STYLE
             },
-            labelStyle: {
-                "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             gridLineWidth: 0,
             position: "left"
         }];
@@ -98,13 +79,30 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         config.yAxis[0].title.rotation = this.constants.ROTATION;
 
         config.yAxis[0].labelRotation = this.config.text_direction;
-        config.xAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.X_AXIS);
-        formatNumberLevelInXaxis(this.config.left_y_axis_number_level);
+        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, self.config.left_y_axis_number_level);
+        self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "bar";
+        //为了给数据标签加个%,还要遍历所有的系列，唉
+        if(config.plotOptions.dataLabels.enabled === true){
+            BI.each(items, function(idx, item){
+                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                    item.dataLabels = {
+                        "style": self.constants.FONT_STYLE,
+                        "align": "outside",
+                        enabled: true,
+                        formatter: {
+                            identifier: "${VALUE}",
+                            valueFormat: config.xAxis[0].formatter
+                        }
+                    };
+                }
+            });
+        }
+        config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
         return [items, config];
 
         function formatChartStyle(){
@@ -120,13 +118,13 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
         function formatCordon(){
             BI.each(self.config.cordon, function(idx, cor){
                 if(idx === 0 && self.xAxis.length > 0){
-                    var magnify = calcMagnify(self.config.left_y_axis_number_level);
+                    var magnify = self.calcMagnify(self.config.left_y_axis_number_level);
                     self.xAxis[0].plotLines = BI.map(cor, function(i, t){
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": self.constants.FONT_STYLE,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -137,13 +135,13 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = calcMagnify(self.config.x_axis_number_level);
+                            magnify = self.calcMagnify(self.config.x_axis_number_level);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
                             break;
                         case self.constants.RIGHT_AXIS_SECOND:
-                            magnify = calcMagnify(self.config.right_y_axis_second_number_level);
+                            magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
@@ -151,7 +149,7 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px","fontWeight":""},
+                                "style": self.constants.FONT_STYLE,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -159,41 +157,6 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
                     });
                 }
             })
-        }
-
-        function formatNumberLevelInXaxis(type){
-            var magnify = calcMagnify(type);
-            if(magnify > 1){
-                BI.each(items, function(idx, item){
-                    BI.each(item.data, function(id, da){
-                        da.x = da.x || 0;
-                        da.x = da.x.div(magnify);
-                        if(self.constants.MINLIMIT.sub(da.x) > 0){
-                            da.x = 0;
-                        }
-                    })
-                })
-            }
-        }
-
-        function calcMagnify(type){
-            var magnify = 1;
-            switch (type) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    magnify = 1;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    magnify = 10000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    magnify = 1000000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    magnify = 100000000;
-                    break;
-            }
-            return magnify;
         }
 
         function getXYAxisUnit(numberLevelType, position){
@@ -222,34 +185,6 @@ BI.AccumulateBarChart = BI.inherit(BI.Widget, {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
-        }
-
-        function formatTickInXYaxis(type, position){
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
-            }
-            if(position === self.constants.X_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
         }
     },
 

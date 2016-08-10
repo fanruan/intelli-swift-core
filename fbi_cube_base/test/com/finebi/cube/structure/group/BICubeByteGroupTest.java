@@ -65,7 +65,8 @@ public class BICubeByteGroupTest extends TestCase {
             assertTrue(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());
             assertFalse(groupData.isLengthWriterAvailable());
-            assertEquals(value, groupData.getGroupValueByPosition(position));
+            assertEquals(value.byteValue(), groupData.getGroupValueByPosition(position));
+            assertEquals(value, groupData.getGroupObjectValueByPosition(position));
             assertTrue(groupData.isGroupReaderAvailable());
             assertTrue(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());

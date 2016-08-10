@@ -146,7 +146,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             height: 30
         });
         oldCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
-            self.model.setOriginalCharsetName(this.getValue());
+            self.model.setOriginalCharsetName(this.getValue()[0]);
         });
         oldCodeCombo.setValue(this.model.getOriginalCharsetName() || "");
         var oldCode = this._createItemWrap(BI.i18nText("BI-Original_Code"), oldCodeCombo);
@@ -159,7 +159,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
             height: 30
         });
         newCodeCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
-            self.model.setNewCharsetName(this.getValue());
+            self.model.setNewCharsetName(this.getValue()[0]);
         });
         newCodeCombo.setValue(this.model.getNewCharsetName() || "");
         var newCode = this._createItemWrap(BI.i18nText("BI-New_Code"), newCodeCombo);

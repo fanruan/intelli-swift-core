@@ -12,4 +12,9 @@ public interface ICubeColumnDetailGetter {
      * @return
      */
     Object getValue(int row);
+
+    PrimitiveType getPrimitiveType();
+
+    PrimitiveDetailGetter createPrimitiveDetailGetter();
+
 }

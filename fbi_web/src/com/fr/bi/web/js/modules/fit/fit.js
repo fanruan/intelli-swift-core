@@ -18,12 +18,12 @@ BI.Fit = BI.inherit(BI.Widget, {
         BI.Fit.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.arrangement = BI.createWidget({
-            type: "bi.adaptive_arrangement",
+            type: "bi.interactive_arrangement",
             layoutType: o.layoutType,
             cls: "fit-dashboard",
             items: o.items
         });
-        this.arrangement.on(BI.AdaptiveArrangement.EVENT_RESIZE, function () {
+        this.arrangement.on(BI.InteractiveArrangement.EVENT_RESIZE, function () {
             self.fireEvent(BI.Fit.EVENT_CHANGE, arguments);
         });
 
@@ -109,7 +109,19 @@ BI.Fit = BI.inherit(BI.Widget, {
                     self._startDrag(id, ui.position, e);
                 },
                 drag: function (e, ui) {
-                    self._drag(id, size || {}, ui.position);
+                    var r;
+                    switch (self.getLayoutType()) {
+                        case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                            r = size || {};
+                            break;
+                        case BI.Arrangement.LAYOUT_TYPE.FREE:
+                            r = self.arrangement.getRegionByName(id);
+                            break;
+                    }
+                    self._drag(id, ui.position, {
+                        width: r.width,
+                        height: r.height
+                    });
                 },
                 stop: function (e, ui) {
                     self._stopDrag(id, ui.position, widget);
@@ -148,40 +160,45 @@ BI.Fit = BI.inherit(BI.Widget, {
     _startDrag: function (id, position, e) {
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                this.flag = this.arrangement.deleteRegion(id);
+                this.arrangement.deleteRegion(id);
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 break;
         }
     },
 
-    _drag: function (id, size, position) {
+    _drag: function (id, position, size) {
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                if (BI.isNotNull(this.flag)) {
-                    this.arrangement.setPosition({
-                        left: position.left,
-                        top: position.top
-                    }, {
-                        width: size.width,
-                        height: size.height
-                    });
-                }
+                this.arrangement.setPosition({
+                    left: position.left,
+                    top: position.top
+                }, {
+                    width: size.width,
+                    height: size.height
+                });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
-                //this.arrangement.setRegionPosition(id, {
-                //    left: position.left < 0 ? 0 : position.left,
-                //    top: position.top < 0 ? 0 : position.top
-                //});
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
+                this.arrangement.draw(position, size, id);
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
+                });
                 break;
         }
     },
 
     _stopDrag: function (id, position, widget) {
         var flag = false;
+        this.arrangement.stopDraw();
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                if (BI.isNotNull(this.flag) && !(flag = this.arrangement.addRegion({
+                if (!(flag = this.arrangement.addRegion({
                         el: widget
                     }))) {
                     this.arrangement.revoke();
@@ -299,6 +316,10 @@ BI.Fit = BI.inherit(BI.Widget, {
         return this.arrangement.getLayoutType();
     },
 
+    getLayoutRatio: function () {
+        return this.arrangement.getLayoutRatio();
+    },
+
     getAllRegions: function () {
         var regions = this.arrangement.getAllRegions();
         var result = [];
@@ -316,6 +337,7 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
+            layoutRatio: this.getLayoutRatio(),
             layoutType: this.getLayoutType(),
             regions: this.getAllRegions()
         }
@@ -362,13 +384,10 @@ BI.Fit = BI.inherit(BI.Widget, {
         return flag;
     },
 
-    resize: function () {
-        this.arrangement.resize();
-    },
-
     populate: function () {
         var self = this;
         var layoutType = Data.SharingPool.get("layoutType");
+        var layoutRatio = Data.SharingPool.get("layoutRatio");
         if (BI.isNull(layoutType)) {
             layoutType = BI.Arrangement.LAYOUT_TYPE.FREE;
         }
@@ -388,10 +407,14 @@ BI.Fit = BI.inherit(BI.Widget, {
         this._changeLayoutType(layoutType);
         this.setLayoutType(layoutType);
         this.arrangement.populate(result);
+        BI.nextTick(function () {
+            self.arrangement.zoom(layoutRatio);
+            self.fireEvent(BI.Fit.EVENT_CHANGE);
+        });
     },
 
     destroy: function () {
-        BI.Resizers.remove(this.getName());
+        this.arrangement.destroy();
         BI.Fit.superclass.destroy.apply(this, arguments);
     }
 });

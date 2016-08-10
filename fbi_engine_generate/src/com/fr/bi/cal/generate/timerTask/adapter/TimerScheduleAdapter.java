@@ -9,7 +9,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
 import com.fr.bi.conf.manager.update.source.TimeFrequency;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
-import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class TimerScheduleAdapter {
         List<TimerTaskSchedule> scheduleList = new ArrayList<TimerTaskSchedule>();
         for (String keys : allTimeTaskMap.keySet()) {
             UpdateSettingSource settingSource = allTimeTaskMap.get(keys);
-            boolean isGlobalUpdate = keys.equals(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
+            boolean isGlobalUpdate = keys.equals(CubeConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
             for (TimeFrequency frequency : settingSource.getTimeList()) {
                 String scheduleTime = BIDateUtils.getScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
                 if (isGlobalUpdate) {

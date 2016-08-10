@@ -12,25 +12,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BIIntegerNIOReader extends BIBasicNIOReader<Integer> implements ICubeIntegerReader {
-    private Map<Long, IntBuffer> intBuffers = new ConcurrentHashMap<Long, IntBuffer>();
-
+public class BIIntegerNIOReader extends BIBasicNIOReader implements ICubeIntegerReader {
+    private Map<Integer, IntBuffer> intBuffers = new ConcurrentHashMap<Integer, IntBuffer>();
+    private IntBuffer[] intBufferArray = new IntBuffer[1];
 
     public BIIntegerNIOReader(File cacheFile) {
         super(cacheFile);
     }
 
-    @Override
-    protected Integer getValue(Long page, int index) throws  BIResourceInvalidException{
-        if(isValid) {
-            try {
-                int result = intBuffers.get(page).get(index);
-                return result == Integer.MIN_VALUE ? null : result;
-            } finally {
-            }
-        } else {
-            throw new BIResourceInvalidException();
+    public int getSpecificValue(long filePosition) throws BIResourceInvalidException {
+        try {
+            return intBufferArray[getPage(filePosition)].get(getIndex(filePosition));
+        } catch (IndexOutOfBoundsException e) {
+            throw new RuntimeException("the expect page value is:" + e);
+        } finally {
         }
+
     }
 
     public BIIntegerNIOReader(String cacheFilePath) {
@@ -42,22 +39,29 @@ public class BIIntegerNIOReader extends BIBasicNIOReader<Integer> implements ICu
         readWriteLock.writeLock().lock();
         try {
 
-            Iterator<Entry<Long, IntBuffer>> iter = intBuffers.entrySet().iterator();
+            Iterator<Entry<Integer, IntBuffer>> iter = intBuffers.entrySet().iterator();
             while (iter.hasNext()) {
-                Entry<Long, IntBuffer> entry = iter.next();
+                Entry<Integer, IntBuffer> entry = iter.next();
                 entry.getValue().clear();
                 iter.remove();
             }
+            intBufferArray = new IntBuffer[1];
         } finally {
             readWriteLock.writeLock().unlock();
         }
     }
 
     @Override
-    protected void initChild(Long index, MappedByteBuffer buffer) {
+    protected void initChild(int index, MappedByteBuffer buffer) {
         readWriteLock.writeLock().lock();
         try {
             intBuffers.put(index, buffer.asIntBuffer());
+            if (intBufferArray.length < index){
+                IntBuffer[] temp = new IntBuffer[index];
+                System.arraycopy(intBufferArray, 0, temp, 0, intBufferArray.length);
+                intBufferArray = temp;
+            }
+            intBufferArray[index] = intBuffers.get(index);
         } finally {
             readWriteLock.writeLock().unlock();
         }

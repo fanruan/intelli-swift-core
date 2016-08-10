@@ -77,12 +77,14 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         //图表
         var usedTargets = BI.Utils.getAllUsableTargetDimensionIDs(wId);
         BI.each(this.viewMap[newType], function (regionId, dIds) {
-            var dim1Found = false, dim2Found = false, series = [];
+            var dim1Found = false, dim2Found = false;
             var tar1Found = false, tar2Found = false, tar3Found = false;
             BI.each(dIds, function (i, dId) {
                 if (regionId === BICst.REGION.DIMENSION1) {
                     if (dim1Found === true) {
-                        dimensions[dId].used = false;
+                        if(newType !== BICst.WIDGET.MAP){
+                            dimensions[dId].used = false;
+                        }
                         self.dimensionsMap[newType][dId] = dimensions[dId];
                     }
                     if (dim1Found === false) {

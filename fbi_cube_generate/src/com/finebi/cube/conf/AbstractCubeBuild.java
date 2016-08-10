@@ -15,10 +15,12 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -31,8 +33,9 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     protected Set<BITableRelationPath> allRelationPathSet = new HashSet<BITableRelationPath>();
     protected Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
     protected CalculateDependTool calculateDependTool;
+
     public AbstractCubeBuild(long userId) {
-        this.userId=userId;
+        this.userId = userId;
         init(userId);
         setSources();
         fullTableDBFields();
@@ -52,8 +55,9 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
     @Override
     public ICubeConfiguration getCubeConfiguration() {
-        return  BICubeConfiguration.getTempConf(Long.toString(userId));
+        return BICubeConfiguration.getTempConf(Long.toString(userId));
     }
+
     protected Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
         Iterator<CubeTableSource> it = tableSources.iterator();
         Set<List<Set<CubeTableSource>>> depends = new HashSet<List<Set<CubeTableSource>>>();
@@ -106,6 +110,37 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         return false;
     }
 
+    @Override
+    public boolean copyFileFromOldCubes() {
+        try {
+            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
+            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
+            if (new File(tempConf.getRootURI().getPath()).exists()) {
+                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
+            }
+            if (new File(advancedConf.getRootURI().getPath()).exists()) {
+                BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean replaceOldCubes() {
+        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
+        if (new File(advancedConf.getRootURI().getPath()).exists()) {
+            BIFileUtils.delete(new File(advancedConf.getRootURI().getPath()));
+        }
+        try {
+            BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
+        } catch (IOException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return false;
+    }
 
     public void setSources() {
         for (Object biBusinessTable : allBusinessTable) {
@@ -144,16 +179,16 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         if (!isRelationValid(relation) || !isSourceRelationValid) {
             return null;
         }
-            BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
-                    primaryField,
-                    foreignField,
-                    primaryTable,
-                    foreignTable
-            );
-            primaryField.setTableBelongTo(primaryTable);
-            foreignField.setTableBelongTo(foreignTable);
-            return biTableSourceRelation;
-        }
+        BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
+                primaryField,
+                foreignField,
+                primaryTable,
+                foreignTable
+        );
+        primaryField.setTableBelongTo(primaryTable);
+        foreignField.setTableBelongTo(foreignTable);
+        return biTableSourceRelation;
+    }
 
 
     protected boolean isRelationValid(BITableRelation relation) {
@@ -171,4 +206,39 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         return tableSourceRelationPath;
     }
 
+    protected Set<BITableSourceRelation> removeDuplicateRelations(Set<BITableSourceRelation> tableRelations) {
+        Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
+        Map sourceIdMap = new HashMap<String, BITableSourceRelation>();
+        for (BITableSourceRelation relation : tableRelations) {
+            try {
+                if (!sourceIdMap.containsKey(relation.toString())) {
+                    set.add(relation);
+                    sourceIdMap.put(relation.toString(), relation);
+                }
+            } catch (NullPointerException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                continue;
+            }
+        }
+        sourceIdMap.clear();
+        return set;
+    }
+
+    protected Set<BITableSourceRelationPath> removeDuplicateRelationPaths(Set<BITableSourceRelationPath> paths) {
+        Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
+        Map sourceIdMap = new HashMap<String, BITableSourceRelationPath>();
+        for (BITableSourceRelationPath path : paths) {
+            try {
+                if (!sourceIdMap.containsKey(path.getSourceID())) {
+                    set.add(path);
+                    sourceIdMap.put(path.getSourceID(), path);
+                }
+            } catch (NullPointerException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+                continue;
+            }
+        }
+        sourceIdMap.clear();
+        return set;
+    }
 }

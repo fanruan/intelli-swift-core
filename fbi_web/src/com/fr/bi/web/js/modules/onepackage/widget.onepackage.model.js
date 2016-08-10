@@ -143,14 +143,13 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     },
 
     getTableTranName: function (tId) {
-        var tableData = this.getTablesData()[tId];
+        var tableData = this.tablesData[tId];
         var tableNameText = tableData.table_name;
         //ETL 表
-        var translations = this.getTranslations();
         if (tableData.connection_name === BICst.CONNECTION.ETL_CONNECTION) {
-            tableNameText = translations[tId];
-        } else if (BI.isNotNull(translations[tId]) && translations[tId] !== tableNameText) {
-            tableNameText = translations[tId] + "(" + tableNameText + ")";
+            tableNameText = this.translations[tId];
+        } else if (BI.isNotNull(this.translations[tId]) && this.translations[tId] !== tableNameText) {
+            tableNameText = this.translations[tId] + "(" + tableNameText + ")";
         }
         return tableNameText;
     },
@@ -173,13 +172,9 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         var self = this;
 
         delete this.tablesData[tableId];
-        BI.some(this.getTables(), function (i, table) {
-            if (table.id === tableId) {
-                self.tables.splice(i, 1);
-                return true;
-            }
+        BI.remove(this.tables, function (i, table) {
+            return table.id === tableId;
         });
-
 
         //删除相关关联
         var connectionSet = this.relations.connectionSet, primaryKeyMap = this.relations.primKeyMap, foreignKeyMap = this.relations.foreignKeyMap;
@@ -195,10 +190,8 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             if (self.getTableIdByFieldId(kId) === tableId) {
                 delete primaryKeyMap[kId];
             } else {
-                BI.each(maps, function (i, keys) {
-                    if (tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id)) {
-                        primaryKeyMap[kId].splice(i, 1);
-                    }
+                BI.remove(maps, function (i, keys) {
+                    return tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id);
                 });
                 if (primaryKeyMap[kId].length === 0) {
                     delete primaryKeyMap[kId];
@@ -209,10 +202,8 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             if (tableId === self.getTableIdByFieldId(kId)) {
                 delete foreignKeyMap[kId];
             } else {
-                BI.each(maps, function (i, keys) {
-                    if (tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id)) {
-                        foreignKeyMap[kId].splice(i, 1);
-                    }
+                BI.remove(maps, function (i, keys) {
+                    return tableId === self.getTableIdByFieldId(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId(keys.foreignKey.field_id);
                 });
                 if (foreignKeyMap[kId].length === 0) {
                     delete foreignKeyMap[kId];
@@ -231,15 +222,22 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     addTablesToPackage: function (tables, callback) {
         var self = this;
         var oldTables = this.getTablesData();
+        var newTables = {};
         //添加表的时候就应该把原始表的名称作为当前业务包表的转义，同理删除也删掉
         //对于业务包表逻辑：保存当前表的转义（当前业务包转义不可重名）、关联，但id是一个新的，
         //暂时根据 id 属性区分 source 表和 package 表
+        var packTIds = [];
         BI.each(tables, function (i, table) {
             var id = BI.UUID();
             BI.each(table.fields, function (j, fs) {
                 BI.each(fs, function (k, field) {
-                    // field.id = id + field.field_name;
-                    field.id = BI.UUID();
+                    var fId = BI.UUID();
+                    //字段的转义
+                    if (BI.isNotNull(field.id) && BI.isNotNull(self.translations[field.id])) {
+                        self.translations[fId] = self.translations[field.id];
+                    }
+
+                    field.id = fId;
                     field.table_id = id;
                     //这里简单维护一下field信息（包括table_id,table_name,field_name,field_type即可）
                     self.allFields[field.id] = {
@@ -257,17 +255,18 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 self.translations[id] = self.createDistinctTableTranName(table.table_name);
             } else {
                 //业务包表
+                packTIds.push(id);
                 var tableId = table.id;
                 //转义、关联都是用sharing pool中的，相当于复制一份
                 self.translations[id] = self.createDistinctTableTranName(self.translations[tableId]);
-                var relations = self.getRelations();
-                var connectionSet = relations.connectionSet, primaryKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
+                var connectionSet = self.relations.connectionSet, primaryKeyMap = self.relations.primKeyMap, foreignKeyMap = self.relations.foreignKeyMap;
                 BI.each(connectionSet, function (i, keys) {
                     var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
-                    if (self.getTableIdByFieldId(primKey.field_id) || self.getTableIdByFieldId(foreignKey.field_id)) {
+                    if (self.getTableIdByFieldId(primKey.field_id) === tableId || self.getTableIdByFieldId(foreignKey.field_id) === tableId) {
+                        var nPK = BI.deepClone(primKey), nFK = BI.deepClone(foreignKey);
                         self.relations.connectionSet.push({
-                            primaryKey: primKey.table_id === tableId ? BI.extend(primKey, {table_id: id}) : primKey,
-                            foreignKey: foreignKey.table_id === tableId ? BI.extend(foreignKey, {table_id: id}) : foreignKey
+                            primaryKey: nPK.table_id === tableId ? BI.extend(nPK, {table_id: id}) : nPK,
+                            foreignKey: nFK.table_id === tableId ? BI.extend(nFK, {table_id: id}) : nFK
                         })
                     }
                 });
@@ -275,9 +274,10 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     if (kId === tableId) {
                         var tmpMaps = [];
                         BI.each(maps, function (i, keys) {
+                            var nPK = keys.primaryKey, nFK = keys.foreignKey;
                             tmpMaps.push({
-                                primaryKey: keys.primaryKey.table_id === tableId ? BI.extend(keys.primaryKey, {table_id: id}) : keys.primaryKey,
-                                foreignKey: keys.foreignKey.table_id === tableId ? BI.extend(keys.foreignKey, {table_id: id}) : keys.foreignKey
+                                primaryKey: nPK.table_id === tableId ? BI.extend(nPK, {table_id: id}) : nPK,
+                                foreignKey: nFK.table_id === tableId ? BI.extend(nFK, {table_id: id}) : nFK
                             })
                         });
                         self.relations.primKeyMap[id] = tmpMaps;
@@ -287,54 +287,61 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     if (kId === tableId) {
                         var tmpMaps = [];
                         BI.each(maps, function (i, keys) {
+                            var nPK = keys.primaryKey, nFK = keys.foreignKey;
                             tmpMaps.push({
-                                primaryKey: keys.primaryKey.table_id === tableId ? BI.extend(keys.primaryKey, {table_id: id}) : keys.primaryKey,
-                                foreignKey: keys.foreignKey.table_id === tableId ? BI.extend(keys.foreignKey, {table_id: id}) : keys.foreignKey
+                                primaryKey: nPK.table_id === tableId ? BI.extend(nPK, {table_id: id}) : nPK,
+                                foreignKey: nFK.table_id === tableId ? BI.extend(nFK, {table_id: id}) : nFK
                             })
                         });
                         self.relations.foreignKeyMap[id] = tmpMaps;
                     }
                 });
             }
-            self.tablesData[id] = BI.extend(table, {id: id});
-        });
-        //添加完之后需要读关联转义信息
-        var mask = BI.createWidget({
-            type: "bi.loading_mask",
-            masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
+            newTables[id] = self.tablesData[id] = BI.extend(table, {id: id});
         });
 
+        //添加完之后需要读关联转义信息
         //读关联的时候去除来自于服务器的
         var oTables = {}, nTables = {};
-        BI.each(oldTables, function(id, t) {
+        BI.each(oldTables, function (id, t) {
             t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (oTables[id] = t);
         });
-        BI.each(this.getTablesData(), function(id, t) {
-            t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (nTables[id] = t);
+        BI.each(newTables, function (id, t) {
+            if (!packTIds.contains(t.id) &&
+                t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION) {
+                nTables[id] = t;
+            }
         });
         var data = {
             oldTables: oTables,
             newTables: nTables
         };
-        BI.Utils.getRelationAndTransByTables(data, function (res) {
-            var relations = res.relations, translations = res.translations;
-            BI.Msg.toast(BI.i18nText("BI-Auto_Read_Relation_Translation_Toast", relations.length, BI.keys(translations.table).length, BI.keys(translations.field).length));
-            self._setReadRelations(relations);
-            self._setReadTranslations(translations);
+        if(BI.size(nTables) > 0) {
+            var mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: BICst.BODY_ELEMENT,
+                text: BI.i18nText("BI-Loading")
+            });
+            BI.Utils.getRelationAndTransByTables(data, function (res) {
+                var relations = res.relations, translations = res.translations;
+                BI.Msg.toast(BI.i18nText("BI-Auto_Read_Relation_Translation_Toast", relations.length, BI.keys(translations.table).length, BI.keys(translations.field).length));
+                self._setReadRelations(relations);
+                self._setReadTranslations(translations);
+                callback();
+                mask.destroy();
+            });
+        } else {
             callback();
-            mask.destroy();
-        });
+        }
         this._syncSharedPackages();
     },
 
     createDistinctTableTranName: function (v) {
         var self = this;
-        var tableIds = this.getTables();
         var currentPackTrans = [];
-        BI.each(tableIds, function (i, table) {
+        BI.each(this.tables, function (i, table) {
             currentPackTrans.push({
-                name: self.getTranslations()[table.id]
+                name: self.translations[table.id]
             })
         });
         return BI.Func.createDistinctName(currentPackTrans, v);
@@ -379,9 +386,9 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     _getCurrentPackTrans: function (id) {
         var self = this;
         var currentTrans = [];
-        BI.each(this.getTables(), function (i, table) {
+        BI.each(this.tables, function (i, table) {
             //去掉本身
-            table.id !== id && currentTrans.push({name: self.getTranslations()[table.id]});
+            table.id !== id && currentTrans.push({name: self.translations[table.id]});
         });
         return currentTrans;
     },

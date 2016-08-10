@@ -29,4 +29,8 @@ public class BICubeMonthColumn extends BICubeDateSubColumn<Integer> {
         selfColumnEntity = new BICubeIntegerColumn(discovery, currentLocation);
 
     }
+
+    public int getGroupValue(int position) {
+        return ((BICubeIntegerColumn)selfColumnEntity).getGroupValue(position);
+    }
 }

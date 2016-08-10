@@ -215,8 +215,8 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                     var d = new Date(v);
                     year.push(d.getFullYear());
                     season.push(Date._QN[getSeason(d.getMonth()) + 1]);
-                    month.push(Date._MN[d.getMonth()]);
-                    week.push(Date._DN[d.getWeekNumber()]);
+                    month.push(d.print("%B"));
+                    week.push(d.print("%A"));
                     date_.push(d.print("%Y-%X-%d"));
                     date_hms.push(d.print("%Y-%X-%d %H:%M:%S"))
 

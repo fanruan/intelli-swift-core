@@ -97,7 +97,7 @@ BI.WebPage = BI.inherit(BI.Widget, {
             self._showLabel();
         }
         this.href.setValue(url);
-        this.iframe.setSrc(url)
+        this.iframe.setSrc(BI.Func.formatAddress(url))
     }
 });
 

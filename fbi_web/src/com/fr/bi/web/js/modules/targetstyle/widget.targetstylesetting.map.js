@@ -46,14 +46,14 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         this.format = BI.createWidget({
             type: "bi.segment",
             items: BICst.TARGET_STYLE_FORMAT,
-            width: 220
+            width: 184
         });
         this.format.setValue(styleSettings.format);
 
         this.numLevel = BI.createWidget({
             type: "bi.segment",
             items: BICst.TARGET_STYLE_LEVEL_SHORT,
-            width: 110
+            width: 230
         });
         this.numLevel.setValue(styleSettings.num_level);
 

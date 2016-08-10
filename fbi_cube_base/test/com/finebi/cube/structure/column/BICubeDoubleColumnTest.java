@@ -34,8 +34,8 @@ public class BICubeDoubleColumnTest extends BICubeColumnBasicTest<Double> {
 
     @Override
     public void checkCubeColumnGroupSort(ICubeColumnEntityService<Double> column) {
-        assertEquals(column.getGroupValue(0), Double.valueOf(1));
-        assertEquals(column.getGroupValue(1), Double.valueOf(2));
-        assertEquals(column.getGroupValue(2), Double.valueOf(3));
+        assertEquals(column.getGroupObjectValue(0), Double.valueOf(1));
+        assertEquals(column.getGroupObjectValue(1), Double.valueOf(2));
+        assertEquals(column.getGroupObjectValue(2), Double.valueOf(3));
     }
 }

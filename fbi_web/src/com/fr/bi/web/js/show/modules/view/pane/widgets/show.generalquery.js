@@ -2,6 +2,11 @@
  * Created by Young's on 2016/5/9.
  */
 BIShow.GeneralQueryView = BI.inherit(BI.View, {
+    _constants: {
+        TOOL_ICON_WIDTH: 20,
+        TOOL_ICON_HEIGHT: 20
+    },
+    
     _defaultConfig: function(){
         return BI.extend(BIShow.GeneralQueryView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget"
@@ -32,10 +37,6 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
             type: "bi.absolute",
             element: vessel,
             items: [{
-                el: this.tools,
-                top: 0,
-                right: 10
-            }, {
                 el: this.filter,
                 top: 10,
                 left: 10,
@@ -46,6 +47,10 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
                 top: 10,
                 left: 10,
                 right: 110
+            }, {
+                el: this.tools,
+                top: 0,
+                right: 10
             }]
         });
         this.widget.element.hover(function(){
@@ -85,10 +90,10 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
         var self = this;
         this.tools = BI.createWidget({
             type: "bi.icon_button",
-            cls: "widget-tools-clear-font show-tools",
+            cls: "widget-tools-clear-font dashboard-title-detail",
             title: BI.i18nText("BI-Clear_Selected_Value"),
-            width: 16,
-            height: 16
+            width: this._constants.TOOL_ICON_WIDTH,
+            height: this._constants.TOOL_ICON_HEIGHT
         });
         this.tools.on(BI.IconButton.EVENT_CHANGE, function(){
             self._resetValue();

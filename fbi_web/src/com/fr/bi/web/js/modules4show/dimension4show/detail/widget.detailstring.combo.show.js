@@ -13,6 +13,9 @@ BI.DetailStringDimensionComboShow = BI.inherit(BI.Widget, {
     _init: function () {
         BI.DetailStringDimensionComboShow.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
+        var fieldName = BI.Utils.getFieldNameByID(fieldId);
+        var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
         this.combo = BI.createWidget({
             type: "bi.down_list_combo",
             element: this.element,
@@ -20,8 +23,8 @@ BI.DetailStringDimensionComboShow = BI.inherit(BI.Widget, {
             iconCls: "detail-dimension-set-font",
             items: [
                 [{
-                    text: BI.i18nText("BI-This_Target_From") + ":" + BI.Utils.getDimensionNameByID(o.dId),
-                    title: BI.i18nText("BI-This_Target_From") + ":" + BI.Utils.getDimensionNameByID(o.dId),
+                    text: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
+                    title: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
                     tipType: "warning",
                     value: BICst.DETAIL_STRING_COMBO.INFO,
                     disabled: true

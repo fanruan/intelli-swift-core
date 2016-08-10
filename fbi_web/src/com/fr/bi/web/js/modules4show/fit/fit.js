@@ -88,6 +88,7 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
     },
 
     _assertBounds: function () {
+        var self = this;
         if (!this.layoutType) {
             this.layoutType = Data.SharingPool.get("layoutType");
             if (BI.isNull(this.layoutType)) {
@@ -95,7 +96,14 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
             }
         }
         if (!this.bounds) {
-            this.bounds = Data.SharingPool.cat("widgets");
+            this.bounds = Data.SharingPool.get("widgets");
+        } else {
+            //这里特别恶心， 自适应布局的时候高度又不能让它变化，但宽度又要resize
+            var widgets = Data.SharingPool.cat("widgets");
+            BI.each(widgets, function (i, widget) {
+                self.bounds[i].bounds.left = widget.bounds.left;
+                self.bounds[i].bounds.width = widget.bounds.width;
+            });
         }
     },
 
@@ -128,18 +136,13 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
         BI.each(items, function (i, item) {
             self._initResizable(item.el);
         });
+        var layoutRatio = Data.SharingPool.get("layoutRatio");
         this.arrangement.setLayoutType(this.layoutType);
         this.arrangement.populate(items);
-        switch (this.layoutType) {
-            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                BI.nextTick(function () {
-                    self.arrangement.resize();
-                    self.fireEvent(BI.Fit4Show.EVENT_RESIZE);
-                });
-                break;
-            case BI.Arrangement.LAYOUT_TYPE.FREE:
-                break;
-        }
+        BI.nextTick(function () {
+            self.arrangement.zoom(layoutRatio);
+            self.fireEvent(BI.Fit4Show.EVENT_RESIZE);
+        });
     }
 });
 BI.Fit4Show.EVENT_RESIZE = "EVENT_RESIZE";

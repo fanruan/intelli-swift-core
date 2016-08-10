@@ -126,7 +126,7 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
     },
 
     _checkButtonEnable: function () {
-        BI.each(this.buttons , function (idx , button) {
+        BI.each(this.buttonGroup.getAllButtons() , function (idx , button) {
             if(idx !== 0) {
                 button.setSmallIntervalEnable(false);
             } else {
@@ -154,12 +154,15 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
                 type: "bi.chart_add_gradient_condition_item",
                 removeCondition: function (cid) {
                     self._removeCondition(cid)
-                }
+                },
+                cid: BI.UUID()
             });
         });
 
         this.buttonGroup.addItems(v);
-        this._sendEventToButtons(this.buttonGroup.getAllButtons())
+        this._checkButtonEnable();
+        this.buttons = this.buttonGroup.getAllButtons();
+        this._sendEventToButtons(this.buttons)
     }
 
 });

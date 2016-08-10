@@ -1,15 +1,22 @@
 package com.fr.bi.web.conf.services.cubetask;
 
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.structure.BICube;
+import com.finebi.cube.structure.Cube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.PersistentTable;
@@ -22,7 +29,7 @@ import java.util.Set;
 /**
  * Created by kary on 16/5/30.
  */
-public class CubeTaskGenerate {
+public class CubeTaskHelper {
 
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
@@ -41,6 +48,7 @@ public class CubeTaskGenerate {
     public static boolean CubeBuildStaff(long userId) {
         boolean taskAddResult = false;
         CubeBuild cubeBuild;
+        /*若cube不存在,全局更新*/
 /*若有新增表或者新增关联，增量更新，否则进行全量*/
         if (isPart(userId)) {
             BILogger.getLogger().info("Cube part update start");
@@ -56,10 +64,13 @@ public class CubeTaskGenerate {
         return taskAddResult;
     }
 
-    private  static boolean isPart(long userId) {
+    private static boolean isPart(long userId) {
         Set<BIBusinessTable> newTables = BICubeGenerateUtils.getTables4CubeGenerate(userId);
         Set<BITableRelation> newRelationSet = BICubeGenerateUtils.getRelations4CubeGenerate(userId);
-        boolean isPart = newTables.size() > 0 || newRelationSet.size() > 0;
+        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(userId)));
+        Cube cube = new BICube(resourceRetrievalService, discovery);
+        boolean isPart = (newTables.size() > 0 || newRelationSet.size() > 0) && cube.isVersionAvailable();
         return isPart;
     }
 

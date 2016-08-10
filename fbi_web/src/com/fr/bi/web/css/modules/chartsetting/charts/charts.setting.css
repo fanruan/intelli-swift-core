@@ -30,14 +30,3 @@
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
-.bi-charts-setting .bubble-style-button {
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-}
-.bi-charts-setting .bubble-style-button.active {
-  background-color: #d4dadd;
-}
-.bi-charts-setting .bubble-style-button:hover {
-  background-color: #d4dadd;
-}

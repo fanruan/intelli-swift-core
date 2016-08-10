@@ -73,6 +73,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         });
     },
 
+    _isEqual: function () {
+        return this.arrangement._isEqual.apply(this.arrangement, arguments);
+    },
+
     _initResizable: function (item) {
         var self = this, o = this.options;
         item.element.css("zIndex", ++this.zIndex);
@@ -91,12 +95,16 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             helper: "bi-resizer",
             start: function () {
                 item.element.css("zIndex", ++self.zIndex);
+                self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_START_RESIZE);
             },
             resize: function (e, ui) {
                 // self._resize(item.attr("id"), ui.size);
+                var offset = self._getScrollOffset();
+                self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_RESIZE, item.attr("id"), ui.size);
             },
             stop: function (e, ui) {
                 self._resize(item.attr("id"), ui.size);
+                self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE, item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
             }
         });
@@ -106,7 +114,6 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         var self = this;
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
-                var size = this._checkRegionSize(name, size);
                 this.setRegionSize(name, {
                     width: size.width,
                     height: size.height
@@ -121,68 +128,73 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
     //检查宽高是否规范
     _checkRegionSize: function (name, size) {
         var self = this;
-        var newSize = {};
-        var leftid, rightid, topid, bottomid;
-        var region = this.getRegionByName(name);
-        var rs = this.arrangement._getInDirectRelativeRegions(name, ["right"]).right;
-        var bs = this.arrangement._getInDirectRelativeRegions(name, ["bottom"]).bottom;
-        if (rs.left.length > 0) {
-            topid = BI.first(rs.left).id;
-            bottomid = BI.last(rs.left).id;
-        }
-        if (bs.top.length > 0) {
-            leftid = BI.first(bs.top).id;
-            rightid = BI.last(bs.top).id;
-        }
-        if (this.arrangement._isEqual(region.width, size.width)) {
-            topid = name;
-            bottomid = name;
-        }
-        if (this.arrangement._isEqual(region.height, size.height)) {
-            leftid = name;
-            rightid = name;
-        }
-        var tops = topid ? this.getDirectRelativeRegions(topid, ["top"]).top : [];
-        var bottoms = bottomid ? this.getDirectRelativeRegions(bottomid, ["bottom"]).bottom : [];
-        var lefts = leftid ? this.getDirectRelativeRegions(leftid, ["left"]).left : [];
-        var rights = rightid ? this.getDirectRelativeRegions(rightid, ["right"]).right : [];
-        if (region.width !== size.width) {
-            if (rights.length === 0) {//最右边的组件不能调整宽度
-                newSize.width = region.width;
-            } else {
-                var finded = BI.find(tops.concat(bottoms), function (i, r) {
-                    r = self.getRegionByName(r.id);
-                    return Math.abs(size.width + region.left - (r.left + r.width)) < 10;
-                });
-                if (finded) {
-                    finded = this.getRegionByName(finded.id);
-                    newSize.width = finded.left + finded.width - region.left;
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                var newSize = {};
+                var leftid, rightid, topid, bottomid;
+                var region = this.getRegionByName(name);
+                var rs = this.arrangement._getInDirectRelativeRegions(name, ["right"]).right;
+                var bs = this.arrangement._getInDirectRelativeRegions(name, ["bottom"]).bottom;
+                if (rs.left.length > 0) {
+                    topid = BI.first(rs.left).id;
+                    bottomid = BI.last(rs.left).id;
+                }
+                if (bs.top.length > 0) {
+                    leftid = BI.first(bs.top).id;
+                    rightid = BI.last(bs.top).id;
+                }
+                if (this.arrangement._isEqual(region.width, size.width)) {
+                    topid = name;
+                    bottomid = name;
+                }
+                if (this.arrangement._isEqual(region.height, size.height)) {
+                    leftid = name;
+                    rightid = name;
+                }
+                var tops = topid ? this.getDirectRelativeRegions(topid, ["top"]).top : [];
+                var bottoms = bottomid ? this.getDirectRelativeRegions(bottomid, ["bottom"]).bottom : [];
+                var lefts = leftid ? this.getDirectRelativeRegions(leftid, ["left"]).left : [];
+                var rights = rightid ? this.getDirectRelativeRegions(rightid, ["right"]).right : [];
+                if (region.width !== size.width) {
+                    if (rights.length === 0) {//最右边的组件不能调整宽度
+                        newSize.width = region.width;
+                    } else {
+                        var finded = BI.find(tops.concat(bottoms), function (i, r) {
+                            r = self.getRegionByName(r.id);
+                            return Math.abs(size.width + region.left - (r.left + r.width)) <= 3;
+                        });
+                        if (finded) {
+                            finded = this.getRegionByName(finded.id);
+                            newSize.width = finded.left + finded.width - region.left;
+                        } else {
+                            newSize.width = size.width;
+                        }
+                    }
                 } else {
                     newSize.width = size.width;
                 }
-            }
-        } else {
-            newSize.width = size.width;
-        }
-        if (region.height !== size.height) {
-            if (bottoms.length === 0) {
-                newSize.height = region.height;
-            } else {
-                var finded = BI.find(lefts.concat(rights), function (i, r) {
-                    r = self.getRegionByName(r.id);
-                    return Math.abs(size.height + region.top - (r.top + r.height)) < 10;
-                });
-                if (finded) {
-                    finded = this.getRegionByName(finded.id);
-                    newSize.height = finded.top + finded.height - region.top;
+                if (region.height !== size.height) {
+                    if (bottoms.length === 0) {
+                        newSize.height = region.height;
+                    } else {
+                        var finded = BI.find(lefts.concat(rights), function (i, r) {
+                            r = self.getRegionByName(r.id);
+                            return Math.abs(size.height + region.top - (r.top + r.height)) <= 3;
+                        });
+                        if (finded) {
+                            finded = this.getRegionByName(finded.id);
+                            newSize.height = finded.top + finded.height - region.top;
+                        } else {
+                            newSize.height = size.height;
+                        }
+                    }
                 } else {
                     newSize.height = size.height;
                 }
-            }
-        } else {
-            newSize.height = size.height;
+                return newSize;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                return size;
         }
-        return newSize;
     },
 
     _getScrollOffset: function () {
@@ -288,7 +300,6 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             this._old = old;
         } else {
             this._old = this.getAllRegions();
-            this.arrangement._deleteRegionByName(name);
             this.relayout();
         }
         return true;
@@ -297,6 +308,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
     setRegionSize: function (name, size) {
         var flag;
         var old = this.getAllRegions();
+        size = this._checkRegionSize(name, size);
         if (flag = this.arrangement.setRegionSize(name, size)) {
             this._old = old;
         }
@@ -354,6 +366,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         return this.arrangement.setRegionPosition(name, position);
     },
 
+    zoom: function (ratio) {
+        this.arrangement.zoom(ratio);
+    },
+
     resize: function () {
         this.arrangement.resize();
     },
@@ -386,6 +402,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         return this.arrangement.getLayoutType();
     },
 
+    getLayoutRatio: function () {
+        return this.arrangement.getLayoutRatio();
+    },
+
     getHelper: function () {
         return this.arrangement.getHelper();
     },
@@ -414,7 +434,6 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 BI.nextTick(function () {
                     self.arrangement.resize();
-                    self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
                 });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
@@ -422,5 +441,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         }
     }
 });
+BI.AdaptiveArrangement.EVENT_ELEMENT_START_RESIZE = "AdaptiveArrangement.EVENT_ELEMENT_START_RESIZE";
+BI.AdaptiveArrangement.EVENT_ELEMENT_RESIZE = "AdaptiveArrangement.EVENT_ELEMENT_RESIZE";
+BI.AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE = "AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE";
 BI.AdaptiveArrangement.EVENT_RESIZE = "AdaptiveArrangement.EVENT_RESIZE";
 $.shortcut('bi.adaptive_arrangement', BI.AdaptiveArrangement);

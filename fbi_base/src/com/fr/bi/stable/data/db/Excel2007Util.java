@@ -4,6 +4,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.stable.ColumnRow;
@@ -143,6 +144,19 @@ public class Excel2007Util {
         }
     }
 
+    private void createDistinctColumnNames(){
+        for(int i = 0; i < columnNames.length; i++) {
+            int index = 1;
+            String columnName = columnNames[i];
+            for(int j = 0; j < columnNames.length; j ++) {
+                if(i != j && ComparatorUtils.equals(columnName, columnNames[j])) {
+                    columnNames[j] = columnName + index;
+                    index++;
+                }
+            }
+        }
+    }
+
     private void dealWithSomething() {
         for (int i = 0; i < tempRowDataList.size(); i++) {
             Object[] oneRow = tempRowDataList.get(i);
@@ -152,13 +166,22 @@ public class Excel2007Util {
                 columnCount = oneRow.length;
                 columnNames = new String[columnCount];
                 for (int j = 0; j < oneRow.length; j++) {
-                    columnNames[j] = oneRow[j].toString();
+                    String cName = oneRow[j].toString();
+                    String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
+                    Pattern p = Pattern.compile(regEx);
+                    Matcher m = p.matcher(cName);
+                    cName = m.replaceAll(StringUtils.EMPTY).trim();
+                    columnNames[j] = cName;
+                    if (ComparatorUtils.equals(StringUtils.EMPTY, cName)) {
+                        columnNames[j] = Inter.getLocText("BI-Field");
+                    }
                 }
+                createDistinctColumnNames();
             } else if (i == 1) {
                 columnTypes = new int[columnCount];
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
-                    if (oneRow.length - 1 > j) {
+                    if (oneRow.length > j) {
                         v = oneRow[j].toString();
                     }
                     currentRowData.add(v);

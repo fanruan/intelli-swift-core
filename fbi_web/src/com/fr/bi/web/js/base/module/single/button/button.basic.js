@@ -121,7 +121,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
                 var mouseDown = false;
                 var selected = false;
                 hand.mousedown(function (e) {
-                    if (e.button === 0) {
+                    // if (e.button === 0) {
                         if (mouseDown === true) {
                             return;
                         }
@@ -132,16 +132,16 @@ BI.BasicButton = BI.inherit(BI.Single, {
                         }
                         mouseDown = true;
                         ev(e);
-                    }
+                    // }
                 });
                 hand.mouseup(function (e) {
-                    if (e.button === 0) {
+                    // if (e.button === 0) {
                         if (mouseDown === true && selected === true) {
                             clk(e);
                         }
                         mouseDown = false;
                         selected = false;
-                    }
+                    // }
                 });
                 var checking = BI.debounce(function () {
                     if (!BI.DOM.isExist(self)) {
@@ -149,7 +149,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
                     }
                 }, 3000);
                 $(document).bind("mouseup." + this.getName(), function (e) {
-                    if (e.button === 0) {
+                    // if (e.button === 0) {
                         if (BI.DOM.isExist(self)) {
                             if (!hand.__isMouseInBounds__(e) && mouseDown === true && !selected) {
                                 self.setSelected(!self.isSelected());
@@ -158,7 +158,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
                             mouseDown = false;
                             checking();
                         }
-                    }
+                    // }
                 });
                 break;
             case "dblclick":

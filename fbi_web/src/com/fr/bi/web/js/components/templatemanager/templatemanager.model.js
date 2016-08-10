@@ -9,11 +9,28 @@ BI.TemplateManagerModel = BI.inherit(FR.OB, {
         this.sortType = BI.TemplateManager.SORT_BY_TIME;
         this.currentNodeId = BI.FileManagerNav.ROOT_CREATE_BY_ME;
         this.tree = new BI.Tree();
+        this._check4NoFolder();
         this.sortAndRefreshTree();
+    },
+
+    //常常会发生一些外部因素导致的文件夹丢失 引起我创建的完全没法用问题
+    _check4NoFolder: function() {
+        var allFolders = ["-1"];
+        BI.each(this.allItems, function(i, item) {
+            if(BI.isNull(item.buildUrl) && BI.isNotNull(item.id)) {
+                allFolders.push(item.id);
+            }
+        });
+        BI.each(this.allItems, function(i, item) {
+            if(!allFolders.contains(item.pId)) {
+                item.pId = "-1";
+            }
+        });
     },
     
     resetAllItems: function(items) {
         this.allItems = items;
+        this._check4NoFolder();
         this.sortAndRefreshTree();
     },
 
@@ -239,7 +256,35 @@ BI.TemplateManagerModel = BI.inherit(FR.OB, {
             folders = BI.sortBy(folders, "lastModify").reverse();
             files = BI.sortBy(files, "lastModify").reverse();
         }
-        this.tree.initTree(BI.Tree.transformToTreeFormat(BI.concat(folders, files)));
+        this.tree.initTree(this._transformToTreeFormat(BI.concat(folders, files)));
+    },
+
+    _transformToTreeFormat: function (sNodes) {
+        var i, l;
+        if (!sNodes) {
+            return [];
+        }
+
+        if (BI.isArray(sNodes)) {
+            var r = [];
+            var tmpMap = [];
+            for (i = 0, l = sNodes.length; i < l; i++) {
+                tmpMap[sNodes[i].id] = sNodes[i];
+            }
+            for (i = 0, l = sNodes.length; i < l; i++) {
+                if (tmpMap[sNodes[i].pId] && sNodes[i].id != sNodes[i].pId) {
+                    if (!tmpMap[sNodes[i].pId].children) {
+                        tmpMap[sNodes[i].pId].children = [];
+                    }
+                    tmpMap[sNodes[i].pId].children.push(sNodes[i]);
+                } else {
+                    r.push(sNodes[i]);
+                }
+            }
+            return r;
+        } else {
+            return [sNodes];
+        }
     },
 
     createDistinctFolderName: function () {

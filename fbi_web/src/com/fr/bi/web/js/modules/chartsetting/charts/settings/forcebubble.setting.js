@@ -3,24 +3,7 @@
  * @extends BI.Widget
  * 百分比堆积，百分比柱状样式
  */
-BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
-
-    constant: {
-        SINGLE_LINE_HEIGHT: 60,
-        SIMPLE_H_GAP: 10,
-        SIMPLE_L_GAP: 2,
-        CHECKBOX_WIDTH: 16,
-        SIMPLE_H_LGAP: 5,
-        EDITOR_WIDTH: 80,
-        EDITOR_HEIGHT: 26,
-        BUTTON_WIDTH: 40,
-        BUTTON_HEIGHT: 30,
-        ICON_WIDTH: 24,
-        ICON_HEIGHT: 24,
-        NUMBER_LEVEL_SEGMENT_WIDTH: 300,
-        FORMAT_SEGMENT_WIDTH: 240,
-        LEGEND_SEGMENT_WIDTH: 180
-    },
+BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.ForceBubbleSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -30,7 +13,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
 
     _init: function(){
         BI.ForceBubbleSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -42,6 +25,26 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
         });
 
+        this.bubbleStyleGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.BUBBLE_CHART_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: constant.BUTTON_WIDTH,
+                height: constant.BUTTON_HEIGHT,
+                iconWidth: constant.ICON_WIDTH,
+                iconHeight: constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.left",
+                lgap: 2
+            }]
+        });
+
+        this.bubbleStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
+        });
+
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [100],
@@ -49,7 +52,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Sheet_Style"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -64,9 +67,20 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
                         type: "bi.center_adapt",
                         items: [this.colorSelect]
                     },
-                    lgap: this.constant.SIMPLE_H_GAP
+                    lgap: constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Total_Style"),
+                    cls: "attr-names",
+                    lgap: 15
+                }, {
+                    el: {
+                        type: "bi.center_adapt",
+                        items: [this.bubbleStyleGroup]
+                    },
+                    lgap: constant.SIMPLE_H_GAP
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 })
             }]
         });
@@ -74,13 +88,13 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
         //图例
         this.legend = BI.createWidget({
             type: "bi.segment",
-            width: this.constant.LEGEND_SEGMENT_WIDTH,
-            height: this.constant.BUTTON_HEIGHT,
+            width: constant.LEGEND_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
             items: BICst.CHART_LEGEND
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({
@@ -90,9 +104,9 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                lgap: this.constant.SIMPLE_H_LGAP,
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
-                textHeight: 60,
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
                 type: "bi.left",
@@ -105,9 +119,9 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
                     type: "bi.center_adapt",
                     items: [this.legend]
                 }], {
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT
                 }),
-                lgap: this.constant.SIMPLE_H_GAP
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
@@ -131,8 +145,8 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
                     cls: "line-title"
                 }, this.transferFilter]
             },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
         });
 
         BI.createWidget({
@@ -148,13 +162,15 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
+        this.bubbleStyleGroup.setValue(BI.Utils.getWSBubbleStyleByID(wId))
     },
 
     getValue: function(){
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
-            chart_legend: this.legend.getValue()[0]
+            chart_legend: this.legend.getValue()[0],
+            bubble_style: this.bubbleStyleGroup.getValue()[0]
         }
     },
 
@@ -162,6 +178,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.Widget, {
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
         this.legend.setValue(v.chart_legend);
+        this.bubbleStyleGroup.setValue(v.bubble_style)
     }
 });
 BI.ForceBubbleSetting.EVENT_CHANGE = "EVENT_CHANGE";

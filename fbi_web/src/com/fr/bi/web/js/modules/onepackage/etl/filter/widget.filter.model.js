@@ -164,7 +164,7 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
                 case BICst.MULTI_DATE_YEAR_AFTER:
                     return new Date(currY + 1 * value, currM, currD).getTime();
                 case BICst.MULTI_DATE_YEAR_BEGIN:
-                    return new Date(currY, 1, 1).getTime();
+                    return new Date(currY, 0, 1).getTime();
                 case BICst.MULTI_DATE_YEAR_END:
                     return new Date(currY, 11, 31).getTime();
                 case BICst.MULTI_DATE_MONTH_PREV:

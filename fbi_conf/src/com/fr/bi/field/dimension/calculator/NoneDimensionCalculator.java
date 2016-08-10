@@ -53,33 +53,6 @@ public class NoneDimensionCalculator implements DimensionCalculator {
         return loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(createKey(), relations);
     }
 
-    /**
-     * 是否为超级大分组
-     *
-     * @param targetTable 指标表
-     * @param loader      注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(BusinessTable targetTable, ICubeDataLoader loader) {
-        return false;
-    }
-
-    ;
-
-
-    /**
-     * 是否为超级大分组
-     *
-     * @param loader 注释
-     * @return 是否为超级大分组
-     */
-    @Override
-    public boolean isSupperLargeGroup(ICubeDataLoader loader) {
-        return false;
-    }
-
-    ;
 
     @Override
     public List<BITableSourceRelation> getRelationList() {
@@ -121,16 +94,6 @@ public class NoneDimensionCalculator implements DimensionCalculator {
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit) {
         return null;
-    }
-
-    @Override
-    public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader) {
-        return createNoneSortGroupValueMapGetter(table, loader);
-    }
-
-    @Override
-    public ICubeColumnIndexReader createValueMap(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit) {
-        return createNoneSortGroupValueMapGetter(table, loader);
     }
 
     @Override

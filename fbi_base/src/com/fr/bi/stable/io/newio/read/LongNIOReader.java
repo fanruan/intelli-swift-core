@@ -21,7 +21,7 @@ public class LongNIOReader extends AbstractNIOReader<Long> {
     @Override
     protected Long getValue(Long index, int l) {
         Long value = longBuffers.get(index).get(l);
-        return ComparatorUtils.equals(value, Long.MIN_VALUE) ? null : value;
+        return ComparatorUtils.equals(value, NIOConstant.LONG.NULL_VALUE) ? null : value;
     }
 
     @Override

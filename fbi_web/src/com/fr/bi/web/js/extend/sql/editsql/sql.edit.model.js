@@ -12,7 +12,11 @@ BI.EditSQLModel = BI.inherit(FR.OB, {
     initData: function(callback){
         var self = this;
         BI.Utils.getConnectionNames(function(names){
+            //去掉服务器数据集
             self.connctionNames = names;
+            BI.remove(self.connctionNames, function(i, item) {
+                return item === BICst.CONNECTION.SERVER_CONNECTION;
+            });
             BI.isEmptyString(self.dataLinkName) && (self.dataLinkName = names[0]);
             callback();
         })

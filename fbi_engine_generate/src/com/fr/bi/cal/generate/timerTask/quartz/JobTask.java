@@ -5,7 +5,7 @@ import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.cal.generate.timerTask.adapter.TimerScheduleAdapter;
-import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.third.org.quartz.Job;
 import com.fr.third.org.quartz.JobDataMap;
@@ -29,8 +29,8 @@ public class JobTask implements Job {
         long userId = Long.valueOf(data.get("userId").toString());
         String jobName = data.getString("jobName");
         String sourceName=data.getString("sourceName");
-        boolean tableExisted = null == TimerScheduleAdapter.tableCheck(userId, sourceName);
-        if (!tableExisted&& !DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE.equals(sourceName)){
+        boolean tableExisted = null != TimerScheduleAdapter.tableCheck(userId, sourceName);
+        if (!tableExisted&& !CubeConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE.equals(sourceName)){
             return;
         }
 

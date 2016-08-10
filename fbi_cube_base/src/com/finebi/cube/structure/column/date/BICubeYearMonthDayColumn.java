@@ -2,6 +2,7 @@ package com.finebi.cube.structure.column.date;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.ICubeResourceLocation;
+import com.finebi.cube.structure.column.BICubeIntegerColumn;
 import com.finebi.cube.structure.column.BICubeLongColumn;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
@@ -25,5 +26,9 @@ public class BICubeYearMonthDayColumn extends BICubeDateSubColumn<Long> {
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
         selfColumnEntity = new BICubeLongColumn(discovery, currentLocation);
+    }
+
+    public long getGroupValue(int position) {
+        return ((BICubeLongColumn)selfColumnEntity).getGroupValue(position);
     }
 }

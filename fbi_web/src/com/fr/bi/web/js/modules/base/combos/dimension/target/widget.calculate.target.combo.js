@@ -5,18 +5,18 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     constants: {
         CHART_TYPE_POSITION: 2,
-        CordonPos: 0
+        CordonPos: 1
     },
     defaultItems: function () {
         return [
             [{
+                text: BI.i18nText("BI-Modify_Cal_Target"),
+                value: BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET
+            }],
+            [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
                 cls: "style-set-h-font"
-            }],
-            [{
-                text: BI.i18nText("BI-Modify_Cal_Target"),
-                value: BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET
             }],
             [{
                 el: {
@@ -131,7 +131,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                BI.remove(item, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -156,7 +156,9 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        return;
+                        BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
+                        BI.removeAt(item, this.constants.CordonPos);
+                        return item;
                 }
                 item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
@@ -166,10 +168,19 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                BI.remove(item, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
+                break;
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, 1);
                 break;
             default:
-                BI.remove(item, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
         }
         return item;

@@ -2,6 +2,7 @@ package com.fr.bi.stable.data.db;
 
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -139,8 +140,8 @@ public class Excel2003Util implements HSSFListener {
             case BOFRecord.sid:
                 processBOFRecord(record);
                 break;
-            case DimensionsRecord.sid:
-                processDimensionRecord(record);
+            case RowRecord.sid:
+                processRowRecord(record);
                 break;
             //collection of label record
             case SSTRecord.sid:
@@ -207,9 +208,9 @@ public class Excel2003Util implements HSSFListener {
         }
     }
 
-    private void processDimensionRecord(Record record){
+    private void processRowRecord(Record record){
         //此处读到的count都包含了标识行和列结束的cell，即+1了
-        columnCount = ((DimensionsRecord)record).getLastCol();
+        columnCount = ((RowRecord)record).getLastCol();
     }
 
     public void processBlankRecord(Record record) {
@@ -283,12 +284,16 @@ public class Excel2003Util implements HSSFListener {
     }
 
     public void processMergeRecord(Record record) {
-        MergeCellsRecord merge = (MergeCellsRecord) record;
-        String m = merge.getAreaAt(0).formatAsString();
-        String[] merged = m.split(":");
-        String s = merged[0], e = merged[1];
-        ColumnRow start = ColumnRow.valueOf(s), end = ColumnRow.valueOf(e);
-        mergeCells.put(start, end);
+        try {
+            MergeCellsRecord merge = (MergeCellsRecord) record;
+            String m = merge.getAreaAt(0).formatAsString();
+            String[] merged = m.split(":");
+            String s = merged[0], e = merged[1];
+            ColumnRow start = ColumnRow.valueOf(s), end = ColumnRow.valueOf(e);
+            mergeCells.put(start, end);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
     }
 
     public void initValue() {

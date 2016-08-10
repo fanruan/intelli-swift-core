@@ -25,6 +25,7 @@ public class NIOConstant {
 
         public static final long PAGE_MODE_TO_AND_READ_VALUE = (PAGE_SIZE << MAX_SINGLE_FILE_PART_SIZE) - 1;
 
+        public static final double NULL_VALUE = Double.NaN;
     }
 
     public static final class INTEGER {
@@ -38,6 +39,8 @@ public class NIOConstant {
         public static final long PAGE_MODE_TO_AND_WRITE_VALUE = PAGE_SIZE - 1;
 
         public static final long PAGE_MODE_TO_AND_READ_VALUE = (PAGE_SIZE << MAX_SINGLE_FILE_PART_SIZE) - 1;
+
+        public static final int NULL_VALUE = Integer.MIN_VALUE;
 
     }
 
@@ -53,6 +56,7 @@ public class NIOConstant {
 
         public static final long PAGE_MODE_TO_AND_READ_VALUE = (PAGE_SIZE << MAX_SINGLE_FILE_PART_SIZE) - 1;
 
+        public static final long NULL_VALUE = Long.MIN_VALUE;
     }
 
     public static final class BYTE {
