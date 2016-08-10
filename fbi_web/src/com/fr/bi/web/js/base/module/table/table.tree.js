@@ -263,7 +263,7 @@ BI.extend(BI.TableTree, {
                 } else {
                     next = [];
                 }
-                if ((store == -1 || node.children.length > 1) && BI.isNotEmptyArray(node.values)) {
+                if (/**(store == -1 || node.children.length > 1) &&**/ BI.isNotEmptyArray(node.values)) {
                     var cls = store === -1 ? " last" : "";
                     var id = BI.UUID();
                     for (var i = next.length; i < deep; i++) {
