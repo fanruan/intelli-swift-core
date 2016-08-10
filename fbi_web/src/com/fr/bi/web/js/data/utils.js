@@ -2078,7 +2078,7 @@ Data.Utils = {
                 valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
                 valueLabel.style = configs.plotOptions.valueLabel.style;
                 var percentageLabel = BI.extend(configs.plotOptions.percentageLabel , {
-                    enabled: config.show_percentage === BICst.PERCENTAGE.SHOW
+                    enabled: config.show_percentage === BICst.PERCENTAGE.NOT_SHOW
                 });
                 var slotValueLAbel = {
                     formatter: function(){
@@ -2665,6 +2665,7 @@ Data.Utils = {
             }
 
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
 
             configs.chartType = "pie";
             delete configs.xAxis;
