@@ -491,7 +491,7 @@
                         filter.filter_value.push(checkFilter(value, dId));
                     });
                 } else {
-                    filter.filter_value = oldFilter.filter_value;
+                    BI.extend(filter, oldFilter);
                     //防止死循环
                     if (BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId) {
                         var result = createDimensionsAndTargets(oldFilter.target_id);
