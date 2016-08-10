@@ -111,9 +111,7 @@
 
         getWidgetsByTemplateId: function (tId, callback) {
             if (tId === this.getCurrentTemplateId()) {
-                Data.Req.reqWidgetsByTemplateId(tId, function (data) {
-                    callback(data);
-                });
+                callback(Data.SharingPool.cat("widgets"));
             } else {
                 Data.BufferPool.getWidgetsByTemplateId(tId, callback);
             }
