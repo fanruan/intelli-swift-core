@@ -180,7 +180,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 filter.filter_value.push(this._checkFilter(value, dId));
             });
         }else{
-            filter.filter_value = oldFilter.filter_value;
+            BI.extend(filter, oldFilter);
             if(BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId){
                 var result = this._createDimensionsAndTargets(oldFilter.target_id);
                 filter.target_id = result.id;
