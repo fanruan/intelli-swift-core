@@ -969,6 +969,12 @@
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
         },
 
+        getWSMinimalistByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.minimalist_model) ? ws.minimalist_model :
+                BICst.DEFAULT_CHART_SETTING.minimalist_model
+        },
+
         getWSShowCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_custom_scale) ? ws.show_custom_scale :
