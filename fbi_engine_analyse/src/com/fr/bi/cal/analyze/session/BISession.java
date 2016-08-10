@@ -21,7 +21,12 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.data.TableDataSource;
+import com.fr.fs.base.entity.CompanyRole;
+import com.fr.fs.base.entity.CustomRole;
+import com.fr.fs.control.CompanyRoleControl;
+import com.fr.fs.control.CustomRoleControl;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.GeneralContext;
@@ -36,9 +41,7 @@ import com.fr.web.core.SessionDealWith;
 import com.fr.web.core.SessionIDInfor;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -62,6 +65,9 @@ public class BISession extends BIAbstractSession {
     private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
     private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> partpageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
 
+    //young 当前用户（普通）的角色信息
+    private List<Long> customRoles = new ArrayList<Long>();
+    private List<Long> companyRoles = new ArrayList<Long>();
 
     public BISession(String remoteAddress, BIWeblet let, long userId) {
         super(remoteAddress, let, userId);
@@ -78,6 +84,7 @@ public class BISession extends BIAbstractSession {
         // TODO:richie在这里改变国际化的环境
         GeneralContext.setLanguage(1);
         updateTime();
+        initRoles();
     }
 
     //TODO : 这边userid 也要把loader什么的换下，在这边实现起来不好
@@ -112,22 +119,22 @@ public class BISession extends BIAbstractSession {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
         if (isEdit) {
             isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId());
-            if(!isEdit){
-                List<BIReportNodeLock> locks = lockDAO.getLock( node.getUserId(), node.getId());
+            if (!isEdit) {
+                List<BIReportNodeLock> locks = lockDAO.getLock(node.getUserId(), node.getId());
                 boolean doForce = true;
-                for(BIReportNodeLock l : locks) {
+                for (BIReportNodeLock l : locks) {
                     SessionIDInfor ss = SessionDealWith.getSessionIDInfor(l.getSessionId());
-                    if(ss instanceof  BISession) {
-                        long t = ((BISession)ss).lastTime;
+                    if (ss instanceof BISession) {
+                        long t = ((BISession) ss).lastTime;
                         //45- 30 超过15-45秒还没反應可能是没有心跳
-                        if(System.currentTimeMillis() - t < 45000) {
+                        if (System.currentTimeMillis() - t < 45000) {
                             doForce = false;
                             break;
                         }
                     }
 
                 }
-                if(doForce) {
+                if (doForce) {
                     forceEdit();
                     return this.isEdit;
                 }
@@ -145,6 +152,24 @@ public class BISession extends BIAbstractSession {
         if (lock != null) {
             lockDAO.release(lock);
         }
+    }
+
+    private void initRoles() {
+        try {
+            if (this.getUserId() != UserControl.getInstance().getSuperManagerID()) {
+                Set<CustomRole> cusRoles = CustomRoleControl.getInstance().getCustomRoleSet(this.getUserId());
+                for (CustomRole role : cusRoles) {
+                    customRoles.add(role.getId());
+                }
+                Set<CompanyRole> comRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(this.getUserId());
+                for (CompanyRole role : comRoles) {
+                    companyRoles.add(role.getId());
+                }
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+
     }
 
     public CubeGenerateStatusProvider getProvider() {
@@ -256,6 +281,16 @@ public class BISession extends BIAbstractSession {
     @Override
     public String getWebTitle() {
         return null;
+    }
+
+    @Override
+    public List<Long> getCustomRoles() {
+        return customRoles;
+    }
+
+    @Override
+    public List<Long> getCompanyRoles() {
+        return companyRoles;
     }
 
     @Override
