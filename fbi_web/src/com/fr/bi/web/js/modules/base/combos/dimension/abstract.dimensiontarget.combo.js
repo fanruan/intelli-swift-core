@@ -7,7 +7,7 @@ BI.AbstractDimensionTargetCombo = BI.inherit(BI.Widget, {
 
     _defaultConfig: function(){
         return BI.extend(BI.AbstractDimensionTargetCombo.superclass._defaultConfig.apply(this, arguments), {
-
+            baseCls: "bi-dimension-target-combo"
         })
     },
 
