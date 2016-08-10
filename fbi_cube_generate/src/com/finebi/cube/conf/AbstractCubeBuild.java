@@ -109,7 +109,6 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     public boolean isSingleTable() {
         return false;
     }
-
     @Override
     public boolean copyFileFromOldCubes() {
         try {
@@ -124,9 +123,8 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
-        return true;
+return true;
     }
-
     @Override
     public boolean replaceOldCubes() {
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
@@ -139,9 +137,8 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         } catch (IOException e) {
             BILogger.getLogger().error(e.getMessage());
         }
-        return false;
+        return true;
     }
-
     public void setSources() {
         for (Object biBusinessTable : allBusinessTable) {
             BusinessTable table = (BusinessTable) biBusinessTable;
@@ -164,7 +161,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
     }
 
-    protected BITableSourceRelation convertRelation(BITableRelation relation) {
+    protected BITableSourceRelation convertRelation(BITableRelation relation) throws BIKeyAbsentException {
         CubeTableSource primaryTable;
         CubeTableSource foreignTable;
         try {
@@ -177,7 +174,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
         if (!isRelationValid(relation) || !isSourceRelationValid) {
-            return null;
+                throw new BIKeyAbsentException("tableSourceRelation key absent");
         }
         BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
                 primaryField,
@@ -200,8 +197,13 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {
         BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
         for (BITableRelation biTableRelation : path.getAllRelations()) {
-            BITableSourceRelation biTableSourceRelation = convertRelation(biTableRelation);
-            tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
+            BITableSourceRelation biTableSourceRelation = null;
+            try {
+                biTableSourceRelation = convertRelation(biTableRelation);
+                tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
+            } catch (BIKeyAbsentException e) {
+                BILogger.getLogger().error(e.getMessage());
+            }
         }
         return tableSourceRelationPath;
     }
