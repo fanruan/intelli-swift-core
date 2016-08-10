@@ -298,7 +298,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             auto_custom_style: options.auto_custom || c.AUTO,
             max_scale: options.max_scale || "",
             min_scale: options.min_scale || "",
-            show_percentage: options.show_percentage || c.SHOW
+            show_percentage: options.show_percentage || c.NOT_SHOW
         };
         o.items = this._formatItems(items);
         var types = [];
