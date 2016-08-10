@@ -41,6 +41,7 @@ BI.BlankIconTextIconItem = BI.inherit(BI.BasicButton, {
             rgap: o.textRgap,
             text: o.text,
             value: o.value,
+            keyword: o.keyword,
             height: o.height
         })
 
