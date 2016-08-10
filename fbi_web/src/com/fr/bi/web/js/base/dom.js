@@ -555,6 +555,15 @@ BI.extend(jQuery, {
                     position.left = p.left;
                 }
                 break;
+            case "middle":
+                if (position.change) {
+                    var p = $.getCenterAdaptPosition(combo, popup);
+                    position.left = p.left;
+                } else {
+                    var p = $.getMiddleAdaptPosition(combo, popup);
+                    position.top = p.top;
+                }
+                break;
         }
         return position;
     }
