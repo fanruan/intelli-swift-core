@@ -3,6 +3,7 @@ package com.finebi.cube.gen.arrange;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.disk.BICubeIncreaseDisDiscovery;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.*;
@@ -423,7 +424,11 @@ public class BICubeOperationManager {
                     return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                 }
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
+                     discovery =BICubeIncreaseDisDiscovery.getInstance();
+                     resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+                    cube = new BICube(resourceRetrievalService, discovery);
                     return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version);
+//                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                 }
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
                     return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);

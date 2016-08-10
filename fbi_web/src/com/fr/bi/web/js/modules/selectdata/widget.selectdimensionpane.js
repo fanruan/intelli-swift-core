@@ -426,7 +426,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     filter.filter_value.push(checkFilter(value, olddId));
                 });
             }else{
-                filter.filter_value = oldFilter.filter_value;
+                BI.extend(filter, oldFilter);
                 if(BI.has(oldFilter, "target_id")){
                     if(oldFilter.target_id === olddId){
                         delete filter.target_id;

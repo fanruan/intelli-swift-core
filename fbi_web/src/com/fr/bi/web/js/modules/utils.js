@@ -62,11 +62,14 @@
         },
 
         getAllGroupedPackagesTreeJSON: function () {
-            var groups = Pool.groups, packages = Pool.packages;
+            var groupMap = Pool.groups, packages = Pool.packages;
             var packStructure = [], groupedPacks = [];
-            BI.each(groups, function (id, group) {
+            var groups = BI.sortBy(groupMap, function(id, item) {
+                return item.init_time;
+            });
+            BI.each(groups, function (i, group) {
                 packStructure.push({
-                    id: id,
+                    id: group.id,
                     text: group.name,
                     isParent: true
                 });
@@ -75,7 +78,7 @@
                         id: item.id,
                         text: packages[item.id].name,
                         value: item.id,
-                        pId: id
+                        pId: group.id
                     });
                     groupedPacks.push(item.id);
                 })
@@ -488,7 +491,7 @@
                         filter.filter_value.push(checkFilter(value, dId));
                     });
                 } else {
-                    filter.filter_value = oldFilter.filter_value;
+                    BI.extend(filter, oldFilter);
                     //防止死循环
                     if (BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId) {
                         var result = createDimensionsAndTargets(oldFilter.target_id);
