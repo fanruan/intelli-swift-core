@@ -52,42 +52,27 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BIReportConstant.WIDGET.MAP:
                 return new MultiChartWidget();
-            case BIReportConstant.WIDGET.ACCUMULATE_BAR: {
+            case BIReportConstant.WIDGET.ACCUMULATE_BAR:
+            case BIReportConstant.WIDGET.PIE:
+            case BIReportConstant.WIDGET.DASHBOARD:
+            case BIReportConstant.WIDGET.DONUT:
+            case BIReportConstant.WIDGET.TABLE:
+            case BIReportConstant.WIDGET.CROSS_TABLE:
                 return new TableWidget();
-            }
-            case BIReportConstant.WIDGET.PIE: {
-                return new TableWidget();
-            }
-            case BIReportConstant.WIDGET.DASHBOARD: {
-                return new TableWidget();
-            }
-            case BIReportConstant.WIDGET.DONUT: {
-                return new TableWidget();
-            }
-            case BIReportConstant.WIDGET.TABLE: {
-                return new TableWidget();
-            }
-            case BIReportConstant.WIDGET.DETAIL: {
+            case BIReportConstant.WIDGET.DETAIL:
                 return new BIDetailWidget();
-            }
-            case BIReportConstant.WIDGET.BUBBLE: {
+            case BIReportConstant.WIDGET.BUBBLE:
                 return new MultiChartWidget();
-            }
-            case BIReportConstant.WIDGET.SCATTER: {
+            case BIReportConstant.WIDGET.SCATTER:
                 return new MultiChartWidget();
-            }
-            case BIReportConstant.WIDGET.RADAR: {
+            case BIReportConstant.WIDGET.RADAR:
                 return new TableWidget();
-            }
-            case BIReportConstant.WIDGET.STRING: {
+            case BIReportConstant.WIDGET.STRING:
                 return new StringControlWidget();
-            }
-            case BIReportConstant.WIDGET.TREE: {
+            case BIReportConstant.WIDGET.TREE:
                 return new TreeWidget();
-            }
-            default: {
+            default:
                 return new MultiChartWidget();
-            }
         }
     }
 
