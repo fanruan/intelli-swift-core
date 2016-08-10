@@ -188,7 +188,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        items[this.constants.CordonPos][0].disabled = true;
+                        BI.removeAt(items, this.constants.CordonPos);
                         BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                         return addDependency();
                 }
@@ -201,6 +201,15 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
+                break;
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(items, 1);
                 break;
             default:
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);

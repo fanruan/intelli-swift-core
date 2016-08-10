@@ -4,10 +4,17 @@ import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.message.IMessage;
+import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.Cube;
+import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
@@ -47,6 +54,7 @@ import static com.fr.bi.util.BICubeDBUtils.getColumnName;
  */
 public class BISourceDataPartTransport extends BISourceDataTransport {
     public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
+
         super(cube, tableSource, allSources, parentTableSource, version);
     }
 
@@ -56,8 +64,13 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         long t = System.currentTimeMillis();
         try {
             copyFromOldCubes();
-            super.recordTableInfo();
+
             long count = transport();
+            ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+            ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+            cube = new BICube(resourceRetrievalService, discovery);
+            tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+            super.recordTableInfo();
             if (count >= 0) {
                 tableEntityService.recordRowCount(count);
             }
