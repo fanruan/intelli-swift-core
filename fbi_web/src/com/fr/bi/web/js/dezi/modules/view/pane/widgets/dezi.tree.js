@@ -185,6 +185,7 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
         })
+        BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
     _resetValue: function () {

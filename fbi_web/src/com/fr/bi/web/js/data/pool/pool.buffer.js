@@ -20,27 +20,29 @@
         },
 
         getNumberFieldMinMaxValueById: function (id, callback) {
-            var self = this, idString = id + "";
-            var cache = Buffer["NUMBER_FIELD_MIN_MAX_VALUE"] || (Buffer["NUMBER_FIELD_MIN_MAX_VALUE"] = {});
+            var key = "NUMBER_FIELD_MIN_MAX_VALUE";
+            var idString = id + "";
+            var cache = Buffer[key] || (Buffer[key] = {});
             if (BI.isNotNull(cache[idString])) {
                 callback(cache[idString]);
                 return;
             }
             Data.Req.reqDeziNumberFieldMinMaxValueByfieldId({id: idString}, function (res) {
-                Buffer[idString] = res;
+                Buffer[key][idString] = res;
                 callback(res);
             });
         },
 
         getTableById: function (id, callback) {
-            var self = this, idString = id + "";
-            var cache = Buffer["TABLE"] || (Buffer["TABLE"] = {});
+            var key = "TABLE";
+            var idString = id + "";
+            var cache = Buffer[key] || (Buffer[key] = {});
             if (BI.isNotNull(cache[idString])) {
                 callback(cache[idString]);
                 return;
             }
             BIReq.reqTableById(idString, function (res) {
-                Buffer[idString] = res;
+                Buffer[key][idString] = res;
                 callback(res);
             });
         },
@@ -69,19 +71,21 @@
         },
 
         getTablesByConnectionName: function (connectionName, callback) {
-            var self = this, cache = Buffer["CONNECTION_TABLES"] || (Buffer["CONNECTION_TABLES"] = {});
+            var key = "CONNECTION_TABLES";
+            var cache = Buffer[key] || (Buffer[key] = {});
             if (BI.isNotNull(cache[connectionName])) {
                 callback(cache[connectionName]);
                 return;
             }
             BIReq.reqTablesByConnectionName(connectionName, function (res) {
-                Buffer["CONNECTION_TABLES"][connectionName] = res;
+                Buffer[key][connectionName] = res;
                 callback(res);
             });
         },
 
         getDefaultChartConfig: function () {
-            var self = this, cache = Buffer["DEFAULT_CHART_CONFIG"];
+            var key = "DEFAULT_CHART_CONFIG"
+            var cache = Buffer[key];
             if (BI.isNotNull(cache)) {
                 return cache;
             }
@@ -89,8 +93,34 @@
             if (BI.isNull(res.styleList)) {
                 res.styleList = [];
             }
-            Buffer["DEFAULT_CHART_CONFIG"] = res;
+            Buffer[key] = res;
             return res;
+        },
+
+        getAllTemplates: function (callback) {
+            var key = "TEMPLATES";
+            var cache = Buffer[key];
+            if (BI.isNotNull(cache)) {
+                callback(cache);
+                return;
+            }
+            Data.Req.reqAllTemplates(function (data) {
+                Buffer[key] = data;
+                callback(data);
+            });
+        },
+
+        getWidgetsByTemplateId: function (tId, callback) {
+            var key = "WIDGETS";
+            var cache = Buffer[key];
+            if (BI.isNotNull(cache)) {
+                callback(cache);
+                return;
+            }
+            Data.Req.reqWidgetsByTemplateId(tId, function (data) {
+                Buffer[key] = data;
+                callback(data);
+            });
         }
     };
 })();
