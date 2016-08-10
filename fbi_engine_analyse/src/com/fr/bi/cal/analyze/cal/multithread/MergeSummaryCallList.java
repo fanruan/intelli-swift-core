@@ -7,16 +7,16 @@ import java.util.concurrent.Callable;
  * Created by 小灰灰 on 2016/8/5.
  */
 public class MergeSummaryCallList implements Callable {
-    private List<MergeSummaryCall> callList;
+    private List<BISingleThreadCal> callList;
 
-    public MergeSummaryCallList(List<MergeSummaryCall> callList) {
+    public MergeSummaryCallList(List<BISingleThreadCal> callList) {
         this.callList = callList;
     }
 
     @Override
     public Object call() throws Exception {
         if (callList != null){
-            for (MergeSummaryCall call : callList){
+            for (BISingleThreadCal call : callList){
                 call.cal();
             }
         }
