@@ -11,16 +11,7 @@ public class BISortFactory {
 
     public static ISort parseSort(JSONObject jo) throws Exception {
         ISort sort = null;
-        int dimensionType = jo.optInt("dimension_type");
         int sortType = jo.optInt("type", BIReportConstant.SORT.ASC);
-        if (dimensionType != BIReportConstant.TARGET_TYPE.STRING) {
-            if (sortType == BIReportConstant.SORT.ASC) {
-                sortType = BIReportConstant.SORT.NUMBER_ASC;
-            }
-            if (sortType == BIReportConstant.SORT.DESC) {
-                sortType = BIReportConstant.SORT.NUMBER_DESC;
-            }
-        }
         switch (sortType) {
             case BIReportConstant.SORT.ASC:
                 sort = new ASCSort();
