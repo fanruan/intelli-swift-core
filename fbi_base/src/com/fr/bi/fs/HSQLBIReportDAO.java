@@ -137,7 +137,10 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
         List<User> users = new ArrayList<User>();
         for (int i = 0; i < sReports.size(); i++) {
             BISharedReportNode node = (BISharedReportNode) sReports.get(i);
-            users.add(UserControl.getInstance().getUser(node.getShareTo()));
+            User user = UserControl.getInstance().getUser(node.getShareTo());
+            if(user != null) {
+                users.add(user);
+            }
         }
         return users;
     }
