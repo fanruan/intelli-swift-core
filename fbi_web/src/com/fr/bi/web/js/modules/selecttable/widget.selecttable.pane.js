@@ -41,7 +41,7 @@ BI.SelectTablePane = BI.inherit(BI.LoadingPane, {
             currentId: o.currentId,
             translations: o.translations
         });
-        Data.BufferPool.getConnectionName(function (linkNames) {
+        BI.Utils.getConnectionNames(function(linkNames){
             self.tab.populate(linkNames);
         });
         this.tab.on(BI.DataLinksTab.EVENT_CHANGE, function () {

@@ -45,29 +45,6 @@
             });
         },
 
-        getTablesByPackId: function (packId, callback) {
-            // var cache = Buffer["TABLES"] || (Buffer["TABLES"] = {});
-            // if (BI.isNotNull(cache[packId])) {
-            //     return cache[packId];
-            // }
-            BIReq.reqTablesByPackId(packId, function (res) {
-                // Buffer["TABLES"][packId] = res;
-                callback(res);
-            })
-        },
-
-        getConnectionName: function (callback) {
-            // var self = this, cache = Buffer["CONNECTION_NAME"];
-            // if (BI.isNotNull(cache)) {
-            //     callback(cache);
-            //     return;
-            // }
-            BIReq.reqConnectionName(function (res) {
-                Buffer["CONNECTION_NAME"] = res;
-                callback(res);
-            });
-        },
-
         getTablesByConnectionName: function (connectionName, callback) {
             var self = this, cache = Buffer["CONNECTION_TABLES"] || (Buffer["CONNECTION_TABLES"] = {});
             if (BI.isNotNull(cache[connectionName])) {

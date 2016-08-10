@@ -41,7 +41,7 @@ BI.SelectOneTablePane = BI.inherit(BI.Widget, {
             currentId: o.currentId,
             translations: o.translations
         });
-        Data.BufferPool.getConnectionName(function (linkNames) {
+        BI.Utils.getConnectionNames(function(linkNames){
             self.tab.populate(linkNames);
         });
         this.tab.on(BI.DataLinksTab.EVENT_CHANGE, function () {
