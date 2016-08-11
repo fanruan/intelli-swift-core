@@ -19,9 +19,13 @@ public interface BIAuthorityManageProvider {
 
     List<BIPackageAuthority> getPackageAuthByID(BIPackageID packageID, long userId);
 
+    List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID, String sessionId);
+
     List<BIPackageID> getAuthPackagesByUser(long userId);
 
-    boolean hasAuthPackageByUser(long userId);
+    List<BIPackageID> getAuthPackagesBySession(String sessionId);
+
+    boolean hasAuthPackageByUser(long userId, String sessionId);
 
     JSONObject createJSON(long userId) throws Exception;
 
