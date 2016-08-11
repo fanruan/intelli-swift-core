@@ -2,6 +2,7 @@ package com.fr.bi.conf.base.auth;
 
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
+import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
@@ -43,10 +44,47 @@ public class BIAuthorityManager {
         return result;
     }
 
+    public List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID,  BISessionProvider session) throws Exception {
+        List<BIPackageAuthority> packAuths = this.packagesAuth.get(packageID);
+        List<BIPackageAuthority> result = new ArrayList<BIPackageAuthority>();
+        for(int i = 0; i < packAuths.size(); i++) {
+            BIPackageAuthority auth = packAuths.get(i);
+            long roleId = auth.getRoleId();
+            List<Long> comRoleIds = session.getCustomRoles();
+            List<Long> cusRoleIds = session.getCompanyRoles();
+            if ((comRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.COMPANY) ||
+                    (cusRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.CUSTOM)) {
+                result.add(auth);
+            }
+        }
+        return result;
+    }
+
     public List<BIPackageID> getAuthPackagesByUser(long userId) throws Exception {
         List<BIPackageID> packageIDs = new ArrayList<BIPackageID>();
         List<Long> comRoleIds = getCompanyRolesByUserId(userId);
         List<Long> cusRoleIds = getCustomRolesByUserId(userId);
+        Iterator<Map.Entry<BIPackageID, List<BIPackageAuthority>>> iterator = this.packagesAuth.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<BIPackageID, List<BIPackageAuthority>> packAuth = iterator.next();
+            List<BIPackageAuthority> authorities = packAuth.getValue();
+            BIPackageID pId = packAuth.getKey();
+            for (int i = 0; i < authorities.size(); i++) {
+                BIPackageAuthority auth = authorities.get(i);
+                long roleId = auth.getRoleId();
+                if ((comRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.COMPANY) ||
+                        (cusRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.CUSTOM)) {
+                    packageIDs.add(pId);
+                }
+            }
+        }
+        return packageIDs;
+    }
+
+    public List<BIPackageID> getAuthPackagesBySession(BISessionProvider session) throws Exception {
+        List<BIPackageID> packageIDs = new ArrayList<BIPackageID>();
+        List<Long> comRoleIds = session.getCustomRoles();
+        List<Long> cusRoleIds = session.getCompanyRoles();
         Iterator<Map.Entry<BIPackageID, List<BIPackageAuthority>>> iterator = this.packagesAuth.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<BIPackageID, List<BIPackageAuthority>> packAuth = iterator.next();

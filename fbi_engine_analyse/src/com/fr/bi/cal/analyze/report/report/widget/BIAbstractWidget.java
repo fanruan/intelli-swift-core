@@ -49,6 +49,7 @@ public abstract class BIAbstractWidget implements BIWidget {
     private long initTime;
     private long userId;
     private boolean realData = true;
+    private String sessionId;
 
     public long getUserId() {
         return userId;
@@ -157,6 +158,9 @@ public abstract class BIAbstractWidget implements BIWidget {
         if (jo.has("real_data")) {
             realData = jo.optBoolean("real_data", true);
         }
+        if(jo.has("sessionId")) {
+            sessionId = jo.getString("sessionId");
+        }
         this.userId = userId;
     }
 
@@ -194,9 +198,10 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     private List<TargetFilter> getAuthFilter(long userId) {
         List<TargetFilter> filters = new ArrayList<TargetFilter>();
-        List<BIPackageID> authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+
+        List<BIPackageID> authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(sessionId);
         for (int i = 0; i < authPacks.size(); i++) {
-            List<BIPackageAuthority> packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), userId);
+            List<BIPackageAuthority> packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), sessionId);
             for (int j = 0; j < packAuths.size(); j++) {
                 BIPackageAuthority auth = packAuths.get(j);
                 if (auth.getFilter() != null) {

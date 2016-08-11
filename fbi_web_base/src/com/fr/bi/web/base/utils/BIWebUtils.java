@@ -172,7 +172,7 @@ public class BIWebUtils {
             dealWithEmptyPack(req, res, sessionID, locale);
             return;
         }
-        if (!BIConfigureManagerCenter.getAuthorityManager().hasAuthPackageByUser(userId)) {
+        if (!BIConfigureManagerCenter.getAuthorityManager().hasAuthPackageByUser(userId, sessionID)) {
             dealWithNORightPack(req, res, sessionID, locale);
             return;
         }
