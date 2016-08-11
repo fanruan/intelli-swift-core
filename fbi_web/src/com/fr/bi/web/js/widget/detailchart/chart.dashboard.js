@@ -54,10 +54,11 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             config.gaugeAxis = self.gaugeAxis;
             var slotValueLAbel = {
                 formatter: function () {
+                    this.value = self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT ? BI.contentFormat(this.value, "#0.00%") :
+                        BI.contentFormat(this.value, "#.##;-#.##");
                     if(self.config.chart_dashboard_type === BICst.CHART_SHAPE.VERTICAL_TUBE){
                         return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
                     }else{
-                        console.log(getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS));
                         return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value +
                             getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) +'</div>';
                     }
@@ -139,6 +140,10 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             });
             if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]}";
+            } else {
+                config.plotOptions.tooltip.formatter.valueFormat = function () {
+                    return BI.contentFormat(this, "#.##;-#.##") + getXYAxisUnit(type, position)
+                }
             }
         }
 
@@ -161,7 +166,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             if (position === self.constants.DASHBOARD_AXIS) {
                 self.config.dashboard_unit !== "" && (unit = unit + self.config.dashboard_unit)
             }
-            return unit === "" ? unit : "(" + unit + ")";
+            return unit;
         }
 
         function getBandsStyles(styles, change) {

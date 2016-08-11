@@ -136,12 +136,12 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             return {
                 id: BI.UUID(),
                 type: "bi.dimension_filter_item",
-                tId: dimId,
+                tId: filter.target_id || dimId,
                 filter: filter
             }
         }
     },
-    
+
     parseGeneralQueryFilter: function(filter){
         var self = this;
         if(BI.isNull(filter)) {

@@ -174,6 +174,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         } else {
             // this.widget.attr("items")[0].left = "";
             // this.widget.attr("items")[0].right = 10;
+            this.combo.setVisible(true);
             this.widget.attr("items")[1].right = 10;
             this.widget.attr("items")[2].top = 50;
             this.widget.attr("items")[2].left = 10;
@@ -189,6 +190,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
         })
+        BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
     _resetValue: function () {

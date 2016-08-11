@@ -14,6 +14,7 @@ import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
 import com.fr.bi.stable.operation.sort.BISortFactory;
+import com.fr.bi.stable.operation.sort.BISortUtils;
 import com.fr.bi.stable.operation.sort.ISort;
 import com.fr.bi.stable.operation.sort.sort.NoSort;
 import com.fr.bi.stable.report.result.BINode;
@@ -94,7 +95,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         super.parseJSON(jo, userId);
         if (jo.has("sort")) {
             JSONObject sortJo = jo.optJSONObject("sort");
-            sortJo.put("dimension_type", jo.optInt("type"));
+            sortJo.put("type", BISortUtils.getSortTypeByDimensionType(sortJo.optInt("type", BIReportConstant.SORT.NONE), jo.optInt("type")));
             this.sort = BISortFactory.parseSort(sortJo);
             JSONObject s = jo.getJSONObject("sort");
             if (s.has("sort_target")) {

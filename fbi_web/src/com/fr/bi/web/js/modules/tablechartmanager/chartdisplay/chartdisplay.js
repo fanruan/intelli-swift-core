@@ -354,7 +354,8 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                     bubble_style: BI.Utils.getWSBubbleStyleByID(o.wId),
                     max_scale: BI.Utils.getWSMaxScaleByID(o.wId) ,
                     min_scale: BI.Utils.getWSMinScaleByID(o.wId),
-                    show_percentage: BI.Utils.getWSShowPercentageByID(o.wId)
+                    show_percentage: BI.Utils.getWSShowPercentageByID(o.wId),
+                    minimalist_model: BI.Utils.getWSMinimalistByID(o.wId)
                 }, {
                     cordon: self.model.getCordon(),
                     tooltip: self.model.getToolTip(type),

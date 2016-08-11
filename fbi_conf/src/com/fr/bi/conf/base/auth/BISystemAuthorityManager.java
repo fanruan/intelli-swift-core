@@ -4,10 +4,12 @@ import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIAuthorityManageProvider;
+import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
+import com.fr.web.core.SessionDealWith;
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,17 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
     }
 
     @Override
+    public List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID, String sessionId) {
+        try {
+            BISessionProvider session = (BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId);
+            return getValue(UserControl.getInstance().getSuperManagerID()).getPackageAuthBySession(packageID, session);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Override
     public List<BIPackageID> getAuthPackagesByUser(long userId) {
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getAuthPackagesByUser(userId);
@@ -52,7 +65,18 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
     }
 
     @Override
-    public boolean hasAuthPackageByUser(long userId) {
+    public List<BIPackageID> getAuthPackagesBySession(String sessionId) {
+        try {
+            BISessionProvider session = (BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId);
+            return getValue(UserControl.getInstance().getSuperManagerID()).getAuthPackagesBySession(session);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasAuthPackageByUser(long userId, String sessionId) {
         return UserControl.getInstance().getSuperManagerID() == userId ||
                 (getAuthPackagesByUser(userId) != null &&
                         getAuthPackagesByUser(userId).size() > 0);
