@@ -27,4 +27,6 @@ public interface ICubeTableColumnManagerService extends Release {
 
     void setOwner(ITableKey owner);
 
+    void buildStructure();
+
 }

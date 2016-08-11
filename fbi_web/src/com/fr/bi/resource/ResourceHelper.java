@@ -17,6 +17,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.Transmitter;
+import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -2448,7 +2449,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/selectdata/searchpane/segment.search.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/searchpane/result.search.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/searcher/searcher.selectdata.js",
-                "com/fr/bi/web/js/widget/selectdata/tab/tab.selectdata.js",
 
                 //简单的一个搜索功能
                 "com/fr/bi/web/js/widget/simplesearcher/searcher.simple.js",

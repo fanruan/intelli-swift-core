@@ -328,6 +328,12 @@ BI.extend(BI.Utils, {
         })
     },
 
+    getTablesByPackId: function (packId, callback) {
+        BIReq.reqTablesByPackId(packId, function (res) {
+            callback(res);
+        })
+    },
+
     getServerSetPreviewBySql: function (data, callback) {
         Data.Req.reqServerSetPreviewBySql(data, function (res) {
             callback(res);
