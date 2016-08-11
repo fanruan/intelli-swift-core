@@ -122,9 +122,11 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
         text = this._parseFloatByDot(text, format);
-
+        
         if (text === Infinity) {
             text = "N/0";
+        } else if(BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+            text += "%";
         }
         item.setText(text);
 
