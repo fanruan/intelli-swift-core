@@ -336,4 +336,25 @@ public class BIMemoryDataSourceFactory {
 
         return memoryDataSource;
     }
+
+
+    public static CubeTableSource generateEmptyTable() {
+        BIMemoryDataSource memoryDataSource = new BIMemoryDataSource();
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
+        columns.add(new BICubeFieldSource(memoryDataSource, "id", DBConstant.CLASS.INTEGER, 10));
+        columns.add(new BICubeFieldSource(memoryDataSource, "name", DBConstant.CLASS.STRING, 10));
+
+        memoryDataSource.setFieldList(columns);
+        Map<Integer, List> content = new HashMap<Integer, List>();
+        List<Long> id = new ArrayList<Long>();
+        List<Long> name = new ArrayList<Long>();
+        content.put(0, id);
+        content.put(1, name);
+        memoryDataSource.setContents(content);
+        memoryDataSource.setSourceID("EmptyTable");
+        memoryDataSource.setRowCount(content.get(0).size());
+        return memoryDataSource;
+    }
+
+
 }

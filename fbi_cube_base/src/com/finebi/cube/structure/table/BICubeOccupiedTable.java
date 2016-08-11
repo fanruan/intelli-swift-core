@@ -183,4 +183,9 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     public Boolean isVersionAvailable() {
         return false;
     }
+
+    @Override
+    public void buildStructure() {
+
+    }
 }
