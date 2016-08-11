@@ -34,6 +34,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -260,6 +261,9 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             int dimensionIndex = rowData.getDimensionIndexFromRow(row, columnLength);
             BIDimension rd = colColumn[dimensionIndex];
             String name = rd.toString(tempNode.getData());
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && name != null) {
+                name = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(name)));
+            }
             NodeExpander childEx = expander.getChildExpander(name);
             int colSpan = sumColumn.length == 0 ? tempNode.getTotalLength(childEx) : tempNode.getTotalLengthWithSummary(childEx);
             if (isCross) {
@@ -309,7 +313,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
                 list = (IntList) deepList.clone();
                 list.add(i);
             } catch (CloneNotSupportedException e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                BILogger.getLogger().error(e.getMessage(), e);
             }
             dealWithNode(tempNode, expander.getChildExpander(name), cbcells, row + rowSpan, tempCol, colColumn, sumColumn, keys, currentIndex, total - 1, isCross, list, isTargetSort, sortDimension, widget, rowData);
             tempCol += colSpan;
@@ -595,7 +599,11 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             int colSpan = sumColumn.length == 0 ? tempNode.getTotalLength() : tempNode.getTotalLengthWithSummary();
             int dimensionIndex = rowData.getDimensionIndexFromRow(row, columnLengh);
             BIDimension rd = colColumn[dimensionIndex];
-            cell = new CBCell(rd.toString(tempNode.getData()));
+            String text = rd.toString(tempNode.getData());
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && text != null) {
+                text = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(text)));
+            }
+            cell = new CBCell(text);
             cell.setRow(row);
             cell.setColumn(tempCol);
             cell.setColumnSpan(colSpan);
@@ -780,7 +788,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         boolean isTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
 
         for (int i = 0; i < colLength; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)usedDimensions[i]).getText());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
             cell.setColumn(0);
             cell.setRow(i);
             cell.setRowSpan(1);
