@@ -132,7 +132,6 @@ public class ResourceHelper {
                             String childId = child.getString("id");
                             if(packages.has(childId)) {
                                 nChildren.put(child);
-                                break;
                             }
                         }
                         group.put("children", nChildren);
