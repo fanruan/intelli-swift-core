@@ -3,6 +3,7 @@ package com.fr.bi.conf.data.source;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -11,7 +12,6 @@ import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
-import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.impl.DBTableData;
@@ -57,7 +57,7 @@ public class ServerTableSource extends DBTableSource {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
             settedStatement.setSql("SELECT distinct " + fieldName + " FROM " + "(" +((DBTableData) tableData).getQuery() + ") " + "t");
-            BICubeDBUtils.runSQL(settedStatement, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
+            DBQueryExecutor.getInstance().runSQL(settedStatement, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue data) {
                     set.add(data.getValue());
@@ -184,7 +184,7 @@ public class ServerTableSource extends DBTableSource {
     private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, ICubeFieldSource[] fields) {
         SQLStatement sql = new SQLStatement(connect);
         sql.setFrom( "(" + query + ") " + "t");
-        return BICubeDBUtils.runSQL(sql, fields, new Traversal<BIDataValue>() {
+        return DBQueryExecutor.getInstance().runSQL(sql, fields, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
                 try {
