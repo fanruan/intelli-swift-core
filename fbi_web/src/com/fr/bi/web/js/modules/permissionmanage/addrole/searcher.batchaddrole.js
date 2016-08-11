@@ -71,7 +71,9 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
             }
         });
         this.searcher.setAdapter(this.roles);
-        
+        this.searcher.on(BI.Searcher.EVENT_CHANGE, function () {
+            self.saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
+        });
         var cancelButton = BI.createWidget({
             type: "bi.button",
             level: "ignore",
