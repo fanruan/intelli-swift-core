@@ -15,6 +15,7 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.dimension.dimension.BIStringDimension;
+import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
 import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTargetKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -114,13 +115,17 @@ public class DimensionGroupFilter {
     }
 
     private void calCalculateTarget(LightNode mergeNode) {
-        List targetKey = new ArrayList(targetsMap.values());
-        List calculatorTarget = new ArrayList();
-        for (BICalculatorTargetKey key : calculatorTargets) {
-            calculatorTarget.add(targetsMap.get(key.getTargetName()));
+        List<TargetCalculator> targetKey = new ArrayList<TargetCalculator>(targetsMap.values());
+        List<CalCalculator> calculatorTarget = new ArrayList<CalCalculator>();
+        List<TargetCalculator> noneCalculateTargetKey = new ArrayList<TargetCalculator>();
+        for (TargetCalculator calculator : targetKey) {
+            if (calculator instanceof CalCalculator) {
+                calculatorTarget.add((CalCalculator) calculator);
+            } else {
+                noneCalculateTargetKey.add(calculator);
+            }
         }
-        targetKey.removeAll(calculatorTarget);
-        CubeIndexLoader.calculateTargets(targetKey, calculatorTarget, mergeNode, true);
+        CubeIndexLoader.calculateTargets(noneCalculateTargetKey, calculatorTarget, mergeNode, true);
 
     }
 

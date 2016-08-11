@@ -140,8 +140,11 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 linkedWidgets.push(link.to);
             }
         });
+
         if (text === Infinity) {
             text = "N/0";
+        } else if(BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+            text += "%";
         }
 
         if (BI.isEmptyArray(linkedWidgets)) {
