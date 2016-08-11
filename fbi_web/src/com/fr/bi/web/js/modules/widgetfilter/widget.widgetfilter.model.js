@@ -141,7 +141,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             }
         }
     },
-    
+
     parseGeneralQueryFilter: function(filter){
         var self = this;
         if(BI.isNull(filter)) {
