@@ -84,10 +84,10 @@ public class ResourceHelper {
         JSONObject fields = new JSONObject();
         JSONObject translations = new JSONObject();
         JSONObject excelViews = new JSONObject();
-        List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
+            List<BIPackageID> authPacks = new ArrayList<BIPackageID>();
             //从分组中去掉allPacks没有的业务包
             Iterator<String> gIds = allGroups.keys();
             while (gIds.hasNext()) {
@@ -112,6 +112,7 @@ public class ResourceHelper {
                 groups = allGroups;
             } else {
                 //前台能看到的业务包
+                authPacks = BIModuleUtils.getAvailablePackID(userId);
                 for (BIPackageID pId : authPacks) {
                     if (allPacks.has(pId.getIdentityValue())) {
                         packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
