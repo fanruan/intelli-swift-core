@@ -19,6 +19,7 @@ import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.third.com.lowagie.text.exceptions.UnsupportedPdfException;
 
 import java.util.*;
 
@@ -257,5 +258,10 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     @Override
     public Boolean isVersionAvailable() {
         return masterTable.isVersionAvailable();
+    }
+
+    @Override
+    public void buildStructure() {
+        throw new UnsupportedOperationException();
     }
 }

@@ -57,11 +57,14 @@ public abstract class BISourceDataTransport extends BIProcessor {
         }
     }
 
-    
 
     @Override
     public void release() {
         tableEntityService.clear();
+    }
+
+    protected void buildTableBasicStructure() {
+        tableEntityService.buildStructure();
     }
 
     protected void recordTableInfo() {
@@ -76,13 +79,14 @@ public abstract class BISourceDataTransport extends BIProcessor {
             tableEntityService.recordFieldNamesFromParent(getParentFieldNames());
         }
     }
+
     protected void copyFromOldCubes() {
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
         try {
             BICubeLocation from = new BICubeLocation(advancedConf.getRootURI().getPath().toString(), tableSource.getSourceID());
             BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
-            BIFileUtils.copyFolder(new File(from.getAbsolutePath()),new File(to.getAbsolutePath()));
+            BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
         } catch (IOException e) {
             BILogger.getLogger().error(e.getMessage());
         } catch (URISyntaxException e) {
@@ -90,6 +94,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
         }
 
     }
+
     private Set<String> getParentFieldNames() {
         Set<ICubeFieldSource> parentFields = tableSource.getParentFields(allSources);
         Set<ICubeFieldSource> facetFields = tableSource.getFacetFields(allSources);
@@ -112,7 +117,6 @@ public abstract class BISourceDataTransport extends BIProcessor {
         return false;
     }
 
-    
 
     private ICubeFieldSource convert(ICubeFieldSource column) {
         return new BICubeFieldSource(tableSource, column.getFieldName(), column.getClassType(), column.getFieldSize());
