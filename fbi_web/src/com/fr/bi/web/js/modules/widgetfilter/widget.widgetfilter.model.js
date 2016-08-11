@@ -232,6 +232,27 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                     text = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";
                 }
                 return text;
+            case BICst.WIDGET.TREE:
+                function getChildrenNode(ob) {
+                    var text = "";
+                    var index = 0, size = BI.size(ob);
+                    BI.each(ob, function(name, children) {
+                        index++;
+                        var childNodes = getChildrenNode(children);
+                        text += name + (childNodes === "" ? "" : (":" + childNodes)) + (index === size ? "" : ",");
+                    });
+                    return text;
+                }
+                BI.each(widgetValue, function(name, children) {
+                    var childNodes = getChildrenNode(children);
+                    text += name + (childNodes === "" ? "" : (":" + childNodes)) + "; ";
+                });
+                if(text !== "") {
+                    text = BI.i18nText("BI-In") + " " + text;
+                }
+                return text;
+            default:
+                return widgetValue;
         }
     },
 
