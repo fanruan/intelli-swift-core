@@ -315,6 +315,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
     public Iterator getOneKeyIterator(final ICubeValueEntryGetter getter) {
         final FinalInt i = new FinalInt();
+        i.value = NIOConstant.INTEGER.NULL_VALUE;
         root.getGroupValueIndex().Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
