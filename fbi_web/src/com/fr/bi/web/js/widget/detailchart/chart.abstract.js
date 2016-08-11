@@ -177,7 +177,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
         if (number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
             if (type === this.constants.NORMAL) {
-                formatter = '#0%'
+                formatter = '#0.00%';
             } else {
                 formatter += '%';
             }
