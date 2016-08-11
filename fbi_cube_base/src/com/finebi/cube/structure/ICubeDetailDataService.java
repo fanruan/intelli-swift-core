@@ -5,7 +5,7 @@ import com.fr.bi.common.inter.Release;
 
 /**
  * 详细数据，主要用于列存储。
- * <p/>
+ * <p>
  * This class created on 2016/3/3.
  *
  * @author Connery
@@ -28,6 +28,8 @@ public interface ICubeDetailDataService<T> extends Release {
     CubeVersion getVersion();
 
     void recordVersion(CubeVersion version);
+
+    void buildStructure();
 
 
 }
