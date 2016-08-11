@@ -25,7 +25,17 @@ public class BICubeRelationTestTool {
                 BITableKeyUtils.convert(tableA),
                 BITableKeyUtils.convert(tableB));
     }
-
+    public static BICubeRelation getEmptyTable_Tb() {
+        CubeTableSource tableEmpty;
+        CubeTableSource tableB;
+        tableEmpty = BIMemoryDataSourceFactory.generateEmptyTable();
+        tableB = BIMemoryDataSourceFactory.generateTableB();
+        return new BICubeRelation(
+                BIColumnKey.covertColumnKey(new BICubeFieldSource(tableEmpty, "name", DBConstant.CLASS.STRING, 6)),
+                BIColumnKey.covertColumnKey(new BICubeFieldSource(tableB, "lover", DBConstant.CLASS.STRING, 6)),
+                BITableKeyUtils.convert(tableEmpty),
+                BITableKeyUtils.convert(tableB));
+    }
     public static BICubeRelation getNullTableRelation() {
         CubeTableSource tableA;
         CubeTableSource tableB;

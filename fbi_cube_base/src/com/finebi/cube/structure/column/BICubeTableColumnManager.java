@@ -278,4 +278,10 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             it.next().clear();
         }
     }
+
+    public void buildStructure(){
+        for (ICubeColumnEntityService columnEntityService:columnKey2ColumnMap.values()){
+            columnEntityService.buildStructure();
+        }
+    }
 }

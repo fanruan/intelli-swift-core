@@ -46,20 +46,32 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     }
 
     public ICubeWriter<T> getCubeWriter() {
-        if (!isCubeWriterAvailable()) {
-            initCubeWriter();
-        }
+        initCubeWriter();
         return cubeWriter;
     }
 
-    public ICubeReader getCubeReader() {
-        if (!isCubeReaderAvailable()) {
-            initCubeReader();
+    public void initCubeWriter() {
+        if (!isCubeWriterAvailable()) {
+            buildCubeWriter();
         }
+    }
+
+    public ICubeReader getCubeReader() {
+        initCubeReader();
         return cubeReader;
     }
 
-    private void initCubeReader() {
+    public void initCubeReader() {
+        if (!isCubeReaderAvailable()) {
+            buildCubeReader();
+        }
+    }
+    public void buildStructure(){
+        initCubeReader();
+        initCubeWriter();
+    }
+
+    private void buildCubeReader() {
         try {
             currentLocation = setDetailType();
             ICubeResourceDiscovery resourceDiscovery = discovery;
@@ -70,7 +82,7 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
         }
     }
 
-    private void initCubeWriter() {
+    private void buildCubeWriter() {
         try {
             currentLocation = setDetailType();
             ICubeResourceDiscovery resourceDiscovery = discovery;
