@@ -348,9 +348,10 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
     _createDimensionsAndTargets: function (old, dimTarIdMap, dimensions) {
         var self = this;
         var result = [];
+        var newId = dimTarIdMap[old.dId] || BI.UUID();
         var dimension = BI.deepClone(old);
-        if (BI.has(dimTarIdMap, old.dId)) {
-            var dim = dimensions[dimTarIdMap[old.dId]] || dimension;
+        if (BI.has(dimTarIdMap, old.dId) && BI.has(dimensions, [dimTarIdMap[old.dId]])) {
+            var dim = dimensions[dimTarIdMap[old.dId]];
             dim.dId = dimTarIdMap[old.dId];
             return [dim];
         }
@@ -384,12 +385,11 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 });
                 break;
         }
-        var id = BI.UUID();
-        dimension.dId = id;
+        dimension.dId = newId;
         if (BI.has(dimension, "filter_value")) {
             dimension.filter_value = checkFilter(dimension.filter_value, dimTarIdMap[old.dId] || old.dId);
         }
-        dimTarIdMap[old.dId] = id;
+        dimTarIdMap[old.dId] = newId;
         result.push(dimension);
         return result;
 

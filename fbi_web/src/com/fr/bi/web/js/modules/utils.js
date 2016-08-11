@@ -502,10 +502,10 @@
             }
 
             function createDimensionsAndTargets(idx) {
-                var newId = BI.UUID();
+                var newId = dimTarIdMap[idx] || BI.UUID();
                 var dimension = BI.deepClone(widget.dimensions[idx]);
-                if (BI.has(dimTarIdMap, idx)) {
-                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
+                if (BI.has(dimTarIdMap, idx) && BI.has(dimensions, [dimTarIdMap[idx]])) {
+                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]]};
                 }
                 switch (widget.dimensions[idx].type) {
                     case BICst.TARGET_TYPE.STRING:
