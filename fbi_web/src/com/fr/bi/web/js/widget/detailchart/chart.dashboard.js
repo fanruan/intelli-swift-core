@@ -54,11 +54,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             config.gaugeAxis = self.gaugeAxis;
             var slotValueLAbel = {
                 formatter: function () {
-                    if(self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                        this.value = BI.contentFormat(this.value, "#0.00%")
-                    }else{
-                        this.value = BI.contentFormat(this.value, "#.##;-#.##");
-                    }
+                    this.value = self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT ? BI.contentFormat(this.value, "#0.00%") :
+                        BI.contentFormat(this.value, "#.##;-#.##");
                     if(self.config.chart_dashboard_type === BICst.CHART_SHAPE.VERTICAL_TUBE){
                         return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
                     }else{
