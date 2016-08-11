@@ -203,8 +203,8 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 if (BI.has(self.oldDimensions[idx], "dimension_map")) {
                     dimension.dimension_map = {};
                     BI.each(self.oldDimensions[idx].dimension_map, function (id, map) {
-                        //明细表dimensionmap存的key是tableId，与汇总表区分
-                        if(self.widgetType === BICst.WIDGET.DETAIL){
+                        //明细表和树控件dimensionmap存的key是tableId，与汇总表区分
+                        if(self.widgetType === BICst.WIDGET.DETAIL || self.widgetType === BICst.WIDGET.TREE){
                             dimension.dimension_map[id] = map;
                         }else{
                             var result = self._createDimensionsAndTargets(id);
