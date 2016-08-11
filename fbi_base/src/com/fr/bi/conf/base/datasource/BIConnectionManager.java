@@ -142,7 +142,7 @@ public class BIConnectionManager extends XMLFileManager {
         BIDBUtils.dealWithJDBCConnection(jdbcDatabaseConnection);
         datasourceManager.putConnection(newName, jdbcDatabaseConnection);
         connMap.remove(oldName);
-        connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema")));
+        connMap.put(newName, new BIConnection(newName, linkDataJo.getString("schema")));
         try {
             FRContext.getCurrentEnv().writeResource(datasourceManager);
             FRContext.getCurrentEnv().writeResource(this);
