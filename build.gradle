@@ -8,6 +8,10 @@ def BI_HOME='../../'
 def jarname='fr-bi-server-4.0.jar'
 //指定生成的jar包版本
 version='4.0'
+//获取什么分支名
+FileTree files =fileTree(dir:'./',include:'build.gradle')
+def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('\\'))
+def branchName=buildDir.substring(buildDir.lastIndexOf ('\\')+1)
 
 jar{
 //指定生成jar包的名称
@@ -123,10 +127,10 @@ task addTime(dependsOn:'compressJS'){
 
 //混淆代码
 task obfuse(dependsOn:'build')<<{
-	ant.mkdir(dir:"${BI_HOME}/build/JAR/tmp")
+	ant.mkdir(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp")
 	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
 	ant.yguard(){
-		inoutpair(in:"build/libs/${jarname}",out:"${BI_HOME}/build/JAR/tmp/${jarname}")
+		inoutpair(in:"build/libs/${jarname}",out:"${BI_HOME}/build/${branchName}/build/JAR/tmp/${jarname}")
 		rename(){
 		keep{
 			method(name:'void main(String[])'){
