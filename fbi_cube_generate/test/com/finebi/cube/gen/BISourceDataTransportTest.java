@@ -66,7 +66,6 @@ public class BISourceDataTransportTest extends BICubeTestBase {
 
     public void testTransport() {
         try {
-            new  File("c:\\").length();
             transport(tableSource);
             BICubeFieldSource[] fields = tableSource.getFieldsArray(new HashSet<CubeTableSource>());
             CubeColumnReaderService col1 = cube.getCubeColumn(BITableKeyUtils.convert(tableSource), BIColumnKey.covertColumnKey(fields[0]));
