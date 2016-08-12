@@ -45,6 +45,12 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
 
     protected abstract void initial();
 
+
+    public void buildStructure(){
+        detailDataService.buildStructure();
+        groupDataService.buildStructure();
+        indexDataService.buildStructure();
+    }
     @Override
     public void setRelationManagerService(ICubeRelationManagerService relationManagerService) {
         this.relationManagerService = relationManagerService;

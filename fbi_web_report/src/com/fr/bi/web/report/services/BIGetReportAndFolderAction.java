@@ -57,7 +57,7 @@ public class BIGetReportAndFolderAction extends ActionNoSessionCMD {
     }
 
     private JSONArray getSharedUsers(long reportId, long createBy) throws Exception{
-        List<User> users = BIDAOUtils.getSharedUsersByReport(Long.valueOf(reportId), createBy);
+        List<User> users = BIDAOUtils.getSharedUsersByReport(reportId, createBy);
         JSONArray ja = new JSONArray();
         if(users != null) {
             for(int i = 0; i < users.size(); i++){

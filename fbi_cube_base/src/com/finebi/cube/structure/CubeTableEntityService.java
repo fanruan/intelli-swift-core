@@ -60,4 +60,6 @@ public interface CubeTableEntityService extends CubeTableEntityGetterService {
     void setTableOwner(ITableKey owner);
     
     boolean isRemovedListAvailable();
+
+    void buildStructure();
 }

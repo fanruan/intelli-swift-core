@@ -22,7 +22,17 @@ public class BICubePathTestTool {
             throw BINonValueUtils.beyondControl();
         }
     }
-
+    public static BICubeTablePath getEmptyTable_B_C() {
+        try {
+            BICubeTablePath path = new BICubeTablePath();
+            path.addRelationAtHead(BICubeRelationTestTool.getEmptyTable_Tb());
+            path.addRelationAtTail(BICubeRelationTestTool.getTbTc());
+            return path;
+        } catch (BITablePathConfusionException e) {
+            e.printStackTrace();
+            throw BINonValueUtils.beyondControl();
+        }
+    }
     public static BICubeTablePath getContainNullPath() {
         try {
             BICubeTablePath path = new BICubeTablePath();

@@ -138,6 +138,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
         var view = BI.Utils.getWidgetViewByID(wId);
+        var minimalist = BI.Utils.getWSMinimalistByID(wId);
         var result = BI.find(view[BICst.REGION.TARGET2], function (idx, did) {
             return did === o.dId;
         });
@@ -183,6 +184,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:

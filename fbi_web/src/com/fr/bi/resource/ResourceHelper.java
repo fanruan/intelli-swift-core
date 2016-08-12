@@ -17,6 +17,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.Transmitter;
+import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -83,10 +84,10 @@ public class ResourceHelper {
         JSONObject fields = new JSONObject();
         JSONObject translations = new JSONObject();
         JSONObject excelViews = new JSONObject();
-        List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
+            List<BIPackageID> authPacks = new ArrayList<BIPackageID>();
             //从分组中去掉allPacks没有的业务包
             Iterator<String> gIds = allGroups.keys();
             while (gIds.hasNext()) {
@@ -111,6 +112,7 @@ public class ResourceHelper {
                 groups = allGroups;
             } else {
                 //前台能看到的业务包
+                authPacks = BIModuleUtils.getAvailablePackID(userId);
                 for (BIPackageID pId : authPacks) {
                     if (allPacks.has(pId.getIdentityValue())) {
                         packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
@@ -130,7 +132,6 @@ public class ResourceHelper {
                             String childId = child.getString("id");
                             if(packages.has(childId)) {
                                 nChildren.put(child);
-                                break;
                             }
                         }
                         group.put("children", nChildren);
@@ -2458,7 +2459,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/selectdata/searchpane/segment.search.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/searchpane/result.search.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/searcher/searcher.selectdata.js",
-                "com/fr/bi/web/js/widget/selectdata/tab/tab.selectdata.js",
 
                 //简单的一个搜索功能
                 "com/fr/bi/web/js/widget/simplesearcher/searcher.simple.js",
@@ -2627,6 +2627,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
+                "com/fr/bi/web/js/widget/sequencetable/summarynumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/sequencetable.js",
 
                 //图片组件

@@ -191,28 +191,9 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             layer: 0,
             nodeType: self.constants.FOLDER
         };
-        if (BI.isEmptyArray(this.templateItems)) {
-            BI.Utils.getAllTemplates(function (res) {
-                self.templateItems = res;
-                self.templateItems.push(createByMe);
-                var currentTemplate = BI.find(self.templateItems, function (idx, item) {
-                    return item.id === BI.Utils.getCurrentTemplateId();
-                });
-                var currentTemplateItem = {
-                    id: currentTemplate.id,
-                    pId: BI.UUID(),
-                    type: "bi.multilayer_icon_arrow_node",
-                    iconCls: currentTemplate.description === "true" ? "real-time-font" : "file-font",
-                    text: currentTemplate.text,
-                    title: currentTemplate.text,
-                    isParent: true,
-                    value: currentTemplate.id,
-                    layer: 0,
-                    nodeType: self.constants.TEMPLATE
-                };
-                callback(BI.concat([currentTemplateItem, createByMe], self._findChildItemsFromItems(-1, 1)));
-            });
-        } else {
+        BI.Utils.getAllTemplates(function (res) {
+            self.templateItems = res;
+            self.templateItems.push(createByMe);
             var currentTemplate = BI.find(self.templateItems, function (idx, item) {
                 return item.id === BI.Utils.getCurrentTemplateId();
             });
@@ -229,7 +210,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 nodeType: self.constants.TEMPLATE
             };
             callback(BI.concat([currentTemplateItem, createByMe], self._findChildItemsFromItems(-1, 1)));
-        }
+        });
     },
 
     /**
@@ -245,7 +226,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         var call = function (widgets) {
             var result = [];
             BI.each(widgets, function (wId, widget) {
-                if(!BI.contains(self.constants.CONTROL_TYPE, widget.type)){
+                if (!BI.contains(self.constants.CONTROL_TYPE, widget.type)) {
                     result.push({
                         id: wId,
                         pId: id,
@@ -266,26 +247,22 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             callback(BI.sortBy(result, "text"));
         };
 
-        if (!self.widgetItems[id]) {
-            BI.Utils.getWidgetsByTemplateId(id, function (data) {
-                var widgets = {};
-                if (id === BI.Utils.getCurrentTemplateId()) {
-                    BI.each(data, function (wId, widget) {
-                        if (wId !== o.wId) {
-                            widgets[wId] = widget;
-                        }
-                    })
-                } else {
-                    BI.each(data, function (wId, widget) {
+        BI.Utils.getWidgetsByTemplateId(id, function (data) {
+            var widgets = {};
+            if (id === BI.Utils.getCurrentTemplateId()) {
+                BI.each(data, function (wId, widget) {
+                    if (wId !== o.wId) {
                         widgets[wId] = widget;
-                    })
-                }
-                self.widgetItems[id] = widgets;
-                call(self.widgetItems[id]);
-            });
-        } else {
-            call(self.widgetItems[id]);
-        }
+                    }
+                })
+            } else {
+                BI.each(data, function (wId, widget) {
+                    widgets[wId] = widget;
+                })
+            }
+            self.widgetItems[id] = widgets;
+            call(widgets);
+        });
     },
 
     _getAllDimensions: function (widgetId) {
@@ -371,9 +348,10 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
     _createDimensionsAndTargets: function (old, dimTarIdMap, dimensions) {
         var self = this;
         var result = [];
+        var newId = dimTarIdMap[old.dId] || BI.UUID();
         var dimension = BI.deepClone(old);
-        if (BI.has(dimTarIdMap, old.dId)) {
-            var dim = dimensions[dimTarIdMap[old.dId]] || dimension;
+        if (BI.has(dimTarIdMap, old.dId) && BI.has(dimensions, [dimTarIdMap[old.dId]])) {
+            var dim = dimensions[dimTarIdMap[old.dId]];
             dim.dId = dimTarIdMap[old.dId];
             return [dim];
         }
@@ -407,16 +385,15 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 });
                 break;
         }
-        var id = BI.UUID();
-        dimension.dId = id;
-        if(BI.has(dimension, "filter_value")){
+        dimension.dId = newId;
+        if (BI.has(dimension, "filter_value")) {
             dimension.filter_value = checkFilter(dimension.filter_value, dimTarIdMap[old.dId] || old.dId);
         }
-        dimTarIdMap[old.dId] = id;
+        dimTarIdMap[old.dId] = newId;
         result.push(dimension);
         return result;
 
-        function checkFilter(oldFilter, olddId){
+        function checkFilter(oldFilter, olddId) {
             var filter = {};
             var filterType = oldFilter.filter_type, filterValue = oldFilter.filter_value;
             filter.filter_type = oldFilter.filter_type;
@@ -425,12 +402,12 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 BI.each(filterValue, function (i, value) {
                     filter.filter_value.push(checkFilter(value, olddId));
                 });
-            }else{
+            } else {
                 BI.extend(filter, oldFilter);
-                if(BI.has(oldFilter, "target_id")){
-                    if(oldFilter.target_id === olddId){
+                if (BI.has(oldFilter, "target_id")) {
+                    if (oldFilter.target_id === olddId) {
                         delete filter.target_id;
-                    }else{
+                    } else {
                         filter.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
                         delete filter.target_id;
                         delete filter.filter_value;
@@ -488,7 +465,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         }
                         var groupArray = [BICst.GROUP.CUSTOM_GROUP, BICst.SUMMARY_TYPE.SUM, BICst.SUMMARY_TYPE.MAX
                             , BICst.SUMMARY_TYPE.MIN, BICst.SUMMARY_TYPE.AVG, BICst.GROUP.Y, BICst.GROUP.S, BICst.GROUP.M,
-                        BICst.GROUP.W, BICst.GROUP.YMD
+                            BICst.GROUP.W, BICst.GROUP.YMD
                         ];
                         if (BI.isNotNull(group) && BI.contains(groupArray, group.type)) {
                             dimension.group = group;
@@ -496,7 +473,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         if (BI.isNotNull(filter_value)) {
                             dimension.filter_value = filter_value;
                         }
-                        if(BI.isNotNull(settings)){
+                        if (BI.isNotNull(settings)) {
                             dimension.settings = settings;
                         }
                         return dimension;
@@ -522,6 +499,8 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
+        this.templateItems = [];
+        this.widgetItems = {};
         this.searcher.populate();
     }
 });

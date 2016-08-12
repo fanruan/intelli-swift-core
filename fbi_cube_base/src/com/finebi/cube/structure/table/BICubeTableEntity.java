@@ -53,6 +53,9 @@ public class BICubeTableEntity implements CubeTableEntityService {
         }
     }
 
+    public void buildStructure() {
+        columnManager.buildStructure();
+    }
 
     private void flushProperty() {
         if (tableProperty != null) {
@@ -94,7 +97,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
         Iterator<Integer> it = removedLine.iterator();
         int row = 0;
         while (it.hasNext()) {
-            tableProperty.recordRemovedList(row++,it.next());
+            tableProperty.recordRemovedList(row++, it.next());
         }
     }
 
@@ -219,7 +222,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public boolean tableDataAvailable() {
-        return tableProperty.isVersionAvailable();
+        return tableProperty.isRowCountAvailable() || tableProperty.isVersionAvailable();
     }
 
     @Override

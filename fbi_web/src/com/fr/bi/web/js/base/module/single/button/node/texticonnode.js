@@ -37,6 +37,7 @@ BI.TextIconNode = BI.inherit(BI.NodeButton, {
             rgap: o.textRgap,
             text: o.text,
             value: o.value,
+            keyword: o.keyword,
             height: o.height
         })
         this.icon = BI.createWidget({

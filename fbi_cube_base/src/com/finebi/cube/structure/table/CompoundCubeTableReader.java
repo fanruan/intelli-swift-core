@@ -281,4 +281,9 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     public Boolean isVersionAvailable() {
         return hostTable.isVersionAvailable();
     }
+
+    @Override
+    public void buildStructure() {
+        throw new UnsupportedOperationException();
+    }
 }

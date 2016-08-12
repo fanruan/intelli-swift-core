@@ -43,22 +43,4 @@ public class BINumberDetailTarget extends BIAbstractDetailTarget {
     public boolean isReady4Calculate(Map<String, Object> values) {
         return true;
     }
-
-
-    @Override
-    public void parseJSON(JSONObject jo, long userId) throws Exception{
-        super.parseJSON(jo, userId);
-        if(jo.has("sort")) {
-            JSONObject sort = jo.optJSONObject("sort");
-            int type = sort.optInt("type");
-            switch (type) {
-                case BIReportConstant.SORT.ASC:
-                    this.sort = new NumberASCSort();
-                    break;
-                case BIReportConstant.SORT.DESC:
-                    this.sort = new NumberDSCSort();
-                    break;
-            }
-        }
-    }
 }
