@@ -1630,6 +1630,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/tip/tip.toast.css",
                 "com/fr/bi/web/css/base/single/tip/tip.tooltip.css",
 
+                "com/fr/bi/web/css/base/wrapper/inline.center.css",
+                "com/fr/bi/web/css/base/wrapper/inline.vertical.css",
+
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
                 "com/fr/bi/web/css/base/view/scrollview.css",
@@ -2163,6 +2166,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/adapt/inline.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/flexbox.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.leftrightvertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.horizontal.js",
@@ -2171,6 +2175,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.vertical.js",
+                "com/fr/bi/web/js/base/wrapper/layout/adapt/inline.vertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
