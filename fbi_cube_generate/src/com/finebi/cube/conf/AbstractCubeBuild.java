@@ -10,7 +10,6 @@ import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.exception.BIRuntimeException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
@@ -163,7 +162,11 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
         if (!isRelationValid(relation) || !isSourceRelationValid) {
-            throw new BIRuntimeException("tableSourceRelation invalid");
+            try {
+                throw new BIKeyAbsentException("tableSourceRelation key absent");
+            } catch (BIKeyAbsentException e) {
+                BILogger.getLogger().error(e.getMessage());
+            }
         }
         BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
                 primaryField,
