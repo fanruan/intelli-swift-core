@@ -28,7 +28,7 @@ public class StringDimensionCalculator extends AbstractDimensionCalculator {
 
     @Override
     public Comparator getComparator() {
-        if (getSortType() == BIReportConstant.SORT.ASC) {
+        if (getSortType() == BIReportConstant.SORT.ASC || getSortType() == BIReportConstant.SORT.NONE) {
             return getField().getFieldType() == DBConstant.COLUMN.NUMBER && getGroup().getType() == BIReportConstant.GROUP.NO_GROUP ? BIBaseConstant.COMPARATOR.COMPARABLE.ASC : BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
         } else if (getSortType() == BIReportConstant.SORT.DESC) {
             return getField().getFieldType() == DBConstant.COLUMN.NUMBER && getGroup().getType() == BIReportConstant.GROUP.NO_GROUP ? BIBaseConstant.COMPARATOR.COMPARABLE.DESC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC;
