@@ -55,7 +55,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                             el: {
                                 el: {
                                     el: {
-                                        type: "bi.layer_tree_table"
+                                        type: "bi.dynamic_summary_layer_tree_table"
                                     }
                                 }
                             },
@@ -131,7 +131,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                             el: {
                                 el: {
                                     el: {
-                                        type: "bi.table_tree"
+                                        type: "bi.dynamic_summary_tree_table"
                                     }
                                 }
                             },
