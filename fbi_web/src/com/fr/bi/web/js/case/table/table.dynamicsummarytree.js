@@ -339,9 +339,9 @@ BI.extend(BI.DynamicSummaryTreeTable, {
                 });
                 if (BI.isNotEmptyArray(node.values)) {
                     leaf++;
-                }
-                if (node.children.length === 1) {
-                    cols.push(leaf - 1 + deep);
+                    if (node.children.length === 1) {
+                        cols.push(leaf - 1 + deep);
+                    }
                 }
                 return;
             }
