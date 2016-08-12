@@ -35,6 +35,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.core.UUID;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -68,7 +69,8 @@ public class UserETLUpdateTask implements CubeTask {
             @Override
             public URI getRootURI() {
                 try {
-                    return URI.create(new BICubeLocation(BIPathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()), path).getAbsolutePath());
+                    File file = new File(new BICubeLocation(BIPathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()), path).getAbsolutePath());
+                    return URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
                     throw BINonValueUtils.beyondControl(e);
                 }

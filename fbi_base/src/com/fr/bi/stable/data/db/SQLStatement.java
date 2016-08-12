@@ -23,6 +23,7 @@ public class SQLStatement {
         this.select = select;
         this.from = from;
         this.where = where;
+
     }
 
     public SQLStatement(Connection conn) {
