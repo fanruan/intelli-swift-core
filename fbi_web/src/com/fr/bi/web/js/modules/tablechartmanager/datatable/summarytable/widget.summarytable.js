@@ -480,7 +480,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     _populateTable: function () {
         this.errorPane.setVisible(false);
-        this.table.attr("isNeedFreeze", this.model.isNeed2Freeze());
+        this.table.attr("isNeedFreeze", true);
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
@@ -490,7 +490,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     _refreshTable: function () {
         this.errorPane.setVisible(false);
-        this.table.attr("isNeedFreeze", this.model.isNeed2Freeze());
+        this.table.attr("isNeedFreeze", true);
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
