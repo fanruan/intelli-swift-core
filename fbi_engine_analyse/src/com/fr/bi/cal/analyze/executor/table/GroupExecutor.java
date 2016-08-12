@@ -1,7 +1,10 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.result.*;
+import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
+import com.fr.bi.cal.analyze.cal.result.CrossExpander;
+import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -29,6 +32,7 @@ import com.fr.json.JSONObject;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -154,6 +158,9 @@ public class GroupExecutor extends AbstractNodeExecutor {
             ArrayList<String> currentIndex = (ArrayList<String>) indexList.clone();
             BIDimension rd = rowColumn[column];
             String name = rd.toString(tempNode.getData());
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && name != null) {
+                name = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(name)));
+            }
             currentIndex.add(name);
             NodeExpander childEx = expander.getChildExpander(name);
             int rowSpan;
@@ -427,7 +434,11 @@ public class GroupExecutor extends AbstractNodeExecutor {
             tempNode = node.getChild(i);
             int rowSpan = sumColumn.length == 0 ? tempNode.getTotalLength() : tempNode.getTotalLengthWithSummary();
             BIDimension rd = rowColumn[column];
-            cell = new CBCell(rd.toString(tempNode.getData()));
+            String text = rd.toString(tempNode.getData());
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && text != null) {
+                text = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(text)));
+            }
+            cell = new CBCell(text);
             cell.setRow(tempRow);
             cell.setColumn(column + hasNumber);
             cell.setRowSpan(rowSpan);
@@ -686,7 +697,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
     private void generateTitle(CBCell[][] cbcells, boolean useTargetSort, int rowLength, int summaryLength, int hasNumber) {
 
         for (int i = 0; i < rowLength; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)usedDimensions[i]).getText());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
             cell.setColumn(i + hasNumber);
             cell.setRow(0);
             cell.setRowSpan(1);

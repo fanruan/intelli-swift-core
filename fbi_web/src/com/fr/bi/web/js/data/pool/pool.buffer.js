@@ -89,7 +89,7 @@
 
         getWidgetsByTemplateId: function (tId, callback) {
             var key = "WIDGETS";
-            var cache = Buffer[key];
+            var cache = Buffer[key + tId];
             if (BI.isNotNull(cache)) {
                 callback(cache);
                 return;

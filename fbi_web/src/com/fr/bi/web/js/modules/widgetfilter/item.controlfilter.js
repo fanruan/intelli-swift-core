@@ -36,6 +36,9 @@ BI.ControlFilterItem = BI.inherit(BI.Widget, {
             case BICst.WIDGET.YMD:
                 widgetIcon = "chart-ymd-font";
                 break;
+            case BICst.WIDGET.TREE:
+                widgetIcon = "chart-tree-font";
+                break;
         }
 
         BI.createWidget({
@@ -52,11 +55,15 @@ BI.ControlFilterItem = BI.inherit(BI.Widget, {
             }, {
                 type: "bi.label",
                 text: widgetName,
+                title: widgetName,
                 height: 30
             }, {
                 type: "bi.label",
                 text: this.options.text.toString(),
-                height: 30
+                title: this.options.text.toString(),
+                textAlign: "left",
+                height: 30,
+                width: 260
             }],
             hgap: 5,
             vgap: 5

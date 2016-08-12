@@ -11,6 +11,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.log.BIRecord;
+import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -21,7 +22,6 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
-import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -76,7 +76,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         com.fr.data.impl.Connection connection = DatasourceManager.getInstance().getConnection(source.getDbName());
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(iSql);
-        return BICubeDBUtils.runSQL(sqlStatement, cube.getBIField(), new Traversal<BIDataValue>() {
+        return (int) DBQueryExecutor.getInstance().runSQL(sqlStatement, cube.getBIField(), new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 cube.addDataValue(data);
@@ -117,7 +117,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         BIKey key = new IndexKey(columnName);
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
         final int fIndex = index;
-        return BICubeDBUtils.runSQL(sqlStatement, cube.getBIField(), new Traversal<BIDataValue>() {
+        return (int) DBQueryExecutor.getInstance().runSQL(sqlStatement, cube.getBIField(), new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 cube.addDataValue(data);
@@ -158,7 +158,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
         }
         BIKey key = new IndexKey(columnName);
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
-        BICubeDBUtils.runSQL(sqlStatement, new ICubeFieldSource[]{f}, new Traversal<BIDataValue>() {
+        DBQueryExecutor.getInstance().runSQL(sqlStatement, new ICubeFieldSource[]{f}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 Object[] key = getter.createKey(1);
