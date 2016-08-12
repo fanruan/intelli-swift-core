@@ -304,7 +304,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 var dimensionIds = BI.Utils.getAllDimDimensionIDs(o.wId);
                 var lnglat = BI.Utils.getDimensionPositionByID(dimensionIds[0]);
                 var op;
-                if (BI.Utils.getWSMinimalistByID(o.wId) && BI.has(BI.ChartDisplay.MINIMALIST_WIDGET, type)) {
+                if (BI.Utils.getWSMinimalistByID(o.wId) && BI.ChartDisplay.MINIMALIST_WIDGET.contains(type)) {
                     op = BI.extend(options, {
                         chart_color: BI.Utils.getWSChartColorByID(o.wId),
                         chart_style: BI.Utils.getWSChartStyleByID(o.wId),
