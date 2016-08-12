@@ -45,6 +45,8 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function(config, items){
         var self = this, o = this.options;
+        var yTitle = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
+        var xTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
@@ -75,18 +77,28 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         }
 
         config.yAxis = this.yAxis;
-        config.yAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.x_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
-        config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
+        BI.extend(config.yAxis[0], {
+            gridLineWidth: this.config.show_grid_line === true? 1 : 0,
+            lineWidth: this.config.line_width,
+            enableTick: this.config.enable_tick,
+            labelRotation: this.config.text_direction
+        });
 
-        config.yAxis[0].labelRotation = this.config.text_direction;
-        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
-        config.xAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
-        config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
+        config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + xTitle : xTitle;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        BI.extend(config.xAxis[0], {
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level),
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            lineWidth: this.config.line_width,
+            showLabel: this.config.show_label,
+            enableTick: this.config.enable_tick,
+            enableMinorTick: this.config.enable_minor_tick
+        });
+
         config.chartType = "bar";
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if(config.plotOptions.dataLabels.enabled === true){
@@ -105,6 +117,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             });
         }
         config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
+
         return [items, config];
 
         function formatChartStyle(){
@@ -235,7 +248,11 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             show_zoom: options.show_zoom || false,
             text_direction: options.text_direction || 0,
-            cordon: options.cordon || []
+            cordon: options.cordon || [],
+            line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
         };
         this.options.items = items;
         var types = [];
