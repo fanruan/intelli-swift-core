@@ -127,7 +127,7 @@ task addTime(dependsOn:'compressJS'){
 
 //»ìÏı´úÂë
 task obfuse(dependsOn:'build')<<{
-	ant.mkdir(dir:"${BI_HOME}/build/JAR/tmp")
+	ant.mkdir(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp")
 	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
 	ant.yguard(){
 		inoutpair(in:"build/libs/${jarname}",out:"${BI_HOME}/build/${branchName}/build/JAR/tmp/${jarname}")
