@@ -72,7 +72,7 @@ BI.SelectTablePane = BI.inherit(BI.LoadingPane, {
                     var tables = [];
                     //ETL 表继承一下自己的id
                     BI.each(etlTables, function(i, eTable) {
-                        seTables[sourceTables.length].id = eTable.id;
+                        seTables[sourceTables.length + i].id = eTable.id;
                     });
                     tables = tables.concat(seTables);
                     tables = tables.concat(allTables.pTables);
