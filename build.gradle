@@ -113,12 +113,12 @@ task compressJS(dependsOn:'copyFile'){
 }
 //添加打包时间
 task addTime(dependsOn:'compressJS'){
-	ant.tstamp(){
-		format(property:'BUILD_JAR_TIME',pattern:'yyyy.MM.dd.hh.mm.ss.S')
-	}
-	ant.concat(destfile:'build/classes/bibuild.txt')=BUILD_JAR_TIME
-	
-		
+	def date = new Date()
+	def formattedDate = date.format('yyyy.MM.dd.hh.mm.ss.S')
+	File file =file(new File('build/classes/main/bibuild.txt'))
+	FileWriter fw=new FileWriter(file)
+	fw.write(formattedDate)
+	fw.close()		
 }
 
 //混淆代码
