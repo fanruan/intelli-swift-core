@@ -64,12 +64,18 @@ BI.SelectTablePane = BI.inherit(BI.LoadingPane, {
             handler: function () {
                 self.loading();
                 var allTables = self.tab.getValue();
-                BI.Utils.getTablesDetailInfoByTables(allTables.sTables, function (sourceTables) {
+                var sourceTables = allTables.sTables;
+                var etlTables = allTables.eTables;
+                var oldSETables = sourceTables.concat(etlTables);
+                BI.Utils.getTablesDetailInfoByTables(oldSETables, function (seTables) {
                     self.loaded();
                     var tables = [];
-                    tables = tables.concat(sourceTables);
+                    //ETL 表继承一下自己的id
+                    BI.each(etlTables, function(i, eTable) {
+                        seTables[sourceTables.length].id = eTable.id;
+                    });
+                    tables = tables.concat(seTables);
                     tables = tables.concat(allTables.pTables);
-                    tables = tables.concat(allTables.eTables);
                     self.fireEvent(BI.SelectTablePane.EVENT_NEXT_STEP, tables);
                 });
             }
