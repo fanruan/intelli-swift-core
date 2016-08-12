@@ -145,7 +145,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     }
 
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
-        return new HashSet<BICubeGenerateRelationPath>();
+        return this.cubeGenerateRelationPathSet;
     }
 
     public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {

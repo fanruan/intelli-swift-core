@@ -163,7 +163,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
         if (!isRelationValid(relation) || !isSourceRelationValid) {
             try {
-                throw new BIKeyAbsentException("tableSourceRelation key absent");
+                throw new BIKeyAbsentException("tableSourceRelation invalid");
             } catch (BIKeyAbsentException e) {
                 BILogger.getLogger().error(e.getMessage());
             }
