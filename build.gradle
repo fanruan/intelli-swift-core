@@ -116,9 +116,8 @@ task addTime(dependsOn:'compressJS'){
 	ant.tstamp(){
 		format(property:'BUILD_JAR_TIME',pattern:'yyyy.MM.dd.hh.mm.ss.S')
 	}
-	ant.concat(destfile:'build/classes/bibuild.txt'){
-		BUILD_JAR_TIME
-	}
+	ant.concat(destfile:'build/classes/bibuild.txt')=BUILD_JAR_TIME
+	
 		
 }
 
