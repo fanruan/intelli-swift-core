@@ -307,10 +307,13 @@ if (!window.BI) {
             var isArray = BI.isArray(obj), i;
             for (i = 0; i < index.length; i++) {
                 if (isArray) {
-                    obj.splice(index[i], 1);
+                    obj[index[i]] = "$deleteIndex";
                 } else {
                     delete obj[index[i]];
                 }
+            }
+            if (isArray) {
+                BI.remove(obj, "$deleteIndex");
             }
         },
 

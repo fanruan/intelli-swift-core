@@ -2273,6 +2273,8 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",
+                "com/fr/bi/web/js/case/table/table.dynamicsummarytree.js",
+                "com/fr/bi/web/js/case/table/table.dynamicsummarylayertree.js",
                 "com/fr/bi/web/js/case/table/tabler.js",
 
                 //chart
