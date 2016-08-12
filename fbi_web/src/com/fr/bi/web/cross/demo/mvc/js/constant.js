@@ -252,7 +252,11 @@ var _JS = [
 
     "layout/mvc.flexboxcenteradapt.js",
 
+    "layout/mvc.inlinecenteradapt.js",
+
     "layout/mvc.verticaladapt.js",
+
+    "layout/mvc.inlineverticaladapt.js",
 
     "layout/mvc.horizontaladapt.js",
 
@@ -552,7 +556,9 @@ var _Routes = {
     "/absolute_center_adapt": "AbsoluteCenterAdaptView",
     "/float_center_adapt": "CenterVerticalAdaptView",
     "/flexbox_center_adapt": "FlexboxCenterAdaptView",
+    "/inline_center_adapt": "InlineCenterAdaptView",
     "/vertical_adapt": "VerticalAdaptView",
+    "/inline_vertical_adapt": "InlineVerticalAdaptView",
     "/horizontal_adapt": "HorizontalAdaptView",
     "/horizontal_auto": "HorizontalAutoView",
     "/horizontal_float": "HorizontalFloatView",
@@ -1000,8 +1006,14 @@ _Models.layout = [{
     text: "bi.flexbox_center_adapt",
     value: "flexbox_center_adapt"
 }, {
+    text: "bi.inline_center_adapt",
+    value: "inline_center_adapt"
+}, {
     text: "bi.vertical_adapt",
     value: "vertical_adapt"
+}, {
+    text: "bi.inline_vertical_adapt",
+    value: "inline_vertical_adapt"
 }, {
     text: "bi.horizontal_adapt",
     value: "horizontal_adapt"

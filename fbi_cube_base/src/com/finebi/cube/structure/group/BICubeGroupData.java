@@ -43,7 +43,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         }
     }
 
-    private void initGroupWriter() {
+    private void buildGroupWriter() {
         try {
             ICubeResourceLocation currentLocation = setGroupType();
 
@@ -54,7 +54,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         }
     }
 
-    private void initGroupReader() {
+    private void buildGroupReader() {
         try {
             ICubeResourceLocation currentLocation = setGroupType();
 
@@ -65,7 +65,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         }
     }
 
-    private void initGroupLengthReader() {
+    private void buildGroupLengthReader() {
         try {
             ICubeResourceLocation sizeLocation = superLocation.buildChildLocation("size.fbi");
             sizeLocation.setIntegerTypeWrapper();
@@ -76,7 +76,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         }
     }
 
-    private void initGroupLengthWriter() {
+    private void buildGroupLengthWriter() {
         try {
             ICubeResourceLocation sizeLocation = superLocation.buildChildLocation("size.fbi");
             sizeLocation.setIntegerTypeWrapper();
@@ -88,33 +88,55 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     }
 
     public ICubeWriter<T> getGroupWriter() {
-        if (!isGroupWriterAvailable()) {
-            initGroupWriter();
-        }
+        initialGroupWriter();
         return groupWriter;
     }
 
-    public ICubeReader getGroupReader() {
-        if (!isGroupReaderAvailable()) {
-            initGroupReader();
+    private void initialGroupWriter() {
+        if (!isGroupWriterAvailable()) {
+            buildGroupWriter();
         }
+    }
+
+    public ICubeReader getGroupReader() {
+        initialGroupReader();
         return groupReader;
     }
 
-    public ICubeIntegerReaderWrapper getGroupLengthReader() {
-        if (!isLengthReaderAvailable()) {
-            initGroupLengthReader();
+    private void initialGroupReader() {
+        if (!isGroupReaderAvailable()) {
+            buildGroupReader();
         }
+    }
+
+    public ICubeIntegerReaderWrapper getGroupLengthReader() {
+        initialGroupLengthReader();
         return groupLengthReader;
     }
 
-    public ICubeIntegerWriterWrapper getGroupLengthWriter() {
-        if (!isLengthWriterAvailable()) {
-            initGroupLengthWriter();
+    private void initialGroupLengthReader() {
+        if (!isLengthReaderAvailable()) {
+            buildGroupLengthReader();
         }
+    }
+
+    public ICubeIntegerWriterWrapper getGroupLengthWriter() {
+        initialGroupLengthWriter();
         return groupLengthWriter;
     }
 
+    private void initialGroupLengthWriter() {
+        if (!isLengthWriterAvailable()) {
+            buildGroupLengthWriter();
+        }
+    }
+
+    public void buildStructure(){
+        initialGroupLengthReader();
+        initialGroupLengthWriter();
+        initialGroupReader();
+        initialGroupWriter();
+    }
     protected boolean isGroupReaderAvailable() {
         return groupReader != null;
     }

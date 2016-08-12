@@ -4,7 +4,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 
 /**
  * 生成索引数据的接口
- * <p/>
+ * <p>
  * This class created on 2016/3/2.
  *
  * @author Connery
@@ -28,5 +28,6 @@ public interface ICubeIndexDataSetterService {
      */
     void addNULLIndex(int position, GroupValueIndex groupValueIndex);
 
+    void buildStructure();
 
 }

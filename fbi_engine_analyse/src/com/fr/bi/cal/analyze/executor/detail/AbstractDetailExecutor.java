@@ -19,12 +19,15 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
+import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
+import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -162,6 +165,10 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         for (int i = 0; i < viewDimension.length; i++) {
             BIDetailTarget t = viewDimension[i];
             Object v = ob[i];
+            if (t instanceof BIDateDetailTarget && ((BIDateDetailTarget) t).getGroup().getType() == BIReportConstant.GROUP.YMD && v != null) {
+                v = DateUtils.DATEFORMAT1.format(new Date(Long.parseLong(v.toString())));
+            }
+
             CBCell cell = new CBCell(v == null ? NONEVALUE : v);
             cell.setRow(row);
             cell.setColumn(i + widget.isOrder());

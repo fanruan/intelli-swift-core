@@ -84,10 +84,10 @@ public class ResourceHelper {
         JSONObject fields = new JSONObject();
         JSONObject translations = new JSONObject();
         JSONObject excelViews = new JSONObject();
-        List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
+            List<BIPackageID> authPacks = new ArrayList<BIPackageID>();
             //从分组中去掉allPacks没有的业务包
             Iterator<String> gIds = allGroups.keys();
             while (gIds.hasNext()) {
@@ -112,6 +112,7 @@ public class ResourceHelper {
                 groups = allGroups;
             } else {
                 //前台能看到的业务包
+                authPacks = BIModuleUtils.getAvailablePackID(userId);
                 for (BIPackageID pId : authPacks) {
                     if (allPacks.has(pId.getIdentityValue())) {
                         packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
@@ -131,7 +132,6 @@ public class ResourceHelper {
                             String childId = child.getString("id");
                             if(packages.has(childId)) {
                                 nChildren.put(child);
-                                break;
                             }
                         }
                         group.put("children", nChildren);
@@ -1630,6 +1630,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/tip/tip.toast.css",
                 "com/fr/bi/web/css/base/single/tip/tip.tooltip.css",
 
+                "com/fr/bi/web/css/base/wrapper/inline.center.css",
+                "com/fr/bi/web/css/base/wrapper/inline.vertical.css",
+
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
                 "com/fr/bi/web/css/base/view/scrollview.css",
@@ -2163,6 +2166,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/adapt/inline.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/flexbox.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.leftrightvertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.horizontal.js",
@@ -2171,6 +2175,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.vertical.js",
+                "com/fr/bi/web/js/base/wrapper/layout/adapt/inline.vertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
@@ -2268,6 +2273,8 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",
+                "com/fr/bi/web/js/case/table/table.dynamicsummarytree.js",
+                "com/fr/bi/web/js/case/table/table.dynamicsummarylayertree.js",
                 "com/fr/bi/web/js/case/table/tabler.js",
 
                 //chart
@@ -2617,6 +2624,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
+                "com/fr/bi/web/js/widget/sequencetable/summarynumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/sequencetable.js",
 
                 //图片组件

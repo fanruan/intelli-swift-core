@@ -229,7 +229,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         var packTIds = [];
         BI.each(tables, function (i, table) {
             var id = BI.UUID();
-            var fieldIds = [];
+            var fieldIds = [], oFields = BI.deepClone(table.fields);
             BI.each(table.fields, function (j, fs) {
                 BI.each(fs, function (k, field) {
                     var fId = BI.UUID();
@@ -262,36 +262,56 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 //转义、关联都是用sharing pool中的，相当于复制一份
                 self.translations[id] = self.createDistinctTableTranName(self.translations[tableId]);
                 var connectionSet = self.relations.connectionSet, primaryKeyMap = self.relations.primKeyMap, foreignKeyMap = self.relations.foreignKeyMap;
-                var addedConns = [], addedPris = [], addedFors = [];
+                var addedConns = [], addedPriMap = {}, addedForMap = {};
                 BI.each(connectionSet, function (k, keys) {
-                    var copyRelation = self._getCopyOfRelation(keys, fieldIds, tableId, id);
-                    if (BI.isNotNull(copyRelation)) {
+                    var copyRelation = self._getCopyOfRelation(keys, oFields, fieldIds, tableId, id);
+                    if (BI.isNotEmptyObject(copyRelation)) {
                         addedConns.push(copyRelation);
                     }
                 });
                 self.relations.connectionSet = connectionSet.concat(addedConns);
                 BI.each(primaryKeyMap, function (pfId, maps) {
+                    var addedPris = [], nPKId = null;
                     BI.each(maps, function (k, keys) {
-                        var copyRelation = self._getCopyOfRelation(keys, fieldIds, tableId, id);
-                        if (BI.isNotNull(copyRelation)) {
+                        var copyRelation = self._getCopyOfRelation(keys, oFields, fieldIds, tableId, id);
+                        if (BI.isNotEmptyObject(copyRelation)) {
+                            nPKId = copyRelation.primaryKey.field_id;
                             addedPris.push(copyRelation);
                         }
                     });
+                    if(addedPris.length > 0 && BI.isNotNull(nPKId)) {
+                        addedPriMap[nPKId] = addedPris;
+                    }
                 });
-                if (addedPris.length > 0) {
-                    self.relations.primKeyMap[id] = addedPris;
-                }
+                BI.each(addedPriMap, function(pkId, ms) {
+                    var pkMaps = self.relations.primKeyMap[pkId];
+                    if(BI.isNotNull(pkMaps)) {
+                        self.relations.primKeyMap[pkId] = pkMaps.concat(ms);
+                    } else {
+                        self.relations.primKeyMap[pkId] = ms;
+                    }
+                });
                 BI.each(foreignKeyMap, function (ffId, maps) {
+                    var addedFors = [], nFKId = null;
                     BI.each(maps, function (k, keys) {
-                        var copyRelation = self._getCopyOfRelation(keys, fieldIds, tableId, id);
-                        if (BI.isNotNull(copyRelation)) {
+                        var copyRelation = self._getCopyOfRelation(keys, oFields, fieldIds, tableId, id);
+                        if (BI.isNotEmptyObject(copyRelation)) {
+                            nFKId = copyRelation.foreignKey.field_id;
                             addedFors.push(copyRelation);
                         }
                     });
+                    if(addedFors.length > 0 && BI.isNotNull(nFKId)) {
+                        addedForMap[nFKId] = addedFors;
+                    }
                 });
-                if (addedFors.length > 0) {
-                    self.relations.foreignKeyMap[id] = addedFors;
-                }
+                BI.each(addedForMap, function(fkId, ms) {
+                    var fkMaps = self.relations.foreignKeyMap[fkId];
+                    if(BI.isNotNull(fkMaps)) {
+                        self.relations.foreignKeyMap[fkId] = fkMaps.concat(ms);
+                    } else {
+                        self.relations.foreignKeyMap[fkId] = ms;
+                    }
+                });
             }
             newTables[id] = self.tablesData[id] = BI.extend(table, {id: id});
         });
@@ -343,41 +363,47 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         return BI.Func.createDistinctName(currentPackTrans, v);
     },
 
-    _getCopyOfRelation: function (keys, fieldIds, oTableId, nTableId) {
+    _getCopyOfRelation: function (keys, oFields, fieldIds, oTableId, nTableId) {
         var self = this;
         var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
-        if (primKey.table_id === oTableId) {
-            var nPK = {}, nFK = BI.deepClone(foreignKey);
-            //因为是刚复制过来，所以能对比转义找fieldId
-            BI.each(fieldIds, function (i, fid) {
-                if (self.allFields[fid] && self.allFields[primKey.field_id] &&
-                    self.allFields[fid].field_name === self.allFields[primKey.field_id].field_name) {
-                    nPK = {
-                        field_id: fid,
-                        table_id: nTableId
+        var relation = {};
+        BI.each(oFields, function(i, ofs) {
+            BI.each(ofs, function(j, oField) {
+                 if(oField.id === primKey.field_id) {
+                     var nPK = {}, nFK = BI.deepClone(foreignKey);
+                     BI.each(fieldIds, function(k, fid) {
+                         if(self.allFields[fid] && self.allFields[primKey.field_id] &&
+                             self.allFields[fid].field_name === self.allFields[primKey.field_id].field_name) {
+                             nPK = {
+                                 field_id: fid,
+                                 table_id: nTableId
+                             }
+                         }
+                     });
+                     relation = {
+                         primaryKey: nPK,
+                         foreignKey: nFK
+                     }
+                 }
+                if(oField.id === foreignKey.field_id) {
+                    var nPK = BI.deepClone(primKey), nFK = {};
+                    BI.each(fieldIds, function(k, fid) {
+                        if(self.allFields[fid] && self.allFields[foreignKey.field_id] &&
+                            self.allFields[fid].field_name === self.allFields[foreignKey.field_id].field_name) {
+                            nFK = {
+                                field_id: fid,
+                                table_id: nTableId
+                            }
+                        }
+                    });
+                    relation = {
+                        primaryKey: nPK,
+                        foreignKey: nFK
                     }
                 }
             });
-            return {
-                primaryKey: nPK,
-                foreignKey: nFK
-            };
-        } else if (foreignKey.table_id === oTableId) {
-            var nPK = BI.deepClone(primKey), nFK = {};
-            BI.each(fieldIds, function (i, fid) {
-                if (self.allFields[fid] && self.allFields[foreignKey.field_id] &&
-                    self.allFields[fid].field_name === self.allFields[foreignKey.field_id].field_name) {
-                    nFK = {
-                        field_id: fid,
-                        table_id: nTableId
-                    }
-                }
-            });
-            return {
-                primaryKey: nPK,
-                foreignKey: nFK
-            };
-        }
+        });
+        return relation;
     },
 
     _setReadRelations: function (readRelations) {
