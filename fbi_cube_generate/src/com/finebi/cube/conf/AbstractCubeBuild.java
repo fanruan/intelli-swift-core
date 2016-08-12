@@ -109,22 +109,9 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     public boolean isSingleTable() {
         return false;
     }
-    @Override
-    public boolean copyFileFromOldCubes() {
-        try {
-            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
-            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
-            if (new File(tempConf.getRootURI().getPath()).exists()) {
-                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
-            }
-            if (new File(advancedConf.getRootURI().getPath()).exists()) {
-                BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
-            }
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
-        }
-return true;
-    }
+
+
+
     @Override
     public boolean replaceOldCubes() {
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
@@ -139,6 +126,7 @@ return true;
         }
         return true;
     }
+
     public void setSources() {
         for (Object biBusinessTable : allBusinessTable) {
             BusinessTable table = (BusinessTable) biBusinessTable;
