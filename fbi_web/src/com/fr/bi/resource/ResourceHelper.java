@@ -132,7 +132,6 @@ public class ResourceHelper {
                             String childId = child.getString("id");
                             if(packages.has(childId)) {
                                 nChildren.put(child);
-                                break;
                             }
                         }
                         group.put("children", nChildren);
@@ -2618,6 +2617,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
+                "com/fr/bi/web/js/widget/sequencetable/summarynumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/sequencetable.js",
 
                 //图片组件

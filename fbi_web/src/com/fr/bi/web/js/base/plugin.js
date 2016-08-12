@@ -8,7 +8,7 @@ BI.Plugin = BI.Plugin || {};
         getWidget: function (type, options) {
             if (_WidgetsPlugin[type]) {
                 var res;
-                for (var i = 0, len = _WidgetsPlugin[type].length; i < len; i++) {
+                for (var i = _WidgetsPlugin[type].length-1; i >=0; i--) {
                     if (res = _WidgetsPlugin[type][i](options)) {
                         return res;
                     }

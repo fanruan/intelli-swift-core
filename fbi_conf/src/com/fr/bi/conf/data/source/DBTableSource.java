@@ -11,6 +11,7 @@ import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.CubeConstant;
@@ -23,7 +24,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.SybaseDialect;
@@ -156,7 +156,7 @@ public class DBTableSource extends AbstractTableSource {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
         try {
-            rowCount = BICubeDBUtils.runSQL(BIDBUtils.getSQLStatement(dbName, tableName), fields, new Traversal<BIDataValue>() {
+            rowCount = DBQueryExecutor.getInstance().runSQL(BIDBUtils.getSQLStatement(dbName, tableName), fields, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue v) {
                     try {
@@ -196,7 +196,7 @@ public class DBTableSource extends AbstractTableSource {
             com.fr.data.impl.Connection connection = DatasourceManager.getInstance().getConnection(this.getDbName());
             SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
             sqlStatement.setSql(SQL);
-            rowCount = BICubeDBUtils.runSQL(sqlStatement, fields, new Traversal<BIDataValue>() {
+            rowCount = DBQueryExecutor.getInstance().runSQL(sqlStatement, fields, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue v) {
                     try {
@@ -205,7 +205,7 @@ public class DBTableSource extends AbstractTableSource {
                         BILogger.getLogger().error(e.getMessage(), e);
                     }
                 }
-            }, rowCount);
+            }, (int) rowCount);
             if (fields.length > 0) {
                 biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, UserControl.getInstance().getSuperManagerID());
             }
@@ -229,7 +229,7 @@ public class DBTableSource extends AbstractTableSource {
         if (field == null) {
             return set;
         }
-        BICubeDBUtils.runSQL(BIDBUtils.getDistinctSQLStatement(dbName, tableName, fieldName), new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
+        DBQueryExecutor.getInstance().runSQL(BIDBUtils.getDistinctSQLStatement(dbName, tableName, fieldName), new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 set.add(data.getValue());

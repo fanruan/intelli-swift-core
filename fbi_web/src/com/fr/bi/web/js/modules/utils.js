@@ -502,10 +502,10 @@
             }
 
             function createDimensionsAndTargets(idx) {
-                var newId = BI.UUID();
+                var newId = dimTarIdMap[idx] || BI.UUID();
                 var dimension = BI.deepClone(widget.dimensions[idx]);
-                if (BI.has(dimTarIdMap, idx)) {
-                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
+                if (BI.has(dimTarIdMap, idx) && BI.has(dimensions, [dimTarIdMap[idx]])) {
+                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]]};
                 }
                 switch (widget.dimensions[idx].type) {
                     case BICst.TARGET_TYPE.STRING:
@@ -1121,6 +1121,28 @@
             BI.each(views, function (i, tar) {
                 if (i >= (BI.parseInt(BICst.REGION.TARGET1))) {
                     result = result.concat(tar);
+                }
+            });
+            return result;
+        },
+
+        getAllBaseDimensionIDs: function (wid) {
+            var self = this;
+            var result = [];
+            var views = Data.SharingPool.get("widgets", wid, "view");
+            var _set = [BICst.TARGET_TYPE.STRING,
+                BICst.TARGET_TYPE.NUMBER,
+                BICst.TARGET_TYPE.DATE];
+            BI.each(views, function (i, dim) {
+                if (i >= BI.parseInt(BICst.REGION.DIMENSION1) && i < (BI.parseInt(BICst.REGION.TARGET1))) {
+                    result = result.concat(dim);
+                } else {
+                    BI.each(dim, function (j, dId) {
+                        var type = self.getDimensionTypeByID(dId);
+                        if (_set.contains(type)) {
+                            result.push(dId);
+                        }
+                    })
                 }
             });
             return result;
