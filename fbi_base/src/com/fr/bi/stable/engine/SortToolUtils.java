@@ -5,10 +5,9 @@ package com.fr.bi.stable.engine;
  */
 public class SortToolUtils {
     private static final long N_LOG_N = 100;
-    private static final long GROUP_SIZE = 3;
-    private static final long GROUP_COUNT = 30;
+    private static final long GROUP_COUNT = 3;
 
-    public static SortTool getSortTool(int groupSize, int rowCount, int gviCount){
+    public static SortTool getSortTool(int groupSize, int gviCount){
         if (gviCount <= 1){
             return SortTool.DIRECT;
         }
@@ -16,9 +15,8 @@ public class SortToolUtils {
         if (groupSize < gviCount){
             return SortTool.INT_ARRAY;
         }
-        int groupCount = gviCount * groupSize / rowCount;
         double treeMap = gviCount * Math.log(gviCount) * N_LOG_N;
-        double intArray = groupSize * GROUP_SIZE + GROUP_COUNT * groupCount;
+        double intArray = groupSize * GROUP_COUNT ;
         return treeMap < intArray ? SortTool.TREE_MAP : SortTool.INT_ARRAY;
     }
 
