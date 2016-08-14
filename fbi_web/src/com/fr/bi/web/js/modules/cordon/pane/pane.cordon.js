@@ -80,6 +80,7 @@ BI.CordonPane = BI.inherit(BI.Widget, {
         this.button_group.addItems([{
             type: "bi.cordon_item",
             cordon_name: BI.i18nText("BI-Cordon") + (this.buttons.length + 1),
+            cordon_number_level: this.numberLevel,
             height: this.constants.itemHeight
         }]);
         this.buttons = this.button_group.getAllButtons();
@@ -91,7 +92,7 @@ BI.CordonPane = BI.inherit(BI.Widget, {
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var type = BI.Utils.getWidgetTypeByID(wId);
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
-        var numberLevel = BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
+        this.numberLevel = BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
         this.magnify = 1;
         switch (type) {
             case BICst.WIDGET.AXIS:
@@ -108,35 +109,37 @@ BI.CordonPane = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 if(regionType === BICst.REGION.TARGET1){
-                    numberLevel = BI.Utils.getWSLeftYAxisNumLevelByID(wId);
+                    this.numberLevel = BI.Utils.getWSLeftYAxisNumLevelByID(wId);
                 }
                 if(regionType === BICst.REGION.TARGET2){
-                    numberLevel = BI.Utils.getWSRightYAxisNumLevelByID(wId);
+                    this.numberLevel = BI.Utils.getWSRightYAxisNumLevelByID(wId);
                 }
                 if(regionType === BICst.REGION.TARGET3){
-                    numberLevel = BI.Utils.getWSRightYAxis2NumLevelByID(wId);
+                    this.numberLevel = BI.Utils.getWSRightYAxis2NumLevelByID(wId);
                 }
                 break;
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
                 if(regionType === BICst.REGION.TARGET1 || regionType === BICst.REGION.TARGET2){
-                    numberLevel = BI.Utils.getWSXAxisNumLevelByID(wId);
+                    this.numberLevel = BI.Utils.getWSXAxisNumLevelByID(wId);
                 }
                 break;
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.BUBBLE:
                 if(regionType === BICst.REGION.TARGET1){
-                    numberLevel = BI.Utils.getWSLeftYAxisNumLevelByID(wId);
+                    this.numberLevel = BI.Utils.getWSLeftYAxisNumLevelByID(wId);
                 }
                 if(regionType === BICst.REGION.TARGET2){
-                    numberLevel = BI.Utils.getWSXAxisNumLevelByID(wId);
+                    this.numberLevel = BI.Utils.getWSXAxisNumLevelByID(wId);
                 }
                 break;
         }
-        switch (numberLevel) {
-            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+        switch (this.numberLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                this.magnify = 0.01;
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
                 this.magnify = 1;
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
@@ -155,7 +158,7 @@ BI.CordonPane = BI.inherit(BI.Widget, {
                 type: "bi.cordon_item",
                 cordon_name: cor.cordon_name,
                 cordon_value: BI.parseFloat(cor.cordon_value).div(self.magnify),
-                cordon_number_level: numberLevel,
+                cordon_number_level: self.numberLevel,
                 cordon_color: cor.cordon_color,
                 height: self.constants.itemHeight
             });

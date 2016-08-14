@@ -154,4 +154,5 @@ BI.CordonItem = BI.inherit(BI.Single,{
     }
 });
 
+BI.CordonItem.EVENT_DESTROY = "EVENT_DESTROY";
 $.shortcut("bi.cordon_item",BI.CordonItem);
