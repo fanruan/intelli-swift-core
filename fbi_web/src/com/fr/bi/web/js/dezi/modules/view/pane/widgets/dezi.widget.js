@@ -298,6 +298,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             });
             return;
         }
+        this.filterPane.populate();
         this.filterPane.setVisible(!this.filterPane.isVisible());
     },
 

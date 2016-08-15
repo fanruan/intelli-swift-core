@@ -142,6 +142,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 result.dimensions = dimensionsAndView.dimensions;
                 result.view = dimensionsAndView.view;
                 o.stop.apply(self, [widget.bounds, ui.position, result]);
+                BI.Utils.broadcastAllWidgets2Refresh();
             },
             helper: o.helper
         });
