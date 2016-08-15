@@ -96,11 +96,17 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var e = BI.Utils.getExpressionByDimensionID(o.dId);
         var ids = e.ids;
         BI.each(ids , function (idx , id){
-            var fieldID = BI.Utils.getFieldIDByDimensionID(id);
-            var fieldName = BI.Utils.getFieldNameByID(fieldID);
-            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldID));
-            var fromText = tableName + "." + fieldName;
-            item[item.length-1].push({
+            //这边的dimensionId不一定能拿到fieldId,计算指标没有fieldId
+            var fromText = "";
+            if(BI.Utils.isCalculateTargetByDimensionID(id)){
+                fromText = BI.Utils.getDimensionNameByID(id);
+            }else{
+                var fieldID = BI.Utils.getFieldIDByDimensionID(id);
+                var fieldName = BI.Utils.getFieldNameByID(fieldID);
+                var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldID));
+                fromText = tableName + "." + fieldName;
+            }
+            item[item.length - 1].push({
                 text: fromText,
                 tipType: "success",
                 value: BICst.TARGET_COMBO.INFO,

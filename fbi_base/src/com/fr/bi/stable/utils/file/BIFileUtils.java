@@ -321,7 +321,7 @@ public class BIFileUtils {
     public static void copyFolder(File src, File dest) throws IOException {
         if (src.isDirectory()) {
             if (!dest.exists()) {
-                dest.mkdir();
+                dest.mkdirs();
             }
             String files[] = src.list();
             for (String file : files) {

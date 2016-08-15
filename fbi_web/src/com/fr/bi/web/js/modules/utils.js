@@ -1136,20 +1136,14 @@
         getAllBaseDimensionIDs: function (wid) {
             var self = this;
             var result = [];
-            var views = Data.SharingPool.get("widgets", wid, "view");
+            var ids = this.getAllDimensionIDs(wid);
             var _set = [BICst.TARGET_TYPE.STRING,
                 BICst.TARGET_TYPE.NUMBER,
-                BICst.TARGET_TYPE.DATE];
-            BI.each(views, function (i, dim) {
-                if (i >= BI.parseInt(BICst.REGION.DIMENSION1) && i < (BI.parseInt(BICst.REGION.TARGET1))) {
-                    result = result.concat(dim);
-                } else {
-                    BI.each(dim, function (j, dId) {
-                        var type = self.getDimensionTypeByID(dId);
-                        if (_set.contains(type)) {
-                            result.push(dId);
-                        }
-                    })
+                BICst.TARGET_TYPE.DATE, BICst.TARGET_TYPE.COUNTER];
+            BI.each(ids, function (i, id) {
+                var type = self.getDimensionTypeByID(id);
+                if (_set.contains(type)) {
+                    result.push(id);
                 }
             });
             return result;
