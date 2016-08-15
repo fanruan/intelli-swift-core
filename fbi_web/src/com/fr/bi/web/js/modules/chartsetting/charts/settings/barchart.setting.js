@@ -408,6 +408,7 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
     populate: function () {
         var wId = this.options.wId;
         var view = BI.Utils.getWidgetViewByID(wId);
+
         var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId), titleX = BI.Utils.getWSXAxisTitleByID(wId);
         if (titleLY === "") {
             BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
@@ -431,13 +432,13 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
-        this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
+        this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
         this.editTitleLY.setValue(titleLY);
-        this.editTitleX.setValue(titleX);
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
+        this.editTitleX.setValue(titleX);
+        this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));

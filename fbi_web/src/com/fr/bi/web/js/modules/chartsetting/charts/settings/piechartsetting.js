@@ -1,7 +1,7 @@
 /**
  * @class BI.PieChartSetting
  * @extends BI.Widget
- * 柱状，堆积柱状，组合图样式
+ * 饼图样式
  */
 BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
 

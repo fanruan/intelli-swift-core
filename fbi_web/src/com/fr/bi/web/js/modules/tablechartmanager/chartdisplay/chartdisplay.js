@@ -74,10 +74,10 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 drilledIds.push(drs.dId);
             });
         });
-        if(BI.contains(drilledIds, dId)){
+        if (BI.contains(drilledIds, dId)) {
             return;
         }
-        if(BI.isNull(dId)){
+        if (BI.isNull(dId)) {
             this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), {})});
             return;
         }
@@ -93,10 +93,10 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var drillOperators = drillMap[rootId] || [];
         //上钻
         if (BI.isNull(drillId)) {
-            if(drillOperators.length !== 0){
+            if (drillOperators.length !== 0) {
                 var val = drillOperators[drillOperators.length - 1].values[0].value[0];
                 while (val !== value) {
-                    if(drillOperators.length === 0){
+                    if (drillOperators.length === 0) {
                         break;
                     }
                     var obj = drillOperators.pop();
@@ -273,7 +273,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                     self._doChartItemClick(obj);
                     self._onClickDrill(obj.dId, obj.x, obj.drillDid);
                 });
-                chart.on(BI.MapChart.EVENT_CLICK_DTOOL, function(obj){
+                chart.on(BI.MapChart.EVENT_CLICK_DTOOL, function (obj) {
                     self._onClickDrill(obj.dId, obj.x);
                 });
                 return chart;
@@ -303,69 +303,92 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             try {
                 var dimensionIds = BI.Utils.getAllDimDimensionIDs(o.wId);
                 var lnglat = BI.Utils.getDimensionPositionByID(dimensionIds[0]);
-
-                var op = BI.extend(options, {
-                    chart_color: BI.Utils.getWSChartColorByID(o.wId),
-                    chart_style: BI.Utils.getWSChartStyleByID(o.wId),
-                    chart_line_type: BI.Utils.getWSChartLineTypeByID(o.wId),
-                    chart_pie_type: BI.Utils.getWSChartPieTypeByID(o.wId),
-                    chart_radar_type: BI.Utils.getWSChartRadarTypeByID(o.wId),
-                    chart_dashboard_type: BI.Utils.getWSChartDashboardTypeByID(o.wId),
-                    chart_inner_radius: BI.Utils.getWSChartInnerRadiusByID(o.wId),
-                    chart_total_angle: BI.Utils.getWSChartTotalAngleByID(o.wId),
-                    left_y_axis_style: BI.Utils.getWSLeftYAxisStyleByID(o.wId),
-                    x_axis_style: BI.Utils.getWSXAxisStyleByID(o.wId),
-                    right_y_axis_style: BI.Utils.getWSRightYAxisStyleByID(o.wId),
-                    right_y_axis_second_style: BI.Utils.getWSRightYAxis2StyleByID(o.wId),
-                    left_y_axis_number_level: BI.Utils.getWSLeftYAxisNumLevelByID(o.wId),
-                    number_of_pointer: BI.Utils.getWSNumberOfPointerByID(o.wId),
-                    dashboard_number_level: BI.Utils.getWSDashboardNumLevelByID(o.wId),
-                    x_axis_number_level: BI.Utils.getWSXAxisNumLevelByID(o.wId),
-                    right_y_axis_number_level: BI.Utils.getWSRightYAxisNumLevelByID(o.wId),
-                    right_y_axis_second_number_level: BI.Utils.getWSRightYAxis2NumLevelByID(o.wId),
-                    left_y_axis_unit: BI.Utils.getWSLeftYAxisUnitByID(o.wId),
-                    dashboard_unit: BI.Utils.getWSDashboardUnitByID(o.wId),
-                    x_axis_unit: BI.Utils.getWSXAxisUnitByID(o.wId),
-                    right_y_axis_unit: BI.Utils.getWSRightYAxisUnitByID(o.wId),
-                    right_y_axis_second_unit: BI.Utils.getWSRightYAxis2UnitByID(o.wId),
-                    show_left_y_axis_title: BI.Utils.getWSShowLeftYAxisTitleByID(o.wId),
-                    show_right_y_axis_title: BI.Utils.getWSShowRightYAxisTitleByID(o.wId),
-                    show_right_y_axis_second_title: BI.Utils.getWSShowRightYAxis2TitleByID(o.wId),
-                    left_y_axis_title: BI.Utils.getWSLeftYAxisTitleByID(o.wId),
-                    right_y_axis_title: BI.Utils.getWSRightYAxisTitleByID(o.wId),
-                    right_y_axis_second_title: BI.Utils.getWSRightYAxis2TitleByID(o.wId),
-                    left_y_axis_reversed: BI.Utils.getWSLeftYAxisReversedByID(o.wId),
-                    right_y_axis_reversed: BI.Utils.getWSRightYAxisReversedByID(o.wId),
-                    right_y_axis_second_reversed: BI.Utils.getWSRightYAxis2ReversedByID(o.wId),
-                    show_x_axis_title: BI.Utils.getWSShowXAxisTitleByID(o.wId),
-                    x_axis_title: BI.Utils.getWSXAxisTitleByID(o.wId),
-                    text_direction: BI.Utils.getWSTextDirectionByID(o.wId),
-                    chart_legend: BI.Utils.getWSChartLegendByID(o.wId),
-                    show_data_label: BI.Utils.getWSShowDataLabelByID(o.wId),
-                    show_data_table: BI.Utils.getWSShowDataTableByID(o.wId),
-                    show_grid_line: BI.Utils.getWSShowGridLineByID(o.wId),
-                    show_zoom: BI.Utils.getWSShowZoomByID(o.wId),
-                    style_conditions: BI.Utils.getWSDashboardStylesByID(o.wId),
-                    auto_custom: BI.Utils.getWSScaleByID(o.wId),
-                    theme_color: BI.Utils.getWSThemeColorByID(o.wId),
-                    map_styles: BI.Utils.getWSMapStylesByID(o.wId),
-                    transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId),
-                    rules_display: BI.Utils.getWSShowRulesByID(o.wId),
-                    bubble_style: BI.Utils.getWSBubbleStyleByID(o.wId),
-                    max_scale: BI.Utils.getWSMaxScaleByID(o.wId) ,
-                    min_scale: BI.Utils.getWSMinScaleByID(o.wId),
-                    show_percentage: BI.Utils.getWSShowPercentageByID(o.wId),
-                    minimalist_model: BI.Utils.getWSMinimalistByID(o.wId)
-                }, {
-                    cordon: self.model.getCordon(),
-                    tooltip: self.model.getToolTip(type),
-                    lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
-                });
+                var op;
+                if (BI.Utils.getWSMinimalistByID(o.wId) && BI.ChartDisplay.MINIMALIST_WIDGET.contains(type)) {
+                    op = BI.extend(options, {
+                        chart_color: BI.Utils.getWSChartColorByID(o.wId),
+                        chart_style: BI.Utils.getWSChartStyleByID(o.wId),
+                        chart_line_type: BI.Utils.getWSChartLineTypeByID(o.wId),
+                        transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId),
+                        left_y_axis_reversed: BI.Utils.getWSLeftYAxisReversedByID(o.wId),
+                        right_y_axis_reversed: BI.Utils.getWSRightYAxisReversedByID(o.wId),
+                        line_width: BICst.DEFAULT_CHART_SETTING.mini_line_width,
+                        show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
+                        enable_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_tick,
+                        enable_minor_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_minor_tick,
+                        left_y_axis_unit: BICst.DEFAULT_CHART_SETTING.left_y_axis_unit,
+                        show_x_axis_title: BICst.DEFAULT_CHART_SETTING.show_x_axis_title,
+                        show_left_y_axis_title: BICst.DEFAULT_CHART_SETTING.show_left_y_axis_title,
+                        chart_legend: BICst.DEFAULT_CHART_SETTING.mini_chart_legend,
+                        show_data_label: BICst.DEFAULT_CHART_SETTING.mini_show_data_label,
+                        show_grid_line: BICst.DEFAULT_CHART_SETTING.mini_show_grid_line
+                    }, {
+                        tooltip: self.model.getToolTip(type),
+                        lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
+                    })
+                } else {
+                    op = BI.extend(options, {
+                        chart_color: BI.Utils.getWSChartColorByID(o.wId),
+                        chart_style: BI.Utils.getWSChartStyleByID(o.wId),
+                        chart_line_type: BI.Utils.getWSChartLineTypeByID(o.wId),
+                        chart_pie_type: BI.Utils.getWSChartPieTypeByID(o.wId),
+                        chart_radar_type: BI.Utils.getWSChartRadarTypeByID(o.wId),
+                        chart_dashboard_type: BI.Utils.getWSChartDashboardTypeByID(o.wId),
+                        chart_inner_radius: BI.Utils.getWSChartInnerRadiusByID(o.wId),
+                        chart_total_angle: BI.Utils.getWSChartTotalAngleByID(o.wId),
+                        left_y_axis_style: BI.Utils.getWSLeftYAxisStyleByID(o.wId),
+                        x_axis_style: BI.Utils.getWSXAxisStyleByID(o.wId),
+                        right_y_axis_style: BI.Utils.getWSRightYAxisStyleByID(o.wId),
+                        right_y_axis_second_style: BI.Utils.getWSRightYAxis2StyleByID(o.wId),
+                        left_y_axis_number_level: BI.Utils.getWSLeftYAxisNumLevelByID(o.wId),
+                        number_of_pointer: BI.Utils.getWSNumberOfPointerByID(o.wId),
+                        dashboard_number_level: BI.Utils.getWSDashboardNumLevelByID(o.wId),
+                        x_axis_number_level: BI.Utils.getWSXAxisNumLevelByID(o.wId),
+                        right_y_axis_number_level: BI.Utils.getWSRightYAxisNumLevelByID(o.wId),
+                        right_y_axis_second_number_level: BI.Utils.getWSRightYAxis2NumLevelByID(o.wId),
+                        left_y_axis_unit: BI.Utils.getWSLeftYAxisUnitByID(o.wId),
+                        dashboard_unit: BI.Utils.getWSDashboardUnitByID(o.wId),
+                        x_axis_unit: BI.Utils.getWSXAxisUnitByID(o.wId),
+                        right_y_axis_unit: BI.Utils.getWSRightYAxisUnitByID(o.wId),
+                        right_y_axis_second_unit: BI.Utils.getWSRightYAxis2UnitByID(o.wId),
+                        show_left_y_axis_title: BI.Utils.getWSShowLeftYAxisTitleByID(o.wId),
+                        show_right_y_axis_title: BI.Utils.getWSShowRightYAxisTitleByID(o.wId),
+                        show_right_y_axis_second_title: BI.Utils.getWSShowRightYAxis2TitleByID(o.wId),
+                        left_y_axis_title: BI.Utils.getWSLeftYAxisTitleByID(o.wId),
+                        right_y_axis_title: BI.Utils.getWSRightYAxisTitleByID(o.wId),
+                        right_y_axis_second_title: BI.Utils.getWSRightYAxis2TitleByID(o.wId),
+                        left_y_axis_reversed: BI.Utils.getWSLeftYAxisReversedByID(o.wId),
+                        right_y_axis_reversed: BI.Utils.getWSRightYAxisReversedByID(o.wId),
+                        right_y_axis_second_reversed: BI.Utils.getWSRightYAxis2ReversedByID(o.wId),
+                        show_x_axis_title: BI.Utils.getWSShowXAxisTitleByID(o.wId),
+                        x_axis_title: BI.Utils.getWSXAxisTitleByID(o.wId),
+                        text_direction: BI.Utils.getWSTextDirectionByID(o.wId),
+                        chart_legend: BI.Utils.getWSChartLegendByID(o.wId),
+                        show_data_label: BI.Utils.getWSShowDataLabelByID(o.wId),
+                        show_data_table: BI.Utils.getWSShowDataTableByID(o.wId),
+                        show_grid_line: BI.Utils.getWSShowGridLineByID(o.wId),
+                        show_zoom: BI.Utils.getWSShowZoomByID(o.wId),
+                        style_conditions: BI.Utils.getWSDashboardStylesByID(o.wId),
+                        auto_custom: BI.Utils.getWSScaleByID(o.wId),
+                        theme_color: BI.Utils.getWSThemeColorByID(o.wId),
+                        map_styles: BI.Utils.getWSMapStylesByID(o.wId),
+                        transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId),
+                        rules_display: BI.Utils.getWSShowRulesByID(o.wId),
+                        bubble_style: BI.Utils.getWSBubbleStyleByID(o.wId),
+                        max_scale: BI.Utils.getWSMaxScaleByID(o.wId),
+                        min_scale: BI.Utils.getWSMinScaleByID(o.wId),
+                        show_percentage: BI.Utils.getWSShowPercentageByID(o.wId)
+                    }, {
+                        cordon: self.model.getCordon(),
+                        tooltip: self.model.getToolTip(type),
+                        lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
+                    });
+                }
                 selectedTab.populate(data, op, types);
-             } catch (e) {
-                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
-                 self.errorPane.setVisible(true);
-             }
+            } catch (e) {
+                self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+                self.errorPane.setVisible(true);
+            }
         });
     },
 
@@ -376,6 +399,26 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
     magnify: function () {
         this.tab.getSelectedTab().magnify();
     }
+});
+BI.extend(BI.ChartDisplay, {
+    MINIMALIST_WIDGET: [
+        BICst.WIDGET.AXIS,
+        BICst.WIDGET.ACCUMULATE_AXIS,
+        BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
+        BICst.WIDGET.COMPARE_AXIS,
+        BICst.WIDGET.FALL_AXIS,
+        BICst.WIDGET.BAR,
+        BICst.WIDGET.ACCUMULATE_BAR,
+        BICst.WIDGET.COMPARE_BAR,
+        BICst.WIDGET.LINE,
+        BICst.WIDGET.AREA,
+        BICst.WIDGET.ACCUMULATE_AREA,
+        BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
+        BICst.WIDGET.COMPARE_AREA,
+        BICst.WIDGET.RANGE_AREA,
+        BICst.WIDGET.COMBINE_CHART,
+        BICst.WIDGET.MULTI_AXIS_COMBINE_CHART
+    ]
 });
 BI.ChartDisplay.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.chart_display', BI.ChartDisplay);

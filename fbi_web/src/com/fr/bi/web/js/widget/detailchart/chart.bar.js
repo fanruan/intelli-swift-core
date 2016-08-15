@@ -82,8 +82,8 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         BI.extend(config.yAxis[0], {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             labelRotation: this.config.text_direction,
-            lineWidth: 1,
-            enableTick: true
+            enableTick: this.config.enable_tick,
+            lineWidth: this.config.line_width
         });
 
         //值轴
@@ -93,9 +93,10 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         BI.extend(config.xAxis[0], {
             formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level),
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
-            lineWidth: 1,
-            enableTick: true,
-            showLabel: true
+            enableTick: this.config.enable_tick,
+            showLabel: this.config.show_label,
+            lineWidth: this.config.line_width,
+            enableMinorTick: this.config.enable_minor_tick
         });
         config.chartType = "bar";
 
@@ -118,26 +119,8 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
 
         //极简模式
-        if (this.config.minimalist_model) {
-            config.legend.enabled = false;
-            config.plotOptions.dataLabels.enabled = true;
-            BI.extend(config.xAxis[0], {
-                gridLineWidth: 0,
-                lineWidth: 0,
-                showLabel: false,
-                enableTick: false,
-                enableMinorTick: false
-            });
-            BI.extend(config.yAxis[0], {
-                gridLineWidth: 0,
-                lineWidth: 0,
-                enableTick: false
-            });
-            config.xAxis[0].title.text = "";
-            delete config.xAxis[0].plotLines;
-            config.yAxis[0].title.text = "";
-            delete config.yAxis[0].plotLines
-        }
+        //     delete config.xAxis[0].plotLines;
+        //     delete config.yAxis[0].plotLines
 
         return [items, config];
 
@@ -256,7 +239,10 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             show_zoom: options.show_zoom || false,
             text_direction: options.text_direction || 0,
             cordon: options.cordon || [],
-            minimalist_model: options.minimalist_model || false
+            line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
         };
         this.options.items = items;
         var types = [];
