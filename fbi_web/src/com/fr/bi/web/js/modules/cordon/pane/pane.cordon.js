@@ -136,10 +136,8 @@ BI.CordonPane = BI.inherit(BI.Widget, {
         }
         switch (numberLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                this.magnify = 1;
-                break;
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                this.magnify = 0.01;
+                this.magnify = 1;
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
                 this.magnify = 10000;
