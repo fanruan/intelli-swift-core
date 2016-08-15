@@ -553,7 +553,7 @@
                         BI.each(expression.ids, function (id, tId) {
                             var result = createDimensionsAndTargets(tId);
                             if (BI.has(expression, "formula_value")) {
-                                expression.formula_value = expression.formula_value.replace(tId, result.id);
+                                expression.formula_value = expression.formula_value.replaceAll(tId, result.id);
                             }
                             expression.ids[id] = result.id;
                         });
