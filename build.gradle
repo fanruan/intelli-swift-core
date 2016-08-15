@@ -127,7 +127,7 @@ task addTime(dependsOn:'compressJS'){
 
 //»ìÏı´úÂë
 task obfuse(dependsOn:'build')<<{
-	ant.delete(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp")
+	ant.delete(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.8")
 	ant.mkdir(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.8")
 	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
 	ant.yguard(){
