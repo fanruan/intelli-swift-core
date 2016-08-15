@@ -49,6 +49,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
+        config.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};
         config.plotOptions.tooltip.formatter = this.config.tooltip;
         formatCordon();
         switch (this.config.chart_legend){
