@@ -1,7 +1,7 @@
 /**
  * @class BI.DonutChartSetting
  * @extends BI.Widget
- * 柱状，堆积柱状，组合图样式
+ * 环图样式
  */
 BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
 

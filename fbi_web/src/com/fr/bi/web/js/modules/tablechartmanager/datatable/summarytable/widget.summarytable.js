@@ -55,7 +55,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                             el: {
                                 el: {
                                     el: {
-                                        type: "bi.layer_tree_table"
+                                        type: "bi.dynamic_summary_layer_tree_table"
                                     }
                                 }
                             },
@@ -131,7 +131,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                             el: {
                                 el: {
                                     el: {
-                                        type: "bi.table_tree"
+                                        type: "bi.dynamic_summary_tree_table"
                                     }
                                 }
                             },
@@ -480,7 +480,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     _populateTable: function () {
         this.errorPane.setVisible(false);
-        this.table.attr("isNeedFreeze", this.model.isNeed2Freeze());
+        this.table.attr("isNeedFreeze", true);
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
@@ -490,7 +490,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
 
     _refreshTable: function () {
         this.errorPane.setVisible(false);
-        this.table.attr("isNeedFreeze", this.model.isNeed2Freeze());
+        this.table.attr("isNeedFreeze", true);
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());

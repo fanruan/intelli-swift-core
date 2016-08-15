@@ -4,6 +4,7 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.adapter.BICubeTableAdapter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeLocation;
@@ -196,7 +197,7 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
 
     public void updateTime() {
         //userMap.updateTime(task);
-        if (latestIndex != null) {
+        if (latestIndex != null && latestIndex.isDataAvailable() && !CubeGenerationManager.getCubeManager().checkCubeStatus(getUserId())) {
             tableIndexTime.updateTime(latestIndex.getTableVersion(null));
         }
     }

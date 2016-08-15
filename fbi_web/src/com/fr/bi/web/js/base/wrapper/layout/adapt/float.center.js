@@ -4,7 +4,7 @@
 BI.FloatCenterAdaptLayout = BI.inherit(BI.Layout, {
     _defaultConfig: function () {
         return BI.extend(BI.FloatCenterAdaptLayout.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-float-center-layout",
+            baseCls: "bi-float-center-adapt-layout",
             items: [],
             hgap: 0,
             vgap: 0,

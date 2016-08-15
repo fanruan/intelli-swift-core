@@ -1,24 +1,32 @@
 package com.finebi.cube.impl.conf;
 
-import com.finebi.cube.conf.AbstractCubeBuild;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.BITableRelationConfigurationProvider;
-import com.finebi.cube.conf.CubeBuild;
+import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.finebi.cube.exception.BICubeResourceAbsentException;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceLocation;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.*;
+import com.finebi.cube.structure.BITableKey;
+import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
+import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +35,7 @@ import java.util.Set;
 /**
  * Created by kary on 16/5/30.
  */
+
 public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild {
 
     private Set<IBusinessPackageGetterService> packs;
@@ -68,7 +77,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         //遍历所有路径，能链到该表的关联（路径）都要被更新
         calculateAllRelationsAndPaths(businessTable, generatedRelations, generatedPaths);
         //设置路径（关联）的依赖关系
-        setCubeGenerateRelationSet(inUseRelations,businessTable);
+        setCubeGenerateRelationSet(inUseRelations, businessTable);
         setCubeGenerateRelationPathSet(inUsePaths);
     }
 
@@ -94,13 +103,13 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
 
     public void setCubeGenerateRelationSet(Set<BITableRelation> inUseRelations, BusinessTable businessTable) {
         for (BITableRelation tableRelation : inUseRelations) {
-            if (isRelationValid(tableRelation)) {
-                BITableRelation tempTableRelation=new BITableRelation(tableRelation.getPrimaryField(),tableRelation.getForeignField());
+            if (istableRelationValid(tableRelation)) {
+                BITableRelation tempTableRelation = new BITableRelation(tableRelation.getPrimaryField(), tableRelation.getForeignField());
                 BITableSourceRelation convertRelation = convertRelation(tempTableRelation);
                 if (null != convertRelation) {
                     this.biTableSourceRelationSet.add(convertRelation);
-                        Set<CubeTableSource> dependTableSourceSet = new HashSet<CubeTableSource>();
-                    boolean containsTable=convertRelation.getPrimaryTable().getSourceID().equals(BusinessTableHelper.getTableDataSource(businessTable.getID()).getSourceID())||convertRelation.getForeignTable().getSourceID().equals(BusinessTableHelper.getTableDataSource(businessTable.getID()).getSourceID());
+                    Set<CubeTableSource> dependTableSourceSet = new HashSet<CubeTableSource>();
+                    boolean containsTable = convertRelation.getPrimaryTable().getSourceID().equals(BusinessTableHelper.getTableDataSource(businessTable.getID()).getSourceID()) || convertRelation.getForeignTable().getSourceID().equals(BusinessTableHelper.getTableDataSource(businessTable.getID()).getSourceID());
                     if (containsTable) {
                         dependTableSourceSet.add(BusinessTableHelper.getTableDataSource(businessTable.getID()));
                     }
@@ -250,6 +259,50 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         return this.biTableSourceRelationSet;
     }
 
+    @Override
+    public boolean copyFileFromOldCubes() {
+        try {
+            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(biUser.getUserId()));
+            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
+            BICubeResourceRetrieval tempResourceRetrieval = new BICubeResourceRetrieval(tempConf);
+            BICubeResourceRetrieval advancedResourceRetrieval = new BICubeResourceRetrieval(advancedConf);
+            if (new File(tempConf.getRootURI().getPath()).exists()) {
+                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
+            }
+            new File(tempConf.getRootURI().getPath()).mkdirs();
+            for (BICubeGenerateRelation relation : this.getCubeGenerateRelationSet()) {
+                copyFilesFromOldCubes(tempResourceRetrieval, advancedResourceRetrieval, relation);
+            }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return true;
+    }
+
+    private void copyFilesFromOldCubes(ICubeResourceRetrievalService tempResourceRetrieval, ICubeResourceRetrievalService advancedResourceRetrieval, BICubeGenerateRelation relation) throws BICubeResourceAbsentException, BITablePathEmptyException, IOException {
+        BITableSourceRelationPath path = new BITableSourceRelationPath(relation.getRelation());
+        ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()), BICubePathUtils.convert(path));
+        ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()), BICubePathUtils.convert(path));
+        BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+        from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()));
+        to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()));
+        BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+        from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getForeignTable()));
+        to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getForeignTable()));
+        BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+    }
+
+    @Override
+    public boolean replaceOldCubes() {
+        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(biUser.getUserId()));
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
+        try {
+            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return true;
+    }
 
     /**
      * TODO改变层级结构
