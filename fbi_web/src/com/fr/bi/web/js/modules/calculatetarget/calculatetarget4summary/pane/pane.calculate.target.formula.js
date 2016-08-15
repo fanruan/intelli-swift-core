@@ -33,6 +33,10 @@ BI.CalculateTargetFormulaPane = BI.inherit(BI.Widget, {
         this.formulaEditor.setValue(expression.formula_value);
     },
 
+    checkValidation: function () {
+        return this.formulaEditor.checkValidation();
+    },
+
     populate: function (model) {
         var o = this.options;
         o.model = model;
