@@ -77,14 +77,16 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
             return BI.some(pack, function (tId, fields) {
                 if (tableId === tId) {
                     BI.each(fields, function (i, field) {
-                        fieldStructure.push({
-                            id: field.id,
-                            pId: tableId,
-                            type: "bi.select_data_level0_item",
-                            fieldType: field.field_type,
-                            text: field.field_name,
-                            value: field
-                        })
+                        if(field.field_type === BICst.COLUMN.STRING) {
+                            fieldStructure.push({
+                                id: field.id,
+                                pId: tableId,
+                                type: "bi.select_data_level0_item",
+                                fieldType: field.field_type,
+                                text: field.field_name,
+                                value: field
+                            })
+                        }
                     });
                 }
             });

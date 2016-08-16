@@ -29,7 +29,7 @@ import java.util.Set;
 /**
  * Created by kary on 16/5/30.
  */
-public class CubeTaskGenerate {
+public class CubeTaskHelper {
 
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
@@ -41,6 +41,7 @@ public class CubeTaskGenerate {
 
     public static boolean CubeBuildETL(long userId, BITableID ETLTableId, BITableID baseTableId) {
         CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(ETLTableId), userId);
+        BILogger.getLogger().info("Cube single table update start");
         boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
     }
@@ -52,12 +53,9 @@ public class CubeTaskGenerate {
 /*若有新增表或者新增关联，增量更新，否则进行全量*/
         if (isPart(userId)) {
             BILogger.getLogger().info("Cube part update start");
-        } else {
-            BILogger.getLogger().info("Cube all update start");
-        }
-        if (false) {
             cubeBuild = new CubeBuildByPart(userId, BICubeGenerateUtils.getTables4CubeGenerate(userId), BICubeGenerateUtils.getRelations4CubeGenerate(userId));
         } else {
+            BILogger.getLogger().info("Cube all update start");
             cubeBuild = new CubeBuildStaff(new BIUser(userId));
         }
         if (preConditionsCheck(userId, cubeBuild)) {

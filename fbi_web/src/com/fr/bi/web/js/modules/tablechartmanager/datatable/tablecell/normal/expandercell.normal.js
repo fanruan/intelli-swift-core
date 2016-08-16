@@ -38,17 +38,17 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         var text = o.text;
         var dGroup = BI.Utils.getDimensionGroupByID(o.dId);
         if (BI.isNotNull(dGroup) && BI.isNumeric(text)) {
-            if(dGroup.type === BICst.GROUP.YMD) {
+            if (dGroup.type === BICst.GROUP.YMD) {
                 var date = new Date(BI.parseInt(text));
                 text = date.print("%Y-%X-%d");
             }
-            if(dGroup.type === BICst.GROUP.S) {
+            if (dGroup.type === BICst.GROUP.S) {
                 text = BICst.FULL_QUARTER_NAMES[text - 1];
             }
-            if(dGroup.type === BICst.GROUP.M) {
+            if (dGroup.type === BICst.GROUP.M) {
                 text = BICst.FULL_MONTH_NAMES[text - 1];
             }
-            if(dGroup.type === BICst.GROUP.W) {
+            if (dGroup.type === BICst.GROUP.W) {
                 text = BICst.FULL_WEEK_NAMES[text - 1];
             }
         }

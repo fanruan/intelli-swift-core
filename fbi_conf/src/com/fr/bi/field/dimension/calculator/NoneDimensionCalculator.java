@@ -97,11 +97,6 @@ public class NoneDimensionCalculator implements DimensionCalculator {
     }
 
     @Override
-    public int getOriginGroupSize(BusinessTable table, ICubeDataLoader loader) {
-        return createNoneSortGroupValueMapGetter(table, loader).sizeOfGroup();
-    }
-
-    @Override
     public int getBaseTableValueCount(Object value, ICubeDataLoader loader) {
         return 0;
     }

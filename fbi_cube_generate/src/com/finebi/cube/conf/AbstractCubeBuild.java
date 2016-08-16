@@ -15,10 +15,12 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -109,6 +111,22 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     }
 
 
+
+    @Override
+    public boolean replaceOldCubes() {
+        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
+        if (new File(advancedConf.getRootURI().getPath()).exists()) {
+            BIFileUtils.delete(new File(advancedConf.getRootURI().getPath()));
+        }
+        try {
+            BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
+        } catch (IOException e) {
+            BILogger.getLogger().error(e.getMessage());
+        }
+        return true;
+    }
+
     public void setSources() {
         for (Object biBusinessTable : allBusinessTable) {
             BusinessTable table = (BusinessTable) biBusinessTable;
@@ -143,7 +161,9 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
-        if (!isRelationValid(relation) || !isSourceRelationValid) {
+        if (!istableRelationValid(relation) || !isSourceRelationValid) {
+//                throw new BIRuntimeException("tableSourceRelation invalid");
+            BILogger.getLogger().error("tableSourceRelation invalid!!!");
             return null;
         }
         BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
@@ -158,7 +178,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     }
 
 
-    protected boolean isRelationValid(BITableRelation relation) {
+    protected boolean istableRelationValid(BITableRelation relation) {
         BusinessTable primaryTable = relation.getPrimaryTable();
         BusinessTable foreignTable = relation.getForeignTable();
         return allBusinessTable.contains(primaryTable) && allBusinessTable.contains(foreignTable);
@@ -167,8 +187,11 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {
         BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
         for (BITableRelation biTableRelation : path.getAllRelations()) {
-            BITableSourceRelation biTableSourceRelation = convertRelation(biTableRelation);
-            tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
+            BITableSourceRelation biTableSourceRelation =convertRelation(biTableRelation);
+            if (null==biTableRelation){
+                return null;
+            }
+                tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
         }
         return tableSourceRelationPath;
     }

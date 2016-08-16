@@ -5,6 +5,7 @@ import com.fr.base.ConfigManager;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.base.CubeIndexManager;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.cal.analyze.session.BISessionUtils;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -171,7 +172,7 @@ public class BIWebUtils {
             dealWithEmptyPack(req, res, sessionID, locale);
             return;
         }
-        if (!BIConfigureManagerCenter.getAuthorityManager().hasAuthPackageByUser(userId)) {
+        if (!BIConfigureManagerCenter.getAuthorityManager().hasAuthPackageByUser(userId, sessionID)) {
             dealWithNORightPack(req, res, sessionID, locale);
             return;
         }
@@ -206,8 +207,11 @@ public class BIWebUtils {
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
         map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + "" + userId);
-        boolean isEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
-        isEdit = sessionIDInfo.setEdit(isEdit);
+        boolean biEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
+        boolean isEdit = sessionIDInfo.setEdit(biEdit);
+        if(biEdit && !isEdit) {
+            map.put("lockedBy", BISessionUtils.getCurrentEditingUserByReport(node.getId(), node.getUserId()));
+        }
         if (!hasPrivilege(isEdit, userId, map) && !ComparatorUtils.equals(node.getDescription(), "fine_excel")) {
             String ma = Inter.getLocText(isEdit ? "BI-User_Has_No_Edit_Privilege" : "BI-User_Has_No_View_Privilege", locale);
             map.put("message", ma);

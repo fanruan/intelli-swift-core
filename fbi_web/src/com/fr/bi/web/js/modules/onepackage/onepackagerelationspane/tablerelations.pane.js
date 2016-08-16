@@ -102,25 +102,15 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
 
         function getTableIdsDegree(){
             var degree = {};
-            //因为1对1的关联在foreignKeyMap中取不到，所以弃用
-            //BI.each(tableIds, function(idx, tId){
-            //    var count = 0;
-            //    var foreFields = getFieldsInForeignMap(fieldsMap[tId]);
-            //    BI.each(foreFields, function(idx, fieldId){
-            //        if(BI.has(foreignKeyMap, fieldId)) {
-            //            count++;
-            //        }
-            //    });
-            //    degree[tId] = count;
-            //});
-            //待优化
             BI.each(connectSet, function(idx, obj){
                 var foreignId = obj.foreignKey.field_id;
-                var tableId = all_fields[foreignId].table_id;
-                if(!BI.has(degree, tableId)){
-                    degree[tableId] = 0;
+                if(BI.has(all_fields, foreignId)){
+                    var tableId = all_fields[foreignId].table_id;
+                    if(!BI.has(degree, tableId)){
+                        degree[tableId] = 0;
+                    }
+                    degree[tableId]++;
                 }
-                degree[tableId]++;
             });
             return degree;
         }

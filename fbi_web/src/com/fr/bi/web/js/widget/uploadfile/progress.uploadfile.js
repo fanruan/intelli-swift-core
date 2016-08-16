@@ -7,7 +7,7 @@ BI.UploadFileWithProgress = BI.inherit(BI.Widget, {
         UPLOAD_PROGRESS: "__upload_progress__"
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.UploadFileWithProgress.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-upload-file-with-progress",
             progressEL: BICst.BODY_ELEMENT,
@@ -18,7 +18,7 @@ BI.UploadFileWithProgress = BI.inherit(BI.Widget, {
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.UploadFileWithProgress.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.file = BI.createWidget({
@@ -56,7 +56,7 @@ BI.UploadFileWithProgress = BI.inherit(BI.Widget, {
             self.fireEvent(BI.UploadFileWithProgress.EVENT_ERROR, arguments);
         });
         this.file.on(BI.MultifileEditor.EVENT_PROGRESS, function (data) {
-            var process = Math.ceil(data.loaded/data.total) * 100;
+            var process = Math.ceil(data.loaded / data.total * 100);
             self.progressBar.setValue(process > 100 ? 100 : process);
             self.fireEvent(BI.UploadFileWithProgress.EVENT_PROGRESS, arguments);
         });

@@ -91,7 +91,6 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
     _createRegionPathsByItems: function(items){
         var self = this;
         var FinalId = BI.UUID();
-        var uuidMap = {}; //管理一下各条路径上的uuid
         this.options.dimensionFieldId = items.dimensionFieldId;
         var ptId = BI.Utils.getTableIdByFieldID(items.dimensionFieldId);
         var paths = BI.Utils.getPathsFromFieldAToFieldB(items.dimensionFieldId, BI.Utils.getFieldIDByDimensionID(items.targetIds[0]));
@@ -104,15 +103,8 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
                 var foreignId = BI.Utils.getForeignIdFromRelation(relation);
                 var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                 if(BI.Utils.getTableIdByFieldID(foreignId) === BI.Utils.getTableIdByFieldID(primaryId)){
-                    var regionId = BI.UUID();
-                    if(BI.has(uuidMap, foreignId)){
-                        regionId = uuidMap[foreignId];
-                    }else{
-                        uuidMap[foreignId] = regionId;
-                    }
                     p.push({
-                        //region: BI.UUID(),
-                        region: regionId,
+                        region: BI.UUID(),
                         regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                         text: BI.Utils.getFieldNameByID(foreignId),
                         value: foreignId

@@ -26,7 +26,8 @@ public class CubeUpdateUtils {
     private static boolean forceCheck=false;
     /*是否需要更新cube*/
     public static boolean cubeStatusCheck(long userId) {
-        return isNeedUpdate(userId)&&forceCheck;
+//        return isNeedUpdate(userId)&&forceCheck;
+        return false;
     }
 
     private static boolean isNeedUpdate(long userId) {

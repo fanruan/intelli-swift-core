@@ -4,7 +4,7 @@ import com.finebi.cube.conf.BICubeManagerProvider;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -27,7 +27,7 @@ public class BIModifyGlobalUpdateSettingAction extends AbstractBIConfigureAction
         String globalUpdateSetting = WebUtils.getHTTPRequestParameter(req, "setting");
         UpdateSettingSource source = new UpdateSettingSource();
         source.parseJSON(new JSONObject(globalUpdateSetting));
-        BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE, source, userId);
+        BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(CubeConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE, source, userId);
         BICubeManager biCubeManager=StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
         biCubeManager.resetCubeGenerationHour(userId);
         try {

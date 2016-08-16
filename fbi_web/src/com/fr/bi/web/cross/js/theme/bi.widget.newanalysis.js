@@ -48,11 +48,11 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
         this.templateName.on(BI.SignEditor.EVENT_VALID, function () {
             self.saveButton.setEnable(true);
         });
-        this.templateName.on(BI.SignEditor.EVENT_ENTER, function (v) {
-            if (self.saveButton.isEnabled()) {
-                self._saveReport();
-            }
-        });
+        // this.templateName.on(BI.SignEditor.EVENT_ENTER, function (v) {
+        //     if (self.saveButton.isEnabled()) {
+        //         self._saveReport();
+        //     }
+        // });
         this.reportLocation = BI.createWidget({
             type: "bi.multilayer_select_tree_combo",
             cls: "template-location-combo",

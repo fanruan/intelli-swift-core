@@ -143,7 +143,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader) {
         ICubeColumnIndexReader getter = createNoneSortGroupValueMapGetter(table, loader);
-        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP) {
+        if (isNoGroup()) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }
         return dimension.getSort().createGroupedMap(getter).iterator();
@@ -163,25 +163,14 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         }
         ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
         getter = dimension.getGroup().createGroupedMap(getter);
-        if (getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP) {
+        if (useRealData && isNoGroup() && getSortType() != BIReportConstant.SORT.CUSTOM) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }
         return dimension.getSort().createGroupedMap(getter).iterator();
     }
 
-    @Override
-    public int getOriginGroupSize(BusinessTable table, ICubeDataLoader loader) {
-        CubeTableSource usedTableSource = getTableSourceFromField();
-        BIKey usedColumnKey = dimension.createKey(field);
-        //多对多处理,这里默认relationList的第一个关联是公共主表关联
-        if (getDirectToDimensionRelationList().size() > 0) {
-            ICubeFieldSource primaryField = getDirectToDimensionRelationList().get(0).getPrimaryField();
-            CubeTableSource primaryTableSource = primaryField.getTableBelongTo();
-            usedTableSource = primaryTableSource;
-            usedColumnKey = new IndexKey(primaryField.getFieldName());
-        }
-        ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList());
-        return getter.sizeOfGroup();
+    private boolean isNoGroup() {
+        return getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP;
     }
 
     private CubeTableSource getTableSourceFromField() {

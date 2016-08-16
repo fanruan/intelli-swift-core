@@ -21,6 +21,7 @@ BI.ExcelUploadModel = BI.inherit(FR.OB, {
                 text: BI.i18nText("BI-Loading")
             });
             BI.Utils.getExcelDataByFileName(this.fullFileName, function(data){
+                self.fileName = data.fileName;
                 self.fields = data.fields;
                 self.previewData = data.data;
                 callback();
@@ -83,7 +84,7 @@ BI.ExcelUploadModel = BI.inherit(FR.OB, {
     },
 
     getFileName: function(){
-        return this.file.filename;
+        return this.fileName;
     },
 
     getFullFileName: function(){

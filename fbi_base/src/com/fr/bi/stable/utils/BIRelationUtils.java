@@ -22,6 +22,10 @@ public class BIRelationUtils {
      * @param key
      * @return
      */
+/*relation.size>1即为路径，=1时为关联*/
+    public static final int PATH_RELATION = 1;
+    public static final int PATH_NULL = 0;
+
     public static boolean isRelationRepeated(List<BITableSourceRelation> relationList, CubeTableSource key) {
         if (relationList == null || key == null) {
             return false;

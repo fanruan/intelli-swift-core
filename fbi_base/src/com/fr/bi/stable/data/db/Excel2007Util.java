@@ -1,6 +1,5 @@
 package com.fr.bi.stable.data.db;
 
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
@@ -48,7 +47,6 @@ public class Excel2007Util {
     private List<Object[]> tempRowDataList = new ArrayList<Object[]>();
     private Map<ColumnRow, ColumnRow> mergeCells = new HashMap<ColumnRow, ColumnRow>();
     private boolean preview = false;
-    private boolean hasFormula = false;
     private OPCPackage xlsxPackage;
     private List<String> tempData = new ArrayList<String>();
 
@@ -109,47 +107,59 @@ public class Excel2007Util {
         return rowDataList;
     }
 
-    public boolean hasFormula() {
-        return hasFormula;
-    }
-
     public void mergeCell() {
         Map<ColumnRow, ColumnRow> merges = mergeCells;
-        for (Map.Entry<ColumnRow, ColumnRow> m : merges.entrySet()) {
-            ColumnRow s = m.getKey();
-            ColumnRow e = m.getValue();
-            //如果是横向合并
-            if (s.getRow() == e.getRow()) {
-                int mergedColCount = e.getColumn() - s.getColumn();
-                for (int i = 0; i < mergedColCount; i++) {
-                    Object[] tempArray = tempRowDataList.get(e.getRow());
-                    if (tempArray.length < s.getColumn() + 1 + mergedColCount) {
-                        Object[] newRow = new Object[s.getColumn() + 1 + mergedColCount];
-                        for (int k = 0; k < tempArray.length; k++) {
-                            newRow[k] = tempArray[k];
+        try {
+            for (Map.Entry<ColumnRow, ColumnRow> m : merges.entrySet()) {
+                ColumnRow s = m.getKey();
+                ColumnRow e = m.getValue();
+                //如果是横向合并
+                if (s.getRow() == e.getRow()) {
+                    int mergedColCount = e.getColumn() - s.getColumn();
+                    for (int i = 0; i < mergedColCount; i++) {
+                        Object[] tempArray = tempRowDataList.get(e.getRow());
+                        if(tempArray.length < e.getColumn() - 1) {
+                            Object [] tArray = new Object[e.getColumn() - 1];
+                            for(int k = 0; k < tempArray.length; k++) {
+                                tArray[k] = tempArray[k];
+                            }
+                            tArray[e.getColumn() - i] = tempRowDataList.get(e.getRow())[s.getColumn()];
+                            tempRowDataList.set(e.getRow(), tArray);
+                        } else {
+                            tempArray[e.getColumn() - i] = tempRowDataList.get(e.getRow())[s.getColumn()];
+                            tempRowDataList.set(e.getRow(), tempArray);
                         }
-                        tempArray = newRow;
                     }
-                    tempArray[e.getColumn() - i] = tempRowDataList.get(e.getRow())[s.getColumn()];
-                    tempRowDataList.set(e.getRow(), tempArray);
-                }
-            } else {
-                int mergedRowCount = e.getRow() - s.getRow();
-                for (int j = 0; j < mergedRowCount; j++) {
-                    Object[] tempArray = tempRowDataList.get(e.getRow() - j);
-                    tempArray[e.getColumn()] = tempRowDataList.get(s.getRow())[e.getColumn()];
-                    tempRowDataList.set(e.getRow() - j, tempArray);
+                } else {
+                    int mergedRowCount = e.getRow() - s.getRow();
+                    for (int j = 0; j < mergedRowCount; j++) {
+                        Object[] tempArray = tempRowDataList.get(e.getRow() - j);
+                        if(tempArray.length < e.getColumn() + 1) {
+                            Object [] tArray = new Object[e.getColumn() + 1];
+                            for(int k = 0; k < tempArray.length; k++) {
+                                tArray[k] = tempArray[k];
+                            }
+                            tArray[e.getColumn()] = tempRowDataList.get(s.getRow())[e.getColumn()];
+                            tempRowDataList.set(e.getRow() - j, tArray);
+                        } else {
+                            tempArray[e.getColumn()] = tempRowDataList.get(s.getRow())[e.getColumn()];
+                            tempRowDataList.set(e.getRow() - j, tempArray);
+                        }
+                    }
                 }
             }
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
         }
+
     }
 
-    private void createDistinctColumnNames(){
-        for(int i = 0; i < columnNames.length; i++) {
+    private void createDistinctColumnNames() {
+        for (int i = 0; i < columnNames.length; i++) {
             int index = 1;
             String columnName = columnNames[i];
-            for(int j = 0; j < columnNames.length; j ++) {
-                if(i != j && ComparatorUtils.equals(columnName, columnNames[j])) {
+            for (int j = 0; j < columnNames.length; j++) {
+                if (i != j && ComparatorUtils.equals(columnName, columnNames[j])) {
                     columnNames[j] = columnName + index;
                     index++;
                 }
@@ -181,7 +191,7 @@ public class Excel2007Util {
                 columnTypes = new int[columnCount];
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
-                    if (oneRow.length - 1 > j) {
+                    if (oneRow.length > j) {
                         v = oneRow[j].toString();
                     }
                     currentRowData.add(v);
@@ -270,13 +280,10 @@ public class Excel2007Util {
 
         StylesTable styles = xssfReader.getStylesTable();
         XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
-        int index = 0;
         while (iter.hasNext()) {
             InputStream stream = iter.next();
-            String sheetName = iter.getSheetName();
             processSheet(styles, strings, stream);
             stream.close();
-            ++index;
         }
     }
 
@@ -291,75 +298,192 @@ public class Excel2007Util {
 
     class MyXSSFSheetHandler extends DefaultHandler {
 
-        private final DataFormatter formatter;
         private StylesTable stylesTable;
         private ReadOnlySharedStringsTable sharedStringsTable;
         private boolean vIsOpen;
+        private boolean fIsOpen;
+        private boolean isIsOpen;
+        private boolean hfIsOpen;
         private xssfDataType nextDataType;
         private short formatIndex;
         private String formatString;
+        private final DataFormatter formatter;
+        private StringBuffer value;
+        private StringBuffer formula;
+        private StringBuffer headerFooter;
+        private boolean formulasNotResults;
+        private String cellValue;
         private int thisColumn = -1;
         private int lastColumnNumber = -1;
-        private StringBuffer value;
-        private String cellValue = null;
 
-        public MyXSSFSheetHandler(StylesTable styles, ReadOnlySharedStringsTable strings) {
+        public MyXSSFSheetHandler(StylesTable styles, ReadOnlySharedStringsTable strings, DataFormatter dataFormatter) {
+            this.value = new StringBuffer();
+            this.formula = new StringBuffer();
+            this.headerFooter = new StringBuffer();
             this.stylesTable = styles;
             this.sharedStringsTable = strings;
-            this.value = new StringBuffer();
             this.nextDataType = xssfDataType.NUMBER;
-            this.formatter = new DataFormatter();
+            this.formatter = dataFormatter;
+            this.formulasNotResults = false;
         }
 
-        @Override
+        public MyXSSFSheetHandler(StylesTable styles, ReadOnlySharedStringsTable strings) {
+            this(styles, strings, new DataFormatter());
+        }
+
+        private boolean isTextTag(String name) {
+            return "v".equals(name) ? true : ("inlineStr".equals(name) ? true : "t".equals(name) && this.isIsOpen);
+        }
+
         public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
-            if ("inlineStr".equals(name) || "v".equals(name)) {
-                vIsOpen = true;
-                value.setLength(0);
-            } else if ("c".equals(name)) {
-                String r = attributes.getValue("r");
-                int firstDigit = -1;
-                for (int c = 0; c < r.length(); ++c) {
-                    if (Character.isDigit(r.charAt(c))) {
-                        firstDigit = c;
+            if (this.isTextTag(name)) {
+                this.vIsOpen = true;
+                this.value.setLength(0);
+            } else if ("is".equals(name)) {
+                this.isIsOpen = true;
+            } else {
+                String cellType;
+                String cellStyleStr;
+                if ("f".equals(name)) {
+                    this.formula.setLength(0);
+                    if (this.nextDataType == xssfDataType.NUMBER) {
+                        this.nextDataType = xssfDataType.FORMULA;
+                    }
+
+                    cellType = attributes.getValue("t");
+                    if (cellType != null && cellType.equals("shared")) {
+                        cellStyleStr = attributes.getValue("ref");
+                        if (cellStyleStr != null) {
+                            this.fIsOpen = true;
+                        } else if (this.formulasNotResults) {
+                            System.err.println("Warning - shared formulas not yet supported!");
+                        }
+                    } else {
+                        this.fIsOpen = true;
+                    }
+                } else if (!"oddHeader".equals(name) && !"evenHeader".equals(name) && !"firstHeader".equals(name) && !"firstFooter".equals(name) && !"oddFooter".equals(name) && !"evenFooter".equals(name)) {
+                    if ("row".equals(name)) {
+//                        int cellType1 = Integer.parseInt(attributes.getValue("r")) - 1;
+//                        this.output.startRow(cellType1);
+                    } else if ("c".equals(name)) {
+                        String r = attributes.getValue("r");
+                        int firstDigit = -1;
+                        for (int c = 0; c < r.length(); ++c) {
+                            if (Character.isDigit(r.charAt(c))) {
+                                firstDigit = c;
+                                break;
+                            }
+                        }
+                        thisColumn = nameToColumn(r.substring(0, firstDigit));
+                        this.nextDataType = xssfDataType.NUMBER;
+                        this.formatIndex = -1;
+                        this.formatString = null;
+                        cellType = attributes.getValue("t");
+                        cellStyleStr = attributes.getValue("s");
+                        if ("b".equals(cellType)) {
+                            this.nextDataType = xssfDataType.BOOL;
+                        } else if ("e".equals(cellType)) {
+                            this.nextDataType = xssfDataType.ERROR;
+                        } else if ("inlineStr".equals(cellType)) {
+                            this.nextDataType = xssfDataType.INLINESTR;
+                        } else if ("s".equals(cellType)) {
+                            this.nextDataType = xssfDataType.SSTINDEX;
+                        } else if ("str".equals(cellType)) {
+                            this.nextDataType = xssfDataType.FORMULA;
+                        } else if (cellStyleStr != null) {
+                            int styleIndex1 = Integer.parseInt(cellStyleStr);
+                            XSSFCellStyle style = this.stylesTable.getStyleAt(styleIndex1);
+                            this.formatIndex = style.getDataFormat();
+                            this.formatString = style.getDataFormatString();
+                            if (this.formatString == null) {
+                                this.formatString = BuiltinFormats.getBuiltinFormat(this.formatIndex);
+                            }
+                        }
+                    } else if ("mergeCell".equals(name)) {
+                        String merge = attributes.getValue("ref");
+                        String[] merged = merge.split(":");
+                        String s = merged[0];
+                        String e = merged[1];
+                        ColumnRow start = ColumnRow.valueOf(s);
+                        ColumnRow end = ColumnRow.valueOf(e);
+                        mergeCells.put(start, end);
+                    }
+                } else {
+                    this.hfIsOpen = true;
+                    this.headerFooter.setLength(0);
+                }
+            }
+
+        }
+
+        public void endElement(String uri, String localName, String name) throws SAXException {
+            if (this.isTextTag(name)) {
+                this.vIsOpen = false;
+                switch (nextDataType) {
+                    case BOOL:
+                        char first = this.value.charAt(0);
+                        cellValue = first == 48 ? "FALSE" : "TRUE";
                         break;
+                    case ERROR:
+                        cellValue = "ERROR:" + this.value.toString();
+                        break;
+                    case FORMULA:
+                        if (this.formulasNotResults) {
+                            cellValue = this.formula.toString();
+                        } else {
+                            String rtsi1 = this.value.toString();
+                            if (this.formatString != null) {
+                                try {
+                                    double sstIndex1 = Double.parseDouble(rtsi1);
+                                    cellValue = this.formatter.formatRawCellContents(sstIndex1, this.formatIndex, this.formatString);
+                                } catch (NumberFormatException var11) {
+                                    cellValue = rtsi1;
+                                }
+                            } else {
+                                cellValue = rtsi1;
+                            }
+                        }
+                        break;
+                    case INLINESTR:
+                        XSSFRichTextString rtsi = new XSSFRichTextString(this.value.toString());
+                        cellValue = rtsi.toString();
+                        break;
+                    case SSTINDEX:
+                        processSSTIndex();
+                        break;
+                    case NUMBER:
+                        processNumber();
+                        break;
+                    default:
+                        cellValue = StringUtils.EMPTY;
+                }
+                if (lastColumnNumber == -1) {
+                    lastColumnNumber = 0;
+                }
+
+                for (int i = lastColumnNumber; i < thisColumn; ++i) {
+                    if (tempData.size() < thisColumn) {
+                        tempData.add(StringUtils.EMPTY);
                     }
                 }
-                thisColumn = nameToColumn(r.substring(0, firstDigit));
-                this.nextDataType = xssfDataType.NUMBER;
-                this.formatIndex = -1;
-                this.formatString = null;
-                String cellType = attributes.getValue("t");
-                String cellStyleStr = attributes.getValue("s");
-                if ("b".equals(cellType)) {
-                    nextDataType = xssfDataType.BOOL;
-                } else if ("e".equals(cellType)) {
-                    nextDataType = xssfDataType.ERROR;
-                } else if ("inlineStr".equals(cellType)) {
-                    nextDataType = xssfDataType.INLINESTR;
-                } else if ("s".equals(cellType)) {
-                    nextDataType = xssfDataType.SSTINDEX;
-                } else if ("str".equals(cellType)) {
-                    nextDataType = xssfDataType.FORMULA;
+                tempData.add(cellValue);
+
+                if (thisColumn > -1) {
+                    lastColumnNumber = thisColumn;
                 }
-                if (cellStyleStr != null) {
-                    int styleIndex = Integer.parseInt(cellStyleStr);
-                    XSSFCellStyle style = stylesTable.getStyleAt(styleIndex);
-                    this.formatIndex = style.getDataFormat();
-                    this.formatString = style.getDataFormatString();
-                    if (this.formatString == null) {
-                        this.formatString = BuiltinFormats.getBuiltinFormat(this.formatIndex);
-                    }
+            } else if ("f".equals(name)) {
+                this.fIsOpen = false;
+            } else if ("is".equals(name)) {
+                this.isIsOpen = false;
+            } else if ("row".equals(name)) {
+                tempRowDataList.add(tempData.toArray());
+                tempData = new ArrayList<String>();
+            } else if (!"oddHeader".equals(name) && !"evenHeader".equals(name) && !"firstHeader".equals(name)) {
+                if ("oddFooter".equals(name) || "evenFooter".equals(name) || "firstFooter".equals(name)) {
+                    this.hfIsOpen = false;
                 }
-                isEmpty = false;
-            } else if ("mergeCell".equals(name)) {
-                String merge = attributes.getValue("ref");
-                String[] merged = merge.split(":");
-                String s = merged[0];
-                String e = merged[1];
-                ColumnRow start = ColumnRow.valueOf(s);
-                ColumnRow end = ColumnRow.valueOf(e);
-                mergeCells.put(start, end);
+            } else {
+                this.hfIsOpen = false;
             }
         }
 
@@ -386,73 +510,21 @@ public class Excel2007Util {
                     cellValue = n;
                 }
             } else {
-                cellValue = n;
+                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "##.##");
             }
         }
 
-        public void processElement() {
-            switch (nextDataType) {
-                case BOOL:
-                    char first = value.charAt(0);
-                    cellValue = first == '0' ? "FALSE" : "TRUE";
-                    break;
-                case ERROR:
-                    cellValue = value.toString();
-                    break;
-                case FORMULA:
-                    cellValue = value.toString();
-                    break;
-                case INLINESTR:
-                    XSSFRichTextString rtsi = new XSSFRichTextString(value.toString());
-                    cellValue = rtsi.toString();
-                    break;
-                case SSTINDEX:
-                    processSSTIndex();
-                    break;
-                case NUMBER:
-                    processNumber();
-                    break;
-                default:
-                    cellValue = StringUtils.EMPTY;
-                    break;
-            }
-            if (lastColumnNumber == -1) {
-                lastColumnNumber = 0;
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            if (this.vIsOpen) {
+                this.value.append(ch, start, length);
             }
 
-            for (int i = lastColumnNumber; i < thisColumn; ++i) {
-                if (tempData.size() < thisColumn) {
-                    tempData.add(StringUtils.EMPTY);
-                }
-            }
-            tempData.add(cellValue);
-
-            if (thisColumn > -1) {
-                lastColumnNumber = thisColumn;
-            }
-        }
-
-        @Override
-        public void endElement(String uri, String localName, String name) throws SAXException {
-            if (preview && rowDataList.size() > BIBaseConstant.PREVIEW_COUNT) {
-                return;
-            }
-            cellValue = null;
-            if ("v".equals(name)) {
-                processElement();
-            } else if ("row".equals(name)) {
-//                processRow();
-                tempRowDataList.add(tempData.toArray());
-                tempData = new ArrayList<String>();
+            if (this.fIsOpen) {
+                this.formula.append(ch, start, length);
             }
 
-        }
-
-        @Override
-        public void characters(char[] ch, int start, int length)
-                throws SAXException {
-            if (vIsOpen) {
-                value.append(ch, start, length);
+            if (this.hfIsOpen) {
+                this.headerFooter.append(ch, start, length);
             }
         }
 

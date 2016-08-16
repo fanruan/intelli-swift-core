@@ -41,6 +41,7 @@ BI.SelectDataLevel0Item = BI.inherit(BI.Single, {
             blankWidth: o.layer * 20,
             text: o.text,
             value: o.value,
+            keyword: o.keyword,
             height: 25,
             textLgap: 10,
             textRgap: 5

@@ -5,7 +5,7 @@ BIShow.TargetView = BI.inherit(BI.View, {
     constants: {
         TARGET_BUTTON_HEIGHT: 25,
         COMBO_WIDTH: 25,
-        CALC_COMBO_WIDTH: 47,
+        CALC_COMBO_WIDTH: 25,
         CHECKBOX_WIDTH: 25,
         CONTAINER_HEIGHT: 25,
         ICON_BUTTON_WIDTH: 12
@@ -222,7 +222,7 @@ BIShow.TargetView = BI.inherit(BI.View, {
             self._updateTarget()
         });
 
-        return [this.calculateTargetButton, this.combo]
+        return [this.combo]
     },
 
     _checkUsedEnable: function () {

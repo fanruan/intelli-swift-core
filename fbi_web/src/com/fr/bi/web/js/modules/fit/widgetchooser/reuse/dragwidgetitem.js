@@ -142,6 +142,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 result.dimensions = dimensionsAndView.dimensions;
                 result.view = dimensionsAndView.view;
                 o.stop.apply(self, [widget.bounds, ui.position, result]);
+                BI.Utils.broadcastAllWidgets2Refresh();
             },
             helper: o.helper
         });
@@ -177,10 +178,10 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
         if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
             filter.filter_value = [];
             BI.each(filterValue, function (i, value) {
-                filter.filter_value.push(this._checkFilter(value));
+                filter.filter_value.push(this._checkFilter(value, dId));
             });
         }else{
-            filter.filter_value = oldFilter.filter_value;
+            BI.extend(filter, oldFilter);
             if(BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId){
                 var result = this._createDimensionsAndTargets(oldFilter.target_id);
                 filter.target_id = result.id;
@@ -191,9 +192,10 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
 
     _createDimensionsAndTargets: function (idx) {
         var self = this;
-        var dimension = BI.deepClone(self.oldDimensions[idx]);
-        if (BI.has(self.dimTarIdMap, idx)) {
-            return {id: self.dimTarIdMap[idx], dimension: self.dimensions[self.dimTarIdMap[idx]] || dimension};
+        var newId = this.dimTarIdMap[idx] || BI.UUID();
+        var dimension = BI.deepClone(this.oldDimensions[idx]);
+        if (BI.has(this.dimTarIdMap, idx) && BI.has(this.dimensions, [this.dimTarIdMap[idx]])) {
+            return {id: this.dimTarIdMap[idx], dimension: this.dimensions[this.dimTarIdMap[idx]]};
         }
         switch (self.oldDimensions[idx].type) {
             case BICst.TARGET_TYPE.STRING:
@@ -202,8 +204,8 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 if (BI.has(self.oldDimensions[idx], "dimension_map")) {
                     dimension.dimension_map = {};
                     BI.each(self.oldDimensions[idx].dimension_map, function (id, map) {
-                        //明细表dimensionmap存的key是tableId，与汇总表区分
-                        if(self.widgetType === BICst.WIDGET.DETAIL){
+                        //明细表和树控件dimensionmap存的key是tableId，与汇总表区分
+                        if(self.widgetType === BICst.WIDGET.DETAIL || self.widgetType === BICst.WIDGET.TREE){
                             dimension.dimension_map[id] = map;
                         }else{
                             var result = self._createDimensionsAndTargets(id);
@@ -237,15 +239,14 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 BI.each(expression.ids, function (id, tId) {
                     var result = self._createDimensionsAndTargets(tId);
                     if (BI.has(expression, "formula_value")) {
-                        expression.formula_value = expression.formula_value.replace(tId, result.id);
+                        expression.formula_value = expression.formula_value.replaceAll(tId, result.id);
                     }
                     expression.ids[id] = result.id;
                 });
                 break;
         }
-        var id = BI.UUID();
-        self.dimTarIdMap[idx] = id;
-        return {id: id, dimension: dimension};
+        self.dimTarIdMap[idx] = newId;
+        return {id: newId, dimension: dimension};
     },
 
     doRedMark: function () {

@@ -52,9 +52,9 @@ BI.TargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     },
 
-    populate: function (item) {
-        this.filterType.setValue(item.filter_type);
-        this._refreshFilterWidget(item.filter_type, item.filter_value);
+    populate: function (items, keyword, context) {
+        this.filterType.setValue(context.filter_type);
+        this._refreshFilterWidget(context.filter_type, context.filter_value);
     },
 
     _buildConditions: function () {
@@ -63,7 +63,8 @@ BI.TargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             return [];
         }
         this.fieldId = o._src.field_id;
-        var fieldName = BI.Utils.getFieldNameByID(this.fieldId);
+        var fieldName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(this.fieldId)) + "." +
+            BI.Utils.getFieldNameByID(this.fieldId);
 
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
@@ -93,7 +94,7 @@ BI.TargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
             self._setNodeData({
-                filter_type : this.getValue()[0]
+                filter_type: this.getValue()[0]
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -137,7 +138,7 @@ BI.TargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
         this.filterWidget.on(BI.SelectFieldDataCombo.EVENT_CONFIRM, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -154,9 +155,9 @@ BI.TargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             height: this._constant.BUTTON_HEIGHT,
             width: this._constant.INPUT_WIDTH
         });
-        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -164,7 +165,7 @@ BI.TargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return this.filterWidget;
     },
 
-    _setNodeData: function(v){
+    _setNodeData: function (v) {
         var o = this.options;
         o.node.set("data", BI.extend(o.node.get("data"), v));
     },

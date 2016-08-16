@@ -120,15 +120,21 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
     _initRegionSize: function () {
         var o = this.options;
-        if (o.isNeedFreeze === true && o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
+        if (o.isNeedFreeze === true) {
             var regionColumnSize = this.table.getRegionColumnSize();
             var maxWidth = this.table.element.width();
-            if (!regionColumnSize[0] || regionColumnSize[0] > maxWidth) {
+            if (!regionColumnSize[0] || (regionColumnSize[0] === 'fill') || regionColumnSize[0] > maxWidth || regionColumnSize[1] > maxWidth) {
                 var freezeCols = o.freezeCols;
-                if (freezeCols.length > 0) {
-                    this.table.setRegionColumnSize([maxWidth * 1.0 / 3, "fill"]);
-                } else {
+                if (freezeCols.length === 0) {
                     this.table.setRegionColumnSize([0, "fill"]);
+                } else if (freezeCols.length > 0 && freezeCols.length < o.columnSize.length) {
+                    var size = maxWidth / 3;
+                    if (freezeCols.length > o.columnSize.length / 2) {
+                        size = maxWidth * 2 / 3;
+                    }
+                    this.table.setRegionColumnSize([size, "fill"]);
+                } else {
+                    this.table.setRegionColumnSize(["fill", 0]);
                 }
             }
         }
@@ -224,7 +230,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         }
     },
 
-    _resizeRegion: function () {
+    _adjustRegion: function () {
         var o = this.options;
         var regionColumnSize = this.table.getCalculateRegionColumnSize();
         if (o.isNeedFreeze === true && o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
@@ -233,14 +239,22 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
             if (sumLeft < regionColumnSize[0] || regionColumnSize[0] >= (sumLeft + sumRight)) {
                 this.table.setRegionColumnSize([sumLeft, "fill"]);
             }
+            this._resizeRegion();
+        }
+    },
+
+    _resizeRegion: function () {
+        var o = this.options;
+        var regionColumnSize = this.table.getCalculateRegionColumnSize();
+        if (o.isNeedFreeze === true && o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
             var maxWidth = this.table.element.width();
             if (regionColumnSize[0] < 15 || regionColumnSize[1] < 15) {
                 var freezeCols = o.freezeCols;
-                if (freezeCols.length > 0) {
-                    this.table.setRegionColumnSize([(maxWidth / 3) | 0, "fill"]);
-                } else {
-                    this.table.setRegionColumnSize([0, "fill"]);
+                var size = maxWidth / 3;
+                if (freezeCols.length > o.columnSize.length / 2) {
+                    size = maxWidth * 2 / 3;
                 }
+                this.table.setRegionColumnSize([size, "fill"]);
             }
         }
     },
@@ -248,12 +262,13 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
     resize: function () {
         this.table.resize();
+        this._resizeRegion();
         this._resizeHeader();
     },
 
     setColumnSize: function (columnSize) {
         this.table.setColumnSize(columnSize);
-        this._resizeRegion();
+        this._adjustRegion();
         this._resizeHeader();
     },
 
@@ -267,7 +282,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
 
     setHeaderColumnSize: function (columnSize) {
         this.table.setHeaderColumnSize(columnSize);
-        this._resizeRegion();
+        this._adjustRegion();
         this._resizeHeader();
     },
 

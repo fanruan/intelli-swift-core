@@ -121,8 +121,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 textAlign: "left",
                 height: 25,
                 allowBlank: false,
-                errorText: function(v) {
-                    if(BI.isNotNull(v) && v.trim() !== "") {
+                errorText: function (v) {
+                    if (BI.isNotNull(v) && BI.trim(v) !== "") {
                         return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
                     }
                     return BI.i18nText("BI-Widget_Name_Can_Not_Null");
@@ -337,7 +337,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             isLayer: true
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
-        })
+        });
+        BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
     _refreshMagnifyButton: function () {

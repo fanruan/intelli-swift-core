@@ -76,16 +76,16 @@ BI.ChartCombineFormatItemFactory = {
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
                 "dataLabels":{
-                    "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                    "style": {fontFamily: "inherit", color: "#808080", fontSize: "12px"},
                     "formatter": {
                         "identifier": "${VALUE}",
                         "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                         "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
                     },
                     "align": "outside",
                     "enabled": false
@@ -151,9 +151,9 @@ BI.ChartCombineFormatItemFactory = {
                         "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                         "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                         "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "xFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                        "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                         "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "yFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                        "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
                     },
                     "shared": false,
                     "padding": 5,
@@ -169,7 +169,6 @@ BI.ChartCombineFormatItemFactory = {
                 },
                 "maxSize": 80,
                 "fillColorOpacity": 0.5,
-                "marker": {"symbol": "circle", "radius": 4.5, "enabled": true},
                 "step": false,
                 "force": false,
                 "minSize": 15,
@@ -212,7 +211,7 @@ BI.ChartCombineFormatItemFactory = {
                 enabled: false,
                 "borderColor": "rgb(0,0,0)",
                 "borderWidth": 1,
-                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                 style:{
                     "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
                 }

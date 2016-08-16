@@ -3,6 +3,7 @@ package com.fr.bi.test;
 import com.fr.bi.base.FinalLong;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -10,7 +11,6 @@ import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
-import com.fr.bi.util.BICubeDBUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
@@ -59,7 +59,7 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
         final int start = (times - 1) * count;
         final int end = times * count;
         final FinalLong all = new FinalLong();
-        BICubeDBUtils.runSQL(BIDBUtils.getSQLStatement("important", "items"), fields, new Traversal<BIDataValue>() {
+        DBQueryExecutor.getInstance().runSQL(BIDBUtils.getSQLStatement("important", "items"), fields, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
                 if (data.getRow() >= start && data.getRow() < end) {

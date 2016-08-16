@@ -21,10 +21,10 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
             width: 36,
             text: ""
         });
-        this.halfCheck.on(BI.MultiSelectBar.EVENT_CHANGE, function(){
-            if(this.isSelected()){
+        this.halfCheck.on(BI.MultiSelectBar.EVENT_CHANGE, function () {
+            if (this.isSelected()) {
                 self.resultList.setNotSelectedValue([]);
-            }  else {
+            } else {
                 self.resultList.setValue([]);
             }
         });
@@ -34,7 +34,7 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             chooseType: BI.Selection.Multi,
             behaviors: {
-                redmark: function(){
+                redmark: function () {
                     return true;
                 }
             },
@@ -49,9 +49,9 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
             items: []
         });
         this.resultList.on(BI.Controller.EVENT_CHANGE, function () {
-            if(this.getNotSelectedValue().length === 0){
+            if (this.getNotSelectedValue().length === 0) {
                 self.halfCheck.setSelected(true);
-            } else if(this.getValue().length === 0) {
+            } else if (this.getValue().length === 0) {
                 self.halfCheck.setSelected(false);
             } else {
                 self.halfCheck.setHalfSelected(true);
@@ -97,22 +97,27 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
         BI.each(items, function (i, item) {
             BI.extend(item, {
                 type: viewType === BI.TemplateManager.LIST_VIEW ? "bi.report_list_view_item" : "bi.report_card_view_item",
-                onClickReport: function(){
-                    FS.tabPane.addItem({
-                        title: item.text,
-                        src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
-                    });
+                isAdmin: o.isAdmin,
+                onClickReport: function () {
+                    try {
+                        FS.tabPane.addItem({
+                            title: item.text,
+                            src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
+                        });
+                    } catch (e) {
+                        window.open(FR.servletURL + item.buildUrl + "&edit=_bi_edit_", "_blank");
+                    }
                 },
-                onRenameReport: function(name){
+                onRenameReport: function (name) {
                     self.fireEvent(BI.ReportSearchResultPane.EVENT_REPORT_RENAME, item.id, name);
                 },
-                onDeleteReport: function(){
+                onDeleteReport: function () {
                     self.fireEvent(BI.ReportSearchResultPane.EVENT_DELETE, item.id);
                 },
-                validationChecker: function(name){
+                validationChecker: function (name) {
                     return o.reportChecker(name, item.id);
                 },
-                onClickHangout: function(){
+                onClickHangout: function () {
                     self.fireEvent(BI.ReportSearchResultPane.EVENT_HANGOUT, item.id);
                 }
             });
@@ -120,17 +125,17 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
         return items;
     },
 
-    getSelectedItems: function(){
+    getSelectedItems: function () {
         return this.resultList.getValue();
     },
 
-    empty: function(){
+    empty: function () {
         this.resultList.populate([]);
     },
 
     populate: function (items, keyword, viewType) {
         this.halfCheck.setSelected(false);
-        switch (viewType){
+        switch (viewType) {
             case BI.TemplateManager.LIST_VIEW:
                 this.resultList.attr("layouts", [{
                     type: "bi.vertical"

@@ -3,22 +3,7 @@
  * @class BI.BarChart
  * @extends BI.Widget
  */
-BI.BarChart = BI.inherit(BI.Widget, {
-
-    constants: {
-        LEFT_AXIS: 0,
-        RIGHT_AXIS: 1,
-        RIGHT_AXIS_SECOND: 2,
-        X_AXIS: 3,
-        ROTATION: -90,
-        NORMAL: 1,
-        LEGEND_BOTTOM: 4,
-        ZERO2POINT: 2,
-        ONE2POINT: 3,
-        TWO2POINT: 4,
-        MINLIMIT: 1e-6,
-        LEGEND_HEIGHT: 80
-    },
+BI.BarChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.BarChart.superclass._defaultConfig.apply(this, arguments), {
@@ -32,32 +17,18 @@ BI.BarChart = BI.inherit(BI.Widget, {
         this.xAxis = [{
             type: "value",
             title: {
-                style: {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                    "color": "#808080",
-                    "fontSize": "12px",
-                    "fontWeight": ""
-                }
+                style: this.constants.FONT_STYLE
             },
-            labelStyle: {
-                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             formatter: "function(){if(this>0) return this; else return this*(-1); }",
             gridLineWidth: 0
         }];
         this.yAxis = [{
             type: "category",
             title: {
-                style: {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                    "color": "#808080",
-                    "fontSize": "12px",
-                    "fontWeight": ""
-                }
+                style: this.constants.FONT_STYLE
             },
-            labelStyle: {
-                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
-            },
+            labelStyle: this.constants.FONT_STYLE,
             gridLineWidth: 0,
             position: "left"
         }];
@@ -76,15 +47,17 @@ BI.BarChart = BI.inherit(BI.Widget, {
     },
 
     _formatConfig: function (config, items) {
-        var self = this, o = this.options;
+        var self = this;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
         switch (this.config.chart_legend) {
             case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
+                BI.extend(config.legend, {
+                    enabled: true,
+                    position: "bottom",
+                    maxHeight: self.constants.LEGEND_HEIGHT
+                });
                 break;
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
@@ -96,35 +69,59 @@ BI.BarChart = BI.inherit(BI.Widget, {
                 break;
         }
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.dataSheet.enabled = this.config.show_data_table;
-        if (config.dataSheet.enabled === true) {
-            config.xAxis[0].showLabel = false;
-        }
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        if(this.config.show_zoom === true){
+        if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
 
         //分类轴
         config.yAxis = this.yAxis;
-        if(this.config.show_x_axis_title === true){
-            config.yAxis[0].title.text = this.config.x_axis_title
-        }else{
-            config.yAxis[0].title.text = "";
-        }
-        config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         config.yAxis[0].title.rotation = this.constants.ROTATION;
-        config.yAxis[0].labelRotation = this.config.text_direction;
+        BI.extend(config.yAxis[0], {
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            labelRotation: this.config.text_direction,
+            enableTick: this.config.enable_tick,
+            lineWidth: this.config.line_width
+        });
 
         //值轴
-        config.xAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.X_AXIS);
-        formatNumberLevelInXaxis(this.config.left_y_axis_number_level);
-        config.xAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
-        config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
+        self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
+        config.xAxis[0].title.text = getXAxisTitle(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.align = "center";
-        config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        BI.extend(config.xAxis[0], {
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level),
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            enableTick: this.config.enable_tick,
+            showLabel: this.config.show_label,
+            lineWidth: this.config.line_width,
+            enableMinorTick: this.config.enable_minor_tick
+        });
         config.chartType = "bar";
+
+        //为了给数据标签加个%,还要遍历所有的系列，唉
+        if (config.plotOptions.dataLabels.enabled === true) {
+            BI.each(items, function (idx, item) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    item.dataLabels = {
+                        "style": self.constants.FONT_STYLE,
+                        "align": "outside",
+                        enabled: true,
+                        formatter: {
+                            identifier: "${VALUE}",
+                            valueFormat: config.xAxis[0].formatter
+                        }
+                    };
+                }
+            });
+        }
+        config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
+
+        //极简模式
+        //     delete config.xAxis[0].plotLines;
+        //     delete config.yAxis[0].plotLines
+
         return [items, config];
 
         function formatChartStyle() {
@@ -140,18 +137,13 @@ BI.BarChart = BI.inherit(BI.Widget, {
         function formatCordon() {
             BI.each(self.config.cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
-                    var magnify = calcMagnify(self.config.left_y_axis_number_level);
+                    var magnify = self.calcMagnify(self.config.left_y_axis_number_level);
                     self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {
-                                    "fontFamily": "Arial",
-                                    "color": "rgba(0,0,0,1.0)",
-                                    "fontSize": "9pt",
-                                    "fontWeight": ""
-                                },
+                                "style": self.constants.FONT_STYLE,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -162,10 +154,10 @@ BI.BarChart = BI.inherit(BI.Widget, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = calcMagnify(self.config.x_axis_number_level);
+                            magnify = self.calcMagnify(self.config.x_axis_number_level);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
@@ -173,12 +165,7 @@ BI.BarChart = BI.inherit(BI.Widget, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": {
-                                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                                    "color": "#808080",
-                                    "fontSize": "12px",
-                                    "fontWeight": ""
-                                },
+                                "style": self.constants.FONT_STYLE,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -188,42 +175,7 @@ BI.BarChart = BI.inherit(BI.Widget, {
             })
         }
 
-        function formatNumberLevelInXaxis(type) {
-            var magnify = calcMagnify(type);
-            if (magnify > 1) {
-                BI.each(items, function (idx, item) {
-                    BI.each(item.data, function (id, da) {
-                        da.x = da.x || 0;
-                        da.x = da.x.div(magnify);
-                        if(self.constants.MINLIMIT.sub(Math.abs(da.x)) > 0){
-                            da.x = 0;
-                        }
-                    })
-                })
-            }
-        }
-
-        function calcMagnify(type) {
-            var magnify = 1;
-            switch (type) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    magnify = 1;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    magnify = 10000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    magnify = 1000000;
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    magnify = 100000000;
-                    break;
-            }
-            return magnify;
-        }
-
-        function getXYAxisUnit(numberLevelType, position) {
+        function getXAxisTitle(numberLevelType, position) {
             var unit = "";
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -245,35 +197,9 @@ BI.BarChart = BI.inherit(BI.Widget, {
             if (position === self.constants.LEFT_AXIS) {
                 self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
-            return unit === "" ? unit : "(" + unit + ")";
-        }
+            unit = unit === "" ? unit : "(" + unit + ")";
 
-        function formatTickInXYaxis(type, position) {
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
-            }
-            if (position === self.constants.X_AXIS) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    if (type === self.constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
-                }
-            }
-            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+            return self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + unit : unit;
         }
     },
 
@@ -309,11 +235,14 @@ BI.BarChart = BI.inherit(BI.Widget, {
             x_axis_title: options.x_axis_title || "",
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            show_data_table: options.show_data_table || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             show_zoom: options.show_zoom || false,
             text_direction: options.text_direction || 0,
-            cordon: options.cordon || []
+            cordon: options.cordon || [],
+            line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
         };
         this.options.items = items;
         var types = [];

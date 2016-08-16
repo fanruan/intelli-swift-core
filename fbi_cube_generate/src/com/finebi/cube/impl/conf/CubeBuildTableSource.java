@@ -119,4 +119,14 @@ public class CubeBuildTableSource extends AbstractCubeBuild implements CubeBuild
     public boolean isSingleTable() {
         return true;
     }
+
+    @Override
+    public boolean copyFileFromOldCubes() {
+        return false;
+    }
+
+    @Override
+    public boolean replaceOldCubes() {
+        return false;
+    }
 }

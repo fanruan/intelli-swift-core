@@ -109,7 +109,15 @@ BI.Fit = BI.inherit(BI.Widget, {
                     self._startDrag(id, ui.position, e);
                 },
                 drag: function (e, ui) {
-                    var r = self.arrangement.getRegionByName(id);
+                    var r;
+                    switch (self.getLayoutType()) {
+                        case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                            r = size || {};
+                            break;
+                        case BI.Arrangement.LAYOUT_TYPE.FREE:
+                            r = self.arrangement.getRegionByName(id);
+                            break;
+                    }
                     self._drag(id, ui.position, {
                         width: r.width,
                         height: r.height
@@ -308,6 +316,10 @@ BI.Fit = BI.inherit(BI.Widget, {
         return this.arrangement.getLayoutType();
     },
 
+    getLayoutRatio: function () {
+        return this.arrangement.getLayoutRatio();
+    },
+
     getAllRegions: function () {
         var regions = this.arrangement.getAllRegions();
         var result = [];
@@ -325,6 +337,7 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
+            layoutRatio: this.getLayoutRatio(),
             layoutType: this.getLayoutType(),
             regions: this.getAllRegions()
         }
@@ -371,13 +384,10 @@ BI.Fit = BI.inherit(BI.Widget, {
         return flag;
     },
 
-    resize: function () {
-        this.arrangement.resize();
-    },
-
     populate: function () {
         var self = this;
         var layoutType = Data.SharingPool.get("layoutType");
+        var layoutRatio = Data.SharingPool.get("layoutRatio");
         if (BI.isNull(layoutType)) {
             layoutType = BI.Arrangement.LAYOUT_TYPE.FREE;
         }
@@ -397,10 +407,14 @@ BI.Fit = BI.inherit(BI.Widget, {
         this._changeLayoutType(layoutType);
         this.setLayoutType(layoutType);
         this.arrangement.populate(result);
+        BI.nextTick(function () {
+            self.arrangement.zoom(layoutRatio);
+            self.fireEvent(BI.Fit.EVENT_CHANGE);
+        });
     },
 
     destroy: function () {
-        BI.Resizers.remove(this.getName());
+        this.arrangement.destroy();
         BI.Fit.superclass.destroy.apply(this, arguments);
     }
 });

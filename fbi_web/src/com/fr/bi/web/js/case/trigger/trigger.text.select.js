@@ -32,7 +32,8 @@ BI.SelectTextTrigger = BI.inherit(BI.Trigger, {
         var o = this.options;
         vals = BI.isArray(vals) ? vals : [vals];
         var result = [];
-        BI.each(this.options.items, function (i, item) {
+        var items = BI.Tree.transformToArrayFormat(this.options.items);
+        BI.each(items, function (i, item) {
             if (BI.deepContains(vals, item.value)) {
                 result.push(item.text || item.value);
             }

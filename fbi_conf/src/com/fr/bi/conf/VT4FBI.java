@@ -6,6 +6,7 @@ package com.fr.bi.conf;
 import com.fr.base.FRContext;
 import com.fr.base.chart.ChartRegisterForBI;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.fs.FSRegisterForBI;
 import com.fr.general.FUNC;
 import com.fr.general.VT4FR;
 import com.fr.json.JSONException;
@@ -328,7 +329,7 @@ public final class VT4FBI {
         LicUtils.resetBytes();
         LicUtils.retryLicLock();
         FUNC.refreshFuntions();
-        //FSRegisterForBI.setSupportFS(supportBIFS());
+        FSRegisterForBI.setSupportFS(supportBIFS());
         ChartRegisterForBI.setSupportDynamicChart(supportChartLink());
     }
 

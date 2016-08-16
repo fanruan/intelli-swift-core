@@ -45,6 +45,12 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
 
     protected abstract void initial();
 
+
+    public void buildStructure(){
+        detailDataService.buildStructure();
+        groupDataService.buildStructure();
+        indexDataService.buildStructure();
+    }
     @Override
     public void setRelationManagerService(ICubeRelationManagerService relationManagerService) {
         this.relationManagerService = relationManagerService;
@@ -92,6 +98,9 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     }
 
     private T convert(Object value) {
+        if (value == null){
+            return null;
+        }
         if (BITypeUtils.isAssignable(Long.class, value.getClass()) &&
                 getClassType() == DBConstant.CLASS.DOUBLE) {
             return convertDouble(value);
@@ -99,6 +108,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
                 getClassType() == DBConstant.CLASS.LONG) {
             return convertLong(value);
         }
+
         return (T) value;
     }
 

@@ -93,11 +93,11 @@ BI.ExcelViewSettingItem = BI.inherit(BI.BasicButton, {
         }
     },
 
-    populate: function (op) {
-        this.row = op.row;
-        this.col = op.col;
-        this.field.setText(op.field);
-        this.cell.setText(this._getShowText(op.row, op.col));
+    populate: function (items, keyword, context) {
+        this.row = context.row;
+        this.col = context.col;
+        this.field.setText(context.field);
+        this.cell.setText(this._getShowText(context.row, context.col));
     }
 });
 $.shortcut('bi.excel_view_setting_item', BI.ExcelViewSettingItem);

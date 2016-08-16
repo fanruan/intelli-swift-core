@@ -1,6 +1,8 @@
 package com.fr.bi.cube.engine.Executor;
 
-import com.fr.bi.cube.engine.exception.TerminateExecutorException;
+import com.fr.bi.cal.analyze.cal.Executor.ILazyExecutorOperation;
+import com.fr.bi.cal.analyze.cal.Executor.LazyExecutor;
+import com.fr.bi.cal.analyze.cal.Executor.LazyExecutorPartner;
 import com.fr.bi.utility.TestUtil;
 
 import java.util.ArrayList;
@@ -57,13 +59,13 @@ public class LazyExecutorPartner4Test extends LazyExecutorPartner<Object> implem
     }
 
     @Override
-    public boolean jumpCurrentOne(Integer para) throws TerminateExecutorException {
+    public boolean jumpCurrentOne(Integer para) {
         TestUtil.wasteTime(TIME);
         return false;
     }
 
     @Override
-    public void mainTask(Integer para_1, Integer para_2) throws TerminateExecutorException {
+    public void mainTask(Integer para_1, Integer para_2)  {
         this.result.add(para_1);
     }
 

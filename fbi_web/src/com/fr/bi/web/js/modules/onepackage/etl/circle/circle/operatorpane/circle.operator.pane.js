@@ -170,7 +170,7 @@ BI.CircleOperatorPane = BI.inherit(BI.LoadingPane, {
         var showTextField = this.circleShowTextFieldCombo.getValue();
         var conditionValue = this.tab.getValue(), o = this.options;
         var manageValue = this.circleManageCombo.getValue()[0];
-        if(BI.isNull(showTextField.type) || (showTextField.type === BI.Selection.Multi && BI.isEmpty(showTextField.value))){
+        if(BI.isEmpty(showTextField)){
             this.constructRelationButton.setEnable(false);
             this.constructRelationButton.setTitle(BI.i18nText("BI-Please_Select_Show_Text_Fields"));
             return;
@@ -242,11 +242,7 @@ BI.CircleOperatorPane = BI.inherit(BI.LoadingPane, {
     },
 
     _assertMultiSelectComboValue: function(){
-        var value = this.circleShowTextFieldCombo.getValue();
-        if(value.type === BI.Selection.Multi){
-            return value.value;
-        }
-        return value.assist;
+        return this.circleShowTextFieldCombo.getValue();
     },
 
     getValue: function(){

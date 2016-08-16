@@ -1,8 +1,11 @@
 package com.fr.bi.cube.engine.sssecret;
 
+import com.fr.bi.cal.analyze.cal.result.NewRootNodeChild;
+import com.fr.bi.cal.analyze.cal.sssecret.IGroupValueTraveller;
 import com.fr.bi.cube.engine.index.GroupValueIndex;
 import com.fr.bi.cube.engine.result.NewRootNodeChild;
 import com.fr.bi.cube.engine.store.ColumnNameKey;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,7 +30,6 @@ public class GroupValueTraveller4Test implements IGroupValueTraveller {
 
         return content.iterator();
     }
-
 
     @Override
     public NewRootNodeChild getCurrentNodeChild(GroupValueIndex parentIndex, Map.Entry entry, boolean usePeriodFilter) {

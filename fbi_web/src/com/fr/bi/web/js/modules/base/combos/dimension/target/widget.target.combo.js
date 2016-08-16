@@ -138,6 +138,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
         var view = BI.Utils.getWidgetViewByID(wId);
+        var minimalist = BI.Utils.getWSMinimalistByID(wId);
         var result = BI.find(view[BICst.REGION.TARGET2], function (idx, did) {
             return did === o.dId;
         });
@@ -153,41 +154,94 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.COMPARE_AREA:
             case BICst.WIDGET.RANGE_AREA:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-                item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
-                    el: item[this.constants.CordonPos][0],
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
-                item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
-                    el: item[this.constants.CordonPos][0],
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Vertical") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
-                break;
             case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
-                    el: item[this.constants.CordonPos][0],
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+                break;
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                item[this.constants.CordonPos][0] = {
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                item[0][this.constants.CHART_TYPE_POSITION] = {
+                    el: {
+                        text: BI.i18nText("BI-Chart_Type"),
+                        value: BICst.TARGET_COMBO.CHART_TYPE,
+                        iconCls1: "",
+                        disabled: false
+                    },
+                    children: [{
+                        text: BI.i18nText("BI-Column_Chart"),
+                        value: BICst.WIDGET.AXIS,
+                        cls: "dot-e-font"
+                    }, {
+                        text: BI.i18nText("BI-Line_Chart"),
+                        value: BICst.WIDGET.LINE,
+                        cls: "dot-e-font"
+                    }, {
+                        text: BI.i18nText("BI-Area_Chart"),
+                        value: BICst.WIDGET.AREA,
+                        cls: "dot-e-font"
+                    }]
+                };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 break;
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.BUBBLE:
@@ -200,13 +254,16 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        item[this.constants.CordonPos][0].disabled = true;
+                        BI.removeAt(item, this.constants.CordonPos);
                         BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                         return item;
                 }
-                item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
-                    el: item[this.constants.CordonPos][0],
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + text + ")",
                         value: BICst.TARGET_COMBO.CORDON

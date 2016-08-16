@@ -473,7 +473,7 @@ BICst.SVG_MAP_TYPE = [{
     text: BI.i18nText("BI-CHONGQINGSHI"),
     title: BI.i18nText("BI-CHONGQINGSHI"),
     value: BICst.MAP_TYPE.CHONGQINGSHI,
-    cls: "drag-map-china-icon"
+    cls: "drag-map-svg-icon"
 }, {
     text: BI.i18nText("BI-SHANGHAISHI"),
     title: BI.i18nText("BI-SHANGHAISHI"),
@@ -1297,6 +1297,15 @@ BICst.RADAR_CHART_STYLE_GROUP = [{
     value: BICst.CHART_SHAPE.CIRCLE
 }];
 
+//堆积雷达图类型
+BICst.ACC_RADAR_CHART_STYLE_GROUP = [{
+    cls: "acc_radar-chart-style-polygon-icon",
+    value: BICst.CHART_SHAPE.POLYGON
+}, {
+    cls: "acc_radar-chart-style-circle-icon",
+    value: BICst.CHART_SHAPE.CIRCLE
+}];
+
 //仪表盘类型
 BICst.DASHBOARD_CHART_STYLE_GROUP = [{
     cls: "dashboard-chart-style-360-icon",
@@ -1308,12 +1317,12 @@ BICst.DASHBOARD_CHART_STYLE_GROUP = [{
     value: BICst.CHART_SHAPE.HALF_DASHBOARD
 }, {
     cls: "dashboard-chart-style-percent-icon",
-    title: BI.i18nText("BI-Percent_Donut_Dashboard"),
-    value: BICst.CHART_SHAPE.PERCENT_DASHBOARD
-}, {
-    cls: "dashboard-chart-style-percent-scale-slot-icon",
     title: BI.i18nText("BI-Percent_Scale_Slot_Dashboard"),
     value: BICst.CHART_SHAPE.PERCENT_SCALE_SLOT
+}, {
+    cls: "dashboard-chart-style-percent-scale-slot-icon",
+    title: BI.i18nText("BI-Percent_Donut_Dashboard"),
+    value: BICst.CHART_SHAPE.PERCENT_DASHBOARD
 }, {
     cls: "dashboard-chart-style-vertical-tube-icon",
     title: BI.i18nText("BI-Vertical_Tube"),
@@ -1334,11 +1343,11 @@ BICst.CHART_SCALE_SETTING = [{
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
     text: BI.i18nText("BI-Bubble_Without_Shadow"),
-    cls: "bubble-style-button bubble-no-projector",
+    cls: "bubble-no-projector",
     value: BICst.CHART_SHAPE.NO_PROJECTOR
 }, {
     text: BI.i18nText("BI-Bubble_With_Shadow"),
-    cls: "bubble-style-button bubble-with-projector",
+    cls: "bubble-with-projector",
     value: BICst.CHART_SHAPE.PROJECTOR
 }];
 
@@ -1397,9 +1406,22 @@ BICst.DEFAULT_CHART_SETTING = {
     x_axis_title: "",
     text_direction: "0",
     chart_legend: BICst.CHART_LEGENDS.BOTTOM,
+    mini_chart_legend: BICst.CHART_LEGENDS.NOT_SHOW,
     show_data_label: false,
+    mini_show_data_label: true,
     show_data_table: false,
     show_grid_line: true,
+    mini_show_grid_line: false,
+    minimalist_model: false,
+    line_width: BICst.LINE_WIDTH.ONE,
+    mini_line_width: BICst.LINE_WIDTH.ZERO,
+    show_label: true,
+    mini_show_label: false,
+    enable_tick: true,
+    mini_enable_tick: false,
+    enable_minor_tick: true,
+    mini_enable_minor_tick: false,
+    show_custom_scale: false,
     show_zoom: false,
     null_continue: true,
     bubble_display: BICst.DISPLAY_RULES.DIMENSION,
@@ -1411,7 +1433,7 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         min: 0,
         max: 100,
         closemin: true,
-        clasemax: false
+        closemax: false
     },
     color: "#65B3EE"
 }, {
@@ -1419,7 +1441,7 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         min: 100,
         max: 200,
         closemin: true,
-        clasemax: false
+        closemax: false
     },
     color: "#95E1AA"
 }, {
@@ -1427,7 +1449,7 @@ BICst.DASHBOARD_STYLE_CONDITIONS = [{
         min: 200,
         max: 300,
         closemin: true,
-        clasemax: true
+        closemax: true
     },
     color: "#F8D08E"
 }];
@@ -1437,41 +1459,41 @@ BICst.MAP_STYLE_CONDITIONS = [{
         min: 0,
         max: 100,
         closemin: true,
-        clasemax: false
+        closemax: false
     },
-    color: "#09ABE9"
+    color: "#65B3EE"
 }, {
     range: {
         min: 100,
         max: 200,
         closemin: true,
-        clasemax: false
+        closemax: false
     },
-    color: "#09ABE9"
+    color: "#95E1AA"
 }, {
     range: {
         min: 200,
         max: 300,
-        closemin: true,
-        clasemax: true
+        closemin: false,
+        closemax: true
     },
-    color: "#09ABE9"
+    color: "#F8D08E"
 }, {
     range: {
         min: 300,
         max: 400,
-        closemin: true,
-        clasemax: true
+        closemin: false,
+        closemax: true
     },
-    color: "#09ABE9"
+    color: "#e697c8"
 }, {
     range: {
         min: 400,
         max: 500,
         closemin: true,
-        clasemax: true
+        closemax: true
     },
-    color: "#09ABE9"
+    color: "#a484b9"
 }];
 
 BICst.CAL_TARGET_TYPE = [{
@@ -1692,6 +1714,15 @@ BICst.TARGET_STYLE_LEVEL_SHORT = [{
     text: BI.i18nText("BI-Normal"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
 }, {
+    text: BI.i18nText("BI-Wan"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND
+}, {
+    text: BI.i18nText("BI-Million"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.MILLION
+}, {
+    text: BI.i18nText("BI-Yi"),
+    value: BICst.TARGET_STYLE.NUM_LEVEL.YI
+}, {
     text: "%",
     value: BICst.TARGET_STYLE.NUM_LEVEL.PERCENT
 }];
@@ -1743,4 +1774,10 @@ BICst.CHART_LEGEND = [{
     value: BICst.CHART_LEGENDS.RIGHT
 }];
 
-
+BICst.PERCENTAGE_SHOW = [{
+    text: BI.i18nText("BI-Display"),
+    value: BICst.PERCENTAGE.SHOW
+}, {
+    text: BI.i18nText("BI-Hidden"),
+    value: BICst.PERCENTAGE.NOT_SHOW
+}];

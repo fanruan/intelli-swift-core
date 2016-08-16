@@ -23,6 +23,7 @@ BI.DetailSelectDataLevel2DateNode = BI.inherit(BI.NodeButton, {
             cls: "select-data-field-date-group-font",
             text: o.text,
             value: o.value,
+            keyword: o.keyword,
             height: o.height,
             textLgap: 10,
             textRgap: 5
@@ -47,7 +48,7 @@ BI.DetailSelectDataLevel2DateNode = BI.inherit(BI.NodeButton, {
                 el: {
                     type: "bi.layout"
                 },
-                width: 35
+                width: 40
             },{
                 el: this.button
             }, {

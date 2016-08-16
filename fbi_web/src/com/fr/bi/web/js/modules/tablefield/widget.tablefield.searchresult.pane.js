@@ -175,11 +175,9 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
     _createRelationButton: function (fieldId) {
         var self = this;
         var onRelationChange = this.options.onRelationsChange;
-        var relationIds = this._getRelationIds(fieldId);
         var relationButton = BI.createWidget({
             type: "bi.relation_tables_button",
-            relationIds: relationIds,
-            translations: this.translations
+            relation_tables: this._getRelationTables(fieldId)
         });
         relationButton.on(BI.RelationTablesButton.EVENT_CHANGE, function () {
             onRelationChange(fieldId);
@@ -223,7 +221,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         });
         transName.on(BI.SignEditor.EVENT_CHANGE, function () {
             transName.setTitle(transName.getValue());
-            self.translations[tId + fieldName] = transName.getValue();
+            self.translations[fieldId] = transName.getValue();
             onTranslationsChange(self.translations);
         });
         return BI.createWidget({
@@ -232,24 +230,28 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         });
     },
 
-    _getRelationIds: function (fieldId) {
+    _getRelationTables: function (fieldId) {
         var relations = this.tableInfo.relations;
+        var translations = this.tableInfo.translations;
+        var allFields = this.tableInfo.all_fields;
         var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
         var currentPrimKey = primKeyMap[fieldId] || [], currentForKey = foreignKeyMap[fieldId];
-        var relationIds = [];
+        var relationTables = [], relationIds = [];
         BI.each(currentPrimKey, function (i, maps) {
-            var table = maps.primaryKey;
-            if (table.field_id === fieldId) {
-                relationIds.push(maps.foreignKey.field_id);
+            var pk = maps.primaryKey, fk = maps.foreignKey;
+            if (pk.field_id === fieldId && fk.field_id !== fieldId && !relationIds.contains(fk.field_id)) {
+                relationIds.push(fk.field_id);
+                relationTables.push(translations[allFields[fk.field_id].table_id]);
             }
         });
         BI.each(currentForKey, function (i, maps) {
-            var table = maps.foreignKey;
-            if (table.field_id === fieldId) {
-                relationIds.push(maps.primaryKey.field_id);
+            var pk = maps.primaryKey, fk = maps.foreignKey;
+            if (fk.field_id === fieldId && pk.field_id !== fieldId && !relationIds.contains(pk.field_id)) {
+                relationIds.push(pk.field_id);
+                relationTables.push(translations[allFields[pk.field_id].table_id]);
             }
         });
-        return relationIds;
+        return relationTables;
     },
 
     _createIsUsable: function (field) {

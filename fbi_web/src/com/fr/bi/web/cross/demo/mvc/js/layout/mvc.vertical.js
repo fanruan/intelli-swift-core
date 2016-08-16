@@ -2,7 +2,7 @@
 VerticalView = BI.inherit(BI.View, {
     _defaultConfig: function(){
         return BI.extend(VerticalView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-vertical bi-mvc-layout"
+            baseCls: "bi-mvc-vertical bi-mvc-layout"
         })
     },
 

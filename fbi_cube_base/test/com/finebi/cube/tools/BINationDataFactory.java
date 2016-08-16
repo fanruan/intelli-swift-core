@@ -70,4 +70,30 @@ public class BINationDataFactory {
         source.getPersistentTable();
         return source;
     }
+    public static CubeTableSource createTableNationByPart() {
+        BINationDataSourceTool source = new BINationDataSourceTool();
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
+        columns.add(new BICubeFieldSource(source, "id", DBConstant.CLASS.LONG, 255));
+        columns.add(new BICubeFieldSource(source, "name", DBConstant.CLASS.STRING, 10));
+
+        List<Long> id = new ArrayList<Long>();
+        id.add(3L);
+        id.add(4L);
+        id.add(5L);
+        List<String> name = new ArrayList<String>();
+        name.add("Japan");
+        name.add("Canada");
+        name.add("Mexio");
+        source.setRowCount(id.size());
+
+        Map<Integer, List> content = new HashMap<Integer, List>();
+        content.put(0, id);
+        content.put(1, name);
+
+        source.setFieldList(columns);
+        source.setContents(content);
+        source.setSourceID("nations");
+        source.getPersistentTable();
+        return source;
+    }
 }

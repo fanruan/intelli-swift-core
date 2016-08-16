@@ -3,23 +3,7 @@
  * @class BI.MapChart
  * @extends BI.Widget
  */
-BI.MapChart = BI.inherit(BI.Widget, {
-
-    constants: {
-        LEFT_AXIS: 0,
-        RIGHT_AXIS: 1,
-        RIGHT_AXIS_SECOND: 2,
-        X_AXIS: 3,
-        ROTATION: -90,
-        NORMAL: 1,
-        LEGEND_BOTTOM: 4,
-        ZERO2POINT: 2,
-        ONE2POINT: 3,
-        TWO2POINT: 4,
-        STYLE_NORMAL: 21,
-        theme_color: "#65bce7",
-        auto_custom: 1
-    },
+BI.MapChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.MapChart.superclass._defaultConfig.apply(this, arguments), {
@@ -40,37 +24,35 @@ BI.MapChart = BI.inherit(BI.Widget, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this, o = this.options, c = this.constants;
         formatRangeLegend();
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
-        config.plotOptions.bubble.color = this.config.map_bubble_color;
-        //config.plotOptions.color = BI.isArray(this.config.theme_color) ? this.config.theme_color : [this.config.theme_color];
         var formatterArray = [];
-        BI.backEach(items, function(idx, item){
-            if(BI.has(item, "settings")){
+        BI.backEach(items, function (idx, item) {
+            if (BI.has(item, "settings")) {
                 formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL));
             }
         });
-        config.plotOptions.tooltip.formatter = function(){
+        config.plotOptions.tooltip.formatter = function () {
             var tip = this.name;
-            BI.each(this.points, function(idx, point){
+            BI.each(this.points, function (idx, point) {
                 var value = point.size || point.y;
-                tip += ('<div>' + point.seriesName + ':' + (window.FR ? FR.contentFormat(value, formatterArray[idx]) : value) + '</div>');
+                tip += ('<div>' + point.seriesName + ':' + BI.contentFormat(value, formatterArray[idx]) + '</div>');
             });
             return tip;
         };
-        config.plotOptions.dataLabels.formatter.valueFormat = function(){
-            return window.FR ? FR.contentFormat(arguments[0], formatterArray[0]) : arguments[0];
+        config.plotOptions.dataLabels.formatter.valueFormat = function () {
+            return BI.contentFormat(arguments[0], formatterArray[0]);
         };
 
         config.geo = this.config.geo;
-        if(this.config.initDrillPath.length > 1){
+        if (this.config.initDrillPath.length > 1) {
             config.initDrillPath = this.config.initDrillPath;
         }
-        config.dTools.click = function(point){
+        config.dTools.click = function (point) {
             point = point || {};
             var pointOption = point.pointOption || {};
             self.fireEvent(BI.MapChart.EVENT_CLICK_DTOOL, pointOption);
@@ -79,10 +61,10 @@ BI.MapChart = BI.inherit(BI.Widget, {
         delete config.xAxis;
         delete config.yAxis;
 
-        var find = BI.find(items, function(idx, item){
+        var find = BI.find(items, function (idx, item) {
             return BI.has(item, "type") && item.type === "areaMap";
         });
-        if(BI.isNull(find)){
+        if (BI.isNull(find)) {
             items.push({
                 type: "areaMap",
                 data: []
@@ -90,31 +72,49 @@ BI.MapChart = BI.inherit(BI.Widget, {
         }
         return [items, config];
 
-        function formatRangeLegend(){
-            switch (self.config.chart_legend){
+        function formatRangeLegend() {
+            config.rangeLegend.enabled = true;
+            switch (self.config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
-                    config.rangeLegend.enabled = true;
                     config.rangeLegend.visible = true;
                     config.rangeLegend.position = "bottom";
                     break;
                 case BICst.CHART_LEGENDS.RIGHT:
-                    config.rangeLegend.enabled = true;
                     config.rangeLegend.visible = true;
                     config.rangeLegend.position = "right";
                     break;
                 case BICst.CHART_LEGENDS.NOT_SHOW:
-                    config.rangeLegend.enabled = true;
                     config.rangeLegend.visible = false;
                     break;
             }
             config.rangeLegend.continuous = false;
-            config.rangeLegend.range = getRangeStyle(self.config.map_styles , self.config.auto_custom , self.config.theme_color);
-            /*config.rangeLegend.formatter = function(){
-                return this.from;
-            }*/
+            config.rangeLegend.range = getRangeStyle(self.config.map_styles, self.config.auto_custom, self.config.theme_color);
+            config.rangeLegend.formatter = function () {
+                var to = this.to;
+                if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
+                    switch (items[0].settings.num_level || c.NORMAL) {
+                        case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                            to += '';
+                            break;
+                        case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                            to += BI.i18nText("BI-Wan");
+                            break;
+                        case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                            to += BI.i18nText("BI-Million");
+                            break;
+                        case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                            to += BI.i18nText("BI-Yi");
+                            break;
+                        case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                            to = BI.contentFormat(BI.parseFloat(to), "#0%");
+                            break;
+                    }
+                }
+                return to
+            };
         }
 
-        function formatToolTipAndDataLabel(format, numberLevel){
+        function formatToolTipAndDataLabel(format, numberLevel) {
             var formatter = '#.##';
             switch (format) {
                 case self.constants.NORMAL:
@@ -130,26 +130,42 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     formatter = '#0.00';
                     break;
             }
-            if (numberLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                if (format === self.constants.NORMAL) {
-                    formatter = '#0%'
-                } else {
-                    formatter += '%';
-                }
+
+            switch (numberLevel) {
+                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                    formatter += '';
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                    formatter += BI.i18nText("BI-Wan");
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                    formatter += BI.i18nText("BI-Million");
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                    formatter += BI.i18nText("BI-Yi");
+                    break;
+                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                    if (format === self.constants.NORMAL) {
+                        formatter = '#0%'
+                    } else {
+                        formatter += '%';
+                    }
+                    break;
             }
+
             return formatter;
         }
 
-        function getRangeStyle (styles , change , defaultColor) {
+        function getRangeStyle(styles, change, defaultColor) {
             var range = [], color = null, defaultStyle = {};
             var conditionMax = null, conditionMin = null, max = null, min = null;
 
-            BI.each(items , function (idx , item) {
-                BI.each(item.data , function (id , it) {
-                    if(BI.isNull(min) || min > it.y) {
+            BI.each(items, function (idx, item) {
+                BI.each(item.data, function (id, it) {
+                    if (BI.isNull(min) || BI.parseFloat(min) > BI.parseFloat(it.y)) {
                         min = it.y
                     }
-                    if(BI.isNull(max) || max < it.y) {
+                    if (BI.isNull(max) || BI.parseFloat(max) < BI.parseFloat(it.y)) {
                         max = it.y
                     }
                 })
@@ -160,7 +176,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
                     defaultStyle.color = defaultColor;
                     return defaultStyle;
                 case BICst.SCALE_SETTING.CUSTOM:
-                    if(styles.length !== 0) {
+                    if (styles.length !== 0) {
                         BI.each(styles, function (idx, style) {
                             range.push({
                                 color: style.color,
@@ -197,14 +213,14 @@ BI.MapChart = BI.inherit(BI.Widget, {
             }
         }
 
-        function _calculateValueNiceDomain(minValue, maxValue){
+        function _calculateValueNiceDomain(minValue, maxValue) {
             minValue = Math.min(0, minValue);
             var tickInterval = _linearTickInterval(minValue, maxValue);
 
             return _linearNiceDomain(minValue, maxValue, tickInterval);
         }
 
-        function _linearTickInterval(minValue, maxValue, m){
+        function _linearTickInterval(minValue, maxValue, m) {
             m = m || 5;
             var span = maxValue - minValue;
             var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
@@ -215,7 +231,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
             return step;
         }
 
-        function _linearNiceDomain(minValue, maxValue, tickInterval){
+        function _linearNiceDomain(minValue, maxValue, tickInterval) {
             minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
             maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
 
@@ -223,51 +239,66 @@ BI.MapChart = BI.inherit(BI.Widget, {
         }
     },
 
-    _formatDrillItems: function(items){
+    _formatDrillItems: function (items) {
         var self = this;
         BI.each(items.series, function(idx, da){
             BI.each(da.data, function(idx, data){
+                da.y = self.formatXYDataWithMagnify(da.y, 1);
+                if (BI.has(da, "settings")) {
+                    data.y = self._formatNumberLevel(da.settings.num_level || self.constants.NORMAL, data.y);
+                }
                 if(BI.has(da, "type") && da.type == "bubble"){
                     data.name = data.x;
                     data.size = data.y;
-                }else{
+                } else {
                     data.name = data.x;
                     data.value = data.y;
                 }
-                if(BI.has(data, "drilldown")){
+                if (BI.has(data, "drilldown")) {
                     self._formatDrillItems(data.drilldown);
                 }
             })
-        })
+        });
     },
 
-    _formatItems: function(items){
-        var self = this, c = this.constants;
+    _formatItems: function (items) {
+        var self = this;
         this.max = null;
         this.min = null;
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
-                    if((BI.isNull(self.max) || da.y > self.max) && id === 0){
+                    da.y = self.formatXYDataWithMagnify(da.y, 1);
+                    if (BI.has(it, "settings")) {
+                        da.y = self._formatNumberLevel(it.settings.num_level || self.constants.NORMAL, da.y);
+                    }
+                    if((BI.isNull(self.max) || BI.parseFloat(da.y) > BI.parseFloat(self.max)) && id === 0){
+
                         self.max = da.y;
                     }
-                    if((BI.isNull(self.min) || da.y < self.min) && id === 0){
+                    if ((BI.isNull(self.min) || BI.parseFloat(da.y) > BI.parseFloat(self.min)) && id === 0) {
                         self.min = da.y;
                     }
-                    if(BI.has(it, "type") && it.type == "bubble"){
+                    if (BI.has(it, "type") && it.type == "bubble") {
                         da.name = da.x;
                         da.size = da.y;
-                    }else{
+                    } else {
                         da.name = da.x;
                         da.value = da.y;
                     }
-                    if(BI.has(da, "drilldown")){
+                    if (BI.has(da, "drilldown")) {
                         self._formatDrillItems(da.drilldown);
                     }
                 })
             })
         });
         return items;
+    },
+
+    _formatNumberLevel: function (numberLevel, y) {
+        y = BI.parseFloat(y);
+        y = BI.contentFormat(BI.parseFloat(y.div(this.calcMagnify(numberLevel)).toFixed(2)), "#.####;-#.####");
+        return y;
     },
 
     populate: function (items, options) {
@@ -279,17 +310,16 @@ BI.MapChart = BI.inherit(BI.Widget, {
             geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
             initDrillPath: options.initDrillPath || [],
             tooltip: options.tooltip || "",
-            theme_color: options.theme_color || c.theme_color,
+            theme_color: options.theme_color || "#65bce7",
             map_styles: options.map_styles || [],
-            auto_custom: options.auto_custom || c.auto_custom,
-            map_bubble_color: options.map_bubble_color || c.theme_color
+            auto_custom: options.auto_custom || c.AUTO_CUSTOM
         };
         this.options.items = items;
 
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.MAP);
             });
             types.push(type);
@@ -302,7 +332,7 @@ BI.MapChart = BI.inherit(BI.Widget, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

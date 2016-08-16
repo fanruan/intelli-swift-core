@@ -21,7 +21,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         this.model = new BI.TemplateManagerModel({items: o.items});
         this._createTools();
         //管理员没有分享
-        FS.config.isAdmin === true && (this.shareButton.setVisible(false));
+        o.isAdmin === true && (this.shareButton.setVisible(false));
 
         //导航
         this.nav = BI.createWidget({
@@ -100,6 +100,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         this.folderAndFileList = BI.createWidget({
             type: "bi.template_manager_button_group",
             items: BI.deepClone(this.model.getAllItems()),
+            isAdmin: o.isAdmin,
             folderChecker: function (name, id) {
                 return self.model.checkFolderName(name, id);
             },
@@ -263,10 +264,11 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         }
         BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), mes, function (flag) {
             if (flag === true) {
-                self.model.removeNode(id, type);
-                self._refreshNavTreeData();
-                self.populate();
-                self.fireEvent(BI.TemplateManager.EVENT_DELETE, id, type);
+                self.fireEvent(BI.TemplateManager.EVENT_DELETE, id, type, function() {
+                    self.model.removeNode(id, type);
+                    self._refreshNavTreeData();
+                    self.populate();
+                });
             }
         });
     },
@@ -311,6 +313,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
                 shareBox.on(BI.ShareReportPane.EVENT_SHARE, function (users) {
                     self.fireEvent(BI.TemplateManager.EVENT_SHARE, selectedItems, users);
                     BI.Popovers.remove(id);
+                    self.folderAndFileList.setValue([]);
                 });
                 BI.Popovers.create(id, shareBox, {width: 600, height: 500}).open(id);
             }

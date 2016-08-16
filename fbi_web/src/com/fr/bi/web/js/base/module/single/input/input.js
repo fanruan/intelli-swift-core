@@ -212,6 +212,9 @@ BI.Input = BI.inherit(BI.Single, {
         BI.nextTick(BI.bind(function () {
             this._checkValidationOnValueChange();
             this._defaultState();
+            if (this.isValid()) {
+                this._lastSubmitValue = this.getValue();
+            }
         }, this));
     },
 

@@ -51,7 +51,8 @@ BI.ETLModel = BI.inherit(FR.OB, {
         BI.each(fields, function (i, fs) {
             BI.each(fs, function (j, field) {
                 field.id = self._getCurrentFieldIdByFieldInfo(field);
-                field.isCircle = _getIsCircle(field);
+                //field.isCircle = _getIsCircle(field);
+                field.table_id = self.id;
                 self.allFields[field.id] = field;
             })
         });
@@ -99,15 +100,16 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
 
     _getCurrentFieldIdByFieldInfo: function (fieldInfo) {
+        var self = this;
         var id = BI.UUID();
         //暂时从allFields里面获取原始的fieldId,allFields里面的数据不会删除,这个是个坑
         var oldFields = this.allFields;
         BI.some(oldFields, function (index, fieldObj) {
-            if (fieldObj.field_name === fieldInfo.field_name && fieldObj.table_id === fieldInfo.table_id) {
+            if (fieldObj.field_name === fieldInfo.field_name && fieldObj.table_id === self.id) {
                 id = fieldObj.id;
-                return true
+                return true;
             }
-            return false
+            return false;
         });
         return id;
     },
@@ -143,43 +145,43 @@ BI.ETLModel = BI.inherit(FR.OB, {
         var relations = this.getRelations();
         var primKeyMap = relations["primKeyMap"], foreignKeyMap = relations["foreignKeyMap"];
         var connectionSet = relations["connectionSet"];
-        if (etl.etl_type === "circle") {
-            //设置1:N的关联
-            BI.each(etlValue.floors, function (idx, floor) {
-                var primaryId = getFieldIdByFieldName(etlValue.id_field_name);
-                var foreignId = getFieldIdByFieldName(floor.name);
-                connectionSet.push({
-                    primaryKey: {
-                        field_id: primaryId
-                    },
-                    foreignKey: {
-                        field_id: foreignId
-                    }
-                });
-                if (!primKeyMap[primaryId]) {
-                    primKeyMap[primaryId] = [];
-                }
-                primKeyMap[primaryId].push({
-                    primaryKey: {
-                        field_id: primaryId
-                    },
-                    foreignKey: {
-                        field_id: foreignId
-                    }
-                });
-                if (!foreignKeyMap[foreignId]) {
-                    foreignKeyMap[foreignId] = [];
-                }
-                foreignKeyMap[foreignId].push({
-                    primaryKey: {
-                        field_id: primaryId
-                    },
-                    foreignKey: {
-                        field_id: foreignId
-                    }
-                });
-            });
-        }
+        //if (etl.etl_type === "circle") {
+        //    //设置1:N的关联
+        //    BI.each(etlValue.floors, function (idx, floor) {
+        //        var primaryId = getFieldIdByFieldName(etlValue.id_field_name);
+        //        var foreignId = getFieldIdByFieldName(floor.name);
+        //        connectionSet.push({
+        //            primaryKey: {
+        //                field_id: primaryId
+        //            },
+        //            foreignKey: {
+        //                field_id: foreignId
+        //            }
+        //        });
+        //        if (!primKeyMap[primaryId]) {
+        //            primKeyMap[primaryId] = [];
+        //        }
+        //        primKeyMap[primaryId].push({
+        //            primaryKey: {
+        //                field_id: primaryId
+        //            },
+        //            foreignKey: {
+        //                field_id: foreignId
+        //            }
+        //        });
+        //        if (!foreignKeyMap[foreignId]) {
+        //            foreignKeyMap[foreignId] = [];
+        //        }
+        //        foreignKeyMap[foreignId].push({
+        //            primaryKey: {
+        //                field_id: primaryId
+        //            },
+        //            foreignKey: {
+        //                field_id: foreignId
+        //            }
+        //        });
+        //    });
+        //}
         this.setRelations(relations);
 
         function getFieldIdByFieldName(field_name) {

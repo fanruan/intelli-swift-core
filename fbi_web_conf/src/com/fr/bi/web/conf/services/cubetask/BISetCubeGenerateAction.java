@@ -29,12 +29,12 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         BIConfigureManagerCenter.getLogManager().logStart(userId);
         boolean cubeBuild;
         if (StringUtils.isEmpty(baseTableId)) {
-            cubeBuild = CubeTaskGenerate.CubeBuildStaff(userId);
+            cubeBuild = CubeTaskHelper.CubeBuildStaff(userId);
         } else {
             if (isETL) {
-                cubeBuild = CubeTaskGenerate.CubeBuildETL(userId, new BITableID(ELTTableId), new BITableID(baseTableId));
+                cubeBuild = CubeTaskHelper.CubeBuildETL(userId, new BITableID(ELTTableId), new BITableID(baseTableId));
             } else {
-                cubeBuild = CubeTaskGenerate.CubeBuildSingleTable(userId, new BITableID(baseTableId));
+                cubeBuild = CubeTaskHelper.CubeBuildSingleTable(userId, new BITableID(baseTableId));
             }
         }
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
@@ -42,7 +42,6 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         JSONObject jsonObject = new JSONObject().put("result", cubeBuild);
         WebUtils.printAsJSON(res, jsonObject);
-
     }
 
 }

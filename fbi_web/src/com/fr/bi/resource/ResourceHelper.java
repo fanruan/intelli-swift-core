@@ -17,6 +17,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.Transmitter;
+import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -83,16 +84,35 @@ public class ResourceHelper {
         JSONObject fields = new JSONObject();
         JSONObject translations = new JSONObject();
         JSONObject excelViews = new JSONObject();
-        List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         try {
             JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
             JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
+            List<BIPackageID> authPacks = new ArrayList<BIPackageID>();
+            //从分组中去掉allPacks没有的业务包
+            Iterator<String> gIds = allGroups.keys();
+            while (gIds.hasNext()) {
+                String gId = gIds.next();
+                JSONObject oneGroup = allGroups.getJSONObject(gId);
+                JSONArray nChildren = new JSONArray();
+                if(oneGroup.has("children")) {
+                    JSONArray children = oneGroup.getJSONArray("children");
+                    for(int i = 0; i < children.length(); i++) {
+                        JSONObject child = children.getJSONObject(i);
+                        if(allPacks.has(child.getString("id"))) {
+                            nChildren.put(child);
+                        }
+                    }
+                    oneGroup.put("children", nChildren);
+                }
+                allGroups.put(gId, oneGroup);
+            }
             //管理员
             if (manageId == userId) {
                 packages = allPacks;
                 groups = allGroups;
             } else {
                 //前台能看到的业务包
+                authPacks = BIModuleUtils.getAvailablePackID(userId);
                 for (BIPackageID pId : authPacks) {
                     if (allPacks.has(pId.getIdentityValue())) {
                         packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
@@ -100,18 +120,24 @@ public class ResourceHelper {
                 }
 
                 //分组
-                Iterator<String> groupNames = allGroups.keys();
-                while (groupNames.hasNext()) {
-                    String groupName = groupNames.next();
-                    JSONObject group = allGroups.getJSONObject(groupName);
-                    JSONArray children = group.getJSONArray("children");
-                    for(int i = 0; i < children.length(); i++) {
-                        JSONObject child = children.getJSONObject(i);
-                        String childId = child.getString("id");
-                        if(packages.has(childId)) {
-                            groups.put(groupName, group);
-                            break;
+                Iterator<String> groupIds = allGroups.keys();
+                while (groupIds.hasNext()) {
+                    String groupId = groupIds.next();
+                    JSONObject group = allGroups.getJSONObject(groupId);
+                    JSONArray nChildren = new JSONArray();
+                    if(group.has("children")) {
+                        JSONArray children = group.getJSONArray("children");
+                        for(int i = 0; i < children.length(); i++) {
+                            JSONObject child = children.getJSONObject(i);
+                            String childId = child.getString("id");
+                            if(packages.has(childId)) {
+                                nChildren.put(child);
+                            }
                         }
+                        group.put("children", nChildren);
+                    }
+                    if(nChildren.length() > 0) {
+                        groups.put(groupId, group);
                     }
                 }
             }
@@ -683,6 +709,7 @@ public class ResourceHelper {
 
                 //图样式
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/popup.customscale.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/customscale/combo.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",
@@ -1313,14 +1340,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/matchingrelationship/settingpane/dimensiontreecombo/dimensiontree.trigger.js",
 
                 //表格属性设置
-                "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart/addcondition/combo/chart.gradientcolor.combo.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/gradientcolor/chart.gradientcolor.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/combo.customscale.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/popup.customscale.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/svg.customscale.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/trigger.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/combo.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/wrap.item.selectcolor.js",
@@ -1329,6 +1355,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/widget.chartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/abstractchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/axischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/bubblechart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/multiaxischart.setting.js",
@@ -1343,6 +1370,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/fallaxischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/piechartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/radarchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/accumulateradarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/forcebubble.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/mapchart.setting.js",
@@ -1601,6 +1629,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/single/tip/tip.bubble.css",
                 "com/fr/bi/web/css/base/single/tip/tip.toast.css",
                 "com/fr/bi/web/css/base/single/tip/tip.tooltip.css",
+
+                "com/fr/bi/web/css/base/wrapper/inline.center.css",
+                "com/fr/bi/web/css/base/wrapper/inline.vertical.css",
 
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
@@ -1934,8 +1965,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/third/jquery.ui.draggable.js",
                 "com/fr/bi/web/js/third/jquery.ui.droppable.js",
                 "com/fr/bi/web/js/third/jquery.ui.sortable.js",
-                "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/es5-sham.js",
+                "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/raphael.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/third/leaflet.js"
@@ -2000,6 +2031,7 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/base/parsers/expression.js",
                 "com/fr/bi/web/js/base/parsers/path.js",
+                "com/fr/bi/web/js/base/parsers/watcher.js",
 
                 "com/fr/bi/web/js/base/action/action.js",
                 "com/fr/bi/web/js/base/action/action.show.js",
@@ -2134,6 +2166,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/adapt/inline.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/flexbox.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.leftrightvertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.horizontal.js",
@@ -2142,6 +2175,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.vertical.js",
+                "com/fr/bi/web/js/base/wrapper/layout/adapt/inline.vertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
@@ -2239,6 +2273,8 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",
+                "com/fr/bi/web/js/case/table/table.dynamicsummarytree.js",
+                "com/fr/bi/web/js/case/table/table.dynamicsummarylayertree.js",
                 "com/fr/bi/web/js/case/table/tabler.js",
 
                 //chart
@@ -2313,6 +2349,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/date/combo.date.js",
 
                 //图控件
+                "com/fr/bi/web/js/widget/detailchart/chart.abstract.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulatearea.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulateaxis.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulatebar.js",
@@ -2419,7 +2456,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/selectdata/searchpane/segment.search.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/searchpane/result.search.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/searcher/searcher.selectdata.js",
-                "com/fr/bi/web/js/widget/selectdata/tab/tab.selectdata.js",
 
                 //简单的一个搜索功能
                 "com/fr/bi/web/js/widget/simplesearcher/searcher.simple.js",
@@ -2588,6 +2624,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
+                "com/fr/bi/web/js/widget/sequencetable/summarynumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/sequencetable.js",
 
                 //图片组件
@@ -2621,6 +2658,7 @@ public class ResourceHelper {
 
                 //选值
                 "com/fr/bi/web/js/components/valuechooser/combo.valuechooser.js",
+                "com/fr/bi/web/js/components/allvaluechooser/combo.allvaluechooser.js",
                 "com/fr/bi/web/js/components/bigvaluechooser/combo.bigvaluechooser.js",
 
                 //带空节点的层级树
@@ -2682,6 +2720,7 @@ public class ResourceHelper {
     public static String[] getFoundationJs() {
         String[] base = getBaseJs();
         String[] third = new String[]{
+                "com/fr/bi/web/js/third/es5-sham.js",
                 "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/third/leaflet.js",

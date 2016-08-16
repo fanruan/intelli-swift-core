@@ -82,7 +82,9 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
             BI.each(dIds, function (i, dId) {
                 if (regionId === BICst.REGION.DIMENSION1) {
                     if (dim1Found === true) {
-                        dimensions[dId].used = false;
+                        if(newType !== BICst.WIDGET.MAP){
+                            dimensions[dId].used = false;
+                        }
                         self.dimensionsMap[newType][dId] = dimensions[dId];
                     }
                     if (dim1Found === false) {

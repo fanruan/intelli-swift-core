@@ -55,7 +55,8 @@ public abstract class AbstractCubeTableSource extends AbstractTableSource {
             }
         }
         for (BIKey col : columns) {
-            td.addColumn(col.getKey(), tableIndex.getColumnDetailReader(col).getValue(0).getClass());
+            Object value = tableIndex.getColumnDetailReader(col).getValue(0);
+            td.addColumn(col.getKey(), value == null ? String.class : value.getClass());
         }
         for (int row = 0; row < tableIndex.getRowCount(); row++) {
             List<Object> rowList = new ArrayList<Object>();
