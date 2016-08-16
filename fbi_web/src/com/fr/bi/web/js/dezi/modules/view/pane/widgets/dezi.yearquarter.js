@@ -191,6 +191,10 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
         this.refresh();
     },
 
+    duplicate: function () {
+        BI.Utils.broadcastAllWidgets2Refresh();
+    },
+
     splice: function () {
         BI.Utils.broadcastAllWidgets2Refresh();
     },
