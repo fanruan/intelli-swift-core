@@ -11,7 +11,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.textTrigger = BI.createWidget({
             type: "bi.text_button",
-            text: "设置样式",
+            text: BI.i18nText("BI-Set_Style"),
             height: 40
         });
         this.imgTrigger = BI.createWidget({
@@ -63,13 +63,13 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         this.style.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
             var style = self.styleTab.getValue();
             switch (style.type) {
-                case 1:
+                case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
                     self.textTrigger.setValue("text");
                     $(self.textTrigger.element).css(style.textStyle);
                     self.imgTrigger.setVisible(false);
                     self.textTrigger.setVisible(true);
                     break;
-                case 2:
+                case BICst.DATA_LABEL_STYLE_TYPE.IMG:
                     self.imgTrigger.setSrc(style.imgStyle.src);
                     self.imgTrigger.setVisible(true);
                     self.textTrigger.setVisible(false);
@@ -79,12 +79,12 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
 
     _checkStyle: function (v) {
         switch (v.type) {
-            case 1:
+            case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
                 this.textTrigger.setValue("text");
                 //todo
                 $(this.textTrigger.element).css(v.textStyle);
                 break;
-            case 2:
+            case BICst.DATA_LABEL_STYLE_TYPE.IMG:
                 this.imgTrigger.setSrc(v.imgStyle.src);
                 this.imgTrigger.element.css({"display": "block"});
                 this.imgTrigger.setVisible(true);

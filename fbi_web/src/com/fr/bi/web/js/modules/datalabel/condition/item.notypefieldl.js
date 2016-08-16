@@ -65,8 +65,7 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         var selectFieldPane = BI.createWidget({
             type: "bi.data_label_filter_select_field",
             height: this._constant.MAX_HEIGHT,
-            field_id: o.field_id,
-            dId: o.dId
+            dId: o.sdId
         });
         this.selectCondition = BI.createWidget({
             type: "bi.combo",
@@ -101,7 +100,7 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
             dId: v,
-            sdId: o.dId
+            sdId: o.sdId
         });
         this.typeSelectedItem.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
@@ -114,7 +113,7 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         }
         return {
             filter_type: BICst.FILTER_TYPE.EMPTY_CONDITION,
-            field_id: this.options.field_id
+            sdId: this.options.sdId
         }
     }
 });

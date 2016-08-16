@@ -30,7 +30,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
         var o = this.options;
         var item = {
             type: "bi.data_label_no_type_field_filter_item",
-            dId: o.dId
+            sdId: o.dId
         };
         this.buttonGroup.addItems([item]);
         this.buttons = this.buttonGroup.getAllButtons();

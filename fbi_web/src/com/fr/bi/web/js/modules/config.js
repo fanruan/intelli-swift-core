@@ -1351,6 +1351,94 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
     value: BICst.CHART_SHAPE.PROJECTOR
 }];
 
+BICst.DATA_LABEL_FILTER_NUMBER_COMBO =[[{
+    text: BI.i18nText("BI-In"),
+    value: BICst.DATA_LABEL_FILTER_NUMBER.BELONG_VALUE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.DATA_LABEL_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.DATA_LABEL_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.DATA_LABEL_FILTER_NUMBER.NOT_EQUAL_TO,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.DATA_LABEL_FILTER_NUMBER.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.DATA_LABEL_FILTER_NUMBER.NOT_NULL,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Place"),
+    value: BICst.DATA_LABEL_FILTER_NUMBER.TOP_N,
+    cls: "dot-e-font"
+}
+], [{
+    text: BI.i18nText("BI-Above_Average"),
+    value: BICst.DATA_LABEL_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Below_Average"),
+    value: BICst.DATA_LABEL_FILTER_NUMBER.SMALL_THAN_CAL_LINE,
+    cls: "dot-e-font"
+}
+]];
+
+BICst.DATA_LABEL_FILTER_STRING_COMBO = [[{
+    text: BI.i18nText("BI-In"),
+    value: BICst.DATA_LABEL_FILTER_STRING.BELONG_VALUE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.DATA_LABEL_FILTER_STRING.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Contain"),
+    value: BICst.DATA_LABEL_FILTER_STRING.CONTAIN,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Contain"),
+    value: BICst.DATA_LABEL_FILTER_STRING.NOT_CONTAIN,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.DATA_LABEL_FILTER_STRING.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.DATA_LABEL_FILTER_STRING.NOT_NULL,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Begin_With"),
+    value: BICst.DATA_LABEL_FILTER_STRING.BEGIN_WITH,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-End_With"),
+    value: BICst.DATA_LABEL_FILTER_STRING.END_WITH,
+    cls: "dot-e-font"
+}]];
+
+BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
+    text: BI.i18nText("BI-No_Range"),
+    value: BICst.DATA_LABEL_RANGE.ALL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-In_Classification"),
+    value: BICst.DATA_LABEL_RANGE.Classification,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-In_Series"),
+    value: BICst.DATA_LABEL_RANGE.Series,
+    cls: "dot-e-font"
+}]];
+
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
     table_form: BICst.TABLE_FORM.OPEN_ROW,

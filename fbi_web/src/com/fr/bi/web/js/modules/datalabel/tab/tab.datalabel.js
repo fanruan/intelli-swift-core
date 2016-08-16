@@ -30,7 +30,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 }
             }, {
                 type: "bi.label",
-                text: "文字标签",
+                text: BI.i18nText("BI-Text_Label"),
                 rgap: 20
             }, {
                 type: "bi.radio",
@@ -40,7 +40,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 }
             }, {
                 type: "bi.label",
-                text: "图片标签"
+                text: BI.i18nText("BI-Image_Label")
             }],
             layouts: [{
                 type: "bi.left_vertical_adapt",
@@ -90,7 +90,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             type: "bi.data_label_text_toolbar"
         });
         this.textToolbar.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
-            self._style.type = 1;
+            self._style.type = BICst.DATA_LABEL_STYLE_TYPE.TEXT;
             self._style.textStyle = self.textToolbar.getValue();
             self.fireEvent(BI.DataLabelTab.TEXT_CHANGE);
         });
@@ -112,7 +112,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         });
         this.imageSet.setValue(this._style.imgStyle);
         this.imageSet.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
-            self._style.type = 2;
+            self._style.type = BICst.DATA_LABEL_STYLE_TYPE.IMG;
             self._style.imgStyle = self.imageSet.getValue();
             self.chart.populate(self.imageSet.getValue().src);
             self.fireEvent(BI.DataLabelTab.IMG_CHANGE, arguments);

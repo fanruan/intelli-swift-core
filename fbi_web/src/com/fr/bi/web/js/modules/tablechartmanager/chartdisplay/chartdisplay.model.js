@@ -424,14 +424,23 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _showDataLabel: function (data) {
         var self = this, o = this.options;
-        var formatter;
-        BI.each(BI.Utils.getAllDimensionIDs(o.wId), function (idx, dId) {
+        var dataLables = {
+            enabled: true,
+            align: "outside",
+            useHtml: true,
+            style: {},
+            formatter: ""
+        };
+        BI.each(BI.Utils.getAllTargetDimensionIDs(o.wId), function (idx, dId) {
             if(!BI.Utils.isDimensionUsable(dId)){
                 return;
             }
             BI.each(BI.Utils.getDatalabelByID(dId), function (id, label) {
-                BI.each(data[0].data, function (i, dt) {
-                    filterData(dt, label);
+                BI.each(data, function (i, item) {
+                    console.log(BI.Utils.getDimensionNameByID(label.target_id));
+                    BI.each(item.data, function (k, dt) {
+                        filterData(dt, label)
+                    })
                 })
             })
         });
@@ -439,29 +448,38 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         
         function filterData(data, label) {
             switch (label.filter_type) {
-                case BICst.TARGET_FILTER_NUMBER.BELONG_VALUE:
+                case BICst.DATA_LABEL_FILTER_NUMBER.BELONG_VALUE:
                     if (data.y>label.filter_value.min && data.y<label.filter_value.max) {
-                        data.dataLabels = {
-                            enabled: true,
-                            align: "outside",
-                            useHtml: true,
-                            style: label.style_setting.textStyle,
-                            formatter: "function(){return '<div>"+data.y+"</div>'}"
+                        switch (label.style_setting.type) {
+                            case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
+                                dataLables.style = label.style_setting.textStyle;
+                                dataLables.formatter = "function(){return '<div>"+data.y+"</div>'}";
+                                break;
+                            case BICst.DATA_LABEL_STYLE_TYPE.IMG:
+                                dataLables.formatter = "function(){return '<div><img width=\"20px\" height=\"20px\" src=\""+label.style_setting.imgStyle.src+"\"></div>';}";
+                                break;
                         }
+                        data.dataLabels = dataLables;
                     }
                     break;
-                case BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE:
+                case BICst.DATA_LABEL_FILTER_NUMBER.NOT_BELONG_VALUE:
                     if (data.y<label.filter_value.min && data.y>label.filter_value.max) {
 
                     }
                     break;
-                case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
+                case BICst.DATA_LABEL_FILTER_NUMBER.EQUAL_TO:
                     break;
-                case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
+                case BICst.DATA_LABEL_FILTER_NUMBER.NOT_EQUAL_TO:
                     break;
-                case BICst.TARGET_FILTER_NUMBER.IS_NULL:
+                case BICst.DATA_LABEL_FILTER_NUMBER.IS_NULL:
                     break;
-                case BICst.TARGET_FILTER_NUMBER.NOT_NULL:
+                case BICst.DATA_LABEL_FILTER_NUMBER.NOT_NULL:
+                    break;
+                case BICst.DATA_LABEL_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
+                    break;
+                case BICst.DATA_LABEL_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
+                    break;
+                case BICst.DATA_LABEL_FILTER_NUMBER.TOP_N:
                     break;
             }
         }

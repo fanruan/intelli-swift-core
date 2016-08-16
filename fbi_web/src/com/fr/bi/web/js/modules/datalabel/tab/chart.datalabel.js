@@ -29,7 +29,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var title = BI.createWidget({
             type: "bi.label",
-            text: "预览"
+            text: BI.i18nText("BI-Preview")
         });
         this.xAxis = [{type: "category"}];
         var type = this.createChartByType(o.chartType);
@@ -85,19 +85,6 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         };
         return [items, config];
     },
-
-    // _formatItems: function(items){
-    //     return BI.map(items, function(idx, item){
-    //         var i = BI.UUID();
-    //         return BI.map(item, function(id, it){
-    //             return BI.extend({}, it, {dataLabels: {
-    //                 style: {
-    //                     color: "red"
-    //                 }
-    //             }});
-    //         });
-    //     });
-    // },
 
     populate: function (src) {
         if (src) {

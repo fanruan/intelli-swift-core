@@ -19,7 +19,7 @@ BI.DataLabelPopup = BI.inherit(BI.BarPopoverSection, {
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text: "数据标签样式",
+            text: BI.i18nText("BI-Data_Label"),
             height: 50,
             textAlign: "left",
             lgap: 10

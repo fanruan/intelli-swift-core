@@ -2,46 +2,6 @@
  * Created by fay on 2016/7/22.
  */
 BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
-    _comboItems: [[{
-        text: BI.i18nText("BI-In"),
-        value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-        cls: "dot-e-font"
-    }, {
-        text: BI.i18nText("BI-Not_In"),
-        value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
-        cls: "dot-e-font"
-    }], [{
-        text: BI.i18nText("BI-Equal"),
-        value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
-        cls: "dot-e-font"
-    }, {
-        text: BI.i18nText("BI-Not_Equal_To"),
-        value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
-        cls: "dot-e-font"
-    }], [{
-        text: BI.i18nText("BI-Is_Null"),
-        value: BICst.TARGET_FILTER_NUMBER.IS_NULL,
-        cls: "dot-e-font"
-    }, {
-        text: BI.i18nText("BI-Not_Null"),
-        value: BICst.TARGET_FILTER_NUMBER.NOT_NULL,
-        cls: "dot-e-font"
-    }], [{
-            text: "第N名",
-            value: 201,
-            cls: "dot-e-font"
-        }
-    ], [
-        {
-            text: "大于等于平均值",
-            value: 202,
-            cls: "dot-e-font"
-        }, {
-            text: "小于平均值",
-            value: 203,
-            cls: "dot-e-font"
-        }
-    ]],
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
         CONTAINER_HEIGHT: 40,
@@ -132,7 +92,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.text_value_down_list_combo",
             width: this.size.COMBO_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
-            items: this._comboItems
+            items: BICst.DATA_LABEL_FILTER_NUMBER_COMBO
         });
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
@@ -154,25 +114,25 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             this.filterRange && this.filterRange.setWidth(this.size.COMBO_WIDTH);
         }
         switch (filterType) {
-            case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
-            case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
+            case BICst.DATA_LABEL_FILTER_NUMBER.EQUAL_TO:
+            case BICst.DATA_LABEL_FILTER_NUMBER.NOT_EQUAL_TO:
                 var addItem = this._createNumberInput(initData);
                 break;
-            case BICst.TARGET_FILTER_NUMBER.BELONG_VALUE:
-            case BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE:
+            case BICst.DATA_LABEL_FILTER_NUMBER.BELONG_VALUE:
+            case BICst.DATA_LABEL_FILTER_NUMBER.NOT_BELONG_VALUE:
                 var addItem = this._createNumberIntervalFilter(initData);
                 break;
-            case BICst.TARGET_FILTER_NUMBER.BELONG_USER:
-            case BICst.TARGET_FILTER_NUMBER.NOT_BELONG_USER:
+            case BICst.DATA_LABEL_FILTER_NUMBER.BELONG_USER:
+            case BICst.DATA_LABEL_FILTER_NUMBER.NOT_BELONG_USER:
                 var addItem = this._createNumberIntervalFilter(initData);
                 break;
-            case 201:
+            case BICst.DATA_LABEL_FILTER_NUMBER.TOP_N:
                 var addItem = this._createRank(initData);
                 break;
-            case 202:
-            case 203:
-            case BICst.TARGET_FILTER_NUMBER.IS_NULL:
-            case BICst.TARGET_FILTER_NUMBER.NOT_NULL:
+            case BICst.DATA_LABEL_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
+            case BICst.DATA_LABEL_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
+            case BICst.DATA_LABEL_FILTER_NUMBER.IS_NULL:
+            case BICst.DATA_LABEL_FILTER_NUMBER.NOT_NULL:
                 this.filterType.setWidth(this._constant.COMBO_WIDTH);
                 this.filterRange && this.filterRange.setWidth(this._constant.COMBO_WIDTH);
                 this.filterWidget = BI.createWidget();
@@ -261,21 +221,9 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.text_value_down_list_combo",
             width: this.size.COMBO_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
-            items: [[{
-                text: "所有(无范围)",
-                value: 100001,
-                cls: "dot-e-font"
-            }, {
-                text: "分类内",
-                value: 100002,
-                cls: "dot-e-font"
-            }, {
-                text: "系列内",
-                value: 100003,
-                cls: "dot-e-font"
-            }]]
+            items: BICst.DATA_LABEL_FILTER_RANGE_COMBO
         });
-        o.filter_range ? range.setValue(o.filter_range) : range.setValue(100001);
+        o.filter_range ? range.setValue(o.filter_range) : range.setValue(BICst.DATA_LABEL_RANGE.ALL);
         return range;
     },
 

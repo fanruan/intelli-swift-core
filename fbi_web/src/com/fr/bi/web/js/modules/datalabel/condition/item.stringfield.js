@@ -22,7 +22,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _init: function () {
-        BI.TargetStringFieldFilterItem.superclass._init.apply(this, arguments);
+        BI.DataLabelStringFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var left = this._buildConditions();
         this.styleSetting = this._createStyle(o.style_setting);
@@ -34,10 +34,10 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             self.destroy();
             BI.DataLabelStringFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
-
          BI.createWidget({
             type: "bi.vertical",
-            cls: "item-content", element: this.element,
+            cls: "item-content",
+            element: this.element,
             items: [{
                 type: "bi.left_right_vertical_adapt",
                 height: this._constant.CONTAINER_HEIGHT,
@@ -62,7 +62,6 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             return [];
         }
         var fieldName = BI.Utils.getDimensionNameByID(o.dId);
-
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
             text: fieldName,
@@ -85,9 +84,9 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.text_value_down_list_combo",
             width: this._constant.COMBO_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_FILTER_STRING_COMBO
+            items: BICst.DATA_LABEL_FILTER_STRING_COMBO
         });
-        this.filterType.setValue(o.filter_type);
+        this.filterType.setValue(BICst.DATA_LABEL_FILTER_STRING.BELONG_VALUE);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
             o.afterValueChange.apply(self, arguments);
@@ -97,23 +96,22 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _refreshFilterWidget: function (filterType, initData) {
-
         switch (filterType) {
-            case BICst.TARGET_FILTER_STRING.BELONG_VALUE:
-            case BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE:
+            case BICst.DATA_LABEL_FILTER_STRING.BELONG_VALUE:
+            case BICst.DATA_LABEL_FILTER_STRING.NOT_BELONG_VALUE:
                 this._createStringBelongCombo(initData);
 
                 break;
-            case BICst.TARGET_FILTER_STRING.CONTAIN:
-            case BICst.TARGET_FILTER_STRING.NOT_CONTAIN:
+            case BICst.DATA_LABEL_FILTER_STRING.CONTAIN:
+            case BICst.DATA_LABEL_FILTER_STRING.NOT_CONTAIN:
                 this._createStringInput(initData);
                 break;
-            case BICst.TARGET_FILTER_STRING.IS_NULL:
-            case BICst.TARGET_FILTER_STRING.NOT_NULL:
+            case BICst.DATA_LABEL_FILTER_STRING.IS_NULL:
+            case BICst.DATA_LABEL_FILTER_STRING.NOT_NULL:
                 this.filterWidget = BI.createWidget();
                 break;
-            case BICst.TARGET_FILTER_STRING.BEGIN_WITH:
-            case BICst.TARGET_FILTER_STRING.END_WITH:
+            case BICst.DATA_LABEL_FILTER_STRING.BEGIN_WITH:
+            case BICst.DATA_LABEL_FILTER_STRING.END_WITH:
                 this._createStringInput(initData);
                 break;
         }
