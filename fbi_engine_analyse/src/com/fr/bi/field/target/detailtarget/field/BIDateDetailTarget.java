@@ -25,11 +25,11 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
             int r = row.intValue();
             if (r > -1) {
                 initialTableSource(loader);
-                Object ob =  columnDetailGetter.getValue(r);
-                if (ob == null){
+                Object ob = columnDetailGetter.getValue(r);
+                if (ob == null) {
                     return ob;
                 }
-                return group.getType() == BIReportConstant.GROUP.M ? ((Number)ob).longValue() + 1 : ((Number)ob).longValue();
+                return group.getType() == BIReportConstant.GROUP.M ? ((Number) ob).longValue() + 1 : ((Number) ob).longValue();
             }
         }
         return null;
@@ -58,12 +58,12 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
         switch (group.getType()) {
             case BIReportConstant.GROUP.YMD:
                 c.setTimeInMillis((Long) value);
-                return c.get(Calendar.YEAR) + "/" + insertZero(c.get(Calendar.MONTH) + 1) + "/" + insertZero(c.get(Calendar.DAY_OF_MONTH));
+                return c.get(Calendar.YEAR) + "-" + insertZero(c.get(Calendar.MONTH) + 1) + "-" + insertZero(c.get(Calendar.DAY_OF_MONTH));
             case BIReportConstant.GROUP.YMDHMS:
                 c.setTimeInMillis((Long) value);
-                return c.get(Calendar.YEAR) + "/"
-                        + insertZero(c.get(Calendar.MONTH) + 1) + "/"
-                        + insertZero(c.get(Calendar.DAY_OF_MONTH)) + "/ "
+                return c.get(Calendar.YEAR) + "-"
+                        + insertZero(c.get(Calendar.MONTH) + 1) + "-"
+                        + insertZero(c.get(Calendar.DAY_OF_MONTH)) + " "
                         + insertZero(c.get(Calendar.HOUR_OF_DAY)) + ":"
                         + insertZero(c.get(Calendar.MINUTE)) + ":"
                         + insertZero(c.get(Calendar.SECOND));

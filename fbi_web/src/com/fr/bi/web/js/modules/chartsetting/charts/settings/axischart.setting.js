@@ -64,7 +64,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -75,7 +75,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.chartStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -340,19 +340,19 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataTable]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.gridLine]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showZoom]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -380,7 +380,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Text_Direction"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.text_direction]
                 }, {
                     type: "bi.label",
@@ -388,10 +388,10 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     textHeight: 30,
                     height: constant.SINGLE_LINE_HEIGHT
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleX]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.editTitleX]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -420,7 +420,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.lYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -428,7 +428,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevellY]
                 }, {
                     type: "bi.label",
@@ -436,13 +436,13 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.LYUnit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.reversedLY]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -471,7 +471,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.rYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -479,7 +479,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevelrY]
                 }, {
                     type: "bi.label",
@@ -487,13 +487,13 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.RYUnit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleRY, this.editTitleRY]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.reversedRY]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT

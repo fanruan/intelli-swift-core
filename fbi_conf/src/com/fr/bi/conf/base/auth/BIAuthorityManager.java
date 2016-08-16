@@ -50,8 +50,8 @@ public class BIAuthorityManager {
         for(int i = 0; i < packAuths.size(); i++) {
             BIPackageAuthority auth = packAuths.get(i);
             long roleId = auth.getRoleId();
-            List<Long> comRoleIds = session.getCustomRoles();
-            List<Long> cusRoleIds = session.getCompanyRoles();
+            List<Long> comRoleIds = session.getCompanyRoles();
+            List<Long> cusRoleIds = session.getCustomRoles();
             if ((comRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.COMPANY) ||
                     (cusRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.CUSTOM)) {
                 result.add(auth);
@@ -83,8 +83,8 @@ public class BIAuthorityManager {
 
     public List<BIPackageID> getAuthPackagesBySession(BISessionProvider session) throws Exception {
         List<BIPackageID> packageIDs = new ArrayList<BIPackageID>();
-        List<Long> comRoleIds = session.getCustomRoles();
-        List<Long> cusRoleIds = session.getCompanyRoles();
+        List<Long> comRoleIds = session.getCompanyRoles();
+        List<Long> cusRoleIds = session.getCustomRoles();
         Iterator<Map.Entry<BIPackageID, List<BIPackageAuthority>>> iterator = this.packagesAuth.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<BIPackageID, List<BIPackageAuthority>> packAuth = iterator.next();

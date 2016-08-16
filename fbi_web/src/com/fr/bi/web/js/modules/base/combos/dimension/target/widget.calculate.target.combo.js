@@ -16,6 +16,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
+                warningTitle: BI.i18nText("BI-Disable_in_Big_Data_Mode"),
                 cls: "style-set-h-font"
             }],
             [{
@@ -93,6 +94,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
         var minimalist = BI.Utils.getWSMinimalistByID(wId);
+        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
         var e = BI.Utils.getExpressionByDimensionID(o.dId);
         var ids = e.ids;
         BI.each(ids , function (idx , id){
@@ -138,6 +140,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 if(minimalist) {
+                    items[this.constants.CordonPos][0].setWarningTitle(BI.i18nText("BI-Unmodified_in_Minimalist_Mode"));
                     item[this.constants.CordonPos][0].disabled = true
                 }
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
@@ -180,6 +183,9 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(bigDataMode){
+                    item[this.constants.CordonPos][0].disabled = true;
+                }
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.GIS_MAP:

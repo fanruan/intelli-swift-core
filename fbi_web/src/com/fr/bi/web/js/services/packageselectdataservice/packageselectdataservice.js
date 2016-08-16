@@ -568,6 +568,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             case BICst.GROUP.YMD:
                                 name = BI.i18nText("BI-Date") + "(" + name + ")";
                                 break;
+                            case BICst.GROUP.YMDHMS:
+                                name = BI.i18nText("BI-Time_ShiKe") + "(" + name + ")"
                         }
                         return {
                             name: name,
@@ -709,6 +711,21 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.YMD}
+            }
+        }), BI.extend({
+            wId: o.wId,
+            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            fieldType: BICst.COLUMN.DATE,
+            drag: drag
+        }, field, {
+            id: fieldId + BICst.GROUP.YMDHMS,
+            pId: fieldId,
+            text: BI.i18nText("BI-Time_ShiKe"),
+            title: prefix + BI.i18nText("BI-Time_ShiKe"),
+            layer: isRelation ? 3 : 2,
+            value: {
+                field_id: fieldId,
+                group: {type: BICst.GROUP.YMDHMS}
             }
         })];
     },
