@@ -4,18 +4,18 @@ tasks.withType(JavaCompile){
 }
 ant.delete(dir:'build')
 sourceCompatibility=1.6
-//BI¹¤³ÌµÄ¸ùÄ¿Â¼
+//BIå·¥ç¨‹çš„æ ¹ç›®å½•
 def BI_HOME='../../'
 def jarname='fr-bi-server-4.0.jar'
-//Ö¸¶¨Éú³ÉµÄjar°ü°æ±¾
+//æŒ‡å®šç”Ÿæˆçš„jaråŒ…ç‰ˆæœ¬
 version='4.0'
-//»ñÈ¡Ê²Ã´·ÖÖ§Ãû
+//è·å–ä»€ä¹ˆåˆ†æ”¯å
 FileTree files =fileTree(dir:'./',include:'build.gradle')
 def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('\\'))
 def branchName=buildDir.substring(buildDir.lastIndexOf ('\\')+1)
 
 jar{
-//Ö¸¶¨Éú³Éjar°üµÄÃû³Æ
+//æŒ‡å®šç”ŸæˆjaråŒ…çš„åç§°
 	baseName='fr-bi-server'
 }
 def list=[
@@ -39,7 +39,7 @@ def list=[
 		"fbi_cube_generate/src"
 	]
 
-//Ö¸¶¨Ô´ÂëËùÔÚÎ»ÖÃ£º
+//æŒ‡å®šæºç æ‰€åœ¨ä½ç½®ï¼š
 sourceSets{
 	main.java.srcDirs=list
 	instrumentTest.java.srcDirs=[
@@ -65,12 +65,12 @@ sourceSets{
 
 
 }
-//ÉùÃ÷Íâ²¿ÒÀÀµ
+//å£°æ˜å¤–éƒ¨ä¾èµ–
 dependencies{
 	compile fileTree(dir:"${BI_HOME}",include:'lib/**/*.jar')
 	testCompile 'junit:junit:4.12'
 }
-//Ö¸Ã÷ÎŞ·¨±àÒëÎÄ¼şËùÔÚÂ·¾¶
+//æŒ‡æ˜æ— æ³•ç¼–è¯‘æ–‡ä»¶æ‰€åœ¨è·¯å¾„
 def dataContent ={def dir ->
 		copySpec{
 			from ("${dir}"){
@@ -87,7 +87,7 @@ def dataContent ={def dir ->
 		}
 }
 
-//½«·Ç.javaÎÄ¼ş¸´ÖÆµ½classesÎÄ¼ş¼ĞÏÂ ²ÎÓë´ò°ü
+//å°†é.javaæ–‡ä»¶å¤åˆ¶åˆ°classesæ–‡ä»¶å¤¹ä¸‹ å‚ä¸æ‰“åŒ…
 task copyFile(type:Copy,dependsOn:compileJava){
 	list.each{ def srcDir->
 		copy{
@@ -96,7 +96,7 @@ task copyFile(type:Copy,dependsOn:compileJava){
 		}
 	}
 }
-//Ñ¹Ëõjs
+//å‹ç¼©js
 task compressJS(dependsOn:'copyFile'){
 	ant.taskdef(name:'yuicompress',classname:'com.yahoo.platform.yui.compressor.YUICompressTask',onerror:'report'){
 		classpath{
@@ -116,7 +116,7 @@ task compressJS(dependsOn:'copyFile'){
 		}
 	}
 }
-//Ìí¼Ó´ò°üÊ±¼ä
+//æ·»åŠ æ‰“åŒ…æ—¶é—´
 task addTime(dependsOn:'compressJS'){
 	def date = new Date()
 	def formattedDate = date.format('yyyy.MM.dd.hh.mm.ss.S')
@@ -126,7 +126,7 @@ task addTime(dependsOn:'compressJS'){
 	fw.close()		
 }
 
-//»ìÏı´úÂë
+//æ··æ·†ä»£ç 
 task obfuse(dependsOn:'build')<<{
 	ant.delete(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.6")
 	ant.mkdir(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.6")
