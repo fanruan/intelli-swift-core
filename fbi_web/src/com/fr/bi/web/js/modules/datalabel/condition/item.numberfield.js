@@ -46,7 +46,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 height: this._constant.CONTAINER_HEIGHT,
                 items: {
                     left: [left[0], left[1], left[2], left[3]],
-                    right:  [this.styleSetting, this.deleteButton]
+                    right: [this.styleSetting, this.deleteButton]
                 },
                 lhgap: this._constant.LEFT_ITEMS_H_GAP,
                 rhgap: this._constant.LEFT_ITEMS_H_GAP

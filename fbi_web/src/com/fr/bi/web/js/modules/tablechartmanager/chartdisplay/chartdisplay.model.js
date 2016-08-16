@@ -448,7 +448,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         function filterData(data, label) {
             switch (label.filter_type) {
                 case BICst.DATA_LABEL_FILTER_NUMBER.BELONG_VALUE:
-                    if (data.y>label.filter_value.min && data.y<label.filter_value.max) {
+                    if (data.y > label.filter_value.min && data.y < label.filter_value.max) {
                         switch (label.style_setting.type) {
                             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
                                 dataLables.style = label.style_setting.textStyle;
@@ -462,7 +462,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     }
                     break;
                 case BICst.DATA_LABEL_FILTER_NUMBER.NOT_BELONG_VALUE:
-                    if (data.y<label.filter_value.min && data.y>label.filter_value.max) {
+                    if (data.y < label.filter_value.min && data.y > label.filter_value.max) {
 
                     }
                     break;

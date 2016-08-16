@@ -34,7 +34,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             self.destroy();
             BI.DataLabelStringFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
-         BI.createWidget({
+        BI.createWidget({
             type: "bi.vertical",
             cls: "item-content",
             element: this.element,

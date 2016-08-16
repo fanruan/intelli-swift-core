@@ -50,7 +50,6 @@ BI.DataLabel = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        console.log( this.conditions.getValue())
         return this.conditions.getValue();
     }
 });
