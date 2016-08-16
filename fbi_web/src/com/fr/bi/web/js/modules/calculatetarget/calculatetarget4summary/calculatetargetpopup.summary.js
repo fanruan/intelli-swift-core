@@ -29,6 +29,7 @@ BI.CalculateTargetPopupSummary = BI.inherit(BI.BarPopoverSection, {
                 });
                 formulaPane.on(BI.CalculateTargetFormulaPane.EVENT_CHANGE, function () {
                     self.model.setTargetExpression(formulaPane.getValue());
+                    self.model.setValidation(formulaPane.checkValidation());
                 });
                 formulaPane.populate(this.model);
                 this.model.setTargetType(BICst.TARGET_TYPE.FORMULA);
@@ -242,7 +243,9 @@ BI.CalculateTargetPopupSummary = BI.inherit(BI.BarPopoverSection, {
     },
 
     end: function () {
-        this.fireEvent(BI.CalculateTargetPopupSummary.EVENT_CHANGE);
+        if (this.model.getValidation()) {
+            this.fireEvent(BI.CalculateTargetPopupSummary.EVENT_CHANGE);
+        }
     },
 
     populate: function () {
@@ -255,5 +258,5 @@ BI.CalculateTargetPopupSummary = BI.inherit(BI.BarPopoverSection, {
 
 
 });
-BI.CalculateTargetPopupSummary.EVENT_CHANGE = "EVENT_CHANGE";
+BI.CalculateTargetPopupSummary.EVENT_CHANGE = "CALCULATE_TARGET_EVENT_CHANGE";
 $.shortcut("bi.calculate_target_popup_summary", BI.CalculateTargetPopupSummary);

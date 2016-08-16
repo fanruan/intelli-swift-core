@@ -142,6 +142,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 result.dimensions = dimensionsAndView.dimensions;
                 result.view = dimensionsAndView.view;
                 o.stop.apply(self, [widget.bounds, ui.position, result]);
+                BI.Utils.broadcastAllWidgets2Refresh();
             },
             helper: o.helper
         });
@@ -238,7 +239,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 BI.each(expression.ids, function (id, tId) {
                     var result = self._createDimensionsAndTargets(tId);
                     if (BI.has(expression, "formula_value")) {
-                        expression.formula_value = expression.formula_value.replace(tId, result.id);
+                        expression.formula_value = expression.formula_value.replaceAll(tId, result.id);
                     }
                     expression.ids[id] = result.id;
                 });

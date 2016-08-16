@@ -80,9 +80,11 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
         while (iterator.hasNext()) {
             BITableRelation relation = iterator.next();
             BITableSourceRelation sourceRelation = convertRelation(relation);
-            biTableSourceRelationSet.add(sourceRelation);
-            newTableSources.add(sourceRelation.getForeignTable());
-            newTableSources.add(sourceRelation.getPrimaryTable());
+            if (null!=sourceRelation) {
+                biTableSourceRelationSet.add(sourceRelation);
+                newTableSources.add(sourceRelation.getForeignTable());
+                newTableSources.add(sourceRelation.getPrimaryTable());
+            }
         }
         biTableSourceRelationSet = removeDuplicateRelations(biTableSourceRelationSet);
     }
