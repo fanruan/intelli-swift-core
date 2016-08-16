@@ -49,7 +49,7 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                         fieldType: BI.Utils.getFieldTypeByID(fieldId),
                         text: "自身",
                         title: "自身",
-                        value: fieldId
+                        value: o.dId
                     }]
                 } else {
                     var widgetId = BI.Utils.getWidgetIDByDimensionID(o.dId);
@@ -63,7 +63,7 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                             fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
                             text: BI.Utils.getDimensionNameByID(dId),
                             title: BI.Utils.getDimensionNameByID(dId),
-                            value: BI.Utils.getFieldIDByDimensionID(dId)
+                            value: dId
                         });
                     });
                     return result;

@@ -42,7 +42,9 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 left: [left],
 
                 right: [this.deleteButton]
-            }
+            },
+            lhgap: this._constant.LEFT_ITEMS_H_GAP,
+            rhgap: this._constant.LEFT_ITEMS_H_GAP
         });
 
         BI.createWidget({
@@ -86,23 +88,11 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         selectFieldPane.on(BI.DataLabelFilterSelectField.EVENT_CLICK_ITEM, function (v) {
             self._onTypeSelected(v);
         });
-        return BI.createWidget({
-            type: "bi.vertical",
-            cls: "item-content",
-            items: [{
-                type: "bi.vertical_adapt",
-                items: [this.selectCondition],
-                width: 90,
-                height: 38,
-                lgap: 5
-            }],
-            width: 540
-        });
+        return this.selectCondition;
     },
 
     _onTypeSelected: function (v) {
-        v = v.field_id || v;
-        var fieldType = BI.Utils.getFieldTypeByID(v);
+        var fieldType = BI.Utils.getFieldTypeByDimensionID(v);
         var self = this, o = this.options;
         var filterItem = BI.DataLabelFilterItemFactory.createFilterItemByFieldType(fieldType);
         this.itemContainer.destroy();
@@ -110,9 +100,18 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         //todo
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
-            field_id: v,
-            dId: o.dId
+            dId: v,
+            sdId: o.dId
         });
+        this.typeSelectedItem.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
+        });
+        o.node.set("data", BI.extend(o.node.get("data"), {
+            value: filterItem.filter_type,
+            filter_type: filterItem.filter_type,
+            filter_value: {value: []},
+            field_id: v.field_id
+        }));
     },
 
     getValue: function () {

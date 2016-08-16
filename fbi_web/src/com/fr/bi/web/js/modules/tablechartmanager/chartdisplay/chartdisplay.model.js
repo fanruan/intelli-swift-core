@@ -169,6 +169,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForAxis: function (da) {
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
+        data = this._showDataLabel(data);
         if (BI.isEmptyArray(data)) {
             return [];
         }
@@ -419,6 +420,51 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             return BI.isEmptyArray(obj.data) ? [] : [[obj]];
         }
         return [];
+    },
+
+    _showDataLabel: function (data) {
+        var self = this, o = this.options;
+        var formatter;
+        BI.each(BI.Utils.getAllDimensionIDs(o.wId), function (idx, dId) {
+            if(!BI.Utils.isDimensionUsable(dId)){
+                return;
+            }
+            BI.each(BI.Utils.getDatalabelByID(dId), function (id, label) {
+                BI.each(data[0].data, function (i, dt) {
+                    filterData(dt, label);
+                })
+            })
+        });
+        return data;
+        
+        function filterData(data, label) {
+            switch (label.filter_type) {
+                case BICst.TARGET_FILTER_NUMBER.BELONG_VALUE:
+                    if (data.y>label.filter_value.min && data.y<label.filter_value.max) {
+                        data.dataLabels = {
+                            enabled: true,
+                            align: "outside",
+                            useHtml: true,
+                            style: label.style_setting.textStyle,
+                            formatter: "function(){return '<div>"+data.y+"</div>'}"
+                        }
+                    }
+                    break;
+                case BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE:
+                    if (data.y<label.filter_value.min && data.y>label.filter_value.max) {
+
+                    }
+                    break;
+                case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
+                    break;
+                case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
+                    break;
+                case BICst.TARGET_FILTER_NUMBER.IS_NULL:
+                    break;
+                case BICst.TARGET_FILTER_NUMBER.NOT_NULL:
+                    break;
+            }
+        }
     },
 
     getToolTip: function (type) {

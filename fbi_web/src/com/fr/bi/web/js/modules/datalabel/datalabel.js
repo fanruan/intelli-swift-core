@@ -38,7 +38,7 @@ BI.DataLabel = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.right",
                 items: [addButton],
-                hgap: 4,
+                hgap: 4
             }, this.conditions],
             element: this.element
         });

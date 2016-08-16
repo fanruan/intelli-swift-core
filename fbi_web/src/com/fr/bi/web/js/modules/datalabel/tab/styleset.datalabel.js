@@ -12,15 +12,13 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         this.textTrigger = BI.createWidget({
             type: "bi.text_button",
             text: "设置样式",
-            height: 40,
-            cls: "condition-trigger"
+            height: 40
         });
         this.imgTrigger = BI.createWidget({
             type: "bi.image_button",
             height: 40,
             iconWidth: 20,
-            iconHeight: 20,
-            cls: "condition-trigger"
+            iconHeight: 20
         });
         this.styleTab = BI.createWidget({
             type: "bi.data_label_tab",
@@ -41,6 +39,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         });
         this.styleTrigger = BI.createWidget({
             type: "bi.htape",
+            cls: "condition-trigger",
             items: [{
                 el: this.triggerButton,
                 width: 50

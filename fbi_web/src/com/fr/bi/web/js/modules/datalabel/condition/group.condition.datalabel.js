@@ -41,18 +41,17 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
         var conditions = BI.Utils.getDatalabelByID(o.dId);
         var items = [];
         BI.each(conditions, function (idx, cdt) {
-            var type = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+            var t = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
             items.push({
-                type: type.type,
-                dId: o.dId,
-                field_id: cdt.field_id,
+                type: t.type,
+                sdId: o.dId,
+                dId: cdt.target_id,
                 filter_type: cdt.filter_type,
                 filter_value: cdt.filter_value,
                 filter_range: cdt.filter_range,
                 style_setting: cdt.style_setting
             });
         });
-
         this.buttonGroup.addItems(items);
         this.buttons = this.buttonGroup.getAllButtons();
     },

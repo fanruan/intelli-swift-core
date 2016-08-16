@@ -101,7 +101,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
 
     populate: function (src) {
         if (src) {
-            var formatter = "function() { return '<div><img width="+this._constant.ICON_WIDTH+"px height="+this._constant.ICON_HEIGHT+"px src="+src+"></div>'}";
+            var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + src + "></div>'}";
             this.data[0][0].data[0].dataLabels = {
                 enabled: true,
                 align: "outside",

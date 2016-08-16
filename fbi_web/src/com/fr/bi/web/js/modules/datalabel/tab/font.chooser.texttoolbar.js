@@ -2,14 +2,6 @@
  * Created by Fay on 2016/7/14.
  */
 BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
-    _defaultConfig: function () {
-        return BI.extend(BI.TextToolbarFontChooser.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-data-tab-text-toolbar-font-chooser",
-            width: 50,
-            height: 20
-        });
-    },
-
     _items: [{
         value: "Microsoft YaHei",
         text: "微软雅黑"
@@ -17,6 +9,14 @@ BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
         value: "SimHei",
         text: "黑体"
     }],
+
+    _defaultConfig: function () {
+        return BI.extend(BI.TextToolbarFontChooser.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-data-tab-text-toolbar-font-chooser",
+            width: 50,
+            height: 20
+        });
+    },
 
     _init: function () {
         BI.TextToolbarFontChooser.superclass._init.apply(this, arguments);
@@ -50,7 +50,6 @@ BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
             }
         });
         this.combo.on(BI.Combo.EVENT_CHANGE, function () {
-            console.log(this)
             this.hideView();
             self.fireEvent(BI.TextToolbarFontChooser.EVENT_CHANGE, arguments);
         })

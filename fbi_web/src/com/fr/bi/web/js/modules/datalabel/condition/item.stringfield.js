@@ -9,7 +9,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         CONTAINER_HEIGHT: 40,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
-        FIELD_NAME_BUTTON_WIDTH: 90,
+        FIELD_NAME_BUTTON_WIDTH: 80,
         TEXT_BUTTON_H_GAP: 10,
         INPUT_WIDTH: 230
     },
@@ -35,34 +35,20 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             BI.DataLabelStringFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
 
-        var leftContainer = BI.createWidget({
+         BI.createWidget({
             type: "bi.vertical",
-            cls: "item-content",
+            cls: "item-content", element: this.element,
             items: [{
                 type: "bi.left_right_vertical_adapt",
                 height: this._constant.CONTAINER_HEIGHT,
                 items: {
                     left: [left[0], left[1], left[2]],
-                    right: [this.styleSetting]
+                    right: [this.styleSetting, this.deleteButton]
                 },
                 lhgap: this._constant.LEFT_ITEMS_H_GAP,
-                width: 540
+                rhgap: this._constant.LEFT_ITEMS_H_GAP
             }]
         });
-        BI.createWidget({
-            type: "bi.vertical",
-            element: this.element,
-            items: {
-                el: {
-                    type: "bi.left_right_vertical_adapt",
-                    height: 42,
-                    items: {
-                        left: [leftContainer],
-                        right: [this.deleteButton]
-                    }
-                }
-            }
-        })
     },
 
     populate: function (item) {
@@ -72,11 +58,10 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _buildConditions: function () {
         var self = this, o = this.options;
-        if (BI.isNull(o.field_id)) {
+        if (BI.isNull(o.dId)) {
             return [];
         }
-        this.fieldId = o.field_id;
-        var fieldName = BI.Utils.getFieldNameByID(this.fieldId);
+        var fieldName = BI.Utils.getDimensionNameByID(o.dId);
 
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
@@ -116,7 +101,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         switch (filterType) {
             case BICst.TARGET_FILTER_STRING.BELONG_VALUE:
             case BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE:
-                this._createTargetStringBelongCombo(initData);
+                this._createStringBelongCombo(initData);
 
                 break;
             case BICst.TARGET_FILTER_STRING.CONTAIN:
@@ -136,16 +121,19 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterWidgetContainer.addItem(this.filterWidget);
     },
 
-    _createTargetStringBelongCombo: function (initData) {
-        var self = this, o = this.options;
+    _createStringBelongCombo: function (initData) {
+        var o = this.options, self = this;
         this.filterWidget = BI.createWidget({
-            type: "bi.select_field_data_combo",
-            field_id: this.fieldId,
+            type: "bi.select_dimension_data_combo",
+            dId: o.dId,
             width: 230,
             height: this._constant.BUTTON_HEIGHT
         });
 
-        this.filterWidget.on(BI.SelectFieldDataCombo.EVENT_CONFIRM, function () {
+        this.filterWidget.on(BI.SelectDimensionDataCombo.EVENT_CONFIRM, function () {
+            self._setNodeData({
+                filter_value : this.getValue()
+            });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
@@ -162,6 +150,9 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: this._constant.INPUT_WIDTH
         });
         this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self._setNodeData({
+                filter_value : this.getValue()
+            });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
@@ -179,9 +170,14 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return this.style;
     },
 
+    _setNodeData: function(v){
+        var o = this.options;
+        o.node.set("data", BI.extend(o.node.get("data"), v));
+    },
+
     getValue: function () {
         return {
-            field_id: this.options.field_id,
+            target_id: this.options.dId,
             filter_type: this.filterType.getValue()[0],
             filter_value: this.filterWidget.getValue(),
             style_setting: this.style.getValue()

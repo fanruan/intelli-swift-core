@@ -957,13 +957,6 @@
                 BICst.DEFAULT_CHART_SETTING.show_data_label;
         },
 
-        getDatalabelByID: function (did) {
-            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "data_label");
-            }
-
-        },
-
         getWSShowDataTableByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_data_table) ? ws.show_data_table :
@@ -1316,6 +1309,13 @@
         getDimensionMapByDimensionID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
                 return Data.SharingPool.get("dimensions", did, "dimension_map") || {};
+            }
+            return {};
+        },
+
+        getDatalabelByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "data_label") || {};
             }
             return {};
         },

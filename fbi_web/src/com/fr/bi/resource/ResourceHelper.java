@@ -1095,6 +1095,27 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
                 "com/fr/bi/web/js/modules/filter/auth/filter.authority.js",
 
+                //数据标签
+                "com/fr/bi/web/js/modules/datalabel/datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/tab.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/imageset.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/styleset.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/chart.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/filter.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/item.numberfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/item.stringfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/factory.filteritem.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/group.condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/item.notypefieldl.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/widget.datalabelselectfield.js",
+                "com/fr/bi/web/js/modules/datalabel/filter/filter.js",
+                "com/fr/bi/web/js/modules/datalabel/filter/expander.js",
+                "com/fr/bi/web/js/modules/datalabel/filter/operation.filter.js",
+                "com/fr/bi/web/js/modules/datalabel/filter/pane.filter.js",
+                "com/fr/bi/web/js/modules/datalabel/filter/expander.filter.js",
                 //计算指标
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/calculatetargetpopup.summary.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/model.calculatetargetpopup.summary.js",
@@ -2638,20 +2659,6 @@ public class ResourceHelper {
 
                 //web组件
                 "com/fr/bi/web/js/widget/web/web.js",
-                "com/fr/bi/web/js/modules/datalabel/datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/tab/tab.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/tab/texttoolbar.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.js",
-                "com/fr/bi/web/js/modules/datalabel/condition/item.numberfield.js",
-                "com/fr/bi/web/js/modules/datalabel/condition/item.stringfield.js",
-                "com/fr/bi/web/js/modules/datalabel/condition/factory.filteritem.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/condition/condition.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/condition/group.condition.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/condition/item.notypefieldl.js",
-                "com/fr/bi/web/js/modules/datalabel/condition/widget.datalabelselectfield.js",
-                "com/fr/bi/web/js/modules/datalabel/tab/imageset.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/tab/styleset.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/tab/chart.datalabel.js",
 
                 //布局
                 "com/fr/bi/web/js/widget/arrangement/arrangement.droppable.js",

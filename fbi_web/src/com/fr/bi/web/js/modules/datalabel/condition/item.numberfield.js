@@ -26,8 +26,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         text: BI.i18nText("BI-Not_Null"),
         value: BICst.TARGET_FILTER_NUMBER.NOT_NULL,
         cls: "dot-e-font"
-    }], [
-        {
+    }], [{
             text: "第N名",
             value: 201,
             cls: "dot-e-font"
@@ -48,7 +47,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         CONTAINER_HEIGHT: 40,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
-        FIELD_NAME_BUTTON_WIDTH: 90,
+        FIELD_NAME_BUTTON_WIDTH: 80,
         TEXT_BUTTON_H_GAP: 10,
         INPUT_WIDTH: 230,
         INPUT_WIDTH_CHANGE: 180,
@@ -77,35 +76,28 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             self.destroy();
             BI.DataLabelNumberFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
+        // var right;
+        // if (o.hideStyle) {
+        //     right = [];
+        // } else {
+        //     right = [this.styleSetting, this.deleteButton]
+        // }
 
-        var leftContainer = BI.createWidget({
+        BI.createWidget({
             type: "bi.vertical",
             cls: "item-content",
+            element: this.element,
             items: [{
                 type: "bi.left_right_vertical_adapt",
                 height: this._constant.CONTAINER_HEIGHT,
                 items: {
                     left: [left[0], left[1], left[2], left[3]],
-                    right: [this.styleSetting]
+                    right:  [this.styleSetting, this.deleteButton]
                 },
                 lhgap: this._constant.LEFT_ITEMS_H_GAP,
-                width: 540
+                rhgap: this._constant.LEFT_ITEMS_H_GAP
             }]
         });
-        BI.createWidget({
-            type: "bi.vertical",
-            element: this.element,
-            items: [{
-                el: {
-                    type: "bi.left_right_vertical_adapt",
-                    height: 42,
-                    items: {
-                        left: [leftContainer],
-                        right: [this.deleteButton]
-                    }
-                }
-            }]
-        })
     },
 
     populate: function (item) {
@@ -115,13 +107,13 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _buildConditions: function () {
         var self = this, o = this.options;
-        if (BI.isNull(o.field_id)) {
+        if (BI.isNull(o.dId)) {
             return [];
         }
 
-        this.fieldId = o.field_id;
-        var fieldName = BI.Utils.getFieldNameByID(this.fieldId);
-        var selfName = BI.Utils.getFieldNameByID(BI.Utils.getFieldIDByDimensionID(o.dId));
+        var fieldName = BI.Utils.getDimensionNameByID(o.dId);
+        var selfName = BI.Utils.getDimensionNameByID(o.sdId);
+
         this._isSelf = fieldName === selfName;
         this.size.INPUT_WIDTH = this._isSelf ? this._constant.INPUT_WIDTH_CHANGE : this._constant.INPUT_WIDTH;
         this.size.COMBO_WIDTH = this._isSelf ? this._constant.COMBO_WIDTH_CHANGE : this._constant.COMBO_WIDTH;
@@ -206,9 +198,9 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
         this.filterWidget.on(BI.NumericalInterval.EVENT_CHANGE, function () {
-            // self._setNodeData({
-            //     filter_value : this.getValue()
-            // });
+            self._setNodeData({
+                filter_value : this.getValue()
+            });
             o.afterValueChange.apply(self, arguments);
         });
         return this.filterWidget;
@@ -229,9 +221,9 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: this.size.INPUT_WIDTH - this._constant.LABEL_WIDTH
         });
         this.filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            // self._setNodeData({
-            //     filter_value : this.getValue()
-            // });
+            self._setNodeData({
+                filter_value : this.getValue()
+            });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
@@ -261,9 +253,9 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: this.size.INPUT_WIDTH - this._constant.LABEL_WIDTH
         });
         this.filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            // self._setNodeData({
-            //     filter_value : this.getValue()
-            // });
+            self._setNodeData({
+                filter_value : this.getValue()
+            });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
@@ -313,17 +305,17 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return this.style;
     },
 
-    // _setNodeData: function(v){
-    //     var o = this.options;
-    //     o.node.set("data", BI.extend(o.node.get("data"), v));
-    // },
+    _setNodeData: function(v){
+        var o = this.options;
+        o.node.set("data", BI.extend(o.node.get("data"), v));
+    },
 
     getValue: function () {
         return {
-            field_id: this.options.field_id,
+            target_id: this.options.dId,
             filter_type: this.filterType.getValue()[0],
             filter_value: this.filterWidget.getValue(),
-            filter_range: this.filterRange.getValue(),
+            filter_range: this.filterRange ? this.filterRange.getValue() : "",
             style_setting: this.style.getValue()
         }
     }

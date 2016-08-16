@@ -26,6 +26,20 @@
 
     <script type="text/javascript">
         $(function () {
+            BI.TESTITEM = BI.createWidget(BI.Widget,{
+               _defaultConfig: function () {
+                   return BI.extend(BI.TESTITEM.superclass._defaultConfig.apply(this, arguments), {
+
+                   })
+               },
+               _init: function () {
+                   BI.TESTITEM.superclass._init.apply(this,arguments);
+                   var self = this, o = this.options;
+                   this.expander = BI.createWidget({
+                       type: "bi.expander"
+                   })
+               }
+            });
             BI.createWidget({
                 type: "bi.absolute",
                 element: "body",
