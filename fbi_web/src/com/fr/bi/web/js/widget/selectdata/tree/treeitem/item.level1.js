@@ -40,6 +40,7 @@ BI.SelectDataLevel1Item = BI.inherit(BI.Single, {
             cls: "select-date-level1-item-button " + this._getFieldClass(o.fieldType),
             text: o.text,
             value: o.value,
+            keyword: o.keyword,
             blankWidth: o.layer * 20,
             height: 25,
             textLgap: 10,

@@ -300,9 +300,12 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 while (iterator.hasNext()) {
                     String targetId = (String) iterator.next();
                     JSONObject targetRelationJo = dimMap.getJSONObject(targetId);
-                    Map<String, BusinessField> dimensionMap = new LinkedHashMap<String, BusinessField>();
-                    dimensionsMap.put(dimensionId, dimensionMap);
                     if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
+                        Map<String, BusinessField> dimensionMap = dimensionsMap.get(dimensionId);
+                        if(dimensionMap == null){
+                            dimensionMap = new LinkedHashMap<String, BusinessField>();
+                            dimensionsMap.put(dimensionId, dimensionMap);
+                        }
                         JSONObject srcJo = targetRelationJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
                         String fieldId = srcJo.getString("field_id");
                         dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));

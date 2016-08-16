@@ -39,6 +39,7 @@ BI.SelectDataLevel2DateNode = BI.inherit(BI.NodeButton, {
             cls: this._getFieldClass(o.fieldType),
             text: o.text,
             value: o.value,
+            keyword: o.keyword,
             height: o.height,
             textLgap: 10,
             textRgap: 5

@@ -187,4 +187,9 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     public Boolean isVersionAvailable() {
         return selfColumnEntity.isVersionAvailable();
     }
+
+    @Override
+    public void buildStructure() {
+        selfColumnEntity.buildStructure();
+    }
 }

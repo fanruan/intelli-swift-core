@@ -224,7 +224,7 @@
                 case BICst.MULTI_DATE_YEAR_BEGIN:
                 case BICst.MULTI_DATE_YEAR_END:
                     this.dateTab.setSelect(BICst.MULTI_DATE_YEAR_CARD);
-                    this.year.setValue(value);
+                    this.year.setValue({type: type, value: value});
                     self._setInnerValue(this.year);
                     date = this.year.getCalculationValue();
                     this.ymd.setValue({
@@ -238,7 +238,7 @@
                 case BICst.MULTI_DATE_QUARTER_BEGIN:
                 case BICst.MULTI_DATE_QUARTER_END:
                     this.dateTab.setSelect(BICst.MULTI_DATE_QUARTER_CARD);
-                    this.quarter.setValue(value);
+                    this.quarter.setValue({type: type, value: value});
                     self._setInnerValue(this.quarter);
                     date = this.quarter.getCalculationValue();
                     this.ymd.setValue({
@@ -252,7 +252,7 @@
                 case BICst.MULTI_DATE_MONTH_BEGIN:
                 case BICst.MULTI_DATE_MONTH_END:
                     this.dateTab.setSelect(BICst.MULTI_DATE_MONTH_CARD);
-                    this.month.setValue(value);
+                    this.month.setValue({type: type, value: value});
                     self._setInnerValue(this.month);
                     date = this.month.getCalculationValue();
                     this.ymd.setValue({
@@ -264,7 +264,7 @@
                 case BICst.MULTI_DATE_WEEK_PREV:
                 case BICst.MULTI_DATE_WEEK_AFTER:
                     this.dateTab.setSelect(BICst.MULTI_DATE_WEEK_CARD);
-                    this.week.setValue(value);
+                    this.week.setValue({type: type, value: value});
                     self._setInnerValue(this.week);
                     date = this.week.getCalculationValue();
                     this.ymd.setValue({
@@ -277,7 +277,7 @@
                 case BICst.MULTI_DATE_DAY_AFTER:
                 case BICst.MULTI_DATE_DAY_TODAY:
                     this.dateTab.setSelect(BICst.MULTI_DATE_DAY_CARD);
-                    this.day.setValue(value);
+                    this.day.setValue({type: type, value: value});
                     self._setInnerValue(this.day);
                     date = this.day.getCalculationValue();
                     this.ymd.setValue({

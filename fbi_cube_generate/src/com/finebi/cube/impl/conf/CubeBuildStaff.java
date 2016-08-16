@@ -97,7 +97,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
         Set<BITableRelation> result = new HashSet<BITableRelation>();
         while (iterator.hasNext()) {
             BITableRelation tableRelation = iterator.next();
-            if (isRelationValid(tableRelation)) {
+            if (istableRelationValid(tableRelation)) {
                 result.add(tableRelation);
             }
         }

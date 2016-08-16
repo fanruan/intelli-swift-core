@@ -92,15 +92,21 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
-
+        var minimalist = BI.Utils.getWSMinimalistByID(wId);
         var e = BI.Utils.getExpressionByDimensionID(o.dId);
         var ids = e.ids;
         BI.each(ids , function (idx , id){
-            var fieldID = BI.Utils.getFieldIDByDimensionID(id);
-            var fieldName = BI.Utils.getFieldNameByID(fieldID);
-            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldID));
-            var fromText = tableName + "." + fieldName;
-            item[item.length-1].push({
+            //这边的dimensionId不一定能拿到fieldId,计算指标没有fieldId
+            var fromText = "";
+            if(BI.Utils.isCalculateTargetByDimensionID(id)){
+                fromText = BI.Utils.getDimensionNameByID(id);
+            }else{
+                var fieldID = BI.Utils.getFieldIDByDimensionID(id);
+                var fieldName = BI.Utils.getFieldNameByID(fieldID);
+                var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldID));
+                fromText = tableName + "." + fieldName;
+            }
+            item[item.length - 1].push({
                 text: fromText,
                 tipType: "success",
                 value: BICst.TARGET_COMBO.INFO,
@@ -131,6 +137,9 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist) {
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:

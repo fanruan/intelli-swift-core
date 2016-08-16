@@ -36,7 +36,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         POLYGON: 7,
         AUTO_CUSTOM: 1,
         AUTO: 1,
-        SHOW: 2,
+        NOT_SHOW: 2,
         FONT_STYLE: {
             "fontFamily": "inherit",
             "color": "#808080",
@@ -177,7 +177,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
         if (number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
             if (type === this.constants.NORMAL) {
-                formatter = '#0%'
+                formatter = '#0.##%';
             } else {
                 formatter += '%';
             }

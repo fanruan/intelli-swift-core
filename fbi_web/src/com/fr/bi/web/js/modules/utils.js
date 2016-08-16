@@ -64,7 +64,7 @@
         getAllGroupedPackagesTreeJSON: function () {
             var groupMap = Pool.groups, packages = Pool.packages;
             var packStructure = [], groupedPacks = [];
-            var groups = BI.sortBy(groupMap, function(id, item) {
+            var groups = BI.sortBy(groupMap, function (id, item) {
                 return item.init_time;
             });
             BI.each(groups, function (i, group) {
@@ -110,15 +110,15 @@
         },
 
         getWidgetsByTemplateId: function (tId, callback) {
-            Data.Req.reqWidgetsByTemplateId(tId, function (data) {
-                callback(data);
-            });
+            if (tId === this.getCurrentTemplateId()) {
+                callback(Data.SharingPool.cat("widgets"));
+            } else {
+                Data.BufferPool.getWidgetsByTemplateId(tId, callback);
+            }
         },
 
         getAllTemplates: function (callback) {
-            Data.Req.reqAllTemplates(function (data) {
-                callback(data);
-            });
+            Data.BufferPool.getAllTemplates(callback);
         },
 
         getAllReportsData: function (callback) {
@@ -502,10 +502,10 @@
             }
 
             function createDimensionsAndTargets(idx) {
-                var newId = BI.UUID();
+                var newId = dimTarIdMap[idx] || BI.UUID();
                 var dimension = BI.deepClone(widget.dimensions[idx]);
-                if (BI.has(dimTarIdMap, idx)) {
-                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
+                if (BI.has(dimTarIdMap, idx) && BI.has(dimensions, [dimTarIdMap[idx]])) {
+                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]]};
                 }
                 switch (widget.dimensions[idx].type) {
                     case BICst.TARGET_TYPE.STRING:
@@ -845,13 +845,13 @@
 
         getWSMaxScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.max_scale) ? ws.max_scale:
+            return BI.isNotNull(ws.max_scale) ? ws.max_scale :
                 ""
         },
 
         getWSMinScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.min_scale) ? ws.min_scale:
+            return BI.isNotNull(ws.min_scale) ? ws.min_scale :
                 ""
         },
 
@@ -967,6 +967,12 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_grid_line) ? ws.show_grid_line :
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
+        },
+
+        getWSMinimalistByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.minimalist_model) ? ws.minimalist_model :
+                BICst.DEFAULT_CHART_SETTING.minimalist_model
         },
 
         getWSShowCustomScale: function (wid) {
@@ -1115,6 +1121,22 @@
             BI.each(views, function (i, tar) {
                 if (i >= (BI.parseInt(BICst.REGION.TARGET1))) {
                     result = result.concat(tar);
+                }
+            });
+            return result;
+        },
+
+        getAllBaseDimensionIDs: function (wid) {
+            var self = this;
+            var result = [];
+            var ids = this.getAllDimensionIDs(wid);
+            var _set = [BICst.TARGET_TYPE.STRING,
+                BICst.TARGET_TYPE.NUMBER,
+                BICst.TARGET_TYPE.DATE, BICst.TARGET_TYPE.COUNTER];
+            BI.each(ids, function (i, id) {
+                var type = self.getDimensionTypeByID(id);
+                if (_set.contains(type)) {
+                    result.push(id);
                 }
             });
             return result;
@@ -2479,7 +2501,7 @@
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
-            if(BI.isNotNull(paramdate)){
+            if (BI.isNotNull(paramdate)) {
                 return parseComplexDateCommon(offset, new Date(paramdate));
             }
         }

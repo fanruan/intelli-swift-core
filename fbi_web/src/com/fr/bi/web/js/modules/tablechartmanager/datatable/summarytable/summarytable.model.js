@@ -61,7 +61,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
     },
 
     getFreezeCols: function () {
-        return this.freezeCols;
+        return this.isNeed2Freeze() ? this.freezeCols : [];
     },
 
     getMergeCols: function () {

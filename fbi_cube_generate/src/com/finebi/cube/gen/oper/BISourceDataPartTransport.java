@@ -22,6 +22,7 @@ import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -32,7 +33,6 @@ import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.impl.Connection;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -64,7 +64,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         long t = System.currentTimeMillis();
         try {
             copyFromOldCubes();
-
             long count = transport();
             ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
             ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
@@ -184,7 +183,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 });
             }
         };
-        BICubeDBUtils.runSQL(sqlStatement, new ICubeFieldSource[]{f}, removeTraversal);
+        DBQueryExecutor.getInstance().runSQL(sqlStatement, new ICubeFieldSource[]{f}, removeTraversal);
         return sortRemovedList;
     }
 

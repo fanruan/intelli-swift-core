@@ -53,6 +53,7 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
             public void clear() {
                 TempCubeManager.release(task);//释放cube
                 TempPathGenerator.release(task);//释放临时路径
+//                TempCubeManager.getInstance(task).clear();
             }
         });
 
