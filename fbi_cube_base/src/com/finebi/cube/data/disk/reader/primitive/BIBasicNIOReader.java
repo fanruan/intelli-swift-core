@@ -76,7 +76,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
         if (bufferArray.length < index){
             synchronized (this){
                 if (bufferArray.length < index){
-                    MappedByteBuffer[] temp = new MappedByteBuffer[index];
+                    MappedByteBuffer[] temp = new MappedByteBuffer[index+1];
                     System.arraycopy(bufferArray, 0, temp, 0, bufferArray.length);
                     bufferArray = temp;
                 }
