@@ -12,7 +12,6 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.*;
 import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
@@ -281,11 +280,11 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
 
     private void copyFilesFromOldCubes(ICubeResourceRetrievalService tempResourceRetrieval, ICubeResourceRetrievalService advancedResourceRetrieval, BICubeGenerateRelation relation) throws BICubeResourceAbsentException, BITablePathEmptyException, IOException {
         BITableSourceRelationPath path = new BITableSourceRelationPath(relation.getRelation());
-        ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()), BICubePathUtils.convert(path));
-        ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()), BICubePathUtils.convert(path));
-        BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
-        from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()));
-        to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()));
+//        ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()), BICubePathUtils.convert(path));
+//        ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()), BICubePathUtils.convert(path));
+//        BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+        ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()));
+        ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()));
         BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
         from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getForeignTable()));
         to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getForeignTable()));
