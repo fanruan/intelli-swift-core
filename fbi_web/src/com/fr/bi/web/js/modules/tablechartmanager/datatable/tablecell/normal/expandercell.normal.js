@@ -42,6 +42,10 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 var date = new Date(BI.parseInt(text));
                 text = date.print("%Y-%X-%d");
             }
+            if (dGroup.type === BICst.GROUP.YMDHMS) {
+                var date = new Date(BI.parseInt(text));
+                text = date.print("%Y-%X-%d  %H:%M:%S");
+            }
             if (dGroup.type === BICst.GROUP.S) {
                 text = BICst.FULL_QUARTER_NAMES[text - 1];
             }
