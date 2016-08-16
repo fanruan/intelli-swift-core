@@ -72,27 +72,39 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
-        config.yAxis = this.yAxis;
 
+        config.yAxis = this.yAxis;
         BI.each(config.yAxis, function(idx, axis){
             switch (axis.axisIndex){
                 case self.constants.LEFT_AXIS:
-                    axis.reversed = false;
-                    axis.formatter = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level);
-                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
-                    axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
-                    axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
+                    var title = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.rotation = self.constants.ROTATION;
+                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
+                    BI.extend(axis, {
+                        reversed: false,
+                        lineWidth: self.config.line_width,
+                        showLabel: self.config.show_label,
+                        enableTick: self.config.enable_tick,
+                        enableMinorTick: self.config.enable_minor_tick,
+                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level)
+                    });
+                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    axis.reversed = true;
-                    axis.formatter = self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level);
-                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
-                    axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
-                    axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
+                    var title = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.rotation = self.constants.ROTATION;
+                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
+                    BI.extend(axis, {
+                        reversed: true,
+                        lineWidth: self.config.line_width,
+                        showLabel: self.config.show_label,
+                        enableTick: self.config.enable_tick,
+                        enableMinorTick: self.config.enable_minor_tick,
+                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level)
+                    });
+                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }
             var res = _calculateValueNiceDomain(0, self.maxes[idx]);
@@ -101,11 +113,22 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
             axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
         });
 
-        config.xAxis[0].title.text = this.config.left_y_axis_title;
-        config.xAxis[0].labelRotation = this.config.text_direction;
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? config.xAxis[0].title.text : "";
         config.xAxis[0].title.align = "center";
-        config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.left_y_axis_title : "";
+        BI.extend(config.xAxis[0], {
+            lineWidth: this.config.line_width,
+            enableTick: this.config.enable_tick,
+            labelRotation: this.config.text_direction,
+            enableMinorTick: this.config.enable_minor_tick,
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+        });
+
+        BI.extend(config.xAxis[1], {
+            lineWidth: this.config.line_width,
+            enableTick: this.config.enable_tick,
+            enableMinorTick: this.config.enable_minor_tick
+        });
+
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if(config.plotOptions.dataLabels.enabled === true){
             BI.each(items, function(idx, item){
@@ -334,7 +357,11 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             show_zoom: options.show_zoom || false,
             text_direction: options.text_direction || 0,
-            cordon: options.cordon || []
+            cordon: options.cordon || [],
+            line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
         };
         this.options.items = items;
 

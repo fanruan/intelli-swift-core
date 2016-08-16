@@ -1,7 +1,7 @@
 /**
  * @class BI.BubbleChartSetting
  * @extends BI.Widget
- * 柱状，堆积柱状，组合图样式
+ * 气泡图样式
  */
 BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 

@@ -62,7 +62,8 @@ BI.AuthorityStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         if (BI.isNull(o._src)) {
             return [];
         }
-        var fieldName = BI.Utils.getFieldNameByFieldId4Conf(o._src.field_id);
+        var fieldName = BI.Utils.getTableNameByFieldId4Conf(o._src.field_id) + "." +
+            BI.Utils.getFieldNameByFieldId4Conf(o._src.field_id);
 
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",

@@ -152,6 +152,9 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist) {
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 item[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
                 break;
             case BICst.WIDGET.SCATTER:

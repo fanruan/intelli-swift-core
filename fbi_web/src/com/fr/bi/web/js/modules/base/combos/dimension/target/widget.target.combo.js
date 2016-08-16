@@ -168,6 +168,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.DATA_LABEL
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.BAR:
@@ -201,6 +204,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
                 break;
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -236,6 +242,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         cls: "dot-e-font"
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 break;
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.BUBBLE:

@@ -204,7 +204,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
-        var showElement = BI.createWidget({
+        this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
             cls: "single-line-settings",
@@ -229,7 +229,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        var xAxis = BI.createWidget({
+        this.xAxis = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
             cls: "single-line-settings",
@@ -267,7 +267,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        var lYAxis = BI.createWidget({
+        this.lYAxis = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
             cls: "single-line-settings",
@@ -324,7 +324,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
-        var otherAttr = BI.createWidget({
+        this.otherAttr = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             cls: "single-line-settings",
             items: {
@@ -338,12 +338,45 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             lhgap: 11
         });
 
+        //极简模式
+        this.minimalistModel = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Minimalist_Model"),
+            width: 170
+        });
+
+        this.minimalistModel.on(BI.Controller.EVENT_CHANGE, function () {
+            self._invisible(!this.isSelected());
+            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE)
+        });
+
+        var modelChange = BI.createWidget({
+            type: "bi.left_right_vertical_adapt",
+            cls: "single-line-settings",
+            items: {
+                left: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Mode_Change"),
+                    cls: "line-title"
+                }, this.minimalistModel]
+            },
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
+        });
+
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, xAxis, showElement, otherAttr],
+            items: [tableStyle, this.lYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
             hgap: 10
         })
+    },
+
+    _invisible: function (v) {
+        this.lYAxis.setVisible(v);
+        this.xAxis.setVisible(v);
+        this.showElement.setVisible(v);
+        this.otherAttr.setVisible(v);
     },
 
     populate: function(){
@@ -384,6 +417,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
+        this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
+        this._invisible(!BI.Utils.getWSMinimalistByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -408,7 +443,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             x_axis_title: this.editTitleX.getValue(),
             text_direction: this.text_direction.getValue(),
             show_data_label: this.showDataLabel.isSelected(),
-            show_grid_line: this.gridLine.isSelected()
+            show_grid_line: this.gridLine.isSelected(),
+            minimalist_model: this.minimalistModel.isSelected()
         }
     },
 
@@ -426,6 +462,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.text_direction.setValue(v.text_direction);
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
+        this.minimalistModel.setSelected(v.minimalist_model)
     }
 });
 BI.RangeAreaChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";

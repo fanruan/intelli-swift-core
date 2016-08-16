@@ -1,7 +1,7 @@
 /**
  * @class BI.ScatterChartSetting
  * @extends BI.Widget
- * 柱状，堆积柱状，组合图样式
+ * 散点样式
  */
 BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
 

@@ -275,14 +275,6 @@ public class BIPlate extends AbstractFSPlate {
         });
     }
 
-
-    @Override
-    public PlatformManageModule[] supportPlatformManageModules() {
-        return new PlatformManageModule[]{
-                new PlatformManageModule("BI-Data_Setting", Inter.getLocText("BI_Data_Settings"), 2009, 1, true)
-        };
-    }
-
     static {
         VT4FBI.dealWithLic();
     }

@@ -151,6 +151,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist) {
+                    items[this.constants.CordonPos][0].disabled = true
+                }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.BAR:
@@ -179,6 +182,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist) {
+                    items[this.constants.CordonPos][0].disabled = true
+                }
                 items[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
                 break;
             case BICst.WIDGET.SCATTER:
