@@ -11,7 +11,6 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -138,12 +137,12 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
         Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
         for (BITableRelationPath path : paths) {
             try {
-                BITableSourceRelationPath relationPath = convert(path);
+                BITableSourceRelationPath relationPath = convertPath(path);
                 if (null != relationPath) {
                     set.add(relationPath);
                 }
             } catch (Exception e) {
-                continue;
+                BILogger.getLogger().error(e.getMessage());
             }
         }
         set = removeDuplicateRelationPaths(set);
@@ -170,17 +169,6 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
         this.allSingleSources = allSingleSources;
     }
 
-    private BITableSourceRelationPath convert(BITableRelationPath path) {
-        BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
-        try {
-            for (BITableRelation relation : path.getAllRelations()) {
-                tableSourceRelationPath.addRelationAtTail(convertRelation(relation));
-            }
-        } catch (BITablePathConfusionException e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
-        return tableSourceRelationPath;
-    }
 
     public Set<List<Set<CubeTableSource>>> getDependTableResource() {
         return dependTableResource;

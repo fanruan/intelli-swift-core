@@ -1,7 +1,7 @@
 /**
  * @class BI.ForceBubbleSetting
  * @extends BI.Widget
- * 百分比堆积，百分比柱状样式
+ * 力学气泡样式
  */
 BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
 

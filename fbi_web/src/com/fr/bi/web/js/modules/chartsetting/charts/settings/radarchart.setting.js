@@ -1,7 +1,7 @@
 /**
  * @class BI.RadarChartSetting
  * @extends BI.Widget
- * 雷达
+ * 雷达图样式
  */
 BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 

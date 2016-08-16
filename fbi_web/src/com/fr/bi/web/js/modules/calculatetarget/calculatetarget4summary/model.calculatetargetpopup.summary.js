@@ -13,6 +13,7 @@ BI.CalculateTargetPopupSummaryModel = BI.inherit(FR.OB, {
 
     _initData: function () {
         var o = this.options;
+        this.validation = true;
         this.wId = o.wId;
         this.dimensions = BI.Utils.getAllTargetDimensionIDs(this.wId);
         this.targetId = o.targetId;
@@ -58,6 +59,7 @@ BI.CalculateTargetPopupSummaryModel = BI.inherit(FR.OB, {
         });
     },
 
+
     setTargetExpression: function (expression) {
         this.targetData._src.expression = expression;
     },
@@ -68,6 +70,10 @@ BI.CalculateTargetPopupSummaryModel = BI.inherit(FR.OB, {
 
     setTargetName: function (name) {
         this.targetData.name = name;
+    },
+
+    setValidation: function (validation) {
+        this.validation = validation;
     },
 
     getTargetName: function () {
@@ -94,6 +100,10 @@ BI.CalculateTargetPopupSummaryModel = BI.inherit(FR.OB, {
             }
         });
         return fields;
+    },
+
+    getValidation: function () {
+        return this.validation;
     },
 
 

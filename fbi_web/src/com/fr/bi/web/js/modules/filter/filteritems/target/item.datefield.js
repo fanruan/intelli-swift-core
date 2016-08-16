@@ -69,7 +69,8 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         if (BI.isNull(o._src)) {
             return [];
         }
-        var fieldName = BI.Utils.getFieldNameByID(o._src.field_id);
+        var fieldName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(o._src.field_id)) + "." +
+            BI.Utils.getFieldNameByID(o._src.field_id);
 
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
@@ -98,7 +99,7 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
-            self._setNodeData({filter_type : this.getValue()[0]});
+            self._setNodeData({filter_type: this.getValue()[0]});
             o.afterValueChange.apply(self, arguments);
         });
         this._refreshFilterWidget(o.filter_type, o.filter_value);
@@ -133,19 +134,19 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterWidgetContainer.addItem(this.filterWidget);
     },
 
-    _createWidgetTab: function(opt, value, pointOrInterval){
+    _createWidgetTab: function (opt, value, pointOrInterval) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.target_date_tab",
             dateWidgetType: opt,
             isTimePoint: pointOrInterval
         });
-        this.filterWidget.on(BI.Tab.EVENT_CHANGE, function(){
-            self._setNodeData({filter_value : this.getValue()});
+        this.filterWidget.on(BI.Tab.EVENT_CHANGE, function () {
+            self._setNodeData({filter_value: this.getValue()});
             o.afterValueChange.apply(self, arguments);
         });
-        this.filterWidget.on(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE, function(){
-            self._setNodeData({filter_value : this.getValue()});
+        this.filterWidget.on(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE, function () {
+            self._setNodeData({filter_value: this.getValue()});
             o.afterValueChange.apply(self, arguments);
         });
         if (BI.isNotNull(value)) {
@@ -160,9 +161,9 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: this._constant.INPUT_WIDTH,
             height: this._constant.TIME_INTERVAL_HEIGHT
         });
-        this.filterWidget.on(BI.CustomTimeInterval.EVENT_CHANGE, function(){
+        this.filterWidget.on(BI.CustomTimeInterval.EVENT_CHANGE, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -177,9 +178,9 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.multidate_param_combo",
             width: this._constant.INPUT_WIDTH
         });
-        this.filterWidget.on(BI.MultiDateParamCombo.EVENT_CHANGE, function(){
+        this.filterWidget.on(BI.MultiDateParamCombo.EVENT_CHANGE, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -188,7 +189,7 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         }
     },
 
-    _setNodeData: function(v){
+    _setNodeData: function (v) {
         var o = this.options;
         o.node.set("data", BI.extend(o.node.get("data"), v));
     },
