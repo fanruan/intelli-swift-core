@@ -41,6 +41,7 @@ public class CubeTaskHelper {
 
     public static boolean CubeBuildETL(long userId, BITableID ETLTableId, BITableID baseTableId) {
         CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(ETLTableId), userId);
+        BILogger.getLogger().info("Cube single table update start");
         boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
     }

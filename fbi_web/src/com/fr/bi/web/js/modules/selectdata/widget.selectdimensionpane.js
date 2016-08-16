@@ -309,7 +309,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             if (dimension.type === BICst.TARGET_TYPE.STRING || dimension.type === BICst.TARGET_TYPE.NUMBER || dimension.type === BICst.TARGET_TYPE.DATE
                 || dimension.type === BICst.TARGET_TYPE.COUNTER) {
                 dimensionStructure.push({
-                    id: dimension._src.field_id,
+                    id: BI.UUID(),
                     pId: wId,
                     type: "bi.detail_select_dimension_level0_item",
                     layer: layer,
@@ -321,7 +321,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 });
             } else {
                 dimensionStructure.push({
-                    id: dimension.dId,
+                    id: BI.UUID(),
                     pId: wId,
                     type: "bi.detail_select_calculation_target_level0_item",
                     layer: layer,
@@ -378,7 +378,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     });
                     var r = self._createDimensionsAndTargets(find, dimTarIdMap, dimensions);
                     if (BI.has(expression, "formula_value")) {
-                        expression.formula_value = expression.formula_value.replace(tId, r[0].dId);
+                        expression.formula_value = expression.formula_value.replaceAll(tId, r[0].dId);
                     }
                     expression.ids[id] = r[0].dId;
                     result = BI.concat(result, r);

@@ -204,6 +204,14 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         }
     },
 
+    duplicate: function () {
+        BI.Utils.broadcastAllWidgets2Refresh();
+    },
+
+    splice: function () {
+        BI.Utils.broadcastAllWidgets2Refresh();
+    },
+
     local: function () {
         if (this.model.has("expand")) {
             this.model.get("expand");
