@@ -76,12 +76,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             self.destroy();
             BI.DataLabelNumberFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
-        // var right;
-        // if (o.hideStyle) {
-        //     right = [];
-        // } else {
-        //     right = [this.styleSetting, this.deleteButton]
-        // }
 
         BI.createWidget({
             type: "bi.vertical",
@@ -198,9 +192,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
         this.filterWidget.on(BI.NumericalInterval.EVENT_CHANGE, function () {
-            self._setNodeData({
-                filter_value : this.getValue()
-            });
             o.afterValueChange.apply(self, arguments);
         });
         return this.filterWidget;
@@ -221,9 +212,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: this.size.INPUT_WIDTH - this._constant.LABEL_WIDTH
         });
         this.filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            self._setNodeData({
-                filter_value : this.getValue()
-            });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
@@ -253,9 +241,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: this.size.INPUT_WIDTH - this._constant.LABEL_WIDTH
         });
         this.filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            self._setNodeData({
-                filter_value : this.getValue()
-            });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
@@ -303,11 +288,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         BI.isNotNull(initData) && this.style.setValue(initData);
         return this.style;
-    },
-
-    _setNodeData: function(v){
-        var o = this.options;
-        o.node.set("data", BI.extend(o.node.get("data"), v));
     },
 
     getValue: function () {

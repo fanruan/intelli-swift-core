@@ -106,12 +106,6 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.typeSelectedItem.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
-        o.node.set("data", BI.extend(o.node.get("data"), {
-            value: filterItem.filter_type,
-            filter_type: filterItem.filter_type,
-            filter_value: {value: []},
-            field_id: v.field_id
-        }));
     },
 
     getValue: function () {

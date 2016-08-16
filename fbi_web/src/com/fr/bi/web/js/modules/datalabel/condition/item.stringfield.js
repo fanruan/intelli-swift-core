@@ -16,7 +16,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DataLabelStringFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "data-label-condition-item bi-analysis-target-string-field-item",
+            extraCls: "data-label-condition-item",
             afterValueChange: BI.emptyFn
         })
     },
@@ -131,9 +131,6 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
 
         this.filterWidget.on(BI.SelectDimensionDataCombo.EVENT_CONFIRM, function () {
-            self._setNodeData({
-                filter_value : this.getValue()
-            });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
@@ -150,9 +147,6 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: this._constant.INPUT_WIDTH
         });
         this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self._setNodeData({
-                filter_value : this.getValue()
-            });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
@@ -168,11 +162,6 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         BI.isNotNull(initData) && this.style.setValue(initData);
         return this.style;
-    },
-
-    _setNodeData: function(v){
-        var o = this.options;
-        o.node.set("data", BI.extend(o.node.get("data"), v));
     },
 
     getValue: function () {
