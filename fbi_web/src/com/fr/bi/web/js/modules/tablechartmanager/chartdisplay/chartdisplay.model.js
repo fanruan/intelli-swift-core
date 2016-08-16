@@ -437,7 +437,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             }
             BI.each(BI.Utils.getDatalabelByID(dId), function (id, label) {
                 BI.each(data, function (i, item) {
-                    console.log(BI.Utils.getDimensionNameByID(label.target_id));
                     BI.each(item.data, function (k, dt) {
                         filterData(dt, label)
                     })

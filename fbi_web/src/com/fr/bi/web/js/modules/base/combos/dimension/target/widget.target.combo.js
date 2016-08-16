@@ -164,7 +164,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     },{
-                        text: BI.i18nText("BI-Data_label"),
+                        text: BI.i18nText("BI-Data_Label"),
                         value: BICst.TARGET_COMBO.DATA_LABEL
                     }]
                 };

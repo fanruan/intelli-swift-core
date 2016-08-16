@@ -1416,6 +1416,7 @@ public class ResourceHelper {
 
                 //标签样式面板
                 "com/fr/bi/web/js/modules/datalabel/datalabelpopup.js",
+
                 //业务包面板
                 "com/fr/bi/web/js/modules/onepackage/onepackagetablespane/widget.packagetables.pane.js",
                 "com/fr/bi/web/js/modules/onepackage/onepackagetablespane/widget.packagesearcher.resultpane.js",

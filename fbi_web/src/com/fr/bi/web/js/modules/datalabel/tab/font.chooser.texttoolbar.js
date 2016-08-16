@@ -2,13 +2,6 @@
  * Created by Fay on 2016/7/14.
  */
 BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
-    _items: [{
-        value: "Microsoft YaHei",
-        text: "微软雅黑"
-    }, {
-        value: "SimHei",
-        text: "黑体"
-    }],
 
     _defaultConfig: function () {
         return BI.extend(BI.TextToolbarFontChooser.superclass._defaultConfig.apply(this, arguments), {
@@ -24,8 +17,7 @@ BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
         this.trigger = BI.createWidget({
             type: "bi.editor_trigger",
             height: o.height,
-            triggerWidth: 12,
-            value: "Microsoft YaHei"
+            triggerWidth: 12
         });
         this.trigger.on(BI.EditorTrigger.EVENT_CHANGE, function () {
             self.fireEvent(BI.TextToolbarFontChooser.EVENT_CHANGE, arguments);
@@ -40,7 +32,7 @@ BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
                 minWidth: 50,
                 el: {
                     type: "bi.button_group",
-                    items: BI.createItems(this._items, {
+                    items: BI.createItems(BICst.Font_Family_COMBO, {
                         type: "bi.single_select_item"
                     }),
                     layouts: [{

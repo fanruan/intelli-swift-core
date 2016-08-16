@@ -24,8 +24,8 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                 return [{
                     id: self._constant.SELF_FIELD,
                     type: "bi.dimension_select_data_level0_node",
-                    text: "自身",
-                    value: "自身",
+                    text: BI.i18nText("BI-Self"),
+                    value: BI.i18nText("BI-Self"),
                     isParent: true,
                     fontType: BI.DimensionSelectDataLevel0Node.CLASSIFY,
                     open: true
@@ -47,8 +47,8 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                         pId: self._constant.SELF_FIELD,
                         type: "bi.select_data_level0_item",
                         fieldType: BI.Utils.getFieldTypeByID(fieldId),
-                        text: "自身",
-                        title: "自身",
+                        text: BI.i18nText("BI-Self"),
+                        title: BI.i18nText("BI-Self"),
                         value: o.dId
                     }]
                 } else {

@@ -1351,6 +1351,7 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
     value: BICst.CHART_SHAPE.PROJECTOR
 }];
 
+//数据标签过滤
 BICst.DATA_LABEL_FILTER_NUMBER_COMBO =[[{
     text: BI.i18nText("BI-In"),
     value: BICst.DATA_LABEL_FILTER_NUMBER.BELONG_VALUE,
@@ -1438,6 +1439,8 @@ BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
     value: BICst.DATA_LABEL_RANGE.Series,
     cls: "dot-e-font"
 }]];
+
+BICst.Font_Family_COMBO = [];
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {

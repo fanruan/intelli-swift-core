@@ -5,13 +5,13 @@
 BI.DataLabelChart = BI.inherit(BI.Widget, {
     data: [[{
         "data": [
-            {"x": "孙林", "y": 40},
-            {"x": "金士鹏", "y": 70},
-            {"x": "张珊", "y": 100},
-            {"x": "孙阳", "y": 30},
-            {"x": "袁成洁", "y": 10}
+            {"x": "data1", "y": 40},
+            {"x": "data2", "y": 70},
+            {"x": "data3", "y": 100},
+            {"x": "data4", "y": 30},
+            {"x": "data5", "y": 10}
         ],
-        "name": "scores"
+        "name": "data"
     }]],
     _constant: {
         ICON_WIDTH: 20,

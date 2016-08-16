@@ -73,8 +73,8 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.size.COMBO_WIDTH = this._isSelf ? this._constant.COMBO_WIDTH_CHANGE : this._constant.COMBO_WIDTH;
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
-            text: fieldName === selfName ? "自身" : fieldName,
-            title: fieldName === selfName ? "自身" : fieldName,
+            text: this._isSelf ? BI.i18nText("BI-Self") : fieldName,
+            title: this._isSelf ? BI.i18nText("BI-Self") : fieldName,
             width: this._constant.FIELD_NAME_BUTTON_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
             textAlign: "left",
