@@ -134,7 +134,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input",
             watermark: BI.i18nText("BI-Default_Data"),
             validationChecker: function(v){
-                return !(v < self.minScale.getValue())
+                return v >= self.minScale.getValue()
             }
         });
 
@@ -150,7 +150,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input",
             watermark: BI.i18nText("BI-Default_Data"),
             validationChecker: function(v){
-                return !(v > self.maxScale.getValue())
+                return v <= self.maxScale.getValue()
             }
         });
 
@@ -190,7 +190,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: this._constant.SIMPLE_H_GAP2
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.chartTypeGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -213,7 +213,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }, {
                 type: "bi.left",
                 items: BI.createItems([{
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.pointer]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -230,14 +230,14 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 lgap: constant.SIMPLE_H_GAP,
                 cls: "attr-names"
             }, {
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 items: [this.minScale]
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Max_Scale"),
                 cls: "attr-names"
             }, {
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 items: [this.maxScale]
             }, {
                 type: "bi.label",
@@ -245,7 +245,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 lgap: constant.SIMPLE_H_GAP,
                 cls: "attr-names"
             }, {
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 items: [this.percentage]
             }],{
                 height: constant.SINGLE_LINE_HEIGHT
@@ -274,7 +274,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names",
                     lgap: this._constant.SIMPLE_H_GAP2
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevellY],
                     lgap: constant.SIMPLE_H_GAP
                 }, {
@@ -283,19 +283,19 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.LYUnit],
                     lgap: constant.SIMPLE_H_GAP
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.scale],
                     lgap: constant.SIMPLE_H_GAP
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.addConditionButton],
                     lgap: constant.SIMPLE_H_GAP
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.conditions],
                     lgap: constant.SIMPLE_H_GAP,
                     width: "100%",

@@ -41,7 +41,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                 type: "bi.left",
                 cls: "detail-style",
                 items: BI.createItems([{
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
