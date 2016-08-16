@@ -2,8 +2,7 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 .data-label-condition-item {
-  margin-top: 2px;
-  min-width: 562px;
+  min-width: 560px;
   border-radius: 2px;
   border-top: 1px solid #d4dadd;
   border-left: 1px solid #d4dadd;
