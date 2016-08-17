@@ -424,13 +424,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _showDataLabel: function (data) {
         var self = this, o = this.options;
-        var dataLables = {
-            enabled: true,
-            align: "outside",
-            useHtml: true,
-            style: {},
-            formatter: ""
-        };
         BI.each(BI.Utils.getAllTargetDimensionIDs(o.wId), function (idx, dId) {
             if(!BI.Utils.isDimensionUsable(dId)){
                 return;
@@ -446,6 +439,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return data;
         
         function filterData(data, label) {
+            var dataLables = {
+                enabled: true,
+                align: "outside",
+                useHtml: true,
+                style: {},
+                formatter: ""
+            };
             switch (label.filter_type) {
                 case BICst.DATA_LABEL_FILTER_NUMBER.BELONG_VALUE:
                     if (data.y > label.filter_value.min && data.y < label.filter_value.max) {

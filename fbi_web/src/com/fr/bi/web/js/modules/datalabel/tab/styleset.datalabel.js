@@ -2,6 +2,15 @@
  * Created by fay on 2016/7/25.
  */
 BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
+    _constant: {
+        ICON_WIDTH: 20,
+        ICON_HEIGHT: 20,
+        BUTTON_HEIGHT: 40,
+        TRIGGER_BUTTON_WIDTH: 50,
+        TRIGGER_ICON_WIDTH: 12,
+        TRIGGER_WIDTH: 62
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.DataLabelStyleSet.superclass._defaultConfig.apply(this, arguments), {});
     },
@@ -12,13 +21,13 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         this.textTrigger = BI.createWidget({
             type: "bi.text_button",
             text: BI.i18nText("BI-Set_Style"),
-            height: 40
+            height: this._constant.BUTTON_HEIGHT
         });
         this.imgTrigger = BI.createWidget({
             type: "bi.image_button",
-            height: 40,
-            iconWidth: 20,
-            iconHeight: 20
+            height: this._constant.BUTTON_HEIGHT,
+            iconWidth: this._constant.ICON_WIDTH,
+            iconHeight: this._constant.ICON_HEIGHT
         });
         this.styleTab = BI.createWidget({
             type: "bi.data_label_tab",
@@ -34,25 +43,25 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         });
         this.triggerIcon = BI.createWidget({
             type: "bi.trigger_icon_button",
-            cls: "trigger-icon",
-            width: 20
+            cls: "trigger-icon"
         });
         this.styleTrigger = BI.createWidget({
             type: "bi.htape",
             cls: "condition-trigger",
             items: [{
                 el: this.triggerButton,
-                width: 50
+                width: this._constant.TRIGGER_BUTTON_WIDTH
             }, {
                 el: this.triggerIcon,
-                width: 12
+                width: this._constant.TRIGGER_ICON_WIDTH
             }],
-            width: 62,
-            height: 40
+            width: this._constant.TRIGGER_WIDTH,
+            height: this._constant.BUTTON_HEIGHT
         });
         this.style = BI.createWidget({
             type: "bi.combo",
             isNeedAdjustWidth: false,
+            isNeedAdjustHeight: false,
             element: this.element,
             el: this.styleTrigger,
             popup: {

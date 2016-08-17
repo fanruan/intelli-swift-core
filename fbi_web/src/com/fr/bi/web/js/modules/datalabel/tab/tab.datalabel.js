@@ -4,7 +4,7 @@
 BI.DataLabelTab = BI.inherit(BI.Widget, {
     _constant: {
         TEXT_TOOL_BAR_HEIGHT: 60,
-        IMAGE_SET_HEIGHT: 160
+        IMAGE_SET_HEIGHT: 165
     },
 
     _defaultConfig: function () {
@@ -26,7 +26,6 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 type: "bi.radio",
                 value: 1,
                 handler: function () {
-                    self.layout.setHeight(self._constant.TEXT_TOOL_BAR_HEIGHT);
                 }
             }, {
                 type: "bi.label",
@@ -36,7 +35,6 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 type: "bi.radio",
                 value: 2,
                 handler: function () {
-                    self.layout.setHeight(self._constant.IMAGE_SET_HEIGHT);
                 }
             }, {
                 type: "bi.label",
@@ -61,6 +59,13 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             cardCreator: BI.bind(this._createPanel, this)
         });
         this.tabs.setSelect(1);
+        this.tabs.on(BI.Tab.EVENT_CHANGE, function () {
+            if (this.getSelect() == 1) {
+                self.layout.setHeight(self._constant.TEXT_TOOL_BAR_HEIGHT);
+            } else {
+                self.layout.setHeight(self._constant.IMAGE_SET_HEIGHT);
+            }
+        });
         this.layout = BI.createWidget({
             type: "bi.vertical",
             element: this.element,
@@ -95,12 +100,11 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             self.fireEvent(BI.DataLabelTab.TEXT_CHANGE);
         });
         return BI.createWidget({
-            type: "bi.absolute",
+            type: "bi.vertical",
             cls: "",
             items: [{
                 el: this.textToolbar,
-                top: 30,
-                left: 0
+                tgap: 30
             }]
         })
     },
@@ -123,15 +127,9 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         });
         this.chart.populate(this._style.imgStyle.src);
         return BI.createWidget({
-                type: "bi.absolute",
-                items: [{
-                    el: this.chart,
-                    top: 30
-                }, {
-                    el: this.imageSet,
-                    top: 30,
-                    left: 150
-                }],
+                type: "bi.horizontal",
+                items: [this.chart, this.imageSet],
+                tgap: 30,
                 bgap: 10
             }
         );

@@ -31,12 +31,10 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             items: [{
                 text: BI.i18nText("BI-Default_Image"),
                 value: 1,
-                width: 50,
                 cls: "image-set-tab-item"
             }, {
                 text: BI.i18nText("BI-Custom_Image"),
                 value: 2,
-                width: 70,
                 cls: "image-set-tab-item"
             }],
             width: 380,
@@ -46,7 +44,6 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 items: [{
                     el: {
                         type: "bi.horizontal",
-                        width: 150,
                         lgap: 6
                     }
                 }]
