@@ -19,7 +19,8 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
             element: this.element,
             items: o.items,
             layouts: [{
-                type: "bi.vertical"
+                type: "bi.vertical",
+                bgap: 5
             }]
         });
 

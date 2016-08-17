@@ -58,6 +58,11 @@ BI.MultiSelectItem = BI.inherit(BI.BasicButton, {
         this.text.unRedMark.apply(this.text, arguments);
     },
 
+    setEnable: function (v) {
+        BI.MultiSelectItem.superclass.setEnable.apply(this, arguments);
+        this.checkbox.setEnable(v);
+    },
+
     doClick: function(){
         BI.MultiSelectItem.superclass.doClick.apply(this, arguments);
         this.checkbox.setSelected(this.isSelected());

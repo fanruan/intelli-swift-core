@@ -5,13 +5,13 @@
  */
 BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.ScatterChartSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.ScatterChartSetting.superclass._init.apply(this, arguments);
         var self = this, constant = BI.AbstractChartSetting;
 
@@ -21,7 +21,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.colorSelect.populate();
 
-        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
+        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -44,7 +44,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -62,7 +62,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_FORMAT
         });
 
-        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
+        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -73,7 +73,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_LEVEL
         });
 
-        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
+        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -84,7 +84,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_FORMAT
         });
 
-        this.XAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
+        this.XAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -95,7 +95,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_LEVEL
         });
 
-        this.numberLevelX.on(BI.Segment.EVENT_CHANGE, function(){
+        this.numberLevelX.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -108,7 +108,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             watermark: BI.i18nText("BI-Custom_Input")
         });
 
-        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -120,7 +120,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             watermark: BI.i18nText("BI-Custom_Input")
         });
 
-        this.XUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.XUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -131,7 +131,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 90
         });
 
-        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
+        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function () {
             this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
@@ -142,7 +142,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
-        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -152,7 +152,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 90
         });
 
-        this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function(){
+        this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function () {
             this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
@@ -164,7 +164,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input"
         });
 
-        this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -176,18 +176,19 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.CHART_LEGEND
         });
 
-        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+        this.legend.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
         //数据标签
         this.showDataLabel = BI.createWidget({
             type: "bi.multi_select_item",
+            warningTitle: BI.i18nText("BI-Disable_in_Big_Data_Mode"),
             value: BI.i18nText("BI-Show_Data_Label"),
             width: 115
         });
 
-        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -198,7 +199,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 115
         });
 
-        this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
+        this.gridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
@@ -221,13 +222,13 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.gridLine]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -255,7 +256,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.lYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -263,7 +264,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevellY]
                 }, {
                     type: "bi.label",
@@ -271,10 +272,10 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.LYUnit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -302,7 +303,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.XAxisStyle]
                 }, {
                     type: "bi.label",
@@ -310,7 +311,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevelX]
                 }, {
                     type: "bi.label",
@@ -318,10 +319,10 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.XUnit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleX, this.editTitleX]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -334,10 +335,11 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
+            warningTitle: BI.i18nText("BI-Disable_in_Big_Data_Mode"),
             width: 170
         });
-        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({
@@ -354,32 +356,62 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             lhgap: constant.SIMPLE_H_GAP
         });
 
+        this.bigDataMode = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Big_Data_Mode"),
+            width: 170
+        });
+
+        this.bigDataMode.on(BI.Controller.EVENT_CHANGE, function () {
+            self._bigDataMode(!this.isSelected());
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
+        });
+
+        var modeChange = BI.createWidget({
+            type: "bi.left_right_vertical_adapt",
+            cls: "single-line-settings",
+            items: {
+                left: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Mode_Change"),
+                    cls: "line-title"
+                }, this.bigDataMode]
+            },
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
+        });
+
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, xAxis, showElement, otherAttr],
+            items: [tableStyle, lYAxis, xAxis, showElement, otherAttr, modeChange],
             hgap: 10
         })
     },
 
-    populate: function(){
+    _bigDataMode: function (v) {
+        this.showDataLabel.setEnable(v);
+        this.transferFilter.setEnable(v)
+    },
+
+    populate: function () {
         var wId = this.options.wId;
 
         var view = BI.Utils.getWidgetViewByID(wId);
         var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId);
         var titleX = BI.Utils.getWSXAxisTitleByID(wId);
-        if(titleLY === ""){
-            BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
-                if(BI.Utils.isDimensionUsable(dId)){
+        if (titleLY === "") {
+            BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
+                if (BI.Utils.isDimensionUsable(dId)) {
                     titleLY = BI.Utils.getDimensionNameByID(dId);
                     return true;
                 }
                 return false;
             });
         }
-        if(titleX === ""){
-            BI.any(view[BICst.REGION.DIMENSION1], function(idx, dId){
-                if(BI.Utils.isDimensionUsable(dId)){
+        if (titleX === "") {
+            BI.any(view[BICst.REGION.DIMENSION1], function (idx, dId) {
+                if (BI.Utils.isDimensionUsable(dId)) {
                     titleX = BI.Utils.getDimensionNameByID(dId);
                     return true;
                 }
@@ -402,12 +434,14 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
+        this.bigDataMode.setSelected(BI.Utils.getWSBigDataModelByID(wId));
+        this._bigDataMode(!BI.Utils.getWSBigDataModelByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
@@ -423,11 +457,12 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             x_axis_title: this.editTitleX.getValue(),
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
-            show_grid_line: this.gridLine.isSelected()
+            show_grid_line: this.gridLine.isSelected(),
+            big_data_mode: this.bigDataMode.isSelected()
         }
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
@@ -443,6 +478,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
+        this.bigDataMode.setSelected(v.big_data_mode)
     }
 });
 BI.ScatterChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
