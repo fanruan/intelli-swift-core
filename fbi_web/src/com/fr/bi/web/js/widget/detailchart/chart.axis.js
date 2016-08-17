@@ -108,6 +108,7 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
             labelRotation: this.config.text_direction,
+            enableMinorTick: this.config.enable_minor_tick,
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0
         });
 
