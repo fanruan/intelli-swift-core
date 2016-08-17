@@ -142,9 +142,11 @@ Data.Req = BIReq = {
         })
     },
 
-    reqTestConnectionByLinkName: function (name, callback) {
+    reqTestConnectionByLinkName: function (name, callback, complete) {
         BI.requestAsync("fr_bi_configure", "test_data_link_name", {name: name}, function (res) {
             callback(res);
+        }, function() {
+            complete();
         })
     },
 

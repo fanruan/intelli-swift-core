@@ -284,6 +284,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                 } else {
                     self._saveSql();
                 }
+            }, function() {
                 mask.destroy();
             });
         });

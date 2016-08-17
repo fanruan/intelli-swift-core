@@ -14,3 +14,8 @@
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
 }
+.bi-base-request-fail-mask .mask-pane {
+  background: #ffffff;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}

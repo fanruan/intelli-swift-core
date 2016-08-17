@@ -94,6 +94,7 @@ BI.extend(BI.Utils, {
             packStructure.push({
                 id: group.id,
                 text: group.name,
+                title: group.name,
                 value: group.name,
                 open: true,
                 isParent: true
@@ -102,6 +103,7 @@ BI.extend(BI.Utils, {
                 packStructure.push({
                     id: item.id,
                     text: packages[item.id].name,
+                    title: packages[item.id].name,
                     value: item.id,
                     pId: group.id,
                     open: true
@@ -124,6 +126,7 @@ BI.extend(BI.Utils, {
                 isGroupedExisted = true;
                 packStructure.push({
                     text: pack.name,
+                    title: pack.name,
                     value: pack.id,
                     pId: 1,
                     id: id,
@@ -134,6 +137,7 @@ BI.extend(BI.Utils, {
         if (isGroupedExisted === true) {
             packStructure.push({
                 text: BI.i18nText('BI-Ungrouped'),
+                title: BI.i18nText('BI-Ungrouped'),
                 value: BI.i18nText('BI-Ungrouped'),
                 id: 1,
                 open: true,
@@ -371,9 +375,11 @@ BI.extend(BI.Utils, {
         })
     },
 
-    getTestConnectionByLinkName: function (name, callback) {
+    getTestConnectionByLinkName: function (name, callback, complete) {
         Data.Req.reqTestConnectionByLinkName(name, function (data) {
             callback(data);
+        }, function() {
+            complete();
         })
     },
 

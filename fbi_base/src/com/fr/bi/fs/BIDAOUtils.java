@@ -100,7 +100,7 @@ public class BIDAOUtils {
         List<BIReportNode> nodes = new ArrayList<BIReportNode>();
         for(int i = 0; i < sharedReports.size(); i++) {
             BISharedReportNode sNode = sharedReports.get(i);
-            nodes.add(BIDAOUtils.findByID(sNode.getReportId(), sNode.getCreateBy()));
+            nodes.add(BIDAOUtils.findByID(sNode.getReportId(), UserControl.getInstance().getUser(sNode.getCreateByName())));
         }
         return nodes;
     }
