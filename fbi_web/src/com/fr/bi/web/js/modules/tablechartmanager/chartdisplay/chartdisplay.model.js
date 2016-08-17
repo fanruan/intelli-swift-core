@@ -431,48 +431,51 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             BI.each(BI.Utils.getDatalabelByID(dId), function (id, label) {
                 BI.each(data, function (i, item) {
                     BI.each(item.data, function (k, dt) {
-                        filterData(dt, label)
+                        if (dt.targetIds[0] == label.target_id) {
+                            filterDataForNumber(dt, label)
+                        }
+                        filterDataForString(dt, label)
                     })
                 })
             })
         });
         return data;
         
-        function filterData(data, label) {
-            var dataLables = {
-                enabled: true,
-                align: "outside",
-                useHtml: true,
-                style: {},
-                formatter: ""
-            };
+        function filterDataForNumber(data, label) {
             switch (label.filter_type) {
                 case BICst.DATA_LABEL_FILTER_NUMBER.BELONG_VALUE:
-                    if (data.y > label.filter_value.min && data.y < label.filter_value.max) {
-                        switch (label.style_setting.type) {
-                            case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
-                                dataLables.style = label.style_setting.textStyle;
-                                dataLables.formatter = "function(){return '<div>"+data.y+"</div>'}";
-                                break;
-                            case BICst.DATA_LABEL_STYLE_TYPE.IMG:
-                                dataLables.formatter = "function(){return '<div><img width=\"20px\" height=\"20px\" src=\""+label.style_setting.imgStyle.src+"\"></div>';}";
-                                break;
-                        }
-                        data.dataLabels = dataLables;
+                    var min = label.filter_value.closemin ? data.y >= label.filter_value.min : data.y > label.filter_value.min;
+                    var max = label.filter_value.closemax ? data.y <= label.filter_value.max : data.y < label.filter_value.max;
+                    if (min && max) {
+                        data.dataLabels = createDataLabel(data, label);
                     }
                     break;
                 case BICst.DATA_LABEL_FILTER_NUMBER.NOT_BELONG_VALUE:
-                    if (data.y < label.filter_value.min && data.y > label.filter_value.max) {
-
+                    var min = label.filter_value.closemin ? data.y < label.filter_value.min : data.y <= label.filter_value.min;
+                    var max = label.filter_value.closemax ? data.y > label.filter_value.max : data.y >= label.filter_value.max;
+                    if (min || max) {
+                        data.dataLabels = createDataLabel(data, label);
                     }
                     break;
                 case BICst.DATA_LABEL_FILTER_NUMBER.EQUAL_TO:
+                    if (data.y == label.filter_value) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
                     break;
                 case BICst.DATA_LABEL_FILTER_NUMBER.NOT_EQUAL_TO:
+                    if (data.y != label.filter_value) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
                     break;
                 case BICst.DATA_LABEL_FILTER_NUMBER.IS_NULL:
+                    if (data.y == null) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
                     break;
                 case BICst.DATA_LABEL_FILTER_NUMBER.NOT_NULL:
+                    if (data.y != null) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
                     break;
                 case BICst.DATA_LABEL_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
                     break;
@@ -481,6 +484,68 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 case BICst.DATA_LABEL_FILTER_NUMBER.TOP_N:
                     break;
             }
+        }
+        function filterDataForString(data, label) {
+            switch (label.filter_type) {
+                case BICst.DATA_LABEL_FILTER_STRING.BELONG_VALUE:
+                    if (!label.filter_value.value || label.filter_value.value.indexOf(data.value) != -1) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
+                    break;
+                case BICst.DATA_LABEL_FILTER_STRING.NOT_BELONG_VALUE:
+                    if (label.filter_value.value && label.filter_value.value.indexOf(data.value) == -1) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
+                    break;
+                case BICst.DATA_LABEL_FILTER_STRING.CONTAIN:
+                    if (!label.filter_value || data.value.indexOf(label.filter_value) != -1 && label.filter_value) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
+                    break;
+                case BICst.DATA_LABEL_FILTER_STRING.NOT_CONTAIN:
+                    if (!label.filter_value || data.value.indexOf(label.filter_value) == -1) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
+                    break;
+                case BICst.DATA_LABEL_FILTER_STRING.IS_NULL:
+                    if (data.value == null) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
+                    break;
+                case BICst.DATA_LABEL_FILTER_STRING.NOT_NULL:
+                    if (data.value != null) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
+                    break;
+                case BICst.DATA_LABEL_FILTER_STRING.BEGIN_WITH:
+                    if (!label.filter_value || data.value.startWith(label.filter_value)) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
+                    break;
+                case BICst.DATA_LABEL_FILTER_STRING.END_WITH:
+                    if (!label.filter_value || data.value.endWith(label.filter_value || "")) {
+                        data.dataLabels = createDataLabel(data, label);
+                    }
+                    break;
+            }
+        }
+        function createDataLabel(data, label) {
+            var dataLables = {
+                enabled: true,
+                align: "outside",
+                useHtml: true,
+                style: {},
+                formatter: "function(){return '<div>"+data.y+"</div>'}"
+            };
+            switch (label.style_setting.type) {
+                case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
+                    dataLables.style = label.style_setting.textStyle;
+                    break;
+                case BICst.DATA_LABEL_STYLE_TYPE.IMG:
+                    dataLables.formatter = "function(){return '<div><img width=\"20px\" height=\"20px\" src=\""+label.style_setting.imgStyle.src+"\"></div>';}";
+                    break;
+            }
+            return dataLables;
         }
     },
 
