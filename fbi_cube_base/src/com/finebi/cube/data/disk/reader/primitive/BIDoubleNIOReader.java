@@ -69,8 +69,8 @@ public class BIDoubleNIOReader extends BIBasicNIOReader implements ICubeDoubleRe
         readWriteLock.writeLock().lock();
         try {
             doubleBuffers.put(index, buffer.asDoubleBuffer());
-            if (doubleBufferArray.length < index){
-                DoubleBuffer[] temp = new DoubleBuffer[index];
+            if (doubleBufferArray.length <= index){
+                DoubleBuffer[] temp = new DoubleBuffer[index+1];
                 System.arraycopy(doubleBufferArray, 0, temp, 0, doubleBufferArray.length);
                 doubleBufferArray = temp;
             }
