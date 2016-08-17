@@ -84,12 +84,11 @@ BI.SortFilterDimensionCombo = BI.inherit(BI.Widget, {
     },
 
     /**
-     * �Ƿ��ǵ�һ��ά��
      * @param dId
      */
     isFirstDimensionBydId: function (dId) {
         var wId = BI.Utils.getWidgetIDByDimensionID(dId);
-        var dims = BI.Utils.getAllDimDimensionIDs(wId);
+        var dims = BI.Utils.getAllUsableDimDimensionIDs(wId);
         return dims[0] === dId;
     },
 

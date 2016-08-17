@@ -119,7 +119,7 @@ public class BIField implements IField {
         if (!ComparatorUtils.equals(fieldName, biField.fieldName)) {
             return false;
         }
-        if (!ComparatorUtils.equals(tableBelongTo, biField.tableBelongTo)) {
+        if (!ComparatorUtils.equals(tableBelongTo.getID().getIdentity(), biField.tableBelongTo.getID().getIdentity())) {
             return false;
         }
         return true;

@@ -204,7 +204,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
 //        }
 //        return flag1 && flag2;
 //    }
-//    
+//
 
     /**
      * 是否显示记录

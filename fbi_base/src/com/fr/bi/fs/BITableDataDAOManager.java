@@ -232,7 +232,10 @@ public class BITableDataDAOManager extends XMLFileManager {
                 BISharedReportNode node = entry.getValue();
                 if (node.getReportId() == reportId && node.getCreateBy() == createBy) {
                     try {
-                        users.add(UserControl.getInstance().getUser(node.getShareTo()));
+                        User user = UserControl.getInstance().getUser(node.getShareTo());
+                        if(user != null) {
+                            users.add(user);
+                        }
                     } catch (Exception e) {
                         BILogger.getLogger().error(e.getMessage(), e);
                     }

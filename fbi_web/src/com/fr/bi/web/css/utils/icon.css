@@ -713,6 +713,36 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_radar_polygon.png');
   _background: none;
 }
+.acc_radar-chart-style-polygon-icon .x-icon,
+.acc_radar-chart-style-polygon-icon:hover .x-icon,
+.acc_radar-chart-style-polygon-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_acc_radar_polygon.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_acc_radar_polygon.png');
+  _background: none;
+}
+.acc_radar-chart-style-polygon-icon.native .x-icon,
+.acc_radar-chart-style-polygon-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_acc_radar_polygon.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_acc_radar_polygon.png');
+  _background: none;
+}
+.acc_radar-chart-style-circle-icon .x-icon,
+.acc_radar-chart-style-circle-icon:hover .x-icon,
+.acc_radar-chart-style-circle-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_acc_radar_circle.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_acc_radar_circle.png');
+  _background: none;
+}
+.acc_radar-chart-style-circle-icon.native .x-icon,
+.acc_radar-chart-style-circle-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_acc_radar_circle.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_acc_radar_circle.png');
+  _background: none;
+}
 .radar-chart-style-circle-icon .x-icon,
 .radar-chart-style-circle-icon:hover .x-icon,
 .radar-chart-style-circle-icon:active .x-icon {

@@ -136,12 +136,12 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             return {
                 id: BI.UUID(),
                 type: "bi.dimension_filter_item",
-                tId: dimId,
+                tId: filter.target_id || dimId,
                 filter: filter
             }
         }
     },
-    
+
     parseGeneralQueryFilter: function(filter){
         var self = this;
         if(BI.isNull(filter)) {
@@ -232,6 +232,27 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                     text = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";
                 }
                 return text;
+            case BICst.WIDGET.TREE:
+                function getChildrenNode(ob) {
+                    var text = "";
+                    var index = 0, size = BI.size(ob);
+                    BI.each(ob, function(name, children) {
+                        index++;
+                        var childNodes = getChildrenNode(children);
+                        text += name + (childNodes === "" ? "" : (":" + childNodes)) + (index === size ? "" : ",");
+                    });
+                    return text;
+                }
+                BI.each(widgetValue, function(name, children) {
+                    var childNodes = getChildrenNode(children);
+                    text += name + (childNodes === "" ? "" : (":" + childNodes)) + "; ";
+                });
+                if(text !== "") {
+                    text = BI.i18nText("BI-In") + " " + text;
+                }
+                return text;
+            default:
+                return widgetValue;
         }
     },
 

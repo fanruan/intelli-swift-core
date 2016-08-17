@@ -5,6 +5,7 @@ import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
 import com.finebi.cube.gen.oper.BISourceDataAllTransport;
 import com.finebi.cube.gen.oper.BISourceDataTransport;
+import com.finebi.cube.gen.subset.BISourceDataPartTransport4Test;
 import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.CubeRelationEntityGetterService;
@@ -31,6 +32,7 @@ import java.util.*;
 public class BINationTablesTest extends BICubeTestBase {
     private BISourceDataTransport dataTransport;
     private Set<CubeTableSource> cubeTableSourceSet;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -38,14 +40,13 @@ public class BINationTablesTest extends BICubeTestBase {
 
     public BINationTablesTest() throws Exception {
         super.setUp();
-       
         init();
     }
 
     private void init() {
         CubeTableSource tableNation = BINationDataFactory.createTableNation();
         CubeTableSource tablePerson = BINationDataFactory.createTablePerson();
-        this.cubeTableSourceSet=new HashSet<CubeTableSource>();
+        this.cubeTableSourceSet = new HashSet<CubeTableSource>();
         cubeTableSourceSet.add(tableNation);
         cubeTableSourceSet.add(tablePerson);
     }
@@ -54,6 +55,14 @@ public class BINationTablesTest extends BICubeTestBase {
     public int getTablesAmount() {
         return cubeTableSourceSet.size();
     }
+
+    public void testAddValue() {
+        transport(BINationDataFactory.createTableNation());
+        transport(BINationDataFactory.createTableNation());
+
+    }
+
+
 
     public void testFieldPathIndex() {
         try {
@@ -119,13 +128,15 @@ public class BINationTablesTest extends BICubeTestBase {
      */
     public void transport(CubeTableSource tableSource) {
         try {
-            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(),1);
+            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1);
             dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
     }
+
+
 
     /**
      * 生成索引

@@ -23,6 +23,46 @@ var TREE = [{id: -1, pId: -2, value: "根目录", text: "根目录"},
     {id: 212, pId: 21, value: "第三级文件2", text: "第三级文件2"},
     {id: 2111, pId: 211, value: "第四级文件1", text: "第四级文件1"}];
 
+var TREEWITHCHILDREN = [{
+    id: -1, value: "根目录", text: "根目录", children: [
+        {
+            id: 1, value: "第一级目录1", text: "第一级目录1", children: [
+            {id: 11, value: "第二级文件1", text: "第二级文件1"},
+            {
+                id: 12, value: "第二级目录2", text: "第二级目录2", children: [
+                {
+                    id: 121, value: "第三级目录1", text: "第三级目录1", children: [
+                    {
+                        id: 1211, value: "第四级目录1", text: "第四级目录1", children: [
+                        {id: 12111, value: "第五级文件1", text: "第五级文件1"}
+                    ]
+                    }
+                ]
+                },
+                {id: 122, value: "第三级文件1", text: "第三级文件1"}
+            ]
+            }
+        ]
+        },
+        {
+            id: 2, value: "第一级目录2", text: "第一级目录2", children: [
+            {
+                id: 21, value: "第二级目录3", text: "第二级目录3", children: [
+                {
+                    id: 211, value: "第三级目录2", text: "第三级目录2", children: [
+                    {id: 2111, value: "第四级文件1", text: "第四级文件1"}
+                ]
+                },
+                {id: 212, value: "第三级文件2", text: "第三级文件2"}
+            ]
+            },
+            {id: 22, value: "第二级文件2", text: "第二级文件2"}
+        ]
+        }
+    ]
+}];
+
+
 var TREEITEMS = [{id: -1, pId: -2, value: "根目录", open: true, type: "bi.plus_group_node", height: 25},
     {id: 1, pId: -1, value: "第一级目录1", type: "bi.plus_group_node", height: 25},
     {id: 11, pId: 1, value: "第二级文件1", type: "bi.single_select_item", height: 25},
@@ -77,7 +117,7 @@ var _JS = [
     "scene/mvc.scene1.js",
 
     "scene/mvc.broadcast.js",
-    
+
     "scene/mvc.draggable.cursor.js",
 
     "scene/mvc.package.data.js",
@@ -121,6 +161,8 @@ var _JS = [
     "widget/mvc.displaytree.js",
 
     "widget/mvc.combo.js",
+
+    "widget/mvc.combo2.js",
 
     "widget/mvc.expander.js",
 
@@ -210,7 +252,11 @@ var _JS = [
 
     "layout/mvc.flexboxcenteradapt.js",
 
+    "layout/mvc.inlinecenteradapt.js",
+
     "layout/mvc.verticaladapt.js",
+
+    "layout/mvc.inlineverticaladapt.js",
 
     "layout/mvc.horizontaladapt.js",
 
@@ -463,6 +509,7 @@ var _Routes = {
     "/parttree": "PartTreeView",
     "/displaytree": "DisplayTreeView",
     "/combo": "ComboView",
+    "/combo2": "Combo2View",
     "/expander": "ExpanderView",
     "/switcher": "SwitcherView",
     "/formula": "FormulaView",
@@ -509,7 +556,9 @@ var _Routes = {
     "/absolute_center_adapt": "AbsoluteCenterAdaptView",
     "/float_center_adapt": "CenterVerticalAdaptView",
     "/flexbox_center_adapt": "FlexboxCenterAdaptView",
+    "/inline_center_adapt": "InlineCenterAdaptView",
     "/vertical_adapt": "VerticalAdaptView",
+    "/inline_vertical_adapt": "InlineVerticalAdaptView",
     "/horizontal_adapt": "HorizontalAdaptView",
     "/horizontal_auto": "HorizontalAutoView",
     "/horizontal_float": "HorizontalFloatView",
@@ -781,6 +830,10 @@ _Models.widget = [{
     value: "combo"
 }, {
     pId: 6,
+    text: "bi.combo(各种位置)",
+    value: "combo2"
+}, {
+    pId: 6,
     text: "bi.expander",
     value: "expander"
 }, {
@@ -953,8 +1006,14 @@ _Models.layout = [{
     text: "bi.flexbox_center_adapt",
     value: "flexbox_center_adapt"
 }, {
+    text: "bi.inline_center_adapt",
+    value: "inline_center_adapt"
+}, {
     text: "bi.vertical_adapt",
     value: "vertical_adapt"
+}, {
+    text: "bi.inline_vertical_adapt",
+    value: "inline_vertical_adapt"
 }, {
     text: "bi.horizontal_adapt",
     value: "horizontal_adapt"
@@ -1406,7 +1465,7 @@ _Models.detail = [{
         pId: 28,
         text: "bi.web_page",
         value: "web_page"
-    },{
+    }, {
         pId: 29,
         text: "bi.arrangement_droppable",
         value: "arrangement_droppable"
@@ -1422,7 +1481,7 @@ _Models.detail = [{
         pId: 30,
         text: "bi.simple_searcher",
         value: "simple_searcher"
-    },{
+    }, {
         pId: 31,
         text: "选色",
         value: "select_color_combo"
@@ -1434,7 +1493,7 @@ _Models.detail = [{
         pId: 31,
         text: "柱形",
         value: "column_charts"
-    },  {
+    }, {
         pId: 31,
         text: "条形图",
         value: "bar_charts"

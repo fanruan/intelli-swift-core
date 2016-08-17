@@ -88,4 +88,7 @@ public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> 
 
     void setOwner(ITableKey owner);
 
+
+    void buildStructure();
+
 }

@@ -56,9 +56,9 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     },
 
-    populate: function (item) {
-        this.filterType.setValue(item.filter_type);
-        this._refreshFilterWidget(item.filter_type, item.filter_value);
+    populate: function (items, keyword, context) {
+        this.filterType.setValue(context.filter_type);
+        this._refreshFilterWidget(context.filter_type, context.filter_value);
     },
 
     _buildConditions: function () {
@@ -66,7 +66,8 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         if (BI.isNull(o._src)) {
             return [];
         }
-        var fieldName = BI.Utils.getFieldNameByFieldId4Conf(o._src.field_id);
+        var fieldName = BI.Utils.getTableNameByFieldId4Conf(o._src.field_id) + "." +
+            BI.Utils.getFieldNameByFieldId4Conf(o._src.field_id);
 
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
@@ -95,7 +96,7 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
-            self._setNodeData({filter_type : this.getValue()[0]});
+            self._setNodeData({filter_type: this.getValue()[0]});
             o.afterValueChange.apply(self, arguments);
         });
         this._refreshFilterWidget(o.filter_type, o.filter_value);
@@ -130,18 +131,18 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterWidgetContainer.addItem(this.filterWidget);
     },
 
-    _createWidgetTab: function(opt, value){
+    _createWidgetTab: function (opt, value) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.target_date_tab",
             dateWidgetType: opt
         });
-        this.filterWidget.on(BI.Tab.EVENT_CHANGE, function(){
-            self._setNodeData({filter_value : this.getValue()});
+        this.filterWidget.on(BI.Tab.EVENT_CHANGE, function () {
+            self._setNodeData({filter_value: this.getValue()});
             o.afterValueChange.apply(self, arguments);
         });
-        this.filterWidget.on(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE, function(){
-            self._setNodeData({filter_value : this.getValue()});
+        this.filterWidget.on(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE, function () {
+            self._setNodeData({filter_value: this.getValue()});
             o.afterValueChange.apply(self, arguments);
         });
         if (BI.isNotNull(value)) {
@@ -156,9 +157,9 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: this._constant.INPUT_WIDTH,
             height: this._constant.TIME_INTERVAL_HEIGHT
         });
-        this.filterWidget.on(BI.CustomTimeInterval.EVENT_CHANGE, function(){
+        this.filterWidget.on(BI.CustomTimeInterval.EVENT_CHANGE, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -173,9 +174,9 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.custom_multi_date_combo",
             width: this._constant.INPUT_WIDTH
         });
-        this.filterWidget.on(BI.CustomMultiDateCombo.EVENT_CHANGE, function(){
+        this.filterWidget.on(BI.CustomMultiDateCombo.EVENT_CHANGE, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -184,7 +185,7 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         }
     },
 
-    _setNodeData: function(v){
+    _setNodeData: function (v) {
         var o = this.options;
         o.node.set("data", BI.extend(o.node.get("data"), v));
     },

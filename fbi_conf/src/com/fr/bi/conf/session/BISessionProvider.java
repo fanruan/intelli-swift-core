@@ -4,6 +4,8 @@ import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.base.provider.UserProvider;
 import com.finebi.cube.api.ICubeDataLoader;
 
+import java.util.List;
+
 /**
  * Created by GUY on 2015/4/8.
  */
@@ -28,4 +30,8 @@ public interface BISessionProvider extends UserProvider {
      * @return
      */
     ICubeDataLoader getLoader();
+
+    List<Long> getCustomRoles();
+
+    List<Long> getCompanyRoles();
 }

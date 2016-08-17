@@ -22,6 +22,7 @@ BI.AnalysisETLSelectDataLevel1DateNode = BI.inherit(BI.NodeButton, {
             cls: "select-data-field-date-group-font",
             text: o.text,
             value: o.value,
+            keyword: o.keyword,
             height: o.height,
             textLgap: 10,
             textRgap: 5
@@ -46,7 +47,7 @@ BI.AnalysisETLSelectDataLevel1DateNode = BI.inherit(BI.NodeButton, {
                 el: {
                     type: "bi.layout"
                 },
-                width: 10
+                width: 20
             },{
                 el: this.button
             }, {

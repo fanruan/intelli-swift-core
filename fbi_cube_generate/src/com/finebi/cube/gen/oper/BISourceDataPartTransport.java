@@ -4,10 +4,17 @@ import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.message.IMessage;
+import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.Cube;
+import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
@@ -15,6 +22,7 @@ import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -22,21 +30,22 @@ import com.fr.bi.stable.data.db.SqlSettedStatement;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.impl.Connection;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.fr.bi.util.BICubeDBUtils.getColumnName;
 
@@ -45,6 +54,7 @@ import static com.fr.bi.util.BICubeDBUtils.getColumnName;
  */
 public class BISourceDataPartTransport extends BISourceDataTransport {
     public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
+
         super(cube, tableSource, allSources, parentTableSource, version);
     }
 
@@ -53,8 +63,13 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
         try {
-            super.recordTableInfo();
+            copyFromOldCubes();
             long count = transport();
+            ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+            ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+            cube = new BICube(resourceRetrievalService, discovery);
+            tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+            super.recordTableInfo();
             if (count >= 0) {
                 tableEntityService.recordRowCount(count);
             }
@@ -85,22 +100,29 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
         source.setUpdateSettingSource(tableUpdateSetting);
         long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;
+
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+        if (tableEntityService.isRemovedListAvailable()) {
+            IntList removedList = tableEntityService.getRemovedList();
+            for (int i = 0; i < removedList.size(); i++) {
+                sortRemovedList.add(Integer.valueOf(removedList.get(i)));
+            }
+        }
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
+          /*remove*/
+        if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
+            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader);
+        }
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
-            rowCount = dealWidthAdd(cubeFieldSources, addDataCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
-        }
-        /*remove*/
-        if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, addDataCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader);
+            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
         }
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
-            rowCount = dealWidthAdd(cubeFieldSources, addDataCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
             sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
+            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
         }
-        if (null != sortRemovedList) {
+        if (null != sortRemovedList&&sortRemovedList.size()!=0) {
             tableEntityService.recordRemovedLine(sortRemovedList);
         }
 
@@ -119,7 +141,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 }
             }
         };
-
         rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount);
         return rowCount;
     }
@@ -162,23 +183,23 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 });
             }
         };
-        BICubeDBUtils.runSQL(sqlStatement, new ICubeFieldSource[]{f}, removeTraversal);
+        DBQueryExecutor.getInstance().runSQL(sqlStatement, new ICubeFieldSource[]{f}, removeTraversal);
         return sortRemovedList;
     }
 
-    private String addDataCondition(String sql) {
-        String LastModifyTime = "${上次更新时间}";
-        SQLRegUtils sqlRegUtils = new SQLRegUtils(sql);
-        String conditions = sqlRegUtils.getConditions();
+    private String addDateCondition(String sql) {
         if (tableEntityService.isCubeLastTimeAvailable() && null != tableEntityService.getCubeLastTime()) {
             Date lastTime = tableEntityService.getCubeLastTime();
-            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
-            String dateStr = sdf.format(lastTime);
-            conditions = conditions.replace(LastModifyTime,dateStr);
-            sqlRegUtils.setConditions(conditions);
-        } else
-            conditions = conditions.replace(LastModifyTime, "");
-        sqlRegUtils.setConditions(conditions);
-        return sqlRegUtils.toString();
+            Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
+            Matcher matcher = pat.matcher(sql);
+            String dateStr = DateUtils.DATETIMEFORMAT2.format(lastTime);
+            while (matcher.find()) {
+                String matchStr = matcher.group(0);
+                sql = sql.replace(matchStr, dateStr);
+            }
+        }
+        return sql;
     }
+
+
 }

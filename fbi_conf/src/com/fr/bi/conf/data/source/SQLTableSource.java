@@ -24,6 +24,8 @@ public class SQLTableSource extends ServerTableSource {
     private String sqlConnection;
     @BICoreField
     private String sqlName;
+    @BICoreField
+    private String enSQL;
 
     public SQLTableSource() {
         super();
@@ -40,7 +42,12 @@ public class SQLTableSource extends ServerTableSource {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
-        jo.put("sql", DecryptBi.encrypt(sql, "sh"));
+        //为了兼容
+        String sqlStr = enSQL;
+        if(enSQL == null) {
+            sqlStr = DecryptBi.encrypt(sql, "sh");
+        }
+        jo.put("sql", sqlStr);
         jo.put("dataLinkName", sqlConnection);
         jo.put("connection_name", DBConstant.CONNECTION.SQL_CONNECTION);
         jo.put("table_name", sqlName);
@@ -49,7 +56,8 @@ public class SQLTableSource extends ServerTableSource {
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         if (jo.has("sql")) {
-            sql = DecryptBi.decrypt(jo.getString("sql"), "sh");
+            enSQL = jo.getString("sql");
+            sql = DecryptBi.decrypt(enSQL, "sh");
         }
         if (jo.has("dataLinkName")) {
             sqlConnection = jo.getString("dataLinkName");
@@ -62,7 +70,7 @@ public class SQLTableSource extends ServerTableSource {
 
     @Override
     public IPersistentTable getPersistentTable() {
-        if (dbTable == null){
+        if (dbTable == null) {
             dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
         }
         return dbTable;

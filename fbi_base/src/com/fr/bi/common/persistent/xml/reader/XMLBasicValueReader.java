@@ -20,10 +20,29 @@ public class XMLBasicValueReader extends XMLValueReader {
     protected void readerContent(XMLableReader xmLableReader) {
         if (xmLableReader.isChildNode()) {
             if (ComparatorUtils.equals(xmLableReader.getTagName(), XMLBasicValueWriter.BASIC_TAG)) {
-                String str = xmLableReader.getAttrAsString("value", "null");
-                Object value = BITypeUtils.stringConvert2BasicType(beanWrapper.getBeanClass(), str);
+
+                String strValue = compatibleValue(xmLableReader);
+                if (!isCompatible(strValue)) {
+                    strValue = xmLableReader.getElementValue();
+                }
+                /**
+                 * 空字符串读出来是Null
+                 */
+                if (strValue == null && ComparatorUtils.equals(String.class, beanWrapper.getBeanClass())) {
+                    strValue = "";
+                }
+                Object value = BITypeUtils.stringConvert2BasicType(beanWrapper.getBeanClass(), strValue);
+
                 beanWrapper.setBean(value);
             }
         }
+    }
+
+    private String compatibleValue(XMLableReader xmLableReader) {
+        return xmLableReader.getAttrAsString("value", "not_compatible");
+    }
+
+    private boolean isCompatible(String strValue) {
+        return !ComparatorUtils.equals(strValue, "not_compatible");
     }
 }

@@ -11,10 +11,20 @@ BI.EditSQLModel = BI.inherit(FR.OB, {
 
     initData: function(callback){
         var self = this;
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: $("body"),
+            text: BI.i18nText("BI-Loading")
+        });
         BI.Utils.getConnectionNames(function(names){
+            //去掉服务器数据集
             self.connctionNames = names;
+            BI.remove(self.connctionNames, function(i, item) {
+                return item === BICst.CONNECTION.SERVER_CONNECTION;
+            });
             BI.isEmptyString(self.dataLinkName) && (self.dataLinkName = names[0]);
             callback();
+            mask.destroy();
         })
     },
 

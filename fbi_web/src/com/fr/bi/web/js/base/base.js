@@ -63,6 +63,10 @@ if (!window.BI) {
             }
         },
 
+        warn: function (message) {
+            console.warn(message)
+        },
+
         UUID: function () {
             var f = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
             var str = "";
@@ -303,10 +307,13 @@ if (!window.BI) {
             var isArray = BI.isArray(obj), i;
             for (i = 0; i < index.length; i++) {
                 if (isArray) {
-                    obj.splice(index[i], 1);
+                    obj[index[i]] = "$deleteIndex";
                 } else {
                     delete obj[index[i]];
                 }
+            }
+            if (isArray) {
+                BI.remove(obj, "$deleteIndex");
             }
         },
 
@@ -731,7 +738,7 @@ if (!window.BI) {
             try {
                 return parseInt(number, radix);
             } catch (e) {
-                throw new Error("转成数�?�类型失�?");
+                throw new Error("转成int类型失败");
                 return NaN;
             }
         },
@@ -740,7 +747,7 @@ if (!window.BI) {
             try {
                 return parseFloat(number);
             } catch (e) {
-                throw new Error("转成Float类型失败");
+                throw new Error("转成float类型失败");
                 return NaN;
             }
         },
@@ -816,7 +823,7 @@ if (!window.BI) {
         }
     });
 
-    //字符串相关方�?
+    //字符串相关方法
     _.extend(BI, {
         trim: function () {
             return $.trim.apply($, arguments);
@@ -830,12 +837,41 @@ if (!window.BI) {
             return (string + "").toLocaleLowerCase();
         },
 
+        isLiteral: function (exp) {
+            var literalValueRE = /^\s?(true|false|-?[\d\.]+|'[^']*'|"[^"]*")\s?$/
+            return literalValueRE.test(exp)
+        },
+
+        stripQuotes: function (str) {
+            var a = str.charCodeAt(0)
+            var b = str.charCodeAt(str.length - 1)
+            return a === b && (a === 0x22 || a === 0x27)
+                ? str.slice(1, -1)
+                : str
+        },
+
+        //background-color => backgroundColor
+        camelize: function (str) {
+            return str.replace(/-(.)/g, function (_, character) {
+                return character.toUpperCase();
+            });
+        },
+
+        //backgroundColor => background-color
+        hyphenate: function (str) {
+            return str.replace(/([A-Z])/g, '-$1').toLowerCase();
+        },
+
         isNotEmptyString: function (str) {
             return BI.isString(str) && !BI.isEmpty(str);
         },
 
         isEmptyString: function (str) {
             return BI.isString(str) && BI.isEmpty(str);
+        },
+
+        contentFormat: function () {
+            return FR.contentFormat.apply(FR, arguments);
         },
 
         /**

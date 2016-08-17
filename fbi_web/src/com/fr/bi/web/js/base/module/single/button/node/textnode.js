@@ -35,6 +35,7 @@ BI.TextNode = BI.inherit(BI.NodeButton, {
             rgap: o.textRgap,
             text: o.text,
             value: o.value,
+            keyword: o.keyword,
             py: o.py
         });
     },

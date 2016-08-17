@@ -25,10 +25,10 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
             type: 'bi.multi_select_combo',
             element: this.element,
             itemsCreator: BI.bind(this._itemsCreator, this),
-            valueFormatter: function(v){
+            valueFormatter: function (v) {
                 var text = v;
                 var group = BI.Utils.getDimensionGroupByID(o.dId);
-                if(BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+                if (BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
                     var date = new Date(BI.parseInt(v));
                     text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
                 }
@@ -95,7 +95,7 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
         var self = this, result = [];
         BI.each(values, function (idx, value) {
             var group = BI.Utils.getDimensionGroupByID(self.options.dId);
-            if(BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+            if (BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
                 var date = new Date(BI.parseInt(value));
                 var text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
                 result.push({
@@ -127,7 +127,11 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this.combo.getValue();
+        var val = this.combo.getValue() || {};
+        return {
+            type: val.type,
+            value: val.value
+        }
     },
 
     populate: function () {

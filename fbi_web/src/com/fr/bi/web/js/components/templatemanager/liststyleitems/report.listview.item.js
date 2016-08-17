@@ -52,7 +52,7 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
             o.onClickReport.apply(self, arguments);
         });
 
-        if (FS.config.isAdmin === false) {
+        if (o.isAdmin === false) {
             var markCls = "report-apply-hangout-ing-font";
             this.hangout = BI.createWidget({
                 type: "bi.icon_change_button",

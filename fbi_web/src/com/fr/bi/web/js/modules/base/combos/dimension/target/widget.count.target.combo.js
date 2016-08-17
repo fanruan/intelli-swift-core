@@ -56,6 +56,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.TARGET_COMBO.STYLE_SETTING,
+                warningTitle: BI.i18nText("BI-Disable_in_Big_Data_Mode"),
                 cls: "style-set-h-font"
             }],
             [{
@@ -106,9 +107,12 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _rebuildItems: function(){
         var o = this.options;
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var tableId = BI.Utils.getTableIDByDimensionID(o.dId);
         var fieldIds = BI.Utils.getStringFieldIDsOfTableID(tableId).concat(BI.Utils.getNumberFieldIDsOfTableID(tableId));
         var children = [];
+        var minimalist = BI.Utils.getWSMinimalistByID(wId);
+        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
         children.push({
             text: BI.i18nText("BI-Total_Row_Count"),
             value: BI.Utils.getCountFieldIDsOfTableID(tableId),
@@ -150,6 +154,10 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist) {
+                    items[this.constants.CordonPos][0].setWarningTitle(BI.i18nText("BI-Unmodified_in_Minimalist_Mode"));
+                    items[this.constants.CordonPos][0].disabled = true
+                }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.BAR:
@@ -163,6 +171,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist) {
+                    items[this.constants.CordonPos][0].disabled = true
+                }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
@@ -175,6 +186,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist) {
+                    items[this.constants.CordonPos][0].disabled = true
+                }
                 items[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
                 break;
             case BICst.WIDGET.SCATTER:
@@ -188,7 +202,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        items[this.constants.CordonPos][0].disabled = true;
+                        BI.removeAt(items, this.constants.CordonPos);
                         BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                         return addDependency();
                 }
@@ -200,7 +214,19 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(bigDataMode) {
+                    items[this.constants.CordonPos][0].disabled = true;
+                }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
+                break;
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(items, 1);
                 break;
             default:
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);

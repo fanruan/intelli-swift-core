@@ -19,7 +19,8 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
             element: this.element,
             items: o.items,
             layouts: [{
-                type: "bi.vertical"
+                type: "bi.vertical",
+                bgap: 5
             }]
         });
 
@@ -154,7 +155,8 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
                 type: "bi.chart_add_gradient_condition_item",
                 removeCondition: function (cid) {
                     self._removeCondition(cid)
-                }
+                },
+                cid: BI.UUID()
             });
         });
 

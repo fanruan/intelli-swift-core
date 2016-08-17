@@ -93,7 +93,17 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         });
         this.viewType.setValue(BICst.TABLES_VIEW.TILE);
         this.viewType.on(BI.Segment.EVENT_CHANGE, function () {
-            self.showCardLayout.showCardByName(this.getValue()[0]);
+            var cardName = this.getValue()[0];
+            self.showCardLayout.showCardByName(cardName);
+            if(cardName === BICst.TABLES_VIEW.RELATION){
+                self.relationView.populate({
+                    tableIds: self.model.getTables(),
+                    translations: self.model.getTranslations(),
+                    relations: self.model.getRelations(),
+                    all_fields: self.model.getAllFields(),
+                    tableData: self.model.getTablesData()
+                });
+            }
         });
 
         this.searcher = BI.createWidget({
@@ -308,13 +318,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         this.viewType.setValue(BICst.TABLES_VIEW.TILE);
         this.showCardLayout.showCardByName(this.showCardLayout.getDefaultShowName());
         this.tableList.populate(this._createItemsForTableList());
-        this.relationView.populate({
-            tableIds: this.model.getTables(),
-            translations: this.model.getTranslations(),
-            relations: this.model.getRelations(),
-            all_fields: this.model.getAllFields(),
-            tableData: this.model.getTablesData()
-        });
         this._refreshEmptyTip();
         //避免出现停留在前面的搜索面板
         this.searcher.stopSearch();

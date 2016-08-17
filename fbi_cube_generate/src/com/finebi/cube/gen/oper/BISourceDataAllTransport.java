@@ -32,6 +32,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
         long t = System.currentTimeMillis();
         try {
             recordTableInfo();
+            buildTableBasicStructure();
             long count = transport();
             if (count >= 0) {
                 /*清除remove的过滤条件*/
@@ -57,12 +58,12 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
     }
     private long transport() {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
+
         ICubeFieldSource[] cubeFieldSources = new ICubeFieldSource[fieldList.size()];
         for (int i = 0; i < fieldList.size(); i++) {
             fieldList.get(i).setTableBelongTo(tableSource);
             cubeFieldSources[i] = fieldList.get(i);
         }
-
         return this.tableSource.read(new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
@@ -74,4 +75,6 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             }
         }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube));
     }
+
+
 }

@@ -1,6 +1,9 @@
 package com.finebi.cube.gen.arrange;
 
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.disk.BICubeIncreaseDisDiscovery;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.*;
@@ -10,12 +13,15 @@ import com.finebi.cube.gen.oper.watcher.BIDataSourceBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIPathBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BITableSourceBuildWatcher;
 import com.finebi.cube.impl.operate.BIOperation;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.status.IStatusTag;
 import com.finebi.cube.router.topic.ITopicTag;
+import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
@@ -23,6 +29,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
@@ -32,7 +39,6 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
-import com.fr.general.ComparatorUtils;
 
 import java.util.*;
 
@@ -329,10 +335,12 @@ public class BICubeOperationManager {
                             getRelationBuilder(cube, relation.getRelation()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    if (null != relation.getDependTableSourceSet()) {
+                    if (null != relation.getDependTableSourceSet() && relation.getDependTableSourceSet().size() != 0) {
                         for (CubeTableSource cubeTableSource : relation.getDependTableSourceSet()) {
                             operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, cubeTableSource.getSourceID()));
                         }
+                    } else {
+                        operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {
@@ -356,21 +364,26 @@ public class BICubeOperationManager {
     * */
     public void generateTableRelationPath(Set<BICubeGenerateRelationPath> relationPathSet) {
         for (BICubeGenerateRelationPath path : relationPathSet) {
-            if (null != path && null != path.getBiTableSourceRelationPath()) {
-                try {
-                    String sourceID = path.getBiTableSourceRelationPath().getSourceID();
-                    BIOperation<Object> operation = new BIOperation<Object>(
-                            sourceID,
-                            getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
+            String sourceID = path.getBiTableSourceRelationPath().getSourceID();
+            BIOperation<Object> operation = new BIOperation<Object>(
+                    sourceID,
+                    getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
+            try {
+                if (null != path && null != path.getBiTableSourceRelationPath()) {
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
-                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
+                    if (path.getDependRelationPathSet().size() == 0) {
+                        operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
+                    } else {
+                        for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
+                            operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
+                        }
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                } catch (Exception e) {
-                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
+
                 }
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e.getMessage(), e);
             }
             subscribePathFinish();
         }
@@ -399,12 +412,16 @@ public class BICubeOperationManager {
     protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version) {
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
         CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
-/*若没有更新设置,按默认处理*/
-        if (null == tableUpdateSetting || ComparatorUtils.equals(0, cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable())) {
+/*若没有更新设置,按默认处理
+* 首次更新均为全局更新*/
+        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+        Cube advancedCube = new BICube(resourceRetrievalService, discovery);
+        if (null == tableUpdateSetting || !(advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable() && advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isCubeLastTimeAvailable())) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
-        } 
+        }
         /*全局更新时该表不更新*/
-        else if (currentTask.getTaskType() != CubeTaskType.SINGLE && tableUpdateSetting.getTogetherOrNever() == DBConstant.SINGLE_TABLE_UPDATE.NEVER) {
+        else if (currentTask.getTaskType() == CubeTaskType.ALL && tableUpdateSetting.getTogetherOrNever() == DBConstant.SINGLE_TABLE_UPDATE.NEVER) {
             return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
         } else {
             switch (tableUpdateSetting.getUpdateType()) {
@@ -412,7 +429,11 @@ public class BICubeOperationManager {
                     return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                 }
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
+                    discovery = BICubeIncreaseDisDiscovery.getInstance();
+                    resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+                    cube = new BICube(resourceRetrievalService, discovery);
                     return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version);
+//                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                 }
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
                     return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);

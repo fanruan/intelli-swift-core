@@ -42,6 +42,9 @@ public class BIGetReportAndFolderAction extends ActionNoSessionCMD {
         JSONArray allEntry = EntryControl.getInstance().getRootNode().createAllEntryJSONArray(UserControl.getInstance().getSuperManagerID(), true);
         for(int i = 0; i < nodeList.size(); i++){
             BIReportNode node = nodeList.get(i);
+            /*处理授权文件被删除的情况时用到*/
+//            node.setParentid("-1");
+//            BIDAOUtils.saveOrUpDate(node, userId);
             if (node.getStatus() == BIReportConstant.REPORT_STATUS.HANGOUT &&
                     checkReportStatus(node.getId(), node.getUserId(), allEntry)) {
                 node.setStatus(BIReportConstant.REPORT_STATUS.NORMAL);
@@ -54,7 +57,7 @@ public class BIGetReportAndFolderAction extends ActionNoSessionCMD {
     }
 
     private JSONArray getSharedUsers(long reportId, long createBy) throws Exception{
-        List<User> users = BIDAOUtils.getSharedUsersByReport(Long.valueOf(reportId), createBy);
+        List<User> users = BIDAOUtils.getSharedUsersByReport(reportId, createBy);
         JSONArray ja = new JSONArray();
         if(users != null) {
             for(int i = 0; i < users.size(); i++){

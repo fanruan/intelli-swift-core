@@ -26,11 +26,7 @@ public class NumberSmallThanAvgFilterValue extends NumberNoneValueFilterValue im
     @Override
     public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         LightNode parentNode = node.getParent();
-        double nline = 0;
-        for (int i = 0; i < parentNode.getChildLength(); i++) {
-            nline += parentNode.getChild(i).getSummaryValue(targetKey).doubleValue();
-        }
-        nline = nline / parentNode.getChildLength();
+        double nline = parentNode.getChildAVGValue(targetKey);
         //FIXME 不存在的值怎么处理呢
         Number targetValue = node.getSummaryValue(targetKey);
         return targetValue == null ? false : targetValue.doubleValue() < nline;

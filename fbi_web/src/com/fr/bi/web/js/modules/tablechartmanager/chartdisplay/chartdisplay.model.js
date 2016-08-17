@@ -44,8 +44,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                     type = BICst.WIDGET.BUBBLE;
                 }
-                var adjustData = BI.map(data.c, function (id, item) {
+                var adjustData = [];
+                BI.each(data.c, function (id, item) {
                     var res = {};
+                    if(BI.isNull(assertValue(item.s[idx]))){
+                        return;
+                    }
                     if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                         switch(type){
                             case BICst.WIDGET.BUBBLE:
@@ -78,7 +82,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             name: res.x
                         };
                     }
-                    return res;
+                    adjustData.push(res);
                 });
                 var obj = {};
                 obj.data = adjustData;
@@ -89,6 +93,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             });
         }
         return result;
+
+        function assertValue(v){
+            if(BI.isNull(v)){
+                return;
+            }
+            if(!BI.isFinite(v)){
+                return 0;
+            }
+            return v;
+        }
     },
 
     _formatDataForGISMap: function(data){
@@ -499,10 +513,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
                 return this._formatDataForAxis(data);
-            case BICst.WIDGET.DASHBOARD:
-                return this._formatDataForDashBoard(data);
+
+                //return this._formatDataForDashBoard(data);
             case BICst.WIDGET.BUBBLE:
                 return this._formatDataForBubble(data);
             case BICst.WIDGET.SCATTER:
@@ -552,6 +567,46 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         
     },
 
+    //clicked 中的值，如果是分组名使用分组对应的id
+    _parseClickedValue4Group: function (v, dId) {
+        var group = BI.Utils.getDimensionGroupByID(dId);
+        var fieldType = BI.Utils.getFieldTypeByDimensionID(dId);
+        var clicked = v;
+
+        if (BI.isNotNull(group)) {
+            if (fieldType === BICst.COLUMN.STRING) {
+                var details = group.details,
+                    ungroup2Other = group.ungroup2Other,
+                    ungroup2OtherName = group.ungroup2OtherName;
+                if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
+                    ungroup2OtherName === v) {
+                    clicked = BICst.UNGROUP_TO_OTHER;
+                }
+                BI.some(details, function (i, detail) {
+                    if (detail.value === v) {
+                        clicked = detail.id;
+                        return true;
+                    }
+                });
+            } else if (fieldType === BICst.COLUMN.NUMBER) {
+                var groupValue = group.group_value, groupType = group.type;
+                if (groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
+                    var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
+                    if (useOther === v) {
+                        clicked = BICst.UNGROUP_TO_OTHER;
+                    }
+                    BI.some(groupNodes, function (i, node) {
+                        if (node.group_name === v) {
+                            clicked = node.id;
+                            return true;
+                        }
+                    });
+                }
+            }
+        }
+        return clicked;
+    },
+
     getWidgetData: function(type, callback){
         var self = this, o = this.options;
         var options = {};
@@ -593,11 +648,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             });
             if(type === BICst.WIDGET.MAP){
-                options.geo = {
-                    data: BICst.MAP_PATH[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_PATH[BICst.MAP_TYPE.CHINA],
-                    name: BICst.MAP_TYPE_NAME[BI.Utils.getWidgetSubTypeByID(o.wId)] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
-                };
-
                 var subType = BI.Utils.getWidgetSubTypeByID(o.wId) || BICst.MAP_TYPE.CHINA;
                 options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
                 var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];
@@ -611,7 +661,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             }
             if(type === BICst.WIDGET.GIS_MAP){
                 options.geo = {
-                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
+                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+                    "attribution": "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>"
                 };
             }
             //var opts = Data.Utils.getWidgetData(jsonData.data, {
@@ -644,34 +695,35 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var o = this.options;
         this._refreshDimsInfo();
         var dId = [], clicked = [];
+        var clickeddId = obj.dId || this.dimIds[0];
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.DASHBOARD:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: obj.dId || this.dimIds[0],
-                    value: [obj.seriesName]
+                    dId: clickeddId,
+                    value: [this._parseClickedValue4Group(obj.seriesName, clickeddId)]
                 }];
                 break;
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: obj.dId || this.dimIds[0],
-                    value: [obj.x]
+                    dId: clickeddId,
+                    value: [this._parseClickedValue4Group(obj.x, clickeddId)]
                 }];
                 break;
             default:
                 dId = obj.targetIds;
                 clicked = [{
-                    dId: obj.dId || this.dimIds[0],
-                    value: [obj.value || obj.x]
+                    dId: clickeddId,
+                    value: [this._parseClickedValue4Group(obj.value || obj.x, clickeddId)]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
                         dId: obj.dId || this.crossDimIds[0],
-                        value: [obj.seriesName]
+                        value: [this._parseClickedValue4Group(obj.seriesName, obj.dId || this.crossDimIds[0])]
                     })
                 }
                 break;

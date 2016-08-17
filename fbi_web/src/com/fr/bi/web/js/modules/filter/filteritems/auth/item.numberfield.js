@@ -53,9 +53,9 @@ BI.AuthorityNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     },
 
-    populate: function (item) {
-        this.filterType.setValue(item.filter_type);
-        this._refreshFilterWidget(item.filter_type, item.filter_value);
+    populate: function (items, keyword, context) {
+        this.filterType.setValue(context.filter_type);
+        this._refreshFilterWidget(context.filter_type, context.filter_value);
 
     },
 
@@ -66,7 +66,8 @@ BI.AuthorityNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         }
 
         this.fieldId = o._src.field_id;
-        var fieldName = BI.Utils.getFieldNameByFieldId4Conf(this.fieldId);
+        var fieldName = BI.Utils.getTableNameByFieldId4Conf(this.fieldId) + "." +
+            BI.Utils.getFieldNameByFieldId4Conf(this.fieldId);
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
             text: fieldName,

@@ -1,7 +1,7 @@
 package com.fr.bi.stable.data.db;
 
+import com.fr.base.AbstractTableData;
 import com.fr.base.FRContext;
-import com.fr.base.TableData;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.data.TableDataSource;
 import com.fr.general.ComparatorUtils;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by sheldon on 14-8-8.
  */
-public class BIExcelTableData implements TableData {
+public class BIExcelTableData extends AbstractTableData {
 
     private String filePath = null;
 

@@ -62,11 +62,14 @@
         },
 
         getAllGroupedPackagesTreeJSON: function () {
-            var groups = Pool.groups, packages = Pool.packages;
+            var groupMap = Pool.groups, packages = Pool.packages;
             var packStructure = [], groupedPacks = [];
-            BI.each(groups, function (id, group) {
+            var groups = BI.sortBy(groupMap, function (id, item) {
+                return item.init_time;
+            });
+            BI.each(groups, function (i, group) {
                 packStructure.push({
-                    id: id,
+                    id: group.id,
                     text: group.name,
                     isParent: true
                 });
@@ -75,7 +78,7 @@
                         id: item.id,
                         text: packages[item.id].name,
                         value: item.id,
-                        pId: id
+                        pId: group.id
                     });
                     groupedPacks.push(item.id);
                 })
@@ -107,15 +110,15 @@
         },
 
         getWidgetsByTemplateId: function (tId, callback) {
-            Data.Req.reqWidgetsByTemplateId(tId, function (data) {
-                callback(data);
-            });
+            if (tId === this.getCurrentTemplateId()) {
+                callback(Data.SharingPool.cat("widgets"));
+            } else {
+                Data.BufferPool.getWidgetsByTemplateId(tId, callback);
+            }
         },
 
         getAllTemplates: function (callback) {
-            Data.Req.reqAllTemplates(function (data) {
-                callback(data);
-            });
+            Data.BufferPool.getAllTemplates(callback);
         },
 
         getAllReportsData: function (callback) {
@@ -485,10 +488,10 @@
                 if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
                     filter.filter_value = [];
                     BI.each(filterValue, function (i, value) {
-                        filter.filter_value.push(checkFilter(value));
+                        filter.filter_value.push(checkFilter(value, dId));
                     });
                 } else {
-                    filter.filter_value = oldFilter.filter_value;
+                    BI.extend(filter, oldFilter);
                     //防止死循环
                     if (BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId) {
                         var result = createDimensionsAndTargets(oldFilter.target_id);
@@ -499,10 +502,10 @@
             }
 
             function createDimensionsAndTargets(idx) {
-                var newId = BI.UUID();
+                var newId = dimTarIdMap[idx] || BI.UUID();
                 var dimension = BI.deepClone(widget.dimensions[idx]);
-                if (BI.has(dimTarIdMap, idx)) {
-                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
+                if (BI.has(dimTarIdMap, idx) && BI.has(dimensions, [dimTarIdMap[idx]])) {
+                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]]};
                 }
                 switch (widget.dimensions[idx].type) {
                     case BICst.TARGET_TYPE.STRING:
@@ -550,7 +553,7 @@
                         BI.each(expression.ids, function (id, tId) {
                             var result = createDimensionsAndTargets(tId);
                             if (BI.has(expression, "formula_value")) {
-                                expression.formula_value = expression.formula_value.replace(tId, result.id);
+                                expression.formula_value = expression.formula_value.replaceAll(tId, result.id);
                             }
                             expression.ids[id] = result.id;
                         });
@@ -571,12 +574,6 @@
         getWSThemeColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.theme_color) ? ws.theme_color :
-                BICst.DEFAULT_CHART_SETTING.theme_color;
-        },
-
-        getWSMapBubbleColorByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.map_bubble_color) ? ws.map_bubble_color :
                 BICst.DEFAULT_CHART_SETTING.theme_color;
         },
 
@@ -644,6 +641,18 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.rules_display) ? ws.rules_display :
                 BICst.DEFAULT_CHART_SETTING.bubble_display;
+        },
+
+        getWSBubbleFixedColorsByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.fixed_colors) ? ws.fixed_colors :
+                BICst.DASHBOARD_STYLE_CONDITIONS
+        },
+
+        getWSBubbleGradientsByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.gradient_colors) ? ws.gradient_colors :
+                BICst.BUBBLE_GRADIENT_COLOR
         },
 
         getWSBubbleStyleByID: function (wid) {
@@ -846,6 +855,24 @@
                 BICst.DEFAULT_CHART_SETTING.dashboard_unit;
         },
 
+        getWSMaxScaleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.max_scale) ? ws.max_scale :
+                ""
+        },
+
+        getWSMinScaleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.min_scale) ? ws.min_scale :
+                ""
+        },
+
+        getWSShowPercentageByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_percentage) ? ws.show_percentage :
+                BICst.PERCENTAGE.NOT_SHOW
+        },
+
         getWSXAxisUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.x_axis_unit) ? ws.x_axis_unit :
@@ -954,16 +981,46 @@
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
         },
 
+        getWSMinBubbleSizeByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.bubble_min_size) ? ws.bubble_min_size :
+                BICst.DEFAULT_CHART_SETTING.bubble_min_size
+        },
+
+        getWSMaxBubbleSizeByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.bubble_max_size) ? ws.bubble_max_size :
+                BICst.DEFAULT_CHART_SETTING.bubble_max_size
+        },
+
+        getWSMinimalistByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.minimalist_model) ? ws.minimalist_model :
+                BICst.DEFAULT_CHART_SETTING.minimalist_model
+        },
+
+        getWSBigDataModelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.big_data_mode) ? ws.big_data_mode :
+                BICst.DEFAULT_CHART_SETTING.big_data_mode
+        },
+
+        getWSShowCustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_custom_scale) ? ws.show_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_custom_scale;
+        },
+
+        getWSCustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.custom_scale) ? ws.custom_scale :
+            {}
+        },
+
         getWSShowZoomByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
                 BICst.DEFAULT_CHART_SETTING.show_zoom;
-        },
-
-        getWSNullContinueByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
-                BICst.DEFAULT_CHART_SETTING.nullContinue;
         },
 
         getWSTextDirectionByID: function (wid) {
@@ -1094,6 +1151,22 @@
             BI.each(views, function (i, tar) {
                 if (i >= (BI.parseInt(BICst.REGION.TARGET1))) {
                     result = result.concat(tar);
+                }
+            });
+            return result;
+        },
+
+        getAllBaseDimensionIDs: function (wid) {
+            var self = this;
+            var result = [];
+            var ids = this.getAllDimensionIDs(wid);
+            var _set = [BICst.TARGET_TYPE.STRING,
+                BICst.TARGET_TYPE.NUMBER,
+                BICst.TARGET_TYPE.DATE, BICst.TARGET_TYPE.COUNTER];
+            BI.each(ids, function (i, id) {
+                var type = self.getDimensionTypeByID(id);
+                if (_set.contains(type)) {
+                    result.push(id);
                 }
             });
             return result;
@@ -1587,14 +1660,10 @@
             var tableB = BI.Utils.getTableIdByFieldID(to);
             var path = this.getPathsFromTableAToTableB(tableA, tableB);
             if (tableA === tableB) {        //同一张表
-                if (this.isSelfCircleTableByTableId(tableA) && !checkPathAvailable(path, from, to)) {      //是自循环表且字段包含层级字段
-                    return [getRelationOfselfCircle(from, to, path)];
-                } else {
-                    return [[{
-                        primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
-                        foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
-                    }]]
-                }
+                return [[{
+                    primaryKey: {field_id: from, table_id: self.getTableIdByFieldID(from)},
+                    foreignKey: {field_id: to, table_id: self.getTableIdByFieldID(to)}
+                }]]
             }
             return path;
 
@@ -2072,7 +2141,8 @@
                                 type: BI.Selection.Multi,
                                 value: [value]
                             },
-                            _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
+                            // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
+                            _src: self.getDimensionSrcByID(dimensionIds[floor])
                         };
                         if (BI.isEmptyObject(child)) {
                             var filterObj = {
@@ -2177,7 +2247,7 @@
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
                 }
-                if(groupType === BICst.GROUP.ID_GROUP) {
+                if (groupType === BICst.GROUP.ID_GROUP) {
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
                         filter_value: {
@@ -2454,7 +2524,9 @@
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
-            return parseComplexDateCommon(offset, new Date(paramdate));
+            if (BI.isNotNull(paramdate)) {
+                return parseComplexDateCommon(offset, new Date(paramdate));
+            }
         }
 
         function parseComplexDateCommon(v, consultedDate) {
@@ -2607,17 +2679,26 @@
                 case BICst.YEAR:
                     start = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), 0, 1);
                     end = new Date(start.getFullYear(), 11, 31);
-                    break;
+                    return {
+                        start: start.getTime(),
+                        end: end.getTime()
+                    };
                 case BICst.YEAR_QUARTER:
                     ydate = tool._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
                     start = tool._getQuarterStartDate(ydate);
                     end = tool._getQuarterEndDate(ydate);
-                    break;
+                    return {
+                        start: start.getTime(),
+                        end: end.getTime()
+                    };
                 case BICst.YEAR_MONTH:
                     ydate = tool._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
                     start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
                     end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
-                    break;
+                    return {
+                        start: start.getTime(),
+                        end: end.getTime()
+                    };
                 case BICst.YEAR_WEEK:
                     start = ydate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
                     end = start.getOffsetDate(7);
@@ -2671,7 +2752,7 @@
                 case BICst.WIDGET.YMD:
                     if (BI.isNotNull(wValue)) {
                         var v = parseComplexDate(wValue);
-                        if(BI.isNotNull(v)){
+                        if (BI.isNotNull(v)) {
                             date = new Date(v);
                         }
                     }

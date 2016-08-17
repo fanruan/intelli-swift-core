@@ -9,6 +9,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.io.File;
+import java.util.UUID;
 
 /**
  * Created by Young's on 2016/3/15.
@@ -75,6 +76,10 @@ public class BIGetImportedExcelData {
             BILogger.getLogger().error(e.getMessage());
             return jo;
         }
+
+        //文件名
+        String fileName = this.fullFileName.substring(UUID.randomUUID().toString().length());
+        jo.put("fileName", fileName);
         jo.put("fields", fieldsJa);
         jo.put("data", dataJa);
         return  jo;

@@ -31,7 +31,8 @@ BI.AbstractDetailDetailSelectDataNode4RealTime = BI.inherit(BI.Widget, {
     _initBroadcast: function () {
         var self = this, o = this.options;
         var check = function () {
-            var dIds = BI.Utils.getAllDimensionIDs();
+            //获取所有维度和基础指标
+            var dIds = BI.Utils.getAllBaseDimensionIDs();
             if (dIds.length > 0) {
                 var tId = BI.Utils.getTableIDByDimensionID(dIds[0]);
                 if (tId === o.value) {

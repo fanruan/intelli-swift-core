@@ -1,5 +1,6 @@
 package com.fr.bi.cube.engine.result;
 
+import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cube.engine.calculator.key.TargetGettingKey;
 import com.fr.bi.cube.engine.calculator.key.single.SumKey;
 import com.fr.bi.cube.engine.store.ColumnKey;

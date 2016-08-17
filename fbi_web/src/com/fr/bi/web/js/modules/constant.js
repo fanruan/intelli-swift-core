@@ -92,7 +92,6 @@ BICst.WIDGET.Heights[BICst.WIDGET.GENERAL_QUERY] = 250;
 BICst.WIDGET.Heights[BICst.WIDGET.QUERY] = 40;
 BICst.WIDGET.Heights[BICst.WIDGET.RESET] = 40;
 
-
 //etl pane card names (empty tip, only one tip, pane)
 BICst.CONF_ETL_DATA_SET_EMPTY_TIP = "data_set_empty_tip";
 BICst.CONF_ETL_DATA_SET_ONLY_ONE_TIP = "data_set_only_one_tip";

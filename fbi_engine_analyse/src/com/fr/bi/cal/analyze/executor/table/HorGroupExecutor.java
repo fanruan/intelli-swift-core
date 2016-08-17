@@ -8,9 +8,6 @@ import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.field.BIAbstractTargetAndDimension;
-import com.fr.bi.field.BITargetAndDimensionUtils;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -19,6 +16,10 @@ import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
+import com.fr.bi.field.BIAbstractTargetAndDimension;
+import com.fr.bi.field.BITargetAndDimensionUtils;
+import com.fr.bi.field.target.target.BIAbstractTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -33,6 +34,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -114,7 +116,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
         } else {
             for (int i = 0; i < sumColumn.length; i++) {
-                cell = new CBCell(sumColumn[i].getValue());
+                cell = new CBCell(((BIAbstractTarget) sumColumn[i]).getText());
                 cell.setRow(maxColumnLength);
                 cell.setColumn(tempCol + i);
                 cell.setRowSpan(1);
@@ -125,7 +127,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
                 //TODO CBBoxElement需要整合减少内存
                 CBBoxElement cbox = new CBBoxElement(cellList);
                 BITargetAndDimension sumCol = sumColumn[i];
-                cbox.setName(sumCol.getValue());
+                cbox.setName(((BIAbstractTarget) sumColumn[i]).getText());
                 cbox.setType(CellConstant.CBCELL.SUMARYNAME);
                 cell.setBoxElement(cbox);
                 cbcells[cell.getColumn()][cell.getRow()] = cell;
@@ -259,6 +261,9 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             int dimensionIndex = rowData.getDimensionIndexFromRow(row, columnLength);
             BIDimension rd = colColumn[dimensionIndex];
             String name = rd.toString(tempNode.getData());
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && name != null) {
+                name = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(name)));
+            }
             NodeExpander childEx = expander.getChildExpander(name);
             int colSpan = sumColumn.length == 0 ? tempNode.getTotalLength(childEx) : tempNode.getTotalLengthWithSummary(childEx);
             if (isCross) {
@@ -308,7 +313,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
                 list = (IntList) deepList.clone();
                 list.add(i);
             } catch (CloneNotSupportedException e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                BILogger.getLogger().error(e.getMessage(), e);
             }
             dealWithNode(tempNode, expander.getChildExpander(name), cbcells, row + rowSpan, tempCol, colColumn, sumColumn, keys, currentIndex, total - 1, isCross, list, isTargetSort, sortDimension, widget, rowData);
             tempCol += colSpan;
@@ -322,7 +327,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         CBCell cell = null;
         boolean isSortTitle = row == 0;
         for (int p = 0; p < sumColumn.length; p++) {
-            cell = new CBCell(Inter.getLocText("BI-Summary") + ":" + sumColumn[p].getValue());
+            cell = new CBCell(Inter.getLocText("BI-Summary") + ":" + ((BIAbstractTarget) sumColumn[p]).getText());
             cell.setRow(row);
             cell.setColumn(tempCol + p);
             int dimensionIndex = columnData.getDimensionIndexFromRow(row, columnLength);
@@ -594,7 +599,11 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             int colSpan = sumColumn.length == 0 ? tempNode.getTotalLength() : tempNode.getTotalLengthWithSummary();
             int dimensionIndex = rowData.getDimensionIndexFromRow(row, columnLengh);
             BIDimension rd = colColumn[dimensionIndex];
-            cell = new CBCell(rd.toString(tempNode.getData()));
+            String text = rd.toString(tempNode.getData());
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && text != null) {
+                text = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(text)));
+            }
+            cell = new CBCell(text);
             cell.setRow(row);
             cell.setColumn(tempCol);
             cell.setColumnSpan(colSpan);
@@ -779,7 +788,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         boolean isTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
 
         for (int i = 0; i < colLength; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)usedDimensions[i]).getText());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
             cell.setColumn(0);
             cell.setRow(i);
             cell.setRowSpan(1);

@@ -73,6 +73,7 @@ BIShow.View = BI.inherit(BI.View, {
         var subvessel = BI.createWidget();
         var saveAs = BI.createWidget({
             type: "bi.icon_text_item",
+            invisible: !BICst.CONFIG.SHOW_DASHBOARD_TITLE,
             cls: "toolbar-save-font save-as",
             text: BI.i18nText("BI-Save_As"),
             height: 30,
@@ -97,6 +98,11 @@ BIShow.View = BI.inherit(BI.View, {
             }]
         });
         this.addSubVessel("pane", subvessel);
+        //锁提示
+        var lockedBy = this.model.get("lockedBy");
+        if(BI.isNotNull(lockedBy) && BI.isNotEmptyString(lockedBy)) {
+            BI.Msg.toast(BI.i18nText("BI-Report_Is_Editing_By", this.model.get("lockedBy")), "warning");
+        }
     },
 
     _saveAs: function(){

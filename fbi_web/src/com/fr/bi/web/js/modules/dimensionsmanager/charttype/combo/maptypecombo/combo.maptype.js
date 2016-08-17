@@ -42,7 +42,6 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
             element: this.element,
             direction: "bottom",
             adjustLength: 3,
-            offsetStyle: "left",
             el: this.trigger,
             popup: {
                 el: this.popup,

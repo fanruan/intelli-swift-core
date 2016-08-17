@@ -5,18 +5,19 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     constants: {
         CHART_TYPE_POSITION: 2,
-        CordonPos: 0
+        CordonPos: 1
     },
     defaultItems: function () {
         return [
             [{
-                text: BI.i18nText("BI-Style_Setting"),
-                value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
-                cls: "style-set-h-font"
-            }],
-            [{
                 text: BI.i18nText("BI-Modify_Cal_Target"),
                 value: BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET
+            }],
+            [{
+                text: BI.i18nText("BI-Style_Setting"),
+                value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
+                warningTitle: BI.i18nText("BI-Disable_in_Big_Data_Mode"),
+                cls: "style-set-h-font"
             }],
             [{
                 el: {
@@ -92,15 +93,22 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
-
+        var minimalist = BI.Utils.getWSMinimalistByID(wId);
+        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
         var e = BI.Utils.getExpressionByDimensionID(o.dId);
         var ids = e.ids;
         BI.each(ids , function (idx , id){
-            var fieldID = BI.Utils.getFieldIDByDimensionID(id);
-            var fieldName = BI.Utils.getFieldNameByID(fieldID);
-            var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldID));
-            var fromText = tableName + "." + fieldName;
-            item[item.length-1].push({
+            //这边的dimensionId不一定能拿到fieldId,计算指标没有fieldId
+            var fromText = "";
+            if(BI.Utils.isCalculateTargetByDimensionID(id)){
+                fromText = BI.Utils.getDimensionNameByID(id);
+            }else{
+                var fieldID = BI.Utils.getFieldIDByDimensionID(id);
+                var fieldName = BI.Utils.getFieldNameByID(fieldID);
+                var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldID));
+                fromText = tableName + "." + fieldName;
+            }
+            item[item.length - 1].push({
                 text: fromText,
                 tipType: "success",
                 value: BICst.TARGET_COMBO.INFO,
@@ -131,7 +139,11 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                BI.remove(item, this.constants.CHART_TYPE_POSITION);
+                if(minimalist) {
+                    items[this.constants.CordonPos][0].setWarningTitle(BI.i18nText("BI-Unmodified_in_Minimalist_Mode"));
+                    item[this.constants.CordonPos][0].disabled = true
+                }
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -143,6 +155,9 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist) {
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 item[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
                 break;
             case BICst.WIDGET.SCATTER:
@@ -156,7 +171,9 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        return;
+                        BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
+                        BI.removeAt(item, this.constants.CordonPos);
+                        return item;
                 }
                 item[this.constants.CordonPos][0].cls = "";
                 item[this.constants.CordonPos][0] = {
@@ -166,10 +183,22 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                BI.remove(item, this.constants.CHART_TYPE_POSITION);
+                if(bigDataMode){
+                    item[this.constants.CordonPos][0].disabled = true;
+                }
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
+                break;
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, 1);
                 break;
             default:
-                BI.remove(item, this.constants.CHART_TYPE_POSITION);
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
         }
         return item;

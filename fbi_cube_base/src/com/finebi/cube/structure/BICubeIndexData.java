@@ -38,11 +38,9 @@ public class BICubeIndexData implements ICubeIndexDataService {
             BINonValueUtils.beyondControl(e);
 
         }
-
-
     }
 
-    private void initIndexReader() {
+    private void buildIndexReader() {
         try {
             indexLocation.setGroupValueIndexType();
             indexLocation.setReaderSourceLocation();
@@ -52,7 +50,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
         }
     }
 
-    private void initIndexWriter() {
+    private void buildIndexWriter() {
         try {
             indexLocation.setGroupValueIndexType();
             indexLocation.setWriterSourceLocation();
@@ -62,7 +60,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
         }
     }
 
-    private void initNullReader() {
+    private void buildNullReader() {
         try {
             nullIndexLocation.setReaderSourceLocation();
             nullIndexLocation.setGroupValueIndexType();
@@ -72,7 +70,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
         }
     }
 
-    private void initNullWriter() {
+    private void buildNullWriter() {
         try {
             nullIndexLocation.setWriterSourceLocation();
             nullIndexLocation.setGroupValueIndexType();
@@ -100,31 +98,53 @@ public class BICubeIndexData implements ICubeIndexDataService {
     }
 
     public ICubeGroupValueIndexReader getIndexReader() {
-        if (!isIndexReaderAvailable()) {
-            initIndexReader();
-        }
+        initIndexReader();
         return indexReader;
     }
 
-    public ICubeGroupValueIndexWriter getIndexWriter() {
-        if (!isIndexWriterAvailable()) {
-            initIndexWriter();
+    private void initIndexReader() {
+        if (!isIndexReaderAvailable()) {
+            buildIndexReader();
         }
+    }
+
+    public ICubeGroupValueIndexWriter getIndexWriter() {
+        initIndexWriter();
         return indexWriter;
     }
 
-    public ICubeGroupValueIndexReader getNullReader() {
-        if (!isNullReaderAvailable()) {
-            initNullReader();
+    private void initIndexWriter() {
+        if (!isIndexWriterAvailable()) {
+            buildIndexWriter();
         }
+    }
+
+    public ICubeGroupValueIndexReader getNullReader() {
+        initNullReader();
         return nullReader;
     }
 
-    public ICubeGroupValueIndexWriter getNullWriter() {
-        if (!isNullWriterAvailable()) {
-            initNullWriter();
+    public void buildStructure(){
+        initNullReader();
+        initNullWriter();
+        initIndexWriter();
+        initIndexReader();
+    }
+    private void initNullReader() {
+        if (!isNullReaderAvailable()) {
+            buildNullReader();
         }
+    }
+
+    public ICubeGroupValueIndexWriter getNullWriter() {
+        initNullWriter();
         return nullWriter;
+    }
+
+    private void initNullWriter() {
+        if (!isNullWriterAvailable()) {
+            buildNullWriter();
+        }
     }
 
     @Override

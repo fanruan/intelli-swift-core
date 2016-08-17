@@ -23,7 +23,6 @@ import java.util.Set;
 public interface ICubeTablePropertyService extends Release, ICubeVersion {
     void recordTableStructure(List<ICubeFieldSource> fields);
 
-
     void recordRowCount(long rowCount);
 
     void recordRemovedList(int position, int value);
@@ -52,7 +51,7 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
     Set<String> getFieldNamesFromParent();
 
     void forceRelease();
-    
+
     boolean isRemovedListAvailable();
 
     boolean isCubeLastUpdateTimeAvailable();

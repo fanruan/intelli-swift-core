@@ -38,41 +38,46 @@ BI.TemplateManagerButtonGroup = BI.inherit(BI.Widget, {
             if (BI.isNotNull(item.children)) {
                 BI.extend(item, {
                     type: self.viewType === BI.TemplateManager.LIST_VIEW ? "bi.folder_list_view_item" : "bi.folder_card_view_item",
-                    onClickItem: function(){
+                    onClickItem: function () {
                         self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_CHANGE, item.id);
                     },
-                    onRenameFolder: function(name){
+                    onRenameFolder: function (name) {
                         self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_FOLDER_RENAME, item.id, name, BI.TemplateManagerButtonGroup.RENAME_FOLDER);
                     },
-                    onDeleteFolder: function(){
+                    onDeleteFolder: function () {
                         self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_DELETE, item.id, BI.TemplateManagerButtonGroup.DELETE_FOLDER);
                     },
-                    validationChecker: function(name){
+                    validationChecker: function (name) {
                         return o.folderChecker(name, item.id);
                     }
                 });
             } else {
                 BI.extend(item, {
                     type: self.viewType === BI.TemplateManager.LIST_VIEW ? "bi.report_list_view_item" : "bi.report_card_view_item",
-                    onClickReport: function(){
-                        FS.tabPane.addItem({
-                            title: item.text,
-                            src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
-                        });
+                    isAdmin: o.isAdmin,
+                    onClickReport: function () {
+                        try {
+                            FS.tabPane.addItem({
+                                title: item.text,
+                                src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
+                            });
+                        } catch (e) {
+                            window.open(FR.servletURL + item.buildUrl + "&edit=_bi_edit_", "_blank");
+                        }
                     },
-                    onRenameReport: function(name){
+                    onRenameReport: function (name) {
                         self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_FOLDER_RENAME, item.id, name, BI.TemplateManagerButtonGroup.RENAME_REPORT);
                     },
-                    onDeleteReport: function(){
+                    onDeleteReport: function () {
                         self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_DELETE, item.id, BI.TemplateManagerButtonGroup.DELETE_REPORT);
                     },
-                    validationChecker: function(name){
+                    validationChecker: function (name) {
                         return o.reportChecker(name, item.id);
                     },
-                    onClickHangout: function(){
+                    onClickHangout: function () {
                         self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_HANGOUT, item.id);
                     },
-                    editSharedUsers: function(users){
+                    editSharedUsers: function (users) {
                         self.fireEvent(BI.TemplateManagerButtonGroup.EVENT_EDIT_SHARED, item.id, users)
                     }
                 });
@@ -93,7 +98,7 @@ BI.TemplateManagerButtonGroup = BI.inherit(BI.Widget, {
         return this.button_group.getNotSelectedValue();
     },
 
-    setNotSelectedValue: function(v){
+    setNotSelectedValue: function (v) {
         this.button_group.setNotSelectedValue(v);
     },
 
@@ -113,13 +118,13 @@ BI.TemplateManagerButtonGroup = BI.inherit(BI.Widget, {
         return this.button_group.getNotSelectedButtons();
     },
 
-    prependItems: function(items){
+    prependItems: function (items) {
         this.button_group.prependItems(items);
     },
 
-    changeViewType: function(viewType){
+    changeViewType: function (viewType) {
         this.viewType = viewType;
-        switch (viewType){
+        switch (viewType) {
             case BI.TemplateManager.LIST_VIEW:
                 this.button_group.attr("layouts", [{
                     type: "bi.vertical"

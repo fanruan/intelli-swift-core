@@ -1,5 +1,8 @@
 package com.fr.bi.cube.engine.result;
 
+import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossExpander;
+import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
