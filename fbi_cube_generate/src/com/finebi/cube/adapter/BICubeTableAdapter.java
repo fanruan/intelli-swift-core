@@ -125,13 +125,27 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public Map<BIKey, ICubeFieldSource> getColumns() {
+//        if (!isColumnInitial()) {
+//            columnSet = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
+//            List<ICubeFieldSource> list = primaryTable.getFieldInfo();
+//            Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
+//            while (tableFieldIt.hasNext()) {
+//                ICubeFieldSource field = tableFieldIt.next();
+//                columnSet.put(getColumnIndex(field.getFieldName()), field);
+//            }
+//        }
         if (!isColumnInitial()) {
-            columnSet = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
-            List<ICubeFieldSource> list = primaryTable.getFieldInfo();
-            Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
-            while (tableFieldIt.hasNext()) {
-                ICubeFieldSource field = tableFieldIt.next();
-                columnSet.put(getColumnIndex(field.getFieldName()), field);
+            synchronized (this) {
+                if (!isColumnInitial()) {
+                    Map<BIKey, ICubeFieldSource> columnSetTemp = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
+                    List<ICubeFieldSource> list = primaryTable.getFieldInfo();
+                    Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
+                    while (tableFieldIt.hasNext()) {
+                        ICubeFieldSource field = tableFieldIt.next();
+                        columnSetTemp.put(getColumnIndex(field.getFieldName()), field);
+                    }
+                    columnSet = columnSetTemp;
+                }
             }
         }
 
