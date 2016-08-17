@@ -2,6 +2,14 @@
  * Created by Fay on 2016/7/14.
  */
 BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
+    _constant: {
+        TRIGGER_HEIGHT: 24,
+        TRIGGER_WIDTH: 80,
+        CHOOSER_WIDTH: 40,
+        BUTTON_HEIGHT: 20,
+        BUTTON_WIDTH: 20
+    },
+
     _defaultConfig: function () {
         var conf = BI.DataLabelTextToolBar.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
@@ -15,8 +23,8 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
         BI.DataLabelTextToolBar.superclass._init.apply(this, arguments);
         this.family = BI.createWidget({
             type: "bi.text_toolbar_font_chooser",
-            height: 24,
-            width: 80,
+            height: this._constant.TRIGGER_HEIGHT,
+            width: this._constant.TRIGGER_WIDTH,
             cls: "text-toolbar-size-chooser-trigger"
         });
         this.family.on(BI.TextToolbarFontChooser.EVENT_CHANGE, function () {
@@ -24,8 +32,8 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
         });
         this.size = BI.createWidget({
             type: "bi.text_toolbar_size_chooser",
-            height: 24,
-            width: 40,
+            height: this._constant.TRIGGER_HEIGHT,
+            width: this._constant.CHOOSER_WIDTH,
             cls: "text-toolbar-size-chooser-trigger"
         });
         this.size.on(BI.TextToolbarSizeChooser.EVENT_CHANGE, function () {
@@ -33,8 +41,8 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
         });
         this.bold = BI.createWidget({
             type: "bi.icon_button",
-            height: 20,
-            width: 20,
+            height: this._constant.BUTTON_HEIGHT,
+            width: this._constant.BUTTON_WIDTH,
             cls: "text-toolbar-button bi-list-item-active text-bold-font"
         });
         this.bold.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -42,8 +50,8 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
         });
         this.italic = BI.createWidget({
             type: "bi.icon_button",
-            height: 20,
-            width: 20,
+            height: this._constant.BUTTON_HEIGHT,
+            width: this._constant.BUTTON_WIDTH,
             cls: "text-toolbar-button bi-list-item-active text-italic-font"
         });
         this.italic.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -54,9 +62,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
             el: {
                 type: "bi.text_toolbar_color_chooser_trigger",
                 cls: "text-toolbar-button"
-            },
-            height: 20,
-            width: 20
+            }
         });
         this.colorchooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
 
