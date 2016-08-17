@@ -134,7 +134,6 @@ public class BICubeTableAdapter implements ICubeTableService {
 //                columnSet.put(getColumnIndex(field.getFieldName()), field);
 //            }
 //        }
-        if (!isColumnInitial()) {
             synchronized (this) {
                 if (!isColumnInitial()) {
                     Map<BIKey, ICubeFieldSource> columnSetTemp = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
@@ -147,8 +146,6 @@ public class BICubeTableAdapter implements ICubeTableService {
                     columnSet = columnSetTemp;
                 }
             }
-        }
-
         return columnSet;
     }
 
