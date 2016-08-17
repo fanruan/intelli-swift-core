@@ -42,7 +42,7 @@ public class CalculateDependManager implements CalculateDependTool {
             BITableSourceRelationPath copyPath = new BITableSourceRelationPath();
             copyPath.copyFrom(biTableSourceRelationPath);
             copyPath.removeLastRelation();
-            if (copyPath.getAllRelations().size() > 1 && tableRelationSet.contains(copyPath.getFirstRelation())) {
+            if (copyPath.getAllRelations().size() > 1 || tableRelationSet.contains(copyPath.getFirstRelation())) {
                 dependRelationPathSet.add(copyPath);
             }
         } catch (BITablePathEmptyException e) {
