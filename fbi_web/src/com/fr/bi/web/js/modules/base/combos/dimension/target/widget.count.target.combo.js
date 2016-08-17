@@ -56,7 +56,6 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.TARGET_COMBO.STYLE_SETTING,
-                warningTitle: BI.i18nText("BI-Disable_in_Big_Data_Mode"),
                 cls: "style-set-h-font"
             }],
             [{
@@ -107,12 +106,10 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _rebuildItems: function(){
         var o = this.options;
-        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var tableId = BI.Utils.getTableIDByDimensionID(o.dId);
         var fieldIds = BI.Utils.getStringFieldIDsOfTableID(tableId).concat(BI.Utils.getNumberFieldIDsOfTableID(tableId));
         var children = [];
-        var minimalist = BI.Utils.getWSMinimalistByID(wId);
-        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
+        var minimalist = BI.Utils.getWSMinimalistByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
         children.push({
             text: BI.i18nText("BI-Total_Row_Count"),
             value: BI.Utils.getCountFieldIDsOfTableID(tableId),
@@ -155,7 +152,6 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 if(minimalist) {
-                    items[this.constants.CordonPos][0].setWarningTitle(BI.i18nText("BI-Unmodified_in_Minimalist_Mode"));
                     items[this.constants.CordonPos][0].disabled = true
                 }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
@@ -214,9 +210,6 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                if(bigDataMode) {
-                    items[this.constants.CordonPos][0].disabled = true;
-                }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.GIS_MAP:

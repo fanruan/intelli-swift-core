@@ -60,8 +60,7 @@ BI.ComboCustomScale = BI.inherit(BI.Widget , {
                 left: [label],
                 right: [combo]
             },
-            rlgap: 10,
-            rrgap: 20
+            rhgap: 10
         })
 
     },

@@ -643,18 +643,6 @@
                 BICst.DEFAULT_CHART_SETTING.bubble_display;
         },
 
-        getWSBubbleFixedColorsByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.fixed_colors) ? ws.fixed_colors :
-                BICst.DASHBOARD_STYLE_CONDITIONS
-        },
-
-        getWSBubbleGradientsByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.gradient_colors) ? ws.gradient_colors :
-                BICst.BUBBLE_GRADIENT_COLOR
-        },
-
         getWSBubbleStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.bubble_style) ? ws.bubble_style :
@@ -981,28 +969,10 @@
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
         },
 
-        getWSMinBubbleSizeByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.bubble_min_size) ? ws.bubble_min_size :
-                BICst.DEFAULT_CHART_SETTING.bubble_min_size
-        },
-
-        getWSMaxBubbleSizeByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.bubble_max_size) ? ws.bubble_max_size :
-                BICst.DEFAULT_CHART_SETTING.bubble_max_size
-        },
-
         getWSMinimalistByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.minimalist_model) ? ws.minimalist_model :
                 BICst.DEFAULT_CHART_SETTING.minimalist_model
-        },
-
-        getWSBigDataModelByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.big_data_mode) ? ws.big_data_mode :
-                BICst.DEFAULT_CHART_SETTING.big_data_mode
         },
 
         getWSShowCustomScale: function (wid) {
