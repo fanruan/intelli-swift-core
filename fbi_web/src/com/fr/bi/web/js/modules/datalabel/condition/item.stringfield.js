@@ -86,7 +86,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             height: this._constant.BUTTON_HEIGHT,
             items: BICst.DATA_LABEL_FILTER_STRING_COMBO
         });
-        this.filterType.setValue(BICst.DATA_LABEL_FILTER_STRING.BELONG_VALUE);
+        this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
             o.afterValueChange.apply(self, arguments);
