@@ -45,10 +45,15 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this;
-        // config.rangeLegend.enabled = true;
-        // config.rangeLegend.visible = true;
-        // config.rangeLegend.position = "bottom";
-        // delete config.legend;
+        config.rangeLegend.enabled = true;
+        config.rangeLegend.visible = true;
+        config.rangeLegend.position = "bottom";
+        config.rangeLegend.continuous = true;
+        // config.rangeLegend.range = [{
+        //     from: 0,
+        //     to: 10000000,
+        //     color: "red"
+        // }];
         var yTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         var xTitle = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.colors = this.config.chart_color;
@@ -73,10 +78,11 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
         BI.extend(config.plotOptions, {
             large: this.config.big_data_mode,
-            minSize: this.config.bubble_min_size,
-            maxSize: this.config.bubble_max_size,
             shadow: this.config.bubble_style !== this.constants.NO_PROJECT
         });
+
+        config.plotOptions.bubble.minSize = this.config.bubble_min_size;
+        config.plotOptions.bubble.maxSize = this.config.bubble_max_size;
 
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";

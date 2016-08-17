@@ -4618,6 +4618,7 @@ Data.Utils = {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatCordon();
+            formatChartLineStyle();
             switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
@@ -4756,6 +4757,24 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                }
+            }
+
+            function formatChartLineStyle(){
+                switch (config.chart_line_type) {
+                    case BICst.CHART_SHAPE.RIGHT_ANGLE:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = true;
+                        break;
+                    case BICst.CHART_SHAPE.CURVE:
+                        configs.plotOptions.curve = true;
+                        configs.plotOptions.step = false;
+                        break;
+                    case BICst.CHART_SHAPE.NORMAL:
+                    default:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = false;
+                        break;
                 }
             }
 

@@ -1342,11 +1342,11 @@ BICst.CHART_SCALE_SETTING = [{
 }];
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
-    text: BI.i18nText("BI-Bubble_Without_Shadow"),
+    title: BI.i18nText("BI-Bubble_Without_Shadow"),
     cls: "bubble-no-projector",
     value: BICst.CHART_SHAPE.NO_PROJECTOR
 }, {
-    text: BI.i18nText("BI-Bubble_With_Shadow"),
+    title: BI.i18nText("BI-Bubble_With_Shadow"),
     cls: "bubble-with-projector",
     value: BICst.CHART_SHAPE.PROJECTOR
 }];
