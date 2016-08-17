@@ -57,8 +57,8 @@ public class BILongNIOReader extends BIBasicNIOReader implements ICubeLongReader
         readWriteLock.writeLock().lock();
         try {
             longBuffers.put(index, buffer.asLongBuffer());
-            if (longBufferArray.length < index){
-                LongBuffer[] temp = new LongBuffer[index];
+            if (longBufferArray.length <= index){
+                LongBuffer[] temp = new LongBuffer[index+1];
                 System.arraycopy(longBufferArray, 0, temp, 0, longBufferArray.length);
                 longBufferArray = temp;
             }

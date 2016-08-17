@@ -65,8 +65,8 @@ public class BIByteNIOReader extends BIBasicNIOReader implements ICubeByteReader
         readWriteLock.writeLock().lock();
         try {
             byteBuffers.put(index, buffer.asReadOnlyBuffer());
-            if (byteBufferArray.length < index){
-                ByteBuffer[] temp = new ByteBuffer[index];
+            if (byteBufferArray.length <= index){
+                ByteBuffer[] temp = new ByteBuffer[index+1];
                 System.arraycopy(byteBufferArray, 0, temp, 0, byteBufferArray.length);
                 byteBufferArray = temp;
             }
