@@ -328,6 +328,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             } else {
                 self.fireEvent(BI.EditSQL.EVENT_SAVE, table);
             }
+        }, function() {
             mask.destroy();
         })
     },
@@ -349,6 +350,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             } else {
                 self.previewTab.setSelect(self.constants.PREVIEW_ERROR);
             }
+        }, function() {
             mask.destroy();
         });
     },

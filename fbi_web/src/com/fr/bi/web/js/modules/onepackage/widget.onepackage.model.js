@@ -61,6 +61,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             //对于当前正在编辑的业务包，维护该sharing pool中的对象
             self._syncSharedPackages();
             callback();
+        }, function() {
             mask.destroy();
         });
     },
@@ -344,6 +345,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 self._setReadRelations(relations);
                 self._setReadTranslations(translations);
                 callback();
+            }, function() {
                 mask.destroy();
             });
         } else {

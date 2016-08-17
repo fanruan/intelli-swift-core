@@ -25,6 +25,7 @@ BI.ExcelUploadModel = BI.inherit(FR.OB, {
                 self.fields = data.fields;
                 self.previewData = data.data;
                 callback();
+            }, function() {
                 mask.destroy();
             })
         }
@@ -59,6 +60,7 @@ BI.ExcelUploadModel = BI.inherit(FR.OB, {
             self.fields = fields;
             self.previewData = data.data;
             callback();
+        }, function() {
             mask.destroy();
         })
     },

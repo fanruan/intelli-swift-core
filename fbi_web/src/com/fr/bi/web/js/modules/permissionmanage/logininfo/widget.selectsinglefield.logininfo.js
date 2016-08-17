@@ -27,6 +27,7 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
                 ids = [BI.Utils.getCurrentPackageId4Conf()]
             }
             self.selectDataPane.setPackage(ids[0]);
+        }, function() {
             mask.destroy();
         });
 

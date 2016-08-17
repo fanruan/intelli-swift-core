@@ -148,29 +148,29 @@ BI.extend(BI.Utils, {
 
     },
 
-    getUpdatePreviewSqlResult: function (data, callback) {
+    getUpdatePreviewSqlResult: function (data, callback, complete) {
         Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    getConfDataByField: function (table, fieldName, filterConfig, callback) {
+    getConfDataByField: function (table, fieldName, filterConfig, callback, complete) {
         Data.Req.reqFieldsDataByData({
             table: table,
             field: fieldName,
             filterConfig: filterConfig
         }, function (data) {
             callback(data.value, data.hasNext);
-        });
+        }, complete);
     },
 
-    getConfDataByFieldId: function (fieldId, filterConfig, callback) {
+    getConfDataByFieldId: function (fieldId, filterConfig, callback, complete) {
         Data.Req.reqFieldsDataByFieldId({
             field_id: fieldId,
             filterConfig: filterConfig
         }, function (data) {
             callback(data.value, data.hasNext);
-        });
+        }, complete);
     },
 
     getAllPackageIDs4Conf: function () {
@@ -250,143 +250,141 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("authority_settings", "packages_auth", pid);
     },
 
-    savePackageAuthority: function (data, callback) {
+    savePackageAuthority: function (data, callback, complete) {
         Data.Req.reqSavePackageAuthority(data, function (res) {
             callback(res);
-        });
+        }, complete);
     },
 
     //fuck you
-    getCircleLayerLevelInfo: function (table, layerInfo, callback) {
+    getCircleLayerLevelInfo: function (table, layerInfo, callback, complete) {
         Data.Req.reqCircleLayerLevelInfoByTableAndCondition(table, layerInfo,
             function (res) {
                 callback(res);
-            });
+            }, complete);
     },
 
     //fuck you
-    getConfNumberFieldMaxMinValue: function (table, fieldName, fieldType, callback) {
+    getConfNumberFieldMaxMinValue: function (table, fieldName, fieldType, callback, complete) {
         Data.Req.reqNumberFieldMaxMinValue(table, fieldName, fieldType,
             function (res) {
                 callback(res);
-            })
+            }, complete)
     },
 
-    getTablesOfOnePackage: function (pId, callback) {
+    getTablesOfOnePackage: function (pId, callback, complete) {
         Data.Req.reqTablesOfOnePackage(pId, function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    updateTablesOfOnePackage: function (data, callback) {
+    updateTablesOfOnePackage: function (data, callback, complete) {
         Data.Req.reqUpdateTablesOfOnePackage(data, function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    saveFileGetExcelData: function (fileId, callback) {
+    saveFileGetExcelData: function (fileId, callback, complete) {
         Data.Req.reqSaveFileGetExcelData({fileId: fileId}, function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    getExcelDataByFileName: function (fullFileName, callback) {
+    getExcelDataByFileName: function (fullFileName, callback, complete) {
         Data.Req.reqExcelDataByFileName({fileName: fullFileName}, function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    saveDataLink: function (data, callback) {
+    saveDataLink: function (data, callback, complete) {
         Data.Req.reqSaveDataLink(data, function () {
             callback();
-        });
+        }, complete);
     },
 
-    getCubePath: function (callback) {
+    getCubePath: function (callback, complete) {
         Data.Req.reqCubePath(function (path) {
             callback(path);
-        });
+        }, complete);
     },
 
-    checkCubePath: function (path, callback) {
+    checkCubePath: function (path, callback, complete) {
         Data.Req.reqCheckCubePath(path, function (res) {
             callback(res);
-        });
+        }, complete);
     },
 
-    saveCubePath: function (path, callback) {
+    saveCubePath: function (path, callback, complete) {
         Data.Req.reqSaveCubePath(path, function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    saveLoginField: function (data, callback) {
+    saveLoginField: function (data, callback, complete) {
         Data.Req.reqSaveLoginField(data, function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    getConnectionNames: function (callback) {
+    getConnectionNames: function (callback, complete) {
         Data.Req.reqConnectionName(function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    getTablesByPackId: function (packId, callback) {
+    getTablesByPackId: function (packId, callback, complete) {
         BIReq.reqTablesByPackId(packId, function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    getServerSetPreviewBySql: function (data, callback) {
+    getServerSetPreviewBySql: function (data, callback, complete) {
         Data.Req.reqServerSetPreviewBySql(data, function (res) {
             callback(res);
-        });
+        }, complete);
     },
 
-    getTablesDetailInfoByTables: function (tables, callback) {
+    getTablesDetailInfoByTables: function (tables, callback, complete) {
         Data.Req.reqTablesDetailInfoByTables(tables, function (res) {
             callback(res);
-        });
+        }, complete);
     },
 
-    getRelationAndTransByTables: function (data, callback) {
+    getRelationAndTransByTables: function (data, callback, complete) {
         Data.Req.reqRelationAndTransByTables(data, function (rt) {
             callback(rt);
-        })
+        }, complete)
     },
 
-    checkCubeStatusByTable: function (table, callback) {
+    checkCubeStatusByTable: function (table, callback, complete) {
         Data.Req.reqCubeStatusByTable(table, function (data) {
             callback(data);
-        })
+        }, complete)
     },
 
     //fields 传[]表示获取全部字段
-    getPreviewDataByTableAndFields: function (table, fields, callback) {
+    getPreviewDataByTableAndFields: function (table, fields, callback, complete) {
         Data.Req.reqPreviewDataByTableAndFields(table, fields, function (data) {
             callback(data);
-        })
+        }, complete)
     },
 
-    getTestConnectionByLink: function (link, callback) {
+    getTestConnectionByLink: function (link, callback, complete) {
         Data.Req.reqTestConnectionByLink(link, function (data) {
             callback(data);
-        })
+        }, complete)
     },
 
     getTestConnectionByLinkName: function (name, callback, complete) {
         Data.Req.reqTestConnectionByLinkName(name, function (data) {
             callback(data);
-        }, function() {
-            complete();
-        })
+        }, complete)
     },
 
-    getSchemasByLink: function (link, callback) {
+    getSchemasByLink: function (link, callback, complete) {
         Data.Req.reqSchemasByLink(link, function (data) {
             callback(data);
-        })
+        }, complete)
     },
 
     getFormulaStringFromFormulaValue: function (formulaValue) {
@@ -428,57 +426,57 @@ BI.extend(BI.Utils, {
         }
     },
 
-    getTranslationsRelationsFields: function (callback) {
+    getTranslationsRelationsFields: function (callback, complete) {
         Data.Req.reqTranslationsRelationsFields(function (data) {
             callback(data);
-        });
+        }, complete);
     },
 
-    getUpdatePreviewSqlResult: function (data, callback) {
+    getUpdatePreviewSqlResult: function (data, callback, complete) {
         Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    modifyGlobalUpdateSetting: function (data, callback) {
+    modifyGlobalUpdateSetting: function (data, callback, complete) {
         Data.Req.reqModifyGlobalUpdateSetting(data, function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    getCubeLog: function (callback) {
+    getCubeLog: function (callback, complete) {
         Data.Req.reqCubeLog(function (res) {
             callback(res);
-        });
+        }, complete);
     },
 
-    getAllPackages: function (callback) {
+    getAllPackages: function (callback, complete) {
         Data.Req.reqAllBusinessPackages(function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    getTableNamesOfAllPackages: function (callback) {
+    getTableNamesOfAllPackages: function (callback, complete) {
         Data.Req.getTableNamesOfAllPackages(function (res) {
             callback(res);
-        })
+        }, complete)
     },
 
-    generateCubeByTable: function (data, callback) {
+    generateCubeByTable: function (data, callback, complete) {
         Data.Req.reqGenerateCubeByTable(data, function () {
             callback();
-        });
+        }, complete);
     },
 
-    generateCube: function (callback) {
+    generateCube: function (callback, complete) {
         Data.Req.reqGenerateCube(function (res) {
             callback(res);
-        });
+        }, complete);
     },
     
-    getPrimaryTablesByTable4Conf: function (table, callback) {
+    getPrimaryTablesByTable4Conf: function (table, callback, complete) {
         Data.Req.reqPrimaryTablesByTable(table, function (res) {
             callback(res);
-        });
+        }, complete);
     }
 });
