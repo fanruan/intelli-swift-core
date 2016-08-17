@@ -50,7 +50,23 @@ public class BIIntegerNIOReaderTest extends TestCase {
             assertTrue(false);
         }
     }
+    public void testLarge() {
+        try {
+            BIIntegerNIOWriter writer = new BIIntegerNIOWriter(BIByteNIOReaderTest.NIO_PATH_TEST);
+            BIIntegerNIOReader reader = new BIIntegerNIOReader(new File(BIByteNIOReaderTest.NIO_PATH_TEST));
 
+            writer.recordSpecificPositionValue(0, 1);
+            writer.recordSpecificPositionValue(2, 1);
+            writer.recordSpecificPositionValue(2000000000, 1);
+            assertEquals(reader.getSpecificValue(0l), 1);
+            assertEquals(reader.getSpecificValue(2l), 1);
+            assertEquals(reader.getSpecificValue(2000000000), 1);
+
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
     public void testWriteNegativeValue() {
         try {
             BIIntegerNIOWriter writer = new BIIntegerNIOWriter(BIByteNIOReaderTest.NIO_PATH_TEST);
