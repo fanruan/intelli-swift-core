@@ -137,6 +137,8 @@ BI.ChartCombineFormatItemFactory = {
                 "style": "pointer",
                 "paneBackgroundColor": "rgb(252,252,252)",
                 "needle": "rgb(229,113,90)",
+
+
                 "large": false,
                 "connectNulls": false,
                 "shadow": true,

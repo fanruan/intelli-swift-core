@@ -139,7 +139,6 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var wType = BI.Utils.getWidgetTypeByID(wId);
         var view = BI.Utils.getWidgetViewByID(wId);
         var minimalist = BI.Utils.getWSMinimalistByID(wId);
-        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
         var result = BI.find(view[BICst.REGION.TARGET2], function (idx, did) {
             return did === o.dId;
         });
@@ -178,7 +177,6 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     el: {
                         text: BI.i18nText("BI-Style_Setting"),
                         value: BICst.TARGET_COMBO.STYLE_SETTING,
-                        warningTitle: BI.i18nText("BI-Unmodified_in_Minimalist_Mode"),
                         cls: ""
                     },
                     children: [{
@@ -263,7 +261,6 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 item[this.constants.CordonPos][0] = {
                     el: {
                         text: BI.i18nText("BI-Style_Setting"),
-                        warningTitle: BI.i18nText("BI-Disable_in_Big_Data_Mode"),
                         value: BICst.TARGET_COMBO.STYLE_SETTING,
                         cls: ""
                     },
@@ -272,9 +269,6 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                if(bigDataMode) {
-                    item[this.constants.CordonPos][0].disabled = true;
-                }
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.MAP:

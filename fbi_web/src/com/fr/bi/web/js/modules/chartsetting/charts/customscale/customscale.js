@@ -59,12 +59,6 @@ BI.CustomScale = BI.inherit(BI.Widget, {
         this.minScale.setValue(v.minScale);
         this.maxScale.setValue(v.maxScale);
         this.interval.setValue(v.interval)
-    },
-
-    populate: function (items) {
-        this.minScale.populate(items);
-        this.maxScale.populate(items);
-        this.interval.populate(items)
     }
 });
 BI.CustomScale.EVENT_CHANGE = "EVENT_CHANGE";

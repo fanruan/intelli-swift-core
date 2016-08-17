@@ -43,13 +43,12 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
+
+
     _formatConfig: function(config, items){
-        var self = this, c = this.constants;
-        var yTitle = getXYAxisUnit(this.config.left_y_axis_number_level, c.LEFT_AXIS);
-        var xTitle = getXYAxisUnit(this.config.x_axis_number_level, c.X_AXIS);
+        var self = this, o = this.options;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
-        config.plotOptions.large = this.config.big_data_mode;
         config.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};
         config.plotOptions.tooltip.formatter = this.config.tooltip;
         formatCordon();
@@ -75,14 +74,16 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis = this.xAxis;
 
         config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, c.LEFT_AXIS);
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + yTitle : yTitle;
+        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
+        config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
+        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
-        config.yAxis[0].title.rotation = c.ROTATION;
+        config.yAxis[0].title.rotation = this.constants.ROTATION;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
-        formatNumberLevelInXaxis(this.config.x_axis_number_level, c.X_AXIS);
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + xTitle : xTitle;
+        formatNumberLevelInXaxis(this.config.x_axis_number_level, this.constants.X_AXIS);
+        config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
+        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "scatter";
@@ -227,7 +228,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
 
     populate: function (items, options) {
         options || (options = {});
-        var c = this.constants;
+        var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",
             chart_color: options.chart_color || [],
@@ -244,8 +245,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
-            tooltip: options.tooltip || "",
-            big_data_mode: options.big_data_mode || false
+            tooltip: options.tooltip || ""
         };
         this.options.items = items;
         var types = [];
