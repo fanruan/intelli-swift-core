@@ -9447,6 +9447,9 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
 
         _canvasRender:function(){
 
+            this._bodyG && this._bodyG.remove();
+            this._bodyG = null;
+            
             var dom = this.component.vanchart.getParentDom();
             var plotBounds = this.component.getPlotBounds();
 
@@ -15656,7 +15659,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     function getTextDimension(text, style, useHtml){
         text = pick(text, "");
         var div = document.createElement("div");
-        var container = document.getElementById("container");
+		var container = document.getElementById("container");
         if(!container){
             container = document.getElementsByTagName("body")[0]
         }
@@ -27141,6 +27144,9 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
         },
 
         _svgRender:function() {
+            
+            this._canvas && this._canvas.clearAll();
+
             this.component.isUpdateWithForce() ? this._renderForceBubbles() : this._renderNormalBubbles();
         },
 

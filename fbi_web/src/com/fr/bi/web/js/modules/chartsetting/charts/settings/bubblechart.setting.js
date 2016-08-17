@@ -479,9 +479,10 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.sign_editor",
             width: constant.EDITOR_WIDTH,
             height: constant.EDITOR_HEIGHT,
+            errorText: BI.i18nText("BI-Please_Input_Positive_Integer"),
             cls: "unit-input",
             validationChecker: function(v) {
-                return v <= self.bubbleSizeTo.getValue()
+                return BI.parseInt(v) > 0 && BI.parseInt(v) <= BI.parseInt(self.bubbleSizeTo.getValue())
             }
         });
 
@@ -493,9 +494,10 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.sign_editor",
             width: constant.EDITOR_WIDTH,
             height: constant.EDITOR_HEIGHT,
+            errorText: BI.i18nText("BI-Please_Input_Integer_Greater_Than_Minimum"),
             cls: "unit-input",
             validationChecker: function(v) {
-                return v >= self.bubbleSizeFrom.getValue()
+                return BI.parseFloat(v) >= BI.parseFloat(self.bubbleSizeFrom.getValue())
             }
         });
 
