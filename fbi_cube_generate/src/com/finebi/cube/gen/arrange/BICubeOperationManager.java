@@ -364,26 +364,21 @@ public class BICubeOperationManager {
     * */
     public void generateTableRelationPath(Set<BICubeGenerateRelationPath> relationPathSet) {
         for (BICubeGenerateRelationPath path : relationPathSet) {
-            String sourceID = path.getBiTableSourceRelationPath().getSourceID();
-            BIOperation<Object> operation = new BIOperation<Object>(
-                    sourceID,
-                    getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
-            try {
-                if (null != path && null != path.getBiTableSourceRelationPath()) {
+            if (null != path && null != path.getBiTableSourceRelationPath()) {
+                try {
+                    String sourceID = path.getBiTableSourceRelationPath().getSourceID();
+                    BIOperation<Object> operation = new BIOperation<Object>(
+                            sourceID,
+                            getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    if (path.getDependRelationPathSet().size() == 0) {
-                        operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
-                    } else {
-                        for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
-                            operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
-                        }
+                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
+                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-
+                } catch (Exception e) {
+                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
-            } catch (Exception e) {
-                throw BINonValueUtils.beyondControl(e.getMessage(), e);
             }
             subscribePathFinish();
         }

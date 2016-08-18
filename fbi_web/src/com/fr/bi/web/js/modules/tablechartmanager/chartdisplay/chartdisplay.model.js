@@ -685,7 +685,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
-            case BICst.WIDGET.DASHBOARD:
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,

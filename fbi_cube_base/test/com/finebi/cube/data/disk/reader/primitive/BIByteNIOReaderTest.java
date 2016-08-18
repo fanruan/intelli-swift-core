@@ -1,13 +1,7 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
-import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
 import com.finebi.cube.data.disk.writer.primitive.BIByteNIOWriter;
-import com.finebi.cube.location.BICubeResourceRetrieval;
-import com.finebi.cube.location.ICubeResourceRetrievalService;
-import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.Cube;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
@@ -66,6 +60,22 @@ public class BIByteNIOReaderTest extends TestCase {
         }
     }
 
+    public void testLargeSize() {
+        try {
+            BIByteNIOWriter writer = new BIByteNIOWriter(BIByteNIOReaderTest.NIO_PATH_TEST);
+            BIByteNIOReader reader = new BIByteNIOReader(new File(BIByteNIOReaderTest.NIO_PATH_TEST));
+            writer.recordSpecificPositionValue(0, Byte.valueOf("0"));
+            writer.recordSpecificPositionValue(1, Byte.valueOf("1"));
+            writer.recordSpecificPositionValue(2000000000, Byte.valueOf("2"));
+            assertEquals(reader.getSpecificValue(0l), Byte.valueOf("0").byteValue());
+            assertEquals(reader.getSpecificValue(1l), Byte.valueOf("1").byteValue());
+            assertEquals(reader.getSpecificValue(2000000000), Byte.valueOf("2").byteValue());
+
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
 
 
     public void testWriteNegativeValue() {

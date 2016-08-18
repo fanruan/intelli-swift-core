@@ -64,12 +64,12 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         long t = System.currentTimeMillis();
         try {
             copyFromOldCubes();
+            super.recordTableInfo();
             long count = transport();
             ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
             ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
             cube = new BICube(resourceRetrievalService, discovery);
             tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
-            super.recordTableInfo();
             if (count >= 0) {
                 tableEntityService.recordRowCount(count);
             }
