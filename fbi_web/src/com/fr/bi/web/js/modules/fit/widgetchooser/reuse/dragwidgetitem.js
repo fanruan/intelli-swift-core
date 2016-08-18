@@ -219,8 +219,12 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 if(BI.has(self.oldDimensions[idx], "sort")){
                     dimension.sort = BI.deepClone(self.oldDimensions[idx].sort);
                     if(BI.has(dimension.sort, "sort_target")){
-                        var result = self._createDimensionsAndTargets(dimension.sort.sort_target);
-                        dimension.sort.sort_target = result.id;
+                        if(dimension.sort.sort_target === idx){
+                            dimension.sort.sort_target = newId;
+                        }else{
+                            var result = self._createDimensionsAndTargets(dimension.sort.sort_target);
+                            dimension.sort.sort_target = result.id;
+                        }
                     }
                 }
                 break;
