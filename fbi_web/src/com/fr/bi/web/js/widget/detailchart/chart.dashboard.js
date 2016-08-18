@@ -251,10 +251,9 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             if (this.config.number_of_pointer === c.ONE_POINTER && items[0].length === 1) {//单个系列
                 BI.each(items[0][0].data, function (idx, da) {
                     result.push({
-                        data: [{
-                            x: items[0][0].name,
-                            y: da.y
-                        }],
+                        data: [BI.extend({}, da, {
+                            x: items[0][0].name
+                        })],
                         name: da.x
                     })
                 });

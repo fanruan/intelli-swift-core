@@ -15,7 +15,7 @@ public interface BISharedReportDAO {
 
     List<User> findUsersByReport(long reportId, long createBy) throws Exception;
 
-    List<BISharedReportNode> findReportsByShare2User(long userId);
+    List<BISharedReportNode> findReportsByShare2User(long userId) throws Exception;
 
-    void removeSharedByReport(long reportId, long createBy);
+    void removeSharedByReport(long reportId, long createBy) throws Exception;
 }

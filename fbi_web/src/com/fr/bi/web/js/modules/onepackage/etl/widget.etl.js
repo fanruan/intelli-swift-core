@@ -356,6 +356,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 self.model.setFields(data[0].fields);
                 self.model.setRelationsByETLValue(data[0]);
                 self._populate();
+            }, function() {
                 mask.destroy();
             });
             return
@@ -601,6 +602,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                     BI.Msg.toast(BI.i18nText("BI-Excel_Modify_Fail"), "warning");
                 }
                 uploadButton.destroy();
+            }, function() {
                 mask.destroy();
             });
         });

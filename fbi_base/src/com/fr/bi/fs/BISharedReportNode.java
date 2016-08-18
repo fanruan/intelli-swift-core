@@ -7,6 +7,8 @@ public class BISharedReportNode extends DAOBean {
     private long reportId;
     private long createBy;
     private long shareTo;
+    private String createByName;
+    private String shareToName;
 
     @Override
     public long getId() {
@@ -42,6 +44,22 @@ public class BISharedReportNode extends DAOBean {
         this.shareTo = shareTo;
     }
 
+    public String getCreateByName() {
+        return createByName;
+    }
+
+    public void setCreateByName(String createByName) {
+        this.createByName = createByName;
+    }
+
+    public String getShareToName() {
+        return shareToName;
+    }
+
+    public void setShareToName(String shareToName) {
+        this.shareToName = shareToName;
+    }
+
     public BISharedReportNode(long id) {
         this.id = id;
     }
@@ -60,29 +78,29 @@ public class BISharedReportNode extends DAOBean {
 
     }
 
-    public BISharedReportNode(long reportId, long createBy, long shareTo) {
+    public BISharedReportNode(long reportId, String createBy, String shareTo) {
         this.reportId = reportId;
-        this.createBy = createBy;
-        this.shareTo = shareTo;
+        this.createByName = createBy;
+        this.shareToName = shareTo;
     }
 
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("reportId")) {
             this.reportId = jo.getLong("reportId");
         }
-        if (jo.has("createBy")) {
-            this.createBy = jo.getLong("createBy");
+        if (jo.has("createByName")) {
+            this.createByName = jo.getString("createByName");
         }
         if (jo.has("shareTo")) {
-            this.shareTo = jo.getLong("shareTo");
+            this.shareToName = jo.getString("shareToName");
         }
     }
 
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("reportId", this.reportId);
-        jo.put("createBy", this.createBy);
-        jo.put("shareTo", this.shareTo);
+        jo.put("createByName", this.createByName);
+        jo.put("shareToName", this.shareToName);
         return jo;
     }
 
@@ -96,7 +114,9 @@ public class BISharedReportNode extends DAOBean {
 
         if (reportId != that.reportId) return false;
         if (createBy != that.createBy) return false;
-        return shareTo == that.shareTo;
+        if (shareTo != that.shareTo) return false;
+        if (createByName != null ? !createByName.equals(that.createByName) : that.createByName != null) return false;
+        return shareToName != null ? shareToName.equals(that.shareToName) : that.shareToName == null;
 
     }
 
@@ -106,6 +126,8 @@ public class BISharedReportNode extends DAOBean {
         result = 31 * result + (int) (reportId ^ (reportId >>> 32));
         result = 31 * result + (int) (createBy ^ (createBy >>> 32));
         result = 31 * result + (int) (shareTo ^ (shareTo >>> 32));
+        result = 31 * result + (createByName != null ? createByName.hashCode() : 0);
+        result = 31 * result + (shareToName != null ? shareToName.hashCode() : 0);
         return result;
     }
 }

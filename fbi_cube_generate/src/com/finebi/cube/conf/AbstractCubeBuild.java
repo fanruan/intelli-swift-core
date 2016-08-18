@@ -111,7 +111,6 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     }
 
 
-
     @Override
     public boolean replaceOldCubes() {
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
@@ -162,7 +161,6 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
         if (!istableRelationValid(relation) || !isSourceRelationValid) {
-//                throw new BIRuntimeException("tableSourceRelation invalid");
             BILogger.getLogger().error("tableSourceRelation invalid!!!");
             return null;
         }
@@ -187,11 +185,11 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {
         BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
         for (BITableRelation biTableRelation : path.getAllRelations()) {
-            BITableSourceRelation biTableSourceRelation =convertRelation(biTableRelation);
-            if (null==biTableRelation){
+            BITableSourceRelation biTableSourceRelation = convertRelation(biTableRelation);
+            if (null == biTableSourceRelation) {
                 return null;
             }
-                tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
+            tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
         }
         return tableSourceRelationPath;
     }
