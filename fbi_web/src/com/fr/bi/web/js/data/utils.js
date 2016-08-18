@@ -6231,15 +6231,15 @@ Data.Utils = {
                         "layout": "horizontal",
                         "hinge": "rgb(101,107,109)",
                         "dataLabels": {
-                            "style": "{fontFamily:Microsoft YaHei, color: #808080, fontSize: 12pt}",
+                            "style": "{fontFamily:'inherit', color: #808080, fontSize: 12pt}",
                             "formatter": {
                                 "identifier": "${VALUE}",
                                 "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                                 "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                                 "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                                 "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                                "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                                "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                                 "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                             },
                             "align": "outside",
@@ -6312,9 +6312,9 @@ Data.Utils = {
                                 "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
                                 "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
                                 "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
+                                "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                                 "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                                "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
                             },
                             "shared": false,
                             "padding": 5,
@@ -6353,7 +6353,7 @@ Data.Utils = {
                             "shadow": true,
                             "curve": false,
                             "sizeBy": "area",
-                            "maxSize": 70,
+                            "maxSize": 80,
                             "minSize": 15,
                             "lineWidth": 0,
                             "animation": true,
@@ -6390,7 +6390,7 @@ Data.Utils = {
                         "borderRadius": 0,
                         "shadow": false,
                         "borderWidth": 0,
-
+                        "visible": true,
                         "style": {
                             "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#1a1a1a", "fontSize": "12px"
                         },
