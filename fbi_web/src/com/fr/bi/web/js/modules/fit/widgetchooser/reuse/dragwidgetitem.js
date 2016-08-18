@@ -213,7 +213,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                         }
                     });
                 }
-                if(BI.has(self.oldDimensions[idx], "filter_value")){
+                if(BI.has(self.oldDimensions[idx], "filter_value") && BI.isNotNull(self.oldDimensions[idx].filter_value)){
                     dimension.filter_value = this._checkFilter(self.oldDimensions[idx].filter_value, self.dimTarIdMap[idx] || idx);
                 }
                 if(BI.has(self.oldDimensions[idx], "sort")){
