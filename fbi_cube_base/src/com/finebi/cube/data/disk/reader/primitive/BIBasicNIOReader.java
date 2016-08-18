@@ -73,7 +73,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     }
 
     private boolean buffersContains(int index){
-        if (bufferArray.length < index){
+        if (bufferArray.length <= index){
             synchronized (this){
                 if (bufferArray.length <= index){
                     MappedByteBuffer[] temp = new MappedByteBuffer[index+1];
