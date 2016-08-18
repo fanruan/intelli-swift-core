@@ -2489,7 +2489,7 @@
                     paramdate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
-                if (BI.isNull(widgetInfo.wId)) {
+                if (BI.isNull(widgetInfo.wId) && BI.isNull(BI.Utils.getWidgetValueByID(widgetInfo.wId))) {
                     return;
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
