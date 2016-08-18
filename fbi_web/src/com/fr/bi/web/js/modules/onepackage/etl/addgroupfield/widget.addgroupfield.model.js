@@ -33,6 +33,7 @@ BI.AddGroupFieldModel = BI.inherit(FR.OB, {
                 self.newGroupsData = newGroupsData;
             }
             callback();
+        }, function() {
             mask.destroy();
         });
 

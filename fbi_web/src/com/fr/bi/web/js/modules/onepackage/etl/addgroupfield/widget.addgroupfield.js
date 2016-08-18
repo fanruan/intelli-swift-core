@@ -405,7 +405,6 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
                 });
                 var table = self.model.getTableInfo();
                 BI.Utils.getPreviewDataByTableAndFields(table, [], function (data) {
-                    mask.destroy();
                     var item = self._createTableItems(data);
                     var tableView = BI.createWidget({
                         type: "bi.preview_table",
@@ -428,6 +427,8 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
                         hgap: self.constants.ADD_GROUP_FIELD_GAP_TEN
                     });
                     self.previewPane.addItem(wrapper);
+                }, function() {
+                    mask.destroy();
                 })
             });
             self.previewPane.addItem(previewButton);

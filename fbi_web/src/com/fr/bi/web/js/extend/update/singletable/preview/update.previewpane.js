@@ -225,6 +225,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                 });
                 self.previewTable.populate(items, [header]);
             }
+        }, function() {
             mask.destroy();
         })
     }
