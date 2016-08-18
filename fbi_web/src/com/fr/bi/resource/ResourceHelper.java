@@ -874,7 +874,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detailnumber.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detaildate.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detailformula.combo.js",
-                "com/fr/bi/web/js/modules/base/buttons/button.databasetable.js",
 
                 //statistic
                 "com/fr/bi/web/js/modules/base/combos/statistic/widget.statisticnumber.combo.js",
@@ -940,10 +939,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/customgroup/widget.pane.allfileds.customgroup.js",
                 "com/fr/bi/web/js/modules/customgroup/widget.pane.searcher.customgroup.js",
                 "com/fr/bi/web/js/modules/customgroup/widget.view.searcher.customgroup.js",
-
-                //取数
-                "com/fr/bi/web/js/modules/selectdatacombo/widget.selectdatacombo.js",
-                "com/fr/bi/web/js/modules/filter/filteritems/dimension/widget.selectdata4dimensioncombo.js",
 
                 //自定义排序
                 "com/fr/bi/web/js/modules/customsort/widget.pane.customsort.js",
@@ -1045,10 +1040,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/fieldrelationsetting/combo.path.setting.detailtable.js",
                 "com/fr/bi/web/js/modules/fieldrelationsetting/fieldrelationsettingpopup.js",
                 "com/fr/bi/web/js/modules/fieldrelationsetting/model.fieldrelationsettingpopup.js",
-
-                //下拉树控件字段关联设置
-                "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/fieldrelationsettingwithpreviewpopup.js",
-                "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/model.fieldrelationsettingwithpreviewpopup.js",
 
                 //过滤条件
                 "com/fr/bi/web/js/modules/filter/filterpopup/targetfilterpopup.js",
@@ -1478,9 +1469,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/saveas/report.saveas.floatbox.js",
 
                 //图表钻取
-                "com/fr/bi/web/js/modules/chartdrill/widget.chartdrill.js",
-                "com/fr/bi/web/js/modules/chartdrill/cell.chartdrill.js",
                 "com/fr/bi/web/js/modules/chartdrill/button.pushdrill.js",
+                "com/fr/bi/web/js/modules/chartdrill/cell.chartdrill.js",
+                "com/fr/bi/web/js/modules/chartdrill/widget.chartdrill.js",
 
                 //etl plugin
                 "com/fr/bi/web/js/extend/excel/etl.excel.plugin.js",
@@ -2100,7 +2091,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/combination/tree.button.js",
                 "com/fr/bi/web/js/base/module/combination/map.button.js",
                 "com/fr/bi/web/js/base/module/combination/tab.js",
-                "com/fr/bi/web/js/base/module/combination/map.button.js",
                 "com/fr/bi/web/js/base/module/combination/navigation.js",
                 "com/fr/bi/web/js/base/module/combination/loader.js",
                 "com/fr/bi/web/js/base/module/combination/searcher.js",
@@ -2205,7 +2195,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/button/treeitem/item.icon.treeleaf.js",
                 "com/fr/bi/web/js/case/button/treeitem/item.multilayer.icon.treeleaf.js",
                 "com/fr/bi/web/js/case/button/treeitem/item.first.treeleaf.js",
-                "com/fr/bi/web/js/case/button/treeitem/item.first.treeleaf.js",
                 "com/fr/bi/web/js/case/button/treeitem/item.last.treeleaf.js",
                 "com/fr/bi/web/js/case/button/treeitem/item.mid.treeleaf.js",
                 "com/fr/bi/web/js/case/button/treeitem/item.treetextleaf.js",
@@ -2218,8 +2207,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/button/node/node.mid.plus.js",
                 "com/fr/bi/web/js/case/button/node/node.arrow.js",
                 "com/fr/bi/web/js/case/button/node/node.triangle.js",
-
-                "com/fr/bi/web/js/case/button/icon/icon.half.js",
 
                 "com/fr/bi/web/js/case/editor/editor.state.js",
                 "com/fr/bi/web/js/case/editor/editor.state.simple.js",

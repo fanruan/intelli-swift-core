@@ -103,7 +103,7 @@ BI.CodeEditor = BI.inherit(BI.Single, {
                 switch (i.marker.className) {
                     case "param":
                         var fieldNameLength = i.to - i.from;
-                        value = value.substr(0, i.from + num) + "${" + value.substr(i.from + num, fieldNameLength) + "}" + value.substr(i.to + num, value.length);
+                        value = value.substr(0, i.from + num) + "$\{" + value.substr(i.from + num, fieldNameLength) + "\}" + value.substr(i.to + num, value.length);
                         num += fieldNameLength + 3;
                         break;
                 }
