@@ -2573,7 +2573,7 @@
         if (filterType === BICst.FILTER_DATE.BELONG_WIDGET_VALUE || filterType === BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE) {
             var filterWId = filterValue.wId, filterValueType = filterValue.filter_value.type;
             var wValue = BI.Utils.getWidgetValueByID(filterWId);
-            if (!BI.Utils.isWidgetExistByID(filterWId)) {
+            if (!BI.Utils.isWidgetExistByID(filterWId) || BI.isNull(wValue)) {
                 return;
             }
             switch (filterValueType) {
