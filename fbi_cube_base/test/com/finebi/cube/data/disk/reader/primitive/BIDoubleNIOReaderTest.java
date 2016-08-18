@@ -70,6 +70,24 @@ public class BIDoubleNIOReaderTest extends TestCase {
         }
     }
 
+    public void testLarge() {
+        try {
+            BIDoubleNIOWriter writer = new BIDoubleNIOWriter(BIByteNIOReaderTest.NIO_PATH_TEST);
+            BIDoubleNIOReader reader = new BIDoubleNIOReader(new File(BIByteNIOReaderTest.NIO_PATH_TEST));
+
+            writer.recordSpecificPositionValue(0, Double.valueOf(1));
+            writer.recordSpecificPositionValue(2, Double.valueOf(1));
+            writer.recordSpecificPositionValue(2000000000, Double.valueOf(1));
+            assertEquals(reader.getSpecificValue(0), Double.valueOf(1));
+            assertEquals(reader.getSpecificValue(2), Double.valueOf(1));
+            assertEquals(reader.getSpecificValue(2000000000), Double.valueOf(1));
+
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
+
     public void testWriteNegativeValue() {
         try {
             BIDoubleNIOWriter writer = new BIDoubleNIOWriter(BIByteNIOReaderTest.NIO_PATH_TEST);

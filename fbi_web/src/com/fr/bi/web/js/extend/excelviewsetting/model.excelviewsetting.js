@@ -127,6 +127,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
                 self.excel.push(d);
             });
             callback();
+        }, function() {
             mask.destroy();
         })
     },

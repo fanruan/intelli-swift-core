@@ -17,6 +17,12 @@
   color: #e85050;
 }
 .bi-table-chart-error-pane .error-info {
+  -webkit-user-select: initial;
+  -khtml-user-select: initial;
+  -moz-user-select: initial;
+  -ms-user-select: initial;
+  -o-user-select: initial;
+  user-select: initial;
   max-width: 600px;
   background: #eaeaea;
   color: #808080;

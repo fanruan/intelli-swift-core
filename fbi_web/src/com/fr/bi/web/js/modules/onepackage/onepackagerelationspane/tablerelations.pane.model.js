@@ -63,6 +63,7 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
         BI.Utils.getTableNamesOfAllPackages(function(res){
             self.originalTableNames = res;
             callback();
+        }, function() {
             mask.destroy();
         });
     },

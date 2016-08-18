@@ -1041,11 +1041,16 @@ if (!window.BI) {
          * 异步ajax请求
          * @param {String} op op参数
          * @param {String} cmd cmd参数
-         * @param {JSON} data ajax请求的参�?
+         * @param {JSON} data ajax请求的参数
          * @param {Function} callback 回调函数
-         * @param {JSON} callback.result 回调函数的参�?
+         * @param {Function} complete 回调
          */
-        requestAsync: function (op, cmd, data, callback) {
+        requestAsync: function (op, cmd, data, callback, complete) {
+            if(BI.isNull(BI.REQUEST_LOADING)) {
+                BI.REQUEST_LOADING = BI.createWidget({
+                    type: "bi.request_loading"
+                });
+            }
             data = data || {};
             if (!BI.isKey(op)) {
                 op = 'fr_bi_dezi';
@@ -1059,11 +1064,20 @@ if (!window.BI) {
                 type: 'POST',
                 data: data,
                 error: function () {
-                    BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
+                    // BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
+                    //失败 取消、重新加载
+                    BI.REQUEST_LOADING.setCallback(function () {
+                        BI.requestAsync(op, cmd, data, callback, complete);
+                    });
+                    BI.REQUEST_LOADING.showError();
                 },
                 complete: function (res, status) {
                     if (BI.isFunction(callback) && status === 'success') {
                         callback(FR.jsonDecode(res.responseText));
+                        BI.Maskers.hide(BI.RequstLoading.MASK_ID);
+                    }
+                    if (BI.isFunction(complete)) {
+                        complete();
                     }
                 }
             });

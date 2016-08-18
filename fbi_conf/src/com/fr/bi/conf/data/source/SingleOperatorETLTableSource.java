@@ -27,11 +27,12 @@ public class SingleOperatorETLTableSource extends ETLTableSource {
 
     @Override
     public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
-        if (isAllAddColumnOperator()) {
-            return getAddedField();
-        } else {
-            return super.getFieldsArray(sources);
-        }
+//        if (isAllAddColumnOperator()) {
+//            return getAddedField();
+//        } else {
+//            return super.getFieldsArray(sources);
+//        }
+        return super.getFieldsArray(sources);
     }
 
     public BICubeFieldSource[] getAddedField() {

@@ -17,7 +17,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.Transmitter;
-import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1669,7 +1668,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/layer/layer.searcher.css",
                 "com/fr/bi/web/css/base/layer/layer.multiselect.css",
                 "com/fr/bi/web/css/base/layer/layer.panel.css",
-
+                "com/fr/bi/web/css/base/reqloading/loading.request.css",
 
                 "com/fr/bi/web/css/utils/widget.css",
                 "com/fr/bi/web/css/utils/color.css",
@@ -2133,6 +2132,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/layer/layer.popup.js",
                 "com/fr/bi/web/js/base/module/layer/layer.scroll.js",
                 "com/fr/bi/web/js/base/module/layer/layer.searcher.js",
+
+                "com/fr/bi/web/js/base/module/reqloading/loading.request.js",
 
                 /**公式编辑器*/
                 "com/fr/bi/web/js/base/module/formula/formulaeditor.js",

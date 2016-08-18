@@ -38,6 +38,7 @@ BI.AddFormulaFieldModel = BI.inherit(FR.OB, {
                 self.formulaData = {};
             }
             callback();
+        }, function() {
             mask.destroy();
         });
 
