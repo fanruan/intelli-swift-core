@@ -164,7 +164,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
                 int position = -1;
                 if (foreignColumn.sizeOfGroup() > 0) {
-                    foreignColumn.getPositionOfGroupByGroupValue(primaryColumnValue);
+                    position = foreignColumn.getPositionOfGroupByGroupValue(primaryColumnValue);
                 }
 
                 /**
