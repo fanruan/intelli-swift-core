@@ -523,7 +523,7 @@
                                 }
                             });
                         }
-                        if (BI.has(widget.dimensions[idx], "filter_value")) {
+                        if (BI.has(widget.dimensions[idx], "filter_value") && BI.isNotNull(widget.dimensions[idx].filter_value)) {
                             dimension.filter_value = checkFilter(widget.dimensions[idx].filter_value, dimTarIdMap[idx] || idx);
                         }
                         if (BI.has(widget.dimensions[idx], "sort")) {
