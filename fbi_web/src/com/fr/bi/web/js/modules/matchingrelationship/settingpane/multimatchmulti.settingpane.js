@@ -62,7 +62,6 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
 
     _createRightRegionPath: function (combineFieldId, dimensionFieldId, joinRegion) {
         var self = this;
-        var uuidMap = {}; //管理一下各条路径上的uuid
         var ptId = BI.Utils.getTableIdByFieldID(dimensionFieldId);
         var paths = BI.Utils.getPathsFromFieldAToFieldB(combineFieldId, dimensionFieldId);
         if(paths.length === 1){
@@ -78,19 +77,13 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
                         regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
                         text: BI.i18nText("BI-Primary_Key"),
-                        value: BI.Utils.getTableIdByFieldID(primaryId),
+                        value: self.finalId,
                         direction: -1
                     });
                 }
                 if(BI.Utils.getTableIdByFieldID(foreignId) === BI.Utils.getTableIdByFieldID(primaryId)){
-                    var regionId = BI.UUID();
-                    if(BI.has(uuidMap, foreignId)){
-                        regionId = uuidMap[foreignId];
-                    }else{
-                        uuidMap[foreignId] = regionId;
-                    }
                     p.push({
-                        region: regionId,
+                        region: BI.UUID(),
                         regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                         text: BI.Utils.getFieldNameByID(foreignId),
                         value: foreignId,
@@ -122,7 +115,6 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
 
     _createLeftRegionPath: function (combineFieldId, targetFieldId) {
         var self = this;
-        var uuidMap = {}; //管理一下各条路径上的uuid
         var ptId = BI.Utils.getTableIdByFieldID(targetFieldId);
         var paths = BI.Utils.getPathsFromFieldAToFieldB(combineFieldId, targetFieldId);
         if(paths.length === 1){
@@ -134,14 +126,8 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                 var foreignId = BI.Utils.getForeignIdFromRelation(relation);
                 var primaryId = BI.Utils.getPrimaryIdFromRelation(relation);
                 if(BI.Utils.getTableIdByFieldID(foreignId) === BI.Utils.getTableIdByFieldID(primaryId)){
-                    var regionId = BI.UUID();
-                    if(BI.has(uuidMap, foreignId)){
-                        regionId = uuidMap[foreignId];
-                    }else{
-                        uuidMap[foreignId] = regionId;
-                    }
                     p.push({
-                        region: regionId,
+                        region: BI.UUID(),
                         regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                         text: BI.Utils.getFieldNameByID(foreignId),
                         value: foreignId
@@ -157,7 +143,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                     p.push({
                         region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(primaryId)),
                         text: BI.i18nText("BI-Primary_Key"),
-                        value: primaryId,
+                        value: self.finalId,
                         direction: -1
                     });
                 }
@@ -175,6 +161,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
             return [];
         }
         var combineFieldId = BI.Utils.getFieldIDsOfTableID(items.combineTableId)[0];
+        this.finalId = BI.UUID();
         var lregion = this._createLeftRegionPath(combineFieldId, BI.Utils.getFieldIDByDimensionID(items.targetIds[0]));
         var rregion = this._createRightRegionPath(combineFieldId, items.dimensionFieldId, lregion);
         var newRegion = [];
@@ -199,7 +186,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var combineIndex = 0;
         BI.find(value, function(idx, val){
-            if(val === o.combineTableId){
+            if(val === self.finalId){
                 combineIndex = idx;
                 return true;
             }
