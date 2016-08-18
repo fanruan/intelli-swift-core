@@ -69,7 +69,7 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         JSONObject jo = new JSONObject();
         jo.put("sql", sql);
         jo.put("last_update_time", lastUpdateDate);
-
+        BILogger.getLogger().info("preview SQL："+sql);
         if (StringUtils.isNotEmpty(sql)) {
             com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(table.getString("connection_name"));
             DBTableData dbTableData = new DBTableData(dbc, sql);
@@ -95,6 +95,7 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
 
                 jo.put("field_names", fieldNameArray);
                 jo.put("data", dataArray);
+                BILogger.getLogger().info("SQL result："+dataArray.toString());
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage());
                 jo.put("error", e.getMessage());
