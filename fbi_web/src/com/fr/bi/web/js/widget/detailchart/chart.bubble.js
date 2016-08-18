@@ -45,42 +45,32 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this;
-        config.rangeLegend.enabled = true;
-        config.rangeLegend.visible = true;
-        config.rangeLegend.position = "bottom";
-        config.rangeLegend.continuous = true;
-        // config.rangeLegend.range = [{
-        //     from: 0,
-        //     to: 10000000,
-        //     color: "red"
-        // }];
         var yTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         var xTitle = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
-        config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
-        config.plotOptions.tooltip.formatter = this.config.tooltip;
-        formatCordon();
-        switch (this.config.chart_legend) {
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
 
+        formatCordon();
         BI.extend(config.plotOptions, {
             large: this.config.big_data_mode,
             shadow: this.config.bubble_style !== this.constants.NO_PROJECT
         });
+        switch (this.config.rules_display) {
+            case BICst.DISPLAY_RULES.FIXED:
+                delete config.legend;
+                formatFixedLegend();
+                break;
+            case BICst.DISPLAY_RULES.GRADIENT:
+                delete config.legend;
+                formatGradientLegend();
+                break;
+            case BICst.DISPLAY_RULES.DIMENSION:
+            default:
+                formatLegend();
+                break;
+        }
 
+        config.colors = this.config.chart_color;
+        config.style = formatChartStyle();
+        config.plotOptions.tooltip.formatter = this.config.tooltip;
         config.plotOptions.bubble.minSize = this.config.bubble_min_size;
         config.plotOptions.bubble.maxSize = this.config.bubble_max_size;
 
@@ -144,6 +134,173 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 default:
                     return "normal";
             }
+        }
+
+        function formatLegend() {
+            switch (self.config.chart_legend) {
+                case BICst.CHART_LEGENDS.BOTTOM:
+                    config.legend.enabled = true;
+                    config.legend.position = "bottom";
+                    config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
+                    break;
+                case BICst.CHART_LEGENDS.RIGHT:
+                    config.legend.enabled = true;
+                    config.legend.position = "right";
+                    break;
+                case BICst.CHART_LEGENDS.NOT_SHOW:
+                default:
+                    config.legend.enabled = false;
+                    break;
+            }
+        }
+
+        function formatFixedLegend() {
+            var min = calculateMaxAndMin()[0];
+            var max = calculateMaxAndMin()[1];
+            var range = [];
+
+            BI.extend(config.rangeLegend, {
+                enabled: true,
+                visible: true,
+                continuous: false,
+                formatter: function () {
+                    return this.to
+                }
+            });
+
+            BI.each(self.config.fixed_colors, function (idx, item) {
+                if(idx == 0 && min < item.range.min){
+                    range.push({
+                        from: min,
+                        to: item.range.min,
+                        color: '#808080'
+                    })
+                }
+
+                range.push({
+                    from: item.range.min,
+                    to: item.range.max,
+                    color: item.color
+                });
+
+                if(idx == (self.config.fixed_colors.length-1) && max > item.range.max){
+                   range.push({
+                       from: item.range.max,
+                       to: max,
+                       color: item.color
+                   })
+                }
+            });
+
+            config.rangeLegend.range = range;
+
+            switch (self.config.chart_legend) {
+                case BICst.CHART_LEGENDS.BOTTOM:
+                    config.rangeLegend.position = "bottom";
+                    break;
+                case BICst.CHART_LEGENDS.RIGHT:
+                    config.rangeLegend.position = "right";
+                    break;
+                case BICst.CHART_LEGENDS.NOT_SHOW:
+                default:
+                    config.rangeLegend.visible = false;
+                    break;
+            }
+        }
+
+        function formatGradientLegend() {
+            var min = calculateMaxAndMin()[0];
+            var max = calculateMaxAndMin()[1];
+            var color = [];
+
+            BI.extend(config.rangeLegend, {
+                enabled: true,
+                visible: true,
+                continuous: true,
+                formatter: function () {
+                    return this.to
+                }
+            });
+
+            config.rangeLegend.range.min = min;
+            config.rangeLegend.range.max = max;
+
+            BI.each(self.config.gradient_colors, function (idx, item) {
+                var minProp = (item.range.min - min) / (max - min);
+                var maxProp = (item.range.max - min) / (max - min);
+
+                if (idx == 0 && minProp > 0) {
+                    color.push([0, '#65B3EE'])
+                }
+
+                if (minProp >= 1) {
+                    return true
+                } else if (maxProp > 1) {
+                    color.push([minProp, item.color_range.from_color]);
+                    color.push([1, item.color_range.to_color]);
+                    return true
+                }
+
+                color.push([minProp, item.color_range.from_color]);
+                color.push([maxProp, item.color_range.to_color])
+            });
+
+            if (color.length > 1) {
+                config.rangeLegend.range.color = color;
+            }
+
+            switch (self.config.chart_legend) {
+                case BICst.CHART_LEGENDS.BOTTOM:
+                    config.rangeLegend.position = "bottom";
+                    break;
+                case BICst.CHART_LEGENDS.RIGHT:
+                    config.rangeLegend.position = "right";
+                    break;
+                case BICst.CHART_LEGENDS.NOT_SHOW:
+                default:
+                    config.rangeLegend.visible = false;
+                    break;
+            }
+        }
+
+        function calculateMaxAndMin() {
+            var max = null, min = null;
+            BI.each(items, function (idx, item) {
+                BI.each(item.data, function (i, da) {
+                    if (BI.isNull(max) || max < da.z) {
+                        max = da.z
+                    }
+                    if (BI.isNull(min) || min > da.z) {
+                        min = da.z
+                    }
+                })
+            });
+            return _calculateValueNiceDomain(min, max);
+        }
+
+        function _calculateValueNiceDomain(minValue, maxValue) {
+            minValue = Math.min(0, minValue);
+            var tickInterval = _linearTickInterval(minValue, maxValue);
+
+            return _linearNiceDomain(minValue, maxValue, tickInterval);
+        }
+
+        function _linearTickInterval(minValue, maxValue, m) {
+            m = m || 5;
+            var span = maxValue - minValue;
+            var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
+            var err = m / span * step;
+
+            if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
+
+            return step;
+        }
+
+        function _linearNiceDomain(minValue, maxValue, tickInterval) {
+            minValue = VanUtils.accMul(Math.floor(minValue / tickInterval), tickInterval);
+            maxValue = VanUtils.accMul(Math.ceil(maxValue / tickInterval), tickInterval);
+
+            return [minValue, maxValue];
         }
 
         function formatCordon() {
@@ -267,7 +424,10 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             bubble_style: options.bubble_style || c.NO_PROJECT,
             big_data_mode: options.big_data_mode || false,
             bubble_min_size: options.bubble_min_size || c.BUBBLE_MIN_SIZE,
-            bubble_max_size: options.bubble_max_size || c.BUBBLE_MAX_SIZE
+            bubble_max_size: options.bubble_max_size || c.BUBBLE_MAX_SIZE,
+            rules_display: options.rules_display || c.RULE_DISPLAY,
+            fixed_colors: options.fixed_colors || [],
+            gradient_colors: options.gradient_colors || []
         };
         this.options.items = items;
         var types = [];

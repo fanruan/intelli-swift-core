@@ -160,7 +160,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             verticalAlign: "top",
             cls: "single-line-settings",
             items: [{

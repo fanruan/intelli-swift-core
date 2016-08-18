@@ -47,6 +47,14 @@ BI.ChartAddGradientConditionItem = BI.inherit(BI.Widget, {
             }
         });
 
+        this.deleteIcon.setVisible(false);
+
+        this.element.hover(function () {
+            self.deleteIcon.setVisible(true);
+        }, function () {
+            self.deleteIcon.setVisible(false);
+        });
+
         BI.createWidget({
             type: "bi.left",
             element: this.element,
@@ -72,7 +80,8 @@ BI.ChartAddGradientConditionItem = BI.inherit(BI.Widget, {
 
     setSmallIntervalEnable: function (v) {
         this.numberRange.setMinEnable(v);
-        this.numberRange.setCloseMinEnable(v)
+        this.numberRange.setCloseMinEnable(v);
+        this.gradientCombo.setEnable(v)
     }
 });
 BI.ChartAddGradientConditionItem.EVENT_CHANGE = "EVENT_CHANGE";

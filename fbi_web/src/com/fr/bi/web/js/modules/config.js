@@ -1507,8 +1507,8 @@ BICst.BUBBLE_GRADIENT_COLOR = [{
         closemax: true
     },
     color_range: {
-        from_color: "#e85050",
-        to_color: "#0c6d23"
+        from_color: "#65B3EE",
+        to_color: "#95E1AA"
     }
 }];
 
