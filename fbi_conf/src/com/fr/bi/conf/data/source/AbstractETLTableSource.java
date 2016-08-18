@@ -218,11 +218,14 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
 
     @Override
     public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
-        if (hasTableFilterOperator()) {
-            return new BICubeFieldSource[0];
-        } else {
+        /**
+         * etl过滤后生成cube报错
+         */
+//        if (hasTableFilterOperator()) {
+//            return new BICubeFieldSource[0];
+//        } else {
             return super.getFieldsArray(sources);
-        }
+//        }
     }
 
     @Override
