@@ -523,7 +523,7 @@
                                 }
                             });
                         }
-                        if (BI.has(widget.dimensions[idx], "filter_value")) {
+                        if (BI.has(widget.dimensions[idx], "filter_value") && BI.isNotNull(widget.dimensions[idx].filter_value)) {
                             dimension.filter_value = checkFilter(widget.dimensions[idx].filter_value, dimTarIdMap[idx] || idx);
                         }
                         if (BI.has(widget.dimensions[idx], "sort")) {
@@ -2489,7 +2489,7 @@
                     paramdate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
-                if (BI.isNull(widgetInfo.wId)) {
+                if (BI.isNull(widgetInfo.wId) && BI.isNull(BI.Utils.getWidgetValueByID(widgetInfo.wId))) {
                     return;
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
@@ -2573,28 +2573,28 @@
         if (filterType === BICst.FILTER_DATE.BELONG_WIDGET_VALUE || filterType === BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE) {
             var filterWId = filterValue.wId, filterValueType = filterValue.filter_value.type;
             var wValue = BI.Utils.getWidgetValueByID(filterWId);
-            if (!BI.Utils.isWidgetExistByID(filterWId)) {
+            if (!BI.Utils.isWidgetExistByID(filterWId) || BI.isNull(wValue)) {
                 return;
             }
             switch (filterValueType) {
                 case BICst.SAME_PERIOD:
-                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
-                        filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
+                    if (BI.isNotNull(wValue.start)) {
+                        filterValue.start = parseComplexDate(wValue.start);
                     }
-                    if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
-                        filterValue.end = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
+                    if (BI.isNotNull(wValue.end)) {
+                        filterValue.end = parseComplexDate(wValue.end);
                     }
                     break;
                 case BICst.LAST_SAME_PERIOD:
-                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year) && BI.isNotNull(wValue.end.month) && BI.isNotNull(wValue.end.day)) {
-                        var s = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
-                        var e = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
-                        filterValue.start = new Date(2 * s - e).getTime();
-                        filterValue.end = s;
+                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.end)) {
+                        var s = parseComplexDate(wValue.start);
+                        var e = parseComplexDate(wValue.end);
+                        filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
+                        filterValue.end = new Date(s).getOffsetDate(-1).getTime();
                     } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
-                        filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
+                        filterValue.start = parseComplexDate(wValue.start);
                     } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
-                        filterValue.end = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
+                        filterValue.end = parseComplexDate(wValue.end);
                     }
                     break;
                 case BICst.YEAR_QUARTER:
