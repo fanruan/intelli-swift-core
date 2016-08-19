@@ -43,18 +43,22 @@ BI.PopupView = BI.inherit(BI.Widget, {
     _init: function () {
         BI.PopupView.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-
         var fn = function (e) {
             e.stopPropagation();
         }, stop = function (e) {
             e.stopEvent();
             return false;
         };
-        this.element.css({
-            "z-index": BI.zIndex_popup,
-            "min-width": o.minWidth + "px",
-            "max-width": o.maxWidth + "px"
-        }).bind({"click": fn, "mousewheel": fn});
+        try {
+            this.element.css({
+                "z-index": BI.zIndex_popup,
+                "min-width": o.minWidth + "px",
+                "max-width": o.maxWidth + "px"
+            }).bind({"click": fn, "mousewheel": fn});
+        } catch (e) {
+            console.log("is this ie8 ? error: " + e);
+        }
+
         o.stopPropagation && this.element.bind({"mousedown": fn, "mouseup": fn, "mouseover": fn});
         o.stopEvent && this.element.bind({"mousedown": stop, "mouseup": stop, "mouseover": stop});
         this.tool = this._createTool();

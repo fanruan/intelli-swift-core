@@ -74,7 +74,6 @@ BI.Chart = BI.inherit(BI.Pane, {
         };
 
         if (this.isInit === false) {
-            this.vanCharts = null;
             BI.nextTick(init);
         }
 
