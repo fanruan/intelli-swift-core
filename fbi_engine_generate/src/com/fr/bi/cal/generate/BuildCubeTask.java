@@ -109,7 +109,10 @@ public class BuildCubeTask implements CubeTask {
     private void replaceOldCubes() {
         try {
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            cubeBuild.replaceOldCubes();
+            boolean b = cubeBuild.replaceOldCubes();
+            if (!b){
+                BILogger.getLogger().error("rename cube files failed");
+            }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         } finally {

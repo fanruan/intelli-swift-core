@@ -43,6 +43,7 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
 
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        BILogger.getLogger().info("preview SQL start");
         String stringSql = WebUtils.getHTTPRequestParameter(req, "sql");
         String tableString = WebUtils.getHTTPRequestParameter(req, "table");
         JSONObject table = new JSONObject(tableString);
@@ -95,7 +96,6 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
 
                 jo.put("field_names", fieldNameArray);
                 jo.put("data", dataArray);
-                BILogger.getLogger().info("SQL result："+dataArray.toString());
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage());
                 jo.put("error", e.getMessage());

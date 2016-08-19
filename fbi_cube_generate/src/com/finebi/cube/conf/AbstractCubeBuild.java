@@ -119,11 +119,11 @@ public abstract class AbstractCubeBuild implements CubeBuild {
             BIFileUtils.delete(new File(advancedConf.getRootURI().getPath()));
         }
         try {
-            BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
+            return BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
         } catch (IOException e) {
             BILogger.getLogger().error(e.getMessage());
+            return false;
         }
-        return true;
     }
 
     public void setSources() {

@@ -73,6 +73,8 @@ public class CubeRunner {
                     finish();
                     setStatue(Status.LOADED);
                     BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
+                    /*耗时比较久,先屏蔽掉*/
+//                    cubeSecurityCheck();
                 }
             }
         });
@@ -85,6 +87,20 @@ public class CubeRunner {
         });
         //执行线程队列
         cubeThread.start();
+    }
+
+    private void cubeSecurityCheck() {
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
+        String path = new File(advancedConf.getRootURI().getPath()).getParent() +File.separatorChar+ "crc_sum";
+        CubeSecurityCheck securityCheck = new CubeSecurityCheck(path);
+        if (new File(path).exists()) {
+            securityCheck.useLeastSum();
+            boolean check = securityCheck.check(advancedConf.getRootURI().getPath());
+            if (!check) {
+                BILogger.getLogger().info("the cube has been changed");
+            }
+        }
+        securityCheck.saveResult();
     }
 
     /**
@@ -180,17 +196,7 @@ public class CubeRunner {
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
         BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
-        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
-        String path = new File(advancedConf.getRootURI().getPath()).getParent() +File.separatorChar+ "crc_sum";
-        CubeSecurityCheck securityCheck = new CubeSecurityCheck(path);
-        if (new File(path).exists()) {
-            securityCheck.useLeastSum();
-            boolean check = securityCheck.check(advancedConf.getRootURI().getPath());
-            if (!check) {
-                BILogger.getLogger().info("the cube has been changed");
-            }
-        }
-        securityCheck.saveResult();
+
     }
 
 
