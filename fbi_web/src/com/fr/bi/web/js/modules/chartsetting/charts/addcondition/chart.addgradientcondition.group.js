@@ -40,8 +40,8 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
                 closemax: true
             },
             color_range: {
-                from_color: "#e85050",
-                to_color: "#0c6d23"
+                from_color: "#65B3EE",
+                to_color: "#95E1AA"
             },
             cid: BI.UUID(),
             removeCondition: function (cid) {
@@ -121,6 +121,9 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
                 range: BI.extend(nextButton.getValue().range , {
                     min: value.range.max,
                     closemin: !value.range.closemax
+                }),
+                color_range: BI.extend(nextButton.getValue().color_range, {
+                    from_color: value.color_range.to_color
                 })
             }))
         }
@@ -129,9 +132,9 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
     _checkButtonEnable: function () {
         BI.each(this.buttonGroup.getAllButtons() , function (idx , button) {
             if(idx !== 0) {
-                button.setSmallIntervalEnable(false);
+                button.setSmallIntervalEnable(false)
             } else {
-                button.setSmallIntervalEnable(true);
+                button.setSmallIntervalEnable(true)
             }
         } )
     },

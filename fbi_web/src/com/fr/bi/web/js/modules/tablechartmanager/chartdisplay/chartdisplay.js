@@ -380,7 +380,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         show_percentage: BI.Utils.getWSShowPercentageByID(o.wId),
                         big_data_mode: BI.Utils.getWSBigDataModelByID(o.wId),
                         bubble_min_size: BI.Utils.getWSMinBubbleSizeByID(o.wId),
-                        bubble_max_size: BI.Utils.getWSMaxBubbleSizeByID(o.wId)
+                        bubble_max_size: BI.Utils.getWSMaxBubbleSizeByID(o.wId),
+                        gradient_colors: BI.Utils.getWSBubbleGradientsByID(o.wId),
+                        fixed_colors: BI.Utils.getWSBubbleFixedColorsByID(o.wId)
                     }, {
                         cordon: self.model.getCordon(),
                         tooltip: self.model.getToolTip(type),
