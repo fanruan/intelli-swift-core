@@ -49,14 +49,17 @@ BI.PopupView = BI.inherit(BI.Widget, {
             e.stopEvent();
             return false;
         };
+        this.element.css({
+            "z-index": BI.zIndex_popup,
+            "min-width": o.minWidth + "px",
+            "max-width": o.maxWidth + "px"
+        });
+        this.element.bind("click", fn);
         try {
-            this.element.css({
-                "z-index": BI.zIndex_popup,
-                "min-width": o.minWidth + "px",
-                "max-width": o.maxWidth + "px"
-            }).bind({"click": fn, "mousewheel": fn});
+            this.element.bind("mousewheel", fn);
         } catch (e) {
-            console.log("is this ie8 ? error: " + e);
+            //TODO IE8 bug 临时处理
+            this.element.bind("mousewheel", fn);
         }
 
         o.stopPropagation && this.element.bind({"mousedown": fn, "mouseup": fn, "mouseover": fn});
