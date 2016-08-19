@@ -196,7 +196,7 @@
                         case "fieldName":
                             var fieldNameLength = i.to - i.from;
                             var fieldId = fieldMap[value.substr(i.from + num, fieldNameLength)];
-                            value = value.substr(0, i.from + num) + "${" + fieldMap[value.substr(i.from + num, fieldNameLength)] + "}" + value.substr(i.to + num, value.length);
+                            value = value.substr(0, i.from + num) + "$\{" + fieldMap[value.substr(i.from + num, fieldNameLength)] + "\}" + value.substr(i.to + num, value.length);
                             num += fieldId.length - fieldNameLength + 3;
                             break;
                     }
