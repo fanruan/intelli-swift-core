@@ -104,7 +104,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             identifier: "${X}${Y}${SIZE}",
                             "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
                             "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                            "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
                         }
                     };
                     if(isNeedFormatDataLabelX === true){
