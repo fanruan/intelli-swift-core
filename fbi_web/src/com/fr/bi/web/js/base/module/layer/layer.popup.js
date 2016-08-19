@@ -53,14 +53,7 @@ BI.PopupView = BI.inherit(BI.Widget, {
             "z-index": BI.zIndex_popup,
             "min-width": o.minWidth + "px",
             "max-width": o.maxWidth + "px"
-        });
-        this.element.bind("click", fn);
-        try {
-            this.element.bind("mousewheel", fn);
-        } catch (e) {
-            //TODO IE8 bug 临时处理
-            this.element.bind("mousewheel", fn);
-        }
+        }).bind({"click": fn, "mousewheel": fn});
 
         o.stopPropagation && this.element.bind({"mousedown": fn, "mouseup": fn, "mouseover": fn});
         o.stopEvent && this.element.bind({"mousedown": stop, "mouseup": stop, "mouseover": stop});
