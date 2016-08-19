@@ -79,7 +79,6 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterWidgetContainer = BI.createWidget({
             type: "bi.left"
         });
-        this.id = o.id;
         this.filterType = BI.createWidget({
             type: "bi.text_value_down_list_combo",
             width: this._constant.COMBO_WIDTH,

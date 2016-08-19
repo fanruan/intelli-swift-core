@@ -4,7 +4,7 @@
 BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
     _constant: {
         SELF_FIELD: 1,
-        DIMENSION_FIELD: 2
+        OTHER_FIELD: 2
     },
 
     _defaultConfig: function () {
@@ -27,38 +27,36 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                     text: BI.i18nText("BI-Self"),
                     value: BI.i18nText("BI-Self"),
                     isParent: true,
-                    fontType: BI.DimensionSelectDataLevel0Node.CLASSIFY,
+                    fontType: BI.DimensionSelectDataLevel0Node.SERIES,
                     open: true
                 }, {
-                    id: self._constant.DIMENSION_FIELD,
+                    id: self._constant.OTHER_FIELD,
                     type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Dimension"),
-                    value: BI.i18nText("BI-Dimension"),
+                    text: BI.i18nText("BI-Dimension")+"/"+BI.i18nText("BI-Target"),
+                    value: BI.i18nText("BI-Dimension")+"/"+BI.i18nText("BI-Target"),
                     isParent: true,
-                    fontType: BI.DimensionSelectDataLevel0Node.SERIES,
+                    fontType: BI.DimensionSelectDataLevel0Node.CLASSIFY,
                     open: true
                 }]
             },
             fieldsCreator: function (tableId) {
                 if (self._constant.SELF_FIELD === tableId) {
-                    var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
                     return [{
-                        id: fieldId,
+                        id: BI.Utils.getFieldIDByDimensionID(o.dId),
                         pId: self._constant.SELF_FIELD,
                         type: "bi.select_data_level0_item",
-                        fieldType: BI.Utils.getFieldTypeByID(fieldId),
+                        fieldType: BI.Utils.getFieldTypeByDimensionID(o.dId),
                         text: BI.i18nText("BI-Self"),
                         title: BI.i18nText("BI-Self"),
                         value: o.dId
                     }]
                 } else {
                     var widgetId = BI.Utils.getWidgetIDByDimensionID(o.dId);
-                    var allDimensions = BI.Utils.getAllDimDimensionIDs(widgetId);
                     var result = [];
-                    BI.each(allDimensions, function (i, dId) {
+                    BI.each(BI.Utils.getAllUsableDimDimensionIDs(widgetId), function (i, dId) {
                         result.push({
                             id: BI.Utils.getFieldIDByDimensionID(dId),
-                            pId: self._constant.DIMENSION_FIELD,
+                            pId: self._constant.OTHER_FIELD,
                             type: "bi.select_data_level0_item",
                             fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
                             text: BI.Utils.getDimensionNameByID(dId),

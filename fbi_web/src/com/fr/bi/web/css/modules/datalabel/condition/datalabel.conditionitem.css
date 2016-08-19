@@ -17,6 +17,9 @@
 .data-label-condition-item .trigger-icon {
   color: #009de3;
 }
+.data-label-condition-item .condition-operator-input {
+  border: 1px solid #d4dadd;
+}
 .data-label-condition-item img {
   display: block;
 }
