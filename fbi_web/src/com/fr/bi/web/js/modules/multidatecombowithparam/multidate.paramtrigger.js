@@ -20,7 +20,6 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
     _init: function () {
         BI.MultiDateParamTrigger.superclass._init.apply(this, arguments);
         var self = this, o = this.options, c = this._const;
-        this.stored_value = {};
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: o.height,
