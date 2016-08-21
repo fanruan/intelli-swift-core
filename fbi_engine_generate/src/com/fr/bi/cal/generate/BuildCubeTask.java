@@ -31,10 +31,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Future;
 
 /**
@@ -109,8 +106,7 @@ public class BuildCubeTask implements CubeTask {
     private void replaceOldCubes() {
         try {
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            boolean b = cubeBuild.replaceOldCubes();
-            if (!b){
+            if (!cubeBuild.replaceOldCubes()){
                 BILogger.getLogger().error("rename cube files failed");
             }
         } catch (Exception e) {
