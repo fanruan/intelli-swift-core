@@ -113,16 +113,16 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
     @Override
     public boolean replaceOldCubes() {
-        List<String> copyFailedFiles=new ArrayList<String>();
+        List<String> copyFailedFiles = new ArrayList<String>();
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
         if (new File(advancedConf.getRootURI().getPath()).exists()) {
-            copyFailedFiles=deleteFiles(new File(advancedConf.getRootURI().getPath()));
+            copyFailedFiles = deleteFiles(new File(advancedConf.getRootURI().getPath()));
         }
-        if (copyFailedFiles.size()>0){
+        if (copyFailedFiles.size() > 0) {
             BILogger.getLogger().error("error:cube delete failed");
             for (String fileName : copyFailedFiles) {
-                BILogger.getLogger().error("failed file:"+fileName);
+                BILogger.getLogger().error("failed file:" + fileName);
             }
         }
         try {
@@ -132,17 +132,15 @@ public abstract class AbstractCubeBuild implements CubeBuild {
             return false;
         }
     }
-    private   List deleteFiles(File f) {
-        List removedFailedFiles=new ArrayList();
+
+    private List deleteFiles(File f) {
+        List removedFailedFiles = new ArrayList();
         File[] files = f.listFiles();
-        if (files == null) {
-            return null;
-        }
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
                 deleteFiles(files[i]);
             } else {
-                if (!BIFileUtils.delete(files[i])){
+                if (!BIFileUtils.delete(files[i])) {
                     removedFailedFiles.add(files[i].getAbsolutePath());
                 }
             }
