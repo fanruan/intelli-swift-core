@@ -178,13 +178,13 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount) {
-        oldCount = dealWithInsert(traversal, fields, SQL, oldCount);
+        oldCount = dealWithInsert(traversal, fields, SQL, oldCount, this.getDbName());
         return oldCount;
     }
 
 
 
-    private long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long rowCount) {
+    protected long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long rowCount, String dbName) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
         try {
@@ -193,7 +193,7 @@ public class DBTableSource extends AbstractTableSource {
                 BILogger.getLogger().error("SQL syntax error");
                 return 0;
             }
-            com.fr.data.impl.Connection connection = DatasourceManager.getInstance().getConnection(this.getDbName());
+            com.fr.data.impl.Connection connection = DatasourceManager.getInstance().getConnection(dbName);
             SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
             sqlStatement.setSql(SQL);
             rowCount = DBQueryExecutor.getInstance().runSQL(sqlStatement, fields, new Traversal<BIDataValue>() {

@@ -12,6 +12,7 @@ import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -72,7 +73,14 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         jo.put("last_update_time", lastUpdateDate);
         BILogger.getLogger().info("preview SQL："+sql);
         if (StringUtils.isNotEmpty(sql)) {
-            com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(table.getString("connection_name"));
+            //预览时不一定已经生成table，所以无法使用table类型来判断
+            String connectionName=null;
+            if (!table.toMap().get("connection_name").equals(DBConstant.CONNECTION.SQL_CONNECTION)){
+               connectionName = table.getString("connection_name");
+          }else {
+                connectionName = table.getString("dataLinkName");
+            }
+            com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
             DBTableData dbTableData = new DBTableData(dbc, sql);
             try {
                 DataModel dm;

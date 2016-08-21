@@ -117,10 +117,10 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
         if (new File(advancedConf.getRootURI().getPath()).exists()) {
-            copyFailedFiles = deleteFiles(new File(advancedConf.getRootURI().getPath()));
+            copyFailedFiles = BIFileUtils.deleteFiles(new File(advancedConf.getRootURI().getPath()));
         }
         if (copyFailedFiles.size() > 0) {
-            BILogger.getLogger().error("error:cube delete failed");
+            BILogger.getLogger().error("error: delete old cube failed");
             for (String fileName : copyFailedFiles) {
                 BILogger.getLogger().error("failed file:" + fileName);
             }
@@ -133,20 +133,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
     }
 
-    private List deleteFiles(File f) {
-        List removedFailedFiles = new ArrayList();
-        File[] files = f.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory()) {
-                deleteFiles(files[i]);
-            } else {
-                if (!BIFileUtils.delete(files[i])) {
-                    removedFailedFiles.add(files[i].getAbsolutePath());
-                }
-            }
-        }
-        return removedFailedFiles;
-    }
+
 
     public void setSources() {
         for (Object biBusinessTable : allBusinessTable) {
