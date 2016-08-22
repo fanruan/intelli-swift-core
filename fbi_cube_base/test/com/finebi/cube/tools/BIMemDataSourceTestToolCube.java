@@ -645,7 +645,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
 
     @Override
     public IPersistentTable getPersistentTable() {
-        return  new PersistentTable(StringUtils.EMPTY,getTableName(), StringUtils.EMPTY);
+        return new PersistentTable(StringUtils.EMPTY, getTableName(), StringUtils.EMPTY);
     }
 
     @Override
@@ -727,7 +727,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount, com.fr.data.impl.Connection connection) {
         return -1;
     }
 

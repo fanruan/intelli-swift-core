@@ -33,6 +33,6 @@ public class BISourceDataTransport4Test extends BISourceDataTransport {
     }
 
     public BISourceDataTransport4Test(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource) {
-        super(cube, tableSource, allSources, parentTableSource,1);
+        super(cube, tableSource, allSources, parentTableSource,1,null);
     }
 }

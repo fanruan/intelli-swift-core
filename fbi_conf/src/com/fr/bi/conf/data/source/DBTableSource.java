@@ -31,7 +31,6 @@ import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
-import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -177,14 +176,14 @@ public class DBTableSource extends AbstractTableSource {
         return rowCount;
     }
 
-    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount) {
-        oldCount = dealWithInsert(traversal, fields, SQL, oldCount, this.getDbName());
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount,com.fr.data.impl.Connection connection) {
+        oldCount = dealWithInsert(traversal, fields, SQL, oldCount, connection);
         return oldCount;
     }
 
 
 
-    protected long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long rowCount, String dbName) {
+    protected long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long rowCount, com.fr.data.impl.Connection connection ) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
         try {
@@ -193,7 +192,6 @@ public class DBTableSource extends AbstractTableSource {
                 BILogger.getLogger().error("SQL syntax error");
                 return 0;
             }
-            com.fr.data.impl.Connection connection = DatasourceManager.getInstance().getConnection(dbName);
             SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
             sqlStatement.setSql(SQL);
             rowCount = DBQueryExecutor.getInstance().runSQL(sqlStatement, fields, new Traversal<BIDataValue>() {

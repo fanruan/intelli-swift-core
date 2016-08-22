@@ -9,6 +9,11 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.conf.data.source.SQLTableSource;
+import com.fr.bi.conf.data.source.ServerTableSource;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -18,6 +23,8 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.data.impl.Connection;
+import com.fr.file.DatasourceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -133,8 +140,6 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
     }
 
-
-
     public void setSources() {
         for (Object biBusinessTable : allBusinessTable) {
             BusinessTable table = (BusinessTable) biBusinessTable;
@@ -142,6 +147,31 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
     }
 
+    @Override
+    public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
+        Map<CubeTableSource, UpdateSettingSource> updateSettingSourceMap = new HashMap<CubeTableSource, UpdateSettingSource>();
+        for (CubeTableSource tableSource : sources) {
+            updateSettingSourceMap.put(tableSource, BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), userId));
+        }
+        return updateSettingSourceMap;
+    }
+
+    @Override
+    public Map<CubeTableSource, Connection> getConnections() {
+        Map<CubeTableSource, Connection> connectionMap = new HashMap<CubeTableSource, Connection>();
+        for (CubeTableSource tableSource : sources) {
+            com.fr.data.impl.Connection connection = null;
+            DatasourceManager.getInstance().getNameConnectionMap();
+            if (tableSource instanceof DBTableSource) {
+                connection = DatasourceManager.getInstance().getConnection(((DBTableSource) tableSource).getDbName());
+            }
+            if (tableSource instanceof ServerTableSource) {
+                connection = DatasourceManager.getInstance().getConnection(((SQLTableSource) tableSource).getSqlConnection());
+            }
+            connectionMap.put(tableSource, connection);
+        }
+        return connectionMap;
+    }
 
     private void fullTableDBFields() {
         Iterator<CubeTableSource> tableSourceIterator = sources.iterator();
@@ -172,7 +202,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
         if (!istableRelationValid(relation) || !isSourceRelationValid) {
-            BILogger.getLogger().error("tableSourceRelation invalid!!!");
+            BILogger.getLogger().error("tableSourceRelation invalid");
             return null;
         }
         BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
@@ -188,9 +218,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
 
     protected boolean istableRelationValid(BITableRelation relation) {
-        BusinessTable primaryTable = relation.getPrimaryTable();
-        BusinessTable foreignTable = relation.getForeignTable();
-        return allBusinessTable.contains(primaryTable) && allBusinessTable.contains(foreignTable);
+        return allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable());
     }
 
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {

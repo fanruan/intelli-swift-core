@@ -190,8 +190,8 @@ public class ServerTableSource extends DBTableSource {
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount) {
-        oldCount = dealWithInsert(traversal, fields, SQL, oldCount, ((SQLTableSource) this).getSqlConnection());
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount,com.fr.data.impl.Connection connection) {
+        oldCount = dealWithInsert(traversal, fields, SQL, oldCount, connection);
         return oldCount;
     }
 

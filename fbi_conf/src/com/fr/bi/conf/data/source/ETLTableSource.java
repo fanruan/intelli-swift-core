@@ -80,7 +80,7 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTab
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount,com.fr.data.impl.Connection connection) {
         return 0;
     }
 

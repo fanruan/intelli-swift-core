@@ -16,11 +16,8 @@ import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.conf.base.datasource.BIConnectionManager;
-import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -33,7 +30,6 @@ import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.data.impl.Connection;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -53,9 +49,10 @@ import static com.fr.bi.util.BICubeDBUtils.getColumnName;
  * Created by kary on 16/7/13.
  */
 public class BISourceDataPartTransport extends BISourceDataTransport {
-    public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
-
-        super(cube, tableSource, allSources, parentTableSource, version);
+    protected UpdateSettingSource tableUpdateSetting;
+    public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version,UpdateSettingSource tableUpdateSetting, com.fr.data.impl.Connection connection) {
+        super(cube, tableSource, allSources, parentTableSource, version, connection);
+        this.tableUpdateSetting=  tableUpdateSetting;
     }
 
     @Override
@@ -97,11 +94,8 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             fieldList.get(i).setTableBelongTo(tableSource);
             cubeFieldSources[i] = fieldList.get(i);
         }
-        DBTableSource source = (DBTableSource) this.tableSource;
-        UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
-        source.setUpdateSettingSource(tableUpdateSetting);
-        long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;
 
+        long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         if (tableEntityService.isRemovedListAvailable()) {
             IntList removedList = tableEntityService.getRemovedList();
@@ -110,28 +104,28 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
         }
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
+
           /*remove*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader);
+            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader, connection);
         }
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
-            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
+                rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount, connection);
         }
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
-            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
+            sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader, connection);
+            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount, connection);
         }
-        if (null != sortRemovedList&&sortRemovedList.size()!=0) {
+        if (null != sortRemovedList && sortRemovedList.size() != 0) {
             tableEntityService.recordRemovedLine(sortRemovedList);
         }
-
         return rowCount;
     }
 
 
-    private long dealWidthAdd(ICubeFieldSource[] cubeFieldSources, String SQL, long rowCount) {
+    private long dealWidthAdd(ICubeFieldSource[] cubeFieldSources, String SQL, long rowCount, com.fr.data.impl.Connection connection) {
         Traversal<BIDataValue> AddTraversal = new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
@@ -142,18 +136,18 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 }
             }
         };
-        rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount);
+
+        rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount, connection);
         return rowCount;
     }
 
 
-    private TreeSet<Integer> dealWithRemove(ICubeFieldSource[] fields, String partDeleteSQL, final TreeSet<Integer> sortRemovedList, ICubeDataLoader loader) {
+    private TreeSet<Integer> dealWithRemove(ICubeFieldSource[] fields, String partDeleteSQL, final TreeSet<Integer> sortRemovedList, ICubeDataLoader loader, com.fr.data.impl.Connection connection) {
         SQLRegUtils regUtils = new SQLRegUtils(partDeleteSQL);
         if (!regUtils.isSql()) {
             BILogger.getLogger().error("SQL syntax error");
             return null;
         }
-        Connection connection = BIConnectionManager.getInstance().getConnection(((DBTableSource) tableSource).getDbName());
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(partDeleteSQL);
         String columnName = getColumnName(connection, sqlStatement, partDeleteSQL);
