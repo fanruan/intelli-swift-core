@@ -3,7 +3,7 @@
  * Created by Fay on 2016/7/13.
  */
 BI.DataLabelChart = BI.inherit(BI.Widget, {
-    data: [[{
+    _data: [[{
         "data": [
             {"x": "data1", "y": 40},
             {"x": "data2", "y": 70},
@@ -89,14 +89,14 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
     populate: function (src) {
         if (src) {
             var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + src + "></div>'}";
-            this.data[0][0].data[0].dataLabels = {
+            this._data[0][0].data[0].dataLabels = {
                 enabled: true,
                 align: "outside",
                 useHtml: true,
                 formatter: formatter
             };
         }
-        this.combineChart.populate(this.data);
+        this.combineChart.populate(this._data);
     }
 });
 BI.DataLabelChart.EVENT_CHANGE = "BI.DataLabelChart.EVENT_CHANGE";
