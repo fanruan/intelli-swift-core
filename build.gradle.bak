@@ -118,7 +118,7 @@ task compressJS(dependsOn:'copyFile'){
 //添加打包时间
 task addTime(dependsOn:'compressJS'){
 	def date = new Date()
-	def formattedDate = date.format('yyyy.MM.dd.HH.mm.ss.S')
+	def formattedDate = date.format('yyyy.MM.dd.hh.mm.ss.S')
 	File file =file(new File('build/classes/main/bibuild.txt'))
 	FileWriter fw=new FileWriter(file)
 	fw.write(formattedDate)
