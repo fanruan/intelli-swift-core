@@ -26,6 +26,7 @@ public class BISourceDataNeverTransport extends BISourceDataTransport{
             copyFromOldCubes();
             recordTableInfo();
             tableEntityService.addVersion(version);
+           tableEntityService.clear();
         } catch (Exception e) {
         } finally {
             return null;

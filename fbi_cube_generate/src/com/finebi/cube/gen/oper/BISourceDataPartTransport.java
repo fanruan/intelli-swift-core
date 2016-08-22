@@ -75,6 +75,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 tableEntityService.recordRowCount(count);
             }
             tableEntityService.addVersion(version);
+            tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
             if (null != tableSource.getPersistentTable()) {
                 System.out.println("table usage:" + tableCostTime);
