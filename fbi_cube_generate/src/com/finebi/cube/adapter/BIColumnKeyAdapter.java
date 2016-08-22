@@ -32,8 +32,7 @@ public class BIColumnKeyAdapter {
                 columnKey = BIDateColumnTool.generateYearMonthDay(field);
                 break;
             case BIReportConstant.GROUP.YMDHMS:
-                //暂时用YMD的数据,等sb加了YMDHMS的数据再实现
-                columnKey = BIDateColumnTool.generateYearMonthDay(field);
+                columnKey = BIColumnKey.covertColumnKey(field);
                 break;
             default:
                 throw BINonValueUtils.beyondControl();

@@ -138,12 +138,14 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         Iterator<CubeTableSource> tableSourceIterator = sources.iterator();
         while (tableSourceIterator.hasNext()) {
             CubeTableSource tableSource = tableSourceIterator.next();
-            ICubeFieldSource[] BICubeFieldSources = tableSource.getFieldsArray(sources);
+            Set<ICubeFieldSource> BICubeFieldSources = tableSource.getFacetFields(sources);
             Map<String, ICubeFieldSource> name2Field = new HashMap<String, ICubeFieldSource>();
-            for (int i = 0; i < BICubeFieldSources.length; i++) {
-                ICubeFieldSource field = BICubeFieldSources[i];
+            Iterator<ICubeFieldSource> it = BICubeFieldSources.iterator();
+            while (it.hasNext()) {
+                ICubeFieldSource field = it.next();
                 name2Field.put(field.getFieldName(), field);
             }
+
             tableDBFieldMaps.put(tableSource, name2Field);
         }
     }
