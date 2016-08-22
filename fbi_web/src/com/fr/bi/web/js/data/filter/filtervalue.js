@@ -2,47 +2,15 @@
  * 前端过滤方法
  */
 Data.Filter = {
-    isStringIn: function(value, array){
-        if(BI.isNull(array) || BI.isEmptyArray(array)){
-            return true;
-        }
-        return BI.contains(array, value);
-    },
 
-    isStringNotIn: function(value, array){
-        if(BI.isNull(array) || BI.isEmptyArray(array)){
-            return true;
-        }
-        return !BI.contains(array, value);
-    },
 
-    isStringContain: function(value, target){
-        if (value == null && target == null) {
-            return true;
-        }
-        if (value == null || target == null) {
-            return false;
-        }
-        return target.indexOf(value) !== -1;
-    },
 
-    isStringNotContain: function(value, target){
-        if (value == null && target == null) {
-            return true;
-        }
-        if (value == null || target == null) {
-            return false;
-        }
-        return target.indexOf(value) === -1;
-    },
 
-    isStringNull: function(value){
-        return BI.isNull(value) || BI.isEmptyString(value);
-    },
 
-    isStringNotNull: function(value){
-        return BI.isNotNull(value) && BI.isNotEmptyString(value);
-    },
+
+
+
+
 
     isStringStartWith: function(value, start){
         if (value == null && start == null) {
@@ -160,6 +128,17 @@ Data.Filter = {
             }
             return i;
         }
+    },
+
+    getNumberAvg: function(array){
+        if(array.length === 0){
+            return;
+        }
+        var sum = 0;
+        BI.each(array, function(idx, num){
+            sum = BI.parseFloat(sum.add(num));
+        });
+        return sum.div(array.length);
     }
 
 };
