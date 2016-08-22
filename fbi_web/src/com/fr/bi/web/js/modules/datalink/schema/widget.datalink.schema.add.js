@@ -212,6 +212,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
                     });
                     self._toggleSchemaStatus(true);
                     self.schemaCombo.populate(items);
+                    self.schemaCombo.setValue(schemas[0]);
                 })
             }
         });
