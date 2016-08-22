@@ -46,12 +46,12 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
         //所有被选中的，对于日期的，可以使用fId+group拼接成id
         var dateGroup = [BICst.GROUP.Y, BICst.GROUP.S, BICst.GROUP.M, BICst.GROUP.W, BICst.GROUP.YMD, BICst.GROUP.YMDHMS];
         BI.each(sortedFieldIds, function (i, fId) {
-            if(BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.COUNTER) {
+            if (BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.COUNTER) {
                 return;
             }
             var fieldName = BI.Utils.getFieldNameByID(fId);
             var fieldValues = [];
-            BI.each(value, function(j, vs){
+            BI.each(value, function (j, vs) {
                 fieldValues.push(vs[i]);
             });
             //日期类型特殊处理
@@ -213,12 +213,21 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
 
                 BI.each(fieldValues, function (i, v) {
                     var d = new Date(v);
-                    year.push(d.getFullYear());
-                    season.push(Date._QN[getSeason(d.getMonth()) + 1]);
-                    month.push(d.print("%B"));
-                    week.push(d.print("%A"));
-                    date_.push(d.print("%Y-%X-%d"));
-                    date_hms.push(d.print("%Y-%X-%d %H:%M:%S"))
+                    if (BI.isNotNull(v)) {
+                        year.push(d.getFullYear());
+                        season.push(Date._QN[getSeason(d.getMonth()) + 1]);
+                        month.push(d.print("%B"));
+                        week.push(d.print("%A"));
+                        date_.push(d.print("%Y-%X-%d"));
+                        date_hms.push(d.print("%Y-%X-%d %H:%M:%S"))
+                    } else {
+                        year.push("");
+                        season.push("");
+                        month.push("");
+                        week.push("");
+                        date_.push("");
+                        date_hms.push("");
+                    }
 
                 });
                 self.mapValues[fId + BICst.GROUP.Y] = year;
