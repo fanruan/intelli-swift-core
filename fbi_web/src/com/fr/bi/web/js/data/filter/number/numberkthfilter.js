@@ -1,7 +1,7 @@
 ;
 !(function(){
     BI.NumberKthFilterValue = function(kNumber){
-        this.kNumber = kNumber;
+        this.kNumber = kNumber || 0;
     };
     BI.NumberKthFilterValue.prototype = {
         constructor: BI.NumberKthFilterValue,
@@ -47,6 +47,9 @@
         },
 
         isQualified: function(value, array){
+            if(this.kNumber === 0){
+                return false;
+            }
             if(BI.isNull(this.kthValue)){
                 this.kthValue = this.getNumberKth(array, this.kNumber);
             }

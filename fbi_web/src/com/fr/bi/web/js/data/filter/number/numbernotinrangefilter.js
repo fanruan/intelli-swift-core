@@ -3,8 +3,8 @@
     BI.NumberNotInRangeFilterValue = function(range){
         this.range = {};
         range = range || {};
-        this.range.min = range.min || 0;
-        this.range.max = range.max || 0;
+        this.range.min = range.min || BI.MIN;
+        this.range.max = range.max || BI.MAX;
         this.range.closemin = range.closemin || true;
         this.range.closemax = range.closemax || true;
     };

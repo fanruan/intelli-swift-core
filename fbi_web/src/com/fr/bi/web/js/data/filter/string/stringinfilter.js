@@ -1,8 +1,9 @@
 ;
 !(function(){
-    BI.StringInFilterValue = function(type, valueSet){
-        this.type = type;
-        this.valueSet = valueSet;
+    BI.StringInFilterValue = function(param){
+        param = param || {};
+        this.type = param.type || BI.Selection.Multi;
+        this.valueSet = param.value || [];
     };
     BI.StringInFilterValue.prototype = {
         constructor: BI.StringInFilterValue,

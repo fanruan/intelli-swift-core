@@ -4,7 +4,7 @@
         if(!BI.isNumber(value)){
             this.value = BI.parseFloat(value);
         }else{
-            this.value = value;
+            this.value = value || 0;
         }
     };
     BI.NumberNotEqualFilterValue.prototype = {
