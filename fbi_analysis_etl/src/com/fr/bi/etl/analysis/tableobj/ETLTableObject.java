@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.bi.etl.analysis.tableobj;
 
@@ -26,57 +26,57 @@ import java.net.URISyntaxException;
 
 /**
  * @author Daniel
- *
  */
 public class ETLTableObject implements Release, Delete {
 
-	private String path;
-	
-	private ICubeTableService ti;
-	
-	private SingleUserNIOReadManager manager = new SingleUserNIOReadManager(-1);
-	
-	private volatile boolean isClear = false;
-	
-	public ETLTableObject(final UserCubeTableSource source, final String id){
-		this.path = BIPathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), id);
-		ti = new BICubeTableAdapter(new BICube(new BICubeResourceRetrieval(new ICubeConfiguration() {
+    private String path;
+
+    private ICubeTableService ti;
+
+    private SingleUserNIOReadManager manager = new SingleUserNIOReadManager(-1);
+
+    private volatile boolean isClear = false;
+
+    public ETLTableObject(final UserCubeTableSource source, final String id) {
+        this.path = BIPathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), id);
+        ti = new BICubeTableAdapter(new BICube(new BICubeResourceRetrieval(new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
                 try {
-                    return URI.create(new BICubeLocation(BIPathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue()), id).getAbsolutePath());
+                    File file = new File(new BICubeLocation(BIPathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue()), id).getAbsolutePath());
+                    return URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
                     throw BINonValueUtils.beyondControl(e);
                 }
             }
         }), BIFactoryHelper.getObject(ICubeResourceDiscovery.class)), source);
-	}
-	
-	
-	public ICubeTableService getTableIndex(){
-		if(isClear){
-			throw new NullTableIndexException();
-		}
-		return ti;
-	}
-	
+    }
 
-	/* (non-Javadoc)
-	 * @see com.fr.bi.common.inter.Release#clear()
-	 */
-	@Override
-	public void clear() {
-		isClear = true;
-		ti.clear();
-		manager.clear();
-	}
 
-	/**
-	 * 
-	 */
-	@Override
-	public void delete() {
-		BIFileUtils.delete(new File(this.path));
-	}
-	
+    public ICubeTableService getTableIndex() {
+        if (isClear) {
+            throw new NullTableIndexException();
+        }
+        return ti;
+    }
+
+
+    /* (non-Javadoc)
+     * @see com.fr.bi.common.inter.Release#clear()
+     */
+    @Override
+    public void clear() {
+        isClear = true;
+        ti.clear();
+        manager.clear();
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void delete() {
+        BIFileUtils.delete(new File(this.path));
+    }
+
 }
