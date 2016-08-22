@@ -169,7 +169,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForAxis: function (da) {
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
-        data = BI.DataLabelMethods.showDataLabel(data, o);
+        // data = BI.DataLabelMethods.showDataLabel(data, o);
         if (BI.isEmptyArray(data)) {
             return [];
         }
