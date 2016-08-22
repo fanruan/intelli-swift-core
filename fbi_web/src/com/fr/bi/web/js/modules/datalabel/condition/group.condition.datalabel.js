@@ -42,7 +42,13 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
         var conditions = BI.Utils.getDatalabelByID(o.dId);
         var items = [];
         BI.each(conditions, function (idx, cdt) {
-            var t = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+            var t = {};
+            if(cdt.target_id != o.dId && !BI.Utils.isDimensionUsable(cdt.target_id)) {
+                cdt = {};
+                cdt.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
+                cdt.sdId = o.dId;
+            }
+            t = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
             items.push({
                 type: t.type,
                 sdId: o.dId,

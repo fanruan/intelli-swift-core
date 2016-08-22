@@ -56,18 +56,6 @@ BI.DataLabelFilterItemFactory = {
             case BICst.DATA_LABEL_FILTER_NUMBER.BOTTOM_N:
                 type = "bi.data_label_number_field_filter_item";
                 break;
-            case BICst.FILTER_DATE.BELONG_DATE_RANGE:
-            case BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE:
-            case BICst.FILTER_DATE.BELONG_WIDGET_VALUE:
-            case BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE:
-            case BICst.FILTER_DATE.LATER_THAN:
-            case BICst.FILTER_DATE.EARLY_THAN:
-            case BICst.FILTER_DATE.EQUAL_TO:
-            case BICst.FILTER_DATE.NOT_EQUAL_TO:
-            case BICst.FILTER_DATE.IS_NULL:
-            case BICst.FILTER_DATE.NOT_NULL:
-                type = "bi.data_label_string_field_filter_item";
-                break;
             case BICst.FILTER_TYPE.EMPTY_CONDITION:
                 type = "bi.data_label_no_type_field_filter_item";
                 break;
