@@ -1,13 +1,10 @@
 package com.fr.bi.cal.generate;
 
-import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
-import com.finebi.cube.security.CubeSecurityCheck;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
@@ -74,7 +71,6 @@ public class CubeRunner {
                     setStatue(Status.LOADED);
                     BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                     /*耗时比较久,先屏蔽掉*/
-//                    cubeSecurityCheck();
                 }
             }
         });
@@ -87,20 +83,6 @@ public class CubeRunner {
         });
         //执行线程队列
         cubeThread.start();
-    }
-
-    private void cubeSecurityCheck() {
-        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
-        String path = new File(advancedConf.getRootURI().getPath()).getParent() +File.separatorChar+ "crc_sum";
-        CubeSecurityCheck securityCheck = new CubeSecurityCheck(path);
-        if (new File(path).exists()) {
-            securityCheck.useLeastSum();
-            boolean check = securityCheck.check(advancedConf.getRootURI().getPath());
-            if (!check) {
-                BILogger.getLogger().info("the cube has been changed");
-            }
-        }
-        securityCheck.saveResult();
     }
 
     /**

@@ -34,7 +34,6 @@ import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.data.impl.Connection;
-import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -99,7 +98,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             cubeFieldSources[i] = fieldList.get(i);
         }
         DBTableSource source = (DBTableSource) this.tableSource;
-        DatasourceManager.getInstance().getTableData(tableSource.getTableName());
         UpdateSettingSource tableUpdateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), UserControl.getInstance().getSuperManagerID());
         source.setUpdateSettingSource(tableUpdateSetting);
         long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;

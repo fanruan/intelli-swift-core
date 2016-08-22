@@ -54,7 +54,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             CubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
             rowCount = tableEntityService.getRowCount();
-//            tableEntityService.clear();
+            tableEntityService.clear();
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
