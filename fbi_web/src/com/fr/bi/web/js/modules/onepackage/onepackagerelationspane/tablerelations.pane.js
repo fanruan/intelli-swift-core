@@ -52,7 +52,6 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             if(BI.contains(distinctTableIds, tId)){
                 return;
             }
-            distinctTableIds.push(tId);
             var primFields = self.getFieldsInPrimKeyMap(fieldsMap[tId]);
             var foreFields = self.getFieldsInForeignMap(fieldsMap[tId]);
             if(BI.isNull(fieldsMap[tId])){
@@ -97,11 +96,15 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             }else{
                 items =  BI.concat(items, getViewItemsByTableId(tId, []));
             }
+            distinctTableIds.push(tId);
         });
         return items;
 
         function getTableIdsDegree(){
             var degree = {};
+            BI.each(tableIds, function(idx, tId){
+               degree[tId] = 0;
+            });
             BI.each(connectSet, function(idx, obj){
                 var foreignId = obj.foreignKey.field_id;
                 if(BI.has(all_fields, foreignId)){
@@ -122,7 +125,7 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                 var primaryId = rel.primaryKey.field_id, foreignId = rel.foreignKey.field_id;
                 var foreignTableId = all_fields[foreignId].table_id;
                 //是未访问过的节点且入度未满
-                if(!BI.contains(visitSet, foreignTableId) && calcDegree[foreignTableId] !== degrees[foreignTableId]){
+                if(!BI.contains(visitSet, foreignTableId) && !BI.contains(distinctTableIds, tId) && calcDegree[foreignTableId] !== degrees[foreignTableId]){
                     //自循环
                     if(all_fields[primaryId].table_id === all_fields[foreignId].table_id){
                         items.push({
@@ -170,13 +173,13 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                             primary: primaryItem,
                             foreign: foreignItem
                         });
+                        var visittable = BI.concat(visitSet, [tId]);
+                        if(!BI.contains(visittable, foreignTableId) && calcDegree[foreignTableId] !== degrees[foreignTableId]){
+                            calcDegree[foreignTableId]++;
+                            items = BI.concat(items, getViewItemsByTableId(foreignTableId, visittable));
+                            distinctTableIds.pushDistinct(foreignTableId);
+                        }
                     }
-                }
-                var visittable = BI.concat(visitSet, [tId]);
-                if(!BI.contains(visittable, foreignTableId) && calcDegree[foreignTableId] !== degrees[foreignTableId]){
-                    calcDegree[foreignTableId]++;
-                    distinctTableIds.pushDistinct(foreignTableId);
-                    items = BI.concat(items, getViewItemsByTableId(foreignTableId, visittable));
                 }
             });
             return items;

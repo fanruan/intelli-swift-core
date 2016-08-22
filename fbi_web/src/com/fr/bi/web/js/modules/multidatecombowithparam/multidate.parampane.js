@@ -123,7 +123,9 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
             }
             paramdate = this.parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
         }
-        return new Date(this.parseComplexDateCommon(offset, new Date(paramdate)));
+        if(BI.isNotNull(paramdate)){
+            return this.parseComplexDateCommon(offset, new Date(paramdate))
+        }
     },
 
     parseComplexDateCommon: function (v, consultedDate) {

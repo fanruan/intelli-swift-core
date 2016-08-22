@@ -1342,11 +1342,11 @@ BICst.CHART_SCALE_SETTING = [{
 }];
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
-    text: BI.i18nText("BI-Bubble_Without_Shadow"),
+    title: BI.i18nText("BI-Bubble_Without_Shadow"),
     cls: "bubble-no-projector",
     value: BICst.CHART_SHAPE.NO_PROJECTOR
 }, {
-    text: BI.i18nText("BI-Bubble_With_Shadow"),
+    title: BI.i18nText("BI-Bubble_With_Shadow"),
     cls: "bubble-with-projector",
     value: BICst.CHART_SHAPE.PROJECTOR
 }];
@@ -1502,8 +1502,11 @@ BICst.DEFAULT_CHART_SETTING = {
     mini_show_data_label: true,
     show_data_table: false,
     show_grid_line: true,
+    bubble_min_size: 15,
+    bubble_max_size: 80,
     mini_show_grid_line: false,
     minimalist_model: false,
+    big_data_mode: false,
     line_width: BICst.LINE_WIDTH.ONE,
     mini_line_width: BICst.LINE_WIDTH.ZERO,
     show_label: true,
@@ -1585,6 +1588,19 @@ BICst.MAP_STYLE_CONDITIONS = [{
         closemax: true
     },
     color: "#a484b9"
+}];
+
+BICst.BUBBLE_GRADIENT_COLOR = [{
+    range: {
+        min: 0,
+        max: 100,
+        closemin: true,
+        closemax: true
+    },
+    color_range: {
+        from_color: "#65B3EE",
+        to_color: "#95E1AA"
+    }
 }];
 
 BICst.CAL_TARGET_TYPE = [{

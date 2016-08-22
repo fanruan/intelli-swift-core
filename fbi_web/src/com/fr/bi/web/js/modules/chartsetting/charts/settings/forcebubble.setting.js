@@ -64,7 +64,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -75,7 +75,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: 15
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.bubbleStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -116,7 +116,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.legend]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
