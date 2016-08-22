@@ -20,7 +20,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
                 style: this.constants.FONT_STYLE
             },
             labelStyle: this.constants.FONT_STYLE,
-            formatter: "function(){if(this>0) return this; else return this*(-1); }",
+            formatter: function(){if(this>0) return this; else return this*(-1); },
             gridLineWidth: 0,
             position: "bottom"
         }];
@@ -45,7 +45,8 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
     },
 
     _formatConfig: function(config, items){
-        var self = this, o = this.options;
+        var self = this;
+        var title = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatChartRadarStyle();
@@ -69,8 +70,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         config.radiusAxis = this.radiusAxis;
         config.radiusAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.radiusAxis[0].formatter);
-        config.radiusAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
-        config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.radiusAxis[0].title.text : config.radiusAxis[0].title.text;
+        config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + title : title;
         config.radiusAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "radar";
         config.plotOptions.columnType = true;

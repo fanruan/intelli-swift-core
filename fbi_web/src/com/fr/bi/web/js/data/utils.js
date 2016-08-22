@@ -336,30 +336,17 @@ Data.Utils = {
                 });
             }
             if (BI.has(data, "s")) {
-                var type = widget.type;
-                if (type === BICst.WIDGET.PIE) {
-                    var adjustData = BI.map(data.s, function (idx, value) {
-                        return {
-                            x: widget.dimensions[targetIds[idx]].name,
+                return BI.map(data.s, function (idx, value) {
+                    return {
+                        name: widget.dimensions[targetIds[idx]].name,
+                        data: [{
+                            x: "",
                             y: (BI.isFinite(value) ? value : 0),
                             targetIds: [targetIds[idx]]
-                        };
-                    });
-                    var obj = {};
-                    obj.data = adjustData;
-                    return [obj];
-                } else {
-                    return BI.map(data.s, function (idx, value) {
-                        return {
-                            name: widget.dimensions[targetIds[idx]].name,
-                            data: [{
-                                x: "",
-                                y: (BI.isFinite(value) ? value : 0),
-                                targetIds: [targetIds[idx]]
-                            }]
-                        };
-                    });
-                }
+                        }]
+                    };
+                });
+
             }
             return [];
         }
@@ -728,14 +715,18 @@ Data.Utils = {
             tooltip: options.tooltip || "",
             geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
             theme_color: options.theme_color || "#65bce7",
-            map_styles: options.map_styles,
+            map_styles: options.map_styles || [],
             auto_custom: BI.isNull(options.map_styles) ? false : options.auto_custom,
             initDrillPath: options.initDrillPath || [],
             lnglat: options.lnglat || constants.LNG_FIRST,
             click: options.click,
             max_scale: options.max_scale || "",
             min_scale: options.min_scale || "",
-            show_percentage: options.show_percentage || constants.NOT_SHOW
+            show_percentage: options.show_percentage || constants.NOT_SHOW,
+            line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
         };
 
         var maxes = [];
@@ -1096,6 +1087,22 @@ Data.Utils = {
                 return formatConfigForRadar(opts[1], opts[0]);
             case BICst.WIDGET.PIE:
                 var t = [];
+
+                if (_isNeedConvert(data)) {
+                    //把每个坐标轴所有的多个系列合并成一个系列
+                    data = BI.map(data, function (idx, item) {
+                        var seriesItem = [];
+                        var obj = {data: [], name: ""};
+                        seriesItem.push(obj);
+                        BI.each(item, function (id, series) {
+                            BI.each(series.data, function (i, da) {
+                                obj.data.push(BI.extend({}, da, {x: series.name}));
+                            });
+                        });
+                        return seriesItem;
+                    })
+                }
+
                 BI.each(data, function (idx, axisItems) {
                     var type = [];
                     BI.each(axisItems, function (id, item) {
@@ -1280,6 +1287,13 @@ Data.Utils = {
                 return formatConfigForGIS(opts[1], opts[0]);
         }
 
+        function _isNeedConvert(items) {
+            var result = BI.find(items, function (idx, item) {
+                return item.length > 1;
+            });
+            return BI.isNotNull(result);
+        }
+
         function _checkLngLatValid(lnglat) {
             if (lnglat.length < 2) {
                 return false;
@@ -1319,18 +1333,19 @@ Data.Utils = {
                 var tip = this.name;
                 BI.each(this.points, function (idx, point) {
                     var value = point.size || point.y;
-                    tip += ('<div>' + point.seriesName + ':' + (window.FR ? FR.contentFormat(value, formatterArray[idx]) : value) + '</div>');
+                    tip += ('<div>' + point.seriesName + ':' + (window.FR ? BI.contentFormat(value, formatterArray[idx]) : value) + '</div>');
                 });
                 return tip;
             };
             configs.plotOptions.dataLabels.formatter.valueFormat = function () {
-                return window.FR ? FR.contentFormat(arguments[0], formatterArray[0]) : arguments[0];
+                return BI.contentFormat(arguments[0], formatterArray[0]);
             };
 
             configs.geo = config.geo;
             if (config.initDrillPath.length > 1) {
                 configs.initDrillPath = config.initDrillPath;
             }
+
             configs.chartType = "areaMap";
             delete configs.xAxis;
             delete configs.yAxis;
@@ -1349,19 +1364,17 @@ Data.Utils = {
             });
 
             function formatRangeLegend() {
+                configs.rangeLegend.enabled = true;
                 switch (config.chart_legend) {
                     case BICst.CHART_LEGENDS.BOTTOM:
-                        configs.rangeLegend.enabled = true;
                         configs.rangeLegend.visible = true;
                         configs.rangeLegend.position = "bottom";
                         break;
                     case BICst.CHART_LEGENDS.RIGHT:
-                        configs.rangeLegend.enabled = true;
                         configs.rangeLegend.visible = true;
                         configs.rangeLegend.position = "right";
                         break;
                     case BICst.CHART_LEGENDS.NOT_SHOW:
-                        configs.rangeLegend.enabled = true;
                         configs.rangeLegend.visible = false;
                         break;
                 }
@@ -1369,7 +1382,27 @@ Data.Utils = {
 
                 configs.rangeLegend.range = getRangeStyle(config.map_styles, config.auto_custom, config.theme_color);
                 configs.rangeLegend.formatter = function () {
-                    return this.to;
+                    var to = this.to;
+                    if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
+                        switch (items[0].settings.num_level || c.NORMAL) {
+                            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                                to += '';
+                                break;
+                            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                                to += BI.i18nText("BI-Wan");
+                                break;
+                            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                                to += BI.i18nText("BI-Million");
+                                break;
+                            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                                to += BI.i18nText("BI-Yi");
+                                break;
+                            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                                to = BI.contentFormat(BI.parseFloat(to), "#0%");
+                                break;
+                        }
+                    }
+                    return to
                 }
             }
 
@@ -1389,12 +1422,26 @@ Data.Utils = {
                         formatter = '#0.00';
                         break;
                 }
-                if (numberLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    if (format === constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
+                switch (numberLevel) {
+                    case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                        formatter += '';
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                        formatter += BI.i18nText("BI-Wan");
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                        formatter += BI.i18nText("BI-Million");
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                        formatter += BI.i18nText("BI-Yi");
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                        if (format === constants.NORMAL) {
+                            formatter = '#0%'
+                        } else {
+                            formatter += '%';
+                        }
+                        break;
                 }
                 return formatter;
             }
@@ -1405,10 +1452,10 @@ Data.Utils = {
 
                 BI.each(items, function (idx, item) {
                     BI.each(item.data, function (id, it) {
-                        if (BI.isNull(min) || min > it.y) {
+                        if (BI.isNull(min) || BI.parseFloat(min) > BI.parseFloat(it.y)) {
                             min = it.y
                         }
-                        if (BI.isNull(max) || max < it.y) {
+                        if (BI.isNull(max) || BI.parseFloat(max) < BI.parseFloat(it.y)) {
                             max = it.y
                         }
                     })
@@ -1488,11 +1535,12 @@ Data.Utils = {
             delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.useHtml = true;
-            configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">' + "' + this.name + ','" + "+ this.value +'</div>'; return a;}";
+            configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">' + "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ BI.contentFormat(this.value, '#.##') +'</div>'; return a;}";
             configs.plotOptions.tooltip.shared = true;
-            configs.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + (point.size || point.y) + '</div>');});return tip; }";
+            configs.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + BI.contentFormat((point.size || point.y), '#.##') + '</div>');});return tip; }";
             configs.geo = {
-                "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
+                "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+                "attribution": "<a><img src='http://webapi.amap.com/theme/v1.3/mapinfo_05.png'>&copy; 2016 AutoNavi</a>"
             };
             configs.chartType = "pointMap";
             configs.plotOptions.icon = {
@@ -1552,6 +1600,7 @@ Data.Utils = {
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
+            configs.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};
             configs.plotOptions.tooltip.formatter = config.tooltip;
             formatCordon();
             switch (config.chart_legend) {
@@ -1584,6 +1633,41 @@ Data.Utils = {
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "scatter";
+
+            if (configs.plotOptions.dataLabels.enabled === true) {
+                BI.each(items, function (idx, item) {
+                    var isNeedFormatDataLabelX = false;
+                    var isNeedFormatDataLabelY = false;
+                    if (config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        isNeedFormatDataLabelX = true;
+                    }
+                    if (config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        isNeedFormatDataLabelY = true;
+                    }
+                    if (isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true) {
+                        item.dataLabels = {
+                            "style": constants.FONT_STYLE,
+                            "align": "outside",
+                            enabled: true,
+                            formatter: {
+                                identifier: "${X}${Y}${SIZE}",
+                                "XFormat": function () {
+                                    return BI.contentFormat(arguments[0], '#.##')
+                                },
+                                "YFormat": function () {
+                                    return BI.contentFormat(arguments[0], '#.##')
+                                }
+                            }
+                        };
+                        if (isNeedFormatDataLabelX === true) {
+                            item.dataLabels.formatter.XFormat = configs.xAxis[0].formatter;
+                        }
+                        if (isNeedFormatDataLabelY === true) {
+                            item.dataLabels.formatter.YFormat = configs.yAxis[0].formatter;
+                        }
+                    }
+                });
+            }
 
             return BI.extend(configs, {
                 series: items
@@ -1690,7 +1774,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -2046,7 +2132,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
+                return function () {
+                    BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -2077,12 +2165,19 @@ Data.Utils = {
 
                 valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
                 valueLabel.style = configs.plotOptions.valueLabel.style;
-                var percentageLabel = BI.extend(configs.plotOptions.percentageLabel , {
+                var percentageLabel = BI.extend(configs.plotOptions.percentageLabel, {
                     enabled: config.show_percentage === BICst.PERCENTAGE.SHOW
                 });
                 var slotValueLAbel = {
-                    formatter: function(){
-                        return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
+                    formatter: function () {
+                        this.value = config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT ? BI.contentFormat(this.value, "#0.00%") :
+                            BI.contentFormat(this.value, "#.##;-#.##");
+                        if (config.chart_dashboard_type === BICst.CHART_SHAPE.VERTICAL_TUBE) {
+                            return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
+                        } else {
+                            return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value +
+                                getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS) + '</div>';
+                        }
                     },
                     style: configs.plotOptions.valueLabel.style,
                     useHtml: true
@@ -2093,11 +2188,9 @@ Data.Utils = {
                         break;
                     case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                         setPlotOptions("ring", bands, slotValueLAbel, percentageLabel);
-                        changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
                         setPlotOptions("slot", bands, valueLabel, percentageLabel);
-                        changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                         BI.extend(valueLabel, {
@@ -2107,7 +2200,6 @@ Data.Utils = {
                             align: "bottom"
                         });
                         setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "horizontal", "vertical");
-                        changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.VERTICAL_TUBE:
                         BI.extend(valueLabel, {
@@ -2117,20 +2209,20 @@ Data.Utils = {
                             align: "left"
                         });
                         setPlotOptions("thermometer", bands, slotValueLAbel, percentageLabel, "vertical", "horizontal");
-                        changeMaxMinScale();
                         break;
                     case BICst.CHART_SHAPE.NORMAL:
                     default:
                         setPlotOptions("pointer", bands, configs.plotOptions.valueLabel);
                         break;
                 }
+                changeMaxMinScale();
                 formatNumberLevelInYaxis(config.dashboard_number_level, constants.LEFT_AXIS);
                 if (config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.valueLabel.formatter.valueFormat = function () {
-                        return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]);
+                        return BI.contentFormat(arguments[0], '#0.00%');
                     };
                     configs.gaugeAxis[0].formatter = function () {
-                        return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]) + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
+                        return BI.contentFormat(arguments[0], '#0.00%') + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
                     };
                 } else {
                     configs.gaugeAxis[0].formatter = function () {
@@ -2173,7 +2265,13 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0.00%')
+                    };
+                } else {
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(this, "#.##;-#.##") + getXYAxisUnit(type, position)
+                    }
                 }
             }
 
@@ -2216,7 +2314,7 @@ Data.Utils = {
                 if (position === constants.DASHBOARD_AXIS) {
                     config.dashboard_unit !== "" && (unit = unit + config.dashboard_unit)
                 }
-                return unit === "" ? unit : "(" + unit + ")";
+                return unit;
             }
 
             function getBandsStyles(styles, change) {
@@ -2318,6 +2416,7 @@ Data.Utils = {
             configs.plotOptions.force = true;
             configs.plotOptions.shadow = config.bubble_style !== constants.NO_PROJECT;
             configs.plotOptions.dataLabels.enabled = true;
+            configs.plotOptions.dataLabels.align = "inside";
             configs.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
             configs.chartType = "bubble";
             delete configs.xAxis;
@@ -2403,44 +2502,68 @@ Data.Utils = {
             }
 
             BI.each(configs.yAxis, function (idx, axis) {
+                var title = '';
                 switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
-                        axis.reversed = config.left_y_axis_reversed;
-                        axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
-                        formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
                         axis.labelStyle.color = axis.lineColor = axis.tickColor = configs.colors[0];
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            reversed: config.left_y_axis_reversed,
+                            enableMinorTick: config.enable_minor_tick,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
+                        });
+                        formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         break;
                     case constants.RIGHT_AXIS:
-                        axis.reversed = config.right_y_axis_reversed;
-                        axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
-                        formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
-                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
                         axis.labelStyle.color = axis.lineColor = axis.tickColor = configs.colors[1];
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            reversed: config.right_y_axis_reversed,
+                            enableMinorTick: config.enable_minor_tick,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS)
+                        });
+                        formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         break;
                     case constants.RIGHT_AXIS_SECOND:
-                        axis.reversed = config.right_y_axis_second_reversed;
-                        axis.formatter = formatTickInXYaxis(config.right_y_axis_second_style, constants.RIGHT_AXIS_SECOND);
-                        formatNumberLevelInYaxis(config.right_y_axis_second_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.right_y_axis_second_number_level, constants.RIGHT_AXIS_SECOND);
-                        axis.title.text = config.show_right_y_axis_second_title === true ? config.right_y_axis_second_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.right_y_axis_second_number_level, constants.RIGHT_AXIS_SECOND);
+                        axis.title.text = config.show_right_y_axis_second_title === true ? config.right_y_axis_second_title + title : title;
                         axis.title.rotation = constants.ROTATION;
                         axis.labelStyle.color = axis.lineColor = axis.tickColor = configs.colors[2];
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            reversed: config.right_y_axis_second_reversed,
+                            enableMinorTick: config.enable_minor_tick,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.right_y_axis_second_style, constants.RIGHT_AXIS_SECOND)
+                        });
+                        formatNumberLevelInYaxis(config.right_y_axis_second_number_level, idx);
                         break;
                 }
             });
-            configs.xAxis[0].title.text = config.x_axis_title;
-            configs.xAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
+
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(configs.xAxis[0], {
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick,
+                labelRotation: config.text_direction,
+                enableMinorTick: config.enable_minor_tick,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0
+            });
 
             var lineItem = [];
             var otherItem = [];
@@ -2541,7 +2664,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -2639,7 +2764,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -2784,6 +2911,9 @@ Data.Utils = {
                 position: "left"
             }];
 
+            var yTitle = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
+            var xTitle = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
+
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -2812,18 +2942,27 @@ Data.Utils = {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
-            configs.yAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
-            configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + yTitle : yTitle;
             configs.yAxis[0].title.rotation = constants.ROTATION;
+            BI.extend(configs.yAxis[0], {
+                gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                labelRotation: config.text_direction,
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick
+            });
 
-            configs.yAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS);
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
-            configs.xAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + xTitle : xTitle;
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(config.xAxis[0], {
+                formatter: formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS),
+                gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                showLabel: config.show_label,
+                enableTick: config.enable_tick,
+                lineWidth: config.line_width,
+                enableMinorTick: config.enable_minor_tick
+            });
+
             configs.chartType = "bar";
             return BI.extend(configs, {
                 series: items
@@ -2985,7 +3124,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -3023,6 +3164,9 @@ Data.Utils = {
                 gridLineWidth: 0,
                 position: "left"
             }];
+            var yTitle = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
+            var xTitle = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
+
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -3053,21 +3197,36 @@ Data.Utils = {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
-            configs.plotOptions.tooltip.formatter.valueFormat = "function(){if(this > 0){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];} else {return window.FR ? (-1) * FR.contentFormat(arguments[0], '#.##') : (-1) * arguments[0];}}";
+            configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                if (this > 0) {
+                    return BI.contentFormat(arguments[0], '#.##')
+                } else {
+                    return (-1) * BI.contentFormat(arguments[0], '#.##')
+                }
+            };
 
-
-            configs.yAxis[0].title.text = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
-            configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + yTitle : yTitle;
             configs.yAxis[0].title.rotation = constants.ROTATION;
+            BI.extend(configs.yAxis[0], {
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick,
+                labelRotation: config.text_direction,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0
+            });
 
-            configs.yAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS);
-            formatNumberLevelInXaxis(config.left_y_axis_number_level);
-            configs.xAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+
+            configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + xTitle : xTitle;
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(configs.xAxis[0], {
+                lineWidth: config.line_width,
+                showLabel: config.show_label,
+                enableTick: config.enable_tick,
+                enableMinorTick: config.enable_minor_tick,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                formatter: formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS)
+            });
+            formatNumberLevelInXaxis(config.left_y_axis_number_level);
+
             configs.chartType = "bar";
             return BI.extend(configs, {
                 series: items
@@ -3227,10 +3386,14 @@ Data.Utils = {
                         } else {
                             formatter += '%';
                         }
-                        return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "').substring(1) : arguments[0].substring(1);}"
+                        return function () {
+                            if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return BI.contentFormat(arguments[0], formatter).substring(1)
+                        }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (FR.contentFormat(arguments[0], '" + formatter + "') + '').substring(1) : (arguments[0] + '').substring(1);}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (BI.contentFormat(arguments[0], formatter) + '').substring(1)
+                }
             }
         }
 
@@ -3267,6 +3430,8 @@ Data.Utils = {
                 gridLineWidth: 0,
                 position: "left"
             }];
+            var xTitle = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
+
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -3301,17 +3466,27 @@ Data.Utils = {
             //分类轴
 
             configs.show_left_y_axis_title === true && (configs.yAxis[0].title.text = config.x_axis_title);
-            configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.yAxis[0].title.rotation = constants.ROTATION;
-            configs.yAxis[0].labelRotation = config.text_direction;
+            BI.extend(config.yAxis[0], {
+                gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                labelRotation: config.text_direction,
+                enableTick: config.enable_tick,
+                lineWidth: config.line_width
+            });
 
             //值轴
-            configs.xAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS);
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
-            configs.xAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.left_y_axis_title + configs.xAxis[0].title.text : configs.xAxis[0].title.text;
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.left_y_axis_title + xTitle : xTitle;
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(config.xAxis[0], {
+                formatter: formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS),
+                gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                enableTick: config.enable_tick,
+                showLabel: config.show_label,
+                lineWidth: config.line_width,
+                enableMinorTick: config.enable_minor_tick
+            });
+
             configs.chartType = "bar";
             return BI.extend(configs, {
                 series: items
@@ -3473,7 +3648,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -3510,6 +3687,8 @@ Data.Utils = {
                 position: "left",
                 gridLineWidth: 0
             }];
+            var yTitle = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -3532,20 +3711,28 @@ Data.Utils = {
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
 
-
-            configs.yAxis[0].reversed = config.left_y_axis_reversed;
-            configs.yAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
-            configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + yTitle : yTitle;
             configs.yAxis[0].title.rotation = constants.ROTATION;
+            BI.extend(configs.yAxis[0], {
+                lineWidth: config.line_width,
+                showLabel: config.show_label,
+                enableTick: config.enable_tick,
+                enableMinorTick: config.enable_minor_tick,
+                reversed: config.left_y_axis_reversed,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
+            });
 
-            configs.xAxis[0].title.text = config.x_axis_title;
-            configs.xAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(configs.xAxis[0], {
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick,
+                labelRotation: config.text_direction,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0
+            });
+
             configs.chartType = "area";
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${VALUE}";
             return BI.extend(configs, {
@@ -3636,7 +3823,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    }
                 }
             }
 
@@ -3710,7 +3899,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -3748,6 +3939,8 @@ Data.Utils = {
                 position: "left",
                 gridLineWidth: 0
             }];
+            var yTitle = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -3765,20 +3958,28 @@ Data.Utils = {
                 delete configs.zoom.zoomType;
             }
 
-
-            configs.yAxis[0].reversed = config.left_y_axis_reversed;
-            configs.yAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
-            configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + yTitle : yTitle;
             configs.yAxis[0].title.rotation = constants.ROTATION;
+            BI.extend(configs.yAxis[0], {
+                lineWidth: config.line_width,
+                showLabel: config.show_label,
+                enableTick: config.enable_tick,
+                enableMinorTick: config.enable_minor_tick,
+                reversed: config.left_y_axis_reversed,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
+            });
 
-            configs.xAxis[0].title.text = config.x_axis_title;
-            configs.xAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(configs.xAxis[0], {
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick,
+                enableMinorTick: config.enable_minor_tick,
+                labelRotation: config.text_direction,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0
+            });
 
             return BI.extend(configs, {
                 series: items
@@ -3868,7 +4069,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -3954,7 +4157,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -4058,26 +4263,38 @@ Data.Utils = {
                 delete configs.zoom.zoomType;
             }
 
-
             BI.each(configs.yAxis, function (idx, axis) {
+                var title = '';
                 switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
-                        axis.reversed = false;
-                        axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
                         formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
+                        BI.extend(axis, {
+                            reversed: false,
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            enableMinorTick: config.enable_minor_tick,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
+                        });
                         break;
                     case constants.RIGHT_AXIS:
-                        axis.reversed = true;
-                        axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
                         formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
-                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
+                        BI.extend(axis, {
+                            reversed: true,
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            enableMinorTick: config.enable_minor_tick,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS)
+                        });
                         break;
                 }
                 var res = _calculateValueNiceDomain(0, maxes[axis.axisIndex]);
@@ -4086,12 +4303,15 @@ Data.Utils = {
                 axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
             });
 
-            configs.xAxis[0].title.text = config.x_axis_title;
-            configs.xAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
-
+            BI.extend(configs.xAxis[0], {
+                labelRotation: config.text_direction,
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick,
+                enableMinorTick: config.enable_minor_tick,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0
+            });
 
             return BI.extend(configs, {
                 series: items
@@ -4234,7 +4454,9 @@ Data.Utils = {
                     }
                 });
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -4320,7 +4542,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -4357,6 +4581,8 @@ Data.Utils = {
                 position: "left",
                 gridLineWidth: 0
             }];
+            var yTitle = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -4386,20 +4612,29 @@ Data.Utils = {
                 delete configs.zoom.zoomType;
             }
 
-
-            configs.yAxis[0].reversed = config.left_y_axis_reversed;
-            configs.yAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.yAxis[0].title.text : configs.yAxis[0].title.text;
-            configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + yTitle : yTitle;
             configs.yAxis[0].title.rotation = constants.ROTATION;
+            BI.extend(config.yAxis[0], {
+                lineWidth: config.line_width,
+                showLabel: config.show_label,
+                enableTick: config.enable_tick,
+                reversed: config.left_y_axis_reversed,
+                enableMinorTick: config.enable_minor_tick,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
+            });
 
-            configs.xAxis[0].title.text = config.x_axis_title;
-            configs.xAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(config.xAxis[0], {
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick,
+                labelRotation: config.text_direction,
+                enableMinorTick: config.enable_minor_tick,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0
+            });
+
             configs.chartType = "area";
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
             return BI.extend(configs, {
@@ -4490,7 +4725,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -4564,7 +4801,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -4645,31 +4884,49 @@ Data.Utils = {
 
 
             BI.each(configs.yAxis, function (idx, axis) {
+                var title = '';
                 switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
-                        axis.reversed = config.left_y_axis_reversed;
-                        axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
                         formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            enableMinorTick: config.enable_minor_tick,
+                            reversed: config.left_y_axis_reversed,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
+                        });
                         break;
                     case constants.RIGHT_AXIS:
-                        axis.reversed = config.right_y_axis_reversed;
-                        axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
                         formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
-                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            enableMinorTick: config.enable_minor_tick,
+                            reversed: config.right_y_axis_reversed,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS)
+                        });
                         break;
                 }
             });
-            configs.xAxis[0].labelRotation = config.text_direction;
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(configs.xAxis, {
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick,
+                enableMinorTick: self.config.enable_minor_tick,
+                labelRotation: config.text_direction,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0
+            });
 
             return BI.extend(configs, {
                 series: items
@@ -4736,7 +4993,7 @@ Data.Utils = {
                 })
             }
 
-            function formatChartLineStyle(){
+            function formatChartLineStyle() {
                 switch (config.chart_line_type) {
                     case BICst.CHART_SHAPE.RIGHT_ANGLE:
                         configs.plotOptions.curve = false;
@@ -4774,7 +5031,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -4860,7 +5119,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -4947,32 +5208,48 @@ Data.Utils = {
                 delete configs.zoom.zoomType;
             }
             BI.each(configs.yAxis, function (idx, axis) {
+                var title = '';
                 switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
-                        axis.reversed = config.left_y_axis_reversed;
-                        axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
                         formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            enableMinorTick: config.enable_minor_tick,
+                            reversed: config.left_y_axis_reversed,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
+                        });
                         break;
                     case constants.RIGHT_AXIS:
-                        axis.reversed = config.right_y_axis_reversed;
-                        axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
                         formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
-                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            enableMinorTick: config.enable_minor_tick,
+                            reversed: config.right_y_axis_reversed,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS)
+                        });
                         break;
                 }
             });
-            configs.xAxis[0].title.text = config.x_axis_title;
-            configs.xAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(configs.xAxis[0], {
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick,
+                labelRotation: config.text_direction,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0,
+            });
 
             return BI.extend(configs, {
                 series: items
@@ -5059,7 +5336,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -5145,7 +5424,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -5163,10 +5444,13 @@ Data.Utils = {
                 labelStyle: {
                     "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
-                formatter: "function(){if(this>0) return this; else return this*(-1); }",
+                formatter: function () {
+                    if (this > 0) return this; else return this * (-1);
+                },
                 gridLineWidth: 0,
                 position: "bottom"
             }];
+            var title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
 
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
@@ -5191,8 +5475,7 @@ Data.Utils = {
             configs.radiusAxis = radiusAxis;
             configs.radiusAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.radiusAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.radiusAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.radiusAxis[0].title.text : configs.radiusAxis[0].title.text;
+            configs.radiusAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
             configs.radiusAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "radar";
             configs.plotOptions.columnType = true;
@@ -5243,7 +5526,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -5329,7 +5614,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -5347,10 +5634,13 @@ Data.Utils = {
                 labelStyle: {
                     "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
-                formatter: "function(){if(this>0) return this; else return this*(-1); }",
+                formatter: function () {
+                    if (this > 0) return this; else return this * (-1);
+                },
                 gridLineWidth: 0,
                 position: "bottom"
             }];
+            var title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
 
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
@@ -5375,8 +5665,7 @@ Data.Utils = {
             configs.radiusAxis = radiusAxis;
             configs.radiusAxis[0].formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.radiusAxis[0].title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-            configs.radiusAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + configs.radiusAxis[0].title.text : configs.radiusAxis[0].title.text;
+            configs.radiusAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
             configs.radiusAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "radar";
             delete configs.xAxis;
@@ -5426,7 +5715,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -5512,7 +5803,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -5598,33 +5891,51 @@ Data.Utils = {
             }
 
             BI.each(configs.yAxis, function (idx, axis) {
+                var title = '';
                 switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
-                        axis.reversed = config.left_y_axis_reversed;
-                        axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
                         formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            enableMinorTick: config.enable_minor_tick,
+                            reversed: config.left_y_axis_reversed,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
+                        });
                         break;
                     case constants.RIGHT_AXIS:
-                        axis.reversed = config.right_y_axis_reversed;
-                        axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
                         formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
-                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLable: config.show_label,
+                            enableTick: config.enable_tick,
+                            enableMinorTick: config.enable_minor_tick,
+                            reversed: config.right_y_axis_reversed,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS)
+                        });
                         break;
                 }
             });
 
-            configs.xAxis[0].title.text = config.x_axis_title;
             configs.xAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(configs.xAxis[0], {
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick,
+                labelRotation: config.text_direction,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0
+            });
+
             configs.chartType = "area";
             return BI.extend(configs, {
                 series: items
@@ -5678,7 +5989,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -5764,7 +6077,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
 
             function formatCordon() {
@@ -5897,32 +6212,49 @@ Data.Utils = {
             }
 
             BI.each(configs.yAxis, function (idx, axis) {
+                var title = '';
                 switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
-                        axis.reversed = config.left_y_axis_reversed;
-                        axis.formatter = formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS);
                         formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
-                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
+                        axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            enableMinorTick: config.enable_minor_tick,
+                            reversed: config.left_y_axis_reversed,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
+                        });
                         break;
                     case constants.RIGHT_AXIS:
-                        axis.reversed = config.right_y_axis_reversed;
-                        axis.formatter = formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS);
                         formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
-                        axis.title.text = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
-                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + axis.title.text : axis.title.text;
-                        axis.gridLineWidth = config.show_grid_line === true ? 1 : 0;
+                        title = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
+                        axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
+                        BI.extend(axis, {
+                            lineWidth: config.line_width,
+                            showLabel: config.show_label,
+                            enableTick: config.enable_tick,
+                            enableMinorTIck: config.enable_minor_tick,
+                            reversed: config.right_y_axis_reversed,
+                            gridLineWidth: config.show_grid_line === true ? 1 : 0,
+                            formatter: formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS)
+                        });
                         break;
                 }
             });
-            configs.xAxis[0].title.text = config.x_axis_title;
-            configs.xAxis[0].labelRotation = config.text_direction;
-            configs.xAxis[0].title.text = config.show_x_axis_title === true ? configs.xAxis[0].title.text : "";
+            configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            BI.extend(configs.xAxis[0], {
+                lineWidth: config.line_width,
+                enableTick: config.enable_tick,
+                enableMinorTick: config.enable_minor_tick,
+                labelRotation: config.text_direction,
+                gridLineWidth: config.show_grid_line === true ? 1 : 0
+            });
 
             return BI.extend(configs, {
                 series: items
@@ -6009,7 +6341,9 @@ Data.Utils = {
                     })
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%')
+                    };
                 }
             }
 
@@ -6095,7 +6429,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (-1) * FR.contentFormat(arguments[0], '" + formatter + "') : (-1) * arguments[0];}"
+                return function () {
+                    if (this >= 0) return BI.contentFormat(arguments[0], formatter); else return (-1) * BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -6219,6 +6555,18 @@ Data.Utils = {
                 return item;
             }
 
+            function contentFormat() {
+                return BI.contentFormat(arguments[0], '')
+            }
+
+            function contentFormat2Decimal() {
+                return BI.contentFormat(arguments[0], '#.##')
+            }
+
+            function contentFormatPercentage() {
+                return BI.contentFormat(arguments[0], '#.##%')
+            }
+
             function combineConfig() {
                 return {
                     "plotOptions": {
@@ -6234,13 +6582,13 @@ Data.Utils = {
                             "style": "{fontFamily:'inherit', color: #808080, fontSize: 12pt}",
                             "formatter": {
                                 "identifier": "${VALUE}",
-                                "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                                "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                                "valueFormat": contentFormat2Decimal,
+                                "seriesFormat": contentFormat,
+                                "percentFormat": contentFormatPercentage,
+                                "categoryFormat": contentFormat,
+                                "XFormat": contentFormat2Decimal,
+                                "YFormat": contentFormat2Decimal,
+                                "sizeFormat": contentFormat2Decimal
                             },
                             "align": "outside",
                             "enabled": false
@@ -6248,10 +6596,10 @@ Data.Utils = {
                         "percentageLabel": {
                             "formatter": {
                                 "identifier": "${PERCENT}",
-                                "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                                "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                                "valueFormat": contentFormat2Decimal,
+                                "seriesFormat": contentFormat,
+                                "percentFormat": contentFormatPercentage,
+                                "categoryFormat": contentFormat
                             },
                             "style": {
                                 "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
@@ -6264,10 +6612,10 @@ Data.Utils = {
                         "valueLabel": {
                             "formatter": {
                                 "identifier": "${SERIES}${VALUE}",
-                                "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                                "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                                "valueFormat": contentFormat2Decimal,
+                                "seriesFormat": contentFormat,
+                                "percentFormat": contentFormatPercentage,
+                                "categoryFormat": contentFormat
                             },
                             "backgroundColor": "rgb(255,255,0)",
                             "style": {
@@ -6282,10 +6630,10 @@ Data.Utils = {
                         "seriesLabel": {
                             "formatter": {
                                 "identifier": "${CATEGORY}",
-                                "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                                "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                                "valueFormat": contentFormat2Decimal,
+                                "seriesFormat": contentFormat,
+                                "percentFormat": contentFormatPercentage,
+                                "categoryFormat": contentFormat
                             },
                             "style": {
                                 "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
@@ -6309,12 +6657,12 @@ Data.Utils = {
                             "formatter": {
                                 "identifier": "${SERIES}${X}${Y}${SIZE}{CATEGORY}${SERIES}${VALUE}",
                                 "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];}",
-                                "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                                "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                                "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                                "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
+                                "seriesFormat": contentFormat,
+                                "percentFormat": contentFormatPercentage,
+                                "categoryFormat": contentFormat,
+                                "XFormat": contentFormat2Decimal,
+                                "sizeFormat": contentFormat2Decimal,
+                                "YFormat": contentFormat2Decimal
                             },
                             "shared": false,
                             "padding": 5,
@@ -6335,7 +6683,6 @@ Data.Utils = {
                         },
                         "maxSize": 70,
                         "fillColorOpacity": 0.5,
-                        "marker": {"symbol": "circle", "radius": 4.5, "enabled": true},
                         "step": false,
                         "force": false,
                         "minSize": 15,
@@ -6378,7 +6725,7 @@ Data.Utils = {
                         enabled: false,
                         "borderColor": "rgb(0,0,0)",
                         "borderWidth": 1,
-                        "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                        "formatter": contentFormat2Decimal,
                         style: {
                             "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                         }
