@@ -161,7 +161,7 @@ public class ServerTableSource extends DBTableSource {
                     Object value = null;
                     switch (columns[j].getFieldType()) {
                         case DBConstant.COLUMN.NUMBER:
-                            value = v == null || v == Primitive.NULL ? null : (Number) v;
+                            value = v == null || v == Primitive.NULL ? null : int2Long((Number) v);
                             break;
                         case DBConstant.COLUMN.DATE:
                             value = v == null || v == Primitive.NULL ? null : ((Date) v).getTime();
@@ -178,6 +178,14 @@ public class ServerTableSource extends DBTableSource {
                     }
                 }
             });
+        }
+    }
+
+    private Number int2Long(Number value) {
+        if (value instanceof Integer) {
+            return value.longValue();
+        } else {
+            return value;
         }
     }
 

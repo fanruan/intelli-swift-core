@@ -59,6 +59,7 @@ public class BIFileUtils {
         return StableUtils.deleteFile(f);
     }
 
+    /*先给cube使用，看哪些文件会出现删除失败的情况*/
     public static List deleteFiles(File f) {
         List removedFailedFiles = new ArrayList();
         File[] files = f.listFiles();
@@ -72,7 +73,9 @@ public class BIFileUtils {
                     }
                 }
             }
-            f.delete();
+            if(!f.delete()) {
+                removedFailedFiles.add(f.getAbsolutePath());
+            }
         }
         return removedFailedFiles;
     }
