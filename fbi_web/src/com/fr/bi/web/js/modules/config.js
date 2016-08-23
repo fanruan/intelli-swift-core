@@ -1424,6 +1424,9 @@ BICst.DEFAULT_CHART_SETTING = {
     show_custom_scale: false,
     show_zoom: false,
     null_continue: true,
+    min_scale: "",
+    max_scale: "",
+    percentage_not_show: BICst.PERCENTAGE.NOT_SHOW,
     bubble_display: BICst.DISPLAY_RULES.DIMENSION,
     bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR
 };

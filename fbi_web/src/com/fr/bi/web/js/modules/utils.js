@@ -843,22 +843,22 @@
                 BICst.DEFAULT_CHART_SETTING.dashboard_unit;
         },
 
-        getWSMaxScaleByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.max_scale) ? ws.max_scale :
-                ""
-        },
-
         getWSMinScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.min_scale) ? ws.min_scale :
-                ""
+                BICst.DEFAULT_CHART_SETTING.min_scale
+        },
+
+        getWSMaxScaleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.max_scale) ? ws.max_scale :
+                BICst.DEFAULT_CHART_SETTING.max_scale
         },
 
         getWSShowPercentageByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_percentage) ? ws.show_percentage :
-                BICst.PERCENTAGE.NOT_SHOW
+                BICst.DEFAULT_CHART_SETTING.percentage_not_show
         },
 
         getWSXAxisUnitByID: function (wid) {
