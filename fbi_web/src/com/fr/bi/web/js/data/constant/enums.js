@@ -215,7 +215,8 @@ BICst.TARGET_COMBO = {
     DELETE: 407,
     INFO: 408,
     DEPEND_TYPE: 409,
-    CORDON: 410
+    CORDON: 410,
+    DATA_LABEL: 411
 };
 
 //明细表维度下拉选项
