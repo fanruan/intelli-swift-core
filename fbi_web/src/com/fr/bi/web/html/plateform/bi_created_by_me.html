@@ -78,9 +78,12 @@
                     reports: FR.encrypt(FR.jsonEncode(reports), "neilsx"),
                     users: FR.encrypt(FR.jsonEncode(users), "neilsx"),
                     edit_shared: isEdit === true
-                }, function () {
-                    if(isEdit !== true) {
-                        refreshFolderAndReportData();
+                }, function (res) {
+                    if(BI.isNotNull(res.result)) {
+                        BI.Msg.toast(BI.i18nText("BI-Share_Successfully"));
+                        if(isEdit !== true) {
+                            refreshFolderAndReportData();
+                        }
                     }
                 });
             });
@@ -88,6 +91,10 @@
                 BI.requestAsync("fr_bi", "report_hangout", {
                     id: id,
                     status: status
+                }, function(res) {
+                    if(BI.isNotNull(res.result)) {
+                        BI.Msg.toast(BI.i18nText("BI-Hanging_Out_Report_Success"));
+                    }
                 });
             });
 
