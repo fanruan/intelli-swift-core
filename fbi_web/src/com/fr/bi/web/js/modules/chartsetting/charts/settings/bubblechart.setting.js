@@ -58,7 +58,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "attr-names",
             textAlign: "left",
             text: BI.i18nText("BI-Color_Setting"),
-            height: 20
+            height: 30
         });
 
         this.fixedColorSetting = BI.createWidget({
@@ -101,7 +101,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "attr-names",
             textAlign: "left",
             text: BI.i18nText("BI-Color_Setting"),
-            height: 20
+            height: 30
         });
 
         this.gradientColorSetting = BI.createWidget({
