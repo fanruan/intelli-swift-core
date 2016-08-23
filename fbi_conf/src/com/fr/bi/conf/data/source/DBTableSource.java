@@ -6,6 +6,7 @@ import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.log.BILogManager;
@@ -58,6 +59,7 @@ public class DBTableSource extends AbstractTableSource {
     @BICoreField
     protected String tableName;
     protected UpdateSettingSource updateSettingSource;
+    @BIIgnoreField
     protected com.fr.data.impl.Connection connection;
 
     public DBTableSource() {
