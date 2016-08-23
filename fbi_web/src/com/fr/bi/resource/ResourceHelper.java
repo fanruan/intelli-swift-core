@@ -669,6 +669,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/finebiservice/finebiservice.css",
 
                 //业务包分组
+                "com/fr/bi/web/css/modules/businesspackagegroup/pane.ungroup.and.group.businesspackage.css",
                 "com/fr/bi/web/css/modules/businesspackagegroup/buttons/button.businesspackage.css",
                 //维度与指标的匹配关系
                 "com/fr/bi/web/css/modules/matchingrelationship/infopane/settargetregion.infopane.css",

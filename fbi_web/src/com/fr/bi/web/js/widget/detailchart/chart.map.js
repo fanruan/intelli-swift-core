@@ -25,7 +25,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
     },
 
     _formatConfig: function (config, items) {
-        var self = this, o = this.options, c = this.constants;
+        var self = this, c = this.constants;
         formatRangeLegend();
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
