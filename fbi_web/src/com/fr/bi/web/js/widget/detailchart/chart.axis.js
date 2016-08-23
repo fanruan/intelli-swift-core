@@ -93,7 +93,7 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                         showLabel: self.config.show_label,
                         enableTick: self.config.enable_tick,
                         reversed: self.config.right_y_axis_reversed,
-                        enableMinorTIck: self.config.enable_minor_tick,
+                        enableMinorTick: self.config.enable_minor_tick,
                         formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level),
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0
                     });
