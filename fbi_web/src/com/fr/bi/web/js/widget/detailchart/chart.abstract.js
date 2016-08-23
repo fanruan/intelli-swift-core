@@ -184,7 +184,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             }
         }
         formatter += ";-" + formatter;
-        return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
+        return function(){return BI.contentFormat(arguments[0], formatter)}
     },
 
     _formatItems: function (items) {
