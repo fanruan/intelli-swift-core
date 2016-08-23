@@ -125,8 +125,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         }
 
         function changeMaxMinScale() {
-            self.gaugeAxis[0].max = self.config.max_scale === "" ? self.gaugeAxis[0].max : self.config.max_scale;
-            self.gaugeAxis[0].min = self.config.min_scale === "" ? self.gaugeAxis[0].min : self.config.min_scale;
+            self.gaugeAxis[0].min = self.config.min_scale || self.gaugeAxis[0].min;
+            self.gaugeAxis[0].max = self.config.max_scale || self.gaugeAxis[0].max;
         }
 
         function formatNumberLevelInYaxis(type, position) {
@@ -300,8 +300,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             number_of_pointer: options.number_of_pointer || c.ONE_POINTER,
             bands_styles: options.style_conditions || [],
             auto_custom_style: options.auto_custom || c.AUTO,
-            max_scale: options.max_scale || "",
-            min_scale: options.min_scale || "",
+            min_scale: options.min_scale,
+            max_scale: options.max_scale,
             show_percentage: options.show_percentage || c.NOT_SHOW
         };
         o.items = this._formatItems(items);
