@@ -190,7 +190,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     }
 
     /**
-     * Detail: ��compoundTable�Ĺ��������ӱ���ֶ���ȡ����
+     * Detail: 测试compoundTable的字表relation
      * Author:Connery
      * Date:2016/6/20
      */

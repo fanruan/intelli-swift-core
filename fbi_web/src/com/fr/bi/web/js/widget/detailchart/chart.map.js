@@ -52,6 +52,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         if (this.config.initDrillPath.length > 1) {
             config.initDrillPath = this.config.initDrillPath;
         }
+        config.dTools.enabled = true;
         config.dTools.click = function (point) {
             point = point || {};
             var pointOption = point.pointOption || {};

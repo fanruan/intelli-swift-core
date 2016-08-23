@@ -59,6 +59,26 @@ public class BIFileUtils {
         return StableUtils.deleteFile(f);
     }
 
+    public static List deleteFiles(File f) {
+        List removedFailedFiles = new ArrayList();
+        File[] files = f.listFiles();
+        if (null!=files) {
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    deleteFiles(files[i]);
+                } else {
+                    if (!BIFileUtils.delete(files[i])) {
+                        removedFailedFiles.add(files[i].getAbsolutePath());
+                    }
+                }
+            }
+            if(!f.delete()) {
+                removedFailedFiles.add(f.getAbsolutePath());
+            }
+        }
+        return removedFailedFiles;
+    }
+
     public static void createDirs(File f) {
         StableUtils.mkdirs(f);
     }
