@@ -88,9 +88,9 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         }
     }
 
-    /*�������£�
-* �Ȳ��룺{id��1��name��China;ID:2,name��US}
-* �ټ���:{id:3,name:Japan,id:4,name:Canada��id��5��name��Mexio}*/
+    /*增量更新：
+* 先插入：{id：1，name：China;ID:2,name：US}
+* 再加入:{id:3,name:Japan,id:4,name:Canada，id：5，name：Mexio}*/
     public void testPartUpdate() throws BICubeColumnAbsentException {
 
         CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(BINationDataFactory.createTableNationByPart()));
@@ -116,7 +116,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     }
 
     /**
-     * �״�ȫ�����£�֮�󲻸���
+     * 首次全量更新，之后不更新
      * @throws BICubeColumnAbsentException
      */
     public void testNeverTransportTable() throws BICubeColumnAbsentException, URISyntaxException {
