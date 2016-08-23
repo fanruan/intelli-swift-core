@@ -70,7 +70,6 @@ public class CubeRunner {
                     finish();
                     setStatue(Status.LOADED);
                     BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
-                    /*耗时比较久,先屏蔽掉*/
                 }
             }
         });

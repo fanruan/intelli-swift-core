@@ -107,7 +107,7 @@ public class BuildCubeTask implements CubeTask {
         try {
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
             if (!cubeBuild.replaceOldCubes()){
-                BILogger.getLogger().error("rename cube files failed");
+                BILogger.getLogger().error("replace cube files failed");
             }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());

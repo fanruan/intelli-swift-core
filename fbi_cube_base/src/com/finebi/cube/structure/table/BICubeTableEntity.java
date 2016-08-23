@@ -121,7 +121,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
         columnService.addOriginalDataValue(rowNumber, value);
     }
 
-    public List<ICubeFieldSource> getAllFields() {
+    private List<ICubeFieldSource> getAllFields() {
         return tableProperty.getFieldInfo();
     }
 

@@ -64,8 +64,6 @@ public class CubeTaskHelper {
         return taskAddResult;
     }
 
-
-
     private static boolean isPart(long userId) {
         Set<BIBusinessTable> newTables = BICubeGenerateUtils.getTables4CubeGenerate(userId);
         Set<BITableRelation> newRelationSet = BICubeGenerateUtils.getRelations4CubeGenerate(userId);
