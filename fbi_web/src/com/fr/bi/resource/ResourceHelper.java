@@ -1096,6 +1096,28 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
                 "com/fr/bi/web/js/modules/filter/auth/filter.authority.js",
 
+                //数据标签
+                "com/fr/bi/web/js/modules/datalabel/datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/datalab.methods.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/tab.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/imageset.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/styleset.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/chart.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/filter.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/common/item.numberfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/common/item.stringfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/common/factory.filteritem.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/group.condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/common/item.notypefieldl.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/common/widget.datalabelselectfield.js",
+                "com/fr/bi/web/js/modules/datalabel/filter/filter.js",
+                "com/fr/bi/web/js/modules/datalabel/filter/expander.js",
+                "com/fr/bi/web/js/modules/datalabel/filter/operation.filter.js",
+                "com/fr/bi/web/js/modules/datalabel/filter/pane.filter.js",
+                "com/fr/bi/web/js/modules/datalabel/filter/expander.filter.js",
                 //计算指标
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/calculatetargetpopup.summary.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/model.calculatetargetpopup.summary.js",
@@ -1392,6 +1414,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/fragments/multirelation/item.multirelation.js",
                 "com/fr/bi/web/js/fragments/multirelation/item.tablefield.multirelation.js",
                 "com/fr/bi/web/js/fragments/multirelation/view.searcher.multirelation.js",
+
+                //标签样式面板
+                "com/fr/bi/web/js/modules/datalabel/datalabel.popup.js",
 
                 //业务包面板
                 "com/fr/bi/web/js/modules/onepackage/onepackagetablespane/widget.packagetables.pane.js",
@@ -1840,6 +1865,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/image/button/upload.css",
                 "com/fr/bi/web/css/widget/image/button/href/image.button.href.css",
                 "com/fr/bi/web/css/widget/image/button/size/image.button.size.css",
+
+                //数据标签
+                "com/fr/bi/web/css/modules/datalabel/datalabel.css",
+                "com/fr/bi/web/css/modules/datalabel/condition/datalabel.condition.css",
+                "com/fr/bi/web/css/modules/datalabel/condition/datalabel.conditionitem.css",
+                "com/fr/bi/web/css/modules/datalabel/tab/datalabel.imageset.css",
+                "com/fr/bi/web/css/modules/datalabel/tab/datalabel.texttoolbar.css",
+                "com/fr/bi/web/css/modules/datalabel/tab/datalabel.barchart.css",
 
                 //可选下拉树
                 "com/fr/bi/web/css/widget/selecttree/combo.select.tree.css",
