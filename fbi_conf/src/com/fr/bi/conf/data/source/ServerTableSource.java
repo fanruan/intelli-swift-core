@@ -189,6 +189,12 @@ public class ServerTableSource extends DBTableSource {
         }
     }
 
+    @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount) {
+        oldCount = dealWithInsert(traversal, fields, SQL, oldCount, connection);
+        return oldCount;
+    }
+
     private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, ICubeFieldSource[] fields) {
         SQLStatement sql = new SQLStatement(connect);
         sql.setFrom("(" + query + ") " + "t");

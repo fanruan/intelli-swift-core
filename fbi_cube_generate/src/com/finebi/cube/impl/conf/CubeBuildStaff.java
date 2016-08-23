@@ -96,7 +96,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
         Set<BITableRelation> result = new HashSet<BITableRelation>();
         while (iterator.hasNext()) {
             BITableRelation tableRelation = iterator.next();
-            if (istableRelationValid(tableRelation)) {
+            if (isTableRelationValid(tableRelation)) {
                 result.add(tableRelation);
             }
         }
@@ -116,9 +116,9 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
         this.relationPaths = relationPaths;
     }
 
-    private Set<BITableSourceRelation> convertRelations(Set<BITableRelation> connectionSet) {
+    private Set<BITableSourceRelation> convertRelations(Set<BITableRelation> relationSet) {
         Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
-        for (BITableRelation relation : connectionSet) {
+        for (BITableRelation relation : relationSet) {
             try {
                 BITableSourceRelation tableSourceRelation = convertRelation(relation);
                 if (null != tableSourceRelation) {

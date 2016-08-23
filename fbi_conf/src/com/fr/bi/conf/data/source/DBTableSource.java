@@ -6,6 +6,7 @@ import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.log.BILogManager;
@@ -31,7 +32,6 @@ import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
-import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -59,6 +59,8 @@ public class DBTableSource extends AbstractTableSource {
     @BICoreField
     protected String tableName;
     protected UpdateSettingSource updateSettingSource;
+    @BIIgnoreField
+    protected com.fr.data.impl.Connection connection;
 
     public DBTableSource() {
         super();
@@ -91,6 +93,7 @@ public class DBTableSource extends AbstractTableSource {
     public static void main(String[] args) {
 
     }
+
 
     /**
      * @return
@@ -178,13 +181,13 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount) {
-        oldCount = dealWithInsert(traversal, fields, SQL, oldCount);
+        oldCount = dealWithInsert(traversal, fields, SQL, oldCount, connection);
         return oldCount;
     }
 
 
 
-    private long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long rowCount) {
+    protected long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long rowCount, com.fr.data.impl.Connection connection ) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
         try {
@@ -193,7 +196,6 @@ public class DBTableSource extends AbstractTableSource {
                 BILogger.getLogger().error("SQL syntax error");
                 return 0;
             }
-            com.fr.data.impl.Connection connection = DatasourceManager.getInstance().getConnection(this.getDbName());
             SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
             sqlStatement.setSql(SQL);
             rowCount = DBQueryExecutor.getInstance().runSQL(sqlStatement, fields, new Traversal<BIDataValue>() {
@@ -342,6 +344,13 @@ public class DBTableSource extends AbstractTableSource {
         writer.end();
     }
 
-    
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
 
 }

@@ -39,9 +39,9 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
                 TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
                 tableEntityService.recordRemovedLine(sortRemovedList);
                 tableEntityService.recordRowCount(count);
-                tableEntityService.clear();
             }
             tableEntityService.addVersion(version);
+            tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
             if (null != tableSource.getPersistentTable()) {
                 System.out.println("table usage:" + tableCostTime);

@@ -1,13 +1,10 @@
 package com.fr.bi.cal.generate;
 
-import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
-import com.finebi.cube.security.CubeSecurityCheck;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
@@ -172,7 +169,6 @@ public class CubeRunner {
     private void finish() {
         setStatue(Status.REPLACING);
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
-        CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         long start = System.currentTimeMillis();
         BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
@@ -180,17 +176,7 @@ public class CubeRunner {
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
         BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
-        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
-        String path = new File(advancedConf.getRootURI().getPath()).getParent() +File.separatorChar+ "crc_sum";
-        CubeSecurityCheck securityCheck = new CubeSecurityCheck(path);
-        if (new File(path).exists()) {
-            securityCheck.useLeastSum();
-            boolean check = securityCheck.check(advancedConf.getRootURI().getPath());
-            if (!check) {
-                BILogger.getLogger().info("the cube has been changed");
-            }
-        }
-        securityCheck.saveResult();
+
     }
 
 
