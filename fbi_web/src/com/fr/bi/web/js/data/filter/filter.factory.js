@@ -1,25 +1,22 @@
 BI.FilterFactory = {
 
-    parseFilter: function(filter){
+    parseFilter: function(filterValue){
         var filter = null;
-        if(BI.has(filter, "filter_type")){
-            switch (filter.filter_type){
+        if(BI.has(filterValue, "filter_type")){
+            switch (filterValue.filter_type){
                 case BICst.FILTER_TYPE.AND:
-                    filter = new GeneralANDDimensionFilter();
+                    filter = new BI.GeneralAndFilter(filterValue.filter_value);
                     break;
                 case BICst.FILTER_TYPE.OR:
-                    filter = new GeneralORDimensionFilter();
+                    filter = new BI.GeneralOrFilter(filterValue.filter_value);
                     break;
                 case BICst.FILTER_TYPE.EMPTY_CONDITION:
-                    filter = new EmptyDimensionTargetValueFilter();
+                    filter = new BI.EmptyFilter();
                     break;
                 default:
-                    filter = new DimensionTargetValueFilter();
+                    filter = new BI.SingleFilter(filterValue.filter_value);
                     break;
             }
-        }
-        if (filter != null){
-            filter.parseJSON(jo, userId);
         }
         return filter;
     }
