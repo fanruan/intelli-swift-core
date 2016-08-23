@@ -18,6 +18,12 @@
                 }
             });
             return BI.isNotNull(res);
+        },
+
+        getFilterResult: function(array) {
+            return BI.filter(array, function(idx, val){
+                return this.isQualified(val, array);
+            });
         }
     }
 })();

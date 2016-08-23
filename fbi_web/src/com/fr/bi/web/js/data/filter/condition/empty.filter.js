@@ -6,7 +6,11 @@
     BI.EmptyFilter.prototype = {
         constructor: BI.EmptyFilter,
 
-        isQualified: function(value, array){
+        isQualified: function(){
+            return true;
+        },
+
+        getFilterResult: function() {
             return true;
         }
     }
