@@ -16,7 +16,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
-                warningTitle: BI.i18nText("BI-Disable_in_Big_Data_Mode"),
+                warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
                 cls: "style-set-h-font"
             }],
             [{
@@ -140,7 +140,6 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 if(minimalist) {
-                    items[this.constants.CordonPos][0].setWarningTitle(BI.i18nText("BI-Unmodified_in_Minimalist_Mode"));
                     item[this.constants.CordonPos][0].disabled = true
                 }
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
