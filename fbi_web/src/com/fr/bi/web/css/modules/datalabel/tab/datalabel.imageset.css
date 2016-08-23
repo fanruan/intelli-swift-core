@@ -13,9 +13,11 @@
 .image-set-tab-item.active {
   color: #009de3;
 }
-.image-set-delete.close-font .b-font:before {
+.image-set-delete.close-font {
   background-color: #e85050;
-  color: #1a1a1a;
+}
+.image-set-delete.close-font .b-font:before {
+  color: #ffffff;
 }
 .image-set-header {
   border-bottom: 1px solid #d4dadd;

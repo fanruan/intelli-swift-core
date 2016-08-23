@@ -1098,7 +1098,7 @@ public class ResourceHelper {
 
                 //数据标签
                 "com/fr/bi/web/js/modules/datalabel/datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/datalabmethods.js",
+                "com/fr/bi/web/js/modules/datalabel/datalab.methods.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/tab.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/texttoolbar.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.js",
@@ -1416,7 +1416,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/fragments/multirelation/view.searcher.multirelation.js",
 
                 //标签样式面板
-                "com/fr/bi/web/js/modules/datalabel/datalabelpopup.js",
+                "com/fr/bi/web/js/modules/datalabel/datalabel.popup.js",
 
                 //业务包面板
                 "com/fr/bi/web/js/modules/onepackage/onepackagetablespane/widget.packagetables.pane.js",
