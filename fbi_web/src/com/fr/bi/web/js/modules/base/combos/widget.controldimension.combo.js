@@ -39,6 +39,7 @@ BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
         var fieldName = BI.Utils.getFieldNameByID(BI.Utils.getFieldIDByDimensionID(o.dId));
 
         items[this.constants.FROM_POSITION][0].text = items[this.constants.FROM_POSITION][0].text + tableName + "." + fieldName;
+        items[this.constants.FROM_POSITION][0].tipType = "success";
 
         this.combo = BI.createWidget({
             type: "bi.down_list_combo",
