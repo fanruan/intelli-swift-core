@@ -45,7 +45,9 @@ public class BIDAOUtils {
             new TableDataDAOControl.ColumnColumn("id", String.class),
             new TableDataDAOControl.ColumnColumn("reportId", String.class),
             new TableDataDAOControl.ColumnColumn("createBy", String.class),
-            new TableDataDAOControl.ColumnColumn("shareTo", String.class)
+            new TableDataDAOControl.ColumnColumn("shareTo", String.class),
+            new TableDataDAOControl.ColumnColumn("createByName", String.class),
+            new TableDataDAOControl.ColumnColumn("shareToName", String.class)
     };
 
     private static BIReportDAO getReportDao(long userId) {

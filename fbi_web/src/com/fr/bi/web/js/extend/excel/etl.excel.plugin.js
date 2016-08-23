@@ -54,6 +54,8 @@ BI.ETLExcel = BI.inherit(BI.ETL, {
             top: 0,
             right: 0
         });
+
+        this.updateSetButton.setVisible(false);
     }
 });
 $.shortcut("bi.etl_excel", BI.ETLExcel);

@@ -4,7 +4,7 @@
 BI.BusinessUngroupAndGroupPane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.BusinessUngroupAndGroupPane.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-custom-group-all-fields-pane",
+            baseCls: "bi-business-ungroup-and-group-pane",
             enableCheckGroup: false,
             disableAdd: false,
             deleteInvisible: false,

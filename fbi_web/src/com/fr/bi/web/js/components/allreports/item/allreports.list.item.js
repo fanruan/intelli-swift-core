@@ -150,7 +150,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
             height: 40
         });
         this.reportName.on(BI.TextButton.EVENT_CHANGE, function () {
-            FS.tabPane.addItem({
+            window.top.FS.tabPane.addItem({
                 title: report.text,
                 src: FR.servletURL + report.buildUrl
             });

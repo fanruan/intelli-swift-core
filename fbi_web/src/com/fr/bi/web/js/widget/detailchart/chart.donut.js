@@ -13,7 +13,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.DonutChart.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             formatConfig: BI.bind(this._formatConfig, this),
@@ -25,7 +25,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
     },
 
     _formatConfig: function(config, items){
-        var self = this, o = this.options;
+        var self = this;
 
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
