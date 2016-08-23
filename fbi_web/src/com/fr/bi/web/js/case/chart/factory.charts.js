@@ -204,7 +204,7 @@ BI.ChartCombineFormatItemFactory = {
                 }
             },
             dTools: {
-                enabled: 'true',
+                enabled: false,
                 style: {
                     fontFamily: "Microsoft YaHei, Hiragino Sans GB W3",
                     color: "#1a1a1a",
@@ -233,7 +233,7 @@ BI.ChartCombineFormatItemFactory = {
                     "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#1a1a1a", "fontSize": "12px"
                 },
                 "position": "right",
-                "enabled": true
+                "enabled": false
             },
             "rangeLegend": {
                 "range": {
