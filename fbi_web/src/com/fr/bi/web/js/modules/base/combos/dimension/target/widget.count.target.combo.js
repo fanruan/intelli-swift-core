@@ -112,7 +112,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var minimalist = BI.Utils.getWSMinimalistByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
         children.push({
             text: BI.i18nText("BI-Total_Row_Count"),
-            value: BI.Utils.getCountFieldIDsOfTableID(tableId),
+            value: BI.Utils.getCountFieldIDsOfTableID(tableId)[0],
             cls: "dot-e-font"
         });
         BI.each(fieldIds, function(idx, fieldId){
