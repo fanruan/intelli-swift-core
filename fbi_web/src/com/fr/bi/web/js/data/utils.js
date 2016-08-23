@@ -1862,7 +1862,7 @@ Data.Utils = {
                         }
                     }
                 }
-                return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
+                return function(){return BI.contentFormat(arguments[0], formatter)}
             }
         }
 
@@ -2891,7 +2891,7 @@ Data.Utils = {
                 labelStyle: {
                     "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
-                formatter: "function(){if(this>0) return this; else return this*(-1); }",
+                formatter: function(){ return this > 0 ? this : (-1) * this },
                 gridLineWidth: 0
             }];
             var yAxis = [{
@@ -3145,7 +3145,7 @@ Data.Utils = {
                 labelStyle: {
                     "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
-                formatter: "function(){if(this>0) return this; else return this*(-1); }",
+                formatter: function(){ return this > 0 ? this : (-1) * this },
                 gridLineWidth: 0
             }];
             var yAxis = [{
@@ -3411,7 +3411,7 @@ Data.Utils = {
                 labelStyle: {
                     "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
-                formatter: "function(){if(this>0) return this; else return this*(-1); }",
+                formatter: function(){ return this > 0 ? this : (-1) * this },
                 gridLineWidth: 0
             }];
             var yAxis = [{
@@ -6656,7 +6656,7 @@ Data.Utils = {
                         "tooltip": {
                             "formatter": {
                                 "identifier": "${SERIES}${X}${Y}${SIZE}{CATEGORY}${SERIES}${VALUE}",
-                                "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];}",
+                                "valueFormat": contentFormat2Decimal,
                                 "seriesFormat": contentFormat,
                                 "percentFormat": contentFormatPercentage,
                                 "categoryFormat": contentFormat,

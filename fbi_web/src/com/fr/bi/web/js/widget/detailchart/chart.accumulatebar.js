@@ -20,7 +20,7 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
                 style: this.constants.FONT_STYLE
             },
             labelStyle: this.constants.FONT_STYLE,
-            formatter: "function(){if(this>0) return this; else return this*(-1); }",
+            formatter: function(){ return this > 0 ? this : (-1) * this },
             gridLineWidth: 0
         }];
         this.yAxis = [{
