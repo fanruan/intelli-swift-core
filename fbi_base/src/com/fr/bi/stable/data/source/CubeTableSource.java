@@ -94,7 +94,7 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
 
     long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end);
 
-    long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount,com.fr.data.impl.Connection connection);
+    long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount);
     /**
      * 获取某个字段的distinct值
      */

@@ -96,7 +96,7 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
     }
 
     @Override
-    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount,com.fr.data.impl.Connection connection) {
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
         return -1;
     }
 

@@ -38,15 +38,13 @@ public abstract class BISourceDataTransport extends BIProcessor {
     protected Cube cube;
     protected List<ITableKey> parents = new ArrayList<ITableKey>();
     protected long version = 0;
-    protected com.fr.data.impl.Connection connection;
 
-    public BISourceDataTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, com.fr.data.impl.Connection connection) {
+    public BISourceDataTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
         this.tableSource = tableSource;
         this.allSources = allSources;
         this.cube = cube;
         tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
         this.version = version;
-        this.connection=connection;
         initialParents(parentTableSource);
     }
 

@@ -56,7 +56,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     public void transport(CubeTableSource tableSource) {
         try {
             setUp();
-            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1,null);
+            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1);
             dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,9 +88,9 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         }
     }
 
-    /*增量更新：
-* 先插入：{id：1，name：China;ID:2,name：US}
-* 再加入:{id:3,name:Japan,id:4,name:Canada，id：5，name：Mexio}*/
+    /*�������£�
+* �Ȳ��룺{id��1��name��China;ID:2,name��US}
+* �ټ���:{id:3,name:Japan,id:4,name:Canada��id��5��name��Mexio}*/
     public void testPartUpdate() throws BICubeColumnAbsentException {
 
         CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(BINationDataFactory.createTableNationByPart()));
@@ -116,7 +116,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     }
 
     /**
-     * 首次全量更新，之后不更新
+     * �״�ȫ�����£�֮�󲻸���
      * @throws BICubeColumnAbsentException
      */
     public void testNeverTransportTable() throws BICubeColumnAbsentException, URISyntaxException {
@@ -159,9 +159,9 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         try {
             BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent();
             Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
-            new BISourceDataAllTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1,null).mainTask(null);
+            new BISourceDataAllTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1).mainTask(null);
             parents.add(tableSource.parent);
-            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents, 1,null);
+            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents, 1);
             dataTransport.mainTask(null);
 
 
@@ -190,7 +190,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     }
 
     /**
-     * Detail: ��compoundTable�Ĺ��������ӱ���ֶ���ȡ����
+     * Detail: 测试compoundTable的字表relation
      * Author:Connery
      * Date:2016/6/20
      */
@@ -199,9 +199,9 @@ public class BISourceDataTransportTest extends BICubeTestBase {
 
             BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent();
             Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
-            new BISourceDataAllTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1,null).mainTask(null);
+            new BISourceDataAllTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1).mainTask(null);
             parents.add(tableSource.parent);
-            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents, 1,null);
+            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents, 1);
             dataTransport.mainTask(null);
 
 

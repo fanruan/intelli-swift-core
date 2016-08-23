@@ -155,7 +155,7 @@ public class BICubeOperationManager {
                 if (!isGenerated(tableSource)) {
                     BIOperation<Object> operation = new BIOperation<Object>(
                             tableSource.getSourceID(),
-                            getDataTransportBuilder(cube, tableSource, originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource), getConnection(tableSource)));
+                            getDataTransportBuilder(cube, tableSource, originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource));
                     try {
@@ -431,7 +431,7 @@ public class BICubeOperationManager {
         return new BITableSourceBuildWatcher(tableEntityService);
     }
 
-    protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource tableUpdateSetting, com.fr.data.impl.Connection connection) {
+    protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource tableUpdateSetting) {
         CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
 /*若没有更新设置,按默认处理
 * 首次更新均为全局更新*/
@@ -439,15 +439,15 @@ public class BICubeOperationManager {
         ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
         Cube advancedCube = new BICube(resourceRetrievalService, discovery);
         if (null == tableUpdateSetting || !(advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable() && advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isCubeLastTimeAvailable())) {
-            return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version, connection);
+            return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         }
         /*若设置为不随全局更新的话，那就不更新*/
         else if (currentTask.getTaskType() == CubeTaskType.ALL && tableUpdateSetting.getTogetherOrNever() == DBConstant.SINGLE_TABLE_UPDATE.NEVER) {
-            return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version, connection);
+            return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
         } else {
             switch (tableUpdateSetting.getUpdateType()) {
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL: {
-                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version, connection);
+                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                 }
                 /*增量更新现在暂时只适用于SQL语句，其他数据集是不能用的*/
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
@@ -455,16 +455,16 @@ public class BICubeOperationManager {
                     resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
                     cube = new BICube(resourceRetrievalService, discovery);
                         if (tableSource instanceof ExcelTableSource) {
-                            return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version, connection);
+                            return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                     } else {
-                            return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version, tableUpdateSetting, connection);
+                            return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version, tableUpdateSetting);
                     }
                 }
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
-                    return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version, connection);
+                    return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
                 }
                 default:
-                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version, connection);
+                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
             }
         }
     }

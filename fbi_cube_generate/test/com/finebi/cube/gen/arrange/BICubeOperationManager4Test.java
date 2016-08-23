@@ -15,7 +15,6 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.data.impl.Connection;
 
 import java.util.Set;
 
@@ -42,7 +41,7 @@ public class BICubeOperationManager4Test extends BICubeOperationManager {
 
 
     @Override
-    protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource updateSetting, Connection connection) {
+    protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource updateSetting) {
         return new BISourceDataTransport4Test(cube, tableSource, allSources, parent);
     }
 

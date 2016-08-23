@@ -24,7 +24,7 @@ import java.util.Set;
 public class BISourceDataNeverTransport4Test extends BISourceDataNeverTransport {
 
     public BISourceDataNeverTransport4Test(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource) {
-        super(cube, tableSource, allSources, parentTableSource, 1,null);
+        super(cube, tableSource, allSources, parentTableSource, 1);
     }
 
 

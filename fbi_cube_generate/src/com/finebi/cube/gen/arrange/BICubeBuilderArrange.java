@@ -29,7 +29,7 @@ public class BICubeBuilderArrange {
         while (it.hasNext()) {
             try {
                 CubeTableSource tableSource = it.next();
-                BISourceDataTransport dataTransport = new BISourceDataAllTransport(cube, tableSource, tableSourceSet, null, 1,null);
+                BISourceDataTransport dataTransport = new BISourceDataAllTransport(cube, tableSource, tableSourceSet, null, 1);
                 BIBuildCubeSubscriber subscriber = new BIBuildCubeSubscriber(new BISubscribeID(tableSource.getSourceID()), dataTransport);
                 subscriber.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
             } catch (BITopicAbsentException e) {

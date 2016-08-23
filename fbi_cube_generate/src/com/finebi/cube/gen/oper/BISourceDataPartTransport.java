@@ -16,6 +16,7 @@ import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BILogManagerProvider;
@@ -50,8 +51,8 @@ import static com.fr.bi.util.BICubeDBUtils.getColumnName;
  */
 public class BISourceDataPartTransport extends BISourceDataTransport {
     protected UpdateSettingSource tableUpdateSetting;
-    public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version,UpdateSettingSource tableUpdateSetting, com.fr.data.impl.Connection connection) {
-        super(cube, tableSource, allSources, parentTableSource, version, connection);
+    public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, UpdateSettingSource tableUpdateSetting) {
+        super(cube, tableSource, allSources, parentTableSource, version);
         this.tableUpdateSetting=  tableUpdateSetting;
     }
 
@@ -107,16 +108,16 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
           /*remove*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader, connection);
+            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader);
         }
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
-                rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount, connection);
+                rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
         }
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader, connection);
-            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount, connection);
+            sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
+            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
         }
         if (null != sortRemovedList && sortRemovedList.size() != 0) {
             tableEntityService.recordRemovedLine(sortRemovedList);
@@ -125,7 +126,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     }
 
 
-    private long dealWidthAdd(ICubeFieldSource[] cubeFieldSources, String SQL, long rowCount, com.fr.data.impl.Connection connection) {
+    private long dealWidthAdd(ICubeFieldSource[] cubeFieldSources, String SQL, long rowCount) {
         Traversal<BIDataValue> AddTraversal = new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
@@ -137,17 +138,18 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
         };
 
-        rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount, connection);
+        rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount);
         return rowCount;
     }
 
 
-    private TreeSet<Integer> dealWithRemove(ICubeFieldSource[] fields, String partDeleteSQL, final TreeSet<Integer> sortRemovedList, ICubeDataLoader loader, com.fr.data.impl.Connection connection) {
+    private TreeSet<Integer> dealWithRemove(ICubeFieldSource[] fields, String partDeleteSQL, final TreeSet<Integer> sortRemovedList, ICubeDataLoader loader) {
         SQLRegUtils regUtils = new SQLRegUtils(partDeleteSQL);
         if (!regUtils.isSql()) {
             BILogger.getLogger().error("SQL syntax error");
             return null;
         }
+        com.fr.data.impl.Connection connection=((DBTableSource)tableSource).getConnection();
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(partDeleteSQL);
         String columnName = getColumnName(connection, sqlStatement, partDeleteSQL);

@@ -23,8 +23,8 @@ import java.util.TreeSet;
  * Created by kary on 16/7/13.
  */
 public class BISourceDataAllTransport extends BISourceDataTransport {
-    public BISourceDataAllTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, com.fr.data.impl.Connection connection) {
-        super(cube, tableSource, allSources, parentTableSource, version,connection);
+    public BISourceDataAllTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
+        super(cube, tableSource, allSources, parentTableSource, version);
     }
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {

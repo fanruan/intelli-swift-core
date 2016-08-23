@@ -164,9 +164,11 @@ public abstract class AbstractCubeBuild implements CubeBuild {
             DatasourceManager.getInstance().getNameConnectionMap();
             if (tableSource instanceof DBTableSource) {
                 connection = DatasourceManager.getInstance().getConnection(((DBTableSource) tableSource).getDbName());
+                ((DBTableSource) tableSource).setConnection(connection);
             }
             if (tableSource instanceof ServerTableSource) {
                 connection = DatasourceManager.getInstance().getConnection(((SQLTableSource) tableSource).getSqlConnection());
+                ((ServerTableSource) tableSource).setConnection(connection);
             }
             connectionMap.put(tableSource, connection);
         }
@@ -201,7 +203,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
-        if (!istableRelationValid(relation) || !isSourceRelationValid) {
+        if (!isTableRelationValid(relation) || !isSourceRelationValid) {
             BILogger.getLogger().error("tableSourceRelation invalid");
             return null;
         }
@@ -217,7 +219,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     }
 
 
-    protected boolean istableRelationValid(BITableRelation relation) {
+    protected boolean isTableRelationValid(BITableRelation relation) {
         return allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable());
     }
 

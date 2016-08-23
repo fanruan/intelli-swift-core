@@ -58,6 +58,7 @@ public class DBTableSource extends AbstractTableSource {
     @BICoreField
     protected String tableName;
     protected UpdateSettingSource updateSettingSource;
+    protected com.fr.data.impl.Connection connection;
 
     public DBTableSource() {
         super();
@@ -90,6 +91,7 @@ public class DBTableSource extends AbstractTableSource {
     public static void main(String[] args) {
 
     }
+
 
     /**
      * @return
@@ -176,7 +178,7 @@ public class DBTableSource extends AbstractTableSource {
         return rowCount;
     }
 
-    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount,com.fr.data.impl.Connection connection) {
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount) {
         oldCount = dealWithInsert(traversal, fields, SQL, oldCount, connection);
         return oldCount;
     }
@@ -340,6 +342,13 @@ public class DBTableSource extends AbstractTableSource {
         writer.end();
     }
 
-    
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
 
 }
