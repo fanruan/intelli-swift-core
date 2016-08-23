@@ -73,6 +73,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.TARGET_COMBO.STYLE_SETTING,
+                warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
                 cls: "style-set-h-font"
             }],
             [{
@@ -159,6 +160,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     el: {
                         text: BI.i18nText("BI-Style_Setting"),
                         value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
                         cls: ""
                     },
                     children: [{
@@ -178,7 +180,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     el: {
                         text: BI.i18nText("BI-Style_Setting"),
                         value: BICst.TARGET_COMBO.STYLE_SETTING,
-                        warningTitle: BI.i18nText("BI-Unmodified_in_Minimalist_Mode"),
+                        warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
                         cls: ""
                     },
                     children: [{
@@ -196,6 +198,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     el: {
                         text: BI.i18nText("BI-Style_Setting"),
                         value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
                         cls: ""
                     },
                     children: [{
@@ -213,6 +216,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     el: {
                         text: BI.i18nText("BI-Style_Setting"),
                         value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
                         cls: ""
                     },
                     children: [{
@@ -263,7 +267,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 item[this.constants.CordonPos][0] = {
                     el: {
                         text: BI.i18nText("BI-Style_Setting"),
-                        warningTitle: BI.i18nText("BI-Disable_in_Big_Data_Mode"),
+                        warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
                         value: BICst.TARGET_COMBO.STYLE_SETTING,
                         cls: ""
                     },

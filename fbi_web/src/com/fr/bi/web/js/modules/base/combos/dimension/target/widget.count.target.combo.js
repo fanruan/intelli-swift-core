@@ -56,7 +56,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.TARGET_COMBO.STYLE_SETTING,
-                warningTitle: BI.i18nText("BI-Disable_in_Big_Data_Mode"),
+                warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
                 cls: "style-set-h-font"
             }],
             [{
@@ -155,7 +155,6 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 if(minimalist) {
-                    items[this.constants.CordonPos][0].setWarningTitle(BI.i18nText("BI-Unmodified_in_Minimalist_Mode"));
                     items[this.constants.CordonPos][0].disabled = true
                 }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
