@@ -134,7 +134,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input",
             watermark: BI.i18nText("BI-Default_Data"),
             validationChecker: function (v) {
-                return self.maxScale.getValue() == '' ? true : BI.parseInt(v) < BI.parseInt(self.maxScale.getValue())
+                return self.maxScale.getValue() == '' ? true : BI.parseFloat(v) < BI.parseFloat(self.maxScale.getValue())
             }
         });
 
@@ -150,7 +150,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input",
             watermark: BI.i18nText("BI-Default_Data"),
             validationChecker: function (v) {
-                return self.minScale.getValue() == '' ? true : BI.parseInt(v) > BI.parseInt(self.minScale.getValue())
+                return self.minScale.getValue() == '' ? true : BI.parseFloat(v) > BI.parseFloat(self.minScale.getValue())
             }
         });
 
