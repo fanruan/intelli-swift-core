@@ -85,7 +85,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILogger.getLogger().error(e1.getMessage(), e1);
             }
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {

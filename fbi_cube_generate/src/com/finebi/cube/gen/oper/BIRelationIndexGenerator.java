@@ -65,7 +65,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             try {
                 biLogManager.errorRelation(relationColumnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {
-                BILogger.getLogger().error(e.getMessage(), e1);
+                BILogger.getLogger().error(e1.getMessage(), e1);
             }
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
