@@ -84,5 +84,4 @@ public class CubeTaskHelper {
         }
         return conditionsMeet;
     }
-
 }
