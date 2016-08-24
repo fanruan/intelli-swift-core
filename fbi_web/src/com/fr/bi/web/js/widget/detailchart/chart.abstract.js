@@ -18,6 +18,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         TWO2POINT: 4,
         MINLIMIT: 1e-5,
         LEGEND_HEIGHT: 80,
+        LEGEND_WIDTH: "15.0%",
         FIX_COUNT: 6,
         STYLE_NORMAL: 21,
         NO_PROJECT: 16,
@@ -133,6 +134,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
                 config.legend.position = "right";
+                config.legend.maxWidth = this.constants.LEGEND_WIDTH;
                 break;
             case BICst.CHART_LEGENDS.NOT_SHOW:
             default:

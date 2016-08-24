@@ -51,23 +51,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
-        switch (this.config.chart_legend) {
-            case BICst.CHART_LEGENDS.BOTTOM:
-                BI.extend(config.legend, {
-                    enabled: true,
-                    position: "bottom",
-                    maxHeight: self.constants.LEGEND_HEIGHT
-                });
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.zoom.zoomTool.visible = this.config.show_zoom;
         if (this.config.show_zoom === true) {
