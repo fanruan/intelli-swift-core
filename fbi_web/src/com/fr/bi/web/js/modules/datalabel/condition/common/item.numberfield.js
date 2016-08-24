@@ -106,7 +106,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.text_value_down_list_combo",
             width: this.size.COMBO_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
-            items: this.isDimension ? BICst.DATA_LABEL_FILTER_STRING_COMBO : BICst.DATA_LABEL_FILTER_NUMBER_COMBO
+            items: this.isDimension ? BICst.DIMENSION_FILTER_STRING_COMBO : BICst.DATA_LABEL_FILTER_NUMBER_COMBO
         });
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
@@ -161,8 +161,8 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
                 var addItem = this._createRank(initData);
                 break;
-            case BICst.DIMENSION_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
-            case BICst.DIMENSION_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
+            case BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
+            case BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
             case BICst.DIMENSION_FILTER_NUMBER.IS_NULL:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_NULL:
                 this.filterType.setWidth(this._constant.COMBO_WIDTH);

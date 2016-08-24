@@ -67,9 +67,9 @@ BI.DataLabelMethods = {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DIMENSION_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
+                case BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
                     break;
-                case BICst.DIMENSION_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
+                case BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
                     break;
                 case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
                     break;

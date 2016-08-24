@@ -143,8 +143,8 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
                 var addItem = this._createRank(initData);
                 break;
-            case BICst.DIMENSION_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
-            case BICst.DIMENSION_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
+            case BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
+            case BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
             case BICst.DIMENSION_FILTER_NUMBER.IS_NULL:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_NULL:
                 this.filterType.setWidth(this._constant.COMBO_WIDTH);

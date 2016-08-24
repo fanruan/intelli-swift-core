@@ -1383,11 +1383,11 @@ BICst.DATA_LABEL_FILTER_NUMBER_COMBO =[[{
 }
 ], [{
     text: BI.i18nText("BI-Above_Average"),
-    value: BICst.DIMENSION_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE,
+    value: BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE,
     cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Below_Average"),
-    value: BICst.DIMENSION_FILTER_NUMBER.SMALL_THAN_CAL_LINE,
+    value: BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE,
     cls: "dot-e-font"
 }
 ]];
