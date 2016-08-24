@@ -3,8 +3,8 @@
  */
 BI.DataLabelTab = BI.inherit(BI.Widget, {
     _constant: {
-        TEXT_TOOL_BAR_HEIGHT: 60,
-        IMAGE_SET_HEIGHT: 165
+        TEXT_TOOL_BAR_HEIGHT: 100,
+        IMAGE_SET_HEIGHT: 160
     },
 
     _defaultConfig: function () {
@@ -24,18 +24,14 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             items: [{
                 type: "bi.radio",
-                value: 1,
-                handler: function () {
-                }
+                value: 1
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Text_Label"),
                 rgap: 20
             }, {
                 type: "bi.radio",
-                value: 2,
-                handler: function () {
-                }
+                value: 2
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Image_Label")
@@ -45,7 +41,8 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 items: [{
                     el: {
                         type: "bi.horizontal",
-                        width: 550,
+                        width: 530,
+                        tgap: 5,
                         lgap: 10
                     }
                 }]
@@ -72,8 +69,8 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             items: [{
                 el: tab
             }],
-            width: 538,
-            height: 60,
+            width: 530,
+            height: this._constant.TEXT_TOOL_BAR_HEIGHT,
             scrollable: null,
             scrolly: false,
             scrollx: false
@@ -90,9 +87,10 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     },
 
     _createTextLabel: function () {
-        var self = this;
+        var self = this, o = this.options;
         this.textToolbar = BI.createWidget({
-            type: "bi.data_label_text_toolbar"
+            type: "bi.data_label_text_toolbar",
+            chartType: o.chartType
         });
         this.textToolbar.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
             self._style.type = BICst.DATA_LABEL_STYLE_TYPE.TEXT;
@@ -101,7 +99,6 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         });
         return BI.createWidget({
             type: "bi.vertical",
-            cls: "",
             items: [{
                 el: this.textToolbar,
                 tgap: 30
@@ -127,10 +124,16 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         });
         this.chart.populate(this._style.imgStyle.src);
         return BI.createWidget({
-                type: "bi.horizontal",
-                items: [this.chart, this.imageSet],
-                tgap: 30,
-                bgap: 10
+                type: "bi.vertical",
+                items: [BI.createWidget({
+                    type: "bi.horizontal",
+                    cls: "img-select",
+                    items: [this.chart, this.imageSet],
+                    scrollable: null,
+                    scrolly: false,
+                    scrollx: false
+                })],
+                tgap: 28
             }
         );
     },

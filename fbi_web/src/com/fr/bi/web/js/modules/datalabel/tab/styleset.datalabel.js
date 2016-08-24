@@ -65,6 +65,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             popup: {
                 el: this.styleTab
             },
+            direction: "bottom,left",
             offsetStyle: "right",
             height: "100%"
         });

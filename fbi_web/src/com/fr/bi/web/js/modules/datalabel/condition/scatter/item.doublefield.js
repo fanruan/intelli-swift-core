@@ -205,7 +205,7 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 type: "bi.label",
                 height: this._constant.BUTTON_HEIGHT,
                 text: "N = ",
-                width: this._constant.LABEL_WIDTH
+                width: this._constant.INPUT_WIDTH - this._constant.LABEL_WIDTH
             }, filterWidget]
         });
     },
@@ -222,7 +222,7 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             errorText: BI.i18nText("BI-Numerical_Interval_Input_Data"),
             allowBlank: true,
             height: this._constant.BUTTON_HEIGHT,
-            width: this._constant.INPUT_WIDTH
+            width: this._constant.INPUT_WIDTH - this._constant.LABEL_WIDTH
         });
         filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function () {
             o.afterValueChange.apply(self, arguments);

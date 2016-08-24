@@ -13,8 +13,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         var conf = BI.DataLabelTextToolBar.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            baseCls: "bi-data-tab-text-toolbar",
-            height: 28
+            baseCls: "bi-data-tab-text-toolbar"
         });
     },
 
@@ -68,12 +67,25 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
 
             self.fireEvent(BI.DataLabelTextToolBar.EVENT_CHANGE, arguments);
         });
-        BI.createWidget({
+        this.showItems = BI.createWidget({
+            type: "bi.text_tool_bar_content_select",
+            items: [{
+                value: BI.i18nText("BI-X_Value")
+            }, {
+                value: BI.i18nText("BI-Y_Value")
+            }]
+        });
+        var top = BI.createWidget({
             type: "bi.left",
-            element: this.element,
             items: [this.family, this.size, this.bold, this.italic, this.colorchooser],
             hgap: 3,
             vgap: 3
+        });
+        BI.createWidget({
+            type: "bi.vertical",
+            element: this.element,
+            items: [top, this.showItems],
+            lgap: 8
         })
     },
 

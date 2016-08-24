@@ -45,9 +45,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
             cls: "bi-data-tab-chart",
             element: this.element,
             items: [{
-                el: this.combineChart,
-                left: -5,
-                top: 10
+                el: this.combineChart
             }, {
                 el: title,
                 left: 20,
@@ -63,9 +61,9 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
             case BICst.WIDGET.AXIS:
                 return "bi.combine_chart";
             case BICst.WIDGET.BUBBLE:
-                return "bi.bubble_chart";
+                return "bi.combine_chart";
             case BICst.WIDGET.SCATTER:
-                return "bi.scatter_chart";
+                return "bi.combine_chart";
         }
     },
 
