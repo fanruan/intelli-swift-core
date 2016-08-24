@@ -105,7 +105,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         });
 
         config.xAxis[0].title.align = "center";
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? config.xAxis[0].title.text : "";
+        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], {
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
