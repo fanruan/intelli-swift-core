@@ -169,7 +169,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForAxis: function (da) {
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
-        this._setDataLabelSetting(data);
+        //this._setDataLabelSetting(data);
         if (BI.isEmptyArray(data)) {
             return [];
         }
@@ -422,7 +422,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         });
         BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
             BI.each(BI.Utils.getDatalabelByID(dId), function (id, dataLabel) {
-                var filter =  BI.FilterFactory.parseFilterValue(dataLabel);
+                var filter =  BI.FilterFactory.parseFilter(dataLabel);
                 BI.any(data, function(idx, series){
                     if(hasSeries === true){
                         //有系列
