@@ -128,6 +128,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
             BILogger.getLogger().info("sql: " + sql.toString() + " execute cost:" + DateUtils.timeCostFrom(t));
             row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row);
         } catch (Throwable e) {
+            BILogger.getLogger().info("sql: " + sql.toString() + " execute failed!");
             throw new RuntimeException(e);
         } finally {
             DBUtils.closeResultSet(rs);

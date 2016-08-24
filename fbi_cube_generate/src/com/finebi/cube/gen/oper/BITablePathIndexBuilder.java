@@ -45,7 +45,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
     }
 
     @Override
-    public Object mainTask(IMessage lastReceiveMessage) {
+    public Object mainTask (IMessage lastReceiveMessage) {
         buildRelationPathIndex();
         return null;
     }

@@ -4,6 +4,7 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -52,9 +53,16 @@ public class BIGetDBTableInfoMapAction extends AbstractBIConfigureAction {
                 sourceInfo.put(source.toString(), source.getSourceID());
             }
         }
+        Map<String, String> relationMap = new HashMap<String, String>();
+        Set<BITableRelation> tableRelations = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
+        for (BITableRelation relation : tableRelations) {
+            relationMap.put(relation.getPrimaryTable().getTableSource().toString()+"."+relation.getPrimaryField().getFieldName()+">>"+relation.getForeignTable().getTableSource().toString()+"."+relation.getForeignField().getFieldName(),relation.getPrimaryTable().getTableSource().getSourceID()+"||"+relation.getForeignTable().getTableSource().getSourceID());
+        }
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
-        String cubePath = new File(advancedConf.getRootURI().getPath()).getParent() + File.separatorChar + "tableInfo";
-        BIFileUtils.writeFile(cubePath, sourceInfo.toString());
+        String cubeTablePath = new File(advancedConf.getRootURI().getPath()).getParent() + File.separatorChar + "tableInfo";
+        String cubeRelationPath = new File(advancedConf.getRootURI().getPath()).getParent() + File.separatorChar + "relationInfo";
+        BIFileUtils.writeFile(cubeTablePath, sourceInfo.toString());
+        BIFileUtils.writeFile(cubeRelationPath, relationMap.toString());
         return sourceInfo;
     }
 }
