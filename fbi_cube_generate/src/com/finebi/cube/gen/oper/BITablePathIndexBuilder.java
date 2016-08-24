@@ -63,12 +63,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
             CubeRelationEntityGetterService lastRelationEntity = null;
             CubeRelationEntityGetterService frontRelationPathReader = null;
             ICubeRelationEntityService targetPathEntity = null;
-            RelationColumnKey columnKeyInfo = null;
-            try {
-                columnKeyInfo = getRelationColumnKeyInfo();
-            } catch (Exception e) {
-                BILogger.getLogger().error("BILog error：columnKeyInfo not found");
-            }
+            RelationColumnKey columnKeyInfo = getRelationColumnKeyInfo();
             try {
                 int primaryRowCount = getPrimaryTableRowCount();
                 lastRelationEntity = buildLastRelationReader();
@@ -87,20 +82,12 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 buildReverseIndex(targetPathEntity, reverse);
                 targetPathEntity.addRelationNULLIndex(0, nullIndex);
                 long costTime = System.currentTimeMillis() - t;
-                try {
-                    if (null != columnKeyInfo) {
-                        biLogManager.infoRelation(columnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
-                    }
-                } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage());
+                if (null != columnKeyInfo) {
+                    biLogManager.infoRelation(columnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
                 }
             } catch (Exception e) {
-                try {
-                    if (null != columnKeyInfo) {
-                        biLogManager.errorRelation(columnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
-                    }
-                } catch (Exception e1) {
-                    BILogger.getLogger().error(e1.getMessage());
+                if (null != columnKeyInfo) {
+                    biLogManager.errorRelation(columnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
                 }
                 throw BINonValueUtils.beyondControl(e.getMessage(), e);
             } finally {
@@ -201,7 +188,12 @@ public class BITablePathIndexBuilder extends BIProcessor {
         List<BITableSourceRelation> relations = new ArrayList<BITableSourceRelation>();
         ICubeFieldSource field = null;
         for (BICubeRelation relation : this.relationPath.getAllRelations()) {
-            BITableSourceRelation tableRelation = getTableRelation(relation);
+            BITableSourceRelation tableRelation = null;
+            try {
+                tableRelation = getTableRelation(relation);
+            } catch (Exception e) {
+                BILogger.getLogger().error("get relationColumnKey failed! relation information used as listed:"+relation.getPrimaryTable().getSourceID()+"."+relation.getPrimaryField().getColumnName()+" to "+relation.getForeignTable().getSourceID()+"."+relation.getForeignField().getColumnName());
+            }
             field = tableRelation.getPrimaryKey();
             relations.add(tableRelation);
         }

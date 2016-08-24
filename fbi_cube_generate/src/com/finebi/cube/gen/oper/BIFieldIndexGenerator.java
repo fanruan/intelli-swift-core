@@ -73,28 +73,19 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             fieldName = hostBICubeFieldSource.getFieldName();
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
-            BILogger.getLogger().error("BILog error：tableSource or ICubeFieldSource error");
         }
         try {
             initial();
             buildTableIndex();
             long costTime = System.currentTimeMillis() - t;
-            try {
-                if (null != persistentTable && fieldName != null) {
-                    biLogManager.infoColumn(persistentTable, fieldName, costTime, Long.valueOf(UserControl.getInstance().getSuperManagerID()));
-                }
-            } catch (Exception e1) {
-                BILogger.getLogger().error(e1.getMessage());
+            if (null != persistentTable && fieldName != null) {
+                biLogManager.infoColumn(persistentTable, fieldName, costTime, Long.valueOf(UserControl.getInstance().getSuperManagerID()));
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-            try {
-                if (null != persistentTable && fieldName != null) {
-                    biLogManager.errorTable(persistentTable, e.getMessage(), UserControl.getInstance().getSuperManagerID());
-                }
-            } catch (Exception e1) {
-                BILogger.getLogger().error(e1.getMessage());
+            if (null != persistentTable && fieldName != null) {
+                biLogManager.errorTable(persistentTable, e.getMessage(), UserControl.getInstance().getSuperManagerID());
             }
+            BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             return null;
         }

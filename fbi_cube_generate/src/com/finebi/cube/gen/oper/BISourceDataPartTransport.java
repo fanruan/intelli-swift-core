@@ -67,7 +67,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             persistentTable = tableSource.getPersistentTable();
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
-            BILogger.getLogger().error("BILog error：tableSource not found");
         }
         try {
             copyFromOldCubes();
@@ -84,22 +83,14 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
             System.out.println("table usage:" + tableCostTime);
-                try {
                     if (null != persistentTable) {
                     biLogManager.infoTable(persistentTable, tableCostTime, UserControl.getInstance().getSuperManagerID());
                     }
-                } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage());
-            }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-                try {
                     if (null != persistentTable) {
                     biLogManager.errorTable(persistentTable, e.getMessage(), UserControl.getInstance().getSuperManagerID());
                     }
-                } catch (Exception e1) {
-                    BILogger.getLogger().error(e1.getMessage());
-            }
+            BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             return null;
         }

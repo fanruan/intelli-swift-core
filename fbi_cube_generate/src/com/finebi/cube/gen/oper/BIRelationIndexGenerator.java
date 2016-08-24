@@ -49,27 +49,19 @@ public class BIRelationIndexGenerator extends BIProcessor {
         try {
             relationColumnKeyInfo = getRelationColumnKeyInfo();
         } catch (Exception e) {
-            BILogger.getLogger().error("BILog error：relation not found");
+            BILogger.getLogger().error("get relationColumnKey failed! relation information used as listed:"+relation.getPrimaryTable().getSourceID()+"."+relation.getPrimaryField().getColumnName()+" to "+relation.getForeignTable().getSourceID()+"."+relation.getForeignField().getColumnName());
+            BILogger.getLogger().error(e.getMessage());
         }
         try {
             buildRelationIndex();
             long costTime = System.currentTimeMillis() - t;
-            try {
-                if (null != relationColumnKeyInfo) {
-                    biLogManager.infoRelation(relationColumnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
-                }
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage());
+            if (null != relationColumnKeyInfo) {
+                biLogManager.infoRelation(relationColumnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
             }
-
             return null;
         } catch (Exception e) {
-            try {
-                if (null != relationColumnKeyInfo) {
-                    biLogManager.errorRelation(relationColumnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
-                }
-            } catch (Exception e1) {
-                BILogger.getLogger().error(e1.getMessage());
+            if (null != relationColumnKeyInfo) {
+                biLogManager.errorRelation(relationColumnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
             }
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
