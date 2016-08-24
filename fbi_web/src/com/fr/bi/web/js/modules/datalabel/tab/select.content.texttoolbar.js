@@ -10,7 +10,7 @@ BI.TextToolbarContentSelect = BI.inherit(BI.Widget, {
         var o = this.options;
         var label = BI.createWidget({
             type: "bi.label",
-            text: "标签显示内容"
+            text: BI.i18nText("BI-Show_Labels")
         });
         var items = o.items || [];
         this.select = BI.createWidget({
