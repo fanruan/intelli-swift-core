@@ -24,6 +24,7 @@ import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.SqlSettedStatement;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -51,15 +52,23 @@ import static com.fr.bi.util.BICubeDBUtils.getColumnName;
  */
 public class BISourceDataPartTransport extends BISourceDataTransport {
     protected UpdateSettingSource tableUpdateSetting;
+
     public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, UpdateSettingSource tableUpdateSetting) {
         super(cube, tableSource, allSources, parentTableSource, version);
-        this.tableUpdateSetting=  tableUpdateSetting;
+        this.tableUpdateSetting = tableUpdateSetting;
     }
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
+        IPersistentTable persistentTable = null;
+        try {
+            persistentTable = tableSource.getPersistentTable();
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+            BILogger.getLogger().error("BILog error：tableSource not found");
+        }
         try {
             copyFromOldCubes();
             super.recordTableInfo();
@@ -74,14 +83,22 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             tableEntityService.addVersion(version);
             tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
-            if (null != tableSource.getPersistentTable()) {
-                System.out.println("table usage:" + tableCostTime);
-                biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
+            System.out.println("table usage:" + tableCostTime);
+                try {
+                    if (null != persistentTable) {
+                    biLogManager.infoTable(persistentTable, tableCostTime, UserControl.getInstance().getSuperManagerID());
+                    }
+                } catch (Exception e) {
+                    BILogger.getLogger().error(e.getMessage());
             }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
-            if (null != tableSource.getPersistentTable()) {
-                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+                try {
+                    if (null != persistentTable) {
+                    biLogManager.errorTable(persistentTable, e.getMessage(), UserControl.getInstance().getSuperManagerID());
+                    }
+                } catch (Exception e1) {
+                    BILogger.getLogger().error(e1.getMessage());
             }
         } finally {
             return null;
@@ -112,7 +129,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         }
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
-                rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
+            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
         }
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
@@ -133,7 +150,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 try {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
-                    e.printStackTrace();
+                    BILogger.getLogger().error(e.getMessage());
                 }
             }
         };
@@ -149,7 +166,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             BILogger.getLogger().error("SQL syntax error");
             return null;
         }
-        com.fr.data.impl.Connection connection=((DBTableSource)tableSource).getConnection();
+        com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(partDeleteSQL);
         String columnName = getColumnName(connection, sqlStatement, partDeleteSQL);
@@ -192,7 +209,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             String dateStr = DateUtils.DATETIMEFORMAT2.format(lastTime);
             while (matcher.find()) {
                 String matchStr = matcher.group(0);
-                sql = sql.replace(matchStr, "${"+dateStr+"}");
+                sql = sql.replace(matchStr, "${" + dateStr + "}");
             }
         }
         return sql;

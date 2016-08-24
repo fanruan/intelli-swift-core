@@ -10,6 +10,7 @@ import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -63,19 +64,36 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        long t=System.currentTimeMillis();
+        long t = System.currentTimeMillis();
         biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
+        IPersistentTable persistentTable = null;
+        String fieldName = null;
+        try {
+            persistentTable = tableSource.getPersistentTable();
+            fieldName = hostBICubeFieldSource.getFieldName();
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage());
+            BILogger.getLogger().error("BILog error：tableSource or ICubeFieldSource  not found");
+        }
         try {
             initial();
             buildTableIndex();
-            long costTime=System.currentTimeMillis()-t;
-            if (null!=tableSource.getPersistentTable()) {
-                biLogManager.infoColumn(tableSource.getPersistentTable(),hostBICubeFieldSource.getFieldName(),costTime,Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+            long costTime = System.currentTimeMillis() - t;
+            try {
+                if (null != persistentTable && fieldName != null) {
+                    biLogManager.infoColumn(persistentTable, fieldName, costTime, Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+                }
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e1.getMessage());
             }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
-            if (null!=tableSource.getPersistentTable()) {
-                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            try {
+                if (null != persistentTable && fieldName != null) {
+                    biLogManager.errorTable(persistentTable, e.getMessage(), UserControl.getInstance().getSuperManagerID());
+                }
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e1.getMessage());
             }
         } finally {
             return null;
@@ -93,7 +111,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         Iterator<Map.Entry<T, IntList>> group2rowNumberIt = group2rowNumber.entrySet().iterator();
         int groupPosition = 0;
         columnEntityService.recordSizeOfGroup(group2rowNumber.size());
-        Integer[] positionOfGroup = new Integer[(int)rowCount];
+        Integer[] positionOfGroup = new Integer[(int) rowCount];
         while (group2rowNumberIt.hasNext()) {
             Map.Entry<T, IntList> entry = group2rowNumberIt.next();
             T groupValue = entry.getKey();
@@ -119,7 +137,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     private void buildPositionOfGroup(Integer[] position) {
-        for (int i = 0; i < position.length; i ++){
+        for (int i = 0; i < position.length; i++) {
             columnEntityService.addPositionOfGroup(i, position[i]);
         }
     }

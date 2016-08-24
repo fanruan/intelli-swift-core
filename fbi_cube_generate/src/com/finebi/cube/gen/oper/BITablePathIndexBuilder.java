@@ -63,6 +63,12 @@ public class BITablePathIndexBuilder extends BIProcessor {
             CubeRelationEntityGetterService lastRelationEntity = null;
             CubeRelationEntityGetterService frontRelationPathReader = null;
             ICubeRelationEntityService targetPathEntity = null;
+            RelationColumnKey columnKeyInfo = null;
+            try {
+                columnKeyInfo = getRelationColumnKeyInfo();
+            } catch (Exception e) {
+                BILogger.getLogger().error("BILog error：columnKeyInfo not found");
+            }
             try {
                 int primaryRowCount = getPrimaryTableRowCount();
                 lastRelationEntity = buildLastRelationReader();
@@ -81,9 +87,21 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 buildReverseIndex(targetPathEntity, reverse);
                 targetPathEntity.addRelationNULLIndex(0, nullIndex);
                 long costTime = System.currentTimeMillis() - t;
-                biLogManager.infoRelation(getRelationColumnKeyInfo(), costTime, UserControl.getInstance().getSuperManagerID());
+                try {
+                    if (null != columnKeyInfo) {
+                        biLogManager.infoRelation(columnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
+                    }
+                } catch (Exception e) {
+                    BILogger.getLogger().error(e.getMessage());
+                }
             } catch (Exception e) {
-                biLogManager.errorRelation(getRelationColumnKeyInfo(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+                try {
+                    if (null != columnKeyInfo) {
+                        biLogManager.errorRelation(columnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
+                    }
+                } catch (Exception e1) {
+                    BILogger.getLogger().error(e1.getMessage());
+                }
                 throw BINonValueUtils.beyondControl(e.getMessage(), e);
             } finally {
 
@@ -110,7 +128,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
     }
 
     private void buildReverseIndex(ICubeRelationEntityService tableRelation, Integer[] index) {
-        for (int i = 0; i < index.length; i ++){
+        for (int i = 0; i < index.length; i++) {
             tableRelation.addReverseIndex(i, index[i]);
         }
     }
@@ -178,12 +196,13 @@ public class BITablePathIndexBuilder extends BIProcessor {
         frontRelation.removeLastRelation();
         return frontRelation;
     }
+
     public RelationColumnKey getRelationColumnKeyInfo() {
         List<BITableSourceRelation> relations = new ArrayList<BITableSourceRelation>();
-        ICubeFieldSource field =null;
+        ICubeFieldSource field = null;
         for (BICubeRelation relation : this.relationPath.getAllRelations()) {
             BITableSourceRelation tableRelation = getTableRelation(relation);
-            field=tableRelation.getPrimaryKey();
+            field = tableRelation.getPrimaryKey();
             relations.add(tableRelation);
         }
         return new RelationColumnKey(field, relations);
@@ -200,8 +219,8 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 primaryTable = cubeTableSource;
                 Set<CubeTableSource> primarySources = new HashSet<CubeTableSource>();
                 primarySources.add(cubeTableSource);
-                for (ICubeFieldSource iCubeFieldSource : primaryTable.getFieldsArray(primarySources)) {
-                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(),relation.getPrimaryField().getColumnName())) {
+                for (ICubeFieldSource iCubeFieldSource : primaryTable.getFacetFields(primarySources)) {
+                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getPrimaryField().getColumnName())) {
                         primaryField = iCubeFieldSource;
                     }
                 }
@@ -213,7 +232,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 foreignTable = cubeTableSource;
                 Set<CubeTableSource> foreignSource = new HashSet<CubeTableSource>();
                 foreignSource.add(cubeTableSource);
-                for (ICubeFieldSource iCubeFieldSource : foreignTable.getFieldsArray(foreignSource)) {
+                for (ICubeFieldSource iCubeFieldSource : foreignTable.getFacetFields(foreignSource)) {
                     if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getForeignField().getColumnName())) {
                         foreignField = iCubeFieldSource;
                     }
@@ -221,8 +240,8 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 break;
             }
         }
-        BITableSourceRelation biTableSourceRelation=new BITableSourceRelation(primaryField,foreignField,primaryTable,foreignTable);
-        return  biTableSourceRelation;
+        BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(primaryField, foreignField, primaryTable, foreignTable);
+        return biTableSourceRelation;
     }
 
     private Set<CubeTableSource> getAllTableSource() {
