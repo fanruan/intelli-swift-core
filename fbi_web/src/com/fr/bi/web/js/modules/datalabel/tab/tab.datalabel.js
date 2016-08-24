@@ -3,6 +3,7 @@
  */
 BI.DataLabelTab = BI.inherit(BI.Widget, {
     _constant: {
+        DEFAULT_TEXT_TOOL_BAR_HEIGHT: 60,
         TEXT_TOOL_BAR_HEIGHT: 100,
         IMAGE_SET_HEIGHT: 160
     },
@@ -19,7 +20,12 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             textStyle: {},
             imgStyle: {}
         };
-        var self = this;
+        var self = this, o = this.options;
+        if (o.chartType === BICst.WIDGET.BUBBLE || o.chartType === BICst.WIDGET.SCATTER) {
+            this._CARDHEIGHT = this._constant.TEXT_TOOL_BAR_HEIGHT
+        } else {
+            this._CARDHEIGHT = this._constant.DEFAULT_TEXT_TOOL_BAR_HEIGHT
+        }
         var tab = BI.createWidget({
             type: "bi.button_group",
             items: [{
@@ -58,7 +64,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         this.tabs.setSelect(1);
         this.tabs.on(BI.Tab.EVENT_CHANGE, function () {
             if (this.getSelect() == 1) {
-                self.layout.setHeight(self._constant.TEXT_TOOL_BAR_HEIGHT);
+                self.layout.setHeight(self._CARDHEIGHT);
             } else {
                 self.layout.setHeight(self._constant.IMAGE_SET_HEIGHT);
             }
@@ -70,7 +76,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 el: tab
             }],
             width: 530,
-            height: this._constant.TEXT_TOOL_BAR_HEIGHT,
+            height: this._CARDHEIGHT,
             scrollable: null,
             scrolly: false,
             scrollx: false
