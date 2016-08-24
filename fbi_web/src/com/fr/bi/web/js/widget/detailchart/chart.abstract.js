@@ -157,7 +157,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 unit = BI.i18nText("BI-Yi");
                 break;
         }
-        return unit === "" ? unit : "(" + unit + axis_unit + ")";
+        return unit === "" && axis_unit === "" ? unit : "(" + unit + axis_unit + ")";
     },
 
     formatTickInXYaxis: function (type, number_level) {
