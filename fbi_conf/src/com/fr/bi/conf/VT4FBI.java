@@ -22,7 +22,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_basic";
+            return "BI-Func_Basic";
         }
 
     };
@@ -30,7 +30,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_multitable";
+            return "BI-Func_Multitable";
         }
 
     };
@@ -38,7 +38,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_increment_update";
+            return "BI-Func_Increment_Update";
         }
 
     };
@@ -46,7 +46,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_OLAP";
+            return "BI-Func_OLAP";
         }
 
     };
@@ -54,7 +54,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_calculate_target";
+            return "BI-Func_Calculate_Target";
         }
 
     };
@@ -62,7 +62,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_report_share";
+            return "BI-Func_Report_Share";
         }
 
     };
@@ -70,7 +70,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_control";
+            return "BI-Func_Control";
         }
 
     };
@@ -78,7 +78,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_general_control";
+            return "BI-Func_General_Control";
         }
 
     };
@@ -86,7 +86,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_excel_view";
+            return "BI-Func_Excel_View";
         }
 
     };
@@ -94,7 +94,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_mobile";
+            return "BI-Func_Mobile";
         }
 
     };
@@ -102,7 +102,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_multi_widget";
+            return "BI-Func_Multi_Widget";
         }
 
     };
@@ -110,7 +110,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_chart_link";
+            return "BI-Func_Chart_Link";
         }
 
     };
@@ -118,7 +118,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_map";
+            return "BI-Func_Map";
         }
 
     };
@@ -126,7 +126,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_fs";
+            return "BI-Func_Fs";
         }
 
     };
@@ -134,7 +134,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_mobile_fs";
+            return "BI-Func_Mobile_Fs";
         }
 
     };
@@ -142,7 +142,7 @@ public final class VT4FBI {
 
         @Override
         public String getLocaleKey() {
-            return "fbi_func_big_data";
+            return "BI-Func_Big_Data";
         }
 
     };
