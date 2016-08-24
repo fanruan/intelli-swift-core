@@ -96,21 +96,21 @@ BI.ScatterLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _refreshFilterWidget: function (filterType, initData) {
         switch (filterType) {
-            case BICst.DATA_LABEL_FILTER_STRING.BELONG_VALUE:
-            case BICst.DATA_LABEL_FILTER_STRING.NOT_BELONG_VALUE:
+            case BICst.DIMENSION_FILTER_STRING.BELONG_VALUE:
+            case BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE:
                 this._createStringBelongCombo(initData);
 
                 break;
-            case BICst.DATA_LABEL_FILTER_STRING.CONTAIN:
-            case BICst.DATA_LABEL_FILTER_STRING.NOT_CONTAIN:
+            case BICst.DIMENSION_FILTER_STRING.CONTAIN:
+            case BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN:
                 this._createStringInput(initData);
                 break;
-            case BICst.DATA_LABEL_FILTER_STRING.IS_NULL:
-            case BICst.DATA_LABEL_FILTER_STRING.NOT_NULL:
+            case BICst.DIMENSION_FILTER_STRING.IS_NULL:
+            case BICst.DIMENSION_FILTER_STRING.NOT_NULL:
                 this.filterWidget = BI.createWidget();
                 break;
-            case BICst.DATA_LABEL_FILTER_STRING.BEGIN_WITH:
-            case BICst.DATA_LABEL_FILTER_STRING.END_WITH:
+            case BICst.DIMENSION_FILTER_STRING.BEGIN_WITH:
+            case BICst.DIMENSION_FILTER_STRING.END_WITH:
                 this._createStringInput(initData);
                 break;
         }

@@ -50,10 +50,8 @@
             if(this.kNumber === 0){
                 return false;
             }
-            if(BI.isNull(this.kthValue)){
-                this.kthValue = this.getNumberKth(array, this.kNumber);
-            }
-            return this.kthValue + "" === BI.parseFloat(value) + "";
+            var kthValue = this.getNumberKth(array, this.kNumber);
+            return kthValue + "" === BI.parseFloat(value) + "";
         }
     }
 })();
