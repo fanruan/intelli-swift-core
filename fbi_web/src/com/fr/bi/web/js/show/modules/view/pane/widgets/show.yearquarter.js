@@ -125,7 +125,7 @@ BIShow.YearQuarterWidgetView = BI.inherit(BI.View, {
             }
         } else {
             this.widget.attr("items")[0].right = 10;
-            this.widget.attr("items")[1].top = 50;
+            this.widget.attr("items")[1].top = 35;
             this.widget.attr("items")[1].left = 10;
         }
         this.widget.resize();

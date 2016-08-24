@@ -420,9 +420,11 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
             popup: this.searcherResultPane
         });
         this.searcher.on(BI.Searcher.EVENT_START, function () {
+            self.moveButton.setVisible(false);
             self.newButton.setVisible(false);
         });
         this.searcher.on(BI.Searcher.EVENT_STOP, function () {
+            self.moveButton.setVisible(true);
             self.newButton.setVisible(true);
         });
         this.searcherResultPane.on(BI.ReportSearchResultPane.EVENT_REPORT_RENAME, function (id, name) {
