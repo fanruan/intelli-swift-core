@@ -211,6 +211,29 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             var createBy = Data.SharingPool.get("createBy");
             window.location.href = FR.servletURL + "?op=fr_bi&cmd=bi_init&id=" + reportId + "&createBy=" + createBy;
         });
+
+        var globalStyleButton = BI.createWidget({
+            type: "bi.button",
+            height: 24,
+            text: BI.i18nText("BI-Global_Style"),
+            width: 90
+        });
+        globalStyleButton.setVisible(false);
+        globalStyleButton.on(BI.Button.EVENT_CHANGE, function() {
+            if(BI.isNull(self.globalStyle)) {
+                self.globalStyle = BI.createWidget({
+                    type: "bi.global_style"
+                });
+                self.globalStyle.on(BI.GlobalStyle.EVENT_PREVIEW, function() {
+                    
+                });
+                self.globalStyle.on(BI.GlobalStyle.EVENT_SAVE, function() {
+                    
+                });
+            } else {
+                self.globalStyle.populate();
+            }
+        });
         return BI.createWidget({
             type: "bi.absolute",
             invisible: !BICst.CONFIG.SHOW_DASHBOARD_TITLE,
@@ -227,6 +250,10 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                 el: viewChange,
                 top: 0,
                 left: 270
+            }, {
+                el: globalStyleButton,
+                top: 3,
+                left: 360
             }]
         })
     },
