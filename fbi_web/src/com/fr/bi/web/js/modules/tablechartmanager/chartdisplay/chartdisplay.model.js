@@ -169,7 +169,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForAxis: function (da) {
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
-        //this._setDataLabelSetting(data);
+        this._setDataLabelSetting(data);
         if (BI.isEmptyArray(data)) {
             return [];
         }
@@ -405,7 +405,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _setDataLabelSetting: function(data){
         var o = this.options;
         var hasSeries = this._checkSeriesExist();
-        var allSeries = BI.flatten(data, "name");
+        var allSeries = BI.pluck(data, "name");
         var cataArrayMap = {};  //值按分类分组
         var seriesArrayMap = {}; //值按系列分组
         var allValueArray = []; //所有值
@@ -428,7 +428,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         //有系列
                         //分类
                         if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
-                            formatDataLabelForClassify(series, filter, BI.flatten(series.data, "x"), dataLabel);
+                            formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
                         }
                         //系列
                         if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2){
@@ -468,7 +468,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         if(series.name === BI.Utils.getDimensionNameByID(dId)){
                             //分类
                             if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
-                                formatDataLabelForClassify(series, filter, BI.flatten(series.data, "x"), dataLabel);
+                                formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
                             }
                             //指标自身
                             if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1){
