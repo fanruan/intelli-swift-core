@@ -45,7 +45,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
     }
 
     @Override
-    public Object mainTask (IMessage lastReceiveMessage) {
+    public Object mainTask(IMessage lastReceiveMessage) {
         buildRelationPathIndex();
         return null;
     }
@@ -82,12 +82,17 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 buildReverseIndex(targetPathEntity, reverse);
                 targetPathEntity.addRelationNULLIndex(0, nullIndex);
                 long costTime = System.currentTimeMillis() - t;
-                if (null != columnKeyInfo) {
+                try {
                     biLogManager.infoRelation(columnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
+                } catch (Exception e) {
+                    BILogger.getLogger().error(e.getMessage());
                 }
             } catch (Exception e) {
-                if (null != columnKeyInfo) {
+                try {
                     biLogManager.errorRelation(columnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
+                } catch (Exception e1) {
+                    BILogger.getLogger().error(e1.getMessage());
+
                 }
                 throw BINonValueUtils.beyondControl(e.getMessage(), e);
             } finally {
@@ -192,7 +197,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
             try {
                 tableRelation = getTableRelation(relation);
             } catch (Exception e) {
-                BILogger.getLogger().error("get relationColumnKey failed! relation information used as listed:"+relation.getPrimaryTable().getSourceID()+"."+relation.getPrimaryField().getColumnName()+" to "+relation.getForeignTable().getSourceID()+"."+relation.getForeignField().getColumnName());
+                BILogger.getLogger().error("get relationColumnKey failed! relation information used as listed:" + relation.getPrimaryTable().getSourceID() + "." + relation.getPrimaryField().getColumnName() + " to " + relation.getForeignTable().getSourceID() + "." + relation.getForeignField().getColumnName());
             }
             field = tableRelation.getPrimaryKey();
             relations.add(tableRelation);

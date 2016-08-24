@@ -10,7 +10,6 @@ import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -66,24 +65,20 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
         biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
-        IPersistentTable persistentTable = null;
-        String fieldName = null;
-        try {
-            persistentTable = tableSource.getPersistentTable();
-            fieldName = hostBICubeFieldSource.getFieldName();
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
-        }
         try {
             initial();
             buildTableIndex();
             long costTime = System.currentTimeMillis() - t;
-            if (null != persistentTable && fieldName != null) {
-                biLogManager.infoColumn(persistentTable, fieldName, costTime, Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+            try {
+                biLogManager.infoColumn(tableSource.getPersistentTable(), hostBICubeFieldSource.getFieldName(), costTime, Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         } catch (Exception e) {
-            if (null != persistentTable && fieldName != null) {
-                biLogManager.errorTable(persistentTable, e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            try {
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {

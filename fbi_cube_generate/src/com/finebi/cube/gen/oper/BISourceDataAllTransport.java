@@ -10,7 +10,6 @@ import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
@@ -32,12 +31,6 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
-        IPersistentTable persistentTable = null;
-        try {
-            persistentTable = tableSource.getPersistentTable();
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
-        }
         try {
             recordTableInfo();
             buildTableBasicStructure();
@@ -52,12 +45,16 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
             System.out.println("table usage:" + tableCostTime);
-            if (null != persistentTable) {
-                biLogManager.infoTable(persistentTable, tableCostTime, UserControl.getInstance().getSuperManagerID());
+            try {
+                biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         } catch (Exception e) {
-            if (null != persistentTable) {
-                biLogManager.errorTable(persistentTable, e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            try {
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {

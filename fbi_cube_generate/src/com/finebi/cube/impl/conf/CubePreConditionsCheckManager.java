@@ -16,7 +16,7 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
         }
         double dirSize = getDirSize(file);
         double availableSpace = getAvailableSpace(file);
-        return (availableSpace > dirSize * 1.5);
+        return (availableSpace > dirSize * 2);
     }
 
     @Override
