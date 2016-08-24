@@ -30,7 +30,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
     addItem: function () {
         var o = this.options;
         var item = {
-            type: "bi.scatter_no_type_field_filter_item",
+            type: "bi.data_label_no_type_field_filter_item",
             sdId: o.dId
         };
         this.buttonGroup.addItems([item]);
@@ -48,7 +48,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
                 cdt.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
                 cdt.sdId = o.dId;
             }
-            t = BI.ScatterFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+            t = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
             items.push({
                 type: t.type,
                 sdId: o.dId,
