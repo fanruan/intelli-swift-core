@@ -106,7 +106,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.text_value_down_list_combo",
             width: this.size.COMBO_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
-            items: this.isDimension ? BICst.DIMENSION_FILTER_STRING_COMBO : BICst.DATA_LABEL_FILTER_NUMBER_COMBO
+            items: this.isDimension ? BICst.DATA_LABEL_FILTER_STRING_COMBO : BICst.DATA_LABEL_FILTER_NUMBER_COMBO
         });
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
