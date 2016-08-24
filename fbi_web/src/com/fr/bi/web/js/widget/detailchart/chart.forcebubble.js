@@ -27,21 +27,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function(config, items){
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
 
         config.plotOptions.force = true;
         config.plotOptions.shadow = this.config.bubble_style !== this.constants.NO_PROJECT;
