@@ -169,7 +169,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForAxis: function (da) {
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
-        //this._setDataLabelSetting(data);
+        this._setDataLabelSetting(data);
         if (BI.isEmptyArray(data)) {
             return [];
         }
@@ -205,6 +205,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _checkSeriesExist: function () {
+        var o = this.options;
         var view = BI.Utils.getWidgetViewByID(o.wId);
         var result = BI.find(view[BICst.REGION.DIMENSION2], function (idx, dId) {
             return BI.Utils.isDimensionUsable(dId);
@@ -421,7 +422,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         });
         BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
             BI.each(BI.Utils.getDatalabelByID(dId), function (id, dataLabel) {
-                var filter =  BI.FilterValueFactory.parseFilterValue(dataLabel);
+                var filter =  BI.FilterFactory.parseFilterValue(dataLabel);
                 BI.any(data, function(idx, series){
                     if(hasSeries === true){
                         //有系列
