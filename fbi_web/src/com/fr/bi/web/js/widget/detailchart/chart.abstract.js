@@ -21,7 +21,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         FIX_COUNT: 6,
         STYLE_NORMAL: 21,
         NO_PROJECT: 16,
-        DASHBOARD_AXIS:4,
+        DASHBOARD_AXIS: 4,
         ONE_POINTER: 1,
         MULTI_POINTER: 2,
         HALF_DASHBOARD: 9,
@@ -82,11 +82,11 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         });
     },
 
-    formatNumberLevelInXaxis: function(items, type){
+    formatNumberLevelInXaxis: function (items, type) {
         var magnify = this.calcMagnify(type);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
-                if(!BI.isNumber(da.x)){
+                if (!BI.isNumber(da.x)) {
                     da.x = BI.parseFloat(da.x);
                 }
                 da.x = da.x || 0;
@@ -95,8 +95,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         })
     },
 
-    formatXYDataWithMagnify: function(number, magnify){
-        if(!BI.isNumber(number)){
+    formatXYDataWithMagnify: function (number, magnify) {
+        if (!BI.isNumber(number)) {
             number = BI.parseFloat(number);
         }
         number = number || 0;
@@ -123,7 +123,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return magnify;
     },
 
-    formatChartLegend: function(config, chart_legend){
+    formatChartLegend: function (config, chart_legend) {
         switch (chart_legend) {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
@@ -157,7 +157,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 unit = BI.i18nText("BI-Yi");
                 break;
         }
-        return unit === "" && axis_unit === "" ? unit : "(" + unit + axis_unit + ")";
+        return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : "(" + unit + axis_unit + ")";
     },
 
     formatTickInXYaxis: function (type, number_level) {
@@ -184,7 +184,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             }
         }
         formatter += ";-" + formatter;
-        return function(){return BI.contentFormat(arguments[0], formatter)}
+        return function () {
+            return BI.contentFormat(arguments[0], formatter)
+        }
     },
 
     _formatItems: function (items) {
