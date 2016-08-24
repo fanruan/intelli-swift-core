@@ -12,10 +12,10 @@
         constructor: BI.NumberNotInRangeFilterValue,
 
         isNumberNotInRange: function(value){
-            if(value = null){
+            if(value == null){
                 return true;
             }
-            return (this.range.closemin ? value < this.range.min : value <= this.range.min) &&
+            return (this.range.closemin ? value < this.range.min : value <= this.range.min) ||
                 (this.range.closemax ? value > this.range.max : value >= this.range.max);
         },
 

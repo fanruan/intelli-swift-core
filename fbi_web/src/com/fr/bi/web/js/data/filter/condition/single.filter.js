@@ -11,8 +11,9 @@
         },
 
         getFilterResult: function(array) {
+            var self = this;
             return BI.filter(array, function(idx, val){
-                return this.isQualified(val, array);
+                return self.isQualified(val, array);
             });
         }
     }

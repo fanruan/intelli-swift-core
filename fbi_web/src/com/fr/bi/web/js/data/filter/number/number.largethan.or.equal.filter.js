@@ -18,10 +18,8 @@
         },
 
         isQualified: function(value, array){
-            if(BI.isNull(this.avgValue)){
-                this.avgValue = this.getNumberAvg(array);
-            }
-            return value >= this.avgValue;
+            var avgValue = this.getNumberAvg(array);
+            return value >= avgValue;
         }
     }
 })();

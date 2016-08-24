@@ -12,7 +12,7 @@
         constructor: BI.NumberInRangeFilterValue,
 
         isNumberInRange: function(value){
-            if(value = null){
+            if(value == null){
                 return false;
             }
             return (this.range.closemin ? value >= this.range.min : value > this.range.min) &&
