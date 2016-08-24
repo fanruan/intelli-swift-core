@@ -2495,7 +2495,7 @@
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
             if (BI.isNotNull(paramdate)) {
-                return parseComplexDateCommon(offset, new Date(paramdate.getFullYear(), paramdate.getMonth(), paramdate.getDate()));
+                return parseComplexDateCommon(offset, new Date(paramdate));
             }
         }
 
