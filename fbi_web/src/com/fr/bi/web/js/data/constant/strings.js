@@ -17,6 +17,8 @@ BICst.LINKAGE = "__linkage__";
 
 BICst.UNGROUP_TO_OTHER = "__ungroup_to_other__";
 
+BICst.GLOBAL_STYLE_LAYER = "__global_style_layer__";
+
 //data link type
 BICst.DATA_LINK = {
     DATA_SOURCE: "__data_link_data_source__",

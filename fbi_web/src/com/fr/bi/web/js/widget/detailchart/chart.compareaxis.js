@@ -49,21 +49,7 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
         config.style = formatChartStyle();
         formatChartLineStyle();
         formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
@@ -75,11 +61,12 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
 
         config.yAxis = this.yAxis;
         BI.each(config.yAxis, function(idx, axis){
+            var unit = '';
             switch (axis.axisIndex){
                 case self.constants.LEFT_AXIS:
-                    var title = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    unit = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
+                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + unit : unit;
                     BI.extend(axis, {
                         reversed: false,
                         lineWidth: self.config.line_width,
@@ -92,9 +79,9 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
                     formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    var title = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    unit = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
+                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + unit : unit;
                     BI.extend(axis, {
                         reversed: true,
                         lineWidth: self.config.line_width,
@@ -114,7 +101,7 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
         });
 
         config.xAxis[0].title.align = "center";
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.left_y_axis_title : "";
+        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], {
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
@@ -272,10 +259,10 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
                     break;
             }
             if(position === self.constants.X_AXIS){
-                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
+                self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
             if(position === self.constants.LEFT_AXIS){
-                self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
+                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
             if(position === self.constants.RIGHT_AXIS){
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
