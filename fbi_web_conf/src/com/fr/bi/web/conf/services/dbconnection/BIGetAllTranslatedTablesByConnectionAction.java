@@ -62,7 +62,7 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
             TableProcedure[] views = new TableProcedure[0];
             String schemaName = BIConnectionManager.getInstance().getSchema(connectionName);
             if (schemaName != null) {
-                if(ComparatorUtils.equals(schemaName, StringUtils.EMPTY)) {
+                if(StringUtils.isEmpty(schemaName)) {
                     schemaName = null;
                 }
                 TableProcedure[] sqlTables = DataCoreUtils.getTables(dbc, TableProcedure.TABLE, schemaName, true);
