@@ -33,87 +33,87 @@ BI.DataLabelMethods = {
 
         function filterForSelf(data, label) {
             switch (label.filter_type) {
-                case BICst.DATA_LABEL_FILTER_NUMBER.BELONG_VALUE:
+                case BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE:
                     var min = label.filter_value.closemin ? data.y >= label.filter_value.min : data.y > label.filter_value.min;
                     var max = label.filter_value.closemax ? data.y <= label.filter_value.max : data.y < label.filter_value.max;
                     if (min && max) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_NUMBER.NOT_BELONG_VALUE:
+                case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE:
                     var min = label.filter_value.closemin ? data.y < label.filter_value.min : data.y <= label.filter_value.min;
                     var max = label.filter_value.closemax ? data.y > label.filter_value.max : data.y >= label.filter_value.max;
                     if (min || max) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_NUMBER.EQUAL_TO:
+                case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
                     if (data.y == label.filter_value) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_NUMBER.NOT_EQUAL_TO:
+                case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
                     if (data.y != label.filter_value) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_NUMBER.IS_NULL:
+                case BICst.DIMENSION_FILTER_NUMBER.IS_NULL:
                     if (data.y == null) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_NUMBER.NOT_NULL:
+                case BICst.DIMENSION_FILTER_NUMBER.NOT_NULL:
                     if (data.y != null) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
+                case BICst.DIMENSION_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
                     break;
-                case BICst.DATA_LABEL_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
+                case BICst.DIMENSION_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
                     break;
-                case BICst.DATA_LABEL_FILTER_NUMBER.TOP_N:
+                case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
                     break;
             }
         }
 
         function filterForClassify(data, label) {
             switch (label.filter_type) {
-                case BICst.DATA_LABEL_FILTER_STRING.BELONG_VALUE:
+                case BICst.DIMENSION_FILTER_STRING.BELONG_VALUE:
                     if (!label.filter_value.value || label.filter_value.value.indexOf(data.value) != -1) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.NOT_BELONG_VALUE:
+                case BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE:
                     if (label.filter_value.value && label.filter_value.value.indexOf(data.value) == -1) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.CONTAIN:
+                case BICst.DIMENSION_FILTER_STRING.CONTAIN:
                     if (!label.filter_value || data.value.indexOf(label.filter_value) != -1 && label.filter_value) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.NOT_CONTAIN:
+                case BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN:
                     if (!label.filter_value || data.value.indexOf(label.filter_value) == -1) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.IS_NULL:
+                case BICst.DIMENSION_FILTER_STRING.IS_NULL:
                     if (data.value == null) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.NOT_NULL:
+                case BICst.DIMENSION_FILTER_STRING.NOT_NULL:
                     if (data.value != null) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.BEGIN_WITH:
+                case BICst.DIMENSION_FILTER_STRING.BEGIN_WITH:
                     if (!label.filter_value || data.value.startWith(label.filter_value)) {
                         createDataLabel(data, label);
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.END_WITH:
+                case BICst.DIMENSION_FILTER_STRING.END_WITH:
                     if (!label.filter_value || data.value.endWith(label.filter_value || "")) {
                         createDataLabel(data, label);
                     }
@@ -123,56 +123,56 @@ BI.DataLabelMethods = {
 
         function filterForSeries(data, label) {
             switch (label.filter_type) {
-                case BICst.DATA_LABEL_FILTER_STRING.BELONG_VALUE:
+                case BICst.DIMENSION_FILTER_STRING.BELONG_VALUE:
                     if (!label.filter_value.value || label.filter_value.value.indexOf(data.name) != -1) {
                         BI.each(data.data, function (idx, item) {
                             createDataLabel(item, label);
                         })
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.NOT_BELONG_VALUE:
+                case BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE:
                     if (label.filter_value.value && label.filter_value.value.indexOf(data.name) == -1) {
                         BI.each(data.data, function (idx, item) {
                             createDataLabel(item, label);
                         })
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.CONTAIN:
+                case BICst.DIMENSION_FILTER_STRING.CONTAIN:
                     if (!label.filter_value || data.name.indexOf(label.filter_value) != -1 && label.filter_value) {
                         BI.each(data.data, function (idx, item) {
                             createDataLabel(item, label);
                         })
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.NOT_CONTAIN:
+                case BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN:
                     if (!label.filter_value || data.name.indexOf(label.filter_value) == -1) {
                         BI.each(data.data, function (idx, item) {
                             createDataLabel(item, label);
                         })
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.IS_NULL:
+                case BICst.DIMENSION_FILTER_STRING.IS_NULL:
                     if (data.name == null) {
                         BI.each(data.data, function (idx, item) {
                             createDataLabel(item, label);
                         })
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.NOT_NULL:
+                case BICst.DIMENSION_FILTER_STRING.NOT_NULL:
                     if (data.name != null) {
                         BI.each(data.data, function (idx, item) {
                             createDataLabel(item, label);
                         })
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.BEGIN_WITH:
+                case BICst.DIMENSION_FILTER_STRING.BEGIN_WITH:
                     if (!label.filter_value || data.name.startWith(label.filter_value)) {
                         BI.each(data.data, function (idx, item) {
                             createDataLabel(item, label);
                         })
                     }
                     break;
-                case BICst.DATA_LABEL_FILTER_STRING.END_WITH:
+                case BICst.DIMENSION_FILTER_STRING.END_WITH:
                     if (!label.filter_value || data.name.endWith(label.filter_value || "")) {
                         BI.each(data.data, function (idx, item) {
                             createDataLabel(item, label);
