@@ -11,20 +11,12 @@
     BI.GeneralAndFilter.prototype = {
         constructor: BI.GeneralAndFilter,
 
-        isQualified: function(value, array){
-            var res = BI.find(this.childs, function(idx, child){
-                if(BI.isNotNull(child) && child.isQualified(value, array)){
-                    return true;
-                }
-            });
-            return BI.isNotNull(res);
-        },
-
         getFilterResult: function(array) {
-            var self = this;
-            return BI.filter(array, function(idx, val){
-                return self.isQualified(val, array);
+            var result = [];
+            BI.each(this.childs, function(idx, filter){
+                result = BI.intersection(result, filter.getFilterResult(array));
             });
+            return result;
         }
     }
 })();

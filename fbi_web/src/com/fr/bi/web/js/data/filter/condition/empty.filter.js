@@ -7,11 +7,11 @@
         constructor: BI.EmptyFilter,
 
         isQualified: function(){
-            return true;
+            return false;
         },
 
         getFilterResult: function() {
-            return true;
+            return [];
         }
     }
 })();

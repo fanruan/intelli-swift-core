@@ -46,12 +46,14 @@
             }
         },
 
-        isQualified: function(value, array){
+        getFilterResult: function(array) {
             if(this.kNumber === 0){
-                return false;
+                return [];
             }
             var kthValue = this.getNumberKth(array, this.kNumber);
-            return kthValue + "" === BI.parseFloat(value) + "";
+            return BI.filter(array, function(idx, val){
+                return kthValue + "" === BI.parseFloat(val) + "";
+            });
         }
     }
 })();

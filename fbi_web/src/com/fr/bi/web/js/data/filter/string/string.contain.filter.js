@@ -13,11 +13,13 @@
             if (this.value == null || target == null) {
                 return false;
             }
-            return target.indexOf(this.value) === -1;
+            return target.indexOf(this.value) !== -1;
         },
 
-        isQualified: function(value){
-            return this.isStringNotContain(value);
+        getFilterResult: function(array) {
+            return BI.filter(array, function(idx, val){
+                return this.isStringNotContain(val);
+            });
         }
     }
 })();

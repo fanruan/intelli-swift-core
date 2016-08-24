@@ -24,8 +24,10 @@
             return (v + "") === (this.value + "");
         },
 
-        isQualified: function(value){
-            return this.isNumberEqual(value);
+        getFilterResult: function(array) {
+            return BI.filter(array, function(idx, val){
+                return this.isNumberEqual(val);
+            });
         }
     }
 })();

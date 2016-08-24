@@ -16,8 +16,10 @@
             return value.endWith(this.end);
         },
 
-        isQualified: function(value){
-            return this.isStringEndWith(value);
+        getFilterResult: function(array) {
+            return BI.filter(array, function(idx, val){
+                return this.isStringEndWith(val);
+            });
         }
     }
 })();

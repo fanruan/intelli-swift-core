@@ -9,8 +9,10 @@
             return BI.isNotNull(value) && BI.isNotEmptyString(value);
         },
 
-        isQualified: function(value){
-            return this.isStringNotNull(value);
+        getFilterResult: function(array) {
+            return BI.filter(array, function(idx, val){
+                return this.isStringNotNull(val);
+            });
         }
     }
 })();

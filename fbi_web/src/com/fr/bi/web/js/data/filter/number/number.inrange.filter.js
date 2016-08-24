@@ -19,8 +19,10 @@
                 (this.range.closemax ? value <= this.range.max : value < this.range.max);
         },
 
-        isQualified: function(value){
-            return this.isNumberInRange(value);
+        getFilterResult: function(array) {
+            return BI.filter(array, function(idx, val){
+                return this.isNumberInRange(val);
+            });
         }
     }
 })();

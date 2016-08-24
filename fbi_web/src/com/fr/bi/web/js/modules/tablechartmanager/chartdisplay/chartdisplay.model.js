@@ -443,11 +443,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         //自身
                         if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1){
                             //范围为全系列
-                            if(dataLabel.filter_range === 1){
+                            if(dataLabel.filter_range === BICst.DATA_LABEL_RANGE.ALL){
                                 formatDataLabelForSelf(series, filter, allValueArray, dataLabel);
                             }
                             //范围为分类 求平均和第n名有差异
-                            if(dataLabel.filter_range === 2){
+                            if(dataLabel.filter_range === BICst.DATA_LABEL_RANGE.Classification){
                                 var filterArrays = [];
                                 BI.each(series.data, function(id, data){
                                     if(idx === 0){
@@ -459,7 +459,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                 });
                             }
                             //范围为系列 求平均和第n名有差异
-                            if(dataLabel.filter_range === 3){
+                            if(dataLabel.filter_range === BICst.DATA_LABEL_RANGE.Series){
                                 formatDataLabelForSelf(series, filter, seriesArrayMap[series.name], dataLabel);
                             }
                         }
