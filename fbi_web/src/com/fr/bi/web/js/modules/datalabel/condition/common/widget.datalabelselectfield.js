@@ -42,7 +42,7 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
             fieldsCreator: function (tableId) {
                 if (self._constant.SELF_FIELD === tableId) {
                     return [{
-                        id: BI.Utils.getFieldIDByDimensionID(o.dId),
+                        id: o.dId,
                         pId: self._constant.SELF_FIELD,
                         type: "bi.select_data_level0_item",
                         fieldType: BI.Utils.getFieldTypeByDimensionID(o.dId),
@@ -55,7 +55,7 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                     var result = [];
                     BI.each(BI.Utils.getAllUsableDimDimensionIDs(widgetId), function (i, dId) {
                         result.push({
-                            id: BI.Utils.getFieldIDByDimensionID(dId),
+                            id: dId,
                             pId: self._constant.OTHER_FIELD,
                             type: "bi.select_data_level0_item",
                             fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
