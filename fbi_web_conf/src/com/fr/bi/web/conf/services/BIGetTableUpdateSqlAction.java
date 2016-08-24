@@ -118,7 +118,7 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         String dateStr = DateUtils.DATETIMEFORMAT2.format(date);
         while (matcher.find()) {
             String matchStr = matcher.group(0);
-            sql = sql.replace(matchStr, "${"+dateStr+"}");
+            sql = sql.replace(matchStr, dateStr);
         }
         return sql;
     }
