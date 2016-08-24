@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Created by kary on 2016/8/22.
  */
-public class BIGetDBTableInfoMapAction extends AbstractBIConfigureAction {
+public class BIPersistTableInfoAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);

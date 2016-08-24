@@ -73,7 +73,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             fieldName = hostBICubeFieldSource.getFieldName();
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
-            BILogger.getLogger().error("BILog error：tableSource or ICubeFieldSource  not found");
+            BILogger.getLogger().error("BILog error：tableSource or ICubeFieldSource error");
         }
         try {
             initial();
