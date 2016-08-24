@@ -2495,7 +2495,7 @@
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
             if (BI.isNotNull(paramdate)) {
-                return parseComplexDateCommon(offset, new Date(paramdate));
+                return parseComplexDateCommon(offset, new Date(paramdate.getFullYear(), paramdate.getMonth(), paramdate.getDate()));
             }
         }
 
@@ -2503,6 +2503,7 @@
             var type = v.type, value = v.value;
             var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
+            date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
             var tool = new BI.MultiDateParamTrigger();
             if (BI.isNull(type) && BI.isNotNull(v.year)) {
                 return new Date(v.year, v.month, v.day).getTime();
@@ -2515,7 +2516,7 @@
                 case BICst.MULTI_DATE_YEAR_BEGIN:
                     return new Date(currY, 0, 1).getTime();
                 case BICst.MULTI_DATE_YEAR_END:
-                    return new Date(currY + 1, 0, 1).getTime() - 1;
+                    return new Date(currY, 11, 31).getTime();
 
                 case BICst.MULTI_DATE_MONTH_PREV:
                     return tool._getBeforeMultiMonth(value).getTime();
@@ -2524,7 +2525,7 @@
                 case BICst.MULTI_DATE_MONTH_BEGIN:
                     return new Date(currY, currM, 1).getTime();
                 case BICst.MULTI_DATE_MONTH_END:
-                    return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getOffsetDate(1).getTime() - 1;
+                    return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
 
                 case BICst.MULTI_DATE_QUARTER_PREV:
                     return tool._getBeforeMulQuarter(value).getTime();
@@ -2533,7 +2534,7 @@
                 case BICst.MULTI_DATE_QUARTER_BEGIN:
                     return tool._getQuarterStartDate().getTime();
                 case BICst.MULTI_DATE_QUARTER_END:
-                    return tool._getQuarterEndDate().getOffsetDate(1).getTime() - 1;
+                    return tool._getQuarterEndDate().getTime();
 
                 case BICst.MULTI_DATE_WEEK_PREV:
                     return date.getOffsetDate(-7 * value).getTime();
@@ -2567,7 +2568,7 @@
                 filterValue.start = parseComplexDate(start);
             }
             if (BI.isNotNull(end)) {
-                filterValue.end = parseComplexDate(end);
+                filterValue.end = new Date(parseComplexDate(end)).getOffsetDate(1).getTime() - 1
             }
         }
         if (filterType === BICst.FILTER_DATE.BELONG_WIDGET_VALUE || filterType === BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE) {
@@ -2582,7 +2583,7 @@
                         filterValue.start = parseComplexDate(wValue.start);
                     }
                     if (BI.isNotNull(wValue.end)) {
-                        filterValue.end = parseComplexDate(wValue.end);
+                        filterValue.end = new Date(parseComplexDate(wValue.end)).getOffsetDate(1).getTime() - 1
                     }
                     break;
                 case BICst.LAST_SAME_PERIOD:
@@ -2608,7 +2609,7 @@
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
                         filterValue.start = value.start;
-                        filterValue.end = value.end;
+                        filterValue.end = new Date(value.end).getOffsetDate(1).getTime() - 1;
                     }
                     break;
             }
@@ -2648,40 +2649,40 @@
             switch (type) {
                 case BICst.YEAR:
                     start = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), 0, 1);
-                    end = new Date(start.getFullYear() + 1, 0, 1);
+                    end = new Date(start.getFullYear(), 11, 31);
                     break;
                 case BICst.YEAR_QUARTER:
                     ydate = tool._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
                     start = tool._getQuarterStartDate(ydate);
-                    end = tool._getQuarterEndDate(ydate).getOffsetDate(1);
+                    end = tool._getQuarterEndDate(ydate);
                     break;
                 case BICst.YEAR_MONTH:
                     ydate = tool._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
                     start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
-                    end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate()).getOffsetDate(1);
+                    end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
                     break;
                 case BICst.YEAR_WEEK:
                     start = ydate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
-                    end = start.getOffsetDate(7);
+                    end = start.getOffsetDate(6);
                     break;
                 case BICst.YEAR_DAY:
                     start = ydate.getOffsetDate(sPrevOrAfter * value.svalue);
-                    end = start.getOffsetDate(1);
+                    end = start;
                     break;
                 case BICst.MONTH_WEEK:
                     var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
                     start = mdate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
-                    end = start.getOffsetDate(7);
+                    end = start.getOffsetDate(6);
                     break;
                 case BICst.MONTH_DAY:
                     var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
                     start = mdate.getOffsetDate(sPrevOrAfter * value.svalue);
-                    end = start.getOffsetDate(1);
+                    end = start;
                     break;
             }
             return {
                 start: start.getTime(),
-                end: end.getTime() - 1
+                end: end.getTime()
             }
         }
 
