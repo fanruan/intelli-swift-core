@@ -2515,7 +2515,7 @@
                 case BICst.MULTI_DATE_YEAR_BEGIN:
                     return new Date(currY, 0, 1).getTime();
                 case BICst.MULTI_DATE_YEAR_END:
-                    return new Date(currY, 11, 31).getTime();
+                    return new Date(currY + 1, 0, 1).getTime() - 1;
 
                 case BICst.MULTI_DATE_MONTH_PREV:
                     return tool._getBeforeMultiMonth(value).getTime();
@@ -2524,7 +2524,7 @@
                 case BICst.MULTI_DATE_MONTH_BEGIN:
                     return new Date(currY, currM, 1).getTime();
                 case BICst.MULTI_DATE_MONTH_END:
-                    return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
+                    return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getOffsetDate(1).getTime() - 1;
 
                 case BICst.MULTI_DATE_QUARTER_PREV:
                     return tool._getBeforeMulQuarter(value).getTime();
@@ -2533,7 +2533,7 @@
                 case BICst.MULTI_DATE_QUARTER_BEGIN:
                     return tool._getQuarterStartDate().getTime();
                 case BICst.MULTI_DATE_QUARTER_END:
-                    return tool._getQuarterEndDate().getTime();
+                    return tool._getQuarterEndDate().getOffsetDate(1).getTime() - 1;
 
                 case BICst.MULTI_DATE_WEEK_PREV:
                     return date.getOffsetDate(-7 * value).getTime();
@@ -2590,7 +2590,7 @@
                         var s = parseComplexDate(wValue.start);
                         var e = parseComplexDate(wValue.end);
                         filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
-                        filterValue.end = new Date(s).getOffsetDate(-1).getTime();
+                        filterValue.end = new Date(s).getTime() - 1;
                     } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
                         filterValue.start = parseComplexDate(wValue.start);
                     } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
@@ -2617,7 +2617,7 @@
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                filterValue.end = new Date(value.start).getOffsetDate(-1).getTime();
+                filterValue.end = new Date(value.start).getTime() - 1;
             }
         }
         if (filterType === BICst.FILTER_DATE.LATER_THAN) {
@@ -2648,27 +2648,18 @@
             switch (type) {
                 case BICst.YEAR:
                     start = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), 0, 1);
-                    end = new Date(start.getFullYear(), 11, 31);
-                    return {
-                        start: start.getTime(),
-                        end: end.getTime()
-                    };
+                    end = new Date(start.getFullYear() + 1, 0, 1);
+                    break;
                 case BICst.YEAR_QUARTER:
                     ydate = tool._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
                     start = tool._getQuarterStartDate(ydate);
-                    end = tool._getQuarterEndDate(ydate);
-                    return {
-                        start: start.getTime(),
-                        end: end.getTime()
-                    };
+                    end = tool._getQuarterEndDate(ydate).getOffsetDate(1);
+                    break;
                 case BICst.YEAR_MONTH:
                     ydate = tool._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
                     start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
-                    end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
-                    return {
-                        start: start.getTime(),
-                        end: end.getTime()
-                    };
+                    end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate()).getOffsetDate(1);
+                    break;
                 case BICst.YEAR_WEEK:
                     start = ydate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
                     end = start.getOffsetDate(7);
