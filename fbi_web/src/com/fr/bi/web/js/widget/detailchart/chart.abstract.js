@@ -18,7 +18,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         TWO2POINT: 4,
         MINLIMIT: 1e-5,
         LEGEND_HEIGHT: 80,
-        LEGEND_WIDTH: "15.0%",
+        LEGEND_WIDTH: "30.0%",
         FIX_COUNT: 6,
         STYLE_NORMAL: 21,
         NO_PROJECT: 16,
