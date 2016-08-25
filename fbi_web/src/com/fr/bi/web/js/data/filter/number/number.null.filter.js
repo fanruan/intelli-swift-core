@@ -9,8 +9,11 @@
             return BI.isNull(value);
         },
 
-        isQualified: function(value){
-            return this.isNumberNull(value);
+        getFilterResult: function(array) {
+            var self = this;
+            return BI.filter(array, function(idx, val){
+                return self.isNumberNull(val);
+            });
         }
     }
 })();

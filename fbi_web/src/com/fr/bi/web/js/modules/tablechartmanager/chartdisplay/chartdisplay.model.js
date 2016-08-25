@@ -169,7 +169,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForAxis: function (da) {
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
-        //this._setDataLabelSetting(data);
+        this._setDataLabelSetting(data);
         if (BI.isEmptyArray(data)) {
             return [];
         }
@@ -402,13 +402,59 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
     },
 
-    _setDataLabelSetting: function(data){
+    _setDataLabelSettingForBubbleAndScatter: function(data){
         var o = this.options;
-        var hasSeries = this._checkSeriesExist();
-        var allSeries = BI.flatten(data, "name");
+        var allSeries = BI.pluck(data, "name");
         var cataArrayMap = {};  //值按分类分组
         var seriesArrayMap = {}; //值按系列分组
         var allValueArray = []; //所有值
+        BI.each(data, function(idx, da){
+            seriesArrayMap[da.name] = [];
+            BI.each(da.data, function(id, obj){
+                if(!BI.has(cataArrayMap, obj.x)){
+                    cataArrayMap[obj.x] = [];
+                }
+                cataArrayMap[obj.x].push(obj.y);
+                seriesArrayMap[da.name].push(obj.y);
+                allValueArray.push(obj.y);
+            })
+        });
+        BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
+            BI.each(BI.Utils.getDatalabelByID(dId), function (id, dataLabel) {
+                var filter = null;
+                if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
+                    filter = BI.FilterFactory.parseFilter(dataLabel);
+                    var filterArray = filter.getFilterResult(allSeries);
+                    BI.any(data, function(idx, series){
+                        if(BI.contains(filterArray, series.name)){
+                            BI.each(series.data, function(id, da){
+                                createDataLabel(da, dataLabel);
+                            });
+                        }
+                    });
+                }else{
+                    filter = BI.FilterObjectFactory.parseFilter(dataLabel);
+                    var filterArray = filter.getFilterResult(BI.pluck(data, "data"));
+                    BI.any(data, function(idx, series){
+                        BI.each(series.data, function(id, da){
+                            if(BI.deepContains(filterArray, da)){
+                                createDataLabel(da, dataLabel);
+                            }
+                        }); 
+                    });
+                }
+            });
+        });
+    },
+
+    _setDataLabelSetting: function(data){
+        var o = this.options;
+        var hasSeries = this._checkSeriesExist();
+        var allSeries = BI.pluck(data, "name");
+        var cataArrayMap = {};  //值按分类分组
+        var seriesArrayMap = {}; //值按系列分组
+        var allValueArray = []; //所有值
+        var filterClassifyArrays = [];//为过滤自身时范围为分类所用
         BI.each(data, function(idx, da){
             seriesArrayMap[da.name] = [];
             BI.each(da.data, function(id, obj){
@@ -428,14 +474,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         //有系列
                         //分类
                         if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
-                            formatDataLabelForClassify(series, filter, BI.flatten(series.data, "x"), dataLabel);
+                            formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
                         }
                         //系列
                         if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2){
                             var filterArray = filter.getFilterResult(allSeries);
                             if(BI.contains(filterArray, series.name)){
-                                BI.each(series.data, function(id, data){
-                                    createDataLabel(data, dataLabel);
+                                BI.each(series.data, function(id, da){
+                                    createDataLabel(da, dataLabel);
                                 });
                                 return true;
                             }
@@ -443,23 +489,22 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         //自身
                         if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1){
                             //范围为全系列
-                            if(dataLabel.filter_range === 1){
+                            if(dataLabel.filter_range === BICst.DATA_LABEL_RANGE.ALL){
                                 formatDataLabelForSelf(series, filter, allValueArray, dataLabel);
                             }
                             //范围为分类 求平均和第n名有差异
-                            if(dataLabel.filter_range === 2){
-                                var filterArrays = [];
-                                BI.each(series.data, function(id, data){
+                            if(dataLabel.filter_range === BICst.DATA_LABEL_RANGE.Classification){
+                                BI.each(series.data, function(id, da){
                                     if(idx === 0){
-                                        filterArrays.push(filter.getFilterResult(cataArrayMap[data.x]));
+                                        filterClassifyArrays.push(filter.getFilterResult(cataArrayMap[da.x]));
                                     }
-                                    if(BI.contains(filterArrays[id], data.y)){
-                                        createDataLabel(data, dataLabel);
+                                    if(BI.contains(filterClassifyArrays[id], da.y)){
+                                        createDataLabel(da, dataLabel);
                                     }
                                 });
                             }
                             //范围为系列 求平均和第n名有差异
-                            if(dataLabel.filter_range === 3){
+                            if(dataLabel.filter_range === BICst.DATA_LABEL_RANGE.Series){
                                 formatDataLabelForSelf(series, filter, seriesArrayMap[series.name], dataLabel);
                             }
                         }
@@ -468,7 +513,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         if(series.name === BI.Utils.getDimensionNameByID(dId)){
                             //分类
                             if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
-                                formatDataLabelForClassify(series, filter, BI.flatten(series.data, "x"), dataLabel);
+                                formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
                             }
                             //指标自身
                             if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1){

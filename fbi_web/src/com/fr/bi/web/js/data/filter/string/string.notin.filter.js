@@ -19,8 +19,11 @@
             return this.type === BI.Selection.All;
         },
 
-        isQualified: function(value){
-            return this.isAllSelect() ? !this.isStringNotIn(value) : this.isStringNotIn(value);
+        getFilterResult: function(array) {
+            var self = this;
+            return BI.filter(array, function(idx, val){
+                return self.isAllSelect() ? !self.isStringNotIn(val) : self.isStringNotIn(val);
+            });
         }
     }
 })();

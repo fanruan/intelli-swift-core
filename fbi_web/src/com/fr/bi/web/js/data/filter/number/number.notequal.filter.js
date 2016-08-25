@@ -24,8 +24,11 @@
             return (v + "") !== (this.value + "");
         },
 
-        isQualified: function(value){
-            return this.isNumberNotEqual(value);
+        getFilterResult: function(array) {
+            var self = this;
+            return BI.filter(array, function(idx, val){
+                return self.isNumberNotEqual(val);
+            });
         }
     }
 })();

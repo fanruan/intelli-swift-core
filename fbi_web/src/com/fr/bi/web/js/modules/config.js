@@ -1376,12 +1376,11 @@ BICst.DATA_LABEL_FILTER_NUMBER_COMBO =[[{
     text: BI.i18nText("BI-Not_Null"),
     value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL,
     cls: "dot-e-font"
-}], [{
+}],[{
     text: BI.i18nText("BI-Place"),
     value: BICst.DIMENSION_FILTER_NUMBER.TOP_N,
     cls: "dot-e-font"
-}
-], [{
+}, {
     text: BI.i18nText("BI-Above_Average"),
     value: BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE,
     cls: "dot-e-font"
