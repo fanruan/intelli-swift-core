@@ -20,8 +20,9 @@
         },
 
         getFilterResult: function(array) {
+            var self = this;
             return BI.filter(array, function(idx, val){
-                return this.isNumberNotInRange(val);
+                return self.isNumberNotInRange(val);
             });
         }
     }

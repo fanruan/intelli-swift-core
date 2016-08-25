@@ -17,8 +17,9 @@
         },
 
         getFilterResult: function(array) {
+            var self = this;
             return BI.filter(array, function(idx, val){
-                return this.isStringContain(val);
+                return self.isStringContain(val);
             });
         }
     }

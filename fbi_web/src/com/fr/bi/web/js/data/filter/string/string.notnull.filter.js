@@ -10,8 +10,9 @@
         },
 
         getFilterResult: function(array) {
+            var self = this;
             return BI.filter(array, function(idx, val){
-                return this.isStringNotNull(val);
+                return self.isStringNotNull(val);
             });
         }
     }

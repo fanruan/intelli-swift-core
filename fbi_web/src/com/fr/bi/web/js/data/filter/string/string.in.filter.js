@@ -20,8 +20,9 @@
         },
 
         getFilterResult: function(array) {
+            var self = this;
             return BI.filter(array, function(idx, val){
-                return this.isAllSelect() ? !this.isStringIn(val) : this.isStringIn(val);
+                return self.isAllSelect() ? !self.isStringIn(val) : self.isStringIn(val);
             });
         }
     }

@@ -25,8 +25,9 @@
         },
 
         getFilterResult: function(array) {
+            var self = this;
             return BI.filter(array, function(idx, val){
-                return this.isNumberNotEqual(val);
+                return self.isNumberNotEqual(val);
             });
         }
     }
