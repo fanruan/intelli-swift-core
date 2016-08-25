@@ -1,7 +1,7 @@
 /**
  * Created by fay on 2016/8/23.
  */
-BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
+BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
         CONTAINER_HEIGHT: 75,
@@ -14,14 +14,14 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.ScatterDoubleFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.ScatterMultiFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "data-label-condition-item",
             afterValueChange: BI.emptyFn
         })
     },
 
     _init: function () {
-        BI.ScatterDoubleFieldFilterItem.superclass._init.apply(this, arguments);
+        BI.ScatterMultiFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.filterType = [];
         this.filterWidget = [];
@@ -37,7 +37,7 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.destroy();
-            BI.ScatterDoubleFieldFilterItem.superclass.destroy.apply(this, arguments);
+            BI.ScatterMultiFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
 
         BI.createWidget({
@@ -235,4 +235,4 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         }
     }
 });
-$.shortcut("bi.scatter_double_field_filter_item", BI.ScatterDoubleFieldFilterItem);
+$.shortcut("bi.scatter_multi_field_filter_item", BI.ScatterMultiFieldFilterItem);
