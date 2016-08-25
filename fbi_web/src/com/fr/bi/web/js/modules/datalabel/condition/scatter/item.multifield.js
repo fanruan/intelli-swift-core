@@ -65,18 +65,23 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     _buildConditions: function () {
         var self = this, o = this.options;
         this.filterItems = [];
-        this.filterValues = o.filter_value || [{target_id: o.dId[0], filter_type: o.filter_type},{target_id: o.dId[1], filter_type: o.filter_type}];
-        if (BI.isNull(this.filterValues[0].target_id) && BI.isNull(this.filterValues[1].target_id)) {
-            return [];
+        this.filterValues = o.filter_value || [];
+        if (this.filterValues.length === 0 && !BI.isNull(o.dId)) {
+            BI.each(o.dId, function (i, dId) {
+                self.filterValues.push({
+                    target_id: dId,
+                    filter_type: o.filter_type
+                });
+            });
         }
-        var targets = BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(this.filterValues[0].target_id));
+        this.targets = BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(this.filterValues[0].target_id));
         BI.each(this.filterValues, function (i, v) {
             var dId = v.target_id;
             var fieldName = BI.Utils.getDimensionNameByID(dId);
-            if (BI.contains(targets[30000], dId)) {
+            if (BI.contains(self.targets[30000], dId)) {
                 fieldName = BI.i18nText("BI-Uppercase_Y_Axis");
             }
-            if (BI.contains(targets[40000], dId)) {
+            if (BI.contains(self.targets[40000], dId)) {
                 fieldName = BI.i18nText("BI-Uppercase_X_Axis");
             }
             var fieldButton = BI.createWidget({
@@ -124,11 +129,12 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _refreshFilterWidget: function (id, filterWidgetContainer, filterType, initData) {
+        var filterItem;
         switch (filterType) {
             case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
             case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
             case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
-                this.filterWidget[id] = this._createNumberInput(initData, id);
+                filterItem = this._createNumberInput(initData, id);
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE:
@@ -142,11 +148,13 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             case BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
             case BICst.DIMENSION_FILTER_NUMBER.IS_NULL:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_NULL:
-                this.filterWidget[id] = BI.createWidget();
+                this.filterWidget[id]= BI.createWidget();
                 break;
+            default:
+                this.filterWidget[id] = BI.createWidget();
         }
         filterWidgetContainer.empty();
-        filterWidgetContainer.addItem(this.filterWidget[id]);
+        filterWidgetContainer.addItem(filterItem || this.filterWidget[id]);
     },
 
     _createNumberIntervalFilter: function (initData) {
@@ -165,7 +173,7 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _createNumberInput: function (initData, id) {
         var self = this, o = this.options;
-        var filterWidget = BI.createWidget({
+        this.filterWidget[id] = BI.createWidget({
             type: "bi.text_editor",
             validationChecker: function () {
                 if (!BI.isNumeric(self.filterWidget[id].getValue())) {
@@ -177,10 +185,10 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             height: this._constant.BUTTON_HEIGHT,
             width: this._constant.INPUT_WIDTH - this._constant.LABEL_WIDTH
         });
-        filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function () {
+        this.filterWidget[id].on(BI.TextEditor.EVENT_CONFIRM, function () {
             o.afterValueChange.apply(self, arguments);
         });
-        BI.isNotNull(initData) && filterWidget.setValue(initData);
+        BI.isNotNull(initData) && this.filterWidget[id].setValue(initData);
         return BI.createWidget({
             type: "bi.inline",
             items: [{
@@ -188,7 +196,7 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 height: this._constant.BUTTON_HEIGHT,
                 text: "N = ",
                 width: this._constant.LABEL_WIDTH
-            }, filterWidget]
+            }, this.filterWidget[id]]
         });
     },
 
@@ -204,17 +212,25 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     getValue: function () {
+        var self = this;
+        var value = [];
+        BI.each(this.filterValues, function (i, v) {
+            var key = "";
+            if (BI.contains(self.targets[30000], v.target_id)) {
+                key = "Y";
+            } else {
+                key = "X";
+            }
+            value.push({
+                key: key,
+                target_id: v.target_id,
+                filter_type: self.filterType[i].getValue()[0],
+                filter_value: self.filterWidget[i].getValue()
+            });
+        });
         return {
             filter_type: BICst.FILTER_TYPE.AND,
-            filter_value: [{
-                target_id: this.filterValues[0].target_id,
-                filter_type: this.filterType[0].getValue()[0],
-                filter_value: this.filterWidget[0].getValue()
-            },{
-                target_id: this.filterValues[1].target_id,
-                filter_type: this.filterType[1].getValue()[0],
-                filter_value: this.filterWidget[1].getValue()
-            }],
+            filter_value: value,
             style_setting: this.style.getValue()
         }
     }
