@@ -1,19 +1,19 @@
 /**
  *
  * Created by GUY on 2016/8/10.
- * @class BI.SequenceTableSummayNumber
+ * @class BI.SequenceTableDynamicNumber
  * @extends BI.SequenceTableTreeNumber
  */
-BI.SequenceTableSummayNumber = BI.inherit(BI.SequenceTableTreeNumber, {
+BI.SequenceTableDynamicNumber = BI.inherit(BI.SequenceTableTreeNumber, {
 
     _defaultConfig: function () {
-        return BI.extend(BI.SequenceTableSummayNumber.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-sequence-table-summay-number",
+        return BI.extend(BI.SequenceTableDynamicNumber.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-sequence-table-dynamic-number"
         });
     },
 
     _init: function () {
-        BI.SequenceTableSummayNumber.superclass._init.apply(this, arguments);
+        BI.SequenceTableDynamicNumber.superclass._init.apply(this, arguments);
     },
 
     _formatNumber: function (nodes) {
@@ -27,7 +27,7 @@ BI.SequenceTableSummayNumber = BI.inherit(BI.SequenceTableTreeNumber, {
                 BI.each(node.children, function (index, child) {
                     cnt += getLeafCount(child);
                 });
-                if (BI.isNotEmptyArray(node.values)) {
+                if (node.children.length > 1 && BI.isNotEmptyArray(node.values)) {
                     cnt++;
                 }
             } else {
@@ -50,7 +50,7 @@ BI.SequenceTableSummayNumber = BI.inherit(BI.SequenceTableTreeNumber, {
                     });
                     start += cnt;
                 });
-                if (node.children.length > 1 && BI.isNotEmptyArray(node.values)) {
+                if (BI.isNotEmptyArray(node.values)) {
                     result.push({
                         text: BI.i18nText("BI-Summary_Values"),
                         start: start++,
@@ -64,4 +64,4 @@ BI.SequenceTableSummayNumber = BI.inherit(BI.SequenceTableTreeNumber, {
         return result;
     }
 });
-$.shortcut('bi.sequence_table_dynamic_number', BI.SequenceTableSummayNumber);
+$.shortcut('bi.sequence_table_dynamic_number', BI.SequenceTableDynamicNumber);
