@@ -67,7 +67,7 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                         type: "bi.select_data_level0_item",
                         text: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
                         title: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
-                        fieldType: BICst.COLUMN.XANDY
+                        fieldType: BICst.DATACOLUMN.XANDY
                     });
                     BI.each(x, function (i, dId) {
                         if (!BI.Utils.isDimensionUsable(dId)) {

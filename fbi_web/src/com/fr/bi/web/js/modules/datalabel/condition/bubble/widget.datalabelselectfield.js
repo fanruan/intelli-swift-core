@@ -68,7 +68,7 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                         type: "bi.select_data_level0_item",
                         text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Bubble_Size"),
                         title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Bubble_Size"),
-                        fieldType: BICst.COLUMN.XANDYANDSIZE
+                        fieldType: BICst.DATACOLUMN.XANDYANDSIZE
                     });
                     result.push({
                         id: BI.i18nText("BI-And"),
@@ -76,7 +76,7 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                         type: "bi.select_data_level0_item",
                         text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
                         title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
-                        fieldType: BICst.COLUMN.XANDY
+                        fieldType: BICst.DATACOLUMN.XANDY
                     });
                     BI.each(x, function (i, dId) {
                         if (!BI.Utils.isDimensionUsable(dId)) {

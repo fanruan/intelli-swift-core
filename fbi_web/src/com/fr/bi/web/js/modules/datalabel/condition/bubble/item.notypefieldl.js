@@ -96,7 +96,7 @@ BI.BubbleNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         var self = this, o = this.options;
         var fieldType;
         if (v == BI.i18nText("BI-And")) {
-            fieldType = BICst.COLUMN.XANDY;
+            fieldType = BICst.DATACOLUMN.XANDY;
             v = BI.Utils.getAllUsableTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.sdId));
         } else {
             fieldType = BI.Utils.getFieldTypeByDimensionID(v);

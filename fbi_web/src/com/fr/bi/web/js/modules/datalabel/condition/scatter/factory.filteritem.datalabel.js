@@ -15,7 +15,7 @@ BI.ScatterFilterItemFactory = {
                 filterType = BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE;
                 type = "bi.scatter_number_field_filter_item";
                 break;
-            case BICst.COLUMN.XANDY:
+            case BICst.DATACOLUMN.XANDY:
                 filterType = BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE;
                 type = "bi.scatter_multi_field_filter_item";
                 break;
