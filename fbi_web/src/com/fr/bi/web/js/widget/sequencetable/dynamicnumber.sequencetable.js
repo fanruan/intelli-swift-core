@@ -50,7 +50,7 @@ BI.SequenceTableSummayNumber = BI.inherit(BI.SequenceTableTreeNumber, {
                     });
                     start += cnt;
                 });
-                if (BI.isNotEmptyArray(node.values)) {
+                if (node.children.length > 1 && BI.isNotEmptyArray(node.values)) {
                     result.push({
                         text: BI.i18nText("BI-Summary_Values"),
                         start: start++,
@@ -64,4 +64,4 @@ BI.SequenceTableSummayNumber = BI.inherit(BI.SequenceTableTreeNumber, {
         return result;
     }
 });
-$.shortcut('bi.sequence_table_summary_number', BI.SequenceTableSummayNumber);
+$.shortcut('bi.sequence_table_dynamic_number', BI.SequenceTableSummayNumber);
