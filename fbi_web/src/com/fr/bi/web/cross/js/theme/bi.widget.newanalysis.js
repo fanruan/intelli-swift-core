@@ -144,6 +144,7 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
     },
 
     _saveReport: function () {
+
         var data = {
             reportName: this.templateName.getValue(),
             reportLocation: this.reportLocation.getValue()[0],
