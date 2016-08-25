@@ -25,6 +25,7 @@ BI.Input = BI.inherit(BI.Single, {
             self._keydown_ = false;
         }, 300);
         var _clk = BI.debounce(BI.bind(this._click, this), BI.EVENT_RESPONSE_TIME, true);
+        this._blurDebounce = BI.debounce(BI.bind(this._blur, this), BI.EVENT_RESPONSE_TIME, true);
         this.element
             .keydown(function (e) {
                 self.fireEvent(BI.Input.EVENT_QUICK_DOWN);
@@ -45,7 +46,7 @@ BI.Input = BI.inherit(BI.Single, {
                 self.element.val(self.element.val());
             })
             .focusout(function (e) {
-                self._blur();
+                self._blurDebounce();
             });
     },
 
@@ -195,7 +196,7 @@ BI.Input = BI.inherit(BI.Single, {
         }
         if (this._isEditing === true) {
             this.element.blur();
-            this._blur();
+            this._blurDebounce();
         }
     },
 

@@ -24,13 +24,13 @@ public class BISourceDataPartTransport4Test extends BISourceDataPartTransport {
     }
 
     public BISourceDataPartTransport4Test(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, int oldCount) {
-        super(cube, tableSource, allSources, parentTableSource, 1);
+        super(cube, tableSource, allSources, parentTableSource, 1,null);
         this.oldCount = oldCount;
     }
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        super.recordTableInfo();
+//        super.recordTableInfo();
         long count = transport();
         if (count >= 0) {
             tableEntityService.recordRowCount(count);

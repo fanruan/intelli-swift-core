@@ -36,6 +36,7 @@ BI.TextItem = BI.inherit(BI.BasicButton, {
             rgap: o.textRgap,
             text: o.text,
             value: o.value,
+            keyword: o.keyword,
             py: o.py
         });
     },

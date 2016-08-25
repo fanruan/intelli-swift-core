@@ -33,7 +33,7 @@ BI.EmptyLevelTree = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
         this.tree.on(BI.LevelTree.EVENT_CHANGE, function(){
-            self.fireEvent(BI.BI.EmptyLevelTree.EVENT_CHANGE, arguments);
+            self.fireEvent(BI.EmptyLevelTree.EVENT_CHANGE, arguments);
         });
     },
 

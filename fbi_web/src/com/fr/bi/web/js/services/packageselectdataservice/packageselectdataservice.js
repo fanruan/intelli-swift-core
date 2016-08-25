@@ -271,8 +271,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         var fieldStructure = [];
         var self = this, o = this.options;
         var fields = o.fieldsCreator(tableId);
-        var map = {}, circleMap = {};
-        var newFields = this._getAllRelativeFields(tableId, fields, circleMap);
+        var fieldMap = {}, map = {};
+        var newFields = BI.PackageSelectDataService.getAllRelativeFields(tableId, fields, map);
 
         BI.each(newFields, function (i, field) {
             var fid = field.id;
@@ -281,7 +281,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             //日期类型-特殊处理
             if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
                 var _type = "bi.detail_select_data_level1_item";
-                fieldStructure.push(map[fid] = {
+                fieldStructure.push(fieldMap[fid] = {
                     id: fid,
                     pId: tableId,
                     wId: o.wId,
@@ -296,7 +296,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 });
                 fieldStructure = fieldStructure.concat(self._buildDateChildren(tableId, field));
             } else {
-                fieldStructure.push(map[fid] = BI.extend({
+                fieldStructure.push(fieldMap[fid] = BI.extend({
                     id: fid,
                     pId: tableId,
                     wId: o.wId,
@@ -311,10 +311,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             }
         });
 
-        if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
+        if (BI.isNotEmptyObject(map)) {
             BI.each(fields, function (i, field) {
                 var id = field.id;
-                if (BI.Utils.getFieldIsCircleByID(id) === true) {
+                if (BI.isNotEmptyArray(map[id])) {
                     var fieldName = BI.Utils.getFieldNameByID(id) || "";
                     var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
                     fieldStructure.push({
@@ -326,6 +326,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             wId: o.wId,
                             text: fieldName,
                             title: title,
+                            keyword: keyword,
                             fieldType: BI.Utils.getFieldTypeByID(id),
                             value: id
                         }, field, {
@@ -336,7 +337,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         }),
                         popup: {
                             type: "bi.select_data_loader",
-                            items: self._getSelfCircleFieldsByFieldId(id, circleMap[id] || [])
+                            items: self._getSelfCircleFieldsByFieldId(id, map[id] || [])
                         }
                     });
                 }
@@ -346,8 +347,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         fields = result.matched.concat(result.finded);
         fieldStructure = [];
         BI.each(fields, function (i, f) {
-            if (map[f.pId]) {
-                fieldStructure.push(map[f.pId]);
+            if (fieldMap[f.pId]) {
+                fieldStructure.push(fieldMap[f.pId]);
             }
             fieldStructure.push(f);
         });
@@ -356,7 +357,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
 
     _getSelfCircleFieldsByFieldId: function (fieldId, foregion, isRelation) {
         var self = this, o = this.options;
-        var usedPath = [];
         foregion || (foregion = []);
         var tableId = BI.Utils.getTableIdByFieldID(fieldId);
         var fieldStructure = [];
@@ -364,11 +364,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             var fid = f.id;
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
             var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
-            BI.some(BI.Utils.getPathsFromFieldAToFieldB(fieldId, fid), function (i, path) {
-                if (BI.Utils.getForeignIdFromRelation(path[0]) === fid) {
-                    usedPath = path;
-                }
-            });
 
             fieldStructure.push(BI.extend({
                 id: fid,
@@ -379,52 +374,13 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
                 title: title,
-                value: {
-                    field_id: fieldId,
-                    target_relation: usedPath
-                },
+                value: fid,
                 drag: self._createDrag(fieldName)
             }, f));
         });
         return fieldStructure;
     },
 
-
-    _getAllRelativeFields: function (tableId, fields, map) {
-        map = map || {};
-        var newFields = [];
-        if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
-            var fIds = [], fieldList = [];
-            var relations = BI.Utils.getPathsFromTableAToTableB(tableId, tableId);
-            BI.each(relations, function (i, path) {
-                var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
-                fIds.push(fId);
-            });
-            BI.each(fields, function (i, field) {
-                var isCircle = BI.Utils.getFieldIsCircleByID(field.id);
-                if (isCircle !== true && !fIds.contains(field.id)) {
-                    newFields.push(BI.extend(field, {
-                        value: {
-                            field_id: field.id,
-                            target_relation: BI.Utils.getPathsFromFieldAToFieldB(field.id, field.id)[0]
-                        }
-                    }));
-                }
-                if (fIds.contains(field.id)) {
-                    fieldList.push(field);
-                }
-            });
-            BI.each(fields, function (i, field) {
-                var isCircle = BI.Utils.getFieldIsCircleByID(field.id);
-                if (isCircle === true) {
-                    map[field.id] = fieldList;
-                }
-            });
-        } else {
-            newFields = fields;
-        }
-        return newFields;
-    },
 
     /**
      * 区别上面的无相关表
@@ -469,7 +425,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
 
         var fields = o.fieldsCreator(tableId, isRelation);
         var map = {};
-        var newFields = this._getAllRelativeFields(tableId, fields, map);
+        var newFields = BI.PackageSelectDataService.getAllRelativeFields(tableId, fields, map);
 
         BI.each(newFields, function (i, field) {
             var fid = field.id;
@@ -534,10 +490,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             }
         });
 
-        if (BI.Utils.isSelfCircleTableByTableId(tableId)) {
+        if (BI.isNotEmptyObject(map)) {
             BI.each(fields, function (i, field) {
                 var id = field.id;
-                if (BI.Utils.getFieldIsCircleByID(id) === true) {
+                if (BI.isNotEmptyArray(map[id])) {
                     var fieldName = BI.Utils.getFieldNameByID(id) || "";
                     var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
                     fieldStructure.push({
@@ -612,6 +568,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             case BICst.GROUP.YMD:
                                 name = BI.i18nText("BI-Date") + "(" + name + ")";
                                 break;
+                            case BICst.GROUP.YMDHMS:
+                                name = BI.i18nText("BI-Time_ShiKe") + "(" + name + ")"
                         }
                         return {
                             name: name,
@@ -626,7 +584,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     }
                     if (BI.has(fId, "target_relation")) {
                         var name = BI.Utils.getFieldNameByID(fId.field_id);
-                        if(BI.Utils.getFieldIsCircleByID(fId.field_id) === true){
+                        if (BI.Utils.getFieldIsCircleByID(fId.field_id) === true) {
                             name = BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.target_relation[0]));
                         }
                         return {
@@ -754,6 +712,21 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.YMD}
             }
+        }), BI.extend({
+            wId: o.wId,
+            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            fieldType: BICst.COLUMN.DATE,
+            drag: drag
+        }, field, {
+            id: fieldId + BICst.GROUP.YMDHMS,
+            pId: fieldId,
+            text: BI.i18nText("BI-Time_ShiKe"),
+            title: prefix + BI.i18nText("BI-Time_ShiKe"),
+            layer: isRelation ? 3 : 2,
+            value: {
+                field_id: fieldId,
+                group: {type: BICst.GROUP.YMDHMS}
+            }
         })];
     },
 
@@ -780,6 +753,45 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
 });
 BI.PackageSelectDataService.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
 BI.extend(BI.PackageSelectDataService, {
-    RELATION_TABLE: "__relation_table__"
+    RELATION_TABLE: "__relation_table__",
+
+    getAllRelativeFields: function (tableId, fields, map) {
+        map = map || {};
+        var newFields = [];
+        var sset = new Set(), store = [], map2Id = {}, res = {};
+        BI.each(fields, function (i, field) {
+            var fieldName = BI.Utils.getOriginalFieldNameByID(field.id);
+            if (fieldName) {
+                var name = fieldName.split("-")[0];
+                map2Id[fieldName] = field.id;
+                if (sset.has(name)) {
+                    store.push(name);
+                } else {
+                    sset.add(name);
+                }
+            }
+        });
+        if (store.length > 0) {
+            BI.each(fields, function (i, field) {
+                var fieldName = BI.Utils.getOriginalFieldNameByID(field.id);
+                var name = fieldName.split("-")[0];
+                var contains = store.contains(name);
+                if (name !== fieldName && contains) {
+                    if (!res[name]) {
+                        res[name] = [];
+                    }
+                    res[name].push(field);
+                } else if (!contains) {
+                    newFields.push(field);
+                }
+            });
+            BI.each(res, function (name, fs) {
+                map[map2Id[name]] = fs;
+            })
+        } else {
+            newFields = fields;
+        }
+        return newFields;
+    }
 });
 $.shortcut("bi.package_select_data_service", BI.PackageSelectDataService);

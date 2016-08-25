@@ -28,8 +28,7 @@ BI.PackageTablePane = BI.inherit(BI.Widget, {
             masker: self.element,
             text: BI.i18nText("BI-Loading")
         });
-        Data.BufferPool.getTablesByPackId(packId, function(tables){
-            mask.destroy();
+        BI.Utils.getTablesByPackId(packId, function(tables){
             var tableItems = [];
             BI.each(tables, function(id, table){
                 tableItems.push({
@@ -63,6 +62,8 @@ BI.PackageTablePane = BI.inherit(BI.Widget, {
                 top: 20,
                 bottom: 0
             });
+        }, function() {
+            mask.destroy();
         })
     },
 

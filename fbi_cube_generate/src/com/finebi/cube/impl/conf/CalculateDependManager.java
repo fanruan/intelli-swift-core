@@ -15,10 +15,10 @@ import java.util.Set;
 /**
  * Created by kary on 2016/6/13.
  */
-public  class CalculateDependManager implements CalculateDependTool {
+public class CalculateDependManager implements CalculateDependTool {
 
     @Override
-    public BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation,Set<CubeTableSource> cubeTableSources) {
+    public BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation, Set<CubeTableSource> cubeTableSources) {
         Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
         if (cubeTableSources.contains(biTableSourceRelation.getForeignTable())) {
             cubeTableSourceSet.add(biTableSourceRelation.getForeignTable());
@@ -31,18 +31,18 @@ public  class CalculateDependManager implements CalculateDependTool {
 
     @Override
     public BICubeGenerateRelationPath calRelationPath(BITableSourceRelationPath biTableSourceRelationPath, Set<BITableSourceRelation> tableRelationSet) {
-        if (biTableSourceRelationPath.getAllRelations().size()<2){
+        if (biTableSourceRelationPath.getAllRelations().size() < 2) {
             return null;
         }
-        Set<BITableSourceRelationPath> dependRelationPathSet=new HashSet<BITableSourceRelationPath>();
+        Set<BITableSourceRelationPath> dependRelationPathSet = new HashSet<BITableSourceRelationPath>();
         try {
             if (tableRelationSet.contains(biTableSourceRelationPath.getLastRelation())) {
                 dependRelationPathSet.add(new BITableSourceRelationPath(biTableSourceRelationPath.getLastRelation()));
             }
-            BITableSourceRelationPath copyPath=new BITableSourceRelationPath();
+            BITableSourceRelationPath copyPath = new BITableSourceRelationPath();
             copyPath.copyFrom(biTableSourceRelationPath);
             copyPath.removeLastRelation();
-            if(copyPath.getAllRelations().size()>1||tableRelationSet.contains(copyPath.getFirstRelation())) {
+            if (copyPath.getAllRelations().size() >=2 || tableRelationSet.contains(copyPath.getFirstRelation())) {
                 dependRelationPathSet.add(copyPath);
             }
         } catch (BITablePathEmptyException e) {

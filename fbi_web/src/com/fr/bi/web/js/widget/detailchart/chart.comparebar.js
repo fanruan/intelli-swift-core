@@ -20,7 +20,9 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
                 style: this.constants.FONT_STYLE
             },
             labelStyle: this.constants.FONT_STYLE,
-            formatter: "function(){if(this>0) return this; else return this*(-1); }",
+            formatter: function () {
+                return this > 0 ? this : (-1) * this;
+            },
             gridLineWidth: 0
         }];
         this.yAxis = [{
@@ -43,55 +45,51 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this, o = this.options;
+        var yTitle = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
+        var xTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
-        if(config.dataSheet.enabled === true){
-            config.xAxis[0].showLabel = false;
-        }
+        config.xAxis[0].showLabel = !config.dataSheet.enabled;
+
         config.zoom.zoomTool.visible = this.config.show_zoom;
-        if(this.config.show_zoom === true){
+        if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
 
         config.yAxis = this.yAxis;
-        config.yAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.x_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
-        config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
+        BI.extend(config.yAxis[0], {
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            lineWidth: this.config.line_width,
+            enableTick: this.config.enable_tick,
+            labelRotation: this.config.text_direction
+        });
 
-        config.yAxis[0].labelRotation = this.config.text_direction;
-        config.xAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.X_AXIS);
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
-        config.xAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
-        config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
+        config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + xTitle : xTitle;
         config.xAxis[0].title.align = "center";
-        config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        BI.extend(config.xAxis[0], {
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level),
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            lineWidth: this.config.line_width,
+            showLabel: this.config.show_label,
+            enableTick: this.config.enable_tick,
+            enableMinorTick: this.config.enable_minor_tick
+        });
+
         config.chartType = "bar";
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if(config.plotOptions.dataLabels.enabled === true){
-            BI.each(items, function(idx, item){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+        if (config.plotOptions.dataLabels.enabled === true) {
+            BI.each(items, function (idx, item) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     item.dataLabels = {
                         "style": self.constants.FONT_STYLE,
                         "align": "outside",
@@ -105,9 +103,10 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             });
         }
         config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
+
         return [items, config];
 
-        function formatChartStyle(){
+        function formatChartStyle() {
             switch (self.config.chart_style) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
@@ -117,11 +116,11 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function formatCordon(){
-            BI.each(self.config.cordon, function(idx, cor){
-                if(idx === 0 && self.xAxis.length > 0){
+        function formatCordon() {
+            BI.each(self.config.cordon, function (idx, cor) {
+                if (idx === 0 && self.xAxis.length > 0) {
                     var magnify = self.calcMagnify(self.config.left_y_axis_number_level);
-                    self.xAxis[0].plotLines = BI.map(cor, function(i, t){
+                    self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
@@ -133,7 +132,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
                         });
                     });
                 }
-                if(idx > 0 && self.yAxis.length >= idx){
+                if (idx > 0 && self.yAxis.length >= idx) {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
@@ -146,7 +145,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
                             magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
                             break;
                     }
-                    self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                    self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
@@ -161,7 +160,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             })
         }
 
-        function getXYAxisUnit(numberLevelType, position){
+        function getXYAxisUnit(numberLevelType, position) {
             var unit = "";
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -177,49 +176,20 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
                     unit = BI.i18nText("BI-Yi");
                     break;
             }
-            if(position === self.constants.X_AXIS){
+            if (position === self.constants.X_AXIS) {
                 self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
-            if(position === self.constants.LEFT_AXIS){
+            if (position === self.constants.LEFT_AXIS) {
                 self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
-            if(position === self.constants.RIGHT_AXIS){
+            if (position === self.constants.RIGHT_AXIS) {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
         }
-
-        function formatTickInXYaxis(type, position){
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
-            }
-            if(position === self.constants.X_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                    return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "').substring(1) : arguments[0].substring(1);}"
-                }
-            }
-            return "function(){if(this>=0) return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0]; else return window.FR ? (FR.contentFormat(arguments[0], '" + formatter + "') + '').substring(1) : (arguments[0] + '').substring(1);}"
-        }
     },
 
-    _formatItems: function(items){
+    _formatItems: function (items) {
         var result = [];
         var i = BI.UUID();
         BI.each(items, function (idx, item) {
@@ -235,7 +205,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
                 it.stack = i;
             })
         });
-        BI.each(items, function(idx, item){
+        BI.each(items, function (idx, item) {
             result = BI.concat(result, item);
         });
         return [result];
@@ -264,13 +234,17 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             show_zoom: options.show_zoom || false,
             text_direction: options.text_direction || 0,
-            cordon: options.cordon || []
+            cordon: options.cordon || [],
+            line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
         };
         this.options.items = items;
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.BAR);
             });
             types.push(type);
@@ -282,7 +256,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

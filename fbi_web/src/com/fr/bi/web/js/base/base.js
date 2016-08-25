@@ -307,10 +307,13 @@ if (!window.BI) {
             var isArray = BI.isArray(obj), i;
             for (i = 0; i < index.length; i++) {
                 if (isArray) {
-                    obj.splice(index[i], 1);
+                    obj[index[i]] = "$deleteIndex";
                 } else {
                     delete obj[index[i]];
                 }
+            }
+            if (isArray) {
+                BI.remove(obj, "$deleteIndex");
             }
         },
 
@@ -735,7 +738,7 @@ if (!window.BI) {
             try {
                 return parseInt(number, radix);
             } catch (e) {
-                throw new Error("转成数�?�类型失�?");
+                throw new Error("转成int类型失败");
                 return NaN;
             }
         },
@@ -744,7 +747,7 @@ if (!window.BI) {
             try {
                 return parseFloat(number);
             } catch (e) {
-                throw new Error("转成Float类型失败");
+                throw new Error("转成float类型失败");
                 return NaN;
             }
         },
@@ -865,6 +868,10 @@ if (!window.BI) {
 
         isEmptyString: function (str) {
             return BI.isString(str) && BI.isEmpty(str);
+        },
+
+        contentFormat: function () {
+            return FR.contentFormat.apply(FR, arguments);
         },
 
         /**
@@ -1034,11 +1041,16 @@ if (!window.BI) {
          * 异步ajax请求
          * @param {String} op op参数
          * @param {String} cmd cmd参数
-         * @param {JSON} data ajax请求的参�?
+         * @param {JSON} data ajax请求的参数
          * @param {Function} callback 回调函数
-         * @param {JSON} callback.result 回调函数的参�?
+         * @param {Function} complete 回调
          */
-        requestAsync: function (op, cmd, data, callback) {
+        requestAsync: function (op, cmd, data, callback, complete) {
+            if(BI.isNull(BI.REQUEST_LOADING)) {
+                BI.REQUEST_LOADING = BI.createWidget({
+                    type: "bi.request_loading"
+                });
+            }
             data = data || {};
             if (!BI.isKey(op)) {
                 op = 'fr_bi_dezi';
@@ -1052,11 +1064,20 @@ if (!window.BI) {
                 type: 'POST',
                 data: data,
                 error: function () {
-                    BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
+                    // BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
+                    //失败 取消、重新加载
+                    BI.REQUEST_LOADING.setCallback(function () {
+                        BI.requestAsync(op, cmd, data, callback, complete);
+                    });
+                    BI.REQUEST_LOADING.showError();
                 },
                 complete: function (res, status) {
                     if (BI.isFunction(callback) && status === 'success') {
                         callback(FR.jsonDecode(res.responseText));
+                        BI.Maskers.hide(BI.RequstLoading.MASK_ID);
+                    }
+                    if (BI.isFunction(complete)) {
+                        complete();
                     }
                 }
             });

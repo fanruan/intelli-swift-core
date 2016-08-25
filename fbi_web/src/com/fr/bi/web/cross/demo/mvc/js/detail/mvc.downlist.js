@@ -44,6 +44,126 @@ DownListView = BI.inherit(BI.View, {
                             text: "column 1.5",
                             cls: "dot-e-font",
                             value: 25
+                        },
+                        {
+                            text: "column 10",
+                            value: 20,
+                            cls: "dot-e-font",
+                            selected: true
+                        },
+                        {
+
+                            text: "column 11",
+                            cls: "dot-e-font",
+                            value: 21
+                        },
+                        {
+
+                            text: "column 12",
+                            cls: "dot-e-font",
+                            value: 22
+                        },
+                        {
+
+                            text: "column 13",
+                            cls: "dot-e-font",
+                            value: 23
+                        },
+                        {
+
+                            text: "column 14",
+                            cls: "dot-e-font",
+                            value: 24
+                        },
+                        {
+
+                            text: "column 15",
+                            cls: "dot-e-font",
+                            value: 23
+                        },
+                        {
+
+                            text: "column 16",
+                            cls: "dot-e-font",
+                            value: 24
+                        },
+                        {
+
+                            text: "column 17",
+                            cls: "dot-e-font",
+                            value: 25
+                        },
+                        {
+
+                            text: "column 18",
+                            cls: "dot-e-font",
+                            value: 26
+                        },
+                        {
+
+                            text: "column 19",
+                            cls: "dot-e-font",
+                            value: 27
+                        },
+                        {
+                            text: "column 10",
+                            value: 20,
+                            cls: "dot-e-font",
+                            selected: true
+                        },
+                        {
+
+                            text: "column 11",
+                            cls: "dot-e-font",
+                            value: 21
+                        },
+                        {
+
+                            text: "column 12",
+                            cls: "dot-e-font",
+                            value: 22
+                        },
+                        {
+
+                            text: "column 13",
+                            cls: "dot-e-font",
+                            value: 23
+                        },
+                        {
+
+                            text: "column 14",
+                            cls: "dot-e-font",
+                            value: 24
+                        },
+                        {
+
+                            text: "column 15",
+                            cls: "dot-e-font",
+                            value: 23
+                        },
+                        {
+
+                            text: "column 16",
+                            cls: "dot-e-font",
+                            value: 24
+                        },
+                        {
+
+                            text: "column 17",
+                            cls: "dot-e-font",
+                            value: 25
+                        },
+                        {
+
+                            text: "column 18",
+                            cls: "dot-e-font",
+                            value: 26
+                        },
+                        {
+
+                            text: "column 19",
+                            cls: "dot-e-font",
+                            value: 27
                         }
                     ]
                 }],
@@ -63,7 +183,7 @@ DownListView = BI.inherit(BI.View, {
                             height: 25,
                             text: "column 2.1",
                             value: 11
-                        }, {text: "column 2.2", value: 12,cls: "dot-e-font"}],
+                        }, {text: "column 2.2", value: 12, cls: "dot-e-font"}],
 
 
                     }
@@ -122,6 +242,68 @@ DownListView = BI.inherit(BI.View, {
                         cls: "dot-e-font",
                         value: 19
                     }
+                ],
+                [
+                    {
+                        text: "column 10",
+                        value: 20,
+                        cls: "dot-e-font",
+                        selected: true
+                    },
+                    {
+
+                        text: "column 11",
+                        cls: "dot-e-font",
+                        value: 21
+                    },
+                    {
+
+                        text: "column 12",
+                        cls: "dot-e-font",
+                        value: 22
+                    },
+                    {
+
+                        text: "column 13",
+                        cls: "dot-e-font",
+                        value: 23
+                    },
+                    {
+
+                        text: "column 14",
+                        cls: "dot-e-font",
+                        value: 24
+                    },
+                    {
+
+                        text: "column 15",
+                        cls: "dot-e-font",
+                        value: 23
+                    },
+                    {
+
+                        text: "column 16",
+                        cls: "dot-e-font",
+                        value: 24
+                    },
+                    {
+
+                        text: "column 17",
+                        cls: "dot-e-font",
+                        value: 25
+                    },
+                    {
+
+                        text: "column 18",
+                        cls: "dot-e-font",
+                        value: 26
+                    },
+                    {
+
+                        text: "column 19",
+                        cls: "dot-e-font",
+                        value: 27
+                    }
                 ]
 
             ]
@@ -156,7 +338,10 @@ DownListView = BI.inherit(BI.View, {
                 type: "bi.button",
                 text: "setValue",
                 handler: function () {
-                    self.down.setValue([{"childValue": 21, "value": 11}, {"value": 18},{"childValue":3434,"value":123123}])
+                    self.down.setValue([{"childValue": 21, "value": 11}, {"value": 18}, {
+                        "childValue": 3434,
+                        "value": 123123
+                    }])
                 }
             },
                 {

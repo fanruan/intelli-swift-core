@@ -28,7 +28,8 @@ public class BILongNIOReader extends BIBasicNIOReader implements ICubeLongReader
 
     public long getSpecificValue(long filePosition) throws BIResourceInvalidException {
         try {
-            return longBufferArray[getPage(filePosition)].get(getIndex(filePosition));
+            int pageIndex = getPage(filePosition);
+            return longBufferArray[pageIndex].get(getIndex(filePosition));
         } catch (IndexOutOfBoundsException e) {
             throw new RuntimeException("the expect page value is:" + e);
         } finally {
@@ -57,8 +58,8 @@ public class BILongNIOReader extends BIBasicNIOReader implements ICubeLongReader
         readWriteLock.writeLock().lock();
         try {
             longBuffers.put(index, buffer.asLongBuffer());
-            if (longBufferArray.length < index){
-                LongBuffer[] temp = new LongBuffer[index];
+            if (longBufferArray.length <= index) {
+                LongBuffer[] temp = new LongBuffer[index + 1];
                 System.arraycopy(longBufferArray, 0, temp, 0, longBufferArray.length);
                 longBufferArray = temp;
             }

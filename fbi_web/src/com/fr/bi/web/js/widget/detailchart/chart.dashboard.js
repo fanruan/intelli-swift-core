@@ -14,7 +14,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.DashboardChart.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
         this.gaugeAxis = [{
             "minorTickColor": "rgb(226,226,226)",
             "tickColor": "rgb(186,186,186)",
@@ -54,10 +54,11 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             config.gaugeAxis = self.gaugeAxis;
             var slotValueLAbel = {
                 formatter: function () {
+                    this.value = self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT ? BI.contentFormat(this.value, "#0.00%") :
+                        BI.contentFormat(this.value, "#.##;-#.##");
                     if(self.config.chart_dashboard_type === BICst.CHART_SHAPE.VERTICAL_TUBE){
                         return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
                     }else{
-                        console.log(getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS));
                         return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value +
                             getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) +'</div>';
                     }
@@ -102,10 +103,10 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
             if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.plotOptions.valueLabel.formatter.valueFormat = function () {
-                    return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]);
+                    return BI.contentFormat(arguments[0], '#0.00%');
                 };
                 config.gaugeAxis[0].formatter = function () {
-                    return (window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]) + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                    return BI.contentFormat(arguments[0], '#0.00%') + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                 };
             } else {
                 config.gaugeAxis[0].formatter = function () {
@@ -124,8 +125,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         }
 
         function changeMaxMinScale() {
-            self.gaugeAxis[0].max = self.config.max_scale === "" ? self.gaugeAxis[0].max : self.config.max_scale;
-            self.gaugeAxis[0].min = self.config.min_scale === "" ? self.gaugeAxis[0].min : self.config.min_scale;
+            self.gaugeAxis[0].min = self.config.min_scale || null;
+            self.gaugeAxis[0].max = self.config.max_scale || null;
         }
 
         function formatNumberLevelInYaxis(type, position) {
@@ -138,7 +139,11 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 })
             });
             if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0.00%') : arguments[0]}";
+                config.plotOptions.tooltip.formatter.valueFormat = function(){return BI.contentFormat(arguments[0], '#0.00%')};
+            } else {
+                config.plotOptions.tooltip.formatter.valueFormat = function () {
+                    return BI.contentFormat(this, "#.##;-#.##") + getXYAxisUnit(type, position)
+                }
             }
         }
 
@@ -161,7 +166,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             if (position === self.constants.DASHBOARD_AXIS) {
                 self.config.dashboard_unit !== "" && (unit = unit + self.config.dashboard_unit)
             }
-            return unit === "" ? unit : "(" + unit + ")";
+            return unit;
         }
 
         function getBandsStyles(styles, change) {
@@ -246,10 +251,9 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             if (this.config.number_of_pointer === c.ONE_POINTER && items[0].length === 1) {//单个系列
                 BI.each(items[0][0].data, function (idx, da) {
                     result.push({
-                        data: [{
-                            x: items[0][0].name,
-                            y: da.y
-                        }],
+                        data: [BI.extend({}, da, {
+                            x: items[0][0].name
+                        })],
                         name: da.x
                     })
                 });
@@ -296,9 +300,9 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             number_of_pointer: options.number_of_pointer || c.ONE_POINTER,
             bands_styles: options.style_conditions || [],
             auto_custom_style: options.auto_custom || c.AUTO,
-            max_scale: options.max_scale || "",
-            min_scale: options.min_scale || "",
-            show_percentage: options.show_percentage || c.SHOW
+            min_scale: options.min_scale,
+            max_scale: options.max_scale,
+            show_percentage: options.show_percentage || c.NOT_SHOW
         };
         o.items = this._formatItems(items);
         var types = [];

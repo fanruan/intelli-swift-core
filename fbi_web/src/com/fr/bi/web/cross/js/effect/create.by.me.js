@@ -2,11 +2,10 @@
 
     $.extend(FS, {
 
-        createByMe: function ($tab, $content, entry, isAdmin) {
-            entry.contentEl.empty();
+        createByMe: function (isAdmin) {
             var templateManage = BI.createWidget({
                 type: "bi.template_manager",
-                element: entry.contentEl,
+                element: $('body'),
                 isAdmin: isAdmin
             });
             templateManage.on(BI.TemplateManager.EVENT_FOLDER_RENAME, function (id, name, pId, type) {
@@ -19,12 +18,28 @@
                 }, function () {
                 })
             });
-            templateManage.on(BI.TemplateManager.EVENT_DELETE, function (id, type) {
+            templateManage.on(BI.TemplateManager.EVENT_DELETE, function (id, type, callback) {
                 //删除
                 BI.requestAsync("fr_bi", "template_folder_delete", {
                     id: id,
                     type: type
-                }, function () {
+                }, function (data) {
+                    if(data.length > 0) {
+                        var msg = "";
+                        switch (type) {
+                            case BI.TemplateManagerButtonGroup.DELETE_FOLDER:
+                                msg = BI.i18nText("BI-Some_Reports_Editing_Can_Not_Delete");
+                                //删除文件夹的时候还是重新拿一下数据
+                                refreshFolderAndReportData();
+                                break;
+                            case BI.TemplateManagerButtonGroup.DELETE_REPORT:
+                                msg = BI.i18nText("BI-Report_Editing_Can_Not_Delete", data[0]);
+                                break;
+                        }
+                        BI.Msg.toast(msg, "warning");
+                    } else {
+                        callback();
+                    }
                 })
             });
             templateManage.on(BI.TemplateManager.EVENT_MOVE, function (selectedFolders, toFolder) {

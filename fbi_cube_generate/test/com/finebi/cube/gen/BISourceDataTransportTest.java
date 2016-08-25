@@ -3,6 +3,7 @@ package com.finebi.cube.gen;
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.disk.BICubeIncreaseDisDiscovery;
 import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.gen.oper.BISourceDataAllTransport;
@@ -109,6 +110,9 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         assertTrue(tableEntityService.getRowCount() == 5);
         assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(0).equals("China"));
         assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(1).equals("US"));
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(2).equals("Japan"));
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(3).equals("Canada"));
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(4).equals("Mexio"));
     }
 
     /**
@@ -186,7 +190,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     }
 
     /**
-     * Detail: ��compoundTable�Ĺ��������ӱ���ֶ���ȡ����
+     * Detail: 测试compoundTable的字表relation
      * Author:Connery
      * Date:2016/6/20
      */
@@ -220,6 +224,10 @@ public class BISourceDataTransportTest extends BICubeTestBase {
 
     public void transportByPart(CubeTableSource tableSource, int oldCount) {
         try {
+            ICubeResourceDiscovery discovery = BICubeIncreaseDisDiscovery.getInstance();
+//            ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+            retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
+            cube = new BICube(retrievalService, discovery);
             dataTransport = new BISourceDataPartTransport4Test(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), oldCount);
             dataTransport.mainTask(null);
         } catch (Exception e) {

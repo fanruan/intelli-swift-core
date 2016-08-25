@@ -45,7 +45,7 @@ BI.AnalysisETLDetailSelectDataLevel1Item = BI.inherit(BI.Single, {
             forceNotSelected:true,
             text: o.text,
             value: o.value,
-            blankWidth: 35,
+            blankWidth: 40,
             height: 25,
             textLgap: 10,
             textRgap: 5

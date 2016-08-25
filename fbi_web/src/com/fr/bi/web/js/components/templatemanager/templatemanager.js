@@ -264,10 +264,11 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
         }
         BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), mes, function (flag) {
             if (flag === true) {
-                self.model.removeNode(id, type);
-                self._refreshNavTreeData();
-                self.populate();
-                self.fireEvent(BI.TemplateManager.EVENT_DELETE, id, type);
+                self.fireEvent(BI.TemplateManager.EVENT_DELETE, id, type, function() {
+                    self.model.removeNode(id, type);
+                    self._refreshNavTreeData();
+                    self.populate();
+                });
             }
         });
     },
@@ -419,9 +420,11 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
             popup: this.searcherResultPane
         });
         this.searcher.on(BI.Searcher.EVENT_START, function () {
+            self.moveButton.setVisible(false);
             self.newButton.setVisible(false);
         });
         this.searcher.on(BI.Searcher.EVENT_STOP, function () {
+            self.moveButton.setVisible(true);
             self.newButton.setVisible(true);
         });
         this.searcherResultPane.on(BI.ReportSearchResultPane.EVENT_REPORT_RENAME, function (id, name) {

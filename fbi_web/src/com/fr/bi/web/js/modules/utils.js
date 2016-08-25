@@ -62,11 +62,14 @@
         },
 
         getAllGroupedPackagesTreeJSON: function () {
-            var groups = Pool.groups, packages = Pool.packages;
+            var groupMap = Pool.groups, packages = Pool.packages;
             var packStructure = [], groupedPacks = [];
-            BI.each(groups, function (id, group) {
+            var groups = BI.sortBy(groupMap, function (id, item) {
+                return item.init_time;
+            });
+            BI.each(groups, function (i, group) {
                 packStructure.push({
-                    id: id,
+                    id: group.id,
                     text: group.name,
                     isParent: true
                 });
@@ -75,7 +78,7 @@
                         id: item.id,
                         text: packages[item.id].name,
                         value: item.id,
-                        pId: id
+                        pId: group.id
                     });
                     groupedPacks.push(item.id);
                 })
@@ -107,15 +110,15 @@
         },
 
         getWidgetsByTemplateId: function (tId, callback) {
-            Data.Req.reqWidgetsByTemplateId(tId, function (data) {
-                callback(data);
-            });
+            if (tId === this.getCurrentTemplateId()) {
+                callback(Data.SharingPool.cat("widgets"));
+            } else {
+                Data.BufferPool.getWidgetsByTemplateId(tId, callback);
+            }
         },
 
         getAllTemplates: function (callback) {
-            Data.Req.reqAllTemplates(function (data) {
-                callback(data);
-            });
+            Data.BufferPool.getAllTemplates(callback);
         },
 
         getAllReportsData: function (callback) {
@@ -488,7 +491,7 @@
                         filter.filter_value.push(checkFilter(value, dId));
                     });
                 } else {
-                    filter.filter_value = oldFilter.filter_value;
+                    BI.extend(filter, oldFilter);
                     //防止死循环
                     if (BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId) {
                         var result = createDimensionsAndTargets(oldFilter.target_id);
@@ -499,10 +502,10 @@
             }
 
             function createDimensionsAndTargets(idx) {
-                var newId = BI.UUID();
+                var newId = dimTarIdMap[idx] || BI.UUID();
                 var dimension = BI.deepClone(widget.dimensions[idx]);
-                if (BI.has(dimTarIdMap, idx)) {
-                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]] || dimension};
+                if (BI.has(dimTarIdMap, idx) && BI.has(dimensions, [dimTarIdMap[idx]])) {
+                    return {id: dimTarIdMap[idx], dimension: dimensions[dimTarIdMap[idx]]};
                 }
                 switch (widget.dimensions[idx].type) {
                     case BICst.TARGET_TYPE.STRING:
@@ -520,7 +523,7 @@
                                 }
                             });
                         }
-                        if (BI.has(widget.dimensions[idx], "filter_value")) {
+                        if (BI.has(widget.dimensions[idx], "filter_value") && BI.isNotNull(widget.dimensions[idx].filter_value)) {
                             dimension.filter_value = checkFilter(widget.dimensions[idx].filter_value, dimTarIdMap[idx] || idx);
                         }
                         if (BI.has(widget.dimensions[idx], "sort")) {
@@ -550,7 +553,7 @@
                         BI.each(expression.ids, function (id, tId) {
                             var result = createDimensionsAndTargets(tId);
                             if (BI.has(expression, "formula_value")) {
-                                expression.formula_value = expression.formula_value.replace(tId, result.id);
+                                expression.formula_value = expression.formula_value.replaceAll(tId, result.id);
                             }
                             expression.ids[id] = result.id;
                         });
@@ -840,22 +843,22 @@
                 BICst.DEFAULT_CHART_SETTING.dashboard_unit;
         },
 
-        getWSMaxScaleByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.max_scale) ? ws.max_scale:
-                ""
-        },
-
         getWSMinScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.min_scale) ? ws.min_scale:
-                ""
+            return BI.isNotNull(ws.min_scale) ? ws.min_scale :
+                BICst.DEFAULT_CHART_SETTING.min_scale
+        },
+
+        getWSMaxScaleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.max_scale) ? ws.max_scale :
+                BICst.DEFAULT_CHART_SETTING.max_scale
         },
 
         getWSShowPercentageByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_percentage) ? ws.show_percentage :
-                BICst.PERCENTAGE.NOT_SHOW
+                BICst.DEFAULT_CHART_SETTING.percentage_not_show
         },
 
         getWSXAxisUnitByID: function (wid) {
@@ -964,6 +967,12 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_grid_line) ? ws.show_grid_line :
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
+        },
+
+        getWSMinimalistByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.minimalist_model) ? ws.minimalist_model :
+                BICst.DEFAULT_CHART_SETTING.minimalist_model
         },
 
         getWSShowCustomScale: function (wid) {
@@ -1112,6 +1121,22 @@
             BI.each(views, function (i, tar) {
                 if (i >= (BI.parseInt(BICst.REGION.TARGET1))) {
                     result = result.concat(tar);
+                }
+            });
+            return result;
+        },
+
+        getAllBaseDimensionIDs: function (wid) {
+            var self = this;
+            var result = [];
+            var ids = this.getAllDimensionIDs(wid);
+            var _set = [BICst.TARGET_TYPE.STRING,
+                BICst.TARGET_TYPE.NUMBER,
+                BICst.TARGET_TYPE.DATE, BICst.TARGET_TYPE.COUNTER];
+            BI.each(ids, function (i, id) {
+                var type = self.getDimensionTypeByID(id);
+                if (_set.contains(type)) {
+                    result.push(id);
                 }
             });
             return result;
@@ -2464,12 +2489,12 @@
                     paramdate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
-                if (BI.isNull(widgetInfo.wId)) {
+                if (BI.isNull(widgetInfo.wId) && BI.isNull(BI.Utils.getWidgetValueByID(widgetInfo.wId))) {
                     return;
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
-            if(BI.isNotNull(paramdate)){
+            if (BI.isNotNull(paramdate)) {
                 return parseComplexDateCommon(offset, new Date(paramdate));
             }
         }
@@ -2478,6 +2503,7 @@
             var type = v.type, value = v.value;
             var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
+            date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
             var tool = new BI.MultiDateParamTrigger();
             if (BI.isNull(type) && BI.isNotNull(v.year)) {
                 return new Date(v.year, v.month, v.day).getTime();
@@ -2542,34 +2568,34 @@
                 filterValue.start = parseComplexDate(start);
             }
             if (BI.isNotNull(end)) {
-                filterValue.end = parseComplexDate(end);
+                filterValue.end = new Date(parseComplexDate(end)).getOffsetDate(1).getTime() - 1
             }
         }
         if (filterType === BICst.FILTER_DATE.BELONG_WIDGET_VALUE || filterType === BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE) {
             var filterWId = filterValue.wId, filterValueType = filterValue.filter_value.type;
             var wValue = BI.Utils.getWidgetValueByID(filterWId);
-            if (!BI.Utils.isWidgetExistByID(filterWId)) {
+            if (!BI.Utils.isWidgetExistByID(filterWId) || BI.isNull(wValue)) {
                 return;
             }
             switch (filterValueType) {
                 case BICst.SAME_PERIOD:
-                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
-                        filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
+                    if (BI.isNotNull(wValue.start)) {
+                        filterValue.start = parseComplexDate(wValue.start);
                     }
-                    if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
-                        filterValue.end = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
+                    if (BI.isNotNull(wValue.end)) {
+                        filterValue.end = new Date(parseComplexDate(wValue.end)).getOffsetDate(1).getTime() - 1
                     }
                     break;
                 case BICst.LAST_SAME_PERIOD:
-                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year) && BI.isNotNull(wValue.end.month) && BI.isNotNull(wValue.end.day)) {
-                        var s = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
-                        var e = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
-                        filterValue.start = new Date(2 * s - e).getTime();
-                        filterValue.end = s;
+                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.end)) {
+                        var s = parseComplexDate(wValue.start);
+                        var e = parseComplexDate(wValue.end);
+                        filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
+                        filterValue.end = new Date(s).getTime() - 1;
                     } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
-                        filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
+                        filterValue.start = parseComplexDate(wValue.start);
                     } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
-                        filterValue.end = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
+                        filterValue.end = parseComplexDate(wValue.end);
                     }
                     break;
                 case BICst.YEAR_QUARTER:
@@ -2583,7 +2609,7 @@
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
                         filterValue.start = value.start;
-                        filterValue.end = value.end;
+                        filterValue.end = new Date(value.end).getOffsetDate(1).getTime() - 1;
                     }
                     break;
             }
@@ -2592,7 +2618,7 @@
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                filterValue.end = new Date(value.start).getOffsetDate(-1).getTime();
+                filterValue.end = new Date(value.start).getTime() - 1;
             }
         }
         if (filterType === BICst.FILTER_DATE.LATER_THAN) {
@@ -2624,48 +2650,39 @@
                 case BICst.YEAR:
                     start = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), 0, 1);
                     end = new Date(start.getFullYear(), 11, 31);
-                    return {
-                        start: start.getTime(),
-                        end: end.getTime()
-                    };
+                    break;
                 case BICst.YEAR_QUARTER:
                     ydate = tool._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
                     start = tool._getQuarterStartDate(ydate);
                     end = tool._getQuarterEndDate(ydate);
-                    return {
-                        start: start.getTime(),
-                        end: end.getTime()
-                    };
+                    break;
                 case BICst.YEAR_MONTH:
                     ydate = tool._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
                     start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
                     end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
-                    return {
-                        start: start.getTime(),
-                        end: end.getTime()
-                    };
+                    break;
                 case BICst.YEAR_WEEK:
                     start = ydate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
-                    end = start.getOffsetDate(7);
+                    end = start.getOffsetDate(6);
                     break;
                 case BICst.YEAR_DAY:
                     start = ydate.getOffsetDate(sPrevOrAfter * value.svalue);
-                    end = start.getOffsetDate(1);
+                    end = start;
                     break;
                 case BICst.MONTH_WEEK:
                     var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
                     start = mdate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
-                    end = start.getOffsetDate(7);
+                    end = start.getOffsetDate(6);
                     break;
                 case BICst.MONTH_DAY:
                     var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
                     start = mdate.getOffsetDate(sPrevOrAfter * value.svalue);
-                    end = start.getOffsetDate(1);
+                    end = start;
                     break;
             }
             return {
                 start: start.getTime(),
-                end: end.getTime() - 1
+                end: end.getTime()
             }
         }
 

@@ -40,21 +40,7 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
         config.style = formatChartStyle();
         formatChartLineStyle();
         formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
@@ -63,36 +49,54 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
-        config.yAxis = this.yAxis;
 
+        config.yAxis = this.yAxis;
         BI.each(config.yAxis, function(idx, axis){
+            var title = "";
             switch (axis.axisIndex){
                 case self.constants.LEFT_AXIS:
-                    axis.reversed = self.config.left_y_axis_reversed;
-                    axis.formatter = formatTickInXYaxis(self.config.left_y_axis_style, self.constants.LEFT_AXIS);
-                    self.formatNumberLevelInYaxis(config, items,self.config.left_y_axis_number_level, idx, axis.formatter);
-                    axis.title.text = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + axis.title.text : axis.title.text;
-                    axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
                     axis.title.rotation = self.constants.ROTATION;
+                    title = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
+                    BI.extend(axis, {
+                        lineWidth: self.config.line_width,
+                        showLabel: self.config.show_label,
+                        enableTick: self.config.enable_tick,
+                        reversed: self.config.left_y_axis_reversed,
+                        enableMinorTick: self.config.enable_minor_tick,
+                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level)
+                    });
+                    self.formatNumberLevelInYaxis(config, items,self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    axis.reversed = self.config.right_y_axis_reversed;
-                    axis.formatter = formatTickInXYaxis(self.config.right_y_axis_style, self.constants.RIGHT_AXIS);
-                    self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
-                    axis.title.text = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + axis.title.text : axis.title.text;
-                    axis.gridLineWidth = self.config.show_grid_line === true ? 1 : 0;
+                    title = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
+                    BI.extend(axis, {
+                        lineWidth: self.config.line_width,
+                        showLabel: self.config.show_label,
+                        enableTick: self.config.enable_tick,
+                        reversed: self.config.right_y_axis_reversed,
+                        enableMinorTick: self.config.enable_minor_tick,
+                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level)
+                    });
+                    self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }
         });
 
-        config.xAxis[0].title.text = this.config.x_axis_title;
-        config.xAxis[0].labelRotation = this.config.text_direction;
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? config.xAxis[0].title.text : "";
         config.xAxis[0].title.align = "center";
-        config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
+        BI.extend(config.xAxis[0], {
+            lineWidth: this.config.line_width,
+            enableTick: this.config.enable_tick,
+            labelRotation: this.config.text_direction,
+            enableMinorTick: self.config.enable_minor_tick,
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+        });
+
         config.chartType = "line";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
@@ -225,43 +229,6 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
             }
             return unit === "" ? unit : "(" + unit + ")";
         }
-
-        function formatTickInXYaxis(type, position){
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
-            }
-            if(position === self.constants.LEFT_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            if(position === self.constants.RIGHT_AXIS){
-                if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
-        }
     },
 
     populate: function (items, options) {
@@ -292,7 +259,11 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             show_zoom: options.show_zoom || false,
             text_direction: options.text_direction || 0,
-            cordon: options.cordon || []
+            cordon: options.cordon || [],
+            line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
         };
         this.options.items = items;
 

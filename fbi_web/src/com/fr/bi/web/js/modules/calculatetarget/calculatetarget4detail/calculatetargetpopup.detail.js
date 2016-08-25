@@ -109,7 +109,9 @@ BI.CalculateTargetPopupDetail = BI.inherit(BI.BarPopoverSection, {
     },
 
     end: function () {
-        this.fireEvent(BI.CalculateTargetPopupDetail.EVENT_CHANGE);
+        if (this.formulaEditor.checkValidation()) {
+            this.fireEvent(BI.CalculateTargetPopupDetail.EVENT_CHANGE);
+        }
     },
 
     populate: function () {

@@ -170,8 +170,9 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         } else {
             // this.widget.attr("items")[0].left = "";
             // this.widget.attr("items")[0].right = 10;
+            this.combo.setVisible(true);
             this.widget.attr("items")[1].right = 10;
-            this.widget.attr("items")[2].top = 50;
+            this.widget.attr("items")[2].top = 35;
             this.widget.attr("items")[2].left = 10;
         }
         this.widget.resize();
@@ -185,6 +186,7 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
         })
+        BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
     _resetValue: function () {
@@ -200,6 +202,14 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
+    },
+
+    duplicate: function () {
+        BI.Utils.broadcastAllWidgets2Refresh();
+    },
+
+    splice: function () {
+        BI.Utils.broadcastAllWidgets2Refresh();
     },
 
     local: function () {

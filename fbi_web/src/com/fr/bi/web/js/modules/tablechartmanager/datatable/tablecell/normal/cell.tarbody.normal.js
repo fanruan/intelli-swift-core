@@ -140,8 +140,11 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 linkedWidgets.push(link.to);
             }
         });
+
         if (text === Infinity) {
             text = "N/0";
+        } else if(BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+            text += "%";
         }
 
         if (BI.isEmptyArray(linkedWidgets)) {
@@ -192,15 +195,15 @@ BI.extend(BI.TargetBodyNormalCell, {
         }
         switch (numLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                return FR.contentFormat(BI.parseFloat(text.div(10000).toFixed(2)), "#.##");
+                return BI.contentFormat(BI.parseFloat(text.div(10000).toFixed(2)), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                return FR.contentFormat(BI.parseFloat(text.div(1000000).toFixed(2)), "#.##");
+                return BI.contentFormat(BI.parseFloat(text.div(1000000).toFixed(2)), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                return FR.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##");
+                return BI.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return FR.contentFormat(text * 100, "#.##");
+                return BI.contentFormat(text * 100, "#.##");
             default:
-                return BI.parseFloat(FR.contentFormat(text, "#.##"));
+                return BI.parseFloat(BI.contentFormat(text, "#.##"));
         }
     }
 });

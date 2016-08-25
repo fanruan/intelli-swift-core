@@ -45,7 +45,9 @@ public class BIDAOUtils {
             new TableDataDAOControl.ColumnColumn("id", String.class),
             new TableDataDAOControl.ColumnColumn("reportId", String.class),
             new TableDataDAOControl.ColumnColumn("createBy", String.class),
-            new TableDataDAOControl.ColumnColumn("shareTo", String.class)
+            new TableDataDAOControl.ColumnColumn("shareTo", String.class),
+            new TableDataDAOControl.ColumnColumn("createByName", String.class),
+            new TableDataDAOControl.ColumnColumn("shareToName", String.class)
     };
 
     private static BIReportDAO getReportDao(long userId) {
@@ -100,7 +102,7 @@ public class BIDAOUtils {
         List<BIReportNode> nodes = new ArrayList<BIReportNode>();
         for(int i = 0; i < sharedReports.size(); i++) {
             BISharedReportNode sNode = sharedReports.get(i);
-            nodes.add(BIDAOUtils.findByID(sNode.getReportId(), sNode.getCreateBy()));
+            nodes.add(BIDAOUtils.findByID(sNode.getReportId(), UserControl.getInstance().getUser(sNode.getCreateByName())));
         }
         return nodes;
     }

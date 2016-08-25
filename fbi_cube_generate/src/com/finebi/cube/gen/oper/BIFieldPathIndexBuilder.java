@@ -90,7 +90,6 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
         BICubeTablePath frontRelation = new BICubeTablePath();
         frontRelation.copyFrom(relationPath);
         ITableKey firstPrimaryKey = relationPath.getFirstRelation().getPrimaryTable();
-        cube.getCubeColumn(firstPrimaryKey, field);
         return (ICubeRelationEntityService) cube.getCubeColumn(firstPrimaryKey, field).getRelationIndexGetter(frontRelation);
     }
 

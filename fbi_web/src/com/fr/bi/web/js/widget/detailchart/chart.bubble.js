@@ -49,34 +49,20 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.style = formatChartStyle();
         config.plotOptions.tooltip.formatter = this.config.tooltip;
         formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
         config.plotOptions.shadow = this.config.bubble_style !== this.constants.NO_PROJECT;
         config.yAxis = this.yAxis;
 
-        config.yAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.LEFT_AXIS);
+        config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
 
-        config.xAxis[0].formatter = formatTickInXYaxis(this.config.x_axis_style, this.constants.X_AXIS);
+        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
         self.formatNumberLevelInXaxis(items, this.config.x_axis_number_level);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
@@ -102,9 +88,9 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                         enabled: true,
                         formatter: {
                             identifier: "${X}${Y}${SIZE}",
-                            "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                            "XFormat": function(){return BI.contentFormat(arguments[0], '#.##')},
+                            "YFormat": function(){return BI.contentFormat(arguments[0], '#.##')},
+                            "sizeFormat": function(){return BI.contentFormat(arguments[0], '#.##')}
                         }
                     };
                     if(isNeedFormatDataLabelX === true){
@@ -213,43 +199,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
-        }
-
-        function formatTickInXYaxis(type, position){
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
-            }
-            if(position === self.constants.LEFT_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            if(position === self.constants.X_AXIS){
-                if(self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
         }
     },
 

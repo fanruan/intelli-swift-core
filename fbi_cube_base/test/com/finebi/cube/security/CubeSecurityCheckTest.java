@@ -40,11 +40,13 @@ public class CubeSecurityCheckTest extends TestCase {
             CubeSecurityCheck securityCheck = new CubeSecurityCheck(path + "crc_sum");
             securityCheck.removeResult();
             assertFalse(new File(path + "crc_sum").exists());
-            securityCheck.check("C:\\Users\\wuk\\Documents\\fineBI\\env\\WebReport\\WEB-INF\\resources\\cubes\\-999\\Advanced");
+//            String cubePath = "C:\\Users\\wuk\\Documents\\fineBI\\env\\WebReport\\WEB-INF\\resources\\cubes\\-999\\Advanced";
+            String cubePath = "D:\\FineBI\\webapps\\WebReport\\WEB-INF\\resources\\cubes\\-999\\Advanced";
+            securityCheck.check(cubePath);
             securityCheck.useLeastSum();
             securityCheck.saveResult();
             assertTrue(new File(path + "crc_sum").exists());
-            assertTrue(securityCheck.check("C:\\Users\\wuk\\Documents\\fineBI\\env\\WebReport\\WEB-INF\\resources\\cubes\\-999\\Advanced"));
+            assertTrue(securityCheck.check(cubePath));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

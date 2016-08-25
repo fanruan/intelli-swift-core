@@ -9,7 +9,7 @@ BI.PopupView = BI.inherit(BI.Widget, {
             baseCls: "bi-list-view",
             maxWidth: 'auto',
             minWidth: 100,
-            maxHeight: 200,
+            //maxHeight: 200,
             minHeight: 25,
             lgap: 0,
             rgap: 0,
@@ -43,7 +43,6 @@ BI.PopupView = BI.inherit(BI.Widget, {
     _init: function () {
         BI.PopupView.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-
         var fn = function (e) {
             e.stopPropagation();
         }, stop = function (e) {
@@ -54,7 +53,15 @@ BI.PopupView = BI.inherit(BI.Widget, {
             "z-index": BI.zIndex_popup,
             "min-width": o.minWidth + "px",
             "max-width": o.maxWidth + "px"
-        }).bind({"click": fn, "mousewheel": fn});
+        }).bind({"click": fn});
+
+        //FIXME IE8下 jquery.mousewheeel.js 第一次执行65行$elem["offsetParent"]()的时候报错：未指明的错误 但是第二次或者调试的时候展开一下$elem内容均能避免上述问题
+        try {
+            this.element.bind("mousewheel", fn);
+        } catch (e) {
+            this.element.bind("mousewheel", fn);
+        }
+
         o.stopPropagation && this.element.bind({"mousedown": fn, "mouseup": fn, "mouseover": fn});
         o.stopEvent && this.element.bind({"mousedown": stop, "mouseup": stop, "mouseover": stop});
         this.tool = this._createTool();
@@ -148,8 +155,8 @@ BI.PopupView = BI.inherit(BI.Widget, {
         var tbHeight = 30 * (this.toolbar ? 1 : 0),
             tabHeight = 25 * (this.tab ? 1 : 0),
             toolHeight = ((this.tool && this.tool.element.outerHeight()) || 25) * ((this.tool && this.tool.isVisible()) ? 1 : 0);
-        this.view.resetHeight ? this.view.resetHeight(h - tbHeight - tabHeight - toolHeight) :
-            this.view.element.css({"max-height": h - tbHeight - tabHeight - toolHeight + "px"})
+        this.view.resetHeight ? this.view.resetHeight(h - tbHeight - tabHeight - toolHeight - 2) :
+            this.view.element.css({"max-height": (h - tbHeight - tabHeight - toolHeight - 2) + "px"})
     },
 
     setEnable: function (arg) {

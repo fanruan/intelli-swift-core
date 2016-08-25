@@ -34,9 +34,8 @@ BI.ImageButtonHref = BI.inherit(BI.Single, {
         this.combo = BI.createWidget({
             type: "bi.combo",
             element: this.element,
-            direction: "bottom",
+            direction: "bottom,left",
             adjustYOffset: 3,
-            offsetStyle: "right",
             el: this.trigger,
             popup: {
                 el: this.input,

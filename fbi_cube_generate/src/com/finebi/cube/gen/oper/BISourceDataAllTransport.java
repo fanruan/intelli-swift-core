@@ -32,15 +32,16 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
         long t = System.currentTimeMillis();
         try {
             recordTableInfo();
+            buildTableBasicStructure();
             long count = transport();
             if (count >= 0) {
                 /*清除remove的过滤条件*/
                 TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
                 tableEntityService.recordRemovedLine(sortRemovedList);
                 tableEntityService.recordRowCount(count);
-                tableEntityService.clear();
             }
             tableEntityService.addVersion(version);
+            tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
             if (null != tableSource.getPersistentTable()) {
                 System.out.println("table usage:" + tableCostTime);
@@ -57,6 +58,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
     }
     private long transport() {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
+
         ICubeFieldSource[] cubeFieldSources = new ICubeFieldSource[fieldList.size()];
         for (int i = 0; i < fieldList.size(); i++) {
             fieldList.get(i).setTableBelongTo(tableSource);
@@ -73,4 +75,6 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             }
         }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube));
     }
+
+
 }

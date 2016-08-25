@@ -87,6 +87,8 @@ public class BITableMapper {
         public static final String FIELD_REPORT_ID = "reportId";
         public static final String FIELD_CREATE_BY = "createBy";
         public static final String FIELD_SHARE_TO = "shareTo";
+        public static final String FIELD_CREATE_BY_NAME = "createByName";
+        public static final String FIELD_SHARE_TO_NAME = "shareToName";
 
         public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(
                 BISharedReportNode.class,
@@ -94,7 +96,9 @@ public class BITableMapper {
                         new PrimaryKeyFCMapper("id", Types.BIGINT, new ColumnSize(10)),
                         new CommonFieldColumnMapper(FIELD_REPORT_ID, Types.BIGINT, new ColumnSize(10), false),
                         new CommonFieldColumnMapper(FIELD_CREATE_BY, Types.BIGINT, new ColumnSize(10), false),
-                        new CommonFieldColumnMapper(FIELD_SHARE_TO, Types.BIGINT, new ColumnSize(10), false)
+                        new CommonFieldColumnMapper(FIELD_SHARE_TO, Types.BIGINT, new ColumnSize(10), false),
+                        new CommonFieldColumnMapper(FIELD_CREATE_BY_NAME, Types.VARCHAR, new ColumnSize(50), false),
+                        new CommonFieldColumnMapper(FIELD_SHARE_TO_NAME, Types.VARCHAR, new ColumnSize(50), false)
                 }
         );
     }

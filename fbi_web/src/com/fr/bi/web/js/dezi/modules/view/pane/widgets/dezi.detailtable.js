@@ -246,7 +246,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         } else {
             this.title.setVisible(true);
             this.widget.attr("items")[0].top = 10;
-            this.widget.attr("items")[2].top = 50;
+            this.widget.attr("items")[2].top = 35;
         }
         this.widget.resize();
         this.tableResize();
@@ -268,6 +268,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
         })
+        BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
 

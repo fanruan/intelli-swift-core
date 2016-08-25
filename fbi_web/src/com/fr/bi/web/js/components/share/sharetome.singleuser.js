@@ -54,7 +54,7 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                             hgap: 10,
                             height: 40,
                             handler: function () {
-                                FS.tabPane.addItem({
+                                window.top.FS.tabPane.addItem({
                                     title: report.text,
                                     src: FR.servletURL + report.buildUrl + "&show=_bi_show_"
                                 });
@@ -92,7 +92,7 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                         iconWidth: 90,
                         iconHeight: 75,
                         handler: function () {
-                            FS.tabPane.addItem({
+                            window.top.FS.tabPane.addItem({
                                 title: report.text,
                                 src: FR.servletURL + report.buildUrl + "&show=_bi_show_"
                             });

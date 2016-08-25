@@ -30,8 +30,40 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
             type: "bi.business_package_manage"
         });
 
-        this.groupPane.on(BI.BusinessPackageManage.EVENT_BATCH_GROUP, function () {
-            self.addSubVessel("packageManagePane", vessel, {isLayer: true}).skipTo("packageManagePane", "packageManagePane");
+        // this.groupPane.on(BI.BusinessPackageManage.EVENT_BATCH_GROUP, function () {
+        //     self.addSubVessel("packageManagePane", vessel, {isLayer: true}).skipTo("packageManagePane", "packageManagePane");
+        // });
+        this.groupPane.on(BI.BusinessPackageManage.EVENT_BATCH_GROUP, function() {
+            if(BI.isNull(self.packageManagePane)) {
+                self.packageManagePane = BI.createWidget({
+                    type: "bi.business_package_group"
+                });
+                self.packageManagePane.on(BI.BusinessPackageGroup.EVENT_CHANGE, function () {
+                    self.model.set("groups", this.getValue());
+                    this.setVisible(false);
+                });
+
+                self.packageManagePane.on(BI.BusinessPackageGroup.EVENT_CANCEL, function () {
+                    this.setVisible(false);
+                });
+                self.packageManagePane.populate();
+                BI.createWidget({
+                    type: "bi.absolute",
+                    element: this.element,
+                    items: [{
+                        el: self.packageManagePane,
+                        left: 0,
+                        top: 0,
+                        right: 0,
+                        bottom: 0
+                    }]
+                });
+            } else {
+                self.packageManagePane.setVisible(true);
+                self.packageManagePane.populate();
+            }
+
+
         });
 
         this.groupPane.on(BI.BusinessPackageManage.EVENT_PACKAGE_ADD, function (groupID, groupName) {

@@ -8,6 +8,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.services.utils.BICubeGenerateUtils;
 import com.fr.fs.web.service.ServiceUtils;
@@ -28,14 +29,19 @@ public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
         long userId = ServiceUtils.getCurrentUserID(req);
         CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableJson), userId);
         JSONObject jo = new JSONObject();
-        boolean tableExisted = BICubeGenerateUtils.tableExisted(source, userId);
-        if (tableExisted) {
-            ICubeDataLoader dataLoader = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId));
-            ICubeTableService tableService = dataLoader.getTableIndex(source);
-            BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-            jo.put("isGenerated", tableService.isDataAvailable() && !cubeManager.hasTask(userId));
-        } else {
+        try {
+            boolean tableExisted = BICubeGenerateUtils.tableExisted(source, userId);
+            if (tableExisted) {
+                ICubeDataLoader dataLoader = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId));
+                ICubeTableService tableService = dataLoader.getTableIndex(source);
+                BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
+                jo.put("isGenerated", tableService.isDataAvailable() && !cubeManager.hasTask(userId));
+            } else {
+                jo.put("isGenerated", false);
+            }
+        }catch (Exception e) {
             jo.put("isGenerated", false);
+            BILogger.getLogger().error(e.getMessage());
         }
         WebUtils.printAsJSON(res, jo);
     }

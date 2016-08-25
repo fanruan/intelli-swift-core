@@ -25,7 +25,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
     },
 
     _formatConfig: function (config, items) {
-        var self = this, o = this.options, c = this.constants;
+        var self = this, c = this.constants;
         formatRangeLegend();
         delete config.legend;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
@@ -40,18 +40,19 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             var tip = this.name;
             BI.each(this.points, function (idx, point) {
                 var value = point.size || point.y;
-                tip += ('<div>' + point.seriesName + ':' + (window.FR ? FR.contentFormat(value, formatterArray[idx]) : value) + '</div>');
+                tip += ('<div>' + point.seriesName + ':' + BI.contentFormat(value, formatterArray[idx]) + '</div>');
             });
             return tip;
         };
         config.plotOptions.dataLabels.formatter.valueFormat = function () {
-            return window.FR ? FR.contentFormat(arguments[0], formatterArray[0]) : arguments[0];
+            return BI.contentFormat(arguments[0], formatterArray[0]);
         };
 
         config.geo = this.config.geo;
         if (this.config.initDrillPath.length > 1) {
             config.initDrillPath = this.config.initDrillPath;
         }
+        config.dTools.enabled = true;
         config.dTools.click = function (point) {
             point = point || {};
             var pointOption = point.pointOption || {};
@@ -106,7 +107,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                             to += BI.i18nText("BI-Yi");
                             break;
                         case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                            to = FR.contentFormat(BI.parseFloat(to), "#0%");
+                            to = BI.contentFormat(BI.parseFloat(to), "#0%");
                             break;
                     }
                 }
@@ -297,7 +298,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
     _formatNumberLevel: function (numberLevel, y) {
         y = BI.parseFloat(y);
-        y = FR.contentFormat(BI.parseFloat(y.div(this.calcMagnify(numberLevel)).toFixed(2)), "#.####");
+        y = BI.contentFormat(BI.parseFloat(y.div(this.calcMagnify(numberLevel)).toFixed(2)), "#.####;-#.####");
         return y;
     },
 

@@ -13,7 +13,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.PercentAccumulateAreaChart.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
         this.xAxis = [{
             type: "category",
             title: {
@@ -44,25 +44,11 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
     },
 
     _formatConfig: function(config, items){
-        var self = this, o = this.options;
+        var self = this;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
@@ -71,21 +57,30 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
+
         config.yAxis = this.yAxis;
-
-        config.yAxis[0].reversed = this.config.left_y_axis_reversed;
-        config.yAxis[0].formatter = formatTickInXYaxis(this.config.left_y_axis_style, this.constants.LEFT_AXIS);
-        self.formatNumberLevelInYaxis(config, items, this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
-        config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
+        BI.extend(config.yAxis[0], {
+            lineWidth: this.config.line_width,
+            showLabel: this.config.show_label,
+            enableTick: this.config.enable_tick,
+            reversed: this.config.left_y_axis_reversed,
+            enableMinorTick: this.config.enable_minor_tick,
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level)
+        });
+        self.formatNumberLevelInYaxis(config, items, this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
 
-        config.xAxis[0].title.text = this.config.x_axis_title;
-        config.xAxis[0].labelRotation = this.config.text_direction;
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? config.xAxis[0].title.text : "";
         config.xAxis[0].title.align = "center";
-        config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
+        BI.extend(config.xAxis[0], {
+            lineWidth: this.config.line_width,
+            enableTick: this.config.enable_tick,
+            labelRotation: this.config.text_direction,
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+        });
+
         config.chartType = "area";
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
 
@@ -184,35 +179,10 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             if(position === self.constants.LEFT_AXIS){
                 self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
-            return unit === "" ? unit : "(" + unit + ")";
-        }
 
-        function formatTickInXYaxis(type, position){
-            var formatter = '#.##';
-            switch (type) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    break;
-            }
-            if(position === self.constants.LEFT_AXIS){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                    if(type === self.constants.NORMAL){
-                        formatter = '#0%'
-                    }else{
-                        formatter += '%';
-                    }
-                }
-            }
-            return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
+            unit = unit === "" ? unit : "(" + unit + ")";
+
+            return self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + unit : unit
         }
     },
 
@@ -246,7 +216,11 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             show_zoom: options.show_zoom || false,
             text_direction: options.text_direction || 0,
-            cordon: options.cordon || []
+            cordon: options.cordon || [],
+            line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
         };
         this.options.items = items;
 

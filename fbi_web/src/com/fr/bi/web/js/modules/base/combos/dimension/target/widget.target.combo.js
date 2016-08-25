@@ -138,6 +138,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
         var view = BI.Utils.getWidgetViewByID(wId);
+        var minimalist = BI.Utils.getWSMinimalistByID(wId);
         var result = BI.find(view[BICst.REGION.TARGET2], function (idx, did) {
             return did === o.dId;
         });
@@ -164,6 +165,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.BAR:
@@ -180,6 +184,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
@@ -194,6 +201,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
                 break;
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
@@ -229,6 +239,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         cls: "dot-e-font"
                     }]
                 };
+                if(minimalist){
+                    item[this.constants.CordonPos][0].disabled = true
+                }
                 break;
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.BUBBLE:
@@ -241,7 +254,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        item[this.constants.CordonPos][0].disabled = true;
+                        BI.removeAt(item, this.constants.CordonPos);
                         BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                         return item;
                 }

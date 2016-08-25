@@ -22,10 +22,10 @@ BI.LevelTree = BI.inherit(BI.Widget, {
         this.initTree(this.options.items);
     },
 
-    _formatItems: function (nodes) {
+    _formatItems: function (nodes, layer) {
         var self = this;
         BI.each(nodes, function (i, node) {
-            var extend = {};
+            var extend = {layer: layer};
             if (!BI.isKey(node.id)) {
                 node.id = BI.UUID();
             }
@@ -42,7 +42,7 @@ BI.LevelTree = BI.inherit(BI.Widget, {
                         break;
                 }
                 BI.defaults(node, extend);
-                self._formatItems(node.children);
+                self._formatItems(node.children, layer + 1);
             } else {
                 switch (i) {
                     case nodes.length - 1:
@@ -50,9 +50,6 @@ BI.LevelTree = BI.inherit(BI.Widget, {
                         break;
                     default :
                         extend.type = "bi.mid_tree_leaf_item";
-                }
-                if (BI.isNull(node.pId)) {
-                    extend.isFront = true;
                 }
                 BI.defaults(node, extend);
             }
@@ -83,7 +80,7 @@ BI.LevelTree = BI.inherit(BI.Widget, {
                 }
             }, o.expander),
 
-            items: this._formatItems(BI.Tree.transformToTreeFormat(nodes)),
+            items: this._formatItems(BI.Tree.transformToTreeFormat(nodes), 0),
 
             el: BI.extend({
                 type: "bi.button_tree",
@@ -107,7 +104,7 @@ BI.LevelTree = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
-        items = this._formatItems(BI.Tree.transformToTreeFormat(items));
+        items = this._formatItems(BI.Tree.transformToTreeFormat(items), 0);
         this.tree.populate(items);
     },
 

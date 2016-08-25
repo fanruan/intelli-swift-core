@@ -3,6 +3,7 @@ package com.fr.bi.conf.data.source;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -11,7 +12,6 @@ import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
-import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.impl.DBTableData;
@@ -44,9 +44,9 @@ public class ServerTableSource extends DBTableSource {
     public Set getFieldDistinctNewestValues(String fieldName, ICubeDataLoader loader, long userId) {
         final HashSet set = new HashSet();
         TableData tableData = getTableData();
-        if(tableData instanceof DBTableData){
+        if (tableData instanceof DBTableData) {
             ICubeFieldSource field = getFields().get(fieldName);
-            if (field == null){
+            if (field == null) {
                 return set;
             }
             SqlSettedStatement settedStatement = new SqlSettedStatement(((DBTableData) tableData).getDatabase());
@@ -56,8 +56,8 @@ public class ServerTableSource extends DBTableSource {
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
-            settedStatement.setSql("SELECT distinct " + fieldName + " FROM " + "(" +((DBTableData) tableData).getQuery() + ") " + "t");
-            BICubeDBUtils.runSQL(settedStatement, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
+            settedStatement.setSql("SELECT distinct " + fieldName + " FROM " + "(" + ((DBTableData) tableData).getQuery() + ") " + "t");
+            DBQueryExecutor.getInstance().runSQL(settedStatement, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
                 @Override
                 public void actionPerformed(BIDataValue data) {
                     set.add(data.getValue());
@@ -73,7 +73,7 @@ public class ServerTableSource extends DBTableSource {
     private HashSet getDistinctValuesOnlyByTableData(TableData tableData, String fieldName) {
         ICubeFieldSource field = getFields().get(fieldName);
         final HashSet set = new HashSet();
-        if (field == null){
+        if (field == null) {
             return set;
         }
         BIServerUtils.runServer(tableData, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
@@ -112,24 +112,24 @@ public class ServerTableSource extends DBTableSource {
     }
 
     @Override
-	protected TableData createPreviewTableData(){
+    protected TableData createPreviewTableData() {
         return getTableData();
     }
 
     @Override
     public TableData createTableData(List<String> fields, ICubeDataLoader loader, long userId) throws Exception {
         TableData tableData = getTableData();
-        if (fields == null || fields.isEmpty()){
+        if (fields == null || fields.isEmpty()) {
             return tableData;
         }
         DataModel dataModel = null;
         try {
             dataModel = tableData.createDataModel(Calculator.createCalculator());
-            if (dataModel.getRowCount() == 0){
+            if (dataModel.getRowCount() == 0) {
                 return tableData;
             }
             tableData = BIDBUtils.createTableData(fields, dataModel);
-        } catch (Exception e){
+        } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             dataModel.release();
@@ -161,7 +161,7 @@ public class ServerTableSource extends DBTableSource {
                     Object value = null;
                     switch (columns[j].getFieldType()) {
                         case DBConstant.COLUMN.NUMBER:
-                            value = v == null || v == Primitive.NULL ? null : (Number) v;
+                            value = v == null || v == Primitive.NULL ? null : int2Long((Number) v);
                             break;
                         case DBConstant.COLUMN.DATE:
                             value = v == null || v == Primitive.NULL ? null : ((Date) v).getTime();
@@ -181,10 +181,24 @@ public class ServerTableSource extends DBTableSource {
         }
     }
 
+    private Number int2Long(Number value) {
+        if (value instanceof Integer) {
+            return value.longValue();
+        } else {
+            return value;
+        }
+    }
+
+    @Override
+    public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long oldCount) {
+        oldCount = dealWithInsert(traversal, fields, SQL, oldCount, connection);
+        return oldCount;
+    }
+
     private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, ICubeFieldSource[] fields) {
         SQLStatement sql = new SQLStatement(connect);
-        sql.setFrom( "(" + query + ") " + "t");
-        return BICubeDBUtils.runSQL(sql, fields, new Traversal<BIDataValue>() {
+        sql.setFrom("(" + query + ") " + "t");
+        return DBQueryExecutor.getInstance().runSQL(sql, fields, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
                 try {

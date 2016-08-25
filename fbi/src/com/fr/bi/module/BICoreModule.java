@@ -6,13 +6,13 @@ import com.finebi.cube.conf.datasource.BIDataSourceManager;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
 import com.finebi.cube.conf.relation.BISystemTableRelationManager;
-import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManager;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
+import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.manager.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
@@ -49,7 +49,6 @@ import com.fr.file.DatasourceManager;
 import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
-import com.fr.general.FRLogger;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
@@ -349,9 +348,9 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registerResources() {
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, ResourceHelper.getThirdJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_THIRD_JS, ResourceHelper.getThirdJs());
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, ResourceHelper.getBaseJs());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, ResourceHelper.getThirdCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, ResourceHelper.getThirdCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, ResourceHelper.getBaseCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, ResourceHelper.getDataJS(), ResourceHelper.DataTransmitter);
@@ -373,6 +372,7 @@ public class BICoreModule extends AbstractModule {
     }
 
     public void loadResources (Locale[] locales) {
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_THIRD_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BASE_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_CONF_JS);
@@ -380,6 +380,7 @@ public class BICoreModule extends AbstractModule {
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_SHOW_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_MODULE_JS);
         ResourceHelper.FormulaTransmitter.transmit(ResourceHelper.getFormulaCollectionJS());
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_THIRD_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);

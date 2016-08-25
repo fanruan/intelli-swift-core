@@ -1,7 +1,7 @@
 /**
  * @class BI.MapSetting
  * @extends BI.Widget
- * 柱状，堆积柱状，组合图样式
+ * 地图样式
  */
 BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
 

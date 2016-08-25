@@ -186,7 +186,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     private Iterator getIterByAllCal(int wholeRowCount, int currentRowCount) {
         ICubeTableService ti = getLoader().getTableIndex(column.getField().getTableBelongTo().getTableSource());
         ICubeValueEntryGetter getter = ti.getValueEntryGetter(column.createKey(), column.getRelationList());
-        SortTool tool = SortToolUtils.getSortTool(getter.getGroupSize(), wholeRowCount, currentRowCount);
+        SortTool tool = SortToolUtils.getSortTool(getter.getGroupSize(), currentRowCount);
         switch (tool) {
             case INT_ARRAY:
                 return getArraySortIterator(getter);
@@ -315,6 +315,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
     public Iterator getOneKeyIterator(final ICubeValueEntryGetter getter) {
         final FinalInt i = new FinalInt();
+        i.value = NIOConstant.INTEGER.NULL_VALUE;
         root.getGroupValueIndex().Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {

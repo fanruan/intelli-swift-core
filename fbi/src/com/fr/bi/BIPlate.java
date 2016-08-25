@@ -14,6 +14,7 @@ import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleManager;
+import com.fr.bi.fs.BISharedReportNode;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.entry.BIReportEntry;
 import com.fr.bi.fs.entry.BIReportEntryDAO;
@@ -29,13 +30,9 @@ import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.tableObject.Column;
 import com.fr.data.core.db.tableObject.ColumnSize;
-import com.fr.data.dao.FieldColumnMapper;
-import com.fr.data.dao.MToMRelationFCMapper;
-import com.fr.data.dao.ObjectTableMapper;
-import com.fr.data.dao.RelationFCMapper;
+import com.fr.data.dao.*;
 import com.fr.dav.LocalEnv;
 import com.fr.fs.AbstractFSPlate;
-import com.fr.fs.base.entity.PlatformManageModule;
 import com.fr.fs.control.EntryPoolFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl.ColumnColumn;
@@ -44,7 +41,6 @@ import com.fr.fs.dao.FSDAOManager;
 import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.GeneralUtils;
-import com.fr.general.Inter;
 import com.fr.plugin.ExtraClassManager;
 import com.fr.stable.*;
 import com.fr.stable.bridge.StableFactory;
@@ -91,6 +87,7 @@ public class BIPlate extends AbstractFSPlate {
         }
         BIConfigureManagerCenter.getLogManager().logEnd(UserControl.getInstance().getSuperManagerID());
         addBITableColumn4NewConnection();
+        addSharedTableColumn4NewConnection();
     }
 
     public void loadMemoryData() {
@@ -154,6 +151,38 @@ public class BIPlate extends AbstractFSPlate {
                     BILogger.getLogger().error(e1.getMessage(), e1);
                 }
             }
+        } finally {
+            DBUtils.closeConnection(cn);
+        }
+    }
+
+    private static void addSharedTableColumn4NewConnection() {
+        Connection cn = null;
+        String tableName = "FR_T_" + DAOUtils.getClassNameWithOutPath(BISharedReportNode.class);
+        try {
+            cn = PlatformDB.getDB().createConnection();
+            try{
+                cn.setAutoCommit(false);
+            }catch(Exception e){
+
+            }
+            Dialect dialect = DialectFactory.generateDialect(cn,PlatformDB.getDB().getDriver());
+            FSDAOManager.addTableColumn(cn, dialect,
+                    new Column("createByName", Types.VARCHAR, new ColumnSize(50)), tableName);
+            FSDAOManager.addTableColumn(cn, dialect,
+                    new Column("shareToName", Types.VARCHAR, new ColumnSize(50)), tableName);
+            cn.commit();
+        } catch (Exception e) {
+            if (cn != null) {
+                try {
+                    cn.rollback();
+                } catch (SQLException e1) {
+                    FRContext.getLogger().error(e1.getMessage(), e1);
+                }
+            }
+
+            FRContext.getLogger().error("Add" + tableName + "Column Action Failed!");
+            FRContext.getLogger().error(e.getMessage(), e);
         } finally {
             DBUtils.closeConnection(cn);
         }
@@ -273,14 +302,6 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js"
 
         });
-    }
-
-
-    @Override
-    public PlatformManageModule[] supportPlatformManageModules() {
-        return new PlatformManageModule[]{
-                new PlatformManageModule("BI-Data_Setting", Inter.getLocText("BI_Data_Settings"), 2009, 1, true)
-        };
     }
 
     static {

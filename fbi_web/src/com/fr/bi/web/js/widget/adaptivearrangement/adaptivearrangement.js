@@ -89,7 +89,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         });
         o.resizable && item.element.resizable({
             handles: "e, s, se",
-            minWidth: 100,
+            minWidth: 20,
             minHeight: 20,
             autoHide: true,
             helper: "bi-resizer",
@@ -366,6 +366,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         return this.arrangement.setRegionPosition(name, position);
     },
 
+    zoom: function (ratio) {
+        this.arrangement.zoom(ratio);
+    },
+
     resize: function () {
         this.arrangement.resize();
     },
@@ -398,6 +402,10 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         return this.arrangement.getLayoutType();
     },
 
+    getLayoutRatio: function () {
+        return this.arrangement.getLayoutRatio();
+    },
+
     getHelper: function () {
         return this.arrangement.getHelper();
     },
@@ -426,7 +434,6 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 BI.nextTick(function () {
                     self.arrangement.resize();
-                    self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
                 });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:

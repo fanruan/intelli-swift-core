@@ -35,6 +35,7 @@ import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.BIUserUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.general.Inter;
 import com.fr.general.NameObject;
@@ -117,6 +118,10 @@ public class CubeIndexLoader {
     public static void calculateTargets(List targetCalculator, List<CalCalculator> calculateTargets, LightNode n, boolean calConfig) {
         int size = calculateTargets.size();
         Set<TargetGettingKey> set = new HashSet<TargetGettingKey>();
+        Iterator<TargetCalculator> cit = targetCalculator.iterator();
+        while (cit.hasNext()) {
+            set.add(cit.next().createTargetGettingKey());
+        }
         while (!calculateTargets.isEmpty() && n != null) {
             Iterator<CalCalculator> iter = calculateTargets.iterator();
             while (iter.hasNext()) {
@@ -450,6 +455,28 @@ public class CubeIndexLoader {
         }
         DimensionGroupFilter dimensionGroupFilter = createDimensionGroupFilter(widget, usedTargets, sumTarget, rowDimension, session, new ArrayList<MergerInfo>(), false);
         boolean shouldOld = dimensionGroupFilter.shouldBuildTree();
+        if (hasAllCalCalculatorTargets(usedTargets)){
+            NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
+            Map<TargetGettingKey, IRootDimensionGroup> rowMap = new ConcurrentHashMap<TargetGettingKey, IRootDimensionGroup>();
+            Map<TargetGettingKey, IRootDimensionGroup> columnMap = new ConcurrentHashMap<TargetGettingKey, IRootDimensionGroup>();
+            NodeAndPageInfo leftAllInfo = getLeftInfo(rowDimension, sumTarget, -1, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, new PageIteratorGroup(rowMap, columnMap), shouldOld);
+            NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, page, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
+            if (usedTargets.length != 0 && isEmpty(topInfo)) {
+                leftInfo.getNode().getChilds().clear();
+                leftInfo.setHasNext(false);
+            }
+            setPageSpiner(widget, leftInfo, topInfo);
+            n = new NewCrossRoot(leftAllInfo.getNode().createCrossHeader(), topInfo.getNode().createCrossHeader());
+            new CrossCalculator(session.getLoader()).execute(n, targetGettingKey, expander);
+            int size = calculateTargets.size();
+            Set set = new HashSet(targetGettingKey);
+            dealCalculateTarget(calculateTargets, n, size, set);
+            if (n == null) {
+                n = new NewCrossRoot(new CrossHeader(null, null, null), new CrossHeader(null, null, null));
+            }
+            cutChilds(n.getLeft().getChilds(), leftInfo.getNode().getChilds());
+            return n;
+        }
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
         NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, page, useRealData, expander, widget, allDimension, session, usedTargets, calculateTargets, pg, shouldOld);
         if (usedTargets.length != 0 && isEmpty(topInfo)) {
@@ -466,6 +493,38 @@ public class CubeIndexLoader {
             n = new NewCrossRoot(new CrossHeader(null, null, null), new CrossHeader(null, null, null));
         }
         return n;
+    }
+
+    private void cutChilds(List<Node> childs, List<Node> childs1) {
+        if (!childs1.isEmpty()){
+            Node start = childs1.get(0);
+            Node end = childs1.get(childs1.size() - 1);
+            Iterator<Node> it = childs.iterator();
+            boolean shouldDelete = true;
+            while (it.hasNext()){
+                Node n = it.next();
+                if (ComparatorUtils.equals(n.getData(), start.getData())){
+                    shouldDelete = false;
+                    cutChilds(n.getChilds(), start.getChilds());
+                }
+                if (shouldDelete){
+                    it.remove();
+                }
+                if (ComparatorUtils.equals(n.getData(), end.getData())){
+                    shouldDelete = true;
+                    cutChilds(n.getChilds(), end.getChilds());
+                }
+            }
+        }
+    }
+
+    private boolean hasAllCalCalculatorTargets(BISummaryTarget[] calculateTargets) {
+        for (BISummaryTarget target : calculateTargets){
+            if (target.calculateAllPage()){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setPageSpiner(BISummaryWidget widget, NodeAndPageInfo leftInfo, NodeAndPageInfo topInfo) {

@@ -116,7 +116,6 @@ BI.AuthorityNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         o.node.set("data", BI.extend(o.node.get("data"), {
             value: filterItem.filter_type,
             filter_type: filterItem.filter_type,
-            filter_value: {value: []},
             _src: {
                 field_id: v.id
             }
