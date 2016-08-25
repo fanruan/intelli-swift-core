@@ -17,9 +17,11 @@
             return BI.parseFloat(sum.div(array.length));
         },
 
-        isQualified: function(value, array){
+        getFilterResult: function(array) {
             var avgValue = this.getNumberAvg(array);
-            return value < avgValue;
+            return BI.filter(array, function(idx, val){
+                return val < avgValue;
+            });
         }
     }
 })();
