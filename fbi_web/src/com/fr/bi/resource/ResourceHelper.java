@@ -1118,6 +1118,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalabel/condition/scatter/factory.filteritem.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.notypefieldl.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/scatter/widget.datalabelselectfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/item.numberfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/item.multifield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/item.stringfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/factory.filteritem.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/item.notypefieldl.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/widget.datalabelselectfield.js",
 
                 //计算指标
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/calculatetargetpopup.summary.js",
