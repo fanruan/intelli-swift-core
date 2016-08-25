@@ -13,6 +13,9 @@ import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.*;
 import com.finebi.cube.structure.BITableKey;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
@@ -26,10 +29,7 @@ import com.fr.general.ComparatorUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by kary on 16/5/30.
@@ -49,10 +49,37 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     private Set<BICubeGenerateRelation> cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
     private Set<BITableRelation> inUseRelations = new HashSet<BITableRelation>();
     private Set<BITableRelationPath> inUsePaths = new HashSet<BITableRelationPath>();
+    private int updateType = DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
+    private BusinessTable businessTable;
+
+    public int getUpdateType() {
+        return updateType;
+    }
+
+    public void setUpdateType(int updateType) {
+        this.updateType = updateType;
+    }
+
+    public BusinessTable getBusinessTable() {
+        return businessTable;
+    }
+
+    public void setBusinessTable(BusinessTable businessTable) {
+        this.businessTable = businessTable;
+    }
 
     public CubeBuildSingleTable(BusinessTable businessTable, long userId) {
         super(userId);
         this.biUser = new BIUser(userId);
+        this.businessTable = businessTable;
+        init(businessTable);
+    }
+
+    public CubeBuildSingleTable(BusinessTable businessTable, long userId, int updateType) {
+        super(userId);
+        this.biUser = new BIUser(userId);
+        this.updateType = updateType;
+        this.businessTable = businessTable;
         init(businessTable);
     }
 
@@ -249,6 +276,14 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         this.dependTableResource = dependTableResource;
     }
 
+    @Override
+    public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
+        Map<CubeTableSource, UpdateSettingSource> map = super.getUpdateSettingSources();
+        UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(businessTable.getTableSource().getSourceID(), biUser.getUserId());
+        updateSettingSource.setUpdateType(updateType);
+        map.put(businessTable.getTableSource(), updateSettingSource);
+        return map;
+    }
 
     /**
      * @return the tableSourceRelationSet
@@ -301,6 +336,8 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         }
         return true;
     }
+
+
 
     /**
      * TODO改变层级结构

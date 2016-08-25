@@ -296,12 +296,10 @@ Data.Req = BIReq = {
 
     reqGenerateCubeByTable: function (tableInfo, callback, complete) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
-                // connectionName: table.connection_name,
-                // tableName: table.table_name,
-                // tableId: table.id
                 baseTableId: tableInfo.baseTable.id,
                 isETL: tableInfo.isETL,
-                ETLTableId: tableInfo.ETLTable==undefined?"":tableInfo.ETLTable.id
+                ETLTableId: BI.isNull(tableInfo.ETLTable) ? "" : tableInfo.ETLTable.id,
+                updateType: tableInfo.updateType
             },
             function (res) {
                 callback(res);

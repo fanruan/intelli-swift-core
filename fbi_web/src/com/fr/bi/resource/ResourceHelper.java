@@ -1516,6 +1516,7 @@ public class ResourceHelper {
                 //表更新
                 "com/fr/bi/web/js/extend/update/update.tabledata.js",
                 "com/fr/bi/web/js/extend/update/update.tabledata.model.js",
+                "com/fr/bi/web/js/extend/update/singletable/item/item.singletable.timesetting.js",
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.js",
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.js",

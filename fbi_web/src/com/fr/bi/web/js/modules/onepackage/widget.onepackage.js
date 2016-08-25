@@ -95,7 +95,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         this.viewType.on(BI.Segment.EVENT_CHANGE, function () {
             var cardName = this.getValue()[0];
             self.showCardLayout.showCardByName(cardName);
-            if(cardName === BICst.TABLES_VIEW.RELATION){
+            if (cardName === BICst.TABLES_VIEW.RELATION) {
                 self.relationView.populate({
                     tableIds: self.model.getTables(),
                     translations: self.model.getTranslations(),
@@ -482,11 +482,11 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         var self = this;
         BI.Layers.remove(this._constant.ETL_LAYER);
         var type = "bi.etl";
-        var tableData= this.model.getTablesData()[id];
+        var tableData = this.model.getTablesData()[id];
         var connName = tableData.connection_name;
-        if(connName === BICst.CONNECTION.EXCEL_CONNECTION) {
+        if (connName === BICst.CONNECTION.EXCEL_CONNECTION) {
             type = "bi.etl_excel"
-        } else if(connName === BICst.CONNECTION.SQL_CONNECTION) {
+        } else if (connName === BICst.CONNECTION.SQL_CONNECTION) {
             type = "bi.etl_sql";
         }
         var etl = BI.createWidget({
@@ -502,15 +502,15 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         });
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_CUBE_SAVE, function (obj) {
-            self.model.updateSettings=BI.deepClone(obj.updateSettings);
+            self.model.updateSettings = BI.deepClone(obj.updateSettings);
             Data.SharingPool.put("fields", self.model.getAllFields());
             Data.SharingPool.put("update_settings", self.model.updateSettings);
             var data = self.model.getValue();
             Data.SharingPool.put("translations", data.translations);
             Data.SharingPool.put("relations", data.relations);
             BI.Utils.updateTablesOfOnePackage(data, function () {
-                // self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
                 BI.Utils.generateCubeByTable(obj.tableInfo, function () {
+                
                 });
             });
         });
