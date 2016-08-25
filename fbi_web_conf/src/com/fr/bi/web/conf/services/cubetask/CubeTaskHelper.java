@@ -39,8 +39,8 @@ public class CubeTaskHelper {
 
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
-    public static boolean CubeBuildSingleTable(long userId, BITableID biTableID) {
-        CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(biTableID), userId);
+    public static boolean CubeBuildSingleTable(long userId, BITableID biTableID, int updateType) {
+        CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(biTableID), userId, updateType);
         boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
     }

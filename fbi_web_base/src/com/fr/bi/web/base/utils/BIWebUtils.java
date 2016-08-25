@@ -195,6 +195,8 @@ public class BIWebUtils {
         } else {
             map.put("popConfig", "null");
         }
+        JSONObject reportName = new JSONObject();
+        reportName.put("name", node.getReportName() != null ? node.getReportName() : "null");
         map.put(ParameterConsts.SESSION_ID, sessionID);
         String isDebug = WebUtils.getHTTPRequestParameter(req, ParameterConsts.__ISDEBUG__);
         String edit = WebUtils.getHTTPRequestParameter(req, "edit");
@@ -203,7 +205,7 @@ public class BIWebUtils {
         map.put("edit", edit == null ? "null" : edit);
         map.put("show", show == null ? "null" : show);
         map.put("createBy", node.getUserId());
-        map.put("reportName", node.getReportName() != null ? node.getReportName() : "null");
+        map.put("reportName", reportName);
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
         map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + "" + userId);

@@ -26,6 +26,7 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         String baseTableId = WebUtils.getHTTPRequestParameter(req, "baseTableId");
         String ELTTableId = WebUtils.getHTTPRequestParameter(req, "ETLTableId");
         Boolean isETL = Boolean.valueOf(WebUtils.getHTTPRequestParameter(req, "isETL"));
+        int updateType = WebUtils.getHTTPRequestIntParameter(req, "updateType");
         BIConfigureManagerCenter.getLogManager().logStart(userId);
         boolean cubeBuild;
         if (StringUtils.isEmpty(baseTableId)) {
@@ -34,7 +35,7 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
             if (isETL) {
                 cubeBuild = CubeTaskHelper.CubeBuildETL(userId, new BITableID(ELTTableId), new BITableID(baseTableId));
             } else {
-                cubeBuild = CubeTaskHelper.CubeBuildSingleTable(userId, new BITableID(baseTableId));
+                cubeBuild = CubeTaskHelper.CubeBuildSingleTable(userId, new BITableID(baseTableId), updateType);
             }
         }
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();

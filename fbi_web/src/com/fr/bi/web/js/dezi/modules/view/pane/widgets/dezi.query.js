@@ -15,10 +15,10 @@ BIDezi.QueryView = BI.inherit(BI.View, {
     _render: function (veseel) {
         var self = this;
         var queryButton = BI.createWidget({
-            type: "bi.button",
+            type: "bi.text_button",
             text: BI.i18nText("BI-Query"),
-            forceCenter: true
-            //height: ""
+            forceCenter: true,
+            cls: "query-or-reset-button"
         });
         queryButton.on(BI.Button.EVENT_CHANGE, function () {
             //需要缓存一份所有控件的过滤条件到SharingPool中
