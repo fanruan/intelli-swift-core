@@ -2,7 +2,7 @@
  * Created by fay on 2016/7/27.
  */
 
-BI.ScatterLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
+BI.ScatterLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
@@ -31,6 +31,7 @@ BI.ScatterLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             cls: "close-h-font"
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AbstractDataLabelFilterItem.DELETE, self);
             self.destroy();
             BI.ScatterLabelStringFieldFilterItem.superclass.destroy.apply(this, arguments);
         });

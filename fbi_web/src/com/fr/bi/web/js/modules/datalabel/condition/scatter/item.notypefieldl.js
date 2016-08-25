@@ -1,7 +1,7 @@
 /**
  * Created by lfhli on 2016/7/15.
  */
-BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
+BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
@@ -112,6 +112,10 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.typeSelectedItem.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
+        this.typeSelectedItem.on(BI.AbstractDataLabelFilterItem.DELETE, function () {
+            self.destroy();
+            BI.DataLabelNoTypeFieldFilterItem.superclass.destroy.apply(this, arguments);
+        })
     },
 
     getValue: function () {

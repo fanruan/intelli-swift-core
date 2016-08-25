@@ -1,7 +1,7 @@
 /**
  * Created by fay on 2016/7/22.
  */
-BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
+BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
         CONTAINER_HEIGHT: 40,
@@ -39,6 +39,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             cls: "close-h-font"
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AbstractDataLabelFilterItem.DELETE, self);
             self.destroy();
             BI.DataLabelNumberFieldFilterItem.superclass.destroy.apply(this, arguments);
         });

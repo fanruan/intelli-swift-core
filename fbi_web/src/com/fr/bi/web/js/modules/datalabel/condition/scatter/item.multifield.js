@@ -1,7 +1,7 @@
 /**
  * Created by fay on 2016/8/23.
  */
-BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
+BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
         CONTAINER_HEIGHT: 75,
@@ -36,6 +36,7 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             cls: "close-h-font"
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AbstractDataLabelFilterItem.DELETE, self);
             self.destroy();
             BI.ScatterMultiFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
