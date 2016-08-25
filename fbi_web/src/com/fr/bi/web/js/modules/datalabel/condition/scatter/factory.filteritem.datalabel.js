@@ -63,6 +63,9 @@ BI.ScatterFilterItemFactory = {
             case BICst.FILTER_TYPE.EMPTY_CONDITION:
                 type = "bi.scatter_no_type_field_filter_item";
                 break;
+            case BICst.FILTER_TYPE.AND:
+                type = "bi.scatter_double_field_filter_item";
+                break;
             default :
                 type = "bi.scatter_no_type_field_filter_item";
                 break;
