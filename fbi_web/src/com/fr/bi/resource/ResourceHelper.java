@@ -1900,6 +1900,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/css/widget/sequencetable/listnumber.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/treenumber.sequencetable.css",
+                "com/fr/bi/web/css/widget/sequencetable/dynamicnumber.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/sequencetable.css",
 
 
