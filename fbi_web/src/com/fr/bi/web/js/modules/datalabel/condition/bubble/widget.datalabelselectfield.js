@@ -63,7 +63,7 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                     });
                 } else {
                     result.push({
-                        id: "XYSIZE",
+                        id: BICst.DATACOLUMN.XANDYANDSIZE,
                         pId: self._constant.X_Y_FIELD,
                         type: "bi.select_data_level0_item",
                         text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Bubble_Size"),
@@ -71,7 +71,7 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                         fieldType: BICst.DATACOLUMN.XANDYANDSIZE
                     });
                     result.push({
-                        id: BI.i18nText("BI-And"),
+                        id: BICst.DATACOLUMN.XANDY,
                         pId: self._constant.X_Y_FIELD,
                         type: "bi.select_data_level0_item",
                         text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
