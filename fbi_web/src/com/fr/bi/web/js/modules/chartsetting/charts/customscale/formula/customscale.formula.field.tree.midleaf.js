@@ -1,12 +1,6 @@
 /**
+ * triangle mid leaf of tree
  * Created by AstronautOO7 on 2016/8/25.
- */
-/**
- * 加号表示的组节点
- *
- * Created by GUY on 2016/1/27.
- * @class BI.MultiLayerSingleTreeMidPlusGroupNode
- * @extends BI.NodeButton
  */
 BI.CustomScaleFormulaFieldTreeMidLeaf = BI.inherit(BI.NodeButton, {
     _defaultConfig: function () {
