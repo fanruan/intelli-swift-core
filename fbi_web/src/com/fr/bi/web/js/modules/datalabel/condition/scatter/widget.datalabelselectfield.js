@@ -40,10 +40,10 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                 }]
             },
             fieldsCreator: function (tableId) {
-                var widgetId = BI.Utils.getWidgetIDByDimensionID(o.dId);
-                var categories = BI.Utils.getWidgetViewByID(widgetId)[10000];
-                var y = BI.Utils.getWidgetViewByID(widgetId)[30000];
-                var x = BI.Utils.getWidgetViewByID(widgetId)[40000];
+                var view = BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+                var categories = view[10000];
+                var y = view[30000];
+                var x = view[40000];
                 var result = [];
                 if (tableId === self._constant.DIMENSION_FIELD) {
                     BI.each(categories, function (i, dId) {

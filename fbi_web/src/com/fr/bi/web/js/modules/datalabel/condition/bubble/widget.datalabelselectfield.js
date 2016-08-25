@@ -40,10 +40,11 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                 }]
             },
             fieldsCreator: function (tableId) {
-                var widgetId = BI.Utils.getWidgetIDByDimensionID(o.dId);
-                var categories = BI.Utils.getWidgetViewByID(widgetId)[10000];
-                var y = BI.Utils.getWidgetViewByID(widgetId)[30000];
-                var x = BI.Utils.getWidgetViewByID(widgetId)[40000];
+                var view = BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+                var categories = view[10000];
+                var y = view[30000];
+                var x = view[40000];
+                var bubbleSize = view[50000];
                 var result = [];
                 if (tableId === self._constant.DIMENSION_FIELD) {
                     BI.each(categories, function (i, dId) {
@@ -61,6 +62,14 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                         });
                     });
                 } else {
+                    result.push({
+                        id: BI.i18nText("BI-And"),
+                        pId: self._constant.X_Y_FIELD,
+                        type: "bi.select_data_level0_item",
+                        text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Bubble_Size"),
+                        title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Bubble_Size"),
+                        fieldType: BICst.COLUMN.XANDYANDSIZE
+                    });
                     result.push({
                         id: BI.i18nText("BI-And"),
                         pId: self._constant.X_Y_FIELD,
@@ -94,6 +103,20 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                             fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
                             text: BI.i18nText("BI-Uppercase_Y_Axis"),
                             title: BI.i18nText("BI-Uppercase_Y_Axis"),
+                            value: dId
+                        });
+                    });
+                    BI.each(bubbleSize, function (i, dId) {
+                        if (!BI.Utils.isDimensionUsable(dId)) {
+                            return;
+                        }
+                        result.push({
+                            id: dId,
+                            pId: self._constant.X_Y_FIELD,
+                            type: "bi.select_data_level0_item",
+                            fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
+                            text: BI.i18nText("BI-Bubble_Size"),
+                            title: BI.i18nText("BI-Bubble_Size"),
                             value: dId
                         });
                     });
