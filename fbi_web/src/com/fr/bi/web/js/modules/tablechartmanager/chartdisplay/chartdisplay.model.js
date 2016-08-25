@@ -402,6 +402,51 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
     },
 
+    _setDataLabelSettingForBubbleAndScatter: function(data){
+        var o = this.options;
+        var allSeries = BI.pluck(data, "name");
+        var cataArrayMap = {};  //值按分类分组
+        var seriesArrayMap = {}; //值按系列分组
+        var allValueArray = []; //所有值
+        BI.each(data, function(idx, da){
+            seriesArrayMap[da.name] = [];
+            BI.each(da.data, function(id, obj){
+                if(!BI.has(cataArrayMap, obj.x)){
+                    cataArrayMap[obj.x] = [];
+                }
+                cataArrayMap[obj.x].push(obj.y);
+                seriesArrayMap[da.name].push(obj.y);
+                allValueArray.push(obj.y);
+            })
+        });
+        BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
+            BI.each(BI.Utils.getDatalabelByID(dId), function (id, dataLabel) {
+                var filter = null;
+                if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
+                    filter = BI.FilterFactory.parseFilter(dataLabel);
+                    var filterArray = filter.getFilterResult(allSeries);
+                    BI.any(data, function(idx, series){
+                        if(BI.contains(filterArray, series.name)){
+                            BI.each(series.data, function(id, da){
+                                createDataLabel(da, dataLabel);
+                            });
+                        }
+                    });
+                }else{
+                    filter = BI.FilterObjectFactory.parseFilter(dataLabel);
+                    var filterArray = filter.getFilterResult(BI.pluck(data, "data"));
+                    BI.any(data, function(idx, series){
+                        BI.each(series.data, function(id, da){
+                            if(BI.deepContains(filterArray, da)){
+                                createDataLabel(da, dataLabel);
+                            }
+                        }); 
+                    });
+                }
+            });
+        });
+    },
+
     _setDataLabelSetting: function(data){
         var o = this.options;
         var hasSeries = this._checkSeriesExist();
@@ -435,8 +480,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2){
                             var filterArray = filter.getFilterResult(allSeries);
                             if(BI.contains(filterArray, series.name)){
-                                BI.each(series.data, function(id, data){
-                                    createDataLabel(data, dataLabel);
+                                BI.each(series.data, function(id, da){
+                                    createDataLabel(da, dataLabel);
                                 });
                                 return true;
                             }
@@ -449,12 +494,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             }
                             //范围为分类 求平均和第n名有差异
                             if(dataLabel.filter_range === BICst.DATA_LABEL_RANGE.Classification){
-                                BI.each(series.data, function(id, data){
+                                BI.each(series.data, function(id, da){
                                     if(idx === 0){
-                                        filterClassifyArrays.push(filter.getFilterResult(cataArrayMap[data.x]));
+                                        filterClassifyArrays.push(filter.getFilterResult(cataArrayMap[da.x]));
                                     }
-                                    if(BI.contains(filterClassifyArrays[id], data.y)){
-                                        createDataLabel(data, dataLabel);
+                                    if(BI.contains(filterClassifyArrays[id], da.y)){
+                                        createDataLabel(da, dataLabel);
                                     }
                                 });
                             }
