@@ -32,8 +32,8 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                 }, {
                     id: self._constant.X_Y_FIELD,
                     type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Uppercase_X_Axis")+"/"+BI.i18nText("BI-Uppercase_Y_Axis"),
-                    value: BI.i18nText("BI-Uppercase_X_Axis")+"/"+BI.i18nText("BI-Uppercase_Y_Axis"),
+                    text: BI.i18nText("BI-Uppercase_X_Axis") + "/" + BI.i18nText("BI-Uppercase_Y_Axis"),
+                    value: BI.i18nText("BI-Uppercase_X_Axis") + "/" + BI.i18nText("BI-Uppercase_Y_Axis"),
                     isParent: true,
                     fontType: BI.DimensionSelectDataLevel0Node.CLASSIFY,
                     open: true
@@ -65,8 +65,8 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                         id: BI.i18nText("BI-And"),
                         pId: self._constant.X_Y_FIELD,
                         type: "bi.select_data_level0_item",
-                        text: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
-                        title: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
+                        text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
+                        title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
                         fieldType: BICst.COLUMN.XANDY
                     });
                     BI.each(x, function (i, dId) {

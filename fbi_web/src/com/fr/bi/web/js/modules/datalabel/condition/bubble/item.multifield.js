@@ -149,7 +149,7 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             case BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
             case BICst.DIMENSION_FILTER_NUMBER.IS_NULL:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_NULL:
-                this.filterWidget[id]= BI.createWidget();
+                this.filterWidget[id] = BI.createWidget();
                 break;
             default:
                 this.filterWidget[id] = BI.createWidget();
