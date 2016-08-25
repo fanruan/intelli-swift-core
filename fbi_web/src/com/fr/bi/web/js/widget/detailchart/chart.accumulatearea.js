@@ -42,21 +42,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.style = formatChartStyle(this.config.chart_style);
         formatChartLineStyle(this.config.chart_line_type);
         formatCordon(this.config.cordon);
-        switch (this.config.chart_legend) {
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
@@ -105,7 +91,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         });
 
         config.xAxis[0].title.align = "center";
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? config.xAxis[0].title.text : "";
+        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], {
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,

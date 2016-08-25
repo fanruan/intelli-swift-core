@@ -741,6 +741,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/fit/fit.widget.css",
                 "com/fr/bi/web/css/modules/fit/fit.css",
 
+                //全局样式
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.setting.css",
+
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
 
                 //明细表超级链接
@@ -1401,6 +1405,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/fit/widgetchooser/widget.dragicongroup.js",
                 "com/fr/bi/web/js/modules/fit/fit.widget.js",
                 "com/fr/bi/web/js/modules/fit/fit.js",
+
+                //全局样式
+                "com/fr/bi/web/js/modules/globalstyle/widget.globalstyle.js",
+                "com/fr/bi/web/js/modules/globalstyle/widget.globalstyle.setting.js",
 
                 //联动
                 "com/fr/bi/web/js/modules/linkage/model.linkage.js",

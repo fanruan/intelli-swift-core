@@ -102,7 +102,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
 
     public void setCubeGenerateRelationSet(Set<BITableRelation> inUseRelations, BusinessTable businessTable) {
         for (BITableRelation tableRelation : inUseRelations) {
-            if (istableRelationValid(tableRelation)) {
+            if (isTableRelationValid(tableRelation)) {
                 BITableRelation tempTableRelation = new BITableRelation(tableRelation.getPrimaryField(), tableRelation.getForeignField());
                 BITableSourceRelation convertRelation = convertRelation(tempTableRelation);
                 if (null != convertRelation) {

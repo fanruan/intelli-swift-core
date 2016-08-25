@@ -2,7 +2,9 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.relation.*;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.data.impl.Connection;
 
 import java.util.List;
 import java.util.Map;
@@ -35,10 +37,14 @@ public interface CubeBuild {
     Set<BICubeGenerateRelation> getCubeGenerateRelationSet();
 
     boolean preConditionsCheck();
-    
+
     boolean isSingleTable();
 
     boolean copyFileFromOldCubes();
 
     boolean replaceOldCubes();
+
+    Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources();
+
+    Map<CubeTableSource, Connection> getConnections();
 }

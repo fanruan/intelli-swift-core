@@ -5,7 +5,6 @@ import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.gen.oper.BIRelationIndexGenerator;
 import com.finebi.cube.gen.oper.BISourceDataAllTransport;
 import com.finebi.cube.gen.oper.BISourceDataTransport;
-import com.finebi.cube.gen.subset.BISourceDataPartTransport4Test;
 import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.CubeRelationEntityGetterService;
