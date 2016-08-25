@@ -4,7 +4,7 @@
 BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
-        CONTAINER_HEIGHT: 75,
+        CONTAINER_HEIGHT: 110,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
         FIELD_NAME_BUTTON_WIDTH: 60,
@@ -85,6 +85,9 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             if (BI.contains(self.targets[40000], dId)) {
                 fieldName = BI.i18nText("BI-Uppercase_X_Axis");
             }
+            if (BI.contains(self.targets[50000], dId)) {
+                fieldName = BI.i18nText("BI-Bubble_Size");
+            }
             var fieldButton = BI.createWidget({
                 type: "bi.text_button",
                 text: fieldName,
@@ -124,6 +127,9 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             }), BI.createWidget({
                 type: "bi.horizontal",
                 items: this.filterItems[1]
+            }),BI.createWidget({
+                type: "bi.horizontal",
+                items: this.filterItems[2]
             })],
             vgap: 5
         });
