@@ -148,6 +148,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 break;
             case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
             case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
+            case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
                 var addItem = this._createNumberInput(initData);
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE:
@@ -157,9 +158,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_USER:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_USER:
                 var addItem = this._createNumberIntervalFilter(initData);
-                break;
-            case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
-                var addItem = this._createRank(initData);
                 break;
             case BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
             case BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
@@ -222,35 +220,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _createNumberInput: function (initData) {
-        var self = this, o = this.options;
-        this.filterWidget = BI.createWidget({
-            type: "bi.text_editor",
-            validationChecker: function () {
-                if (!BI.isNumeric(self.filterWidget.getValue())) {
-                    return false;
-                }
-            },
-            errorText: BI.i18nText("BI-Numerical_Interval_Input_Data"),
-            allowBlank: true,
-            height: this._constant.BUTTON_HEIGHT,
-            width: this.size.INPUT_WIDTH - this._constant.LABEL_WIDTH
-        });
-        this.filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            o.afterValueChange.apply(self, arguments);
-        });
-        BI.isNotNull(initData) && this.filterWidget.setValue(initData);
-        return BI.createWidget({
-            type: "bi.inline",
-            items: [{
-                type: "bi.label",
-                height: this._constant.BUTTON_HEIGHT,
-                text: "N = ",
-                width: this._constant.LABEL_WIDTH
-            }, this.filterWidget]
-        });
-    },
-
-    _createRank: function (initData) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.text_editor",

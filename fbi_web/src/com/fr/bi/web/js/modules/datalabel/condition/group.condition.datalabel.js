@@ -12,6 +12,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
     _init: function () {
         BI.DataLabelConditionGroup.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        this.chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
         this.buttonGroup = BI.createWidget({
             type: "bi.button_group",
             cls: "",
@@ -29,8 +30,16 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
 
     addItem: function () {
         var o = this.options;
+        var type;
+        if (this.chartType === BICst.WIDGET.SCATTER) {
+            type = "bi.scatter_no_type_field_filter_item";
+        } else if (this.chartType === BICst.WIDGET.BUBBLE) {
+            type = "bi.bubble_no_type_field_filter_item";
+        } else {
+            type = "bi.data_label_no_type_field_filter_item";
+        }
         var item = {
-            type: "bi.data_label_no_type_field_filter_item",
+            type: type,
             sdId: o.dId
         };
         this.buttonGroup.addItems([item]);
@@ -38,17 +47,23 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-        var o = this.options;
+        var self = this, o = this.options;
         var conditions = BI.Utils.getDatalabelByID(o.dId);
         var items = [];
         BI.each(conditions, function (idx, cdt) {
             var t = {};
-            if(cdt.target_id != o.dId && !BI.Utils.isDimensionUsable(cdt.target_id)) {
-                cdt = {};
-                cdt.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
-                cdt.sdId = o.dId;
+            if (self.chartType === BICst.WIDGET.SCATTER) {
+                t = BI.ScatterFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+            } else if (self.chartType === BICst.WIDGET.BUBBLE) {
+                // t = BI.BubbleFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+            } else {
+                if(cdt.target_id != o.dId && !BI.Utils.isDimensionUsable(cdt.target_id)) {
+                    cdt = {};
+                    cdt.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
+                    cdt.sdId = o.dId;
+                }
+                t = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
             }
-            t = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
             items.push({
                 type: t.type,
                 sdId: o.dId,
