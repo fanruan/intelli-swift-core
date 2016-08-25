@@ -17,7 +17,7 @@ BI.TextToolbarContentSelect = BI.inherit(BI.Widget, {
             type: "bi.horizontal",
             items: BI.createItems(items, {
                 type: "bi.multi_select_item",
-                width: 80
+                width: 100
             })
         });
         BI.createWidget({
