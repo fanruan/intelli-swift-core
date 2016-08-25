@@ -286,12 +286,12 @@ BI.ETL = BI.inherit(BI.Widget, {
         updateSet.on(BI.UpdateTableData.EVENT_SAVE, function () {
             self.model.setUpdateSettings(this.getValue());
         });
-        updateSet.on(BI.UpdateTableData.EVENT_CUBE_SAVE, function (obj) {
+        updateSet.on(BI.UpdateTableData.EVENT_CUBE_SAVE, function (tableInfo) {
             self.model.setUpdateSettings(this.getValue());
-            var object = {};
-            object.tableInfo = obj;
-            object.updateSettings=BI.deepClone(this.model.table.update_settings);
-            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, object)
+            var info = {};
+            info.tableInfo = tableInfo;
+            info.updateSettings = BI.deepClone(this.model.table.update_settings);
+            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, info)
         });
         BI.Popovers.create(this.model.getId(), updateSet).open(this.model.getId());
     },
@@ -356,7 +356,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 self.model.setFields(data[0].fields);
                 self.model.setRelationsByETLValue(data[0]);
                 self._populate();
-            }, function() {
+            }, function () {
                 mask.destroy();
             });
             return
@@ -602,14 +602,14 @@ BI.ETL = BI.inherit(BI.Widget, {
                     BI.Msg.toast(BI.i18nText("BI-Excel_Modify_Fail"), "warning");
                 }
                 uploadButton.destroy();
-            }, function() {
+            }, function () {
                 mask.destroy();
             });
         });
         uploadButton.element.find("input").click();
     },
-    
-    _modifySQL: function(tId) {
+
+    _modifySQL: function (tId) {
         var self = this;
         var table = this.model.getTableById(tId);
         BI.Layers.remove(self.constants.SQL_LAYER);
@@ -620,15 +620,15 @@ BI.ETL = BI.inherit(BI.Widget, {
             dataLinkName: table.dataLinkName
         });
         BI.Layers.show(self.constants.SQL_LAYER);
-        sqlEditor.on(BI.EditSQL.EVENT_CANCEL, function(){
+        sqlEditor.on(BI.EditSQL.EVENT_CANCEL, function () {
             BI.Layers.remove(self.constants.SQL_LAYER);
         });
-        sqlEditor.on(BI.EditSQL.EVENT_SAVE, function(data){
+        sqlEditor.on(BI.EditSQL.EVENT_SAVE, function (data) {
             BI.Layers.remove(self.constants.SQL_LAYER);
             self.model.setFields(data.fields);
             self.model.saveTableById(table.id, data);
         });
-        
+
     },
 
     /**

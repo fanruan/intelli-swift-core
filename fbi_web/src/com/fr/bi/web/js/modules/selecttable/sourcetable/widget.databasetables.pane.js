@@ -48,7 +48,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
     populateTab: function (connName) {
         var self = this;
         this.loading();
-        Data.BufferPool.getTablesByConnectionName(connName, function (res) {
+        BI.Utils.getTablesByConnectionName(connName, function (res) {
             self.populate(connName, res);
             self.loaded();
         });
@@ -358,7 +358,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
     _reConnectionLink: function () {
         var self = this;
         this.loading();
-        Data.BufferPool.getTablesByConnectionName(this.connectionName, function (res) {
+        BI.Utils.getTablesByConnectionName(this.connectionName, function (res) {
             self.populate(self.connectionName, res);
             self.loaded();
         });

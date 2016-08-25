@@ -15,9 +15,10 @@ BIDezi.ResetView = BI.inherit(BI.View, {
     _render: function (veseel) {
         var self = this;
         var resetButton = BI.createWidget({
-            type: "bi.button",
+            type: "bi.text_button",
             text: BI.i18nText("BI-Reset"),
-            forceCenter: true
+            forceCenter: true,
+            cls: "query-or-reset-button"
         });
         resetButton.on(BI.Button.EVENT_CHANGE, function () {
             self._resetAllControlValues();

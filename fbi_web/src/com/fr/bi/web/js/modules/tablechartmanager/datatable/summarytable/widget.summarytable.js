@@ -136,7 +136,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                                 }
                             },
                             sequence: {
-                                type: "bi.sequence_table_tree_number"
+                                type: "bi.sequence_table_dynamic_number"
                             }
                         },
                         itemsCreator: function (op, populate) {

@@ -47,21 +47,8 @@
             });
         },
 
-        getTablesByConnectionName: function (connectionName, callback) {
-            var key = "CONNECTION_TABLES";
-            var cache = Buffer[key] || (Buffer[key] = {});
-            if (BI.isNotNull(cache[connectionName])) {
-                callback(cache[connectionName]);
-                return;
-            }
-            BIReq.reqTablesByConnectionName(connectionName, function (res) {
-                Buffer[key][connectionName] = res;
-                callback(res);
-            });
-        },
-
         getDefaultChartConfig: function () {
-            var key = "DEFAULT_CHART_CONFIG"
+            var key = "DEFAULT_CHART_CONFIG";
             var cache = Buffer[key];
             if (BI.isNotNull(cache)) {
                 return cache;
