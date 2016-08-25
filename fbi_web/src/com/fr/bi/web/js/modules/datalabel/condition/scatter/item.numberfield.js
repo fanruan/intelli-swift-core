@@ -277,7 +277,7 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             target_id: this.options.dId,
             filter_type: this.filterType.getValue()[0],
             filter_value: this.filterWidget.getValue(),
-            filter_range: this.filterRange ? this.filterRange.getValue() : "",
+            filter_range: this.filterRange ? this.filterRange.getValue()[0] : "",
             style_setting: this.style.getValue()
         }
     }

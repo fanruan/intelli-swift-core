@@ -409,6 +409,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var cataArrayMap = {};  //值按分类分组
         var seriesArrayMap = {}; //值按系列分组
         var allValueArray = []; //所有值
+        var filterClassifyArrays = [];//为过滤自身时范围为分类所用
         BI.each(data, function(idx, da){
             seriesArrayMap[da.name] = [];
             BI.each(da.data, function(id, obj){
@@ -448,12 +449,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             }
                             //范围为分类 求平均和第n名有差异
                             if(dataLabel.filter_range === BICst.DATA_LABEL_RANGE.Classification){
-                                var filterArrays = [];
                                 BI.each(series.data, function(id, data){
                                     if(idx === 0){
-                                        filterArrays.push(filter.getFilterResult(cataArrayMap[data.x]));
+                                        filterClassifyArrays.push(filter.getFilterResult(cataArrayMap[data.x]));
                                     }
-                                    if(BI.contains(filterArrays[id], data.y)){
+                                    if(BI.contains(filterClassifyArrays[id], data.y)){
                                         createDataLabel(data, dataLabel);
                                     }
                                 });
