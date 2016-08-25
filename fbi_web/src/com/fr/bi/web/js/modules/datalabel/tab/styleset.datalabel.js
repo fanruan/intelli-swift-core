@@ -20,7 +20,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.textTrigger = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Set_Style"),
+            text: BI.i18nText("BI-Set_Style")
         });
         this.imgTrigger = BI.createWidget({
             type: "bi.image_button",

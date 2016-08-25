@@ -55,7 +55,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
             if (self.chartType === BICst.WIDGET.SCATTER) {
                 t = BI.ScatterFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
             } else if (self.chartType === BICst.WIDGET.BUBBLE) {
-                // t = BI.BubbleFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+                t = BI.BubbleFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
             } else {
                 if(cdt.target_id != o.dId && !BI.Utils.isDimensionUsable(cdt.target_id)) {
                     cdt = {};
