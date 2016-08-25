@@ -332,6 +332,12 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
+    getTablesByConnectionName: function (connectionName, callback) {
+        BIReq.reqTablesByConnectionName(connectionName, function (res) {
+            callback(res);
+        });
+    },
+
     getTablesByPackId: function (packId, callback, complete) {
         BIReq.reqTablesByPackId(packId, function (res) {
             callback(res);
