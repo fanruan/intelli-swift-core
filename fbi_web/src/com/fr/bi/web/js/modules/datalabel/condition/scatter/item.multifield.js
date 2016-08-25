@@ -1,7 +1,7 @@
 /**
  * Created by fay on 2016/8/23.
  */
-BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
+BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
         CONTAINER_HEIGHT: 75,
@@ -14,16 +14,17 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.ScatterDoubleFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.ScatterMultiFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "data-label-condition-item",
             afterValueChange: BI.emptyFn
         })
     },
 
     _init: function () {
-        BI.ScatterDoubleFieldFilterItem.superclass._init.apply(this, arguments);
+        BI.ScatterMultiFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-
+        this.filterType = [];
+        this.filterWidget = [];
         var and = BI.createWidget({
             type: "bi.label",
             text: BI.i18nText("BI-And")
@@ -35,8 +36,9 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             cls: "close-h-font"
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AbstractDataLabelFilterItem.DELETE, self);
             self.destroy();
-            BI.ScatterDoubleFieldFilterItem.superclass.destroy.apply(this, arguments);
+            BI.ScatterMultiFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
 
         BI.createWidget({
@@ -63,17 +65,24 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _buildConditions: function () {
         var self = this, o = this.options;
-        if (BI.isNull(o.dId)) {
-            return [];
-        }
         this.filterItems = [];
-        var targets = BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(o.dId[0]));
-        BI.each(o.dId, function (i, dId) {
+        this.filterValues = o.filter_value || [];
+        if (this.filterValues.length === 0 && !BI.isNull(o.dId)) {
+            BI.each(o.dId, function (i, dId) {
+                self.filterValues.push({
+                    target_id: dId,
+                    filter_type: o.filter_type
+                });
+            });
+        }
+        this.targets = BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(this.filterValues[0].target_id));
+        BI.each(this.filterValues, function (i, v) {
+            var dId = v.target_id;
             var fieldName = BI.Utils.getDimensionNameByID(dId);
-            if (BI.contains(targets[30000], dId)) {
+            if (BI.contains(self.targets[30000], dId)) {
                 fieldName = BI.i18nText("BI-Uppercase_Y_Axis");
             }
-            if (BI.contains(targets[40000], dId)) {
+            if (BI.contains(self.targets[40000], dId)) {
                 fieldName = BI.i18nText("BI-Uppercase_X_Axis");
             }
             var fieldButton = BI.createWidget({
@@ -92,19 +101,19 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             var filterWidgetContainer = BI.createWidget({
                 type: "bi.left"
             });
-            var filterType = BI.createWidget({
+            self.filterType[i] = BI.createWidget({
                 type: "bi.text_value_down_list_combo",
                 width: self._constant.COMBO_WIDTH,
                 height: self._constant.BUTTON_HEIGHT,
                 items: BICst.DATA_LABEL_FILTER_NUMBER_COMBO
             });
-            filterType.setValue(o.filter_type);
-            filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
-                self._refreshFilterWidget(filterWidgetContainer, self.filterType.getValue()[0]);
+            self.filterType[i].setValue(v.filter_type);
+            self.filterType[i].on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
+                self._refreshFilterWidget(i, filterWidgetContainer, self.filterType[i].getValue()[0]);
                 o.afterValueChange.apply(self, arguments);
             });
-            self._refreshFilterWidget(filterWidgetContainer, o.filter_type, o.filter_value);
-            self.filterItems.push([fieldButton, filterType, filterWidgetContainer]);
+            self._refreshFilterWidget(i, filterWidgetContainer, v.filter_type, v.filter_value);
+            self.filterItems.push([fieldButton, self.filterType[i], filterWidgetContainer]);
         });
         return BI.createWidget({
             type: "bi.vertical",
@@ -120,49 +129,33 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
     },
 
-    _refreshFilterWidget: function (filterWidgetContainer, filterType, initData) {
+    _refreshFilterWidget: function (id, filterWidgetContainer, filterType, initData) {
+        var filterItem;
         switch (filterType) {
-            case BICst.DIMENSION_FILTER_STRING.BELONG_VALUE:
-            case BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE:
-                var addItem = this._createStringBelongCombo(initData);
-
-                break;
-            case BICst.DIMENSION_FILTER_STRING.CONTAIN:
-            case BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN:
-                var addItem = this._createStringInput(initData);
-                break;
-            case BICst.DIMENSION_FILTER_STRING.IS_NULL:
-            case BICst.DIMENSION_FILTER_STRING.NOT_NULL:
-                this.filterWidget = BI.createWidget();
-                var addItem = this.filterWidget;
-                break;
-            case BICst.DIMENSION_FILTER_STRING.BEGIN_WITH:
-            case BICst.DIMENSION_FILTER_STRING.END_WITH:
-                var addItem = this._createStringInput(initData);
-                break;
             case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
             case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
             case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
-                var addItem = this._createNumberInput(initData);
+                filterItem = this._createNumberInput(initData, id);
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE:
-                var addItem = this._createNumberIntervalFilter(initData);
+                this.filterWidget[id] = this._createNumberIntervalFilter(initData);
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_USER:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_USER:
-                var addItem = this._createNumberIntervalFilter(initData);
+                this.filterWidget[id] = this._createNumberIntervalFilter(initData);
                 break;
             case BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
             case BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
             case BICst.DIMENSION_FILTER_NUMBER.IS_NULL:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_NULL:
-                var filterWidget = BI.createWidget();
-                var addItem = filterWidget;
+                this.filterWidget[id]= BI.createWidget();
                 break;
+            default:
+                this.filterWidget[id] = BI.createWidget();
         }
         filterWidgetContainer.empty();
-        filterWidgetContainer.addItem(addItem);
+        filterWidgetContainer.addItem(filterItem || this.filterWidget[id]);
     },
 
     _createNumberIntervalFilter: function (initData) {
@@ -179,54 +172,68 @@ BI.ScatterDoubleFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return filterWidget;
     },
 
-    _createNumberInput: function (initData) {
+    _createNumberInput: function (initData, id) {
         var self = this, o = this.options;
-        var filterWidget = BI.createWidget({
+        this.filterWidget[id] = BI.createWidget({
             type: "bi.text_editor",
             validationChecker: function () {
-                if (!BI.isNumeric(self.filterWidget.getValue())) {
+                if (!BI.isNumeric(self.filterWidget[id].getValue())) {
                     return false;
                 }
             },
             errorText: BI.i18nText("BI-Numerical_Interval_Input_Data"),
             allowBlank: true,
             height: this._constant.BUTTON_HEIGHT,
-            width: this._constant.INPUT_WIDTH
+            width: this._constant.INPUT_WIDTH - this._constant.LABEL_WIDTH
         });
-        filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function () {
+        this.filterWidget[id].on(BI.TextEditor.EVENT_CONFIRM, function () {
             o.afterValueChange.apply(self, arguments);
         });
-        BI.isNotNull(initData) && filterWidget.setValue(initData);
+        BI.isNotNull(initData) && this.filterWidget[id].setValue(initData);
         return BI.createWidget({
             type: "bi.inline",
             items: [{
                 type: "bi.label",
                 height: this._constant.BUTTON_HEIGHT,
                 text: "N = ",
-                width: this._constant.INPUT_WIDTH - this._constant.LABEL_WIDTH
-            }, filterWidget]
+                width: this._constant.LABEL_WIDTH
+            }, this.filterWidget[id]]
         });
     },
 
     _createStyle: function (initData) {
         var self = this, o = this.options;
-        var chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId[0]));
-        var style = BI.createWidget({
+        var chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.filterValues[0].target_id));
+        this.style = BI.createWidget({
             type: "bi.data_label_style_set",
             chartType: chartType
         });
-        BI.isNotNull(initData) && style.setValue(initData);
-        return style;
+        BI.isNotNull(initData) && this.style.setValue(initData);
+        return this.style;
     },
 
     getValue: function () {
+        var self = this;
+        var value = [];
+        BI.each(this.filterValues, function (i, v) {
+            var key = "";
+            if (BI.contains(self.targets[30000], v.target_id)) {
+                key = "Y";
+            } else {
+                key = "X";
+            }
+            value.push({
+                key: key,
+                target_id: v.target_id,
+                filter_type: self.filterType[i].getValue()[0],
+                filter_value: self.filterWidget[i].getValue()
+            });
+        });
         return {
-            // target_id: this.options.dId,
-            // filter_type: this.filterType.getValue()[0],
-            // filter_value: this.filterWidget.getValue(),
-            // filter_range: this.filterRange ? this.filterRange.getValue()[0] : "",
-            // style_setting: this.style.getValue()
+            filter_type: BICst.FILTER_TYPE.AND,
+            filter_value: value,
+            style_setting: this.style.getValue()
         }
     }
 });
-$.shortcut("bi.scatter_double_field_filter_item", BI.ScatterDoubleFieldFilterItem);
+$.shortcut("bi.scatter_multi_field_filter_item", BI.ScatterMultiFieldFilterItem);

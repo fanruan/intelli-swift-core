@@ -1,7 +1,7 @@
 /**
  * Created by lfhli on 2016/7/15.
  */
-BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
+BI.BubbleNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
@@ -15,14 +15,14 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.ScatterNoTypeFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.BubbleNoTypeFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "data-label-condition-item",
             afterValueChange: BI.emptyFn
         })
     },
 
     _init: function () {
-        BI.ScatterNoTypeFieldFilterItem.superclass._init.apply(this, arguments);
+        BI.BubbleNoTypeFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         var left = this._buildConditionsNoType();
@@ -32,7 +32,7 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.destroy();
-            BI.ScatterNoTypeFieldFilterItem.superclass.destroy.apply(this, arguments);
+            BI.BubbleNoTypeFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
         this.itemContainer = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
@@ -65,7 +65,7 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _buildConditionsNoType: function () {
         var self = this, o = this.options;
         var selectFieldPane = BI.createWidget({
-            type: "bi.scatter_filter_select_field",
+            type: "bi.bubble_filter_select_field",
             height: this._constant.MAX_HEIGHT,
             dId: o.sdId
         });
@@ -86,7 +86,7 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             }
         });
 
-        selectFieldPane.on(BI.ScatterFilterSelectField.EVENT_CLICK_ITEM, function (v) {
+        selectFieldPane.on(BI.BubbleFilterSelectField.EVENT_CLICK_ITEM, function (v) {
             self._onTypeSelected(v);
         });
         return this.selectCondition;
@@ -101,7 +101,7 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         } else {
             fieldType = BI.Utils.getFieldTypeByDimensionID(v);
         }
-        var filterItem = BI.ScatterFilterItemFactory.createFilterItemByFieldType(fieldType);
+        var filterItem = BI.BubbleFilterItemFactory.createFilterItemByFieldType(fieldType);
         this.itemContainer.destroy();
         this.itemContainer = null;
         //todo
@@ -128,5 +128,5 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         }
     }
 });
-BI.ScatterNoTypeFieldFilterItem.EVENT_CHANGE = "BI.ScatterNoTypeFieldFilterItem.EVENT_CHANGE";
-$.shortcut("bi.scatter_no_type_field_filter_item", BI.ScatterNoTypeFieldFilterItem);
+BI.BubbleNoTypeFieldFilterItem.EVENT_CHANGE = "BI.BubbleNoTypeFieldFilterItem.EVENT_CHANGE";
+$.shortcut("bi.bubble_no_type_field_filter_item", BI.BubbleNoTypeFieldFilterItem);

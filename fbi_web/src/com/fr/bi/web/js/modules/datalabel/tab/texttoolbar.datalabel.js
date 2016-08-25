@@ -80,6 +80,8 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
                     value: BI.i18nText("BI-X_Value")
                 }, {
                     value: BI.i18nText("BI-Y_Value")
+                }, {
+                    value: BI.i18nText("BI-Bubble_Size_Value")
                 }]
             });
         } else if(o.chartType === BICst.WIDGET.SCATTER) {
