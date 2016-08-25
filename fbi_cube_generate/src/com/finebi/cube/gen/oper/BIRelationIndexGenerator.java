@@ -48,10 +48,10 @@ public class BIRelationIndexGenerator extends BIProcessor {
         try {
             buildRelationIndex();
             long costTime = System.currentTimeMillis() - t;
-            biLogManager.infoRelation(getRelationColumnKeyInfo(), costTime, UserControl.getInstance().getSuperManagerID());
+//            biLogManager.infoRelation(getRelationColumnKeyInfo(), costTime, UserControl.getInstance().getSuperManagerID());
             return null;
         } catch (Exception e) {
-            biLogManager.errorRelation(getRelationColumnKeyInfo(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+//            biLogManager.errorRelation(getRelationColumnKeyInfo(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             return null;
@@ -77,7 +77,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 primaryTable = cubeTableSource;
                 Set<CubeTableSource> primarySources = new HashSet<CubeTableSource>();
                 primarySources.add(cubeTableSource);
-                for (ICubeFieldSource iCubeFieldSource : primaryTable.getFieldsArray(primarySources)) {
+                for (ICubeFieldSource iCubeFieldSource : primaryTable.getFacetFields(primarySources)) {
                     if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getPrimaryField().getColumnName())) {
                         primaryField = iCubeFieldSource;
                     }
@@ -90,7 +90,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 foreignTable = cubeTableSource;
                 Set<CubeTableSource> foreignSource = new HashSet<CubeTableSource>();
                 foreignSource.add(cubeTableSource);
-                for (ICubeFieldSource iCubeFieldSource : foreignTable.getFieldsArray(foreignSource)) {
+                for (ICubeFieldSource iCubeFieldSource : foreignTable.getFacetFields(foreignSource)) {
                     if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getForeignField().getColumnName())) {
                         foreignField = iCubeFieldSource;
                     }

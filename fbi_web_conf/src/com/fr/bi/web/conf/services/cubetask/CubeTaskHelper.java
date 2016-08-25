@@ -1,10 +1,9 @@
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.BICubeManagerProvider;
-import com.finebi.cube.conf.CubeBuild;
-import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
@@ -16,13 +15,21 @@ import com.finebi.cube.structure.Cube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.conf.data.source.SQLTableSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.web.conf.services.utils.BICubeGenerateUtils;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -54,15 +61,41 @@ public class CubeTaskHelper {
 //            BILogger.getLogger().info("Cube part update start");
 //            cubeBuild = new CubeBuildByPart(userId, BICubeGenerateUtils.getTables4CubeGenerate(userId), BICubeGenerateUtils.getRelations4CubeGenerate(userId));
 //        } else {
-            BILogger.getLogger().info("Cube all update start");
-            cubeBuild = new CubeBuildStaff(new BIUser(userId));
+        BILogger.getLogger().info("Cube all update start");
+        cubeBuild = new CubeBuildStaff(new BIUser(userId));
 //        }
+        saveTableInfos(userId);
         if (preConditionsCheck(userId, cubeBuild)) {
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
             taskAddResult = cubeManager.addTask(task, userId);
         }
         return taskAddResult;
     }
+
+
+    private static void saveTableInfos(long userId) {
+        Set<CubeTableSource> sources = new HashSet<CubeTableSource>();
+        Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
+        for (BusinessTable table : allTables) {
+            sources.add(table.getTableSource());
+        }
+        Map<String, String> sourceInfo = new HashMap<String, String>();
+        for (CubeTableSource source : sources) {
+            if (source instanceof SQLTableSource) {
+                String queryName = ((SQLTableSource) source).getSqlConnection() + "@" + ((SQLTableSource) source).getQuery() + ((SQLTableSource) source).getSqlConnection();
+                sourceInfo.put(queryName, source.getSourceID());
+//                System.out.println(((SQLTableSource) source).getSqlConnection()+"@"+((SQLTableSource) source).getQuery()+((SQLTableSource) source).getSqlConnection()+":"+source.getSourceID());
+            }
+            if (source instanceof DBTableSource) {
+                sourceInfo.put(source.toString(), source.getSourceID());
+//                System.out.println(source.toString()+":"+source.getSourceID());
+            }
+        }
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
+        String cubePath = new File(advancedConf.getRootURI().getPath()).getParent() + File.separatorChar + "tableInfo";
+        BIFileUtils.writeFile(cubePath, sourceInfo.toString());
+    }
+
 
     private static boolean isPart(long userId) {
         Set<BIBusinessTable> newTables = BICubeGenerateUtils.getTables4CubeGenerate(userId);
