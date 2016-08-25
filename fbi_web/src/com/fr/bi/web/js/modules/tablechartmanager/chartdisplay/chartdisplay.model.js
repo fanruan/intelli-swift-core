@@ -169,7 +169,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForAxis: function (da) {
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
-        //this._setDataLabelSettingForAxis(data);
+        this._setDataLabelSettingForAxis(data);
         if (BI.isEmptyArray(data)) {
             return [];
         }
@@ -563,8 +563,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dataLables.style = label.style_setting.textStyle;
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
-                dataLables.formatter = "function(){return '<div><img width=\"20px\" height=\"20px\" src=\"" + label.style_setting.imgStyle.src + "\"></div>';}";
+                dataLables.formatter = "function(){return '<table style=\"width:100%;height:100%;\"> <tr valign=middle align=center>  <td><img src =\"picture/icon_top1-18.png\" ></td> </tr></table>';}";
                 break;
+
         }
         data.dataLabels = dataLables;
     },
