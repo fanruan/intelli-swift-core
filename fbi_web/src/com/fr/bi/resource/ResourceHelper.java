@@ -1113,7 +1113,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalabel/condition/common/item.notypefieldl.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/widget.datalabelselectfield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.numberfield.js",
-                "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.doublefield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.multifield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.stringfield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/scatter/factory.filteritem.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.notypefieldl.js",
