@@ -95,10 +95,13 @@ BI.BubbleNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _onTypeSelected: function (v) {
         var self = this, o = this.options;
         var fieldType;
-        if (v == BI.i18nText("BI-And")) {
+        if (v === BI.i18nText("BI-And")) {
             fieldType = BICst.DATACOLUMN.XANDY;
             v = BI.Utils.getAllUsableTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.sdId));
-        } else {
+        } else if(v === "XYSIZE"){
+            fieldType = BICst.DATACOLUMN.XANDYANDSIZE;
+            v = BI.Utils.getAllUsableTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.sdId));
+        } else{
             fieldType = BI.Utils.getFieldTypeByDimensionID(v);
         }
         var filterItem = BI.BubbleFilterItemFactory.createFilterItemByFieldType(fieldType);
