@@ -21,11 +21,9 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         this.textTrigger = BI.createWidget({
             type: "bi.text_button",
             text: BI.i18nText("BI-Set_Style"),
-            height: this._constant.BUTTON_HEIGHT
         });
         this.imgTrigger = BI.createWidget({
             type: "bi.image_button",
-            height: this._constant.BUTTON_HEIGHT,
             iconWidth: this._constant.ICON_WIDTH,
             iconHeight: this._constant.ICON_HEIGHT
         });
@@ -38,7 +36,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         });
         this.imgTrigger.setVisible(false);
         this.triggerButton = BI.createWidget({
-            type: "bi.vertical",
+            type: "bi.center_adapt",
             items: [this.textTrigger, this.imgTrigger]
         });
         this.triggerIcon = BI.createWidget({
@@ -56,7 +54,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
                 width: this._constant.TRIGGER_ICON_WIDTH
             }],
             width: this._constant.TRIGGER_WIDTH,
-            height: this._constant.BUTTON_HEIGHT
+            height: "100%"
         });
         this.style = BI.createWidget({
             type: "bi.combo",
@@ -67,7 +65,9 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             popup: {
                 el: this.styleTab
             },
-            offsetStyle: "right"
+            direction: "bottom,left",
+            offsetStyle: "right",
+            height: "100%"
         });
         this.style.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
             var style = self.styleTab.getValue();

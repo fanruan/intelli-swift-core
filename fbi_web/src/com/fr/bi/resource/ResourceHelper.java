@@ -17,7 +17,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.Transmitter;
-import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1102,22 +1101,24 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalabel/tab/tab.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/texttoolbar.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/select.content.texttoolbar.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/imageset.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/styleset.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/chart.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/filter.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/group.condition.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/item.numberfield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/item.stringfield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/factory.filteritem.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/condition/condition.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/condition/group.condition.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/item.notypefieldl.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/widget.datalabelselectfield.js",
-                "com/fr/bi/web/js/modules/datalabel/filter/filter.js",
-                "com/fr/bi/web/js/modules/datalabel/filter/expander.js",
-                "com/fr/bi/web/js/modules/datalabel/filter/operation.filter.js",
-                "com/fr/bi/web/js/modules/datalabel/filter/pane.filter.js",
-                "com/fr/bi/web/js/modules/datalabel/filter/expander.filter.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.numberfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.doublefield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.stringfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/factory.filteritem.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.notypefieldl.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/widget.datalabelselectfield.js",
+
                 //计算指标
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/calculatetargetpopup.summary.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/model.calculatetargetpopup.summary.js",
@@ -2217,6 +2218,30 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.vertical.js",
                 "com/fr/bi/web/js/data/utils.js",
+                //filter
+                "com/fr/bi/web/js/data/filter/filtervalue.factory.js",
+                "com/fr/bi/web/js/data/filter/filter.factory.js",
+                "com/fr/bi/web/js/data/filter/condition/empty.filter.js",
+                "com/fr/bi/web/js/data/filter/condition/general.and.filter.js",
+                "com/fr/bi/web/js/data/filter/condition/general.or.filter.js",
+                "com/fr/bi/web/js/data/filter/condition/single.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.equal.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.inrange.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.kth.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.largethan.or.equal.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.lessthan.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.notequal.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.notinrange.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.notnull.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.null.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.contain.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.endwith.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.in.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.notcontain.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.notin.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.notnull.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.null.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.startwith.filter.js",
 
                 "com/fr/bi/web/js/case/case.js",
                 "com/fr/bi/web/js/case/layer/panel.js",

@@ -11,10 +11,10 @@ BI.FilterValueFactory = {
                 case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE:
                     filterValue = new BI.NumberNotInRangeFilterValue(filter.filter_value);
                     break;
-                case BICst.DIMENSION_FILTER_NUMBER.MORE_THAN_AVG:
+                case BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
                     filterValue = new BI.NumberLargeThanOrEqualFilterValue();
                     break;
-                case BICst.DIMENSION_FILTER_NUMBER.LESS_THAN_AVG:
+                case BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
                     filterValue = new BI.NumberLessThanFilterValue();
                     break;
                 case BICst.DIMENSION_FILTER_NUMBER.IS_NULL:

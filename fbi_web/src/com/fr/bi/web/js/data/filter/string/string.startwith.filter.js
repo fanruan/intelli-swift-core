@@ -16,8 +16,11 @@
             return value.startWith(this.start);
         },
 
-        isQualified: function(value){
-            return this.isStringStartWith(value);
+        getFilterResult: function(array) {
+            var self = this;
+            return BI.filter(array, function(idx, val){
+                return self.isStringStartWith(val);
+            });
         }
     }
 })();

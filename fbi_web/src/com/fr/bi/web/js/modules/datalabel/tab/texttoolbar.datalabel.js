@@ -13,13 +13,12 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         var conf = BI.DataLabelTextToolBar.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            baseCls: "bi-data-tab-text-toolbar",
-            height: 28
+            baseCls: "bi-data-tab-text-toolbar"
         });
     },
 
     _init: function () {
-        var self = this;
+        var self = this, o = this.options;
         BI.DataLabelTextToolBar.superclass._init.apply(this, arguments);
         this.family = BI.createWidget({
             type: "bi.text_toolbar_font_chooser",
@@ -68,12 +67,39 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
 
             self.fireEvent(BI.DataLabelTextToolBar.EVENT_CHANGE, arguments);
         });
-        BI.createWidget({
+        var top = BI.createWidget({
             type: "bi.left",
-            element: this.element,
             items: [this.family, this.size, this.bold, this.italic, this.colorchooser],
             hgap: 3,
             vgap: 3
+        });
+        if (o.chartType === BICst.WIDGET.BUBBLE) {
+            this.showItems = BI.createWidget({
+                type: "bi.text_tool_bar_content_select",
+                items: [{
+                    value: BI.i18nText("BI-X_Value")
+                }, {
+                    value: BI.i18nText("BI-Y_Value")
+                }]
+            });
+        } else if(o.chartType === BICst.WIDGET.SCATTER) {
+            this.showItems = BI.createWidget({
+                type: "bi.text_tool_bar_content_select",
+                items: [{
+                    value: BI.i18nText("BI-X_Value")
+                }, {
+                    value: BI.i18nText("BI-Y_Value")
+                }]
+            });
+        } else {
+            this.showItems = BI.createWidget();
+        }
+
+        BI.createWidget({
+            type: "bi.vertical",
+            element: this.element,
+            items: [top, this.showItems],
+            lgap: 8
         })
     },
 

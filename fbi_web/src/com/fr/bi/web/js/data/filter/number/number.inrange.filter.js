@@ -12,15 +12,18 @@
         constructor: BI.NumberInRangeFilterValue,
 
         isNumberInRange: function(value){
-            if(value = null){
+            if(value == null){
                 return false;
             }
             return (this.range.closemin ? value >= this.range.min : value > this.range.min) &&
                 (this.range.closemax ? value <= this.range.max : value < this.range.max);
         },
 
-        isQualified: function(value){
-            return this.isNumberInRange(value);
+        getFilterResult: function(array) {
+            var self = this;
+            return BI.filter(array, function(idx, val){
+                return self.isNumberInRange(val);
+            });
         }
     }
 })();

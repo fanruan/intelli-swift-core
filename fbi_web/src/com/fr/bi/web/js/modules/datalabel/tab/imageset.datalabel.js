@@ -29,10 +29,12 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             cls: "image-set-tab",
             items: [{
+                type: "bi.single_select_item",
                 text: BI.i18nText("BI-Default_Image"),
                 value: 1,
                 cls: "image-set-tab-item"
             }, {
+                type: "bi.single_select_item",
                 text: BI.i18nText("BI-Custom_Image"),
                 value: 2,
                 cls: "image-set-tab-item"

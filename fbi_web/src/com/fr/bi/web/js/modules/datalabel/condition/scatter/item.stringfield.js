@@ -2,7 +2,7 @@
  * Created by fay on 2016/7/27.
  */
 
-BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
+BI.ScatterLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
@@ -15,14 +15,14 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.DataLabelStringFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.ScatterLabelStringFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "data-label-condition-item",
             afterValueChange: BI.emptyFn
         })
     },
 
     _init: function () {
-        BI.DataLabelStringFieldFilterItem.superclass._init.apply(this, arguments);
+        BI.ScatterLabelStringFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var left = this._buildConditions();
         this.styleSetting = this._createStyle(o.style_setting);
@@ -32,7 +32,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.destroy();
-            BI.DataLabelStringFieldFilterItem.superclass.destroy.apply(this, arguments);
+            BI.ScatterLabelStringFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
         BI.createWidget({
             type: "bi.vertical",
@@ -170,4 +170,4 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         }
     }
 });
-$.shortcut("bi.data_label_string_field_filter_item", BI.DataLabelStringFieldFilterItem);
+$.shortcut("bi.scatter_string_field_filter_item", BI.ScatterLabelStringFieldFilterItem);

@@ -46,14 +46,14 @@
             }
         },
 
-        isQualified: function(value, array){
+        getFilterResult: function(array) {
             if(this.kNumber === 0){
-                return false;
+                return [];
             }
-            if(BI.isNull(this.kthValue)){
-                this.kthValue = this.getNumberKth(array, this.kNumber);
-            }
-            return this.kthValue + "" === BI.parseFloat(value) + "";
+            var kthValue = this.getNumberKth(array, this.kNumber);
+            return BI.filter(array, function(idx, val){
+                return kthValue + "" === BI.parseFloat(val) + "";
+            });
         }
     }
 })();
