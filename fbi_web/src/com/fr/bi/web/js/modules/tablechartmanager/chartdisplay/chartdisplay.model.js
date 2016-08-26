@@ -551,7 +551,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataLabel: function (data, label) {
-        var dataLables = {
+        var dataLabels = {
             enabled: true,
             align: "outside",
             useHtml: true,
@@ -560,15 +560,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         };
         switch (label.style_setting.type) {
             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
-                dataLables.style = label.style_setting.textStyle;
+                dataLabels.style = label.style_setting.textStyle;
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
-                //dataLables.formatter = "function(){return '<div><img width=\"20px\" height=\"20px\" src=\""+label.style_setting.imgStyle.src+"\"></div>';}";
-                dataLables.formatter = "function(){return '<table style=\"width:100%;height:100%;\"> <tr valign=middle align=center>  <td><img alt=\"1234\"></td> </tr></table>';}";
+                dataLabels.formatter = "function(){return '<div><img width=\"20px\" height=\"20px\" src=\""+label.style_setting.imgStyle.src+"\"></div>';}";
                 break;
 
         }
-        data.dataLabels = dataLables;
+        data.dataLabels = dataLabels;
     },
 
     getCordon: function () {
@@ -691,7 +690,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             }
         });
-        
     },
 
     //clicked 中的值，如果是分组名使用分组对应的id
