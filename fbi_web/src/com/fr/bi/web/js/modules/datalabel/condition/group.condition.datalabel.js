@@ -52,17 +52,15 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
         var items = [];
         BI.each(conditions, function (idx, cdt) {
             var t = {};
-            if (self.chartType === BICst.WIDGET.SCATTER) {
-                t = BI.ScatterFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
-            } else if (self.chartType === BICst.WIDGET.BUBBLE) {
-                t = BI.BubbleFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
-            } else {
-                if(cdt.target_id != o.dId && !BI.Utils.isDimensionUsable(cdt.target_id)) {
-                    cdt = {};
-                    cdt.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
-                    cdt.sdId = o.dId;
-                }
-                t = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+            switch (self.chartType) {
+                case BICst.WIDGET.SCATTER:
+                    t = BI.ScatterFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+                    break;
+                case BICst.WIDGET.BUBBLE:
+                    t = BI.BubbleFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+                    break;
+                default:
+                    t = BI.DataLabelFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
             }
             items.push({
                 type: t.type,

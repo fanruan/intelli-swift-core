@@ -13,7 +13,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         var conf = BI.DataLabelTextToolBar.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            baseCls: "bi-data-tab-text-toolbar"
+            baseCls: "bi-data-tab-text-toolbar bi-text-toolbar"
         });
     },
 
@@ -101,6 +101,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
             type: "bi.vertical",
             element: this.element,
             items: [top, this.showLabels],
+            width: 260,
             lgap: 8
         })
     },
