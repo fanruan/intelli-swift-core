@@ -27,10 +27,10 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.filterWidget = [];
         this.filterField = [{
             name: BI.i18nText("BI-Uppercase_X_Axis"),
-            key: "X"
+            key: "x"
         }, {
             name: BI.i18nText("BI-Uppercase_Y_Axis"),
-            key: "Y"
+            key: "y"
         }];
         var and = BI.createWidget({
             type: "bi.label",

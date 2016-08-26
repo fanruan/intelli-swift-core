@@ -27,10 +27,10 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.filterWidget = [];
         this.filterField = [{
             name: BI.i18nText("BI-Uppercase_X_Axis"),
-            key: "X"
+            key: "x"
         }, {
             name: BI.i18nText("BI-Uppercase_Y_Axis"),
-            key: "Y"
+            key: "y"
         }];
         var and = BI.createWidget({
             type: "bi.label",
@@ -78,7 +78,7 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         if(this.filterValues.length === 3 || o.dId === BICst.DATACOLUMN.XANDYANDSIZE) {
             this.filterField.push({
                 name: BI.i18nText("BI-Bubble_Size"),
-                key: "Z"
+                key: "z"
             });
         }
         BI.each(this.filterValues, function (i, filter) {
