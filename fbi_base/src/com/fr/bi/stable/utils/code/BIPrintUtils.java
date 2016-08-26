@@ -28,7 +28,7 @@ public class BIPrintUtils {
         BILogger.getLogger().info(title + ":" + (float) Math.round((float) index / rowCount * CubeConstant.PERCENT_ROW) / CubeConstant.PERCENT_ROW_D + "%! about " + DateUtils.miliisecondCostAsString(time) + "time left");
     }
 
-    public static String outputException(Exception exception) {
+    public static String outputException(Throwable exception) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         exception.printStackTrace(new PrintStream(byteArrayOutputStream));
         return byteArrayOutputStream.toString();

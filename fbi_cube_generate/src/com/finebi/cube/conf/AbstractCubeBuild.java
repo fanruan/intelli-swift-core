@@ -166,9 +166,9 @@ public abstract class AbstractCubeBuild implements CubeBuild {
                 connection = DatasourceManager.getInstance().getConnection(((DBTableSource) tableSource).getDbName());
                 ((DBTableSource) tableSource).setConnection(connection);
             }
-            if (tableSource instanceof ServerTableSource) {
+            if (tableSource instanceof SQLTableSource) {
                 connection = DatasourceManager.getInstance().getConnection(((SQLTableSource) tableSource).getSqlConnection());
-                ((ServerTableSource) tableSource).setConnection(connection);
+                ((SQLTableSource) tableSource).setConnection(connection);
             }
             connectionMap.put(tableSource, connection);
         }
