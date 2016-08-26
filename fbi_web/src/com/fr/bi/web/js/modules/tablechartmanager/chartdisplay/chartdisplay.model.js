@@ -517,11 +517,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         //当前指标所在系列
                         if(series.name === BI.Utils.getDimensionNameByID(dId)){
                             //分类
-                            if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
+                            if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
                                 formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
                             }
                             //指标自身
-                            if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1){
+                            if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1){
                                 formatDataLabelForSelf(series, filter, seriesArrayMap[series.name], dataLabel);
                             }
                             return true;
