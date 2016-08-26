@@ -1901,6 +1901,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/css/widget/sequencetable/listnumber.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/treenumber.sequencetable.css",
+                "com/fr/bi/web/css/widget/sequencetable/dynamicnumber.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/sequencetable.css",
 
 
@@ -2622,7 +2623,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
-                "com/fr/bi/web/js/widget/sequencetable/summarynumber.sequencetable.js",
+                "com/fr/bi/web/js/widget/sequencetable/dynamicnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/sequencetable.js",
 
                 //图片组件

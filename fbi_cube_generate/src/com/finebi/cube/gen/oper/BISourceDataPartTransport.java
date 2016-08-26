@@ -51,9 +51,10 @@ import static com.fr.bi.util.BICubeDBUtils.getColumnName;
  */
 public class BISourceDataPartTransport extends BISourceDataTransport {
     protected UpdateSettingSource tableUpdateSetting;
+
     public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, UpdateSettingSource tableUpdateSetting) {
         super(cube, tableSource, allSources, parentTableSource, version);
-        this.tableUpdateSetting=  tableUpdateSetting;
+        this.tableUpdateSetting = tableUpdateSetting;
     }
 
     @Override
@@ -74,15 +75,19 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             tableEntityService.addVersion(version);
             tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
-            if (null != tableSource.getPersistentTable()) {
-                System.out.println("table usage:" + tableCostTime);
+            System.out.println("table usage:" + tableCostTime);
+            try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-            if (null != tableSource.getPersistentTable()) {
+            try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e1.getMessage(), e1);
             }
+            BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             return null;
         }
@@ -112,7 +117,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         }
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
-                rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
+            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
         }
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
@@ -133,7 +138,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 try {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
-                    e.printStackTrace();
+                    BILogger.getLogger().error(e.getMessage());
                 }
             }
         };
@@ -149,7 +154,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             BILogger.getLogger().error("SQL syntax error");
             return null;
         }
-        com.fr.data.impl.Connection connection=((DBTableSource)tableSource).getConnection();
+        com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(partDeleteSQL);
         String columnName = getColumnName(connection, sqlStatement, partDeleteSQL);
