@@ -25,6 +25,13 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         var self = this, o = this.options;
         this.filterType = [];
         this.filterWidget = [];
+        this.filterField = [{
+            name: BI.i18nText("BI-Uppercase_X_Axis"),
+            key: "X"
+        }, {
+            name: BI.i18nText("BI-Uppercase_Y_Axis"),
+            key: "Y"
+        }];
         var and = BI.createWidget({
             type: "bi.label",
             text: BI.i18nText("BI-And")
@@ -47,7 +54,7 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             element: this.element,
             items: [{
                 type: "bi.left_right_vertical_adapt",
-                height: (this._constant.CONTAINER_HEIGHT - 5)*this.filterItems.length + 10,
+                height: (this._constant.CONTAINER_HEIGHT - 5) * this.filterField.length + 10,
                 items: {
                     left: [and, left],
                     right: [this.styleSetting, this.deleteButton]
@@ -67,32 +74,21 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         var self = this, o = this.options;
         this.filterItems = [];
         var filterContainer = [];
-        this.filterValues = o.filter_value || [];
-        if (this.filterValues.length === 0 && !BI.isNull(o.dId)) {
-            BI.each(o.dId, function (i, dId) {
-                self.filterValues.push({
-                    target_id: dId,
-                    filter_type: o.filter_type
-                });
+        this.filterValues = o.filter_value || this.filterField;
+        if(this.filterValues.length === 3 || o.dId === BICst.DATACOLUMN.XANDYANDSIZE) {
+            this.filterField.push({
+                name: BI.i18nText("BI-Bubble_Size"),
+                key: "Z"
             });
         }
-        this.targets = BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(this.filterValues[0].target_id));
-        BI.each(this.filterValues, function (i, v) {
-            var dId = v.target_id;
-            var fieldName = BI.Utils.getDimensionNameByID(dId);
-            if (BI.contains(self.targets[30000], dId)) {
-                fieldName = BI.i18nText("BI-Uppercase_Y_Axis");
-            }
-            if (BI.contains(self.targets[40000], dId)) {
-                fieldName = BI.i18nText("BI-Uppercase_X_Axis");
-            }
-            if (BI.contains(self.targets[50000], dId)) {
-                fieldName = BI.i18nText("BI-Bubble_Size");
+        BI.each(this.filterValues, function (i, filter) {
+            if(BI.isNull(filter.filter_type)) {
+                filter.filter_type = o.filter_type
             }
             var fieldButton = BI.createWidget({
                 type: "bi.text_button",
-                text: fieldName,
-                title: fieldName,
+                text: self.filterField[i].name,
+                title: self.filterField[i].name,
                 width: self._constant.FIELD_NAME_BUTTON_WIDTH,
                 height: self._constant.BUTTON_HEIGHT,
                 textAlign: "left",
@@ -111,12 +107,12 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
                 height: self._constant.BUTTON_HEIGHT,
                 items: BICst.DATA_LABEL_FILTER_NUMBER_COMBO
             });
-            self.filterType[i].setValue(v.filter_type);
+            self.filterType[i].setValue(filter.filter_type);
             self.filterType[i].on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
                 self._refreshFilterWidget(i, filterWidgetContainer, self.filterType[i].getValue()[0]);
                 o.afterValueChange.apply(self, arguments);
             });
-            self._refreshFilterWidget(i, filterWidgetContainer, v.filter_type, v.filter_value);
+            self._refreshFilterWidget(i, filterWidgetContainer, filter.filter_type, filter.filter_value);
             self.filterItems.push([fieldButton, self.filterType[i], filterWidgetContainer]);
         });
 
@@ -209,10 +205,10 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _createStyle: function (initData) {
         var self = this, o = this.options;
-        var chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.filterValues[0].target_id));
+        // var chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.filterValues[0].target_id));
         this.style = BI.createWidget({
             type: "bi.data_label_style_set",
-            chartType: chartType
+            // chartType: chartType
         });
         BI.isNotNull(initData) && this.style.setValue(initData);
         return this.style;
@@ -221,18 +217,9 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     getValue: function () {
         var self = this;
         var value = [];
-        BI.each(this.filterValues, function (i, v) {
-            var key = "";
-            if (BI.contains(self.targets[30000], v.target_id)) {
-                key = "Y";
-            } else if (BI.contains(self.targets[40000], v.target_id)){
-                key = "X";
-            } else {
-                key = "z";
-            }
+        BI.each(this.filterValues, function (i) {
             value.push({
-                key: key,
-                target_id: v.target_id,
+                key: self.filterField[i].key,
                 filter_type: self.filterType[i].getValue()[0],
                 filter_value: self.filterWidget[i].getValue()
             });
