@@ -173,7 +173,7 @@ BI.ChartCombineFormatItemFactory = {
                     }
                 },
                 "maxSize": 80,
-                "fillColorOpacity": 0.5,
+                "fillColorOpacity": 1.0,
                 "step": false,
                 "force": false,
                 "minSize": 15,

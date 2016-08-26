@@ -10,6 +10,7 @@ import com.fr.json.JSONTransform;
 public class TimeFrequency implements JSONTransform {
     private int updateFrequency = DBConstant.UPDATE_FREQUENCY.EVER_DAY;
     private int updateTime;
+    private int updateType = DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
 
     public int getUpdateFrequency() {
         return updateFrequency;
@@ -27,21 +28,33 @@ public class TimeFrequency implements JSONTransform {
         this.updateTime = updateTime;
     }
 
+    public int getUpdateType() {
+        return updateType;
+    }
+
+    public void setUpdateType(int updateType) {
+        this.updateType = updateType;
+    }
+
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("frequency", this.updateFrequency);
         jo.put("time", this.updateTime);
+        jo.put("updateType", this.updateType);
         return jo;
     }
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        if(jo.has("frequency")) {
+        if (jo.has("frequency")) {
             this.updateFrequency = jo.getInt("frequency");
         }
-        if(jo.has("time")) {
+        if (jo.has("time")) {
             this.updateTime = jo.getInt("time");
+        }
+        if (jo.has("updateType")) {
+            this.updateType = jo.getInt("updateType");
         }
     }
 }

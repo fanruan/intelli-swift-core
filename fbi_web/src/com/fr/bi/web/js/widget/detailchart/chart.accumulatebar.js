@@ -45,7 +45,7 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function(config, items){
         var self = this;
-        var yTitle = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
+        var unit = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
         var xTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
@@ -61,7 +61,7 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
         }
 
         config.yAxis = this.yAxis;
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
+        config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + unit : unit;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
         BI.extend(config.yAxis[0], {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
