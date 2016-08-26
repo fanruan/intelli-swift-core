@@ -62,7 +62,7 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                     });
                 } else {
                     result.push({
-                        id: BI.i18nText("BI-And"),
+                        id: BICst.DATACOLUMN.XANDY,
                         pId: self._constant.X_Y_FIELD,
                         type: "bi.select_data_level0_item",
                         text: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
