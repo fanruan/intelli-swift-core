@@ -38,10 +38,13 @@ BI.TextToolbarContentSelect = BI.inherit(BI.Widget, {
             lgap: 2
         });
     },
-
+    
     _checkState: function () {
         var value = this.getValue();
-        if (value.indexOf(true) === value.lastIndexOf(true)) {
+        var count = BI.countBy(value, function (i, num) {
+            return num ? 'true' : 'false';
+        });
+        if (count['true'] === 1) {
             BI.each(this.items, function (i, item) {
                 if (item.isSelected()) {
                     item.setEnable(false);
@@ -59,7 +62,7 @@ BI.TextToolbarContentSelect = BI.inherit(BI.Widget, {
         var self = this;
         BI.each(v, function (i, value) {
             self.items[i].setSelected(value);
-        })
+        });
         this._checkState();
     },
 
