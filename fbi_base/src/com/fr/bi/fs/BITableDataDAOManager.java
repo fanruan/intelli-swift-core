@@ -234,7 +234,7 @@ public class BITableDataDAOManager extends XMLFileManager {
             List<User> users = new ArrayList<User>();
             for (Map.Entry<Long, BISharedReportNode> entry : getTdBISharedReport_idEntrySet()) {
                 BISharedReportNode node = entry.getValue();
-                if (node.getReportId() == reportId && ComparatorUtils.equals(node.getCreateBy(), tdUser.getUsername())) {
+                if (tdUser != null && node.getReportId() == reportId && ComparatorUtils.equals(node.getCreateBy(), tdUser.getUsername())) {
                     try {
                         User user = UserControl.getInstance().getByUserName(tdUser.getUsername());
                         if(user != null) {
@@ -254,7 +254,7 @@ public class BITableDataDAOManager extends XMLFileManager {
         User tdUser = TableDataSyncDB.getInstance().findUserByUserId(userId);
         for (Map.Entry<Long, BISharedReportNode> entry : getTdBISharedReport_idEntrySet()) {
             BISharedReportNode node = entry.getValue();
-            if (ComparatorUtils.equals(tdUser.getUsername(), node.getShareToName())) {
+            if (tdUser != null && ComparatorUtils.equals(tdUser.getUsername(), node.getShareToName())) {
                 nodes.add(node);
             }
         }

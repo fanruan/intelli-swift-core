@@ -46,27 +46,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
 
 
     _formatConfig: function(config, items){
-        var self = this, o = this.options;
+        var self = this;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         config.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};
         config.plotOptions.tooltip.formatter = this.config.tooltip;
         formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
 
@@ -105,8 +91,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                         enabled: true,
                         formatter: {
                             identifier: "${X}${Y}${SIZE}",
-                            "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
+                            "XFormat": function(){return BI.contentFormat(arguments[0], '#.##')},
+                            "YFormat": function(){return BI.contentFormat(arguments[0], '#.##')}
                         }
                     };
                     if(isNeedFormatDataLabelX === true){
@@ -193,7 +179,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                 })
             });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                config.plotOptions.tooltip.formatter.valueFormat = function(){return BI.contentFormat(arguments[0], '#0%')};
             }
         }
 

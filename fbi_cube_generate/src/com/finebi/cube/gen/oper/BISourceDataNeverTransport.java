@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * Created by kary on 16/7/13.
  */
-public class BISourceDataNeverTransport extends BISourceDataTransport{
+public class BISourceDataNeverTransport extends BISourceDataTransport {
     public BISourceDataNeverTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
         super(cube, tableSource, allSources, parentTableSource, version);
     }
@@ -26,6 +26,7 @@ public class BISourceDataNeverTransport extends BISourceDataTransport{
             copyFromOldCubes();
             recordTableInfo();
             tableEntityService.addVersion(version);
+            tableEntityService.clear();
         } catch (Exception e) {
         } finally {
             return null;

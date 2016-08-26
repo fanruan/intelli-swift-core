@@ -31,10 +31,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Future;
 
 /**
@@ -109,7 +106,9 @@ public class BuildCubeTask implements CubeTask {
     private void replaceOldCubes() {
         try {
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            cubeBuild.replaceOldCubes();
+            if (!cubeBuild.replaceOldCubes()){
+                BILogger.getLogger().error("replace cube files failed");
+            }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         } finally {
@@ -124,6 +123,8 @@ public class BuildCubeTask implements CubeTask {
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuild.getSources());
         operationManager.initialWatcher();
         operationManager.subscribeStartMessage();
+        operationManager.setUpdateSettingSourceMap(cubeBuild.getUpdateSettingSources());
+        operationManager.setConnectionMap(cubeBuild.getConnections());
         manager.registerDataSource(cubeBuild.getAllSingleSources());
         manager.registerRelation(cubeBuild.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuild.getBiTableSourceRelationPathSet());
