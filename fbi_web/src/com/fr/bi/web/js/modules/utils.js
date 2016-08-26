@@ -1618,7 +1618,33 @@
             if (BI.isNull(relations[from])) {
                 return [];
             }
-            return relations[from][to] || [];
+            if(BI.isNull(relations[from][to])){
+                return [];
+            }
+            return removeCircleInPath();
+
+            function removeCircleInPath(){
+                var relationOrder = [];
+                return BI.filter(relations[from][to], function(idx, path){
+                    var orders = [];
+                    var hasCircle = BI.any(path, function(id, relation){
+                        var prev = BI.Utils.getTableIdByFieldID(BI.Utils.getPrimaryIdFromRelation(relation));
+                        var last = BI.Utils.getTableIdByFieldID(BI.Utils.getForeignIdFromRelation(relation));
+                        var result = BI.find(relationOrder, function(i, order){
+                            if(order[0] === last && order[1] === prev){
+                                return true;
+                            }
+                        });
+                        orders.push([prev, last]);
+                        return BI.isNotNull(result);
+                    });
+                    if(hasCircle === false){
+                        relationOrder = BI.concat(relationOrder, orders);
+                    }
+                    return hasCircle === false;
+                });
+            }
+
         },
 
         getPathsFromFieldAToFieldB: function (from, to) {
