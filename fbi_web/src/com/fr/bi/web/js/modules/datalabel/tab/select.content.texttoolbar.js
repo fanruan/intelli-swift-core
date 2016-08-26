@@ -17,7 +17,7 @@ BI.TextToolbarContentSelect = BI.inherit(BI.Widget, {
         this.items = BI.createWidgets(items, {
             type: "bi.multi_select_item",
             width: 100,
-            warningTitle: "至少显示一个数值"
+            warningTitle: BI.i18nText("BI-At_Least_One_Value")
         });
         BI.each(this.items, function (i, item) {
             item.setSelected(true);
