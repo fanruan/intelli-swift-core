@@ -707,7 +707,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/chartsetting/crosstable/widget.crosstable.setting.css",
 
                 //图样式
-                "com/fr/bi/web/css/modules/chartsetting/charts/customscale/popup.customscale.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/customscale/formula/customscale.formula.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/combo.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
@@ -1374,6 +1374,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.group.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.field.tree.midleaf.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.field.tree.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/combo.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/trigger.customscale.js",
