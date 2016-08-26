@@ -50,8 +50,8 @@ BI.DimensionFilterSelectField = BI.inherit(BI.Widget, {
                         pId: self._constant.DIMENSION_FIELD,
                         type: "bi.select_data_level0_item",
                         fieldType: BI.Utils.getFieldTypeByID(fieldId),
-                        text: BI.Utils.getFieldNameByID(fieldId),
-                        title: BI.Utils.getFieldNameByID(fieldId),
+                        text: BI.Utils.getDimensionNameByID(o.dId),
+                        title: BI.Utils.getDimensionNameByID(o.dId),
                         value: o.dId
                     }]
                 } else {
