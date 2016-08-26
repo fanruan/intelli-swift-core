@@ -4,10 +4,10 @@
 BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
-        CONTAINER_HEIGHT: 110,
+        CONTAINER_HEIGHT: 40,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
-        FIELD_NAME_BUTTON_WIDTH: 60,
+        FIELD_NAME_BUTTON_WIDTH: 50,
         TEXT_BUTTON_H_GAP: 10,
         INPUT_WIDTH: 230,
         LABEL_WIDTH: 30
@@ -47,7 +47,7 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             element: this.element,
             items: [{
                 type: "bi.left_right_vertical_adapt",
-                height: this._constant.CONTAINER_HEIGHT,
+                height: (this._constant.CONTAINER_HEIGHT - 5)*this.filterItems.length + 10,
                 items: {
                     left: [and, left],
                     right: [this.styleSetting, this.deleteButton]
@@ -66,6 +66,7 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _buildConditions: function () {
         var self = this, o = this.options;
         this.filterItems = [];
+        var filterContainer = [];
         this.filterValues = o.filter_value || [];
         if (this.filterValues.length === 0 && !BI.isNull(o.dId)) {
             BI.each(o.dId, function (i, dId) {
@@ -118,19 +119,18 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             self._refreshFilterWidget(i, filterWidgetContainer, v.filter_type, v.filter_value);
             self.filterItems.push([fieldButton, self.filterType[i], filterWidgetContainer]);
         });
+
+        BI.each(this.filterItems, function (i, item) {
+            filterContainer.push(BI.createWidget({
+                type: "bi.vertical_adapt",
+                items: item,
+                hgap: 5
+            }));
+        });
         return BI.createWidget({
             type: "bi.vertical",
             cls: "condition-items",
-            items: [BI.createWidget({
-                type: "bi.horizontal",
-                items: this.filterItems[0]
-            }), BI.createWidget({
-                type: "bi.horizontal",
-                items: this.filterItems[1]
-            }),BI.createWidget({
-                type: "bi.horizontal",
-                items: this.filterItems[2]
-            })],
+            items: filterContainer,
             vgap: 5
         });
     },
@@ -225,8 +225,10 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             var key = "";
             if (BI.contains(self.targets[30000], v.target_id)) {
                 key = "Y";
-            } else {
+            } else if (BI.contains(self.targets[40000], v.target_id)){
                 key = "X";
+            } else {
+                key = "z";
             }
             value.push({
                 key: key,

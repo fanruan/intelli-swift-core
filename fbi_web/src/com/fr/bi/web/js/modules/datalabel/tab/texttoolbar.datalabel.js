@@ -74,7 +74,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
             vgap: 3
         });
         if (o.chartType === BICst.WIDGET.BUBBLE) {
-            this.showItems = BI.createWidget({
+            this.showLabels = BI.createWidget({
                 type: "bi.text_tool_bar_content_select",
                 items: [{
                     value: BI.i18nText("BI-X_Value")
@@ -85,7 +85,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
                 }]
             });
         } else if(o.chartType === BICst.WIDGET.SCATTER) {
-            this.showItems = BI.createWidget({
+            this.showLabels = BI.createWidget({
                 type: "bi.text_tool_bar_content_select",
                 items: [{
                     value: BI.i18nText("BI-X_Value")
@@ -94,13 +94,13 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
                 }]
             });
         } else {
-            this.showItems = BI.createWidget();
+            this.showLabels = BI.createWidget();
         }
 
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [top, this.showItems],
+            items: [top, this.showLabels],
             lgap: 8
         })
     },
@@ -112,6 +112,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
         this.bold.setSelected(v["font-weight"] === "bold");
         this.italic.setSelected(v["font-style"] === "italic");
         this.colorchooser.setValue(v["color"] || "#000000");
+        this.showLabels.setValue(v["show-labels"] || []);
     },
 
     getValue: function () {
@@ -120,7 +121,8 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
             "font-size": this.size.getValue(),
             "font-weight": this.bold.isSelected() ? "bold" : "normal",
             "font-style": this.italic.isSelected() ? "italic" : "normal",
-            "color": this.colorchooser.getValue()
+            "color": this.colorchooser.getValue(),
+            "show-labels": this.showLabels.getValue()
         }
     }
 });

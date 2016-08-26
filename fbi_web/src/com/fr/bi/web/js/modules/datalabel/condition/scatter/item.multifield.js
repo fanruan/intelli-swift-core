@@ -4,7 +4,7 @@
 BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
-        CONTAINER_HEIGHT: 75,
+        CONTAINER_HEIGHT: 40,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
         FIELD_NAME_BUTTON_WIDTH: 60,
@@ -47,7 +47,7 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             element: this.element,
             items: [{
                 type: "bi.left_right_vertical_adapt",
-                height: this._constant.CONTAINER_HEIGHT,
+                height: (this._constant.CONTAINER_HEIGHT - 5)*this.filterItems.length + 10,
                 items: {
                     left: [and, left],
                     right: [this.styleSetting, this.deleteButton]

@@ -97,7 +97,14 @@ BI.BubbleNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         var fieldType;
         if (v === BICst.DATACOLUMN.XANDY) {
             fieldType = BICst.DATACOLUMN.XANDY;
-            v = BI.Utils.getAllUsableTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.sdId));
+            v= [];
+            var targets = BI.Utils.getAllUsableTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.sdId));
+            BI.each(targets, function (i, dId) {
+                if(BI.contains(BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(o.sdId))[50000], dId)) {
+                    return;
+                }
+                v.push(dId);
+            })
         } else if(v === BICst.DATACOLUMN.XANDYANDSIZE){
             fieldType = BICst.DATACOLUMN.XANDYANDSIZE;
             v = BI.Utils.getAllUsableTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.sdId));
