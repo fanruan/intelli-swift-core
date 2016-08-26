@@ -241,7 +241,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             obj.name = name;
             return obj;
         });
-        //this._setDataLabelSettingForBubbleAndScatter(objs);
+        this._setDataLabelSettingForBubbleAndScatter(objs);
         return [objs];
     },
 
@@ -272,7 +272,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             }];
             return obj;
         });
-        //this._setDataLabelSettingForBubbleAndScatter(objs);
+        this._setDataLabelSettingForBubbleAndScatter(objs);
         return [objs];
     },
 
@@ -427,7 +427,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
             BI.each(BI.Utils.getDatalabelByID(dId), function (id, dataLabel) {
                 var filter = null;
-                if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
+                if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
                     filter = BI.FilterFactory.parseFilter(dataLabel);
                     var filterArray = filter.getFilterResult(allSeries);
                     BI.any(data, function(idx, series){
@@ -439,7 +439,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     });
                 }else{
                     filter = BI.FilterObjectFactory.parseFilter(dataLabel);
-                    var filterArray = filter.getFilterResult(BI.pluck(data, "data"));
+                    var filterArray = filter.getFilterResult(BI.flatten(BI.pluck(data, "data")));
                     BI.any(data, function(idx, series){
                         BI.each(series.data, function(id, da){
                             if(BI.deepContains(filterArray, da)){
@@ -478,11 +478,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     if(hasSeries === true){
                         //有系列
                         //分类
-                        if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
+                        if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
                             formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
                         }
                         //系列
-                        if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2){
+                        if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2){
                             var filterArray = filter.getFilterResult(allSeries);
                             if(BI.contains(filterArray, series.name)){
                                 BI.each(series.data, function(id, da){
@@ -492,7 +492,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             }
                         }
                         //自身
-                        if(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1){
+                        if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1){
                             //范围为全系列
                             if(dataLabel.filter_range === BICst.DATA_LABEL_RANGE.ALL){
                                 formatDataLabelForSelf(series, filter, allValueArray, dataLabel);
@@ -563,7 +563,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dataLables.style = label.style_setting.textStyle;
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
-                dataLables.formatter = "function(){return '<table style=\"width:100%;height:100%;\"> <tr valign=middle align=center>  <td><img src =\"picture/icon_top1-18.png\" ></td> </tr></table>';}";
+                //dataLables.formatter = "function(){return '<div><img width=\"20px\" height=\"20px\" src=\""+label.style_setting.imgStyle.src+"\"></div>';}";
+                dataLables.formatter = "function(){return '<table style=\"width:100%;height:100%;\"> <tr valign=middle align=center>  <td><img alt=\"1234\"></td> </tr></table>';}";
                 break;
 
         }

@@ -2224,6 +2224,10 @@ public class ResourceHelper {
                 //filter
                 "com/fr/bi/web/js/data/filter/filtervalue.factory.js",
                 "com/fr/bi/web/js/data/filter/filter.factory.js",
+                "com/fr/bi/web/js/data/filter/objectcondition/obj.general.and.filter.js",
+                "com/fr/bi/web/js/data/filter/objectcondition/obj.general.or.filter.js",
+                "com/fr/bi/web/js/data/filter/objectcondition/obj.single.filter.js",
+                "com/fr/bi/web/js/data/filter/objectcondition/filter.obj.factory.js",
                 "com/fr/bi/web/js/data/filter/condition/empty.filter.js",
                 "com/fr/bi/web/js/data/filter/condition/general.and.filter.js",
                 "com/fr/bi/web/js/data/filter/condition/general.or.filter.js",
