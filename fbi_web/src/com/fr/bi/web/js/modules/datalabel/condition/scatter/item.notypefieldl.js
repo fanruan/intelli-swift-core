@@ -95,7 +95,7 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _onTypeSelected: function (v) {
         var self = this, o = this.options;
         var fieldType;
-        if (v == BI.i18nText("BI-And")) {
+        if (v === BICst.DATACOLUMN.XANDY) {
             fieldType = BICst.DATACOLUMN.XANDY;
             v = BI.Utils.getAllUsableTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.sdId));
         } else {

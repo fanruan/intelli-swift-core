@@ -16,6 +16,7 @@ BI.BubbleFilterItemFactory = {
                 type = "bi.bubble_number_field_filter_item";
                 break;
             case BICst.DATACOLUMN.XANDY:
+            case BICst.DATACOLUMN.XANDYANDSIZE:
                 filterType = BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE;
                 type = "bi.bubble_multi_field_filter_item";
                 break;
