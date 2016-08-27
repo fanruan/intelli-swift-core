@@ -224,9 +224,9 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         BI.each(this.filterValues, function (i, v) {
             var key = "";
             if (BI.contains(self.targets[30000], v.target_id)) {
-                key = "Y";
+                key = "y";
             } else {
-                key = "X";
+                key = "x";
             }
             value.push({
                 key: key,
