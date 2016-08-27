@@ -4,7 +4,7 @@
         if(BI.has(filter, "filter_value")){
             var filter_value = filter.filter_value || [];
             this.childs = BI.map(filter_value, function(idx, fv){
-                return BI.FilterFactory.parseFilter(fv);
+                return BI.FilterObjectFactory.parseFilter(fv);
             })
         }
         this.key = BI.UUID();
@@ -27,11 +27,11 @@
             });
             return BI.filter(array, function(idx, item){
                 var find = BI.find(self.childs, function(idx, child){
-                    if(BI.isNotNull(child) && !BI.contains(filterValueMap[child.getKey()], item[child.getKey()])){
+                    if(BI.isNotNull(child) && !BI.deepContains(filterValueMap[child.getKey()], item)){
                         return true;
                     }
                 });
-                BI.isNull(find);
+                return BI.isNull(find);
             });
         }
     }

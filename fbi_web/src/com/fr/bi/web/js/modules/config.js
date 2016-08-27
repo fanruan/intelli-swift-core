@@ -1226,9 +1226,11 @@ BICst.CHART_VALUE_AXIS_STYLE = [{
 //表格（分组表、交叉表和复杂表）类型
 BICst.TABLE_FORM_GROUP = [{
     cls: "table-open-row-style-font",
+    title: BI.i18nText("BI-TABLE_TYPE_TREE_SHOW"),
     value: BICst.TABLE_FORM.OPEN_ROW
 }, {
     cls: "table-open-col-style-font",
+    title: BI.i18nText("BI-TABLE_TYPE_MULTI_COLUMN_SHOW"),
     value: BICst.TABLE_FORM.OPEN_COL
 }];
 
