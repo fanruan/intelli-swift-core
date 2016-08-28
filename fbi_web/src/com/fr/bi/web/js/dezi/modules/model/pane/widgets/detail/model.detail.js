@@ -37,7 +37,9 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 }
                 BI.remove(arr, function (i, id) {
                     if(key2 === id){
-                        isTarget = true;
+                        if(region >= BICst.REGION.TARGET1){
+                            isTarget = true;
+                        }
                         return true;
                     }
                 })
@@ -57,6 +59,11 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     if(BI.isNotNull(tSort) && tSort.sort_target === key2) {
                         self.set("sort", {}, {silent: true});
                     }
+                }else{
+                    //图表样式的过滤条件
+                    BI.each(dimension.data_label, function(idx, filter){
+                        checkFilter(filter);
+                    });
                 }
             });
             var allIds = BI.keys(dimensions);
