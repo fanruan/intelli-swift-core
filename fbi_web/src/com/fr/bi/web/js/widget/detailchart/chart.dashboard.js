@@ -277,10 +277,10 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             BI.each(items[0], function (idx, item) {
                 BI.each(item.data, function (id, da) {
                     others.push({
-                        data: [{
+                        data: [BI.extend({}, da, {
                             x: item.name,
                             y: da.y
-                        }],
+                        })],
                         name: da.x
                     })
                 })
