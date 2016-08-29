@@ -410,20 +410,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _setDataLabelSettingForBubbleAndScatter: function(data){
         var self = this, o = this.options;
         var allSeries = BI.pluck(data, "name");
-        var cataArrayMap = {};  //值按分类分组
-        var seriesArrayMap = {}; //值按系列分组
-        var allValueArray = []; //所有值
-        BI.each(data, function(idx, da){
-            seriesArrayMap[da.name] = [];
-            BI.each(da.data, function(id, obj){
-                if(!BI.has(cataArrayMap, obj.x)){
-                    cataArrayMap[obj.x] = [];
-                }
-                cataArrayMap[obj.x].push(obj.y);
-                seriesArrayMap[da.name].push(obj.y);
-                allValueArray.push(obj.y);
-            })
-        });
         BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
             BI.each(BI.Utils.getDatalabelByID(dId), function (id, dataLabel) {
                 var filter = null;
