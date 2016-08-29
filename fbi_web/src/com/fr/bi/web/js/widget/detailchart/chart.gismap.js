@@ -24,15 +24,26 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         delete config.dataSheet;
         delete config.legend;
         delete config.zoom;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.useHtml = true;
-        config.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">'+ "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ BI.contentFormat(this.value, '#.##') +'</div>'; return a;}";
+        config.plotOptions.dataLabels.formatter = function () {
+            var name = (BI.isArray(this.name) ? '' : this.name + ',') + BI.contentFormat(this.value, '#.##') ;
+            var style = "padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;";
+            var a = '<div style = ' + style + '>' + name + '</div>';
+            return a;
+        };
         config.plotOptions.tooltip.shared = true;
-        config.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + BI.contentFormat((point.size || point.y), '#.##') + '</div>');});return tip; }";
+        config.plotOptions.tooltip.formatter = function () {
+            var tip = BI.isArray(this.name) ? '' : this.name;
+            BI.each(this.points, function (idx, point) {
+                tip += ('<div>' + point.seriesName + ':' + BI.contentFormat((point.size || point.y), '#.##') + '</div>');
+            });
+            return tip;
+        };
         config.geo = {
             "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
             "attribution": "<a><img src='http://webapi.amap.com/theme/v1.3/mapinfo_05.png'>&copy; 2016 AutoNavi</a>"
@@ -55,24 +66,24 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
 
     },
 
-    _checkLngLatValid: function(lnglat){
-        if(lnglat.length < 2){
+    _checkLngLatValid: function (lnglat) {
+        if (lnglat.length < 2) {
             return false;
         }
         return lnglat[0] <= 180 && lnglat[0] >= -180 && lnglat[1] <= 90 && lnglat[1] >= -90;
     },
 
-    _formatItems: function(items){
+    _formatItems: function (items) {
         var self = this;
         var results = [];
-        BI.each(items, function(idx, item){
+        BI.each(items, function (idx, item) {
             var result = [];
-            BI.each(item, function(id, it){
+            BI.each(item, function (id, it) {
                 var res = [];
-                BI.each(it.data, function(i, da){
+                BI.each(it.data, function (i, da) {
                     da.y = self.formatXYDataWithMagnify(da.y, 1);
                     var lnglat = da.x.split(",");
-                    if(self.config.lnglat === self.constants.LAT_FIRST){
+                    if (self.config.lnglat === self.constants.LAT_FIRST) {
                         var lng = lnglat[1];
                         lnglat[1] = lnglat[0];
                         lnglat[0] = lng;
@@ -80,17 +91,17 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
                     da.lnglat = lnglat;
                     da.value = da.y;
                     da.name = BI.isNotNull(da.z) ? da.z : da.lnglat;
-                    if(self._checkLngLatValid(da.lnglat)){
+                    if (self._checkLngLatValid(da.lnglat)) {
                         res.push(da);
                     }
                 });
-                if(BI.isNotEmptyArray(res)){
+                if (BI.isNotEmptyArray(res)) {
                     result.push(BI.extend(it, {
                         data: res
                     }));
                 }
             });
-            if(BI.isNotEmptyArray(result)){
+            if (BI.isNotEmptyArray(result)) {
                 results.push(result);
             }
         });
@@ -108,9 +119,9 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
         this.options.items = items;
 
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(){
+            BI.each(axisItems, function () {
                 type.push(BICst.WIDGET.GIS_MAP);
             });
             types.push(type);
@@ -123,7 +134,7 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

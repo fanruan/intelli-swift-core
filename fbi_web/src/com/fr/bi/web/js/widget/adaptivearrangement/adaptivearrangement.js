@@ -89,7 +89,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         });
         o.resizable && item.element.resizable({
             handles: "e, s, se",
-            minWidth: 100,
+            minWidth: 20,
             minHeight: 20,
             autoHide: true,
             helper: "bi-resizer",

@@ -64,7 +64,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         }
 
         config.yAxis = this.yAxis;
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
+        config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
         BI.extend(config.yAxis[0], {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,

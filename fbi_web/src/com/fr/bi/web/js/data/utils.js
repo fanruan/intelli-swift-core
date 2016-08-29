@@ -2241,8 +2241,8 @@ Data.Utils = {
             }
 
             function changeMaxMinScale() {
-                gaugeAxis[0].max = config.max_scale === "" ? gaugeAxis[0].max : config.max_scale;
-                gaugeAxis[0].min = config.min_scale === "" ? gaugeAxis[0].min : config.min_scale;
+                gaugeAxis[0].max = config.max_scale || null;
+                gaugeAxis[0].min = config.min_scale || null;
             }
 
             function formatNumberLevelInYaxis(type, position) {
@@ -2911,7 +2911,7 @@ Data.Utils = {
                 position: "left"
             }];
 
-            var yTitle = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
+            var unit = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
             var xTitle = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
 
             configs.yAxis = yAxis;
@@ -2942,7 +2942,7 @@ Data.Utils = {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + yTitle : yTitle;
+            configs.yAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + unit : unit;
             configs.yAxis[0].title.rotation = constants.ROTATION;
             BI.extend(configs.yAxis[0], {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
@@ -3205,7 +3205,7 @@ Data.Utils = {
                 }
             };
 
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + yTitle : yTitle;
+            configs.yAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + yTitle : yTitle;
             configs.yAxis[0].title.rotation = constants.ROTATION;
             BI.extend(configs.yAxis[0], {
                 lineWidth: config.line_width,

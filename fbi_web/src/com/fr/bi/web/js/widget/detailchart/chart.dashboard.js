@@ -125,8 +125,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         }
 
         function changeMaxMinScale() {
-            self.gaugeAxis[0].min = self.config.min_scale || self.gaugeAxis[0].min;
-            self.gaugeAxis[0].max = self.config.max_scale || self.gaugeAxis[0].max;
+            self.gaugeAxis[0].min = self.config.min_scale || null;
+            self.gaugeAxis[0].max = self.config.max_scale || null;
         }
 
         function formatNumberLevelInYaxis(type, position) {
@@ -277,10 +277,10 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             BI.each(items[0], function (idx, item) {
                 BI.each(item.data, function (id, da) {
                     others.push({
-                        data: [{
+                        data: [BI.extend({}, da, {
                             x: item.name,
                             y: da.y
-                        }],
+                        })],
                         name: da.x
                     })
                 })

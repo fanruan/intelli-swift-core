@@ -134,7 +134,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input",
             watermark: BI.i18nText("BI-Default_Data"),
             validationChecker: function (v) {
-                return self.maxScale.getValue() == '' ? true : BI.parseInt(v) < BI.parseInt(self.maxScale.getValue())
+                return self.maxScale.getValue() == '' ? true : BI.parseFloat(v) < BI.parseFloat(self.maxScale.getValue())
             }
         });
 
@@ -150,7 +150,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input",
             watermark: BI.i18nText("BI-Default_Data"),
             validationChecker: function (v) {
-                return self.minScale.getValue() == '' ? true : BI.parseInt(v) > BI.parseInt(self.minScale.getValue())
+                return self.minScale.getValue() == '' ? true : BI.parseFloat(v) > BI.parseFloat(self.minScale.getValue())
             }
         });
 
@@ -168,6 +168,19 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.percentage.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE)
+        });
+
+        var labelPercentage = BI.createWidget({
+            type: "bi.label",
+            text: BI.i18nText("BI-Percentage"),
+            height: constant.BUTTON_HEIGHT,
+            cls: "attr-names"
+        });
+
+        this.textPercentage = BI.createWidget({
+            type: "bi.left",
+            items: [labelPercentage, this.percentage],
+            lgap: constant.SIMPLE_H_GAP
         });
 
         var tableStyle = BI.createWidget({
@@ -240,13 +253,8 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 type: "bi.center_adapt",
                 items: [this.maxScale]
             }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Percentage"),
-                lgap: constant.SIMPLE_H_GAP,
-                cls: "attr-names"
-            }, {
                 type: "bi.center_adapt",
-                items: [this.percentage]
+                items: [this.textPercentage]
             }], {
                 height: constant.SINGLE_LINE_HEIGHT
             }),
@@ -347,12 +355,14 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             case BICst.CHART_SHAPE.NORMAL:
             case BICst.CHART_SHAPE.HALF_DASHBOARD:
                 this.pointers.setVisible(true);
+                this.textPercentage.setVisible(false);
                 break;
             case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
             case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
             case BICst.CHART_SHAPE.VERTICAL_TUBE:
             case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
                 this.pointers.setVisible(false);
+                this.textPercentage.setVisible(true);
                 break;
         }
     },

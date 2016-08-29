@@ -163,7 +163,6 @@ public class CubeRunner {
 
     private void start() {
         BackUpUtils.backup();
-//        copyOldCubesToTempCubes();
     }
 
     private void finish() {
@@ -176,7 +175,6 @@ public class CubeRunner {
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
         BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
-
     }
 
 
