@@ -278,7 +278,8 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
 
     @Override
     public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
-        Map<CubeTableSource, UpdateSettingSource> map = super.getUpdateSettingSources();
+//        Map<CubeTableSource, UpdateSettingSource> map = super.getUpdateSettingSources();
+        Map<CubeTableSource, UpdateSettingSource> map = new HashMap<CubeTableSource, UpdateSettingSource>();
         UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(businessTable.getTableSource().getSourceID(), biUser.getUserId());
         updateSettingSource.setUpdateType(updateType);
         map.put(businessTable.getTableSource(), updateSettingSource);

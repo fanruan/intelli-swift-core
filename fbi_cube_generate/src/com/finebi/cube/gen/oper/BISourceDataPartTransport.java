@@ -64,6 +64,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         try {
             copyFromOldCubes();
             super.recordTableInfo();
+            buildTableBasicStructure();
             long count = transport();
             ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
             ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
