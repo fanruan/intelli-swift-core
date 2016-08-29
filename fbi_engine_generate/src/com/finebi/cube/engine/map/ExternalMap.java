@@ -62,6 +62,10 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
             this.containerFolderNeedDel = true;
             file.mkdirs();
         }
+        else {
+            deleteDir(file);
+            file.mkdirs();
+        }
         if (DEBUG) {
             BILogger.getLogger().info(this.diskContainerPath);
         }
@@ -282,28 +286,24 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
 	public void putAll(Map<? extends K, ? extends V> t) {
 
     }
+    private  void deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i=0; i<children.length; i++) {
+                deleteDir(new File(dir, children[i]));
+            }
+        }
+        dir.delete();
+    }
 
     public void release() {
 
         this.writeFile.stop();
         this.readFile.release();
-        File base = new File(getFolderPath());
-        if (base.exists()) {
-            String[] names = base.list();
-            for (int i = 0; i < names.length; i++) {
-                String name = names[i];
-                File file = new File(base.getAbsoluteFile() + File.separator + name);
-                if (file.exists()) {
-                    file.delete();
-                }
-            }
-            base.delete();
-        }
-
         if (this.containerFolderNeedDel) {
             File file = new File(diskContainerPath);
             if (file.exists()) {
-                file.delete();
+                deleteDir(file);
             }
         }
     }

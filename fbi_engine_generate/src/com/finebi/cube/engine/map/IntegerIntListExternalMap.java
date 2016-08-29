@@ -1,8 +1,11 @@
 package com.finebi.cube.engine.map;
 
+import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.list.IntList;
 
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -16,10 +19,6 @@ public class IntegerIntListExternalMap extends IntListExternalMap<Integer> {
     public IntegerIntListExternalMap(Long bufferSize, Comparator comparator, String dataFolder) {
         super(bufferSize, comparator, dataFolder);
     }
-//    @Override
-//    public ExternalMapIO<Integer, IntList> getExternalMapIO(String id_filePath) {
-//        return new IntegerIntListExternalMapIO(id_filePath);
-//    }
 
     @Override
     public ExternalMapIO<Integer, IntList> getExternalMapIO(String id_filePath) {
@@ -36,4 +35,5 @@ public class IntegerIntListExternalMap extends IntListExternalMap<Integer> {
             super(currentContainer);
         }
     }
+
 }

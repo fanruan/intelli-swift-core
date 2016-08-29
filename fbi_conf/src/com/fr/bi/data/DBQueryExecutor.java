@@ -26,7 +26,7 @@ public class DBQueryExecutor {
     }
 
     private void initialExtractor() {
-
+    DRIEVER_EXTRACOTR.put("org.apache.hive.jdbc.HiveDriver",new HiveExtractor());
     }
 
     public static DBQueryExecutor getInstance() {
