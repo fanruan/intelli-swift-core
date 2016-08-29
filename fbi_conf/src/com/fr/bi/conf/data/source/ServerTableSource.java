@@ -197,7 +197,7 @@ public class ServerTableSource extends DBTableSource {
 
     private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, ICubeFieldSource[] fields) {
         SQLStatement sql = new SQLStatement(connect);
-        sql.setFrom("(" + query + ") " + "t");
+        sql.setFrom("(\n" + query + "\n) " + "t");
         return DBQueryExecutor.getInstance().runSQL(sql, fields, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
