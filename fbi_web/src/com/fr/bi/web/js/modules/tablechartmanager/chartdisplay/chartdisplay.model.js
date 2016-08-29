@@ -411,7 +411,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var self = this, o = this.options;
         var allSeries = BI.pluck(data, "name");
         BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
-            BI.each(BI.Utils.getDatalabelByWidgetID(dId), function (id, dataLabel) {
+            BI.each(BI.Utils.getDatalabelByWidgetID(o.wId), function (id, dataLabel) {
                 var filter = null;
                 if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
                     filter = BI.FilterFactory.parseFilter(dataLabel);
@@ -555,6 +555,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         };
         switch (label.style_setting.type) {
             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
+                label.style_setting.textStyle.fontSize = label.style_setting.textStyle.fontSize + "px";
                 dataLabels.style = label.style_setting.textStyle;
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
