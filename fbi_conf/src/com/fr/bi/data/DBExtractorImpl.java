@@ -73,6 +73,9 @@ public abstract class DBExtractorImpl implements DBExtractor {
                                 object = new TimestampDealer(rsColumn);
                                 break;
                             }
+                            default: {
+                                object = new TimestampDealer(rsColumn);
+                            }
                         }
                         break;
                     }
