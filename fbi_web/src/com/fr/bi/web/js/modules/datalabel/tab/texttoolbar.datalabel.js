@@ -64,7 +64,6 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
             }
         });
         this.colorchooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
-
             self.fireEvent(BI.DataLabelTextToolBar.EVENT_CHANGE, arguments);
         });
         var top = BI.createWidget({
@@ -96,12 +95,13 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
         } else {
             this.showLabels = BI.createWidget();
         }
-
+        this.showLabels.on(BI.TextToolbarContentSelect.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DataLabelTextToolBar.EVENT_CHANGE, arguments);
+        });
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
             items: [top, this.showLabels],
-            width: 260,
             lgap: 8
         })
     },

@@ -23,6 +23,7 @@ BI.TextToolbarContentSelect = BI.inherit(BI.Widget, {
             item.setSelected(true);
             item.on(BI.Controller.EVENT_CHANGE, function () {
                 self._checkState();
+                self.fireEvent(BI.TextToolbarContentSelect.EVENT_CHANGE, arguments);
             })
         });
         this.select = BI.createWidget({
@@ -60,9 +61,11 @@ BI.TextToolbarContentSelect = BI.inherit(BI.Widget, {
     setValue: function (v) {
         v || (v = []);
         var self = this;
-        BI.each(v, function (i, value) {
-            self.items[i].setSelected(value);
-        });
+        if(v.length <= self.items.length) {
+            BI.each(v, function (i, value) {
+                self.items[i].setSelected(value);
+            });
+        }
         this._checkState();
     },
 
@@ -74,4 +77,5 @@ BI.TextToolbarContentSelect = BI.inherit(BI.Widget, {
         return result;
     }
 });
+BI.TextToolbarContentSelect.EVENT_CHANGE = "BI.TextToolbarContentSelect.EVENT_CHANGE";
 $.shortcut('bi.text_tool_bar_content_select', BI.TextToolbarContentSelect);

@@ -66,7 +66,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
             items.push({
                 type: t.type,
                 sdId: o.dId,
-                chartType: this.chartType,
+                chartType: self.chartType,
                 key: cdt.key,
                 dId: cdt.target_id,
                 filter_type: cdt.filter_type,
