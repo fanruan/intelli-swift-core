@@ -95,10 +95,18 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _onTypeSelected: function (v) {
         var self = this, o = this.options;
         var fieldType;
-        if (v === BICst.DATACOLUMN.XANDY) {
-            fieldType = BICst.DATACOLUMN.XANDY;
-        } else {
-            fieldType = BI.Utils.getFieldTypeByDimensionID(v);
+        switch (v) {
+            case BICst.DATACOLUMN.X:
+                fieldType = BICst.DATACOLUMN.X;
+                break;
+            case BICst.DATACOLUMN.Y:
+                fieldType = BICst.DATACOLUMN.Y;
+                break;
+            case BICst.DATACOLUMN.XANDY:
+                fieldType = BICst.DATACOLUMN.XANDY;
+                break;
+            default:
+                fieldType = BI.Utils.getFieldTypeByDimensionID(v);
         }
         var filterItem = BI.ScatterFilterItemFactory.createFilterItemByFieldType(fieldType);
         this.itemContainer.destroy();

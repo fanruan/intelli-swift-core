@@ -40,16 +40,10 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                 }]
             },
             fieldsCreator: function (tableId) {
-                var view = BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
-                var categories = view[10000];
-                var y = view[30000];
-                var x = view[40000];
+                var categories = BI.Utils.getAllUsableDimDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
                 var result = [];
                 if (tableId === self._constant.DIMENSION_FIELD) {
                     BI.each(categories, function (i, dId) {
-                        if (!BI.Utils.isDimensionUsable(dId)) {
-                            return;
-                        }
                         result.push({
                             id: dId,
                             pId: self._constant.DIMENSION_FIELD,
@@ -67,35 +61,24 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                         type: "bi.select_data_level0_item",
                         text: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
                         title: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
-                        fieldType: BICst.DATACOLUMN.XANDY
-                    });
-                    BI.each(x, function (i, dId) {
-                        if (!BI.Utils.isDimensionUsable(dId)) {
-                            return;
-                        }
-                        result.push({
-                            id: dId,
-                            pId: self._constant.X_Y_FIELD,
-                            type: "bi.select_data_level0_item",
-                            fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
-                            text: BI.i18nText("BI-Uppercase_X_Axis"),
-                            title: BI.i18nText("BI-Uppercase_X_Axis"),
-                            value: dId
-                        });
-                    });
-                    BI.each(y, function (i, dId) {
-                        if (!BI.Utils.isDimensionUsable(dId)) {
-                            return;
-                        }
-                        result.push({
-                            id: dId,
-                            pId: self._constant.X_Y_FIELD,
-                            type: "bi.select_data_level0_item",
-                            fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
-                            text: BI.i18nText("BI-Uppercase_Y_Axis"),
-                            title: BI.i18nText("BI-Uppercase_Y_Axis"),
-                            value: dId
-                        });
+                        fieldType: BICst.DATACOLUMN.XANDY,
+                        value: BICst.DATACOLUMN.XANDY
+                    },{
+                        id: BICst.DATACOLUMN.X,
+                        pId: self._constant.X_Y_FIELD,
+                        type: "bi.select_data_level0_item",
+                        text: BI.i18nText("BI-Uppercase_X_Axis"),
+                        title: BI.i18nText("BI-Uppercase_X_Axis"),
+                        fieldType: BICst.DATACOLUMN.X,
+                        value: BICst.DATACOLUMN.X
+                    },{
+                        id: BICst.DATACOLUMN.Y,
+                        pId: self._constant.X_Y_FIELD,
+                        type: "bi.select_data_level0_item",
+                        text: BI.i18nText("BI-Uppercase_Y_Axis"),
+                        title: BI.i18nText("BI-Uppercase_Y_Axis"),
+                        fieldType: BICst.DATACOLUMN.Y,
+                        value: BICst.DATACOLUMN.Y
                     });
                 }
                 return result;

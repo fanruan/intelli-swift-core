@@ -124,6 +124,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _refreshFilterWidget: function (filterType, initData) {
+        var aadItem;
         if (this.changeWidth) {
             this.filterType.setWidth(this.size.COMBO_WIDTH);
             this.filterRange && this.filterRange.setWidth(this.size.COMBO_WIDTH);
@@ -131,30 +132,30 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         switch (filterType) {
             case BICst.DIMENSION_FILTER_STRING.BELONG_VALUE:
             case BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE:
-                var addItem = this._createStringBelongCombo(initData);
+                addItem = this._createStringBelongCombo(initData);
 
                 break;
             case BICst.DIMENSION_FILTER_STRING.CONTAIN:
             case BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN:
-                var addItem = this._createStringInput(initData);
+                addItem = this._createStringInput(initData);
                 break;
             case BICst.DIMENSION_FILTER_STRING.IS_NULL:
             case BICst.DIMENSION_FILTER_STRING.NOT_NULL:
                 this.filterWidget = BI.createWidget();
-                var addItem = this.filterWidget;
+                addItem = this.filterWidget;
                 break;
             case BICst.DIMENSION_FILTER_STRING.BEGIN_WITH:
             case BICst.DIMENSION_FILTER_STRING.END_WITH:
-                var addItem = this._createStringInput(initData);
+                addItem = this._createStringInput(initData);
                 break;
             case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
             case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
             case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
-                var addItem = this._createNumberInput(initData);
+                addItem = this._createNumberInput(initData);
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE:
-                var addItem = this._createNumberIntervalFilter(initData);
+                addItem = this._createNumberIntervalFilter(initData);
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_USER:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_USER:
@@ -167,7 +168,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
                 this.filterType.setWidth(this._constant.COMBO_WIDTH);
                 this.filterRange && this.filterRange.setWidth(this._constant.COMBO_WIDTH);
                 this.filterWidget = BI.createWidget();
-                var addItem = this.filterWidget;
+                addItem = this.filterWidget;
                 break;
         }
         this.filterWidgetContainer.empty();

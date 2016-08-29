@@ -12,6 +12,9 @@ BI.BubbleFilterItemFactory = {
                 break;
             case BICst.COLUMN.NUMBER:
             case BICst.COLUMN.COUNTER:
+            case BICst.DATACOLUMN.X:
+            case BICst.DATACOLUMN.Y:
+            case BICst.DATACOLUMN.Z:
                 filterType = BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE;
                 type = "bi.bubble_number_field_filter_item";
                 break;

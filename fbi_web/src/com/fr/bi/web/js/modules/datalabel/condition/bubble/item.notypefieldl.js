@@ -95,12 +95,24 @@ BI.BubbleNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _onTypeSelected: function (v) {
         var self = this, o = this.options;
         var fieldType;
-        if (v === BICst.DATACOLUMN.XANDY) {
-            fieldType = BICst.DATACOLUMN.XANDY;
-        } else if(v === BICst.DATACOLUMN.XANDYANDSIZE){
-            fieldType = BICst.DATACOLUMN.XANDYANDSIZE;
-        } else{
-            fieldType = BI.Utils.getFieldTypeByDimensionID(v);
+        switch (v) {
+            case BICst.DATACOLUMN.X:
+                fieldType = BICst.DATACOLUMN.X;
+                break;
+            case BICst.DATACOLUMN.Y:
+                fieldType = BICst.DATACOLUMN.Y;
+                break;
+            case BICst.DATACOLUMN.Z:
+                fieldType = BICst.DATACOLUMN.Z;
+                break;
+            case BICst.DATACOLUMN.XANDY:
+                fieldType = BICst.DATACOLUMN.XANDY;
+                break;
+            case BICst.DATACOLUMN.XANDYANDSIZE:
+                fieldType = BICst.DATACOLUMN.XANDYANDSIZE;
+                break;
+            default:
+                fieldType = BI.Utils.getFieldTypeByDimensionID(v);
         }
         var filterItem = BI.BubbleFilterItemFactory.createFilterItemByFieldType(fieldType);
         this.itemContainer.destroy();
