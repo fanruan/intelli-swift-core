@@ -120,8 +120,8 @@ BI.IconMarkStyleSetting = BI.inherit(BI.Widget, {
             rightIcon = "target-style-more-dot-font";
         if (icon === BICst.TARGET_STYLE.ICON_STYLE.ARROW){
             leftIcon = "target-style-less-arrow-font";
-            centerIcon = "target-style-less-arrow-font";
-            rightIcon = "target-style-less-arrow-font";
+            centerIcon = "target-style-equal-arrow-font";
+            rightIcon = "target-style-more-arrow-font";
         }
         this.leftIcon.setIcon(leftIcon);
         this.rightIcon.setIcon(rightIcon);

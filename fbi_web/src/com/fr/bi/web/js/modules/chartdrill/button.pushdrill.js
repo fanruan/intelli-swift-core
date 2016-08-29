@@ -13,7 +13,6 @@ BI.DrillPushButton = BI.inherit(BI.BasicButton, {
         BI.DrillPushButton.superclass._init.apply(this, arguments);
         var svg = BI.createWidget({
             type: "bi.svg",
-            element: this.element,
             width: 60,
             height: 10
         });
@@ -21,10 +20,28 @@ BI.DrillPushButton = BI.inherit(BI.BasicButton, {
             .attr({stroke: "#d4dadd", fill: "#ffffff"});
         this.pushButton = BI.createWidget({
             type: "bi.icon_change_button",
-            element: this.element,
             iconWidth: 10,
             iconHeight: 10
         });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: svg,
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
+            }, {
+                el: this.pushButton,
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
+            }],
+            width: 60,
+            height: 10
+        })
     },
     
     setPushDown: function(){

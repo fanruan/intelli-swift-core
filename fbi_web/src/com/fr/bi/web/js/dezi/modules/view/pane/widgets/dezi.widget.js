@@ -316,7 +316,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         } else {
             this.title.setVisible(true);
             this.widget.attr("items")[0].top = 10;
-            this.widget.attr("items")[2].top = 50;
+            this.widget.attr("items")[2].top = 35;
         }
         this.widget.resize();
         this.tableChartResize();

@@ -49,21 +49,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.style = formatChartStyle();
         config.plotOptions.tooltip.formatter = this.config.tooltip;
         formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
         config.plotOptions.shadow = this.config.bubble_style !== this.constants.NO_PROJECT;
@@ -102,9 +88,9 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                         enabled: true,
                         formatter: {
                             identifier: "${X}${Y}${SIZE}",
-                            "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                            "XFormat": function(){return BI.contentFormat(arguments[0], '#.##')},
+                            "YFormat": function(){return BI.contentFormat(arguments[0], '#.##')},
+                            "sizeFormat": function(){return BI.contentFormat(arguments[0], '#.##')}
                         }
                     };
                     if(isNeedFormatDataLabelX === true){

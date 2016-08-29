@@ -30,6 +30,7 @@ BI.SelectSingleRelationTableField = BI.inherit(BI.Widget, {
                 ids = [BI.Utils.getCurrentPackageId4Conf()]
             }
             self.searcher.setPackage(ids[0]);
+        }, function() {
             mask.destroy();
         });
         this.searcher = BI.createWidget({

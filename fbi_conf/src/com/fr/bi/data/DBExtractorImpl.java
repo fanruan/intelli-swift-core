@@ -137,10 +137,12 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 query = dealWithSqlCharSet(sql.toString(), connection);
                 stmt = createStatement(conn, dialect);
                 rs = stmt.executeQuery(query);
+                BILogger.getLogger().error("sql: " + sql.toString() + " execute failed!");
             }
             BILogger.getLogger().info("sql: " + sql.toString() + " execute cost:" + DateUtils.timeCostFrom(t));
             row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row);
         } catch (Throwable e) {
+            BILogger.getLogger().error("sql: " + sql.toString() + " execute failed!");
             throw new RuntimeException(e);
         } finally {
             DBUtils.closeResultSet(rs);

@@ -11,11 +11,11 @@ BI.UpdateSingleTableSettingModel = BI.inherit(FR.OB, {
         this.addSql = "";
         this.deleteSql = "";
         this.modifySql = "";
-        this.togetherNever = BICst.SINGLE_TABLE_UPDATE.TOGETHER;
+        // this.togetherNever = BICst.SINGLE_TABLE_UPDATE.TOGETHER;
         this.timeList = [];
         if(BI.isNotNull(updateSetting)) {
             this.updateType = updateSetting.update_type;
-            this.togetherNever = updateSetting.together_never;
+            // this.togetherNever = updateSetting.together_never;
             this.addSql = updateSetting.add_sql;
             this.deleteSql = updateSetting.delete_sql;
             this.modifySql = updateSetting.modify_sql;

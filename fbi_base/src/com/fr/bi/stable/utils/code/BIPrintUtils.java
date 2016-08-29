@@ -3,6 +3,9 @@ package com.fr.bi.stable.utils.code;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.general.DateUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 /**
  * System.println
  * Created by GUY on 2015/3/11.
@@ -23,5 +26,11 @@ public class BIPrintUtils {
         long time = System.currentTimeMillis() - start;
         time = (long) (((float) time / index) * rowCount) - time;
         BILogger.getLogger().info(title + ":" + (float) Math.round((float) index / rowCount * CubeConstant.PERCENT_ROW) / CubeConstant.PERCENT_ROW_D + "%! about " + DateUtils.miliisecondCostAsString(time) + "time left");
+    }
+
+    public static String outputException(Throwable exception) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        exception.printStackTrace(new PrintStream(byteArrayOutputStream));
+        return byteArrayOutputStream.toString();
     }
 }

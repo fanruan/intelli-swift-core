@@ -386,7 +386,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 break;
         }
         dimension.dId = newId;
-        if (BI.has(dimension, "filter_value")) {
+        if (BI.has(dimension, "filter_value") && BI.isNotNull(dimension.filter_value)) {
             dimension.filter_value = checkFilter(dimension.filter_value, dimTarIdMap[old.dId] || old.dId);
         }
         dimTarIdMap[old.dId] = newId;

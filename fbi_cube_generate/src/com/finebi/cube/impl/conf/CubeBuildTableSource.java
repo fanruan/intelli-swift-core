@@ -7,12 +7,10 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by kary on 16/6/1.
@@ -128,5 +126,13 @@ public class CubeBuildTableSource extends AbstractCubeBuild implements CubeBuild
     @Override
     public boolean replaceOldCubes() {
         return false;
+    }
+
+    /*
+    * 对实时报表来说，所有更新都是全量更新
+     */
+    @Override
+    public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources(){
+        return new HashMap<CubeTableSource, UpdateSettingSource>();
     }
 }

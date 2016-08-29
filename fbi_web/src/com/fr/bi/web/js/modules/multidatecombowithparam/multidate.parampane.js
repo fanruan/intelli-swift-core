@@ -118,7 +118,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
                 paramdate = this.parseComplexDateCommon(wWValue.end);
             }
         } else {
-            if (BI.isNull(widgetInfo.wId)) {
+            if (BI.isNull(widgetInfo.wId) || BI.isNull(BI.Utils.getWidgetValueByID(widgetInfo.wId))) {
                 return;
             }
             paramdate = this.parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
@@ -134,45 +134,45 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
         var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
         var tool = new BI.MultiDateParamTrigger();
         if (BI.isNull(type) && BI.isNotNull(v.year)) {
-            return new Date(v.year, v.month, v.day).getTime();
+            return new Date(v.year, v.month, v.day);
         }
         switch (type) {
             case BICst.MULTI_DATE_YEAR_PREV:
-                return new Date(currY - 1 * value, currM, currD).getTime();
+                return new Date(currY - 1 * value, currM, currD);
             case BICst.MULTI_DATE_YEAR_AFTER:
-                return new Date(currY + 1 * value, currM, currD).getTime();
+                return new Date(currY + 1 * value, currM, currD);
             case BICst.MULTI_DATE_YEAR_BEGIN:
-                return new Date(currY, 0, 1).getTime();
+                return new Date(currY, 0, 1);
             case BICst.MULTI_DATE_YEAR_END:
-                return new Date(currY, 11, 31).getTime();
+                return new Date(currY, 11, 31);
             case BICst.MULTI_DATE_MONTH_PREV:
-                return tool._getBeforeMultiMonth(value).getTime();
+                return tool._getBeforeMultiMonth(value);
             case BICst.MULTI_DATE_MONTH_AFTER:
-                return tool._getAfterMultiMonth(value).getTime();
+                return tool._getAfterMultiMonth(value);
             case BICst.MULTI_DATE_MONTH_BEGIN:
-                return new Date(currY, currM, 1).getTime();
+                return new Date(currY, currM, 1);
             case BICst.MULTI_DATE_MONTH_END:
-                return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
+                return new Date(currY, currM, (date.getLastDateOfMonth()).getDate());
             case BICst.MULTI_DATE_QUARTER_PREV:
-                return tool._getBeforeMulQuarter(value).getTime();
+                return tool._getBeforeMulQuarter(value);
             case BICst.MULTI_DATE_QUARTER_AFTER:
-                return tool._getAfterMulQuarter(value).getTime();
+                return tool._getAfterMulQuarter(value);
             case BICst.MULTI_DATE_QUARTER_BEGIN:
-                return tool._getQuarterStartDate().getTime();
+                return tool._getQuarterStartDate();
             case BICst.MULTI_DATE_QUARTER_END:
-                return tool._getQuarterEndDate().getTime();
+                return tool._getQuarterEndDate();
             case BICst.MULTI_DATE_WEEK_PREV:
-                return date.getOffsetDate(-7 * value).getTime();
+                return date.getOffsetDate(-7 * value);
             case BICst.MULTI_DATE_WEEK_AFTER:
-                return date.getOffsetDate(7 * value).getTime();
+                return date.getOffsetDate(7 * value);
             case BICst.MULTI_DATE_DAY_PREV:
-                return date.getOffsetDate(-1 * value).getTime();
+                return date.getOffsetDate(-1 * value);
             case BICst.MULTI_DATE_DAY_AFTER:
-                return date.getOffsetDate(1 * value).getTime();
+                return date.getOffsetDate(1 * value);
             case BICst.MULTI_DATE_DAY_TODAY:
-                return date.getTime();
+                return date;
             case BICst.MULTI_DATE_CALENDAR:
-                return new Date(value.year, value.month, value.day).getTime();
+                return new Date(value.year, value.month, value.day);
             default:
                 break;
         }

@@ -63,26 +63,6 @@
             this.okButton.on(BI.TextButton.EVENT_CHANGE, function () {
                 self.fireEvent(BI.MultiDatePopup.BUTTON_OK_EVENT_CHANGE);
             });
-            this.ymd = BI.createWidget({
-                type: "bi.date_calendar_popup",
-                min: this.options.min,
-                max: this.options.max
-            });
-            this.year = BI.createWidget({
-                type: "bi.yearcard"
-            });
-            this.quarter = BI.createWidget({
-                type: 'bi.quartercard'
-            });
-            this.month = BI.createWidget({
-                type: 'bi.monthcard'
-            });
-            this.week = BI.createWidget({
-                type: 'bi.weekcard'
-            });
-            this.day = BI.createWidget({
-                type: 'bi.daycard'
-            });
             this.dateTab = BI.createWidget({
                 type: 'bi.tab',
                 tab: {
@@ -120,44 +100,70 @@
                 cardCreator: function (v) {
                     switch (v) {
                         case BICst.MULTI_DATE_YMD_CARD:
+                            self.ymd = BI.createWidget({
+                                type: "bi.date_calendar_popup",
+                                min: self.options.min,
+                                max: self.options.max
+                            });
+                            self.ymd.on(BI.DateCalendarPopup.EVENT_CHANGE, function () {
+                                self.fireEvent(BI.MultiDatePopup.CALENDAR_EVENT_CHANGE);
+                            });
                             return self.ymd;
                         case BICst.MULTI_DATE_YEAR_CARD:
+                            self.year = BI.createWidget({
+                                type: "bi.yearcard"
+                            });
+                            self.year.on(BI.MultiDateCard.EVENT_CHANGE, function (v) {
+                                self._setInnerValue(self.year, v);
+                            });
                             return self.year;
                         case BICst.MULTI_DATE_QUARTER_CARD:
+                            self.quarter = BI.createWidget({
+                                type: 'bi.quartercard'
+                            });
+                            self.quarter.on(BI.MultiDateCard.EVENT_CHANGE, function (v) {
+                                self._setInnerValue(self.quarter, v);
+                            });
                             return self.quarter;
                         case BICst.MULTI_DATE_MONTH_CARD:
+                            self.month = BI.createWidget({
+                                type: 'bi.monthcard'
+                            });
+                            self.month.on(BI.MultiDateCard.EVENT_CHANGE, function (v) {
+                                self._setInnerValue(self.month, v);
+                            });
                             return self.month;
                         case BICst.MULTI_DATE_WEEK_CARD:
+                            self.week = BI.createWidget({
+                                type: 'bi.weekcard'
+                            });
+                            self.week.on(BI.MultiDateCard.EVENT_CHANGE, function (v) {
+                                self._setInnerValue(self.week, v);
+                            });
                             return self.week;
                         case BICst.MULTI_DATE_DAY_CARD:
+                            self.day = BI.createWidget({
+                                type: 'bi.daycard'
+                            });
+                            self.day.on(BI.MultiDateCard.EVENT_CHANGE, function (v) {
+                                self._setInnerValue(self.day, v);
+                            });
                             return self.day;
                     }
                 }
             });
             this.dateTab.setSelect(BICst.MULTI_DATE_YMD_CARD);
-            this.year.on(BI.MultiDateCard.EVENT_CHANGE, function (v) {
-                self._setInnerValue(self.year, v);
-            });
-            this.quarter.on(BI.MultiDateCard.EVENT_CHANGE, function (v) {
-                self._setInnerValue(self.quarter, v);
-            });
-            this.month.on(BI.MultiDateCard.EVENT_CHANGE, function (v) {
-                self._setInnerValue(self.month, v);
-            });
-            this.week.on(BI.MultiDateCard.EVENT_CHANGE, function (v) {
-                self._setInnerValue(self.week, v);
-            });
-            this.day.on(BI.MultiDateCard.EVENT_CHANGE, function (v) {
-                self._setInnerValue(self.day, v);
-            });
-            this.ymd.on(BI.DateCalendarPopup.EVENT_CHANGE, function () {
-                self.fireEvent(BI.MultiDatePopup.CALENDAR_EVENT_CHANGE);
-            });
+            this.cur = BICst.MULTI_DATE_YMD_CARD;
             this.dateTab.on(BI.Tab.EVENT_CHANGE, function () {
                 var v = self.dateTab.getSelect();
                 switch (v) {
                     case BICst.MULTI_DATE_YMD_CARD:
-                        self.ymd.setValue(self.ymd.getValue());
+                        var date = this.getTab(self.cur).getCalculationValue();
+                        self.ymd.setValue({
+                            year: date.getFullYear(),
+                            month: date.getMonth(),
+                            day: date.getDate()
+                        });
                         self._setInnerValue(self.ymd);
                         break;
                     case BICst.MULTI_DATE_YEAR_CARD:
@@ -181,6 +187,7 @@
                         self._setInnerValue(self.day);
                         break;
                 }
+                self.cur = v;
             });
             this.dateButton = BI.createWidget({
                 type: "bi.grid",
@@ -225,85 +232,55 @@
                 case BICst.MULTI_DATE_YEAR_END:
                     this.dateTab.setSelect(BICst.MULTI_DATE_YEAR_CARD);
                     this.year.setValue({type: type, value: value});
+                    this.cur = BICst.MULTI_DATE_YEAR_CARD;
                     self._setInnerValue(this.year);
-                    date = this.year.getCalculationValue();
-                    this.ymd.setValue({
-                        year: date.getFullYear(),
-                        month: date.getMonth(),
-                        day: date.getDate()
-                    });
                     break;
                 case BICst.MULTI_DATE_QUARTER_PREV:
                 case BICst.MULTI_DATE_QUARTER_AFTER:
                 case BICst.MULTI_DATE_QUARTER_BEGIN:
                 case BICst.MULTI_DATE_QUARTER_END:
                     this.dateTab.setSelect(BICst.MULTI_DATE_QUARTER_CARD);
+                    this.cur = BICst.MULTI_DATE_QUARTER_CARD;
                     this.quarter.setValue({type: type, value: value});
                     self._setInnerValue(this.quarter);
-                    date = this.quarter.getCalculationValue();
-                    this.ymd.setValue({
-                        year: date.getFullYear(),
-                        month: date.getMonth(),
-                        day: date.getDate()
-                    });
                     break;
                 case BICst.MULTI_DATE_MONTH_PREV:
                 case BICst.MULTI_DATE_MONTH_AFTER:
                 case BICst.MULTI_DATE_MONTH_BEGIN:
                 case BICst.MULTI_DATE_MONTH_END:
                     this.dateTab.setSelect(BICst.MULTI_DATE_MONTH_CARD);
+                    this.cur = BICst.MULTI_DATE_MONTH_CARD;
                     this.month.setValue({type: type, value: value});
                     self._setInnerValue(this.month);
-                    date = this.month.getCalculationValue();
-                    this.ymd.setValue({
-                        year: date.getFullYear(),
-                        month: date.getMonth(),
-                        day: date.getDate()
-                    });
                     break;
                 case BICst.MULTI_DATE_WEEK_PREV:
                 case BICst.MULTI_DATE_WEEK_AFTER:
                     this.dateTab.setSelect(BICst.MULTI_DATE_WEEK_CARD);
+                    this.cur = BICst.MULTI_DATE_WEEK_CARD;
                     this.week.setValue({type: type, value: value});
                     self._setInnerValue(this.week);
-                    date = this.week.getCalculationValue();
-                    this.ymd.setValue({
-                        year: date.getFullYear(),
-                        month: date.getMonth(),
-                        day: date.getDate()
-                    });
                     break;
                 case BICst.MULTI_DATE_DAY_PREV:
                 case BICst.MULTI_DATE_DAY_AFTER:
                 case BICst.MULTI_DATE_DAY_TODAY:
                     this.dateTab.setSelect(BICst.MULTI_DATE_DAY_CARD);
+                    this.cur = BICst.MULTI_DATE_DAY_CARD;
                     this.day.setValue({type: type, value: value});
                     self._setInnerValue(this.day);
-                    date = this.day.getCalculationValue();
-                    this.ymd.setValue({
-                        year: date.getFullYear(),
-                        month: date.getMonth(),
-                        day: date.getDate()
-                    });
                     break;
                 default:
                     if (BI.isNull(value)) {
                         var date = new Date();
+                        this.dateTab.setSelect(BICst.MULTI_DATE_YMD_CARD);
                         this.ymd.setValue({
                             year: date.getFullYear(),
                             month: date.getMonth(),
                             day: date.getDate()
                         });
-                        this.year.setValue();
-                        this.quarter.setValue();
-                        this.month.setValue();
-                        this.week.setValue();
-                        this.day.setValue();
-                        this.dateTab.setSelect(BICst.MULTI_DATE_YMD_CARD);
                         this.textButton.setValue(BI.i18nText("BI-Multi_Date_Today"));
                     } else {
-                        this.ymd.setValue(value);
                         this.dateTab.setSelect(BICst.MULTI_DATE_YMD_CARD);
+                        this.ymd.setValue(value);
                         this.textButton.setValue(BI.i18nText("BI-Multi_Date_Today"));
                     }
                     this.textButton.setEnable(true);

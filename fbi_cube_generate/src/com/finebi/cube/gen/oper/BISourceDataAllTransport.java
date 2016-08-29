@@ -26,6 +26,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
     public BISourceDataAllTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
         super(cube, tableSource, allSources, parentTableSource, version);
     }
+
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
@@ -39,23 +40,28 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
                 TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
                 tableEntityService.recordRemovedLine(sortRemovedList);
                 tableEntityService.recordRowCount(count);
-                tableEntityService.clear();
             }
             tableEntityService.addVersion(version);
+            tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
-            if (null != tableSource.getPersistentTable()) {
-                System.out.println("table usage:" + tableCostTime);
+            System.out.println("table usage:" + tableCostTime);
+            try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-            if (null != tableSource.getPersistentTable()) {
+            try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
+            BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             return null;
         }
     }
+
     private long transport() {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
 

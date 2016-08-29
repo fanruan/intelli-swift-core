@@ -111,7 +111,7 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
                     });
                 }else{
                     p.push({
-                        region: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
+                        region: BI.UUID(),
                         regionText: BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(foreignId)),
                         text: BI.Utils.getFieldNameByID(foreignId),
                         value: foreignId
@@ -119,7 +119,7 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
                 }
                 if (id === 0) {
                     p.push({
-                        region: BI.Utils.getTableNameByID(ptId),
+                        region: BI.UUID(),
                         //region: BI.UUID(),
                         regionText: BI.Utils.getTableNameByID(ptId),
                         text: BI.Utils.getFieldNameByID(items.dimensionFieldId),

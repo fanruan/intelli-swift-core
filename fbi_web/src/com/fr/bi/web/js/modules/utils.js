@@ -523,7 +523,7 @@
                                 }
                             });
                         }
-                        if (BI.has(widget.dimensions[idx], "filter_value")) {
+                        if (BI.has(widget.dimensions[idx], "filter_value") && BI.isNotNull(widget.dimensions[idx].filter_value)) {
                             dimension.filter_value = checkFilter(widget.dimensions[idx].filter_value, dimTarIdMap[idx] || idx);
                         }
                         if (BI.has(widget.dimensions[idx], "sort")) {
@@ -843,22 +843,22 @@
                 BICst.DEFAULT_CHART_SETTING.dashboard_unit;
         },
 
-        getWSMaxScaleByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.max_scale) ? ws.max_scale :
-                ""
-        },
-
         getWSMinScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.min_scale) ? ws.min_scale :
-                ""
+                BICst.DEFAULT_CHART_SETTING.min_scale
+        },
+
+        getWSMaxScaleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.max_scale) ? ws.max_scale :
+                BICst.DEFAULT_CHART_SETTING.max_scale
         },
 
         getWSShowPercentageByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_percentage) ? ws.show_percentage :
-                BICst.PERCENTAGE.NOT_SHOW
+                BICst.DEFAULT_CHART_SETTING.percentage_not_show
         },
 
         getWSXAxisUnitByID: function (wid) {
@@ -1618,7 +1618,33 @@
             if (BI.isNull(relations[from])) {
                 return [];
             }
-            return relations[from][to] || [];
+            if(BI.isNull(relations[from][to])){
+                return [];
+            }
+            return removeCircleInPath();
+
+            function removeCircleInPath(){
+                var relationOrder = [];
+                return BI.filter(relations[from][to], function(idx, path){
+                    var orders = [];
+                    var hasCircle = BI.any(path, function(id, relation){
+                        var prev = BI.Utils.getTableIdByFieldID(BI.Utils.getPrimaryIdFromRelation(relation));
+                        var last = BI.Utils.getTableIdByFieldID(BI.Utils.getForeignIdFromRelation(relation));
+                        var result = BI.find(relationOrder, function(i, order){
+                            if(order[0] === last && order[1] === prev){
+                                return true;
+                            }
+                        });
+                        orders.push([prev, last]);
+                        return BI.isNotNull(result);
+                    });
+                    if(hasCircle === false){
+                        relationOrder = BI.concat(relationOrder, orders);
+                    }
+                    return hasCircle === false;
+                });
+            }
+
         },
 
         getPathsFromFieldAToFieldB: function (from, to) {
@@ -2489,7 +2515,7 @@
                     paramdate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
-                if (BI.isNull(widgetInfo.wId)) {
+                if (BI.isNull(widgetInfo.wId) && BI.isNull(BI.Utils.getWidgetValueByID(widgetInfo.wId))) {
                     return;
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
@@ -2503,6 +2529,7 @@
             var type = v.type, value = v.value;
             var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
+            date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
             var tool = new BI.MultiDateParamTrigger();
             if (BI.isNull(type) && BI.isNotNull(v.year)) {
                 return new Date(v.year, v.month, v.day).getTime();
@@ -2567,34 +2594,34 @@
                 filterValue.start = parseComplexDate(start);
             }
             if (BI.isNotNull(end)) {
-                filterValue.end = parseComplexDate(end);
+                filterValue.end = new Date(parseComplexDate(end)).getOffsetDate(1).getTime() - 1
             }
         }
         if (filterType === BICst.FILTER_DATE.BELONG_WIDGET_VALUE || filterType === BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE) {
             var filterWId = filterValue.wId, filterValueType = filterValue.filter_value.type;
             var wValue = BI.Utils.getWidgetValueByID(filterWId);
-            if (!BI.Utils.isWidgetExistByID(filterWId)) {
+            if (!BI.Utils.isWidgetExistByID(filterWId) || BI.isNull(wValue)) {
                 return;
             }
             switch (filterValueType) {
                 case BICst.SAME_PERIOD:
-                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
-                        filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
+                    if (BI.isNotNull(wValue.start)) {
+                        filterValue.start = parseComplexDate(wValue.start);
                     }
-                    if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
-                        filterValue.end = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
+                    if (BI.isNotNull(wValue.end)) {
+                        filterValue.end = new Date(parseComplexDate(wValue.end)).getOffsetDate(1).getTime() - 1
                     }
                     break;
                 case BICst.LAST_SAME_PERIOD:
-                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year) && BI.isNotNull(wValue.end.month) && BI.isNotNull(wValue.end.day)) {
-                        var s = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
-                        var e = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
-                        filterValue.start = new Date(2 * s - e).getTime();
-                        filterValue.end = s;
+                    if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.end)) {
+                        var s = parseComplexDate(wValue.start);
+                        var e = parseComplexDate(wValue.end);
+                        filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
+                        filterValue.end = new Date(s).getTime() - 1;
                     } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
-                        filterValue.start = new Date(wValue.start.year, wValue.start.month, wValue.start.day).getTime();
+                        filterValue.start = parseComplexDate(wValue.start);
                     } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
-                        filterValue.end = new Date(wValue.end.year, wValue.end.month, wValue.end.day).getTime();
+                        filterValue.end = parseComplexDate(wValue.end);
                     }
                     break;
                 case BICst.YEAR_QUARTER:
@@ -2608,7 +2635,7 @@
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
                         filterValue.start = value.start;
-                        filterValue.end = value.end;
+                        filterValue.end = new Date(value.end).getOffsetDate(1).getTime() - 1;
                     }
                     break;
             }
@@ -2617,14 +2644,14 @@
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                filterValue.end = new Date(value.start).getOffsetDate(-1).getTime();
+                filterValue.end = new Date(value.start).getTime() - 1;
             }
         }
         if (filterType === BICst.FILTER_DATE.LATER_THAN) {
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                filterValue.start = new Date(value.start).getOffsetDate(1).getTime();
+                filterValue.start = new Date(value.start).getTime();
             }
         }
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {
@@ -2649,48 +2676,39 @@
                 case BICst.YEAR:
                     start = new Date((date.getFullYear() + fPrevOrAfter * value.fvalue), 0, 1);
                     end = new Date(start.getFullYear(), 11, 31);
-                    return {
-                        start: start.getTime(),
-                        end: end.getTime()
-                    };
+                    break;
                 case BICst.YEAR_QUARTER:
                     ydate = tool._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
                     start = tool._getQuarterStartDate(ydate);
                     end = tool._getQuarterEndDate(ydate);
-                    return {
-                        start: start.getTime(),
-                        end: end.getTime()
-                    };
+                    break;
                 case BICst.YEAR_MONTH:
                     ydate = tool._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
                     start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
                     end = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
-                    return {
-                        start: start.getTime(),
-                        end: end.getTime()
-                    };
+                    break;
                 case BICst.YEAR_WEEK:
                     start = ydate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
-                    end = start.getOffsetDate(7);
+                    end = start.getOffsetDate(6);
                     break;
                 case BICst.YEAR_DAY:
                     start = ydate.getOffsetDate(sPrevOrAfter * value.svalue);
-                    end = start.getOffsetDate(1);
+                    end = start;
                     break;
                 case BICst.MONTH_WEEK:
                     var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
                     start = mdate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
-                    end = start.getOffsetDate(7);
+                    end = start.getOffsetDate(6);
                     break;
                 case BICst.MONTH_DAY:
                     var mdate = tool._getOffsetMonth(date, fPrevOrAfter * value.fvalue);
                     start = mdate.getOffsetDate(sPrevOrAfter * value.svalue);
-                    end = start.getOffsetDate(1);
+                    end = start;
                     break;
             }
             return {
                 start: start.getTime(),
-                end: end.getTime() - 1
+                end: end.getTime()
             }
         }
 

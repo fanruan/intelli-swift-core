@@ -49,3 +49,15 @@
 .bi-dashboard-widget .dashboard-title-detail {
   font-size: 16px;
 }
+.bi-dashboard-widget .query-or-reset-button {
+  background: #009de3;
+  color: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 14px;
+}
+.bi-dashboard-widget .query-or-reset-button:hover {
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}

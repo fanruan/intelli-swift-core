@@ -17,7 +17,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.Transmitter;
-import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -670,6 +669,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/finebiservice/finebiservice.css",
 
                 //业务包分组
+                "com/fr/bi/web/css/modules/businesspackagegroup/pane.ungroup.and.group.businesspackage.css",
                 "com/fr/bi/web/css/modules/businesspackagegroup/buttons/button.businesspackage.css",
                 //维度与指标的匹配关系
                 "com/fr/bi/web/css/modules/matchingrelationship/infopane/settargetregion.infopane.css",
@@ -740,6 +740,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/fit/widgetchooser/widget.dragicongroup.css",
                 "com/fr/bi/web/css/modules/fit/fit.widget.css",
                 "com/fr/bi/web/css/modules/fit/fit.css",
+
+                //全局样式
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.setting.css",
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
 
@@ -875,7 +879,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detailnumber.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detaildate.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/detail/widget.detailformula.combo.js",
-                "com/fr/bi/web/js/modules/base/buttons/button.databasetable.js",
 
                 //statistic
                 "com/fr/bi/web/js/modules/base/combos/statistic/widget.statisticnumber.combo.js",
@@ -941,10 +944,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/customgroup/widget.pane.allfileds.customgroup.js",
                 "com/fr/bi/web/js/modules/customgroup/widget.pane.searcher.customgroup.js",
                 "com/fr/bi/web/js/modules/customgroup/widget.view.searcher.customgroup.js",
-
-                //取数
-                "com/fr/bi/web/js/modules/selectdatacombo/widget.selectdatacombo.js",
-                "com/fr/bi/web/js/modules/filter/filteritems/dimension/widget.selectdata4dimensioncombo.js",
 
                 //自定义排序
                 "com/fr/bi/web/js/modules/customsort/widget.pane.customsort.js",
@@ -1046,10 +1045,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/fieldrelationsetting/combo.path.setting.detailtable.js",
                 "com/fr/bi/web/js/modules/fieldrelationsetting/fieldrelationsettingpopup.js",
                 "com/fr/bi/web/js/modules/fieldrelationsetting/model.fieldrelationsettingpopup.js",
-
-                //下拉树控件字段关联设置
-                "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/fieldrelationsettingwithpreviewpopup.js",
-                "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/model.fieldrelationsettingwithpreviewpopup.js",
 
                 //过滤条件
                 "com/fr/bi/web/js/modules/filter/filterpopup/targetfilterpopup.js",
@@ -1411,6 +1406,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/fit/fit.widget.js",
                 "com/fr/bi/web/js/modules/fit/fit.js",
 
+                //全局样式
+                "com/fr/bi/web/js/modules/globalstyle/widget.globalstyle.js",
+                "com/fr/bi/web/js/modules/globalstyle/widget.globalstyle.setting.js",
+
                 //联动
                 "com/fr/bi/web/js/modules/linkage/model.linkage.js",
                 "com/fr/bi/web/js/modules/linkage/linkage.target.js",
@@ -1479,9 +1478,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/saveas/report.saveas.floatbox.js",
 
                 //图表钻取
-                "com/fr/bi/web/js/modules/chartdrill/widget.chartdrill.js",
-                "com/fr/bi/web/js/modules/chartdrill/cell.chartdrill.js",
                 "com/fr/bi/web/js/modules/chartdrill/button.pushdrill.js",
+                "com/fr/bi/web/js/modules/chartdrill/cell.chartdrill.js",
+                "com/fr/bi/web/js/modules/chartdrill/widget.chartdrill.js",
 
                 //etl plugin
                 "com/fr/bi/web/js/extend/excel/etl.excel.plugin.js",
@@ -1517,6 +1516,7 @@ public class ResourceHelper {
                 //表更新
                 "com/fr/bi/web/js/extend/update/update.tabledata.js",
                 "com/fr/bi/web/js/extend/update/update.tabledata.model.js",
+                "com/fr/bi/web/js/extend/update/singletable/item/item.singletable.timesetting.js",
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.js",
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.js",
@@ -1669,7 +1669,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/layer/layer.searcher.css",
                 "com/fr/bi/web/css/base/layer/layer.multiselect.css",
                 "com/fr/bi/web/css/base/layer/layer.panel.css",
-
+                "com/fr/bi/web/css/base/reqloading/loading.request.css",
 
                 "com/fr/bi/web/css/utils/widget.css",
                 "com/fr/bi/web/css/utils/color.css",
@@ -1901,6 +1901,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/css/widget/sequencetable/listnumber.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/treenumber.sequencetable.css",
+                "com/fr/bi/web/css/widget/sequencetable/dynamicnumber.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/sequencetable.css",
 
 
@@ -2101,7 +2102,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/combination/tree.button.js",
                 "com/fr/bi/web/js/base/module/combination/map.button.js",
                 "com/fr/bi/web/js/base/module/combination/tab.js",
-                "com/fr/bi/web/js/base/module/combination/map.button.js",
                 "com/fr/bi/web/js/base/module/combination/navigation.js",
                 "com/fr/bi/web/js/base/module/combination/loader.js",
                 "com/fr/bi/web/js/base/module/combination/searcher.js",
@@ -2133,6 +2133,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/layer/layer.popup.js",
                 "com/fr/bi/web/js/base/module/layer/layer.scroll.js",
                 "com/fr/bi/web/js/base/module/layer/layer.searcher.js",
+
+                "com/fr/bi/web/js/base/module/reqloading/loading.request.js",
 
                 /**公式编辑器*/
                 "com/fr/bi/web/js/base/module/formula/formulaeditor.js",
@@ -2204,7 +2206,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/button/treeitem/item.icon.treeleaf.js",
                 "com/fr/bi/web/js/case/button/treeitem/item.multilayer.icon.treeleaf.js",
                 "com/fr/bi/web/js/case/button/treeitem/item.first.treeleaf.js",
-                "com/fr/bi/web/js/case/button/treeitem/item.first.treeleaf.js",
                 "com/fr/bi/web/js/case/button/treeitem/item.last.treeleaf.js",
                 "com/fr/bi/web/js/case/button/treeitem/item.mid.treeleaf.js",
                 "com/fr/bi/web/js/case/button/treeitem/item.treetextleaf.js",
@@ -2217,8 +2218,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/button/node/node.mid.plus.js",
                 "com/fr/bi/web/js/case/button/node/node.arrow.js",
                 "com/fr/bi/web/js/case/button/node/node.triangle.js",
-
-                "com/fr/bi/web/js/case/button/icon/icon.half.js",
 
                 "com/fr/bi/web/js/case/editor/editor.state.js",
                 "com/fr/bi/web/js/case/editor/editor.state.simple.js",
@@ -2624,7 +2623,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
-                "com/fr/bi/web/js/widget/sequencetable/summarynumber.sequencetable.js",
+                "com/fr/bi/web/js/widget/sequencetable/dynamicnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/sequencetable.js",
 
                 //图片组件

@@ -8,9 +8,14 @@
 
     <title>${reportName}</title>
     <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=third.css"/>
     <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=base.css"/>
     <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=modules.css"/>
     <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=show.css"/>
+
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/utils/bi.ie8.font.css"/>
+    <![endif]-->
 
     <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
     <!--<script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.chart.js"></script>-->
@@ -22,6 +27,7 @@
     <script type="text/javascript"
             src="${servletURL}?op=emb&resource=formula.js&__pre__=true"></script>
 
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=third.js"></script>
     <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js"></script>
 
     <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js"></script>
@@ -40,7 +46,7 @@
                 edit: '${edit}',
                 description: '${description}',
                 createBy: '${createBy}',
-                reportName: "${reportName}",
+                reportName: ${reportName},
                 userId: '${userId}',
                 onlyViewAuth: ${onlyViewAuth},
                 reg: ${reg},
