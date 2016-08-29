@@ -106,12 +106,12 @@ BI.TargetFilterSelectField = BI.inherit(BI.Widget, {
     _createMultiPathFields: function (fieldId, path) {
         var self = this;
         var fields = [];
-        var fieldName = BI.Utils.getFieldNameByID(fieldId);
         BI.each(path, function (i, relations) {
+            var text = self._createNameByRelations(relations);
             fields.push({
                 type: "bi.select_data_level1_item",
-                text: self._createNameByRelations(relations),
-                title: fieldName,
+                text: text,
+                title: text,
                 value: {
                     field_id: fieldId,
                     target_relation: relations
