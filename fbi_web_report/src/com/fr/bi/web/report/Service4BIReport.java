@@ -64,7 +64,7 @@ public class Service4BIReport implements Service {
 
             new BIInitCreatedByMeAction(),
             new BIInitAllReportAction(),
-            new BIInitSharedToMeAction()
+            new BIInitSharedToMeAction(),
 
     };
 
