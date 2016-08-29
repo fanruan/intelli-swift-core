@@ -19,5 +19,5 @@ BICst.BROADCAST = {
 
     DETAIL_EDIT_PREFIX: "detail_edit_", //进入编辑界面 + wId
 
-    DATA_LABEL_PREFIX: "data_label_" //
+    DATA_LABEL_PREFIX: "data_label_" //数据标签(气泡图/散点图) + wId
 };
