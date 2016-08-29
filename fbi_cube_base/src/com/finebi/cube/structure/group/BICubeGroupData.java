@@ -240,7 +240,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
 
         @Override
         public int maxIndex() {
-            return sizeOfGroup();
+            return sizeOfGroup()-1;
         }
 
         @Override
