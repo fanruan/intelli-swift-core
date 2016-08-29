@@ -153,10 +153,9 @@ BI.BubbleLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem,
 
     _createStyle: function (initData) {
         var self = this, o = this.options;
-        var chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
         this.style = BI.createWidget({
             type: "bi.data_label_style_set",
-            chartType: chartType
+            chartType: o.chartType
         });
         BI.isNotNull(initData) && this.style.setValue(initData);
         return this.style;

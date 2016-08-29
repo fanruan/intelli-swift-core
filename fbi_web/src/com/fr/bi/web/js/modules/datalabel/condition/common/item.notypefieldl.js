@@ -101,7 +101,8 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
             dId: v,
-            sdId: o.sdId
+            sdId: o.sdId,
+            chartType: o.chartType
         });
         this.typeSelectedItem.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);

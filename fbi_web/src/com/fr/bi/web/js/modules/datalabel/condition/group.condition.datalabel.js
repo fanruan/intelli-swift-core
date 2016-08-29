@@ -40,7 +40,8 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
         }
         var item = {
             type: type,
-            sdId: o.dId
+            sdId: o.dId,
+            chartType: this.chartType
         };
         this.buttonGroup.addItems([item]);
         this.buttons = this.buttonGroup.getAllButtons();
@@ -65,6 +66,8 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
             items.push({
                 type: t.type,
                 sdId: o.dId,
+                chartType: this.chartType,
+                key: cdt.key,
                 dId: cdt.target_id,
                 filter_type: cdt.filter_type,
                 filter_value: cdt.filter_value,

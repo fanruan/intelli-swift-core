@@ -62,21 +62,45 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _buildConditions: function () {
         var self = this, o = this.options;
         var fieldName = "";
-        if (BI.isNull(o.dId)) {
+        if (BI.isNull(o.dId) && BI.isEmptyString(o.key)) {
             return [];
         }
-        switch (o.dId) {
-            case BICst.DATACOLUMN.X:
-                this.key = "x";
-                fieldName = BI.i18nText("BI-Uppercase_X_Axis");
-                break;
-            case BICst.DATACOLUMN.Y:
-                this.key = "y";
-                fieldName = BI.i18nText("BI-Uppercase_Y_Axis");
-                break;
-            default:
-                fieldName = BI.Utils.getDimensionNameByID(o.dId);
-                this.isDimension = true;
+        if (BI.isNull(o.dId)) {
+            switch (o.key) {
+                case "x":
+                    this.key = "x";
+                    fieldName = BI.i18nText("BI-Uppercase_X_Axis");
+                    break;
+                case "y":
+                    this.key = "y";
+                    fieldName = BI.i18nText("BI-Uppercase_Y_Axis");
+                    break;
+                case "z":
+                    this.key = "z";
+                    fieldName = BI.i18nText("BI-Bubble_Size");
+                    break;
+                default:
+                    fieldName = BI.Utils.getDimensionNameByID(o.dId);
+                    this.isDimension = true;
+            }
+        } else {
+            switch (o.dId) {
+                case BICst.DATACOLUMN.X:
+                    this.key = "x";
+                    fieldName = BI.i18nText("BI-Uppercase_X_Axis");
+                    break;
+                case BICst.DATACOLUMN.Y:
+                    this.key = "y";
+                    fieldName = BI.i18nText("BI-Uppercase_Y_Axis");
+                    break;
+                case BICst.DATACOLUMN.Z:
+                    this.key = "z";
+                    fieldName = BI.i18nText("BI-Bubble_Size");
+                    break;
+                default:
+                    fieldName = BI.Utils.getDimensionNameByID(o.dId);
+                    this.isDimension = true;
+            }
         }
         o.filter_type = this.isDimension === false ? o.filter_type : BICst.DIMENSION_FILTER_STRING.BELONG_VALUE;
 
@@ -235,11 +259,10 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _createStyle: function (initData) {
-        var self = this, o = this.options;
-        // var chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        var o = this.options;
         this.style = BI.createWidget({
             type: "bi.data_label_style_set",
-            // chartType: chartType
+            chartType: o.chartType
         });
         BI.isNotNull(initData) && this.style.setValue(initData);
         return this.style;
@@ -248,7 +271,6 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     getValue: function () {
         return {
             key: this.key,
-            target_id: this.options.dId,
             filter_type: this.filterType.getValue()[0],
             filter_value: this.filterWidget.getValue(),
             style_setting: this.style.getValue()
