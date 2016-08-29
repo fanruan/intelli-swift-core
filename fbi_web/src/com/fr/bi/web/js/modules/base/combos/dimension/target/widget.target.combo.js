@@ -284,7 +284,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     },{
                         text: BI.i18nText("BI-Data_Label"),
-                        value: BICst.TARGET_COMBO.DATA_LABEL,
+                        value: BICst.TARGET_COMBO.DATA_LABEL_OTHER,
                         warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
                     }]
                 };

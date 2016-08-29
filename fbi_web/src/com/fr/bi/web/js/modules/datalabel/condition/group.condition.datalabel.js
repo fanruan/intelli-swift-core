@@ -12,7 +12,8 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
     _init: function () {
         BI.DataLabelConditionGroup.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        this.wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        this.chartType = BI.Utils.getWidgetTypeByID(this.wId);
         this.buttonGroup = BI.createWidget({
             type: "bi.button_group",
             cls: "",
@@ -49,7 +50,12 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this, o = this.options;
-        var conditions = BI.Utils.getDatalabelByID(o.dId);
+        var conditions;
+        if (this.chartType === BICst.WIDGET.SCATTER || this.chartType === BICst.WIDGET.BUBBLE) {
+            conditions = BI.Utils.getDatalabelByWidgetID(this.wId)
+        } else {
+            conditions = BI.Utils.getDatalabelByID(o.dId);
+        }
         var items = [];
         BI.each(conditions, function (idx, cdt) {
             var t = {};

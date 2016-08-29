@@ -411,7 +411,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var self = this, o = this.options;
         var allSeries = BI.pluck(data, "name");
         BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
-            BI.each(BI.Utils.getDatalabelByID(dId), function (id, dataLabel) {
+            BI.each(BI.Utils.getDatalabelByWidgetID(dId), function (id, dataLabel) {
                 var filter = null;
                 if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
                     filter = BI.FilterFactory.parseFilter(dataLabel);
@@ -537,12 +537,21 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataLabel: function (data, label) {
+        var show = "";
+        var chartType = BI.Utils.getWidgetTypeByID(this.options.wId);
+        if(chartType === BICst.WIDGET.BUBBLE) {
+            show = "(" + data.x + "," + data.y +") " + data.z;
+        } else if(chartType === BICst.WIDGET.SCATTER) {
+            show = "(" +data.x + "," + data.y + ")";
+        } else {
+            show = data.y;
+        }
         var dataLabels = {
             enabled: true,
             align: "outside",
             useHtml: true,
             style: {},
-            formatter: "function(){return '<div>" + data.y + "</div>'}"
+            formatter: "function(){return '<div>" + show + "</div>'}"
         };
         switch (label.style_setting.type) {
             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
