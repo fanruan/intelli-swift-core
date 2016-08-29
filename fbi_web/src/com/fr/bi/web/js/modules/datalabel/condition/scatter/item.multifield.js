@@ -4,7 +4,7 @@
 BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
-        CONTAINER_HEIGHT: 75,
+        CONTAINER_HEIGHT: 80,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
         FIELD_NAME_BUTTON_WIDTH: 60,
@@ -25,6 +25,13 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         var self = this, o = this.options;
         this.filterType = [];
         this.filterWidget = [];
+        this.filterField = [{
+            name: BI.i18nText("BI-Uppercase_X_Axis"),
+            key: "x"
+        }, {
+            name: BI.i18nText("BI-Uppercase_Y_Axis"),
+            key: "y"
+        }];
         var and = BI.createWidget({
             type: "bi.label",
             text: BI.i18nText("BI-And")
@@ -66,34 +73,21 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _buildConditions: function () {
         var self = this, o = this.options;
         this.filterItems = [];
-        this.filterValues = o.filter_value || [];
-        if (this.filterValues.length === 0 && !BI.isNull(o.dId)) {
-            BI.each(o.dId, function (i, dId) {
-                self.filterValues.push({
-                    target_id: dId,
-                    filter_type: o.filter_type
-                });
-            });
-        }
-        this.targets = BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(this.filterValues[0].target_id));
-        BI.each(this.filterValues, function (i, v) {
-            var dId = v.target_id;
-            var fieldName = BI.Utils.getDimensionNameByID(dId);
-            if (BI.contains(self.targets[30000], dId)) {
-                fieldName = BI.i18nText("BI-Uppercase_Y_Axis");
-            }
-            if (BI.contains(self.targets[40000], dId)) {
-                fieldName = BI.i18nText("BI-Uppercase_X_Axis");
+        this.filterValues = o.filter_value || this.filterField;
+        BI.each(this.filterValues, function (i, filter) {
+            if(BI.isNull(filter.filter_type)) {
+                filter.filter_type = o.filter_type
             }
             var fieldButton = BI.createWidget({
                 type: "bi.text_button",
-                text: fieldName,
-                title: fieldName,
+                text: self.filterField[i].name,
+                title: self.filterField[i].name,
                 width: self._constant.FIELD_NAME_BUTTON_WIDTH,
                 height: self._constant.BUTTON_HEIGHT,
                 textAlign: "left",
                 hgap: self._constant.TEXT_BUTTON_H_GAP
             });
+
             fieldButton.on(BI.Controller.EVENT_CHANGE, function () {
                 arguments[2] = self;
                 self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
@@ -107,12 +101,12 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
                 height: self._constant.BUTTON_HEIGHT,
                 items: BICst.DATA_LABEL_FILTER_NUMBER_COMBO
             });
-            self.filterType[i].setValue(v.filter_type);
+            self.filterType[i].setValue(filter.filter_type);
             self.filterType[i].on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
                 self._refreshFilterWidget(i, filterWidgetContainer, self.filterType[i].getValue()[0]);
                 o.afterValueChange.apply(self, arguments);
             });
-            self._refreshFilterWidget(i, filterWidgetContainer, v.filter_type, v.filter_value);
+            self._refreshFilterWidget(i, filterWidgetContainer, filter.filter_type, filter.filter_value);
             self.filterItems.push([fieldButton, self.filterType[i], filterWidgetContainer]);
         });
         return BI.createWidget({
@@ -149,7 +143,7 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             case BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
             case BICst.DIMENSION_FILTER_NUMBER.IS_NULL:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_NULL:
-                this.filterWidget[id]= BI.createWidget();
+                this.filterWidget[id] = BI.createWidget();
                 break;
             default:
                 this.filterWidget[id] = BI.createWidget();
@@ -203,10 +197,10 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _createStyle: function (initData) {
         var self = this, o = this.options;
-        var chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.filterValues[0].target_id));
+        // var chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.filterValues[0].target_id));
         this.style = BI.createWidget({
             type: "bi.data_label_style_set",
-            chartType: chartType
+            // chartType: chartType
         });
         BI.isNotNull(initData) && this.style.setValue(initData);
         return this.style;
@@ -215,16 +209,9 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     getValue: function () {
         var self = this;
         var value = [];
-        BI.each(this.filterValues, function (i, v) {
-            var key = "";
-            if (BI.contains(self.targets[30000], v.target_id)) {
-                key = "y";
-            } else {
-                key = "x";
-            }
+        BI.each(this.filterValues, function (i) {
             value.push({
-                key: key,
-                target_id: v.target_id,
+                key: self.filterField[i].key,
                 filter_type: self.filterType[i].getValue()[0],
                 filter_value: self.filterWidget[i].getValue()
             });
