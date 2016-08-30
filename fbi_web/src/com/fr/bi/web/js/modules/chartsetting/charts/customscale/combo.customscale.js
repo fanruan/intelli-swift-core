@@ -27,8 +27,9 @@ BI.ComboCustomScale = BI.inherit(BI.Widget , {
             height: 360
         });
 
-        this.pane.on(BI.FormulaInsert.EVENT_CHANGE , function () {
+        this.pane.on(BI.CustomScaleFormula.EVENT_CHANGE , function () {
             self.trigger.setValue(self.pane.getValue());
+            self.combo.hideView();
             self.fireEvent(BI.ComboCustomScale.EVENT_CHANGE)
         });
 
@@ -41,7 +42,7 @@ BI.ComboCustomScale = BI.inherit(BI.Widget , {
             self.fireEvent(BI.ComboCustomScale.EVENT_CHANGE)
         });
 
-       var combo = BI.createWidget({
+       this.combo = BI.createWidget({
             type: "bi.combo",
             width: 110,
             isNeedAdjustWidth: false,
@@ -58,7 +59,7 @@ BI.ComboCustomScale = BI.inherit(BI.Widget , {
             element: this.element,
             items: {
                 left: [label],
-                right: [combo]
+                right: [this.combo]
             },
             rlgap: 10,
             rrgap: 20

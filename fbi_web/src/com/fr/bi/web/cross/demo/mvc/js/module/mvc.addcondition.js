@@ -92,6 +92,7 @@ AddConditionView = BI.inherit(BI.View, {
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
+            height: 100,
             items: [interval, formulaTrigger, formula, customScale/*, singleTree*/],
             hgap: 10,
             vgap: 10
