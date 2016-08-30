@@ -16,6 +16,12 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
 
     _init: function () {
         BIDezi.DetailModel.superclass._init.apply(this, arguments);
+        var self = this;
+        BI.Broadcasts.on(BICst.BROADCAST.DATA_LABEL_PREFIX+this.get("id"), function (v) {
+            self.set("settings", BI.extend(self.get("settings"),{
+                data_label: v
+            }));
+        })
     },
 
     similar: function (ob, key) {
