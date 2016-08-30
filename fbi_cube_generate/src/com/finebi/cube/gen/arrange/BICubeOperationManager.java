@@ -442,7 +442,6 @@ public class BICubeOperationManager {
         if (null == tableUpdateSetting || !(advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable() && advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isCubeLastTimeAvailable())) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         }
-
         /*若设置为不随全局更新的话，那就不更新*/
         else if (currentTask.getTaskType() == CubeTaskType.ALL && tableUpdateSetting.getTogetherOrNever() == DBConstant.SINGLE_TABLE_UPDATE.NEVER) {
             return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
@@ -457,9 +456,9 @@ public class BICubeOperationManager {
                     resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
                     cube = new BICube(resourceRetrievalService, discovery);
                      /*服务数据集和EXCEL数据集不支持增量更新,即使选择增量也当作全部更新处理*/
-                    if ((tableSource instanceof ExcelTableSource)||(tableSource instanceof ServerTableSource)) {
+                    if ((tableSource instanceof ExcelTableSource) || (tableSource instanceof ServerTableSource)) {
                         return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
-                    }else {
+                    } else {
                         return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version, tableUpdateSetting);
                     }
                 }

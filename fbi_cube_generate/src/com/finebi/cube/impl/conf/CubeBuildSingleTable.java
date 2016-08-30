@@ -76,8 +76,8 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     private void setChildTableSource(String childTableSourceId) {
         if (null != childTableSourceId) {
             for (CubeTableSource source : this.getAllSingleSources()) {
-                if (ComparatorUtils.equals(source.getSourceID(),childTableSourceId)){
-                    this.childTableSource=source;
+                if (ComparatorUtils.equals(source.getSourceID(), childTableSourceId)) {
+                    this.childTableSource = source;
                 }
             }
         }
@@ -266,19 +266,19 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     @Override
     public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
         Map<CubeTableSource, UpdateSettingSource> map = new HashMap<CubeTableSource, UpdateSettingSource>();
-        if (null==childTableSource){
-           return map;
+        if (null == childTableSource) {
+            return map;
         }
         for (CubeTableSource source : this.getAllSingleSources()) {
             UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), biUser.getUserId());
             if (null != updateSettingSource) {
-            if (ComparatorUtils.equals(source.getSourceID(), this.childTableSource.getSourceID())) {
-                updateSettingSource.setUpdateType(updateType);
+                if (ComparatorUtils.equals(source.getSourceID(), this.childTableSource.getSourceID())) {
+                    updateSettingSource.setUpdateType(updateType);
+                } else {
+                    updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
+                }
             } else {
-                updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
-            }
-            }else {
-                updateSettingSource=new UpdateSettingSource();
+                updateSettingSource = new UpdateSettingSource();
                 updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
             }
             map.put(source, updateSettingSource);

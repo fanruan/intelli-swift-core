@@ -52,7 +52,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         try {
             allRelationPathSet = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILogger.getLogger().error(e.getMessage(), e);
         }
     }
 
