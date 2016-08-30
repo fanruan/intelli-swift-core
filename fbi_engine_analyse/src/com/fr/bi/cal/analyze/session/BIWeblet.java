@@ -30,6 +30,7 @@ import java.util.Map;
 public class BIWeblet implements Weblet {
 
     private BIReportNode node;
+    private Long userId;
 
     /**
      * 构造函数
@@ -41,13 +42,20 @@ public class BIWeblet implements Weblet {
     public BIWeblet() {
     }
 
+    public BIWeblet(long userId) {
+        this.userId = userId;
+    }
+
     /**
      * 创建Session
      */
     @Override
     public SessionProvider createSessionIDInfor(HttpServletRequest req,
                                                 String remoteAddress, Map parameterMap4Execute) throws Exception {
-        return new BISession(remoteAddress, this, ServiceUtils.getCurrentUserID(req), req.getLocale(), node);
+        if(userId == null) {
+            userId = ServiceUtils.getCurrentUserID(req);
+        }
+        return new BISession(remoteAddress, this, userId, req.getLocale(), node);
     }
 
     /**
