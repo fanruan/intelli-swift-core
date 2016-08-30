@@ -2954,7 +2954,7 @@ Data.Utils = {
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
             configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + xTitle : xTitle;
             configs.xAxis[0].title.align = "center";
-            BI.extend(config.xAxis[0], {
+            BI.extend(configs.xAxis[0], {
                 formatter: formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS),
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 showLabel: config.show_label,
@@ -3467,7 +3467,7 @@ Data.Utils = {
 
             configs.show_left_y_axis_title === true && (configs.yAxis[0].title.text = config.x_axis_title);
             configs.yAxis[0].title.rotation = constants.ROTATION;
-            BI.extend(config.yAxis[0], {
+            BI.extend(configs.yAxis[0], {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 labelRotation: config.text_direction,
                 enableTick: config.enable_tick,
@@ -3478,7 +3478,7 @@ Data.Utils = {
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.left_y_axis_title + xTitle : xTitle;
             configs.xAxis[0].title.align = "center";
-            BI.extend(config.xAxis[0], {
+            BI.extend(configs.xAxis[0], {
                 formatter: formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS),
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 enableTick: config.enable_tick,
@@ -4615,7 +4615,7 @@ Data.Utils = {
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
             configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + yTitle : yTitle;
             configs.yAxis[0].title.rotation = constants.ROTATION;
-            BI.extend(config.yAxis[0], {
+            BI.extend(configs.yAxis[0], {
                 lineWidth: config.line_width,
                 showLabel: config.show_label,
                 enableTick: config.enable_tick,
@@ -4627,7 +4627,7 @@ Data.Utils = {
 
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            BI.extend(config.xAxis[0], {
+            BI.extend(configs.xAxis[0], {
                 lineWidth: config.line_width,
                 enableTick: config.enable_tick,
                 labelRotation: config.text_direction,
