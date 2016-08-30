@@ -31,7 +31,6 @@ import com.finebi.cube.utils.BICubeRelationUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.ExcelTableSource;
-import com.fr.bi.conf.data.source.ServerTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -455,11 +454,10 @@ public class BICubeOperationManager {
                     discovery = BICubeIncreaseDisDiscovery.getInstance();
                     resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
                     cube = new BICube(resourceRetrievalService, discovery);
-                     /*服务数据集和EXCEL数据集不支持增量更新,即使选择增量也当作全部更新处理*/
-                    if ((tableSource instanceof ExcelTableSource) || (tableSource instanceof ServerTableSource)) {
-                        return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+                        if (tableSource instanceof ExcelTableSource) {
+                            return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                     } else {
-                        return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version, tableUpdateSetting);
+                            return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version, tableUpdateSetting);
                     }
                 }
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
