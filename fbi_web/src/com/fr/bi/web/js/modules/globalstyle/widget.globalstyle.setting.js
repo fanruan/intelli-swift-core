@@ -46,10 +46,11 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
 
         //预设样式
         this.predictionStyle = BI.createWidget({
-            type: "bi.button",
-            text: "wahaha",
-            level: "common",
-            height: 190
+            // type: "bi.button",
+            // text: "wahaha",
+            // level: "common",
+            // height: 190
+            type:"bi.global_style_index_prediction_style"
         });
         this._initCenter();
 
@@ -82,8 +83,8 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                         left: [cancel],
                         right: [preview, save]
                     },
-                    lhgap: 20,
-                    rhgap: 20,
+                    llgap: 20,
+                    rrgap: 20,
                     height: 60
                 },
                 height: 60
