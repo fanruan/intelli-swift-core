@@ -20,7 +20,7 @@ BI.RegionsManagerShow = BI.inherit(BI.Widget, {
         BI.RegionsManagerShow.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.regions = {};
-        if(o.regionType >= BICst.MAP_TYPE.WORLD){
+        if((o.regionType + "").indexOf(BICst.DI_TU) !== -1){
             this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Region_Name"), BICst.REGION.DIMENSION1);
             this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
             this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Region_Suspension_Target"), BICst.REGION.TARGET2)

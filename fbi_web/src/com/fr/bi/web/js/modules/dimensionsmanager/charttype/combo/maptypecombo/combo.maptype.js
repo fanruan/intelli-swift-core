@@ -5,6 +5,11 @@
  * @extend BI.Widget
  */
 BI.MapTypeCombo = BI.inherit(BI.Widget, {
+
+    _CONST: {
+        SHOW_MAP_LAYER: 2
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.MapTypeCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-map-type-combo",
@@ -16,11 +21,30 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
     _init: function () {
         BI.MapTypeCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        var items = [];
+        BI.each(MapConst.INNER_MAP_INFO.MAP_TYPE_NAME, function(key, value){
+            if(MapConst.INNER_MAP_INFO.MAP_LAYER[key] < self._CONST.SHOW_MAP_LAYER){
+                items.push({
+                    text: value,
+                    value: key,
+                    title: value,
+                    iconClass: MapConst.INNER_MAP_INFO.MAP_LAYER[key] === 0 ? "drag-map-china-icon" : "drag-map-svg-icon"
+                });
+            }
+        });
+        BI.each(MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME, function(key, value){
+            items.push({
+                text: value,
+                value: key,
+                title: value,
+                iconClass: "drag-map-svg-icon"
+            });
+        });
         this.trigger = BI.createWidget({
             type: "bi.icon_combo_trigger",
             iconClass: "drag-map-china-icon",
             title: o.title,
-            items: o.items,
+            items: items,
             width: o.width,
             height: o.height,
             iconWidth: o.iconWidth,

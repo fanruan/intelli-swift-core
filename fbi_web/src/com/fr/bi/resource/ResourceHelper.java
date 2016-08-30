@@ -11,15 +11,19 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.general.GeneralContext;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
+import com.fr.stable.CodeUtils;
 import com.fr.stable.StableUtils;
+import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.Transmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -28,6 +32,7 @@ import java.util.*;
  */
 public class ResourceHelper {
     public static Transmitter DataTransmitter = new Transmitter() {
+
         @Override
         public String transmit(HttpServletRequest req, HttpServletResponse res, String[] files) {
             return getDataJs(req, files);
@@ -59,11 +64,89 @@ public class ResourceHelper {
         }
     }
 
-    public static FormulaTransmitter FormulaTransmitter = new FormulaTransmitter();
+    public static class MapConstantTransmitter implements Transmitter {
 
+        private JSONObject innerMapInfo = new JSONObject();
+        private JSONObject customMapInfo = new JSONObject();
+
+        @Override
+        public String transmit(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String[] files) {
+            Map<String, JSONObject> map = new HashMap<String, JSONObject>();
+            StringBuilder buffer = new StringBuilder();
+            try {
+                map.put("custom_map_info", customMapInfo);
+                map.put("inner_map_info", innerMapInfo);
+                customMapInfo.put("MAP_NAME", new JSONObject());
+                customMapInfo.put("MAP_TYPE_NAME", new JSONObject());
+                customMapInfo.put("MAP_PATH", new JSONObject());
+                customMapInfo.put("MAP_LAYER", new JSONObject());
+                customMapInfo.put("MAP_PARENT_CHILDREN", new JSONObject());
+                innerMapInfo.put("MAP_NAME", new JSONObject());
+                innerMapInfo.put("MAP_TYPE_NAME", new JSONObject());
+                innerMapInfo.put("MAP_PATH", new JSONObject());
+                innerMapInfo.put("MAP_LAYER", new JSONObject());
+                innerMapInfo.put("MAP_PARENT_CHILDREN", new JSONObject());
+
+                String innerMapPath = new File(GeneralContext.getEnvProvider().getPath(), "resources/geojson/map").getAbsolutePath();
+                String customMapPath = new File(GeneralContext.getEnvProvider().getPath(), "resources/geojson/image").getAbsolutePath();
+                editFileNames(innerMapPath, "map", "map", innerMapInfo, "MAP_", 0);
+                editFileNames(customMapPath, "image", "image", customMapInfo, "MAP_", 0);
+                for (String file : files) {
+                    buffer.append(TemplateUtils.renderTemplate(file, map));
+                }
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage());
+            }
+            return buffer.toString();
+        }
+
+        private void editFileNames(String path, String parentPath, String parentName, JSONObject obj, String prev, int layer) throws JSONException {
+            File file = new File(path);
+            File[] array = file.listFiles();
+            if(array == null){
+                return;
+            }
+            List<File> dirs = new ArrayList<File>();
+            List<File> files = new ArrayList<File>();
+            for(File f : array){
+                if(f.isFile()){
+                    files.add(f);
+                }else{
+                    if (f.isDirectory()){
+                        dirs.add(f);
+                    }
+                }
+            }
+            JSONArray children = new JSONArray();
+            for(File f : files){
+                String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
+                String currentName = (StringUtils.isEmpty(parentName) ? fileName : parentName + File.separator + fileName);
+                obj.getJSONObject("MAP_NAME").put(fileName, prev + currentName);
+                obj.getJSONObject("MAP_TYPE_NAME").put(prev + currentName, fileName);
+                obj.getJSONObject("MAP_PATH").put(prev + currentName, "?op=fr_bi&cmd=get_map_json&file_path=" + CodeUtils.cjkEncode(currentName) + ".json");
+                obj.getJSONObject("MAP_LAYER").put(prev + currentName, layer);
+                children.put(prev + currentName);
+            }
+            obj.getJSONObject("MAP_PARENT_CHILDREN").put(parentName, children);
+            for(File f : dirs){
+                String currentName = (StringUtils.isEmpty(parentName) ? f.getName() : parentName + File.separator + f.getName());
+                String currentPath = StringUtils.isEmpty(parentPath) ? f.getName() : parentPath + File.separator + f.getName();
+                editFileNames(f.getAbsolutePath(), currentPath, currentName, obj, prev, layer + 1);
+
+            }
+        }
+    }
+
+    public static MapConstantTransmitter MapTransmitter = new MapConstantTransmitter();
+
+    public static FormulaTransmitter FormulaTransmitter = new FormulaTransmitter();
 
     public static String[] getDataJS() {
         return new String[]{"/com/fr/bi/web/js/template/pool.data.js"};
+    }
+
+    public static String[] getMapJS() {
+        return new String[]{"/com/fr/bi/web/js/template/map.js"};
     }
 
     public static String[] getFormulaCollectionJS() {

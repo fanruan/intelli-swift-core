@@ -67,15 +67,15 @@ Data.Utils = {
             });
         });
         if (type === BICst.WIDGET.MAP) {
-            var subType = widget.sub_type || BICst.MAP_TYPE.CHINA;
-            options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
+            var subType = widget.sub_type || MapConst.INNER_MAP_INFO.MAP_NAME[BI.i18nText("BI-China")];
+            options.initDrillPath = [MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType]];
             var drill = BI.values(getDrill())[0];
             BI.each(drill, function (idx, dri) {
                 options.initDrillPath.push(dri.values[0].value[0]);
             });
             options.geo = {
-                data: BICst.MAP_PATH[subType],
-                name: BICst.MAP_TYPE_NAME[subType] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                data: MapConst.INNER_MAP_INFO.MAP_PATH[subType],
+                name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[BI.i18nText("BI-China")]
             }
         }
         if (type === BICst.WIDGET.GIS_MAP) {
@@ -482,7 +482,7 @@ Data.Utils = {
                             res.drilldown = {};
                             res.drilldown.series = formatDataForMap(item, currentLayer);
                             res.drilldown.geo = {
-                                data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]],
+                                data: MapConst.INNER_MAP_INFO.MAP_PATH[MapConst.INNER_MAP_INFO.MAP_NAME[res.x]],
                                 name: res.x
                             };
                         }
@@ -713,7 +713,7 @@ Data.Utils = {
             x_axis_style: options.x_axis_style || constants.NORMAL,
             x_axis_number_level: options.x_axis_number_level || constants.NORMAL,
             tooltip: options.tooltip || "",
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
+            geo: options.geo || {data: MapConst.INNER_MAP_INFO.MAP_PATH[BI.i18nText("BI-China")], name: BI.i18nText("BI-China")},
             theme_color: options.theme_color || "#65bce7",
             map_styles: options.map_styles || [],
             auto_custom: BI.isNull(options.map_styles) ? false : options.auto_custom,
