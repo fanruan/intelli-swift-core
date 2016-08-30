@@ -8,7 +8,7 @@ import com.fr.bi.web.dezi.BIReportSavingAction;
 import com.fr.bi.web.dezi.BIWidgetSettingAction;
 import com.fr.bi.web.dezi.services.*;
 import com.fr.bi.web.dezi.services.image.BISaveUploadImageAction;
-import com.fr.bi.web.dezi.services.report.BIUpadateSessionAction;
+import com.fr.bi.web.dezi.services.report.BIUpdateSessionAction;
 import com.fr.bi.web.report.services.BIInitDeziPaneAction;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
@@ -40,7 +40,7 @@ public class Service4BIDezi implements Service {
     }
 
     private static AbstractBIDeziAction[] actions = {
-            new BIUpadateSessionAction(),
+            new BIUpdateSessionAction(),
             new BIRemoveWidgetAction(),
 
             new BIWidgetSettingAction(),

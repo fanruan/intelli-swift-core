@@ -31,6 +31,7 @@ import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -81,6 +82,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
+            return null;
         } catch (Exception e) {
             try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
@@ -88,8 +90,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 BILogger.getLogger().error(e1.getMessage(), e1);
             }
             BILogger.getLogger().error(e.getMessage(), e);
-        } finally {
-            return null;
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
