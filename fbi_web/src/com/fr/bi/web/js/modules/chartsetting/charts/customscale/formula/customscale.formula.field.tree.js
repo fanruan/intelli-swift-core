@@ -5,7 +5,7 @@
 BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.CustomScaleFormulaFieldTree.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "custom-scale-formula-field-tree",
+            baseCls: "bi-custom-scale-formula-field-tree",
             chooseType: 0,
             items: {}
         })
@@ -169,6 +169,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
         this.fieldTree = BI.createWidget({
             type: "bi.multilayer_single_level_tree",
             element: this.element,
+            isDefaultInit: true,
             items: nodes
         });
 

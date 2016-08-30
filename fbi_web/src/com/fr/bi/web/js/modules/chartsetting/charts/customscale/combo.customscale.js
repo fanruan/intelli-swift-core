@@ -22,9 +22,9 @@ BI.ComboCustomScale = BI.inherit(BI.Widget , {
         });
 
         this.pane = BI.createWidget({
-            type: "bi.formula_insert",
+            type: "bi.custom_scale_formula_pane",
             width: 500,
-            height: 300
+            height: 360
         });
 
         this.pane.on(BI.FormulaInsert.EVENT_CHANGE , function () {

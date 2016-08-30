@@ -85,13 +85,14 @@ AddConditionView = BI.inherit(BI.View, {
         var items = BI.deepClone(TREE);
 
         var singleTree = BI.createWidget({
-            type: "bi.custom_scale_formula"
+            type: "bi.custom_scale_formula_pane",
+
         });
 
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            items: [interval, formulaTrigger, formula, customScale, singleTree],
+            items: [interval, formulaTrigger, formula, customScale/*, singleTree*/],
             hgap: 10,
             vgap: 10
         });

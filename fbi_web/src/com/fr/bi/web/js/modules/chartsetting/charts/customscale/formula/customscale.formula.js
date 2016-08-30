@@ -6,10 +6,7 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.CustomScaleFormula.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-custom-scale-formula",
-            items: {
-                type: 14,
-                30000: [BI.UUID(), BI.UUID()]
-            }
+            items: {}
         })
     },
 
@@ -31,8 +28,8 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
 
         this.symbolGroup = BI.createWidget({
             type: "bi.symbol_group",
-            height: 30,
-            cls: "symbol-group-column"
+            cls: "symbol-group",
+            height: 30
         });
 
         this.symbolGroup.on(BI.SymbolGroup.EVENT_CHANGE, function (v) {
@@ -112,15 +109,19 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
         this.populate(o.items)
     },
 
+    checkValidation: function () {
+        return this.validation === "valid";
+    },
+
     _createTargetMap: function (state, items, targetType, text, axis) {
         var fieldMap = {};
-        if(state){
+        if (state) {
             BI.each(items[targetType], function (idx, item) {
                 fieldMap["max(" + axis + (idx + 1) + ")"] = item + text[0];
                 fieldMap["min(" + axis + (idx + 1) + ")"] = item + text[1];
                 fieldMap["average(" + axis + (idx + 1) + ")"] = item + text[2]
             });
-        }else{
+        } else {
             BI.each(items[targetType], function (idx, item) {
                 fieldMap[item + text[0]] = "max(" + axis + (idx + 1) + ")";
                 fieldMap[item + text[1]] = "min(" + axis + (idx + 1) + ")";
@@ -260,14 +261,46 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
                     });
                     hint.element.attr({text: self.fieldValueTextMap[node.getValue()]});
                     return hint.element;
-
                 }
             })
         });
     },
 
-    getValue: function () {
+    _analyzeContent: function (v) {
+        var regx = /\$[\{][^\}]*[\}]|\w*\w|\$\{[^\$\(\)\+\-\*\/)\$,]*\w\}|\$\{[^\$\(\)\+\-\*\/]*\w\}|\$\{[^\$\(\)\+\-\*\/]*[\u4e00-\u9fa5]\}|\w|(.)|\n/g;
+        return v.match(regx);
+    },
 
+    refresh: function () {
+        this.formulaEditor.refresh();
+    },
+
+    getFormulaString: function () {
+        return this.formulaEditor.getFormulaString()
+    },
+
+    getUsedFields: function () {
+        return this.formulaEditor.getUsedFields()
+    },
+
+    setValue: function (v) {
+        var self = this, result;
+        self.formulaEditor.refresh();
+        self.formulaEditor.setValue("");
+        result = this._analyzeContent(v);
+        BI.each(result, function (i, item) {
+            var fieldRegx = /\$[\{][^\]*[\}]/;
+            var str = item.match(fieldRegx);
+            if (BI.isNotEmptyArray(str)) {
+                self.formulaEditor.insertField(self.fieldValueTextMap[str[0].substring(2, item.length - 1)])
+            } else {
+                self.formulaEditor.insertString(item)
+            }
+        })
+    },
+
+    getValue: function () {
+        return this.formulaEditor.getValue()
     },
 
     populate: function (items) {
