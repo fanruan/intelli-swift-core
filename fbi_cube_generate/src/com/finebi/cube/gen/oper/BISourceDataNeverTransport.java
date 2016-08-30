@@ -3,6 +3,7 @@ package com.finebi.cube.gen.oper;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.Set;
 
@@ -27,9 +28,9 @@ public class BISourceDataNeverTransport extends BISourceDataTransport {
             recordTableInfo();
             tableEntityService.addVersion(version);
             tableEntityService.clear();
-        } catch (Exception e) {
-        } finally {
             return null;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 

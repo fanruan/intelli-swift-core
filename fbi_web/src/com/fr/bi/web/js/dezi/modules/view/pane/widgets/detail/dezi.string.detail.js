@@ -222,6 +222,8 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             this.dimensionsManager.populate();
+            this.combo.setValue();
+            this.model.set("value", this.combo.getValue());
         }
     },
 

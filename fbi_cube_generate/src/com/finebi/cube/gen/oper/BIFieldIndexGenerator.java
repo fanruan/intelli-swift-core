@@ -74,6 +74,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
+            return null;
         } catch (Exception e) {
             try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
@@ -81,8 +82,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
             BILogger.getLogger().error(e.getMessage(), e);
-        } finally {
-            return null;
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 

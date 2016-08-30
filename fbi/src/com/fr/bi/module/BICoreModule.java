@@ -34,6 +34,7 @@ import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.mobile.Service4BIMobile;
 import com.fr.bi.web.dezi.web.Service4BIDezi;
 import com.fr.bi.web.report.Service4BIReport;
+import com.fr.bi.web.report.services.finecube.Service4FineCube;
 import com.fr.cluster.rpc.RPC;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -405,7 +406,9 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIReport(),
                 new Service4BIDezi(),
                 new Service4BIMobile(),
-                new Service4BIBase()
+                new Service4BIBase(),
+
+                new Service4FineCube()
         };
     }
 
