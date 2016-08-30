@@ -37,7 +37,7 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                     fieldType: BICst.DATACOLUMN.XANDYANDSIZE,
                     value: BICst.DATACOLUMN.XANDYANDSIZE,
                     isParent: false
-                },{
+                }, {
                     id: BICst.DATACOLUMN.XANDY,
                     type: "bi.select_data_level0_item",
                     text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
@@ -45,7 +45,7 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                     fieldType: BICst.DATACOLUMN.XANDY,
                     value: BICst.DATACOLUMN.XANDY,
                     isParent: false
-                },{
+                }, {
                     id: BICst.DATACOLUMN.X,
                     type: "bi.select_data_level0_item",
                     fieldType: BICst.DATACOLUMN.X,
@@ -53,7 +53,7 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                     title: BI.i18nText("BI-Uppercase_X_Axis"),
                     value: BICst.DATACOLUMN.X,
                     isParent: false
-                },{
+                }, {
                     id: BICst.DATACOLUMN.Y,
                     type: "bi.select_data_level0_item",
                     fieldType: BICst.DATACOLUMN.Y,
@@ -61,7 +61,7 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                     title: BI.i18nText("BI-Uppercase_Y_Axis"),
                     value: BICst.DATACOLUMN.Y,
                     isParent: false
-                },{
+                }, {
                     id: BICst.DATACOLUMN.Z,
                     type: "bi.select_data_level0_item",
                     fieldType: BICst.DATACOLUMN.Z,

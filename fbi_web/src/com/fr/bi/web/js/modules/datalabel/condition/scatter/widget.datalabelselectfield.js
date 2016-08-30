@@ -29,15 +29,15 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                     isParent: true,
                     fontType: BI.DimensionSelectDataLevel0Node.SERIES,
                     open: true
-                },{
+                }, {
                     id: BICst.DATACOLUMN.XANDY,
                     type: "bi.select_data_level0_item",
-                    text: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
-                    title: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
+                    text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
+                    title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
                     fieldType: BICst.DATACOLUMN.XANDY,
                     value: BICst.DATACOLUMN.XANDY,
                     isParent: false
-                },{
+                }, {
                     id: BICst.DATACOLUMN.X,
                     type: "bi.select_data_level0_item",
                     text: BI.i18nText("BI-Uppercase_X_Axis"),
@@ -45,7 +45,7 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                     fieldType: BICst.DATACOLUMN.X,
                     value: BICst.DATACOLUMN.X,
                     isParent: false
-                },{
+                }, {
                     id: BICst.DATACOLUMN.Y,
                     type: "bi.select_data_level0_item",
                     text: BI.i18nText("BI-Uppercase_Y_Axis"),

@@ -74,14 +74,14 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.filterItems = [];
         var filterContainer = [];
         this.filterValues = o.filter_value || this.filterField;
-        if(this.filterValues.length === 3 || o.dId === BICst.DATACOLUMN.XANDYANDSIZE) {
+        if (this.filterValues.length === 3 || o.dId === BICst.DATACOLUMN.XANDYANDSIZE) {
             this.filterField.push({
                 name: BI.i18nText("BI-Bubble_Size"),
                 key: "z"
             });
         }
         BI.each(this.filterValues, function (i, filter) {
-            if(BI.isNull(filter.filter_type)) {
+            if (BI.isNull(filter.filter_type)) {
                 filter.filter_type = o.filter_type
             }
             var fieldButton = BI.createWidget({

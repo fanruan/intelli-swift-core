@@ -113,7 +113,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                     value: BI.i18nText("BI-Bubble_Size_Value")
                 }]
             });
-        } else if(o.chartType === BICst.WIDGET.SCATTER) {
+        } else if (o.chartType === BICst.WIDGET.SCATTER) {
             this.showLabels = BI.createWidget({
                 type: "bi.text_tool_bar_content_select",
                 items: [{
@@ -136,7 +136,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 tgap: 30
             }, {
                 el: this.showLabels,
-                lgap:10,
+                lgap: 10,
                 tgap: 5
             }]
         })

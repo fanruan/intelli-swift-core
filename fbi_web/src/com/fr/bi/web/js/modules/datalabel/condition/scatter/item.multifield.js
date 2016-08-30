@@ -74,7 +74,7 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.filterItems = [];
         this.filterValues = o.filter_value || this.filterField;
         BI.each(this.filterValues, function (i, filter) {
-            if(BI.isNull(filter.filter_type)) {
+            if (BI.isNull(filter.filter_type)) {
                 filter.filter_type = o.filter_type
             }
             var fieldButton = BI.createWidget({
@@ -187,7 +187,7 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _createStyle: function (initData) {
-        var  o = this.options;
+        var o = this.options;
         this.style = BI.createWidget({
             type: "bi.data_label_style_set",
             chartType: o.chartType

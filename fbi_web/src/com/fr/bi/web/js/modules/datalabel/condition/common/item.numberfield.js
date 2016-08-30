@@ -27,7 +27,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
         this.isDimension = false;
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
-        if(BI.contains(BI.Utils.getAllDimDimensionIDs(wId), o.dId)){
+        if (BI.contains(BI.Utils.getAllDimDimensionIDs(wId), o.dId)) {
             this.isDimension = true;
         }
         this.size = {};
