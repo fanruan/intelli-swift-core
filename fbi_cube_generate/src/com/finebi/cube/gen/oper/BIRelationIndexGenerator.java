@@ -68,8 +68,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 BILogger.getLogger().error(e1.getMessage(), e1);
             }
             BILogger.getLogger().error(e.getMessage(), e);
-        } finally {
-            return null;
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
