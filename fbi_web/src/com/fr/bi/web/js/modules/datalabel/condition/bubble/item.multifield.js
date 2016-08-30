@@ -15,8 +15,7 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _defaultConfig: function () {
         return BI.extend(BI.BubbleMultiFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "data-label-condition-item",
-            afterValueChange: BI.emptyFn
+            extraCls: "data-label-condition-item"
         })
     },
 
@@ -110,7 +109,6 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             self.filterType[i].setValue(filter.filter_type);
             self.filterType[i].on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
                 self._refreshFilterWidget(i, filterWidgetContainer, self.filterType[i].getValue()[0]);
-                o.afterValueChange.apply(self, arguments);
             });
             self._refreshFilterWidget(i, filterWidgetContainer, filter.filter_type, filter.filter_value);
             self.filterItems.push([fieldButton, self.filterType[i], filterWidgetContainer]);
@@ -161,21 +159,17 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _createNumberIntervalFilter: function (initData) {
-        var self = this, o = this.options;
         var filterWidget = BI.createWidget({
             type: "bi.numerical_interval",
             width: this._constant.INPUT_WIDTH,
             height: this._constant.BUTTON_HEIGHT
         });
         BI.isNotNull(initData) && filterWidget.setValue(initData);
-        filterWidget.on(BI.NumericalInterval.EVENT_CHANGE, function () {
-            o.afterValueChange.apply(self, arguments);
-        });
         return filterWidget;
     },
 
     _createNumberInput: function (initData, id) {
-        var self = this, o = this.options;
+        var self = this;
         this.filterWidget[id] = BI.createWidget({
             type: "bi.text_editor",
             validationChecker: function () {
@@ -187,9 +181,6 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             allowBlank: true,
             height: this._constant.BUTTON_HEIGHT,
             width: this._constant.INPUT_WIDTH - this._constant.LABEL_WIDTH
-        });
-        this.filterWidget[id].on(BI.TextEditor.EVENT_CONFIRM, function () {
-            o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget[id].setValue(initData);
         return BI.createWidget({
@@ -204,7 +195,7 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _createStyle: function (initData) {
-        var self = this, o = this.options;
+        var o = this.options;
         this.style = BI.createWidget({
             type: "bi.data_label_style_set",
             chartType: o.chartType

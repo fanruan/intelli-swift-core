@@ -16,14 +16,13 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DataLabelNoTypeFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "data-label-condition-item",
-            afterValueChange: BI.emptyFn
+            extraCls: "data-label-condition-item"
         })
     },
 
     _init: function () {
         BI.DataLabelNoTypeFieldFilterItem.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
 
         var left = this._buildConditionsNoType();
         this.deleteButton = BI.createWidget({
@@ -97,7 +96,7 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         var filterItem = BI.DataLabelFilterItemFactory.createFilterItemByFieldType(fieldType);
         this.itemContainer.destroy();
         this.itemContainer = null;
-        //todo
+
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
             dId: v,

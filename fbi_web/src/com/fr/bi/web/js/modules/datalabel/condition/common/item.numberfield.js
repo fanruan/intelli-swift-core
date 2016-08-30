@@ -17,8 +17,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DataLabelNumberFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "data-label-condition-item",
-            afterValueChange: BI.emptyFn
+            extraCls: "data-label-condition-item"
         })
     },
 
@@ -112,19 +111,19 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
-            o.afterValueChange.apply(self, arguments);
         });
         this._refreshFilterWidget(o.filter_type, this.options.filter_value);
 
         if (this.isSelf && hasSeries) {
             this.filterRange = this._createRange();
-            return [this.fieldButton, this.filterType, this.filterWidgetContainer, this.filterRange];
+        } else {
+            this.filterRange = BI.createWidget();
         }
-        return [this.fieldButton, this.filterType, this.filterWidgetContainer];
+        return [this.fieldButton, this.filterType, this.filterWidgetContainer, this.filterRange];
     },
 
     _refreshFilterWidget: function (filterType, initData) {
-        var aadItem;
+        var addItem;
         if (this.changeWidth) {
             this.filterType.setWidth(this.size.COMBO_WIDTH);
             this.filterRange && this.filterRange.setWidth(this.size.COMBO_WIDTH);
@@ -159,7 +158,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_USER:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_USER:
-                var addItem = this._createNumberIntervalFilter(initData);
+                addItem = this._createNumberIntervalFilter(initData);
                 break;
             case BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
             case BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE:
@@ -176,7 +175,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _createStringInput: function (initData) {
-        var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.sign_editor",
             cls: "condition-operator-input",
@@ -184,45 +182,34 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             height: this._constant.BUTTON_HEIGHT,
             width: this._constant.INPUT_WIDTH
         });
-        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            o.afterValueChange.apply(self, arguments);
-        });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
         return this.filterWidget;
     },
 
     _createStringBelongCombo: function (initData) {
-        var o = this.options, self = this;
+        var o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.select_dimension_data_combo",
             dId: o.dId,
             width: this._constant.INPUT_WIDTH,
             height: this._constant.BUTTON_HEIGHT
         });
-
-        this.filterWidget.on(BI.SelectFieldDataCombo.EVENT_CONFIRM, function () {
-            o.afterValueChange.apply(self, arguments);
-        });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
         return this.filterWidget;
     },
 
     _createNumberIntervalFilter: function (initData) {
-        var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.numerical_interval",
             width: this.size.INPUT_WIDTH,
             height: this._constant.BUTTON_HEIGHT
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
-        this.filterWidget.on(BI.NumericalInterval.EVENT_CHANGE, function () {
-            o.afterValueChange.apply(self, arguments);
-        });
         return this.filterWidget;
     },
 
     _createNumberInput: function (initData) {
-        var self = this, o = this.options;
+        var self = this;
         this.filterWidget = BI.createWidget({
             type: "bi.text_editor",
             validationChecker: function () {
@@ -234,9 +221,6 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             allowBlank: true,
             height: this._constant.BUTTON_HEIGHT,
             width: this.size.INPUT_WIDTH - this._constant.LABEL_WIDTH
-        });
-        this.filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function () {
-            o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
         return BI.createWidget({
@@ -251,7 +235,7 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _createRange: function () {
-        var self = this, o = this.options;
+        var o = this.options;
         var range = BI.createWidget({
             type: "bi.text_value_down_list_combo",
             width: this.size.COMBO_WIDTH,

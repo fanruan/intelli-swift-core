@@ -26,7 +26,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DataLabelChart.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var o = this.options;
         var title = BI.createWidget({
             type: "bi.label",
             text: BI.i18nText("BI-Preview")

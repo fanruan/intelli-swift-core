@@ -14,7 +14,6 @@ BI.DataLabelPopup = BI.inherit(BI.BarPopoverSection, {
     },
 
     rebuildNorth: function (north) {
-        var o = this.options;
         BI.createWidget({
             type: "bi.label",
             element: north,

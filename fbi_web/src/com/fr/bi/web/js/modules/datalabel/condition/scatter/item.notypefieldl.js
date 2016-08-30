@@ -16,14 +16,13 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _defaultConfig: function () {
         return BI.extend(BI.ScatterNoTypeFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "data-label-condition-item",
-            afterValueChange: BI.emptyFn
+            extraCls: "data-label-condition-item"
         })
     },
 
     _init: function () {
         BI.ScatterNoTypeFieldFilterItem.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
 
         var left = this._buildConditionsNoType();
         this.deleteButton = BI.createWidget({
@@ -111,7 +110,7 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         var filterItem = BI.ScatterFilterItemFactory.createFilterItemByFieldType(fieldType);
         this.itemContainer.destroy();
         this.itemContainer = null;
-        //todo
+
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
             dId: v,

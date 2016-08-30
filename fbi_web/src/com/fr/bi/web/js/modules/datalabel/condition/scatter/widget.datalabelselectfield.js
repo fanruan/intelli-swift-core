@@ -29,58 +29,46 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                     isParent: true,
                     fontType: BI.DimensionSelectDataLevel0Node.SERIES,
                     open: true
-                }, {
-                    id: self._constant.X_Y_FIELD,
-                    type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Uppercase_X_Axis")+"/"+BI.i18nText("BI-Uppercase_Y_Axis"),
-                    value: BI.i18nText("BI-Uppercase_X_Axis")+"/"+BI.i18nText("BI-Uppercase_Y_Axis"),
-                    isParent: true,
-                    fontType: BI.DimensionSelectDataLevel0Node.CLASSIFY,
-                    open: true
+                },{
+                    id: BICst.DATACOLUMN.XANDY,
+                    type: "bi.select_data_level0_item",
+                    text: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
+                    title: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
+                    fieldType: BICst.DATACOLUMN.XANDY,
+                    value: BICst.DATACOLUMN.XANDY,
+                    isParent: false
+                },{
+                    id: BICst.DATACOLUMN.X,
+                    type: "bi.select_data_level0_item",
+                    text: BI.i18nText("BI-Uppercase_X_Axis"),
+                    title: BI.i18nText("BI-Uppercase_X_Axis"),
+                    fieldType: BICst.DATACOLUMN.X,
+                    value: BICst.DATACOLUMN.X,
+                    isParent: false
+                },{
+                    id: BICst.DATACOLUMN.Y,
+                    type: "bi.select_data_level0_item",
+                    text: BI.i18nText("BI-Uppercase_Y_Axis"),
+                    title: BI.i18nText("BI-Uppercase_Y_Axis"),
+                    fieldType: BICst.DATACOLUMN.Y,
+                    value: BICst.DATACOLUMN.Y,
+                    isParent: false
                 }]
             },
-            fieldsCreator: function (tableId) {
+            fieldsCreator: function () {
                 var categories = BI.Utils.getAllUsableDimDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
                 var result = [];
-                if (tableId === self._constant.DIMENSION_FIELD) {
-                    BI.each(categories, function (i, dId) {
-                        result.push({
-                            id: dId,
-                            pId: self._constant.DIMENSION_FIELD,
-                            type: "bi.select_data_level0_item",
-                            fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
-                            text: BI.Utils.getDimensionNameByID(dId),
-                            title: BI.Utils.getDimensionNameByID(dId),
-                            value: dId
-                        });
-                    });
-                } else {
+                BI.each(categories, function (i, dId) {
                     result.push({
-                        id: BICst.DATACOLUMN.XANDY,
-                        pId: self._constant.X_Y_FIELD,
+                        id: dId,
+                        pId: self._constant.DIMENSION_FIELD,
                         type: "bi.select_data_level0_item",
-                        text: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
-                        title: BI.i18nText("BI-Uppercase_X_Axis")+BI.i18nText("BI-And")+BI.i18nText("BI-Uppercase_Y_Axis"),
-                        fieldType: BICst.DATACOLUMN.XANDY,
-                        value: BICst.DATACOLUMN.XANDY
-                    },{
-                        id: BICst.DATACOLUMN.X,
-                        pId: self._constant.X_Y_FIELD,
-                        type: "bi.select_data_level0_item",
-                        text: BI.i18nText("BI-Uppercase_X_Axis"),
-                        title: BI.i18nText("BI-Uppercase_X_Axis"),
-                        fieldType: BICst.DATACOLUMN.X,
-                        value: BICst.DATACOLUMN.X
-                    },{
-                        id: BICst.DATACOLUMN.Y,
-                        pId: self._constant.X_Y_FIELD,
-                        type: "bi.select_data_level0_item",
-                        text: BI.i18nText("BI-Uppercase_Y_Axis"),
-                        title: BI.i18nText("BI-Uppercase_Y_Axis"),
-                        fieldType: BICst.DATACOLUMN.Y,
-                        value: BICst.DATACOLUMN.Y
+                        fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
+                        text: BI.Utils.getDimensionNameByID(dId),
+                        title: BI.Utils.getDimensionNameByID(dId),
+                        value: dId
                     });
-                }
+                });
                 return result;
             }
         });

@@ -18,7 +18,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
     },
 
     _init: function () {
-        var self = this, o = this.options;
+        var self = this;
         BI.DataLabelTextToolBar.superclass._init.apply(this, arguments);
         this.family = BI.createWidget({
             type: "bi.text_toolbar_font_chooser",
