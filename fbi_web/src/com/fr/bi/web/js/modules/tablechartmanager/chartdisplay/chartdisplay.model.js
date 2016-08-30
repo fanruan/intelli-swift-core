@@ -410,31 +410,29 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _setDataLabelSettingForBubbleAndScatter: function(data){
         var self = this, o = this.options;
         var allSeries = BI.pluck(data, "name");
-        BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
-            BI.each(BI.Utils.getDatalabelByWidgetID(o.wId), function (id, dataLabel) {
-                var filter = null;
-                if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
-                    filter = BI.FilterFactory.parseFilter(dataLabel);
-                    var filterArray = filter.getFilterResult(allSeries);
-                    BI.any(data, function(idx, series){
-                        if(BI.contains(filterArray, series.name)){
-                            BI.each(series.data, function(id, da){
-                                self._createDataLabel(da, dataLabel);
-                            });
+        BI.each(BI.Utils.getDatalabelByWidgetID(o.wId), function (id, dataLabel) {
+            var filter = null;
+            if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
+                filter = BI.FilterFactory.parseFilter(dataLabel);
+                var filterArray = filter.getFilterResult(allSeries);
+                BI.any(data, function(idx, series){
+                    if(BI.contains(filterArray, series.name)){
+                        BI.each(series.data, function(id, da){
+                            self._createDataLabel(da, dataLabel);
+                        });
+                    }
+                });
+            }else{
+                filter = BI.FilterObjectFactory.parseFilter(dataLabel);
+                var filterArray = filter.getFilterResult(BI.flatten(BI.pluck(data, "data")));
+                BI.any(data, function(idx, series){
+                    BI.each(series.data, function(id, da){
+                        if(BI.deepContains(filterArray, da)){
+                            self._createDataLabel(da, dataLabel);
                         }
                     });
-                }else{
-                    filter = BI.FilterObjectFactory.parseFilter(dataLabel);
-                    var filterArray = filter.getFilterResult(BI.flatten(BI.pluck(data, "data")));
-                    BI.any(data, function(idx, series){
-                        BI.each(series.data, function(id, da){
-                            if(BI.deepContains(filterArray, da)){
-                                self._createDataLabel(da, dataLabel);
-                            }
-                        }); 
-                    });
-                }
-            });
+                });
+            }
         });
     },
 

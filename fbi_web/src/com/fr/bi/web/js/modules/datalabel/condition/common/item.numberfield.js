@@ -116,10 +116,11 @@ BI.DataLabelNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
         if (this.isSelf && hasSeries) {
             this.filterRange = this._createRange();
+            return [this.fieldButton, this.filterType, this.filterWidgetContainer, this.filterRange];
         } else {
             this.filterRange = BI.createWidget();
+            return [this.fieldButton, this.filterType, this.filterWidgetContainer];
         }
-        return [this.fieldButton, this.filterType, this.filterWidgetContainer, this.filterRange];
     },
 
     _refreshFilterWidget: function (filterType, initData) {
