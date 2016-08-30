@@ -45,7 +45,6 @@ BI.DataLabel = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-        var o = this.options;
         this.conditions.populate();
     },
 

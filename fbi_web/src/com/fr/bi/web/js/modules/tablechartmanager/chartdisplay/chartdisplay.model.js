@@ -411,7 +411,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var self = this, o = this.options;
         var allSeries = BI.pluck(data, "name");
         BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
-            BI.each(BI.Utils.getDatalabelByID(dId), function (id, dataLabel) {
+            BI.each(BI.Utils.getDatalabelByWidgetID(o.wId), function (id, dataLabel) {
                 var filter = null;
                 if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
                     filter = BI.FilterFactory.parseFilter(dataLabel);
@@ -537,21 +537,45 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataLabel: function (data, label) {
+        var show = "";
+        var chartType = BI.Utils.getWidgetTypeByID(this.options.wId);
+        var x,y,z,dot;
+        if(chartType === BICst.WIDGET.BUBBLE) {
+            x = label.style_setting.showLabels[0] ? data.x : "";
+            y = label.style_setting.showLabels[1] ? data.y : "";
+            z = label.style_setting.showLabels[2] ? data.z : "";
+            dot = BI.isEmptyString(y) ? "" : ",";
+            if(BI.isEmptyString(x) && BI.isEmptyString(y)) {
+                show = z;
+            } else {
+                show = "(" + x + dot + y +") " + z;
+            }
+        } else if(chartType === BICst.WIDGET.SCATTER) {
+            x = label.style_setting.showLabels[0] ? data.x : "";
+            y = label.style_setting.showLabels[1] ? data.y : "";
+            if(!BI.isEmptyString(x) && !BI.isEmptyString(y)) {
+                show = "(" + x + "," + y +") ";
+            } else {
+                show = x + y;
+            }
+        } else {
+            show = data.y;
+        }
         var dataLabels = {
             enabled: true,
             align: "outside",
             useHtml: true,
             style: {},
-            formatter: "function(){return '<div>" + data.y + "</div>'}"
+            formatter: "function(){return '<div>" + show + "</div>'}"
         };
         switch (label.style_setting.type) {
             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
+                label.style_setting.textStyle.fontSize = label.style_setting.textStyle.fontSize + "px";
                 dataLabels.style = label.style_setting.textStyle;
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
                 dataLabels.formatter = "function(){return '<div><img width=\"20px\" height=\"20px\" src=\""+label.style_setting.imgStyle.src+"\"></div>';}";
                 break;
-
         }
         data.dataLabels = dataLabels;
     },

@@ -30,97 +30,64 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                     fontType: BI.DimensionSelectDataLevel0Node.SERIES,
                     open: true
                 }, {
-                    id: self._constant.X_Y_FIELD,
-                    type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Uppercase_X_Axis") + "/" + BI.i18nText("BI-Uppercase_Y_Axis"),
-                    value: BI.i18nText("BI-Uppercase_X_Axis") + "/" + BI.i18nText("BI-Uppercase_Y_Axis"),
-                    isParent: true,
-                    fontType: BI.DimensionSelectDataLevel0Node.CLASSIFY,
-                    open: true
+                    id: BICst.DATACOLUMN.XANDYANDSIZE,
+                    type: "bi.select_data_level0_item",
+                    text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Bubble_Size"),
+                    title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Bubble_Size"),
+                    fieldType: BICst.DATACOLUMN.XANDYANDSIZE,
+                    value: BICst.DATACOLUMN.XANDYANDSIZE,
+                    isParent: false
+                }, {
+                    id: BICst.DATACOLUMN.XANDY,
+                    type: "bi.select_data_level0_item",
+                    text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
+                    title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
+                    fieldType: BICst.DATACOLUMN.XANDY,
+                    value: BICst.DATACOLUMN.XANDY,
+                    isParent: false
+                }, {
+                    id: BICst.DATACOLUMN.X,
+                    type: "bi.select_data_level0_item",
+                    fieldType: BICst.DATACOLUMN.X,
+                    text: BI.i18nText("BI-Uppercase_X_Axis"),
+                    title: BI.i18nText("BI-Uppercase_X_Axis"),
+                    value: BICst.DATACOLUMN.X,
+                    isParent: false
+                }, {
+                    id: BICst.DATACOLUMN.Y,
+                    type: "bi.select_data_level0_item",
+                    fieldType: BICst.DATACOLUMN.Y,
+                    text: BI.i18nText("BI-Uppercase_Y_Axis"),
+                    title: BI.i18nText("BI-Uppercase_Y_Axis"),
+                    value: BICst.DATACOLUMN.Y,
+                    isParent: false
+                }, {
+                    id: BICst.DATACOLUMN.Z,
+                    type: "bi.select_data_level0_item",
+                    fieldType: BICst.DATACOLUMN.Z,
+                    text: BI.i18nText("BI-Bubble_Size"),
+                    title: BI.i18nText("BI-Bubble_Size"),
+                    value: BICst.DATACOLUMN.Z,
+                    isParent: false
                 }]
             },
-            fieldsCreator: function (tableId) {
-                var view = BI.Utils.getWidgetViewByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
-                var categories = view[10000];
-                var y = view[30000];
-                var x = view[40000];
-                var bubbleSize = view[50000];
+            fieldsCreator: function () {
+                var categories = BI.Utils.getAllUsableDimDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
                 var result = [];
-                if (tableId === self._constant.DIMENSION_FIELD) {
-                    BI.each(categories, function (i, dId) {
-                        if (!BI.Utils.isDimensionUsable(dId)) {
-                            return;
-                        }
-                        result.push({
-                            id: dId,
-                            pId: self._constant.DIMENSION_FIELD,
-                            type: "bi.select_data_level0_item",
-                            fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
-                            text: BI.Utils.getDimensionNameByID(dId),
-                            title: BI.Utils.getDimensionNameByID(dId),
-                            value: dId
-                        });
-                    });
-                } else {
+                BI.each(categories, function (i, dId) {
+                    if (!BI.Utils.isDimensionUsable(dId)) {
+                        return;
+                    }
                     result.push({
-                        id: BICst.DATACOLUMN.XANDYANDSIZE,
-                        pId: self._constant.X_Y_FIELD,
+                        id: dId,
+                        pId: self._constant.DIMENSION_FIELD,
                         type: "bi.select_data_level0_item",
-                        text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Bubble_Size"),
-                        title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Bubble_Size"),
-                        fieldType: BICst.DATACOLUMN.XANDYANDSIZE
+                        fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
+                        text: BI.Utils.getDimensionNameByID(dId),
+                        title: BI.Utils.getDimensionNameByID(dId),
+                        value: dId
                     });
-                    result.push({
-                        id: BICst.DATACOLUMN.XANDY,
-                        pId: self._constant.X_Y_FIELD,
-                        type: "bi.select_data_level0_item",
-                        text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
-                        title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
-                        fieldType: BICst.DATACOLUMN.XANDY
-                    });
-                    BI.each(x, function (i, dId) {
-                        if (!BI.Utils.isDimensionUsable(dId)) {
-                            return;
-                        }
-                        result.push({
-                            id: dId,
-                            pId: self._constant.X_Y_FIELD,
-                            type: "bi.select_data_level0_item",
-                            fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
-                            text: BI.i18nText("BI-Uppercase_X_Axis"),
-                            title: BI.i18nText("BI-Uppercase_X_Axis"),
-                            value: dId
-                        });
-                    });
-                    BI.each(y, function (i, dId) {
-                        if (!BI.Utils.isDimensionUsable(dId)) {
-                            return;
-                        }
-                        result.push({
-                            id: dId,
-                            pId: self._constant.X_Y_FIELD,
-                            type: "bi.select_data_level0_item",
-                            fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
-                            text: BI.i18nText("BI-Uppercase_Y_Axis"),
-                            title: BI.i18nText("BI-Uppercase_Y_Axis"),
-                            value: dId
-                        });
-                    });
-                    BI.each(bubbleSize, function (i, dId) {
-                        if (!BI.Utils.isDimensionUsable(dId)) {
-                            return;
-                        }
-                        result.push({
-                            id: dId,
-                            pId: self._constant.X_Y_FIELD,
-                            type: "bi.select_data_level0_item",
-                            fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
-                            text: BI.i18nText("BI-Bubble_Size"),
-                            title: BI.i18nText("BI-Bubble_Size"),
-                            value: dId
-                        });
-                    });
-                }
+                });
                 return result;
             }
         });
