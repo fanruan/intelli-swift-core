@@ -1,0 +1,33 @@
+@import "../../bibase";
+.bi-global-style-setting{
+  background: @color-bi-background-default;
+  .box-shadow(0 0 20px, rgba(0, 0, 0, 0.2));
+  & .global-style-title{
+    font-size: @font-size-14;
+    color: @color-bi-text-black;
+  }
+  & .bi-wrapper-bottom{
+    border-bottom: 1px solid @color-bi-border-line;
+  }
+  & .item-label{
+    font-size: 12px;
+    color: @color-bi-background-black;
+  }
+  & .chart-style-font{
+    border: 1px solid @color-bi-border-default;
+    .border-radius(@radius-2);
+    &:hover{
+      background: @color-bi-background-gray;
+    }
+    &.active{
+      border: 1px solid @color-bi-border-highlight;
+    }
+  }
+  & .border{
+     border: 1px solid @border-color-normal;
+  }
+  & .item-save{
+    font-size: 14px;
+    color: @color-bi-text-highlight;
+  }
+}

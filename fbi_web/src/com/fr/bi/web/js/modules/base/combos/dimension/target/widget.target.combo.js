@@ -140,6 +140,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var wType = BI.Utils.getWidgetTypeByID(wId);
         var view = BI.Utils.getWidgetViewByID(wId);
         var minimalist = BI.Utils.getWSMinimalistByID(wId);
+        var dataLable = BI.Utils.getWSShowDataLabelByID(wId);
         var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
         var result = BI.find(view[BICst.REGION.TARGET2], function (idx, did) {
             return did === o.dId;
@@ -168,11 +169,15 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     },{
                         text: BI.i18nText("BI-Data_Label"),
-                        value: BICst.TARGET_COMBO.DATA_LABEL
+                        value: BICst.TARGET_COMBO.DATA_LABEL,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
                     }]
                 };
                 if(minimalist){
                     item[this.constants.CordonPos][0].disabled = true
+                }
+                if(!dataLable){
+                    item[this.constants.CordonPos][0].children[1].disabled = true
                 }
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
@@ -279,11 +284,15 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     },{
                         text: BI.i18nText("BI-Data_Label"),
-                        value: BICst.TARGET_COMBO.DATA_LABEL
+                        value: BICst.TARGET_COMBO.DATA_LABEL_OTHER,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
                     }]
                 };
                 if(bigDataMode) {
                     item[this.constants.CordonPos][0].disabled = true;
+                }
+                if(!dataLable){
+                    item[this.constants.CordonPos][0].children[1].disabled = true
                 }
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;

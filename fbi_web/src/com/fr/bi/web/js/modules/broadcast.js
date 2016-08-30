@@ -18,4 +18,6 @@ BICst.BROADCAST = {
     WIDGET_SELECTED_PREFIX: "widget_selected_", //组件选中广播事件
 
     DETAIL_EDIT_PREFIX: "detail_edit_", //进入编辑界面 + wId
+
+    DATA_LABEL_PREFIX: "data_label_" //数据标签(气泡图/散点图) + wId
 };

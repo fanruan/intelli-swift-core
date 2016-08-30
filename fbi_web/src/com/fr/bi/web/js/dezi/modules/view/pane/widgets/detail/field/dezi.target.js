@@ -134,6 +134,8 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                         self._buildCordonPane();
                     } else if (s === BICst.TARGET_COMBO.DATA_LABEL) {
                         self._buildDataLabelPane();
+                    } else if(s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
+                        self._buildDataLabelPane4ScatterBubble();
                     } else {
                         self._buildStyleSettingPane();
                     }
@@ -388,6 +390,20 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         });
         popup.on(BI.DataLabelPopup.EVENT_CHANGE, function (v) {
             self.model.set("data_label", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
+    },
+
+    _buildDataLabelPane4ScatterBubble: function () {
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.data_label_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.DataLabelPopup.EVENT_CHANGE, function (v) {
+            BI.Broadcasts.send(BICst.BROADCAST.DATA_LABEL_PREFIX+BI.Utils.getWidgetIDByDimensionID(id), v);
         });
         BI.Popovers.create(id, popup).open(id);
         popup.populate();
