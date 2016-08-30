@@ -7,7 +7,7 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         CONTAINER_HEIGHT: 40,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
-        FIELD_NAME_BUTTON_WIDTH: 50,
+        FIELD_NAME_BUTTON_WIDTH: 53,
         TEXT_BUTTON_H_GAP: 10,
         INPUT_WIDTH: 230,
         LABEL_WIDTH: 30
@@ -116,7 +116,7 @@ BI.BubbleMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
         BI.each(this.filterItems, function (i, item) {
             filterContainer.push(BI.createWidget({
-                type: "bi.vertical_adapt",
+                type: "bi.left",
                 items: item,
                 hgap: 5
             }));
