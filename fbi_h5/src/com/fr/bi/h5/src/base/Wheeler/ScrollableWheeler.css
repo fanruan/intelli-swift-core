@@ -1,0 +1,143 @@
+.ScrollableWheeler-topShadow,
+.ScrollableWheeler-bottomShadow {
+    height: 4px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    z-index: 1;
+}
+.ScrollableWheeler-topShadow {
+    background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAF0lEQVR4AWPUkNeSBhHCjJoK2twgFisAFagCCp3pJlAAAAAASUVORK5CYII=) repeat-x;
+}
+
+.ScrollableWheeler-bottomShadow {
+    margin-top: -4px;
+    background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAHElEQVQI12MwNjZmZdAT1+Nm0JDWEGZQk1GTBgAWkwIeAEp52AAAAABJRU5ErkJggg==) repeat-x;
+}
+
+.ScrollableWheeler-main {
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+}
+
+.ScrollableWheeler-rowsContainer {
+    overflow: hidden;
+    position: relative;
+}
+
+.ScrollableWheeler-horizontalScrollbar {
+    bottom: 0;
+    position: absolute;
+}
+
+.ScrollableWheeler-horizontalScrollbar .ScrollbarLayout-mainHorizontal {
+    background-color: #fff;
+}
+
+
+
+
+.ScrollbarLayout-main {
+    box-sizing: border-box;
+    outline: none;
+    overflow: hidden;
+    position: absolute;
+    -webkit-transition-duration: 250ms;
+    transition-duration: 250ms;
+    -webkit-transition-timing-function: ease;
+    transition-timing-function: ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.ScrollbarLayout-main:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.ScrollbarLayout-mainVertical {
+    bottom: 0;
+    right: 0;
+    top: 0;
+    -webkit-transition-property: background-color width;
+    transition-property: background-color width;
+    width: 15px;
+}
+
+.ScrollbarLayout-mainVertical.ScrollbarLayout-mainActive,
+.ScrollbarLayout-mainVertical:hover {
+    width: 17px;
+}
+
+.ScrollbarLayout-mainHorizontal {
+    bottom: 0;
+    height: 15px;
+    left: 0;
+    -webkit-transition-property: background-color height;
+    transition-property: background-color height;
+}
+
+/* Touching the scroll-track directly makes the scroll-track bolder */
+.ScrollbarLayout-mainHorizontal.ScrollbarLayout-mainActive,
+.ScrollbarLayout-mainHorizontal:hover {
+    height: 17px;
+}
+
+.ScrollbarLayout-face {
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: 1;
+}
+
+.ScrollbarLayout-face:after {
+    border-radius: 6px;
+    content: '';
+    display: block;
+    position: absolute;
+    -webkit-transition: background-color 250ms ease;
+    transition: background-color 250ms ease;
+    background-color: #c2c2c2;
+}
+
+.ScrollbarLayout-faceHorizontal {
+    bottom: 0;
+    left: 0;
+    top: 0;
+}
+
+.ScrollbarLayout-faceHorizontal:after {
+    bottom: 4px;
+    left: 0;
+    top: 4px;
+    width: 100%;
+}
+
+.ScrollbarLayout-faceVertical {
+    left: 0;
+    right: 0;
+    top: 0;
+}
+
+.ScrollbarLayout-faceVertical:after {
+    height: 100%;
+    left: 4px;
+    right: 4px;
+    top: 0;
+}
+
+
+.ScrollbarLayout-mainOpaque,
+.ScrollbarLayout-mainOpaque.ScrollbarLayout-mainActive,
+.ScrollbarLayout-mainOpaque:hover {
+    background-color: #fff;
+}
+
+
+.ScrollbarLayout-main:hover .ScrollbarLayout:after,
+.ScrollbarLayout-mainActive .ScrollbarLayout:after,
+.ScrollbarLayout-faceActive:after {
+    background-color: #7d7d7d;
+}
