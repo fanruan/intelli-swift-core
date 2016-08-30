@@ -45,19 +45,19 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
     _setEventForButton: function (buttons) {
         var self = this;
         BI.each(buttons, function (idx, button) {
-            button.on(BI.NumberIntervalCustomGroupItem.EVENT_VALID, function () {
-                if (self.isValid()) {
-                    self.fireEvent(BI.NumberIntervalCustomItemGroup.EVENT_VALID);
-                }
-            });
+            //button.on(BI.NumberIntervalCustomGroupItem.EVENT_VALID, function () {
+            //    if (self.isValid()) {
+            //        self.fireEvent(BI.NumberIntervalCustomItemGroup.EVENT_VALID);
+            //    }
+            //});
 
-            button.on(BI.NumberIntervalCustomGroupItem.EVENT_CHANGE, function () {
-                self._checkNextItemState(this.getValue());
-            });
+            //button.on(BI.NumberIntervalCustomGroupItem.EVENT_CHANGE, function () {
+            //    self._checkNextItemState(this.getValue());
+            //});
 
-            button.on(BI.NumberIntervalCustomGroupItem.EVENT_ERROR, function () {
-                self.fireEvent(BI.NumberIntervalCustomItemGroup.EVENT_ERROR);
-            });
+            //button.on(BI.NumberIntervalCustomGroupItem.EVENT_ERROR, function () {
+            //    self.fireEvent(BI.NumberIntervalCustomItemGroup.EVENT_ERROR);
+            //});
 
             button.on(BI.NumberIntervalCustomGroupItem.EVENT_DESTROY, function () {
                 if (self.buttons.length === 0) {
@@ -121,14 +121,6 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
         return nameCount === 1;
     },
 
-    _checkButtonEnable: function () {
-        BI.each(this.buttons, function (idx, button) {
-            if (idx !== 0) {
-                button.setSmallIntervalEnable(false);
-            }
-        });
-    },
-
     populate: function (items) {
         var self = this;
         this.options.items = items || [];
@@ -137,7 +129,6 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
         }));
         this.buttons = this.buttongroup.getAllButtons();
         this._setEventForButton(this.buttons);
-        this._checkButtonEnable();
     },
 
     addItem: function () {
@@ -173,9 +164,6 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
         this.buttongroup.addItems([item]);
         this.buttongroup.setTipVisible(false);
         this.buttons = this.buttongroup.getAllButtons();
-        if (this.buttons.length !== 1) {
-            this.buttons[this.buttons.length - 1].setSmallIntervalEnable(false);
-        }
         this._setEventForButton([this.buttons[this.buttons.length - 1]]);
         this.fireEvent(BI.NumberIntervalCustomItemGroup.EVENT_VALID);
     },
