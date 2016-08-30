@@ -18,7 +18,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
     },
 
     _init: function () {
-        var self = this, o = this.options;
+        var self = this;
         BI.DataLabelTextToolBar.superclass._init.apply(this, arguments);
         this.family = BI.createWidget({
             type: "bi.text_toolbar_font_chooser",
@@ -63,67 +63,35 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
                 cls: "text-toolbar-button"
             }
         });
+        this.colorchooser.setValue("#808080");
         this.colorchooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
-
             self.fireEvent(BI.DataLabelTextToolBar.EVENT_CHANGE, arguments);
         });
-        var top = BI.createWidget({
+        BI.createWidget({
             type: "bi.left",
+            element: this.element,
             items: [this.family, this.size, this.bold, this.italic, this.colorchooser],
             hgap: 3,
             vgap: 3
         });
-        if (o.chartType === BICst.WIDGET.BUBBLE) {
-            this.showLabels = BI.createWidget({
-                type: "bi.text_tool_bar_content_select",
-                items: [{
-                    value: BI.i18nText("BI-X_Value")
-                }, {
-                    value: BI.i18nText("BI-Y_Value")
-                }, {
-                    value: BI.i18nText("BI-Bubble_Size_Value")
-                }]
-            });
-        } else if(o.chartType === BICst.WIDGET.SCATTER) {
-            this.showLabels = BI.createWidget({
-                type: "bi.text_tool_bar_content_select",
-                items: [{
-                    value: BI.i18nText("BI-X_Value")
-                }, {
-                    value: BI.i18nText("BI-Y_Value")
-                }]
-            });
-        } else {
-            this.showLabels = BI.createWidget();
-        }
-
-        BI.createWidget({
-            type: "bi.vertical",
-            element: this.element,
-            items: [top, this.showLabels],
-            width: 260,
-            lgap: 8
-        })
     },
 
     setValue: function (v) {
         v || (v = {});
-        this.family.setValue(v["font-family"] || "");
-        this.size.setValue(v["font-size"] || 14);
-        this.bold.setSelected(v["font-weight"] === "bold");
-        this.italic.setSelected(v["font-style"] === "italic");
+        this.family.setValue(v["fontFamily"] || "");
+        this.size.setValue(v["fontSize"] || 14);
+        this.bold.setSelected(v["fontWeight"] === "bold");
+        this.italic.setSelected(v["fontStyle"] === "italic");
         this.colorchooser.setValue(v["color"] || "#000000");
-        this.showLabels.setValue(v["show-labels"] || []);
     },
 
     getValue: function () {
         return {
-            "font-family": this.family.getValue(),
-            "font-size": this.size.getValue(),
-            "font-weight": this.bold.isSelected() ? "bold" : "normal",
-            "font-style": this.italic.isSelected() ? "italic" : "normal",
-            "color": this.colorchooser.getValue(),
-            "show-labels": this.showLabels.getValue()
+            "fontFamily": this.family.getValue(),
+            "fontSize": this.size.getValue(),
+            "fontWeight": this.bold.isSelected() ? "bold" : "normal",
+            "fontStyle": this.italic.isSelected() ? "italic" : "normal",
+            "color": this.colorchooser.getValue()
         }
     }
 });

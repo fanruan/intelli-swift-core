@@ -16,8 +16,7 @@ BI.BubbleLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem,
 
     _defaultConfig: function () {
         return BI.extend(BI.BubbleLabelStringFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "data-label-condition-item",
-            afterValueChange: BI.emptyFn
+            extraCls: "data-label-condition-item"
         })
     },
 
@@ -89,7 +88,6 @@ BI.BubbleLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem,
         this.filterType.setValue(o.filter_type);
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
-            o.afterValueChange.apply(self, arguments);
         });
         this._refreshFilterWidget(o.filter_type, o.filter_value);
         return [this.fieldButton, this.filterType, this.filterWidgetContainer];
@@ -120,23 +118,18 @@ BI.BubbleLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem,
     },
 
     _createStringBelongCombo: function (initData) {
-        var o = this.options, self = this;
+        var o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.select_dimension_data_combo",
             dId: o.dId,
             width: 230,
             height: this._constant.BUTTON_HEIGHT
         });
-
-        this.filterWidget.on(BI.SelectDimensionDataCombo.EVENT_CONFIRM, function () {
-            o.afterValueChange.apply(self, arguments);
-        });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
         return this.filterWidget;
     },
 
     _createStringInput: function (initData) {
-        var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.sign_editor",
             cls: "condition-operator-input",
@@ -144,19 +137,15 @@ BI.BubbleLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem,
             height: this._constant.BUTTON_HEIGHT,
             width: this._constant.INPUT_WIDTH
         });
-        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            o.afterValueChange.apply(self, arguments);
-        });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
         return this.filterWidget;
     },
 
     _createStyle: function (initData) {
-        var self = this, o = this.options;
-        var chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        var o = this.options;
         this.style = BI.createWidget({
             type: "bi.data_label_style_set",
-            chartType: chartType
+            chartType: o.chartType
         });
         BI.isNotNull(initData) && this.style.setValue(initData);
         return this.style;

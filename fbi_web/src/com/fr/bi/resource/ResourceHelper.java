@@ -1097,7 +1097,6 @@ public class ResourceHelper {
 
                 //数据标签
                 "com/fr/bi/web/js/modules/datalabel/datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/datalab.methods.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/tab.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/texttoolbar.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.js",

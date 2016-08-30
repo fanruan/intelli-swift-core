@@ -134,7 +134,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             var src = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + attachId + "_" + fileName;
             BI.requestAsync("fr_bi_dezi", "save_upload_image", {
                 attach_id: attachId
-            }, function (res) {
+            }, function () {
                 if (self._img.length < 14) {
                     self._img.push(src);
                     self.populate();

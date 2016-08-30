@@ -26,7 +26,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DataLabelChart.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var o = this.options;
         var title = BI.createWidget({
             type: "bi.label",
             text: BI.i18nText("BI-Preview")
@@ -85,16 +85,17 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (src) {
+        var data = BI.deepClone(this._data);
         if (src) {
             var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + src + "></div>'}";
-            this._data[0][0].data[0].dataLabels = {
+            data[0][0].data[0].dataLabels = {
                 enabled: true,
                 align: "outside",
                 useHtml: true,
                 formatter: formatter
             };
         }
-        this.combineChart.populate(this._data);
+        this.combineChart.populate(data);
     }
 });
 BI.DataLabelChart.EVENT_CHANGE = "BI.DataLabelChart.EVENT_CHANGE";
