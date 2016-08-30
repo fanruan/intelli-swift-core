@@ -156,7 +156,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     },
 
     _createDefaultImgs: function () {
-        var self = this, tmp = [], result= [];
+        var self = this, tmp = [], result = [];
         BI.each(this._defaultImg, function (i, item) {
             var img = {
                 type: "bi.image_button",
@@ -167,11 +167,11 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
                 }
             };
-            if(!tmp[BI.parseInt(i/7)]) {
-                tmp[BI.parseInt(i/7)] = []
+            if (!tmp[BI.parseInt(i / 7)]) {
+                tmp[BI.parseInt(i / 7)] = []
             }
             img.src = item;
-            tmp[BI.parseInt(i/7)].push(img);
+            tmp[BI.parseInt(i / 7)].push(img);
         });
         BI.each(tmp, function (i, item) {
             result.push({
@@ -214,8 +214,8 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             height: 14
         };
         BI.each(items, function (i, item) {
-            if(!tmp[BI.parseInt(i/7)]) {
-                tmp[BI.parseInt(i/7)] = []
+            if (!tmp[BI.parseInt(i / 7)]) {
+                tmp[BI.parseInt(i / 7)] = []
             }
             img.src = item;
             icon.handler = function (i) {
@@ -242,7 +242,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             }, function () {
                 iconButton.setVisible(false);
             });
-            tmp[BI.parseInt(i/7)].push(button)
+            tmp[BI.parseInt(i / 7)].push(button)
         });
         BI.each(tmp, function (i, item) {
             result.push({
