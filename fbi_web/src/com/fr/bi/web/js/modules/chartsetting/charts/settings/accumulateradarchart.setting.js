@@ -186,12 +186,12 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.numberLevellY]
                 }, {
-                 type: "bi.vertical_adapt",
-                 items: [this.showCustomScale]
-                 }, {
-                 type: "bi.vertical_adapt",
-                 items: [this.customScale]
-                 }], {
+                    type: "bi.vertical_adapt",
+                    items: [this.showCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customScale]
+                }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_H_GAP
