@@ -63,6 +63,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
                 cls: "text-toolbar-button"
             }
         });
+        this.colorchooser.setValue("#808080");
         this.colorchooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.DataLabelTextToolBar.EVENT_CHANGE, arguments);
         });

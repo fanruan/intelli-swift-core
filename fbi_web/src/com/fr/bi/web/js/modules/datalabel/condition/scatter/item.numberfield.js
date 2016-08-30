@@ -216,7 +216,7 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _createNumberInput: function (initData) {
-        var self = this, o = this.options;
+        var self = this;
         this.filterWidget = BI.createWidget({
             type: "bi.text_editor",
             validationChecker: function () {

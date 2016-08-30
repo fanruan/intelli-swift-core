@@ -15,12 +15,12 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DataLabelTab.superclass._init.apply(this, arguments);
+        var self = this, o = this.options;
         this._style = {
             type: 0,
             textStyle: {},
             imgStyle: {}
         };
-        var self = this, o = this.options;
         if (o.chartType === BICst.WIDGET.BUBBLE || o.chartType === BICst.WIDGET.SCATTER) {
             this._CARDHEIGHT = this._constant.TEXT_TOOL_BAR_HEIGHT
         } else {
@@ -113,7 +113,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                     value: BI.i18nText("BI-Bubble_Size_Value")
                 }]
             });
-        } else if (o.chartType === BICst.WIDGET.SCATTER) {
+        } else if(o.chartType === BICst.WIDGET.SCATTER) {
             this.showLabels = BI.createWidget({
                 type: "bi.text_tool_bar_content_select",
                 items: [{
@@ -128,6 +128,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         this.showLabels.on(BI.TextToolbarContentSelect.EVENT_CHANGE, function () {
             self._style.showLabels = self.showLabels.getValue();
         });
+        this._style.showLabels = self.showLabels.getValue();
         return BI.createWidget({
             type: "bi.vertical",
             items: [{
@@ -136,7 +137,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 tgap: 30
             }, {
                 el: this.showLabels,
-                lgap: 10,
+                lgap:10,
                 tgap: 5
             }]
         })
