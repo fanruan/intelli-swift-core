@@ -33,7 +33,6 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         var type = v.type, value = v.value;
         var date = new Date();
         var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
-        var tool = new BI.MultiDateParamTrigger();
         if(BI.isNull(type) && BI.isNotNull(v.year)) {
             return new Date(v.year, v.month, v.day);
         }
@@ -48,22 +47,22 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 return new Date(currY, 11, 31);
 
             case BICst.MULTI_DATE_MONTH_PREV:
-                return tool._getBeforeMultiMonth(value);
+                return BI.Utils.getBeforeMultiMonth(value);
             case BICst.MULTI_DATE_MONTH_AFTER:
-                return tool._getAfterMultiMonth(value);
+                return BI.Utils.getAfterMultiMonth(value);
             case BICst.MULTI_DATE_MONTH_BEGIN:
                 return new Date(currY, currM, 1);
             case BICst.MULTI_DATE_MONTH_END:
                 return new Date(currY, currM, (date.getLastDateOfMonth()).getDate());
 
             case BICst.MULTI_DATE_QUARTER_PREV:
-                return tool._getBeforeMulQuarter(value);
+                return BI.Utils.getBeforeMulQuarter(value);
             case BICst.MULTI_DATE_QUARTER_AFTER:
-                return tool._getAfterMulQuarter(value);
+                return BI.Utils.getAfterMulQuarter(value);
             case BICst.MULTI_DATE_QUARTER_BEGIN:
-                return tool._getQuarterStartDate();
+                return BI.Utils.getQuarterStartDate();
             case BICst.MULTI_DATE_QUARTER_END:
-                return tool._getQuarterEndDate();
+                return BI.Utils.getQuarterEndDate();
 
             case BICst.MULTI_DATE_WEEK_PREV:
                 return date.getOffsetDate(-7 * value);
