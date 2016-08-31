@@ -7,6 +7,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.FRContext;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -135,7 +136,8 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     int start = startCol;
                     for (String s : showFields) {
                         for (int j = 0; j < columnLength; j++) {
-                            travel.actionPerformed(new BIDataValue(i, start++, vals[cnt++]));
+                            travel.actionPerformed(new BIDataValue(i, start++,  vals[cnt] == null ? BIValueConstant.SPECIAL_FIELD_VALUE : vals[cnt]));
+                            cnt++;
                         }
                     }
                 } catch (StackOverflowError e) {
