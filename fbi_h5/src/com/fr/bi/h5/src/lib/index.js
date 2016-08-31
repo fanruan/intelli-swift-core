@@ -16,14 +16,14 @@ export * from 'react';
 
 // Components
 export ActivityIndicatorIOS from './ActivityIndicator/ActivityIndicator.web';
-// export DatePickerIOS from './DatePickerIOS/DatePickerIOS.web';
+export ActivityIndicator from './ActivityIndicator/ActivityIndicator.web';
+export DatePickerIOS from './DatePickerIOS/DatePickerIOS';
 export DrawerLayoutAndroid from './DrawerLayout/DrawerLayout.web';
 export Image from './Image/Image.web';
 export ListView from './ListView/ListView.web';
 export Modal from './Modal/Modal.web';
 export Navigator from './Navigator/Navigator.web';
 export Picker from './Picker/Picker.web';
-export DatePickerIOS from './DatePickerIOS/DatePickerIOS';
 export ProgressViewIOS from './ProgressView/ProgressView.web';
 export ScrollView from './ScrollView/ScrollView.web';
 export SegmentedControlIOS from './SegmentedControl/SegmentedControl.web';
@@ -65,61 +65,6 @@ export Fetch from './Fetch/Fetch.web';
 export NativeModules from './NativeModules/NativeModules.web';
 export Platform from './Platform/Platform.web';
 export processColor from './StyleSheet/processColor.web';
-
-// React
-// export {
-//   // Components
-//   ActivityIndicatorIOS,
-// // export DatePickerIOS,
-//   DrawerLayoutAndroid,
-//   Image,
-//   ListView,
-//   Modal,
-//   Navigator,
-//   PickerIOS,
-//   Picker,
-//   ProgressViewIOS,
-//   ScrollView,
-//   SegmentedControlIOS,
-//   SliderIOS,
-//   Switch,
-//   SwitchAndroid,
-//   SwitchIOS,
-//   TabBarIOS,
-//   Text,
-//   TextInput,
-//   ToastAndroid,
-//   Toast,
-//   Touchable,
-//   TouchableHighlight,
-//   TouchableOpacity,
-//   TouchableWithoutFeedback,
-//   TouchableBounce,
-//   RefreshControl,
-//   View,
-//   ViewPagerAndroid,
-//   ViewPager,
-//
-//
-// // APIs
-//   Alert,
-//   AlertIOS,
-//   Animated,
-//   AsyncStorage,
-//   Dimensions,
-//   Easing,
-//   InteractionManager,
-//   PanResponder,
-//   PixelRatio,
-//   StyleSheet,
-//   Jsonp,
-//   Fetch,
-//
-// // Plugins
-//   NativeModules,
-//   Platform,
-//   processColor
-// };
 
 
 // Match the react-native export signature, which uses CommonJS
