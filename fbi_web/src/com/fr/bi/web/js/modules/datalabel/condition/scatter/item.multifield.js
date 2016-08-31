@@ -7,7 +7,7 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         CONTAINER_HEIGHT: 80,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
-        FIELD_NAME_BUTTON_WIDTH: 60,
+        FIELD_NAME_BUTTON_WIDTH: 53,
         TEXT_BUTTON_H_GAP: 10,
         INPUT_WIDTH: 230,
         LABEL_WIDTH: 30
@@ -111,11 +111,13 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             type: "bi.vertical",
             cls: "condition-items",
             items: [BI.createWidget({
-                type: "bi.horizontal",
-                items: this.filterItems[0]
+                type: "bi.left",
+                items: this.filterItems[0],
+                hgap: 5
             }), BI.createWidget({
-                type: "bi.horizontal",
-                items: this.filterItems[1]
+                type: "bi.left",
+                items: this.filterItems[1],
+                hgap: 5
             })],
             vgap: 5
         });
