@@ -89,6 +89,7 @@ public class BuildCubeTask implements CubeTask {
     public void end() {
         Future<String> result = finishObserver.getOperationResult();
         try {
+            BILogger.getLogger().info("start persist datas!");
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
             if (!cubeBuild.isSingleTable()) {
                 BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());

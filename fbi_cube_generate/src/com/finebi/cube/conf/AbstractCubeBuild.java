@@ -18,7 +18,6 @@ import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -52,10 +51,8 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         calculateDependTool = new CalculateDependManager();
         try {
             allRelationPathSet = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
-        } catch (BITableRelationConfusionException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (BITablePathConfusionException e) {
-            BILogger.getLogger().error(e.getMessage());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -204,7 +201,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
         if (!isTableRelationValid(relation) || !isSourceRelationValid) {
-            BILogger.getLogger().error("tableSourceRelation invalid:"+relation.toString());
+            BILogger.getLogger().error("tableSourceRelation invalid:" + relation.toString());
             return null;
         }
         BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(

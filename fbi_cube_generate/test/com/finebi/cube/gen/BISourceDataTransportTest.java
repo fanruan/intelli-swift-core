@@ -90,7 +90,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
 
     /*增量更新：
 * 先插入：{id：1，name：China;ID:2,name：US}
-* 再加入:{id:3,name:Japan,id:4,name:Canada，id：5，name：Mexio}*/
+* 再加入:{id:3,name:Japan,id:4,name:Canada，id：5，name：Mexico}*/
     public void testPartUpdate() throws BICubeColumnAbsentException {
 
         CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(BINationDataFactory.createTableNationByPart()));
@@ -112,7 +112,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(1).equals("US"));
         assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(2).equals("Japan"));
         assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(3).equals("Canada"));
-        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(4).equals("Mexio"));
+        assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(4).equals("Mexico"));
     }
 
     /**

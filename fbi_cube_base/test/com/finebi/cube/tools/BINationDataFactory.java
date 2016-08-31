@@ -83,7 +83,7 @@ public class BINationDataFactory {
         List<String> name = new ArrayList<String>();
         name.add("Japan");
         name.add("Canada");
-        name.add("Mexio");
+        name.add("Mexico");
         source.setRowCount(id.size());
 
         Map<Integer, List> content = new HashMap<Integer, List>();
