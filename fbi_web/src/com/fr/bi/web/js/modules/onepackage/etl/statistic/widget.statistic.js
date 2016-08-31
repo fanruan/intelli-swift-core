@@ -175,7 +175,21 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
 
         this.save.on(BI.Button.EVENT_CHANGE,function(){
             self._checkMasker();
-            self.fireEvent(BI.GroupStatistic.EVENT_SAVE, self.model.getValue());
+            var data = self.model.getValue();
+            var mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: self.element,
+                text: BI.i18nText("BI-Loading")
+            });
+            BI.Utils.getTablesDetailInfoByTables([data], function (sourceTables) {
+                var table = sourceTables[0];
+                if(BI.isNotNull(table)) {
+                    data.fields = table.fields;
+                }
+                self.fireEvent(BI.GroupStatistic.EVENT_SAVE, data);
+            }, function() {
+                mask.destroy();
+            });
         });
 
         return BI.createWidget({
