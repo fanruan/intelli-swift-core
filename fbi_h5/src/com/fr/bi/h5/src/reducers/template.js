@@ -1,6 +1,6 @@
 import {ADD_TODO, DELETE_TODO, EDIT_TODO, COMPLETE_TODO, COMPLETE_ALL, CLEAR_COMPLETED} from '../constants/ActionTypes'
 
-const initialState = STORE;
+const initialState = BH.STORE;
 
 export default function todos(state = initialState, action) {
   switch (action.type) {

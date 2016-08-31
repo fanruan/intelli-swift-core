@@ -20,6 +20,35 @@ class Image extends Component {
     isInAParentText: React.PropTypes.bool
   }
 
+  static getSize = function(
+      url,
+      success,
+      failure
+  ) {
+    let wrap = document.createElement('div'),
+        img = new window.Image(),
+        loadedHandler = function loadedHandler() {
+          img.removeEventListener('load', loadedHandler);
+          success && success(img.offsetWidth, img.offsetHeight);
+        },
+        errorHandler = function errorHandler() {
+          img.removeEventListener('error', errorHandler);
+          failure && failure();
+        };
+
+    wrap.style.cssText = 'height:0px;width:0px;overflow:hidden;visibility:hidden;';
+
+    wrap.appendChild(img);
+    document.body.appendChild(wrap);
+    img.src = url;
+    if (!img.complete) {
+      img.addEventListener('error', errorHandler);
+      img.addEventListener('load', loadedHandler);
+    } else {
+      loadedHandler();
+    }
+  }
+
   render() {
 
     let props = {...this.props};
@@ -38,13 +67,13 @@ class Image extends Component {
       containerStyles.backgroundPosition = '50%';
 
       return (
-        <View style={containerStyles} data-src={props.src}>
-          {this.props.children}
-        </View>
+          <View style={containerStyles} data-src={props.src}>
+            {this.props.children}
+          </View>
       );
     } else {
       return (
-        <img {...props}/>
+          <img {...props}/>
       );
     }
   }

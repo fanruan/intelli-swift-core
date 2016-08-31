@@ -8,7 +8,8 @@ import React, {
     Text,
     Dimensions,
     ListView,
-    View
+    View,
+    Fetch
 } from 'lib'
 
 const {width, height} = Dimensions.get('window');
@@ -31,11 +32,12 @@ class Main extends Component {
             initialListSize={3}
             dataSource={this.state.dataSource}
             renderRow={this._renderRow.bind(this)}
-            />
+        />
     }
 
     _renderRow(rowData, sectionID, rowID) {
         const wi = this.props.template.popConfig.widgets[rowData];
+        const self = this;
         var data = {
             "data": {
                 "s": [11813],
@@ -515,15 +517,30 @@ class Main extends Component {
                 "x": 358
             }, "page": [0, 0, 0, 0, 1]
         };
-        return <View ref={function (ob){
+        return <View className={''} ref={function (ob) {
             //BI.requestAsync('fr_bi_dezi', 'widget_setting', wi, (data)=>{
-            requestAnimationFrame(()=> {
-                    let vanCharts = VanCharts.init(ReactDOM.findDOMNode(ob));
-                    vanCharts.setOptions(Data.Utils.convertDataToChartData(data.data, wi, {click:(d)=>{console.log(d)}}))
-                })
+
+            var w = {...wi, page: -1};
+            Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+                method: "POST",
+
+                body: JSON.stringify({widget: w, sessionID: BH.sessionID})
+            }).then(function (response) {
+                return response.json();// 转换为JSON
+            }).then((data)=> {
+                let vanCharts = VanCharts.init(ReactDOM.findDOMNode(ob));
+                vanCharts.setOptions(Data.Utils.convertDataToChartData(data.data, wi, {
+                    click: (d)=> {
+                        console.log(d)
+                    }
+                }))
+            });
+            //requestAnimationFrame(()=> {
+
+            //})
             //})
 
-        }} key={rowData} style={{height: height/2}}></View>
+        }} key={rowData} style={{height: height / 2}}></View>
     }
 }
 mixin.onClass(Main, PureRenderMixin);

@@ -8,7 +8,7 @@
  */
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import ListViewDataSource from './ListViewDataSource.web';
 import ScrollView from '../ScrollView/ScrollView.web';
@@ -17,7 +17,6 @@ import StaticRenderer from './StaticRenderer.web';
 import TimerMixin from 'react-timer-mixin';
 import mixin from 'react-mixin';
 import assign from 'object-assign';
-// import autobind from 'autobind-decorator';
 
 const DEFAULT_PAGE_SIZE = 1;
 const DEFAULT_INITIAL_ROWS = 10;
@@ -189,7 +188,7 @@ class ListView extends Component {
      * with `horizontal={true}`.
      * @platform ios
      */
-    stickyHeaderIndices: PropTypes.arrayOf(PropTypes.number)
+    stickyHeaderIndices: PropTypes.arrayOf(PropTypes.number),
   }
 
   /**
@@ -202,12 +201,12 @@ class ListView extends Component {
     renderScrollComponent: props => <ScrollView {...props} />,
     scrollRenderAheadDistance: DEFAULT_SCROLL_RENDER_AHEAD,
     onEndReachedThreshold: DEFAULT_END_REACHED_THRESHOLD,
-    stickyHeaderIndices: []
+    stickyHeaderIndices: [],
   }
 
   state = {
     curRenderedRowsCount: this.props.initialListSize,
-    highlightedRow: {}
+    highlightedRow: {},
   }
 
   /**
@@ -218,7 +217,7 @@ class ListView extends Component {
       contentLength: this.scrollProperties.contentLength,
       totalRows: this.props.dataSource.getRowCount(),
       renderedRows: this.state.curRenderedRowsCount,
-      visibleRows: Object.keys(this._visibleRows).length
+      visibleRows: Object.keys(this._visibleRows).length,
     };
   }
 
@@ -229,8 +228,8 @@ class ListView extends Component {
    */
   getScrollResponder() {
     return this.refs[SCROLLVIEW_REF] &&
-      this.refs[SCROLLVIEW_REF].getScrollResponder &&
-      this.refs[SCROLLVIEW_REF].getScrollResponder();
+        this.refs[SCROLLVIEW_REF].getScrollResponder &&
+        this.refs[SCROLLVIEW_REF].getScrollResponder();
   }
 
   scrollTo(...args) {
@@ -271,17 +270,17 @@ class ListView extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.dataSource !== nextProps.dataSource ||
-      this.props.initialListSize !== nextProps.initialListSize) {
+        this.props.initialListSize !== nextProps.initialListSize) {
       this.setState((state, props) => {
         this._prevRenderedRowsCount = 0;
         return {
           curRenderedRowsCount: Math.min(
-            Math.max(
-              state.curRenderedRowsCount,
-              props.initialListSize
-            ),
-            props.dataSource.getRowCount()
-          )
+              Math.max(
+                  state.curRenderedRowsCount,
+                  props.initialListSize
+              ),
+              props.dataSource.getRowCount()
+          ),
         };
       }, () => this._renderMoreRowsIfNeeded());
     }
@@ -318,17 +317,17 @@ class ListView extends Component {
 
       if (this.props.renderSectionHeader) {
         let shouldUpdateHeader = rowCount >= this._prevRenderedRowsCount &&
-          dataSource.sectionHeaderShouldUpdate(sectionIdx);
+            dataSource.sectionHeaderShouldUpdate(sectionIdx);
         bodyComponents.push(
-          <StaticRenderer
-            key={'s_' + sectionID}
-            shouldUpdate={!!shouldUpdateHeader}
-            render={this.props.renderSectionHeader.bind(
-              null,
-              dataSource.getSectionHeaderData(sectionIdx),
-              sectionID
-            )}
-          />
+            <StaticRenderer
+                key={'s_' + sectionID}
+                shouldUpdate={!!shouldUpdateHeader}
+                render={this.props.renderSectionHeader.bind(
+                    null,
+                    dataSource.getSectionHeaderData(sectionIdx),
+                    sectionID
+                )}
+            />
         );
         sectionHeaderIndices.push(totalIndex++);
       }
@@ -337,33 +336,33 @@ class ListView extends Component {
         let rowID = rowIDs[rowIdx];
         let comboID = sectionID + '_' + rowID;
         let shouldUpdateRow = rowCount >= this._prevRenderedRowsCount &&
-          dataSource.rowShouldUpdate(sectionIdx, rowIdx);
+            dataSource.rowShouldUpdate(sectionIdx, rowIdx);
         let row =
-          <StaticRenderer
-            key={'r_' + comboID}
-            shouldUpdate={!!shouldUpdateRow}
-            render={this.props.renderRow.bind(
-              null,
-              dataSource.getRowData(sectionIdx, rowIdx),
-              sectionID,
-              rowID,
-              this.onRowHighlighted.bind(this)
-            )}
-          />;
+            <StaticRenderer
+                key={'r_' + comboID}
+                shouldUpdate={!!shouldUpdateRow}
+                render={this.props.renderRow.bind(
+                    null,
+                    dataSource.getRowData(sectionIdx, rowIdx),
+                    sectionID,
+                    rowID,
+                    this.onRowHighlighted.bind(this)
+                )}
+            />;
         bodyComponents.push(row);
         totalIndex++;
 
         if (this.props.renderSeparator &&
-          (rowIdx !== rowIDs.length - 1 || sectionIdx === allRowIDs.length - 1)) {
+            (rowIdx !== rowIDs.length - 1 || sectionIdx === allRowIDs.length - 1)) {
           let adjacentRowHighlighted =
-            this.state.highlightedRow.sectionID === sectionID && (
-              this.state.highlightedRow.rowID === rowID ||
-              this.state.highlightedRow.rowID === rowIDs[rowIdx + 1]
-            );
+              this.state.highlightedRow.sectionID === sectionID && (
+                  this.state.highlightedRow.rowID === rowID ||
+                  this.state.highlightedRow.rowID === rowIDs[rowIdx + 1]
+              );
           let separator = this.props.renderSeparator(
-            sectionID,
-            rowID,
-            adjacentRowHighlighted
+              sectionID,
+              rowID,
+              adjacentRowHighlighted
           );
           if (separator) {
             bodyComponents.push(separator);
@@ -380,8 +379,8 @@ class ListView extends Component {
     }
 
     let {
-      renderScrollComponent,
-      ...props
+        renderScrollComponent,
+        ...props,
     } = this.props;
     if (!props.scrollEventThrottle) {
       props.scrollEventThrottle = DEFAULT_SCROLL_CALLBACK_THROTTLE;
@@ -398,7 +397,7 @@ class ListView extends Component {
       onKeyboardWillShow: undefined,
       onKeyboardWillHide: undefined,
       onKeyboardDidShow: undefined,
-      onKeyboardDidHide: undefined
+      onKeyboardDidHide: undefined,
     });
 
     // TODO(ide): Use function refs so we can compose with the scroll
@@ -406,7 +405,7 @@ class ListView extends Component {
     return React.cloneElement(renderScrollComponent(props), {
       ref: SCROLLVIEW_REF,
       onContentSizeChange: this._onContentSizeChange.bind(this),
-      onLayout: this._onLayout.bind(this)
+      onLayout: this._onLayout.bind(this),
     }, header, bodyComponents, footer);
   }
 
@@ -452,9 +451,9 @@ class ListView extends Component {
 
   _maybeCallOnEndReached(event) {
     if (this.props.onEndReached &&
-      this.scrollProperties.contentLength !== this._sentEndForContentLength &&
-      this._getDistanceFromEnd(this.scrollProperties) < this.props.onEndReachedThreshold &&
-      this.state.curRenderedRowsCount === this.props.dataSource.getRowCount()) {
+        this.scrollProperties.contentLength !== this._sentEndForContentLength &&
+        this._getDistanceFromEnd(this.scrollProperties) < this.props.onEndReachedThreshold &&
+        this.state.curRenderedRowsCount === this.props.dataSource.getRowCount()) {
       this._sentEndForContentLength = this.scrollProperties.contentLength;
       this.props.onEndReached(event);
       return true;
@@ -464,8 +463,8 @@ class ListView extends Component {
 
   _renderMoreRowsIfNeeded() {
     if (this.scrollProperties.contentLength === null ||
-      this.scrollProperties.visibleLength === null ||
-      this.state.curRenderedRowsCount === this.props.dataSource.getRowCount()) {
+        this.scrollProperties.visibleLength === null ||
+        this.state.curRenderedRowsCount === this.props.dataSource.getRowCount()) {
       this._maybeCallOnEndReached();
       return;
     }
@@ -479,8 +478,8 @@ class ListView extends Component {
   _pageInNewRows() {
     this.setState((state, props) => {
       let rowsToRender = Math.min(
-        state.curRenderedRowsCount + props.pageSize,
-        props.dataSource.getRowCount()
+          state.curRenderedRowsCount + props.pageSize,
+          props.dataSource.getRowCount()
       );
       this._prevRenderedRowsCount = state.curRenderedRowsCount;
       return {
@@ -579,21 +578,21 @@ class ListView extends Component {
 
     let target = ReactDOM.findDOMNode(this.refs[SCROLLVIEW_REF]);
     this.scrollProperties.visibleLength = target[
-      isVertical ? 'offsetHeight' : 'offsetWidth'
-      ];
+        isVertical ? 'offsetHeight' : 'offsetWidth'
+        ];
     this.scrollProperties.contentLength = target[
-      isVertical ? 'scrollHeight' : 'scrollWidth'
-      ];
+        isVertical ? 'scrollHeight' : 'scrollWidth'
+        ];
     this.scrollProperties.offset = target[
-      isVertical ? 'scrollTop' : 'scrollTop'
-      ];
+        isVertical ? 'scrollTop' : 'scrollLeft'
+        ];
     // this._updateVisibleRows(e.nativeEvent.updatedChildFrames);
     if (!this._maybeCallOnEndReached(e)) {
       this._renderMoreRowsIfNeeded();
     }
 
     if (this.props.onEndReached &&
-      this._getDistanceFromEnd(this.scrollProperties) > this.props.onEndReachedThreshold) {
+        this._getDistanceFromEnd(this.scrollProperties) > this.props.onEndReachedThreshold) {
       // Scrolled out of the end zone, so it should be able to trigger again.
       this._sentEndForContentLength = null;
     }
@@ -604,7 +603,6 @@ class ListView extends Component {
 
 mixin.onClass(ListView, ScrollResponder.Mixin);
 mixin.onClass(ListView, TimerMixin);
-//autobind(ListView);
 
 ListView.isReactNativeComponent = true;
 

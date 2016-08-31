@@ -8,10 +8,10 @@
  */
 'use strict';
 
-import React, {Component} from 'react';
+import '../PanResponder/PanResponder.web';
+import React, { Component } from 'react';
 import Touchable from './Touchable';
 import mixin from 'react-mixin';
-// import autobind from 'autobind-decorator';
 
 /**
  * When the scroll view is disabled, this defines how far your touch may move
@@ -56,7 +56,7 @@ class TouchableWithoutFeedback extends Component {
     /**
      * Delay in ms, from onPressIn, before onLongPress is called.
      */
-    delayLongPress: React.PropTypes.number
+    delayLongPress: React.PropTypes.number,
   }
 
   state = this.touchableGetInitialState()
@@ -65,7 +65,7 @@ class TouchableWithoutFeedback extends Component {
   // ensurePositiveDelayProps(this.props);
   // },
 
-  componentWillReceiveProps(nextProps:Object) {
+  componentWillReceiveProps(nextProps) {
     // ensurePositiveDelayProps(nextProps);
   }
 
@@ -73,44 +73,48 @@ class TouchableWithoutFeedback extends Component {
    * `Touchable.Mixin` self callbacks. The mixin will invoke these if they are
    * defined on your component.
    */
-  touchableHandlePress(e:Event) {
+  touchableHandlePress(e) {
     var touchBank = e.touchHistory.touchBank[e.touchHistory.indexOfSingleActiveTouch];
-    var offset = Math.sqrt(Math.pow(touchBank.startPageX - touchBank.currentPageX, 2)
-      + Math.pow(touchBank.startPageY - touchBank.currentPageY, 2));
-    var velocity = (offset / (touchBank.currentTimeStamp - touchBank.startTimeStamp)) * 1000;
-    if (velocity < 100) this.props.onPress && this.props.onPress(e);
+    if (touchBank) {
+      var offset = Math.sqrt(Math.pow(touchBank.startPageX - touchBank.currentPageX, 2)
+          + Math.pow(touchBank.startPageY - touchBank.currentPageY, 2));
+      var velocity = (offset / (touchBank.currentTimeStamp - touchBank.startTimeStamp)) * 1000;
+      if (velocity < 100) this.props.onPress && this.props.onPress(e);
+    } else {
+      this.props.onPress && this.props.onPress(e);
+    }
   }
 
-  touchableHandleActivePressIn(e:Event) {
+  touchableHandleActivePressIn(e) {
     this.props.onPressIn && this.props.onPressIn(e);
   }
 
-  touchableHandleActivePressOut(e:Event) {
+  touchableHandleActivePressOut(e) {
     this.props.onPressOut && this.props.onPressOut(e);
   }
 
-  touchableHandleLongPress(e:Event) {
+  touchableHandleLongPress(e) {
     this.props.onLongPress && this.props.onLongPress(e);
   }
 
-  touchableGetPressRectOffset() {
+  touchableGetPressRectOffset(): typeof PRESS_RECT_OFFSET {
     return PRESS_RECT_OFFSET; // Always make sure to predeclare a constant!
   }
 
-  touchableGetHighlightDelayMS():number {
+  touchableGetHighlightDelayMS() {
     return this.props.delayPressIn || 0;
   }
 
-  touchableGetLongPressDelayMS():number {
+  touchableGetLongPressDelayMS() {
     return this.props.delayLongPress === 0 ? 0 :
     this.props.delayLongPress || 500;
   }
 
-  touchableGetPressOutDelayMS():number {
+  touchableGetPressOutDelayMS() {
     return this.props.delayPressOut || 0;
   }
 
-  render():ReactElement {
+  render() {
     // Note(avik): remove dynamic typecast once Flow has been upgraded
     return React.cloneElement(React.Children.only(this.props.children), {
       onStartShouldSetResponder: this.touchableHandleStartShouldSetResponder.bind(this),
@@ -122,9 +126,8 @@ class TouchableWithoutFeedback extends Component {
     });
   }
 
-}
+};
 
 mixin.onClass(TouchableWithoutFeedback, Touchable.Mixin);
-//autobind(TouchableWithoutFeedback);
 
 module.exports = TouchableWithoutFeedback;
