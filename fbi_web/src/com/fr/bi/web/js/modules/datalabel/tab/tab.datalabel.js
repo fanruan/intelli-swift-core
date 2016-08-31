@@ -47,7 +47,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 items: [{
                     el: {
                         type: "bi.horizontal",
-                        width: 530,
+                        width: 550,
                         tgap: 5,
                         lgap: 10
                     }
@@ -75,7 +75,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             items: [{
                 el: tab
             }],
-            width: 530,
+            width: 550,
             height: this._CARDHEIGHT,
             scrollable: null,
             scrolly: false,
@@ -165,7 +165,10 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 items: [BI.createWidget({
                     type: "bi.horizontal",
                     cls: "img-select",
-                    items: [this.chart, this.imageSet],
+                    items: [this.chart, {
+                        el: this.imageSet,
+                        lgap: 20
+                    }],
                     scrollable: null,
                     scrolly: false,
                     scrollx: false
