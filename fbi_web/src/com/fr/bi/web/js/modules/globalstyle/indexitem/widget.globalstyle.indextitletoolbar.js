@@ -14,6 +14,7 @@ BI.GlobalStyleIndexTitleToolBar=BI.inherit(BI.Widget,{
 
         this.bold = BI.createWidget({
             type: "bi.icon_button",
+            title:BI.i18nText("BI-Bold"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-bold-font"
@@ -24,6 +25,7 @@ BI.GlobalStyleIndexTitleToolBar=BI.inherit(BI.Widget,{
 
         this.italic = BI.createWidget({
             type: "bi.icon_button",
+            title:BI.i18nText("BI-Italic"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-italic-font"
@@ -44,6 +46,7 @@ BI.GlobalStyleIndexTitleToolBar=BI.inherit(BI.Widget,{
             type: "bi.color_chooser",
             el: {
                 type: "bi.text_toolbar_color_chooser_trigger",
+                title:BI.i18nText("BI-Font_Colour"),
                 cls: "text-toolbar-button"
             }
         });

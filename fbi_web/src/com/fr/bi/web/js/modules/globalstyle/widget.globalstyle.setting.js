@@ -69,10 +69,11 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 },
                 height: 40
             },{
-                el:{
-                    type:"bi.vertical",
-                    items:[this.predictionStyle]
-                },
+                // el:{
+                //     type:"bi.vertical",
+                //     items:[this.predictionStyle]
+                // },
+                el:this.predictionStyle,
                 height:190
             },{
                 el: this.centerItems
@@ -121,10 +122,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         this.backgroundColour = BI.createWidget({
             type: "bi.global_style_index_background"
         });
-        this.backgroundColour.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
-        });
         var backgroundColourWrapper=BI.createWidget({
             type: "bi.left",
             cls: "bi-wrapper-bottom",
@@ -142,19 +139,11 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         this.widgetBackgroundColour = BI.createWidget({
             type: "bi.global_style_index_background"
         });
-        this.widgetBackgroundColour.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
-        });
         var widgetBackgroundColourWrapper = this._createComboWrapper(BI.i18nText("BI-Widget_Background_Colour"), this.widgetBackgroundColour);
 
         //标题栏
         this.titleColour = BI.createWidget({
             type: "bi.global_style_index_background"
-        });
-        this.titleColour.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
         var titleColourWrapper = this._createComboWrapper(BI.i18nText("BI-Title_Colour"), this.titleColour);
 
@@ -163,10 +152,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             //type: "bi.text_toolbar"
             type:"bi.global_style_index_title_tool_bar",
             cls:"border"
-        });
-        this.titleWordStyle.on(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
         var titleWordStyleWrapper = this._createWrapper(BI.i18nText("BI-Title_Word_Style"), this.titleWordStyle);
 
@@ -186,10 +171,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 height: 30
             }]
         });
-        this.chartStyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
-        });
         var chartStyleWrapper = this._createWrapper(BI.i18nText("BI-Chart_Style"), this.chartStyle);
 
         //图表配色
@@ -200,10 +181,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         });
         this.chartColour.populate();
         this.chartColour.setValue(BICst.CHART_COLORS[0]["value"]);
-        this.chartColour.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
-        });
         var chartColourWrapper = this._createWrapper(BI.i18nText("BI-Chart_Colour"), this.chartColour);
 
         //图表文字
@@ -211,10 +188,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             //type: "bi.text_toolbar"
             type:"bi.global_style_index_chart_tool_bar",
             cls:"border"
-        });
-        this.chartWordStyle.on(BI.GlobalStyleIndexChartToolBar.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
         var chartWordWrapper=BI.createWidget({
             type: "bi.left",
@@ -234,10 +207,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             type: "bi.color_chooser",
             height: 30,
             width: 160
-        });
-        this.controlTheme.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
         var controlThemeWrapper=BI.createWidget({
             type: "bi.left",
@@ -298,13 +267,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             }, widget],
             vgap: 10
         }
-    },
-
-    _backgroundColour: function (value) {
-        // console.log(value);
-        // alert(value);
-        // console.log(JSON.stringify(value));
-        // alert(JSON.stringify(value));
     },
 
     _saveTextButton: function () {
