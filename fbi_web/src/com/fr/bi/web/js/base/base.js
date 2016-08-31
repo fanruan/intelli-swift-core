@@ -1037,6 +1037,65 @@ if (!window.BI) {
     //BI请求
     _.extend(BI, {
 
+        ajax: function (option) {
+            option || (option = {});
+            //encode
+            for (var key in option.data) {
+                if (_.isObject(option.data[key])) {
+                    option.data[key] = window.encodeURIComponent(FR.jsonEncode(option.data[key]));
+                } else {
+                    option.data[key] = window.encodeURIComponent(option.data[key]);
+                }
+            }
+
+            if (BI.isNull(BI.REQUEST_LOADING)) {
+                BI.REQUEST_LOADING = BI.createWidget({
+                    type: "bi.request_loading"
+                });
+            }
+
+            FR.ajax({
+                url: option.url,
+                type: "POST",
+                data: option.data,
+                error: function () {
+                    //失败 取消、重新加载
+                    BI.REQUEST_LOADING.setCallback(function () {
+                        BI.ajax(option);
+                    });
+                    BI.REQUEST_LOADING.showError();
+                },
+                success: function (res) {
+                    if (BI.isFunction(option.success)) {
+                        option.success(FR.jsonDecode(res));
+                    }
+                },
+                complete: function (res, status) {
+                    //登录超时
+                    if (BI.isNotNull(res.responseText) && res.responseText.indexOf("fs-login-content") > -1) {
+                        if (BI.isNotNull(BI.Popovers.get(BI.LoginTimeOut.POPOVER_ID))) {
+                            BI.Popovers.open(BI.LoginTimeOut.POPOVER_ID);
+                        } else {
+                            var loginTimeout = BI.createWidget({
+                                type: "bi.login_timeout"
+                            });
+                            loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
+                                BI.ajax(option);
+                                BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
+                            });
+                            BI.Popovers.create(BI.LoginTimeOut.POPOVER_ID, loginTimeout, {
+                                width: 600,
+                                height: 400
+                            }).open(BI.LoginTimeOut.POPOVER_ID);
+                        }
+                    }
+                    if (BI.isFunction(option.complete)) {
+                        option.complete(FR.jsonDecode(res.responseText));
+                    }
+                }
+            });
+        },
+
         /**
          * 异步ajax请求
          * @param {String} op op参数
@@ -1046,11 +1105,6 @@ if (!window.BI) {
          * @param {Function} complete 回调
          */
         requestAsync: function (op, cmd, data, callback, complete) {
-            if(BI.isNull(BI.REQUEST_LOADING)) {
-                BI.REQUEST_LOADING = BI.createWidget({
-                    type: "bi.request_loading"
-                });
-            }
             data = data || {};
             if (!BI.isKey(op)) {
                 op = 'fr_bi_dezi';
@@ -1059,25 +1113,21 @@ if (!window.BI) {
                 data.sessionID = Data.SharingPool.get("sessionID");
             }
             var url = FR.servletURL + '?op=' + op + '&cmd=' + cmd + "&_=" + Math.random();
-            (BI.ajax || FR.ajax)({
+            (BI.ajax)({
                 url: url,
                 type: 'POST',
                 data: data,
                 error: function () {
                     // BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
-                    //失败 取消、重新加载
-                    BI.REQUEST_LOADING.setCallback(function () {
-                        BI.requestAsync(op, cmd, data, callback, complete);
-                    });
-                    BI.REQUEST_LOADING.showError();
+                },
+                success: function (res) {
+                    if (BI.isFunction(callback)) {
+                        callback(res);
+                    }
                 },
                 complete: function (res, status) {
-                    if (BI.isFunction(callback) && status === 'success') {
-                        callback(FR.jsonDecode(res.responseText));
-                        BI.Maskers.hide(BI.RequstLoading.MASK_ID);
-                    }
                     if (BI.isFunction(complete)) {
-                        complete();
+                        complete(res);
                     }
                 }
             });
