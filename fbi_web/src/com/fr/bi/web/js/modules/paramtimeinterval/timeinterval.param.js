@@ -74,28 +74,33 @@ BI.ParamTimeInterval = BI.inherit(BI.Single, {
             self.right.hidePopupView();
         });
         combo.on(BI.MultiDateCombo.EVENT_CHANGE, function () {
+            BI.Bubbles.hide("error");
             var smallDate = self.left.getKey(), bigDate = self.right.getKey();
             if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
                 self._setTitle(BI.i18nText("BI-Time_Interval_Error_Text"));
                 self.element.addClass(self.constants.timeErrorCls);
+                BI.Bubbles.show("error", BI.i18nText("BI-Time_Interval_Error_Text"), self, {
+                    offsetStyle: "center"
+                });
+                self.fireEvent(BI.TimeInterval.EVENT_ERROR);
             } else {
                 self._clearTitle();
                 self.element.removeClass(self.constants.timeErrorCls);
             }
         });
 
-        combo.on(BI.MultiDateCombo.EVENT_VALID, function () {
+        combo.on(BI.MultiDateCombo.EVENT_CONFIRM, function(){
+            BI.Bubbles.hide("error");
             var smallDate = self.left.getKey(), bigDate = self.right.getKey();
             if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
                 self._setTitle(BI.i18nText("BI-Time_Interval_Error_Text"));
                 self.element.addClass(self.constants.timeErrorCls);
-            } else {
+                self.fireEvent(BI.TimeInterval.EVENT_ERROR);
+            }else{
                 self._clearTitle();
                 self.element.removeClass(self.constants.timeErrorCls);
+                self.fireEvent(BI.TimeInterval.EVENT_CHANGE);
             }
-        });
-        combo.on(BI.MultiDateParamCombo.EVENT_CHANGE, function(){
-            self.fireEvent(BI.ParamTimeInterval.EVENT_CHANGE);
         });
         return combo;
     },

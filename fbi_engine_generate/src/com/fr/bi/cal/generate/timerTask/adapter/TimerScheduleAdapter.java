@@ -35,7 +35,7 @@ public class TimerScheduleAdapter {
                 } else {
                     BusinessTable table = tableCheck(userId, keys);
                     if (table != null) {
-                        CubeBuild cubeBuild = new CubeBuildSingleTable(table, userId);
+                        CubeBuild cubeBuild = new CubeBuildSingleTable(table, null,userId,0);
                         TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuild, keys,userId);
                         scheduleList.add(taskSchedule);
                     }

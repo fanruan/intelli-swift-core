@@ -177,7 +177,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
 
     setType: function (type) {
         var t = type;
-        if(type >= BICst.MAP_TYPE.WORLD){
+        if((type + "").indexOf(BICst.DI_TU) !== -1){
             this.sub_type = t;
             t = BICst.WIDGET.MAP;
         }

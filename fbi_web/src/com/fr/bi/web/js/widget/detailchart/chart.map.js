@@ -308,7 +308,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
+            geo: options.geo || {data: MapConst.INNER_MAP_INFO.MAP_PATH[BI.i18nText("BI-China")], name: BI.i18nText("BI-China")},
             initDrillPath: options.initDrillPath || [],
             tooltip: options.tooltip || "",
             theme_color: options.theme_color || "#65bce7",

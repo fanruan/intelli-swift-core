@@ -54,13 +54,9 @@ BI.ChartType = BI.inherit(BI.Widget, {
                 }));
             } else {
                 if (item.value === BICst.WIDGET.MAP) {
-                    BI.each(BICst.SVG_MAP_TYPE, function (i, it) {
-                        it.iconClass = it.cls;
-                    });
                     result.push(BI.extend({
                         type: "bi.map_type_combo",
                         width: 40,
-                        items: BICst.SVG_MAP_TYPE,
                         iconWidth: 24,
                         iconHeight: 24
                     }, {
@@ -86,7 +82,7 @@ BI.ChartType = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        v = v || BICst.MAP_TYPE.CHINA;
+        v = v || MapConst.INNER_MAP_INFO.MAP_NAME[BI.i18nText("BI-China")];
         this.buttonTree.setValue(v);
     }
 });

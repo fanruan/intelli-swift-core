@@ -178,6 +178,10 @@ public class BIBaseConstant {
         public final static String IMAGE_PATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "images";
     }
 
+    public static final class MAP_JSON {
+        public final static String MAP_PATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "geojson";
+    }
+
     public static final class CUBEINDEX {
 
 
