@@ -12,7 +12,13 @@
 
 <script>__REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__</script>
 <script type="text/javascript">
-    (window || global).STORE = {
+    if (!window.BH) {
+        window.BH = {
+            servletURL: "${servletURL}",
+            sessionID: ${sessionID}
+        };
+    }
+    BH.STORE = {
         reportId: ${reportId},
         popConfig: ${popConfig},
         sessionID: ${sessionID},
@@ -22,9 +28,8 @@
         userId: '${userId}',
         reg: ${reg}
     };
-    console.log(STORE);
 </script>
 <script type="text/javascript" src="${servletURL}?op=emb&resource=h5.js"></script>
-<script src="${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/entry.js&__pre__=true"></script>
+<script src="${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/entry.js"></script>
 </body>
 </html>
