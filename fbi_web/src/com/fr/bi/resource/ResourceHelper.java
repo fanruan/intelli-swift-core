@@ -708,6 +708,7 @@ public class ResourceHelper {
 
                 //图样式
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/formula/customscale.formula.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/customscale/formula/customscale.formula.fieldtree.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/combo.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
@@ -1386,6 +1387,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.field.tree.midleaf.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.field.tree.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.pane.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/combo.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/trigger.customscale.js",
@@ -2819,6 +2821,24 @@ public class ResourceHelper {
     }
 
     public static String[] getMobileJs(){
+        return new String[] {
+                "com/fr/bi/web/mobile/mobile.jQuery.js",
+                "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/js/core/underscore.js",
+                "com/fr/bi/web/js/base/base.js",
+                "com/fr/bi/web/mobile/mobile.data.js",
+                "com/fr/bi/web/js/data/data.js",
+                "com/fr/bi/web/js/data/constant/biconst.js",
+                "com/fr/bi/web/js/data/constant/enums.js",
+                "com/fr/bi/web/js/base/proto/number.js",
+                "com/fr/bi/web/js/base/proto/array.js",
+                "com/fr/bi/web/js/base/proto/date.js",
+                "com/fr/bi/web/js/data/utils.js"
+        };
+    }
+
+    public static String[] getH5Js(){
         return new String[] {
                 "com/fr/bi/web/mobile/mobile.jQuery.js",
                 "com/fr/bi/web/js/third/d3.js",

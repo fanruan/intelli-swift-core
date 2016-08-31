@@ -186,12 +186,12 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.numberLevellY]
                 }, {
-                 type: "bi.vertical_adapt",
-                 items: [this.showCustomScale]
-                 }, {
-                 type: "bi.vertical_adapt",
-                 items: [this.customScale]
-                 }], {
+                    type: "bi.vertical_adapt",
+                    items: [this.showCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customScale]
+                }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_H_GAP
@@ -300,7 +300,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     populate: function () {
         var wId = this.options.wId;
-        var tIds = BI.Utils.getAllTargetDimensionIDs(wId);
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));

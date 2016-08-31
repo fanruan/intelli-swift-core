@@ -71,6 +71,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
             type: "bi.left",
             element: this.element,
             items: [this.family, this.size, this.bold, this.italic, this.colorchooser],
+            width: 220,
             hgap: 3,
             vgap: 3
         });

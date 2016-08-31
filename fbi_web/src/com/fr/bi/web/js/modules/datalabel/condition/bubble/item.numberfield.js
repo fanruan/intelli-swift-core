@@ -253,12 +253,16 @@ BI.BubbleNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     getValue: function () {
-        return {
+        var result = {
             key: this.key,
             filter_type: this.filterType.getValue()[0],
             filter_value: this.filterWidget.getValue(),
             style_setting: this.style.getValue()
+        };
+        if (this.isDimension) {
+            result.target_id = this.options.dId;
         }
+        return result;
     }
 });
 $.shortcut("bi.bubble_number_field_filter_item", BI.BubbleNumberFieldFilterItem);
