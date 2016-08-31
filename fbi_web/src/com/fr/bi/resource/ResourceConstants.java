@@ -24,4 +24,5 @@ public class ResourceConstants {
     public static final String DEFAULT_FORMULA_JS = "formula.js";
 
     public static final String DEFAULT_MOBILE_JS = "mobile.js";
+    public static final String DEFAULT_H5_JS = "h5.js";
 }
