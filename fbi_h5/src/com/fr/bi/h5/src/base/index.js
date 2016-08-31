@@ -5,7 +5,6 @@ export CellMeasurer from './CellMeasurer'
 export ColumnSizer from './ColumnSizer'
 export Wheeler from './Wheeler/Wheeler'
 export ScrollableWheeler from './Wheeler/ScrollableWheeler'
-export Mover from './Mover'
 export Swiper from './Swiper'
 export Sortable from './Sortable'
 
@@ -19,6 +18,5 @@ export InfiniteLoader from './InfiniteLoader'
 export Grid from './Grid'
 export VirtualScroll from './VirtualScroll'
 export Collection from './Collection'
-export FixedDataTable from './FixedDataTable'
 
 export default module.exports;
