@@ -12,7 +12,6 @@ import React, {Component} from 'react';
 import ActivityIndicator from '../ActivityIndicator/ActivityIndicator.web';
 import {Mixin as NativeMethodsMixin} from '../Utilties/NativeMethodsMixin.web';
 import mixin from 'react-mixin';
-// import autobind from 'autobind-decorator';
 
 let RefreshLayoutConsts = {SIZE: {}};
 
@@ -24,7 +23,7 @@ class RefreshControl extends Component {
     this._lastNativeRefreshing = this.props.refreshing;
   }
 
-  componentDidUpdate(prevProps:{refreshing: boolean}) {
+  componentDidUpdate(prevProps) {
     // RefreshControl is a controlled component so if the native refreshing
     // value doesn't match the current js refreshing prop update it to
     // the js value.
@@ -59,7 +58,6 @@ class RefreshControl extends Component {
 }
 
 mixin.onClass(RefreshControl, NativeMethodsMixin);
-//autobind(RefreshControl);
 RefreshControl.isReactNativeComponent = true;
 
 export default RefreshControl;

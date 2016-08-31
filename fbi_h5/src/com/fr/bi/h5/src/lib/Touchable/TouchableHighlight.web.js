@@ -8,15 +8,15 @@
  */
 'use strict';
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import View from '../View/View.web';
 import TimerMixin from 'react-timer-mixin';
 import TouchableWithoutFeedback from './TouchableWithoutFeedback.web';
-import {Mixin as TouchableMixin} from './Touchable';
-import {Mixin as NativeMethodsMixin} from '../Utilties/NativeMethodsMixin.web';
+import { Mixin as TouchableMixin } from './Touchable';
+import { Mixin as NativeMethodsMixin } from '../Utilties/NativeMethodsMixin.web';
 import StyleSheet from '../StyleSheet/StyleSheet.web';
 import mixin from 'react-mixin';
-// import autobind from 'autobind-decorator';
+
 
 var DEFAULT_PROPS = {
   activeOpacity: 0.8,
@@ -30,10 +30,10 @@ var PRESS_RECT_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
 var CHILD_REF = 'childRef';
 var UNDERLAY_REF = 'underlayRef';
 var INACTIVE_CHILD_PROPS = {
-  style: StyleSheet.create({x: {opacity: 1.0}}).x
+  style: StyleSheet.create({x: {opacity: 1.0}}).x,
 };
 var INACTIVE_UNDERLAY_PROPS = {
-  style: StyleSheet.create({x: {backgroundColor: 'transparent'}}).x
+  style: StyleSheet.create({x: {backgroundColor: 'transparent'}}).x,
 };
 
 class TouchableHighlight extends Component {
@@ -56,7 +56,7 @@ class TouchableHighlight extends Component {
     /**
      * Called immediately after the underlay is hidden
      */
-    onHideUnderlay: React.PropTypes.func
+    onHideUnderlay: React.PropTypes.func,
   }
 
   static defaultProps = DEFAULT_PROPS
@@ -68,17 +68,17 @@ class TouchableHighlight extends Component {
     return {
       activeProps: {
         style: {
-          opacity: props.activeOpacity
+          opacity: props.activeOpacity,
         }
       },
       activeUnderlayProps: {
         style: {
-          backgroundColor: props.underlayColor
+          backgroundColor: props.underlayColor,
         }
       },
       underlayStyle: [
         INACTIVE_UNDERLAY_PROPS.style,
-        props.style
+        props.style,
       ]
     };
   }
@@ -95,8 +95,8 @@ class TouchableHighlight extends Component {
   componentWillReceiveProps(nextProps) {
     // ensurePositiveDelayProps(nextProps);
     if (nextProps.activeOpacity !== this.props.activeOpacity ||
-      nextProps.underlayColor !== this.props.underlayColor ||
-      nextProps.style !== this.props.style) {
+        nextProps.underlayColor !== this.props.underlayColor ||
+        nextProps.style !== this.props.style) {
       this.setState(this.computeSyntheticState(nextProps));
     }
   }
@@ -105,34 +105,38 @@ class TouchableHighlight extends Component {
    * `Touchable.Mixin` self callbacks. The mixin will invoke these if they are
    * defined on your component.
    */
-  touchableHandleActivePressIn(e:Object) {
+  touchableHandleActivePressIn(e) {
     this.clearTimeout(this._hideTimeout);
     this._hideTimeout = null;
     this._showUnderlay();
     this.props.onPressIn && this.props.onPressIn(e);
   }
 
-  touchableHandleActivePressOut(e:Object) {
+  touchableHandleActivePressOut(e) {
     if (!this._hideTimeout) {
       this._hideUnderlay();
     }
     this.props.onPressOut && this.props.onPressOut(e);
   }
 
-  touchableHandlePress(e:Object) {
+  touchableHandlePress(e) {
     this.clearTimeout(this._hideTimeout);
     this._showUnderlay();
     this._hideTimeout = this.setTimeout(this._hideUnderlay,
-      this.props.delayPressOut || 100);
+        this.props.delayPressOut || 100);
 
     var touchBank = e.touchHistory.touchBank[e.touchHistory.indexOfSingleActiveTouch];
-    var offset = Math.sqrt(Math.pow(touchBank.startPageX - touchBank.currentPageX, 2)
-      + Math.pow(touchBank.startPageY - touchBank.currentPageY, 2));
-    var velocity = (offset / (touchBank.currentTimeStamp - touchBank.startTimeStamp)) * 1000;
-    if (velocity < 100) this.props.onPress && this.props.onPress(e);
+    if (touchBank) {
+      var offset = Math.sqrt(Math.pow(touchBank.startPageX - touchBank.currentPageX, 2)
+          + Math.pow(touchBank.startPageY - touchBank.currentPageY, 2));
+      var velocity = (offset / (touchBank.currentTimeStamp - touchBank.startTimeStamp)) * 1000;
+      if (velocity < 100) this.props.onPress && this.props.onPress(e);
+    } else {
+      this.props.onPress && this.props.onPress(e);
+    }
   }
 
-  touchableHandleLongPress(e:Object) {
+  touchableHandleLongPress(e) {
     this.props.onLongPress && this.props.onLongPress(e);
   }
 
@@ -169,7 +173,7 @@ class TouchableHighlight extends Component {
       this.refs[CHILD_REF].setNativeProps(INACTIVE_CHILD_PROPS);
       this.refs[UNDERLAY_REF].setNativeProps({
         ...INACTIVE_UNDERLAY_PROPS,
-        style: this.state.underlayStyle
+        style: this.state.underlayStyle,
       });
       this.props.onHideUnderlay && this.props.onHideUnderlay();
     }
@@ -178,35 +182,34 @@ class TouchableHighlight extends Component {
   render() {
 
     return (
-      <View
-        accessible={true}
-        accessibilityComponentType={this.props.accessibilityComponentType}
-        accessibilityTraits={this.props.accessibilityTraits}
-        ref={UNDERLAY_REF}
-        style={this.state.underlayStyle}
-        onLayout={this.props.onLayout}
-        onStartShouldSetResponder={this.touchableHandleStartShouldSetResponder.bind(this)}
-        onResponderTerminationRequest={this.touchableHandleResponderTerminationRequest.bind(this)}
-        onResponderGrant={this.touchableHandleResponderGrant.bind(this)}
-        onResponderMove={this.touchableHandleResponderMove.bind(this)}
-        onResponderRelease={this.touchableHandleResponderRelease.bind(this)}
-        onResponderTerminate={this.touchableHandleResponderTerminate.bind(this)}
-        testID={this.props.testID}>
-        {React.cloneElement(
-          React.Children.only(this.props.children),
-          {
-            ref: CHILD_REF
-          }
-        )}
-      </View>
+        <View
+            accessible={true}
+            accessibilityComponentType={this.props.accessibilityComponentType}
+            accessibilityTraits={this.props.accessibilityTraits}
+            ref={UNDERLAY_REF}
+            style={this.state.underlayStyle}
+            onLayout={this.props.onLayout}
+            onStartShouldSetResponder={this.touchableHandleStartShouldSetResponder.bind(this)}
+            onResponderTerminationRequest={this.touchableHandleResponderTerminationRequest.bind(this)}
+            onResponderGrant={this.touchableHandleResponderGrant.bind(this)}
+            onResponderMove={this.touchableHandleResponderMove.bind(this)}
+            onResponderRelease={this.touchableHandleResponderRelease.bind(this)}
+            onResponderTerminate={this.touchableHandleResponderTerminate.bind(this)}
+            testID={this.props.testID}>
+          {React.cloneElement(
+              React.Children.only(this.props.children),
+              {
+                ref: CHILD_REF,
+              }
+          )}
+        </View>
     );
   }
 
-}
+};
 
 mixin.onClass(TouchableHighlight, TimerMixin);
 mixin.onClass(TouchableHighlight, TouchableMixin);
 mixin.onClass(TouchableHighlight, NativeMethodsMixin);
-//autobind(TouchableHighlight);
 
 module.exports = TouchableHighlight;
