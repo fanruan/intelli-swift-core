@@ -39,15 +39,9 @@ public class CubeTaskHelper {
 
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
-    public static boolean CubeBuildSingleTable(long userId, BITableID biTableID, int updateType) {
-        CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(biTableID), userId, updateType);
-        boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
-        return taskAdd;
-    }
-
-    public static boolean CubeBuildETL(long userId, BITableID ETLTableId, BITableID baseTableId) {
-        CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(ETLTableId), userId);
+    public static boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
         BILogger.getLogger().info("Cube single table update start");
+        CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(hostTableId), childTableSourceId, userId, updateType);
         boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
     }

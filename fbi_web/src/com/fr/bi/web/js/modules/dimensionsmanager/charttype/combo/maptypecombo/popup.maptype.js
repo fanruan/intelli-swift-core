@@ -6,7 +6,8 @@ BI.MapTypePopup = BI.inherit(BI.Pane, {
 
     constants: {
         SVG_MAP: 1,
-        BIT_MAP: 2
+        BIT_MAP: 2,
+        SHOW_MAP_LAYER: 2
     },
 
     _defaultConfig: function () {
@@ -47,6 +48,7 @@ BI.MapTypePopup = BI.inherit(BI.Pane, {
     },
 
     _createItems: function () {
+        var self = this;
         var items = [{
             id: 1,
             type: "bi.triangle_group_node",
@@ -62,17 +64,38 @@ BI.MapTypePopup = BI.inherit(BI.Pane, {
             isParent: true,
             open: false
         }];
-        BI.each(BICst.SVG_MAP_TYPE, function(idx, it){
-            items.push(BI.extend({
+        BI.each(MapConst.INNER_MAP_INFO.MAP_TYPE_NAME, function(key, value){
+            if(MapConst.INNER_MAP_INFO.MAP_LAYER[key] < self.constants.SHOW_MAP_LAYER){
+                var item = {
+                    type: "bi.multilayer_icon_tree_leaf_item",
+                    height: 30,
+                    iconHeight: 24,
+                    iconWidth: 24,
+                    layer: 1,
+                    id: BI.UUID(),
+                    pId: 1,
+                    text: value,
+                    value: key,
+                    title: value,
+                    iconCls: MapConst.INNER_MAP_INFO.MAP_LAYER[key] === 0 ? "drag-map-china-icon" : "drag-map-svg-icon"
+                };
+                MapConst.INNER_MAP_INFO.MAP_LAYER[key] === 0 ? items.splice(0, 0, item) : items.push(item);
+            }
+        });
+        BI.each(MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME, function(key, value){
+            items.push({
                 type: "bi.multilayer_icon_tree_leaf_item",
                 height: 30,
                 iconHeight: 24,
                 iconWidth: 24,
                 layer: 1,
                 id: BI.UUID(),
-                pId: 1,
-                iconCls: it.cls
-            }, it));
+                pId: 2,
+                text: value,
+                value: key,
+                title: value,
+                iconCls: "drag-map-svg-icon"
+            });
         });
         return items;
     },

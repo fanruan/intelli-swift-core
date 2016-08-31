@@ -6,7 +6,8 @@ BI.MapTypePopupShow = BI.inherit(BI.Pane, {
 
     constants: {
         SVG_MAP: 1,
-        BIT_MAP: 2
+        BIT_MAP: 2,
+        SHOW_MAP_LAYER: 2
     },
 
     _defaultConfig: function () {
@@ -69,19 +70,45 @@ BI.MapTypePopupShow = BI.inherit(BI.Pane, {
     },
 
     _createItemsByParentNodeId: function(pId){
-        var items = pId === this.constants.SVG_MAP ? BICst.SVG_MAP_TYPE : [];
-        return BI.map(items, function(idx, item){
-            return BI.extend({
-                type: "bi.multilayer_icon_tree_leaf_item",
-                height: 30,
-                iconHeight: 16,
-                iconWidth: 16,
-                layer: 1,
-                id: BI.UUID(),
-                pId: pId,
-                iconCls: item.cls
-            }, item);
-        });
+        var self = this;
+        var items = [];
+        if(pId === 1){
+            BI.each(MapConst.INNER_MAP_INFO.MAP_TYPE_NAME, function(key, value){
+                if(MapConst.INNER_MAP_INFO.MAP_LAYER[key] < self._CONST.SHOW_MAP_LAYER){
+                    var item = {
+                        type: "bi.multilayer_icon_tree_leaf_item",
+                        height: 30,
+                        iconHeight: 24,
+                        iconWidth: 24,
+                        layer: 1,
+                        id: BI.UUID(),
+                        pId: 1,
+                        text: value,
+                        value: key,
+                        title: value,
+                        iconCls: MapConst.INNER_MAP_INFO.MAP_LAYER[key] === 0 ? "drag-map-china-icon" : "drag-map-svg-icon"
+                    };
+                    MapConst.INNER_MAP_INFO.MAP_LAYER[key] === 0 ? items.splice(0, 0, item) : items.push(item);
+                }
+            });
+        }else{
+            BI.each(MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME, function(key, value){
+                items.push({
+                    type: "bi.multilayer_icon_tree_leaf_item",
+                    height: 30,
+                    iconHeight: 16,
+                    iconWidth: 16,
+                    layer: 1,
+                    id: BI.UUID(),
+                    pId: pId,
+                    text: value,
+                    value: key,
+                    title: value,
+                    iconCls: "drag-map-svg-icon"
+                });
+            });
+        }
+        return items;
     },
 
     getValue: function () {
