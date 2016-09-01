@@ -50,49 +50,36 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     private Set<BITableRelation> inUseRelations = new HashSet<BITableRelation>();
     private Set<BITableRelationPath> inUsePaths = new HashSet<BITableRelationPath>();
     private int updateType = DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
-    private BusinessTable businessTable;
+    private CubeTableSource childTableSource;
 
-    public int getUpdateType() {
-        return updateType;
-    }
-
-    public void setUpdateType(int updateType) {
-        this.updateType = updateType;
-    }
-
-    public BusinessTable getBusinessTable() {
-        return businessTable;
-    }
-
-    public void setBusinessTable(BusinessTable businessTable) {
-        this.businessTable = businessTable;
-    }
-
-    public CubeBuildSingleTable(BusinessTable businessTable, long userId) {
-        super(userId);
-        this.biUser = new BIUser(userId);
-        this.businessTable = businessTable;
-        init(businessTable);
-    }
-
-    public CubeBuildSingleTable(BusinessTable businessTable, long userId, int updateType) {
+    public CubeBuildSingleTable(BusinessTable hostTable, String childTableSourceId, long userId, int updateType) {
         super(userId);
         this.biUser = new BIUser(userId);
         this.updateType = updateType;
-        this.businessTable = businessTable;
-        init(businessTable);
+        init(hostTable, childTableSourceId);
     }
 
-    public void init(BusinessTable businessTable) {
+    public void init(BusinessTable businessTable, String childTableSourceId) {
 
         try {
             setAllSources(businessTable);
             Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
+            setChildTableSource(childTableSourceId);
             calculateRelationsAndPaths(businessTable);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    private void setChildTableSource(String childTableSourceId) {
+        if (null != childTableSourceId) {
+            for (CubeTableSource source : this.getAllSingleSources()) {
+                if (ComparatorUtils.equals(source.getSourceID(), childTableSourceId)) {
+                    this.childTableSource = source;
+                }
+            }
         }
     }
 
@@ -278,10 +265,24 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
 
     @Override
     public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
-        Map<CubeTableSource, UpdateSettingSource> map = super.getUpdateSettingSources();
-        UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(businessTable.getTableSource().getSourceID(), biUser.getUserId());
-        updateSettingSource.setUpdateType(updateType);
-        map.put(businessTable.getTableSource(), updateSettingSource);
+        Map<CubeTableSource, UpdateSettingSource> map = new HashMap<CubeTableSource, UpdateSettingSource>();
+        if (null == childTableSource) {
+            return map;
+        }
+        for (CubeTableSource source : this.getAllSingleSources()) {
+            UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), biUser.getUserId());
+            if (null != updateSettingSource) {
+                if (ComparatorUtils.equals(source.getSourceID(), this.childTableSource.getSourceID())) {
+                    updateSettingSource.setUpdateType(updateType);
+                } else {
+                    updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
+                }
+            } else {
+                updateSettingSource = new UpdateSettingSource();
+                updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
+            }
+            map.put(source, updateSettingSource);
+        }
         return map;
     }
 
@@ -304,12 +305,12 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                 BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
             }
             new File(tempConf.getRootURI().getPath()).mkdirs();
-            Set<CubeTableSource> tableSet=new HashSet<CubeTableSource>();
+            Set<CubeTableSource> tableSet = new HashSet<CubeTableSource>();
             for (BICubeGenerateRelation relation : this.getCubeGenerateRelationSet()) {
                 tableSet.add(relation.getRelation().getPrimaryTable());
                 tableSet.add(relation.getRelation().getForeignTable());
             }
-            tableSet=set2Set(calculateTableSource(tableSet));
+            tableSet = set2Set(calculateTableSource(tableSet));
             for (CubeTableSource source : tableSet) {
                 copyFilesFromOldCubes(tempResourceRetrieval, advancedResourceRetrieval, source);
             }
@@ -336,7 +337,6 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         }
         return true;
     }
-
 
 
     /**

@@ -10382,6 +10382,16 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                 var url = "data:image/"+this.imageSuffix+";base64," + this.imageString;
                 this._imageBackgroundLayer = L.imageOverlay(url, bounds).addTo(leaflet);
             }
+
+            if(this.imageString && this._tileLayer){
+                this._tileLayer && this._tileLayer.remove();
+                this._tileLayer = null;
+            }
+
+            if(!this.imageString &&  this._imageBackgroundLayer){
+                this._imageBackgroundLayer && leaflet.removeLayer(this._imageBackgroundLayer)
+                this._imageBackgroundLayer = null;
+            }
         },
 
         //对图片类型的json数据,要更具具体的绘图区域大小做自适应
@@ -30158,7 +30168,17 @@ define('render/DrillToolsSvgRender',['require','./BaseRender','../utils/BaseUtil
             var iconS = this._bodyG.selectAll('g').data(this.component.getIconData(), function(d){return d.layerIndex});
 
             //update状态的标签注意改文字颜色
-            iconS.select('text').style('fill', function(d){return dTools.textColor(d);});
+            iconS.select('text')
+                .text(function(d){return  d.geo.geoName})
+                .style('fill', function(d){return dTools.textColor(d);});
+
+            iconS.select('path').attr('d', function (d) {
+                return dTools.getBookMarkPath(d);
+            });
+            
+            iconS.attr('transform', function(d){
+                return BaseUtils.makeTranslate([d.aniEnd, 0]);
+            });
 
             var exitData = [];
             var exit = iconS.exit().each(function(d){exitData.push(d)});

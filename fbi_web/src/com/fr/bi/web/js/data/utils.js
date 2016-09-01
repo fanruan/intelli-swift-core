@@ -67,15 +67,15 @@ Data.Utils = {
             });
         });
         if (type === BICst.WIDGET.MAP) {
-            var subType = widget.sub_type || BICst.MAP_TYPE.CHINA;
-            options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
+            var subType = widget.sub_type || MapConst.INNER_MAP_INFO.MAP_NAME[BI.i18nText("BI-China")];
+            options.initDrillPath = [MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType]];
             var drill = BI.values(getDrill())[0];
             BI.each(drill, function (idx, dri) {
                 options.initDrillPath.push(dri.values[0].value[0]);
             });
             options.geo = {
-                data: BICst.MAP_PATH[subType],
-                name: BICst.MAP_TYPE_NAME[subType] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                data: MapConst.INNER_MAP_INFO.MAP_PATH[subType],
+                name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[BI.i18nText("BI-China")]
             }
         }
         if (type === BICst.WIDGET.GIS_MAP) {
@@ -482,7 +482,7 @@ Data.Utils = {
                             res.drilldown = {};
                             res.drilldown.series = formatDataForMap(item, currentLayer);
                             res.drilldown.geo = {
-                                data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]],
+                                data: MapConst.INNER_MAP_INFO.MAP_PATH[MapConst.INNER_MAP_INFO.MAP_NAME[res.x]],
                                 name: res.x
                             };
                         }
@@ -713,7 +713,7 @@ Data.Utils = {
             x_axis_style: options.x_axis_style || constants.NORMAL,
             x_axis_number_level: options.x_axis_number_level || constants.NORMAL,
             tooltip: options.tooltip || "",
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
+            geo: options.geo || {data: MapConst.INNER_MAP_INFO.MAP_PATH[BI.i18nText("BI-China")], name: BI.i18nText("BI-China")},
             theme_color: options.theme_color || "#65bce7",
             map_styles: options.map_styles || [],
             auto_custom: BI.isNull(options.map_styles) ? false : options.auto_custom,
@@ -2954,7 +2954,7 @@ Data.Utils = {
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
             configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + xTitle : xTitle;
             configs.xAxis[0].title.align = "center";
-            BI.extend(config.xAxis[0], {
+            BI.extend(configs.xAxis[0], {
                 formatter: formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS),
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 showLabel: config.show_label,
@@ -3467,7 +3467,7 @@ Data.Utils = {
 
             configs.show_left_y_axis_title === true && (configs.yAxis[0].title.text = config.x_axis_title);
             configs.yAxis[0].title.rotation = constants.ROTATION;
-            BI.extend(config.yAxis[0], {
+            BI.extend(configs.yAxis[0], {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 labelRotation: config.text_direction,
                 enableTick: config.enable_tick,
@@ -3478,7 +3478,7 @@ Data.Utils = {
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.left_y_axis_title + xTitle : xTitle;
             configs.xAxis[0].title.align = "center";
-            BI.extend(config.xAxis[0], {
+            BI.extend(configs.xAxis[0], {
                 formatter: formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS),
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 enableTick: config.enable_tick,
@@ -4615,7 +4615,7 @@ Data.Utils = {
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
             configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + yTitle : yTitle;
             configs.yAxis[0].title.rotation = constants.ROTATION;
-            BI.extend(config.yAxis[0], {
+            BI.extend(configs.yAxis[0], {
                 lineWidth: config.line_width,
                 showLabel: config.show_label,
                 enableTick: config.enable_tick,
@@ -4627,7 +4627,7 @@ Data.Utils = {
 
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            BI.extend(config.xAxis[0], {
+            BI.extend(configs.xAxis[0], {
                 lineWidth: config.line_width,
                 enableTick: config.enable_tick,
                 labelRotation: config.text_direction,

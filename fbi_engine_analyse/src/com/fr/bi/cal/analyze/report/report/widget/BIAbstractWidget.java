@@ -10,6 +10,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
+import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
@@ -192,6 +193,11 @@ public abstract class BIAbstractWidget implements BIWidget {
             for (int i = 0; i < row.length; i++) {
                 gvi = GVIUtils.AND(gvi, filter.createFilterIndex(row[i], targetKey, loader, userId));
             }
+        }
+        //去掉一些特殊标记的值
+        for (DimensionCalculator r : row) {
+            GroupValueIndex n = loader.getTableIndex(targetKey.getTableSource()).getIndexes(r.createKey(), new Object[]{BIValueConstant.SPECIAL_FIELD_VALUE})[0];
+            gvi = GVIUtils.AND(gvi, n.NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
         }
         return gvi;
     }
