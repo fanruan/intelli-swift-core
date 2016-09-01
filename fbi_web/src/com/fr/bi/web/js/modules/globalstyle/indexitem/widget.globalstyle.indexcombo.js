@@ -106,7 +106,15 @@ BI.GlobalStyleIndexBackground = BI.inherit(BI.Widget, {
     },
 
     setValue: function (values) {
-
+        if(values["selectType"]=="colour"){
+            this.combo.setValue(["colour"]);
+            this._createComboItems(["colour"]);
+            this.selectColour.setValue(values["Value"])
+        }else if(values["selectType"]=="picture"){
+            this.combo.setValue(["picture"]);
+            this._createComboItems(["picture"]);
+            this.selectPicture.setValue(values["Value"])
+        }
     },
 
     populate: function (values) {

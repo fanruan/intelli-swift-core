@@ -218,16 +218,16 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             text: BI.i18nText("BI-Global_Style"),
             width: 90
         });
-        //globalStyleButton.setVisible(false);
+        globalStyleButton.setVisible(false);
         globalStyleButton.on(BI.Button.EVENT_CHANGE, function () {
             if (BI.isNull(self.globalStyle)) {
                 self.globalStyle = BI.createWidget({
                     type: "bi.global_style"
                 });
-                self.globalStyle.on(BI.GlobalStyle.EVENT_PREVIEW, function() {
+                self.globalStyle.on(BI.GlobalStyle.EVENT_PREVIEW, function () {
 
                 });
-                self.globalStyle.on(BI.GlobalStyle.EVENT_SAVE, function() {
+                self.globalStyle.on(BI.GlobalStyle.EVENT_SAVE, function () {
 
                 });
             } else {

@@ -18,10 +18,12 @@ BI.GlobalStyleIndexAlignChooser = BI.inherit(BI.Widget, {
             element: this.element,
             items: BI.createItems([{
                 cls: "align-chooser-button text-align-left-font",
+                title:BI.i18nText("BI-Position_Left"),
                 selected: true,
                 value:"left"
             }, {
                 cls: "align-chooser-button text-align-center-font",
+                title:BI.i18nText("BI-Position_Center"),
                 value:"center"
             }], {
                 type: "bi.icon_button",
