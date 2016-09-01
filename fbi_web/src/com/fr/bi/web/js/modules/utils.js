@@ -478,6 +478,8 @@
                 };
                 obj.settings = widget.settings;
                 obj.value = widget.value;
+                //表头上指标的排序和过滤
+
                 return obj;
             }
 
