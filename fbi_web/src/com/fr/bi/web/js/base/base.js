@@ -1055,7 +1055,7 @@ if (!window.BI) {
                 error: function () {
                     //失败 取消、重新加载
                     BI.REQUEST_LOADING.setCallback(function () {
-                        decondBIParam(option.data);
+                        decodeBIParam(option.data);
                         BI.ajax(option);
                     });
                     BI.REQUEST_LOADING.showError();
@@ -1070,7 +1070,7 @@ if (!window.BI) {
                                 type: "bi.login_timeout"
                             });
                             loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
-                                decondBIParam(option.data);
+                                decodeBIParam(option.data);
                                 BI.ajax(option);
                                 BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
                             });
@@ -1097,7 +1097,7 @@ if (!window.BI) {
                     }
                 }
             }
-            function decondBIParam(data) {
+            function decodeBIParam(data) {
                 for (var key in data) {
                     data[key] = window.decodeURIComponent(data[key]);
                     if (_.isObject(data[key])) {
