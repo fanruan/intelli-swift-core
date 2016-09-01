@@ -999,6 +999,18 @@
                 BICst.DEFAULT_CHART_SETTING.text_direction;
         },
 
+        getWSShowBackgroundByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_background_layer) ? ws.show_background_layer :
+                BICst.DEFAULT_CHART_SETTING.show_background_layer;
+        },
+
+        getWSBackgroundLayerInfoByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.background_layer_info) ? ws.background_layer_info :
+                BICst.DEFAULT_CHART_SETTING.background_layer_info;
+        },
+
         //settings  ---- end ----
 
         getWidgetSettingsByID: function (wid) {
