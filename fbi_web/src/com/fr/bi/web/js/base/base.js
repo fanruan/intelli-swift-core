@@ -1040,13 +1040,7 @@ if (!window.BI) {
         ajax: function (option) {
             option || (option = {});
             //encode
-            for (var key in option.data) {
-                if (_.isObject(option.data[key])) {
-                    option.data[key] = window.encodeURIComponent(FR.jsonEncode(option.data[key]));
-                } else {
-                    option.data[key] = window.encodeURIComponent(option.data[key]);
-                }
-            }
+            encodeBIParam(option.data);
 
             if (BI.isNull(BI.REQUEST_LOADING)) {
                 BI.REQUEST_LOADING = BI.createWidget({
@@ -1061,14 +1055,10 @@ if (!window.BI) {
                 error: function () {
                     //失败 取消、重新加载
                     BI.REQUEST_LOADING.setCallback(function () {
+                        decodeBIParam(option.data);
                         BI.ajax(option);
                     });
                     BI.REQUEST_LOADING.showError();
-                },
-                success: function (res) {
-                    if (BI.isFunction(option.success)) {
-                        option.success(FR.jsonDecode(res));
-                    }
                 },
                 complete: function (res, status) {
                     //登录超时
@@ -1080,6 +1070,7 @@ if (!window.BI) {
                                 type: "bi.login_timeout"
                             });
                             loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
+                                decodeBIParam(option.data);
                                 BI.ajax(option);
                                 BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
                             });
@@ -1088,12 +1079,32 @@ if (!window.BI) {
                                 height: 400
                             }).open(BI.LoginTimeOut.POPOVER_ID);
                         }
+                    } else if(status === "success" && BI.isFunction(option.success)) {
+                        option.success(FR.jsonDecode(res.responseText));
                     }
                     if (BI.isFunction(option.complete)) {
                         option.complete(FR.jsonDecode(res.responseText));
                     }
                 }
             });
+
+            function encodeBIParam(data) {
+                for (var key in data) {
+                    if (_.isObject(data[key])) {
+                        data[key] = window.encodeURIComponent(FR.jsonEncode(data[key]));
+                    } else {
+                        data[key] = window.encodeURIComponent(data[key]);
+                    }
+                }
+            }
+            function decodeBIParam(data) {
+                for (var key in data) {
+                    data[key] = window.decodeURIComponent(data[key]);
+                    if (_.isObject(data[key])) {
+                        data[key] = FR.jsonDecode(data[key]);
+                    }
+                }
+            }
         },
 
         /**
