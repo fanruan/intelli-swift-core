@@ -843,8 +843,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/linkage/linkage.target.css",
                 "com/fr/bi/web/css/modules/linkage/linkage.css",
 
-                "com/fr/bi/web/css/modules/logintimeout/login.timeout.css",
-
                 //cube日志
                 "com/fr/bi/web/css/modules/cubelog/items/title.item.wronginfo.cubelog.css",
                 "com/fr/bi/web/css/modules/cubelog/items/item.wronginfo.cubelog.css",
@@ -1502,8 +1500,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/linkage/linkage.targets.js",
                 "com/fr/bi/web/js/modules/linkage/linkage.js",
 
-                "com/fr/bi/web/js/modules/logintimeout/login.timeout.js",
-
                 //onewidget
                 "com/fr/bi/web/js/modules/onewidget/onewidget.js",
                 "com/fr/bi/web/js/modules/onewidget/detailtable.js",
@@ -1758,6 +1754,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/layer/layer.multiselect.css",
                 "com/fr/bi/web/css/base/layer/layer.panel.css",
                 "com/fr/bi/web/css/base/reqloading/loading.request.css",
+                "com/fr/bi/web/css/base/logintimeout/login.timeout.css",
 
                 "com/fr/bi/web/css/utils/widget.css",
                 "com/fr/bi/web/css/utils/color.css",
@@ -2367,6 +2364,8 @@ public class ResourceHelper {
                 //chart
                 "com/fr/bi/web/js/case/chart/chart.combine.js",
                 "com/fr/bi/web/js/case/chart/factory.charts.js",
+
+                "com/fr/bi/web/js/case/logintimeout/login.timeout.js",
 
                 /**
                  * 基础类控件

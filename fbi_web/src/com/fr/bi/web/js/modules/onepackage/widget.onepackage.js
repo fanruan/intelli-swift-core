@@ -286,6 +286,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
                 BI.Utils.updateTablesOfOnePackage(data, function () {
                     self.fireEvent(BI.OnePackage.EVENT_SAVE);
+                }, function() {
                     mask.destroy();
                 });
             }

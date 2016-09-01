@@ -1037,8 +1037,9 @@ if (!window.BI) {
     //BI请求
     _.extend(BI, {
 
-        ajax: function (option) {
-            option || (option = {});
+        ajax: function (opt) {
+            opt || (opt = {});
+            var option = BI.deepClone(opt);
             //encode
             for (var key in option.data) {
                 if (_.isObject(option.data[key])) {
@@ -1065,11 +1066,6 @@ if (!window.BI) {
                     });
                     BI.REQUEST_LOADING.showError();
                 },
-                success: function (res) {
-                    if (BI.isFunction(option.success)) {
-                        option.success(FR.jsonDecode(res));
-                    }
-                },
                 complete: function (res, status) {
                     //登录超时
                     if (BI.isNotNull(res.responseText) && res.responseText.indexOf("fs-login-content") > -1) {
@@ -1080,7 +1076,7 @@ if (!window.BI) {
                                 type: "bi.login_timeout"
                             });
                             loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
-                                BI.ajax(option);
+                                BI.ajax(opt);
                                 BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
                             });
                             BI.Popovers.create(BI.LoginTimeOut.POPOVER_ID, loginTimeout, {
@@ -1088,6 +1084,8 @@ if (!window.BI) {
                                 height: 400
                             }).open(BI.LoginTimeOut.POPOVER_ID);
                         }
+                    } else if(status === "success" && BI.isFunction(option.success)) {
+                        option.success(FR.jsonDecode(res.responseText));
                     }
                     if (BI.isFunction(option.complete)) {
                         option.complete(FR.jsonDecode(res.responseText));
