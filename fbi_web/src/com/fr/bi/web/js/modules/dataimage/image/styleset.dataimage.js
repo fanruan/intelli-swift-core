@@ -60,6 +60,9 @@ BI.DataImageStyleSet = BI.inherit(BI.Widget, {
             offsetStyle: "right",
             height: "100%"
         });
+        this.style.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function () {
+            self.stylePane.populate();
+        });
     },
 
     setValue: function (v) {
