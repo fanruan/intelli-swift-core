@@ -1,0 +1,14 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-global-style-index-prediction-style {
+  background: #f3f3f3;
+}
+.bi-global-style-index-prediction-style .layout-bg1 {
+  color: #ffffff;
+  background-color: #0088cc;
+}
+.bi-global-style-index-prediction-style .layout-bg2 {
+  color: #ffffff;
+  background-color: #008B8B;
+}

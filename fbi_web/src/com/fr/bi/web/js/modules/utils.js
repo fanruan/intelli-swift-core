@@ -1388,6 +1388,11 @@
             return {};
         },
 
+        getDatalabelByWidgetID: function (wid) {
+            var settings = this.getWidgetSettingsByID(wid);
+            return settings.data_label || {};
+        },
+
         isDimensionByDimensionID: function (dId) {
             var wId = this.getWidgetIDByDimensionID(dId);
             var views = this.getWidgetViewByID(wId);

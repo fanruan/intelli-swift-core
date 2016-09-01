@@ -3,7 +3,7 @@
  */
 BI.DataLabelTab = BI.inherit(BI.Widget, {
     _constant: {
-        DEFAULT_TEXT_TOOL_BAR_HEIGHT: 60,
+        DEFAULT_TEXT_TOOL_BAR_HEIGHT: 70,
         TEXT_TOOL_BAR_HEIGHT: 100,
         IMAGE_SET_HEIGHT: 160
     },
@@ -15,12 +15,12 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DataLabelTab.superclass._init.apply(this, arguments);
+        var self = this, o = this.options;
         this._style = {
             type: 0,
             textStyle: {},
             imgStyle: {}
         };
-        var self = this, o = this.options;
         if (o.chartType === BICst.WIDGET.BUBBLE || o.chartType === BICst.WIDGET.SCATTER) {
             this._CARDHEIGHT = this._constant.TEXT_TOOL_BAR_HEIGHT
         } else {
@@ -47,7 +47,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 items: [{
                     el: {
                         type: "bi.horizontal",
-                        width: 530,
+                        width: 550,
                         tgap: 5,
                         lgap: 10
                     }
@@ -75,7 +75,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             items: [{
                 el: tab
             }],
-            width: 530,
+            width: 550,
             height: this._CARDHEIGHT,
             scrollable: null,
             scrolly: false,
@@ -95,19 +95,50 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     _createTextLabel: function () {
         var self = this, o = this.options;
         this.textToolbar = BI.createWidget({
-            type: "bi.data_label_text_toolbar",
-            chartType: o.chartType
+            type: "bi.data_label_text_toolbar"
         });
         this.textToolbar.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
             self._style.type = BICst.DATA_LABEL_STYLE_TYPE.TEXT;
             self._style.textStyle = self.textToolbar.getValue();
             self.fireEvent(BI.DataLabelTab.TEXT_CHANGE);
         });
+        if (o.chartType === BICst.WIDGET.BUBBLE) {
+            this.showLabels = BI.createWidget({
+                type: "bi.text_tool_bar_content_select",
+                items: [{
+                    value: BI.i18nText("BI-X_Value")
+                }, {
+                    value: BI.i18nText("BI-Y_Value")
+                }, {
+                    value: BI.i18nText("BI-Bubble_Size_Value")
+                }]
+            });
+        } else if (o.chartType === BICst.WIDGET.SCATTER) {
+            this.showLabels = BI.createWidget({
+                type: "bi.text_tool_bar_content_select",
+                items: [{
+                    value: BI.i18nText("BI-X_Value")
+                }, {
+                    value: BI.i18nText("BI-Y_Value")
+                }]
+            });
+        } else {
+            this.showLabels = BI.createWidget();
+        }
+        this.showLabels.on(BI.TextToolbarContentSelect.EVENT_CHANGE, function () {
+            self._style.showLabels = self.showLabels.getValue();
+        });
+        this._style.showLabels = self.showLabels.getValue();
         return BI.createWidget({
             type: "bi.vertical",
             items: [{
                 el: this.textToolbar,
+                lgap: 5,
                 tgap: 30
+            }, {
+                el: this.showLabels,
+                lgap: 10,
+                tgap: 5
             }]
         })
     },
@@ -134,7 +165,10 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 items: [BI.createWidget({
                     type: "bi.horizontal",
                     cls: "img-select",
-                    items: [this.chart, this.imageSet],
+                    items: [this.chart, {
+                        el: this.imageSet,
+                        lgap: 20
+                    }],
                     scrollable: null,
                     scrolly: false,
                     scrollx: false
@@ -146,6 +180,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     setValue: function (v) {
         this._style = v;
         this.textToolbar.setValue(v.textStyle);
+        this.showLabels.setValue(v.showLabels);
     },
     getValue: function () {
         return this._style;

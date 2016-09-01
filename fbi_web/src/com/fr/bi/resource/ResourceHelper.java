@@ -741,6 +741,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/fit/fit.widget.css",
                 "com/fr/bi/web/css/modules/fit/fit.css",
 
+                //全局样式
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.setting.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexcombo.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indextitletoolbar.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexalignchooser.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexpredictionstyle.css",
+
+
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
 
                 //明细表超级链接
@@ -1098,7 +1107,6 @@ public class ResourceHelper {
 
                 //数据标签
                 "com/fr/bi/web/js/modules/datalabel/datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/datalab.methods.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/tab.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/texttoolbar.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.js",
@@ -1447,6 +1455,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/fit/widgetchooser/widget.dragicongroup.js",
                 "com/fr/bi/web/js/modules/fit/fit.widget.js",
                 "com/fr/bi/web/js/modules/fit/fit.js",
+
+                //全局样式
+                "com/fr/bi/web/js/modules/globalstyle/widget.globalstyle.js",
+                "com/fr/bi/web/js/modules/globalstyle/widget.globalstyle.setting.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcombo.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcharttoolbar.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.js",
 
                 //联动
                 "com/fr/bi/web/js/modules/linkage/model.linkage.js",
@@ -2802,6 +2819,24 @@ public class ResourceHelper {
     }
 
     public static String[] getMobileJs(){
+        return new String[] {
+                "com/fr/bi/web/mobile/mobile.jQuery.js",
+                "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/js/core/underscore.js",
+                "com/fr/bi/web/js/base/base.js",
+                "com/fr/bi/web/mobile/mobile.data.js",
+                "com/fr/bi/web/js/data/data.js",
+                "com/fr/bi/web/js/data/constant/biconst.js",
+                "com/fr/bi/web/js/data/constant/enums.js",
+                "com/fr/bi/web/js/base/proto/number.js",
+                "com/fr/bi/web/js/base/proto/array.js",
+                "com/fr/bi/web/js/base/proto/date.js",
+                "com/fr/bi/web/js/data/utils.js"
+        };
+    }
+
+    public static String[] getH5Js(){
         return new String[] {
                 "com/fr/bi/web/mobile/mobile.jQuery.js",
                 "com/fr/bi/web/js/third/d3.js",

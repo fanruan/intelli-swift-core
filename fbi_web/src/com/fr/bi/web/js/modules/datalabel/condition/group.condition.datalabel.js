@@ -11,17 +11,16 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DataLabelConditionGroup.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
-        this.chartType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        var o = this.options;
+        this.wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        this.chartType = BI.Utils.getWidgetTypeByID(this.wId);
         this.buttonGroup = BI.createWidget({
             type: "bi.button_group",
             cls: "",
             element: this.element,
             items: o.items,
             layouts: [{
-                type: "bi.vertical",
-                hgap: 10,
-                tgap: 4
+                type: "bi.vertical"
             }]
         });
 
@@ -29,8 +28,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
     },
 
     addItem: function () {
-        var o = this.options;
-        var type;
+        var o = this.options, type;
         if (this.chartType === BICst.WIDGET.SCATTER) {
             type = "bi.scatter_no_type_field_filter_item";
         } else if (this.chartType === BICst.WIDGET.BUBBLE) {
@@ -40,15 +38,20 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
         }
         var item = {
             type: type,
-            sdId: o.dId
+            sdId: o.dId,
+            chartType: this.chartType
         };
         this.buttonGroup.addItems([item]);
         this.buttons = this.buttonGroup.getAllButtons();
     },
 
     populate: function () {
-        var self = this, o = this.options;
-        var conditions = BI.Utils.getDatalabelByID(o.dId);
+        var self = this, o = this.options, conditions;
+        if (this.chartType === BICst.WIDGET.SCATTER || this.chartType === BICst.WIDGET.BUBBLE) {
+            conditions = BI.Utils.getDatalabelByWidgetID(this.wId)
+        } else {
+            conditions = BI.Utils.getDatalabelByID(o.dId);
+        }
         var items = [];
         BI.each(conditions, function (idx, cdt) {
             var t = {};
@@ -65,6 +68,8 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
             items.push({
                 type: t.type,
                 sdId: o.dId,
+                chartType: self.chartType,
+                key: cdt.key,
                 dId: cdt.target_id,
                 filter_type: cdt.filter_type,
                 filter_value: cdt.filter_value,

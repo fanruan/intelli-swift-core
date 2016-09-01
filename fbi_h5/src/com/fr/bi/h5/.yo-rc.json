@@ -1,0 +1,8 @@
+{
+  "generator-react-webpack": {
+    "appName": "bi",
+    "style": "less",
+    "postcss": false,
+    "generatedWithVersion": 3
+  }
+}
