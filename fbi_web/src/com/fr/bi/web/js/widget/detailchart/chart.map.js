@@ -49,6 +49,15 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         };
 
         config.geo = this.config.geo;
+        if(this.config.show_background_layer === true){
+            if(this.config.background_layer_info.type === BICst.WMS_SERVER){
+                config.geo.tileLayer = false;
+                config.geo.wmsUrl = this.config.background_layer_info.url;
+                config.geo.wmsLayer = this.config.background_layer_info.wmsLayer
+            }else{
+                config.geo.tileLayer = this.config.background_layer_info.url;
+            }
+        }
         if (this.config.initDrillPath.length > 1) {
             config.initDrillPath = this.config.initDrillPath;
         }
@@ -308,12 +317,14 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            geo: options.geo || {data: MapConst.INNER_MAP_INFO.MAP_PATH[BI.i18nText("BI-China")], name: BI.i18nText("BI-China")},
+            geo: options.geo,
             initDrillPath: options.initDrillPath || [],
             tooltip: options.tooltip || "",
             theme_color: options.theme_color || "#65bce7",
             map_styles: options.map_styles || [],
-            auto_custom: options.auto_custom || c.AUTO_CUSTOM
+            auto_custom: options.auto_custom || c.AUTO_CUSTOM,
+            show_background_layer: options.show_background_layer || false,
+            background_layer_info: options.background_layer_info
         };
         this.options.items = items;
 
