@@ -9,6 +9,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -136,7 +137,7 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     int start = startCol;
                     for (String s : showFields) {
                         for (int j = 0; j < columnLength; j++) {
-                            travel.actionPerformed(new BIDataValue(i, start++,  vals[cnt] == null ? BIValueConstant.SPECIAL_FIELD_VALUE : vals[cnt]));
+                            travel.actionPerformed(new BIDataValue(i, start++,  vals[cnt] == null ? BIReportConstant.SPECIAL_FIELD_VALUE : vals[cnt]));
                             cnt++;
                         }
                     }
