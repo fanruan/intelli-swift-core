@@ -1,23 +1,22 @@
 /**
- * 数据标签
- * Created by Fay on 2016/7/13.
+ * Created by fay on 2016/9/1.
  */
-BI.DataLabel = BI.inherit(BI.Widget, {
+BI.DataImage = BI.inherit(BI.Widget, {
     _constant: {
         ADD_BUTTON_WIDTH: 70,
         ADD_BUTTON_HEIGHT: 26
     },
 
     _defaultConfig: function () {
-        var conf = BI.DataLabel.superclass._defaultConfig.apply(this, arguments);
+        var conf = BI.DataImage.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            baseCls: "bi-data-label",
+            baseCls: "bi-data-image",
             dId: ""
         });
     },
 
     _init: function () {
-        BI.DataLabel.superclass._init.apply(this, arguments);
+        BI.DataImage.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var addButton = BI.createWidget({
             type: "bi.button",
@@ -30,7 +29,7 @@ BI.DataLabel = BI.inherit(BI.Widget, {
             }
         });
         this.conditions = BI.createWidget({
-            type: "bi.data_label_condition_group",
+            type: "bi.data_image_condition_group",
             dId: o.dId
         });
         BI.createWidget({
@@ -56,5 +55,5 @@ BI.DataLabel = BI.inherit(BI.Widget, {
     }
 });
 
-BI.DataLabel.EVENT_CHANGE = "BI.DataLabel.EVENT_CHANGE";
-$.shortcut("bi.data_label", BI.DataLabel);
+BI.DataImage.EVENT_CHANGE = "BI.DataImage.EVENT_CHANGE";
+$.shortcut("bi.data_image", BI.DataImage);

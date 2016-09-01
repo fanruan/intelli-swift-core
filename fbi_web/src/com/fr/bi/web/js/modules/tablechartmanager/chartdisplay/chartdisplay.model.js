@@ -578,6 +578,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         data.dataLabels = dataLabels;
     },
 
+    _createDataImage: function () {
+
+    },
+
     getCordon: function () {
         var o = this.options;
         var cordon = {};

@@ -1,8 +1,7 @@
 /**
- * Created by fay on 2016/7/27.
+ * Created by fay on 2016/9/1.
  */
-
-BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
+BI.DataImageStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
@@ -15,13 +14,13 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.DataLabelStringFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.DataImageStringFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "condition-item"
         })
     },
 
     _init: function () {
-        BI.DataLabelStringFieldFilterItem.superclass._init.apply(this, arguments);
+        BI.DataImageStringFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var left = this._buildConditions();
         this.styleSetting = this._createStyle(o.style_setting);
@@ -32,7 +31,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AbstractDataLabelFilterItem.DELETE, self);
             self.destroy();
-            BI.DataLabelStringFieldFilterItem.superclass.destroy.apply(this, arguments);
+            BI.DataImageStringFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
         BI.createWidget({
             type: "bi.vertical",
@@ -145,7 +144,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _createStyle: function (initData) {
         var o = this.options;
         this.style = BI.createWidget({
-            type: "bi.data_label_style_set",
+            type: "bi.data_image_style_set",
             chartType: o.chartType
         });
         BI.isNotNull(initData) && this.style.setValue(initData);
@@ -161,4 +160,4 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         }
     }
 });
-$.shortcut("bi.data_label_string_field_filter_item", BI.DataLabelStringFieldFilterItem);
+$.shortcut("bi.data_image_string_field_filter_item", BI.DataImageStringFieldFilterItem);

@@ -16,7 +16,7 @@ BI.DataLabelNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DataLabelNoTypeFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "data-label-condition-item"
+            extraCls: "condition-item"
         })
     },
 

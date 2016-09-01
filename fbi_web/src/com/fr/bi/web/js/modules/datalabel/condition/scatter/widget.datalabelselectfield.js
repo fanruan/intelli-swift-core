@@ -56,7 +56,7 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                 }]
             },
             fieldsCreator: function () {
-                var categories = BI.Utils.getAllUsableDimDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
+                var categories = BI.Utils.getAllDimDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
                 var result = [];
                 BI.each(categories, function (i, dId) {
                     result.push({

@@ -15,7 +15,7 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _defaultConfig: function () {
         return BI.extend(BI.ScatterMultiFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "data-label-condition-item"
+            extraCls: "condition-item"
         })
     },
 
@@ -72,7 +72,9 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _buildConditions: function () {
         var self = this, o = this.options;
         this.filterItems = [];
-        this.filterValues = o.filter_value || this.filterField;
+        if(o.filter_value.length >= 2) {
+            this.filterValues = o.filter_value.slice(0,2) || this.filterField;
+        }
         BI.each(this.filterValues, function (i, filter) {
             if (BI.isNull(filter.filter_type)) {
                 filter.filter_type = o.filter_type

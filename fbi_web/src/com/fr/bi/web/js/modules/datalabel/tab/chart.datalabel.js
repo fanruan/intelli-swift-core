@@ -55,8 +55,8 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         this.config = this._formatConfig();
         this.combineChart = BI.createWidget({
             type: type,
-            width: 150,
-            height: 130
+            width: 170,
+            height: 140
         });
         BI.createWidget({
             type: "bi.absolute",
@@ -69,8 +69,8 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
                 left: 20,
                 top: 5
             }],
-            width: 150,
-            height: 130
+            width: 170,
+            height: 140
         });
     },
 

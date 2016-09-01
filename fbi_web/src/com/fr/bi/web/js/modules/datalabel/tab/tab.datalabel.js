@@ -5,7 +5,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     _constant: {
         DEFAULT_TEXT_TOOL_BAR_HEIGHT: 70,
         TEXT_TOOL_BAR_HEIGHT: 100,
-        IMAGE_SET_HEIGHT: 160
+        IMAGE_SET_HEIGHT: 170
     },
 
     _defaultConfig: function () {
