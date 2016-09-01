@@ -300,7 +300,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 self.errorPane.setVisible(true);
                 return;
             }
-            try {
+            //try {
                 var dimensionIds = BI.Utils.getAllDimDimensionIDs(o.wId);
                 var lnglat = BI.Utils.getDimensionPositionByID(dimensionIds[0]);
                 var op;
@@ -382,7 +382,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         bubble_min_size: BI.Utils.getWSMinBubbleSizeByID(o.wId),
                         bubble_max_size: BI.Utils.getWSMaxBubbleSizeByID(o.wId),
                         gradient_colors: BI.Utils.getWSBubbleGradientsByID(o.wId),
-                        fixed_colors: BI.Utils.getWSBubbleFixedColorsByID(o.wId)
+                        fixed_colors: BI.Utils.getWSBubbleFixedColorsByID(o.wId),
+                        custom_y_scale: BI.Utils.getWSCustomYScale(o.wId),
+                        custom_x_scale: BI.Utils.getWSCustomXScale(o.wId)
                     }, {
                         cordon: self.model.getCordon(),
                         tooltip: self.model.getToolTip(type),
@@ -390,10 +392,10 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                     });
                 }
                 selectedTab.populate(data, op, types);
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate chart: " + e);
-                self.errorPane.setVisible(true);
-            }
+            // } catch (e) {
+            //     self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+            //     self.errorPane.setVisible(true);
+            // }
         });
     },
 

@@ -83,12 +83,18 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + yTitle : yTitle;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
+        config.yAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
+        config.yAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
+        config.yAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
         self.formatNumberLevelInXaxis(items, this.config.x_axis_number_level);
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + xTitle : xTitle;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.xAxis[0].min = this.config.custom_x_scale.minScale.scale || null;
+        config.xAxis[0].max = this.config.custom_x_scale.maxScale.scale || null;
+        config.xAxis[0].tickInterval = this.config.custom_x_scale.interval.scale || null;
         config.chartType = "bubble";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
@@ -427,7 +433,9 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             bubble_max_size: options.bubble_max_size || c.BUBBLE_MAX_SIZE,
             rules_display: options.rules_display || c.RULE_DISPLAY,
             fixed_colors: options.fixed_colors || [],
-            gradient_colors: options.gradient_colors || []
+            gradient_colors: options.gradient_colors || [],
+            custom_y_scale: options.custom_y_scale || null,
+            custom_x_scale: options.custom_x_scale || null
         };
         this.options.items = items;
         var types = [];

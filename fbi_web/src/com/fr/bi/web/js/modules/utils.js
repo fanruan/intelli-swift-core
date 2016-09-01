@@ -564,6 +564,10 @@
             }
         },
 
+        getCalculateValue: function(did){
+            return Data.SharingPool.get("calculateValue", did) || []
+        },
+
         //settings  ---- start ----
         getWSTableFormByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
@@ -1005,15 +1009,27 @@
                 BICst.DEFAULT_CHART_SETTING.big_data_mode
         },
 
-        getWSShowCustomScale: function (wid) {
+        getWSShowYCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_custom_scale) ? ws.show_custom_scale :
-                BICst.DEFAULT_CHART_SETTING.show_custom_scale;
+            return BI.isNotNull(ws.show_y_custom_scale) ? ws.show_y_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_y_custom_scale;
         },
 
-        getWSCustomScale: function (wid) {
+        getWSCustomYScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_scale) ? ws.custom_scale :
+            return BI.isNotNull(ws.custom_y_scale) ? ws.custom_y_scale :
+            {}
+        },
+
+        getWSShowXCustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_x_custom_scale) ? ws.show_x_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_x_custom_scale;
+        },
+
+        getWSCustomXScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.custom_x_scale) ? ws.custom_x_scale :
             {}
         },
 

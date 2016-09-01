@@ -5,12 +5,7 @@
 BI.CustomScaleFormulaPane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.CustomScaleFormulaPane.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-custom-scale-formula-pane",
-            items: {
-                type: 14,
-                30000: [BI.UUID(), BI.UUID()],
-                40000: []
-            }
+            baseCls: "bi-custom-scale-formula-pane"
         })
     },
     
@@ -20,12 +15,13 @@ BI.CustomScaleFormulaPane = BI.inherit(BI.Widget, {
     },
 
     populate:function () {
-        var self = this, items = this.options.items;
+        var self = this, o = this.options;
 
         this.formula = BI.createWidget({
-            type: "bi.custom_scale_formula"
+            type: "bi.custom_scale_formula",
+            wId: o.wId
         });
-        this.formula.populate(items);
+        this.formula.populate();
         this.formula.on(BI.CustomScaleFormula.EVENT_CHANGE, function () {
             confirmButton.setEnable(self.formula.checkValidation())
         });
@@ -71,6 +67,14 @@ BI.CustomScaleFormulaPane = BI.inherit(BI.Widget, {
                 height: 60
             }]
         })
+    },
+
+    refresh: function () {
+        this.formula.refresh()
+    },
+
+    getAnalyzeContent: function () {
+        return this.formula.getAnalyzeContent()
     },
 
     getValue: function () {
