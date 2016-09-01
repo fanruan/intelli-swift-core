@@ -564,7 +564,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             align: "outside",
             useHtml: true,
             style: {},
-            formatter: "function(){return '<div>" + show + "</div>'}"
+            formatter: "function(){return " + show + "}"
         };
         switch (label.style_setting.type) {
             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
@@ -572,7 +572,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dataLabels.style.fontSize += "px";
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
-                dataLabels.formatter = "function(){return '<div><img width=\"20px\" height=\"20px\" src=\""+label.style_setting.imgStyle.src+"\"></div>';}";
+                dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\""+label.style_setting.imgStyle.src+"\">';}";
                 break;
         }
         data.dataLabels = dataLabels;
