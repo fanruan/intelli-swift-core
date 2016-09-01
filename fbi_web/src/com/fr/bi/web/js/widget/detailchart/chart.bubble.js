@@ -434,8 +434,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             rules_display: options.rules_display || c.RULE_DISPLAY,
             fixed_colors: options.fixed_colors || [],
             gradient_colors: options.gradient_colors || [],
-            custom_y_scale: options.custom_y_scale || null,
-            custom_x_scale: options.custom_x_scale || null
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE
         };
         this.options.items = items;
         var types = [];

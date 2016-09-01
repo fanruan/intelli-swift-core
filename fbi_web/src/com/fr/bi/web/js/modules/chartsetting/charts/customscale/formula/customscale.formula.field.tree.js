@@ -164,6 +164,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 nodes = this._createThreeAxis(nodes, usedTargets, BI.i18nText("BI-Left_Value_Axis"), BI.i18nText("BI-Right_Value_Axis_One"), BI.i18nText("BI-Right_Value_Axis_Two"));
                 break;
             case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
                 nodes = this._createTwoAxis(nodes, usedTargets, BI.i18nText("BI-Y_Value_Axis"), BI.i18nText("BI-X_Value_Axis"));
                 break;
         }

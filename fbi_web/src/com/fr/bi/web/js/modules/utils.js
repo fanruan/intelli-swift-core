@@ -1018,7 +1018,7 @@
         getWSCustomYScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.custom_y_scale) ? ws.custom_y_scale :
-            {}
+                BICst.DEFAULT_CHART_SETTING.custom_scale
         },
 
         getWSShowXCustomScale: function (wid) {
@@ -1030,7 +1030,19 @@
         getWSCustomXScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.custom_x_scale) ? ws.custom_x_scale :
-            {}
+                BICst.DEFAULT_CHART_SETTING.custom_scale
+        },
+
+        getWSShowZCustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_z_custom_scale) ? ws.show_z_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_z_custom_scale;
+        },
+
+        getWSCustomZScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.custom_z_scale) ? ws.custom_z_scale :
+                BICst.DEFAULT_CHART_SETTING.custom_scale
         },
 
         getWSShowZoomByID: function (wid) {

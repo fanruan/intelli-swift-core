@@ -13,7 +13,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _init: function () {
         BI.MultiAxisChartSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -387,6 +387,78 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
+        //左轴刻度自定义
+        this.showYCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showYCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customYScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customYScale.setValue({})
+            }
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
+        this.customYScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customYScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
+        //右轴1刻度自定义
+        this.showXCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showXCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customXScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customXScale.setValue({})
+            }
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
+        this.customXScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customXScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
+        //右轴2刻度自定义
+        this.showZCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showZCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customZScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customZScale.setValue({})
+            }
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
+        this.customZScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customZScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -509,6 +581,12 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.reversedLY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showYCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customYScale]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -560,6 +638,12 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.reversedRY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showXCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customXScale]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -611,6 +695,12 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.reversedRY2]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showZCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customZScale]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -761,6 +851,15 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
+        this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
+        this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+        this.showXCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
+        this.customXScale.setValue(BI.Utils.getWSCustomXScale(wId));
+        this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
+        this.showZCustomScale.setSelected(BI.Utils.getWSShowZCustomScale(wId));
+        this.customZScale.setValue(BI.Utils.getWSCustomZScale(wId));
+        this.customZScale.setVisible(BI.Utils.getWSShowZCustomScale(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -799,7 +898,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_data_table: this.showDataTable.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
             show_zoom: this.showZoom.isSelected(),
-            minimalist_model: this.minimalistModel.isSelected()
+            minimalist_model: this.minimalistModel.isSelected(),
+            show_y_custom_scale: this.showYCustomScale.isSelected(),
+            custom_y_scale: this.customYScale.getValue(),
+            show_x_custom_scale: this.showXCustomScale.isSelected(),
+            custom_x_scale: this.customXScale.getValue(),
+            show_z_custom_scale: this.showZCustomScale.isSelected(),
+            custom_z_scale: this.customZScale.getValue()
         }
     },
 
@@ -833,7 +938,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataTable.setSelected(v.show_data_table);
         this.gridLine.setSelected(v.show_grid_line);
         this.showZoom.setSelected(v.show_zoom);
-        this.minimalistModel.setSelected(v.minimalist_model)
+        this.minimalistModel.setSelected(v.minimalist_model);
+        this.showYCustomScale.setSelected(v.show_y_custom_scale);
+        this.customYScale.setValue(v.custom_y_scale);
+        this.showXCustomScale.setSelected(v.show_x_custom_scale);
+        this.customXScale.setValue(v.custom_x_scale);
+        this.showZCustomScale.setSelected(v.show_z_custom_scale);
+        this.customZScale.setValue(v.custom_z_scale)
     }
 });
 BI.MultiAxisChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

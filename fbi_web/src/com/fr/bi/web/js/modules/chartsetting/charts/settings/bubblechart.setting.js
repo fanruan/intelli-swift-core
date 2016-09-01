@@ -324,7 +324,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.showYCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
             self.customYScale.setVisible(this.isSelected());
-            if(!this.isSelected()){
+            if (!this.isSelected()) {
                 self.customYScale.setValue({})
             }
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
@@ -348,7 +348,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.showXCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
             self.customXScale.setVisible(this.isSelected());
-            if(!this.isSelected()){
+            if (!this.isSelected()) {
                 self.customXScale.setValue({})
             }
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
@@ -407,7 +407,10 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.YScale]
+                    items: [this.showYCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customYScale]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -459,7 +462,10 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleX, this.editTitleX]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.XScale]
+                    items: [this.showXCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customXScale]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -508,7 +514,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.EDITOR_HEIGHT,
             errorText: BI.i18nText("BI-Please_Input_Positive_Integer"),
             cls: "unit-input",
-            validationChecker: function(v) {
+            validationChecker: function (v) {
                 return BI.parseInt(v) > 0 && BI.parseInt(v) <= BI.parseInt(self.bubbleSizeTo.getValue())
             }
         });
@@ -523,7 +529,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.EDITOR_HEIGHT,
             errorText: BI.i18nText("BI-Please_Input_Integer_Greater_Than_Minimum"),
             cls: "unit-input",
-            validationChecker: function(v) {
+            validationChecker: function (v) {
                 return BI.parseFloat(v) >= BI.parseFloat(self.bubbleSizeFrom.getValue())
             }
         });
@@ -613,6 +619,10 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.bigDataMode.on(BI.Controller.EVENT_CHANGE, function () {
             self._bigDataMode(!this.isSelected());
+            if (this.isSelected()) {
+                self.rulesDisplay.setValue(BICst.DISPLAY_RULES.GRADIENT);
+                self._colorSettingChange(BICst.DISPLAY_RULES.GRADIENT)
+            }
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 

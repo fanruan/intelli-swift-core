@@ -93,7 +93,10 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
             showLabel: this.config.show_label,
             enableTick: this.config.enable_tick,
             lineWidth: this.config.line_width,
-            enableMinorTick: this.config.enable_minor_tick
+            enableMinorTick: this.config.enable_minor_tick,
+            max: self.config.custom_y_scale.minScale.scale || null,
+            min: self.config.custom_y_scale.maxScale.scale || null,
+            tickInterval: self.config.custom_y_scale.interval.scale || null
         });
         config.chartType = "bar";
         //为了给数据标签加个%,还要遍历所有的系列，唉
@@ -242,7 +245,8 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
-            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE
         };
         this.options.items = items;
         var types = [];

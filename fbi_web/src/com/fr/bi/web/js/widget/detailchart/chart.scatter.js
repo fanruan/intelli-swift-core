@@ -79,12 +79,18 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + yTitle : yTitle;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = c.ROTATION;
+        config.yAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
+        config.yAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
+        config.yAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
         formatNumberLevelInXaxis(this.config.x_axis_number_level, c.X_AXIS);
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + xTitle : xTitle;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.xAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
+        config.xAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
+        config.xAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
         config.chartType = "scatter";
 
         if(config.plotOptions.dataLabels.enabled === true){
@@ -245,7 +251,9 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
             tooltip: options.tooltip || "",
-            big_data_mode: options.big_data_mode || false
+            big_data_mode: options.big_data_mode || false,
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE
         };
         this.options.items = items;
         var types = [];

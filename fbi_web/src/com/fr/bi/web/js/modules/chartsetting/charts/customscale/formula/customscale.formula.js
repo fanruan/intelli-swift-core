@@ -191,6 +191,7 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
                     BI.i18nText("BI-Right_Value_Axis_One"), BI.i18nText("BI-Right_Value_Axis_Two"));
                 break;
             case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
                 return this._createTwoTargetsMap(true, text, items, BI.i18nText("BI-Y_Value_Axis"),
                     BI.i18nText("BI-X_Value_Axis"));
                 break;
@@ -237,6 +238,7 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
                     BI.i18nText("BI-Right_Value_Axis_One"), BI.i18nText("BI-Right_Value_Axis_Two"));
                 break;
             case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
                 return this._createTwoTargetsMap(false, text, items, BI.i18nText("BI-Y_Value_Axis"),
                     BI.i18nText("BI-X_Value_Axis"));
                 break;

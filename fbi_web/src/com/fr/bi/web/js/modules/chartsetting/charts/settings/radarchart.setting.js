@@ -7,7 +7,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.RadarChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-radar-chart"
         })
     },
 
@@ -222,12 +222,6 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.gridLine]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.showCustomScale]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.customScale]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -265,6 +259,12 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.numberLevellY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customScale]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
