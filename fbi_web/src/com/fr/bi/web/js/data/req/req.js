@@ -80,6 +80,9 @@ Data.Req = BIReq = {
 
     _widgetDataHandler: function (res) {
         var track = function (node) {
+            if (!node) {
+                return;
+            }
             if (node.n === BICst.SPECIAL_FIELD_VALUE) {
                 node.n = "";
             }

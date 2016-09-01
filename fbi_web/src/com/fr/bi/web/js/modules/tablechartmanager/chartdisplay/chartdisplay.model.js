@@ -635,7 +635,15 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             });
             if(type === BICst.WIDGET.MAP){
-                var subType = BI.Utils.getWidgetSubTypeByID(o.wId) || MapConst.INNER_MAP_INFO.MAP_NAME[BI.i18nText("BI-China")];
+                var subType = BI.Utils.getWidgetSubTypeByID(o.wId);
+                if(BI.isNull(subType)){
+                    BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function(path, layer){
+                        if(layer === 0){
+                            subType = path;
+                            return true;
+                        }
+                    });
+                }
                 var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
                 if(BI.isNull(name)){
                     name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
@@ -647,7 +655,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
                 options.geo = {
                     data: MapConst.INNER_MAP_INFO.MAP_PATH[subType] || MapConst.CUSTOM_MAP_INFO.MAP_PATH[subType],
-                    name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[BI.i18nText("BI-China")]
+                    name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
                 }
             }
             if(type === BICst.WIDGET.GIS_MAP){

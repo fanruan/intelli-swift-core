@@ -14,6 +14,9 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
+import com.taobao.top.link.embedded.websocket.util.StringUtil;
+import org.h2.util.StringUtils;
 
 import java.util.*;
 
@@ -66,7 +69,10 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     Object[] groupValue = new Object[1];
                     groupValue[0] = e.getKey();
                     if (!filterGvi.AND((GroupValueIndex) e.getValue()).isAllEmpty()) {
-                        dataList.add(e.getKey().toString());
+                        String k = e.getKey().toString();
+                        if (!StringUtils.equals(k, BIReportConstant.SPECIAL_FIELD_VALUE)) {
+                            dataList.add(k);
+                        }
                     }
                 }
                 if (dimension.getSortType() == BIReportConstant.SORT.DESC) {
@@ -85,7 +91,10 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     if (!filterGvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
                         count++;
                         if (count > start) {
-                            dataList.add(dataReader.getGroupValue(i).toString());
+                            String k = dataReader.getGroupValue(i).toString();
+                            if (!StringUtils.equals(k, BIReportConstant.SPECIAL_FIELD_VALUE)) {
+                                dataList.add(k);
+                            }
                         }
                     }
                 }
