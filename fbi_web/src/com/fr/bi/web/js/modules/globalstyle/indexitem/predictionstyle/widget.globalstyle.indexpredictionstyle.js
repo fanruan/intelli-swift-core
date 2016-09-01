@@ -33,14 +33,22 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
         });
 
         this.centerButtonGroup=BI.createWidget({
-            //type:"bi.button"
-            type:"bi.global_style_prediction_style_button_group"
+            // //type:"bi.button"
+            // type:"bi.global_style_prediction_style_button_group"
+            type:"bi.button_group",
+            items:[this._createButton(1),this._createButton(2),this._createButton(3),this._createButton(4),this._createButton(5)],
+            layouts:[{
+                type:"bi.inline",
+                lgap: 5,
+                rgap: 5,
+                tgap: 5,
+                bgap: 5
+            }]
         });
 
 
         var centerItems=BI.createWidget({
             type:"bi.htape",
-            //height:160,
             items:[{
                 el:leftLayout,
                 width:30
@@ -88,7 +96,16 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
             }]
         })
     },
-
+    _createButton:function (value) {
+        return BI.createWidget({
+            type:"bi.icon_button",
+            cls:"button-shadow",
+            text:"default",
+            value:value,
+            height:70,
+            width:108
+        })
+    },
 
     populate:function () {
         

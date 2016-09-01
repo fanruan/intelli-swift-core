@@ -12,3 +12,8 @@
   color: #ffffff;
   background-color: #008B8B;
 }
+.bi-global-style-index-prediction-style .button-shadow.active {
+  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
