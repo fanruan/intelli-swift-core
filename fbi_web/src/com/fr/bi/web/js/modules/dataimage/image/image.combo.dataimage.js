@@ -44,15 +44,18 @@ BI.DataImagePane = BI.inherit(BI.Widget, {
             type: "bi.data_label_chart",
             chartType: o.chartType
         });
-        this.chart.populate();
     },
+
     setValue: function (v) {
+        this.imageSet.setValue(v)
     },
+
     getValue: function () {
         return this.imageSet.getValue();
     },
-    populate: function () {
-        this.chart.populate();
+
+    populate: function (src) {
+        this.chart.populate(src);
     }
 });
 BI.DataImagePane.IMG_CHANGE = "BI.DataImageTab.IMG_CHANGE";

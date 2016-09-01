@@ -44,7 +44,8 @@ BI.DataImageStyleSet = BI.inherit(BI.Widget, {
             type: "bi.data_image_pane",
             chartType: o.chartType
         });
-        this.stylePane.on(BI.DataLabelTab.IMG_CHANGE, function () {
+        this.stylePane.on(BI.DataImagePane.IMG_CHANGE, function () {
+            self.stylePane.populate(self.stylePane.getValue().src);
             self.style.hideView();
         });
         this.style = BI.createWidget({
@@ -61,7 +62,7 @@ BI.DataImageStyleSet = BI.inherit(BI.Widget, {
             height: "100%"
         });
         this.style.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function () {
-            self.stylePane.populate();
+            self.stylePane.populate(self.stylePane.getValue().src);
         });
     },
 
