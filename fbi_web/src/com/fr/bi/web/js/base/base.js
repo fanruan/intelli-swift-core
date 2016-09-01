@@ -1037,17 +1037,10 @@ if (!window.BI) {
     //BI请求
     _.extend(BI, {
 
-        ajax: function (opt) {
-            opt || (opt = {});
-            var option = BI.deepClone(opt);
+        ajax: function (option) {
+            option || (option = {});
             //encode
-            for (var key in option.data) {
-                if (_.isObject(option.data[key])) {
-                    option.data[key] = window.encodeURIComponent(FR.jsonEncode(option.data[key]));
-                } else {
-                    option.data[key] = window.encodeURIComponent(option.data[key]);
-                }
-            }
+            encodeBIParam(option.data);
 
             if (BI.isNull(BI.REQUEST_LOADING)) {
                 BI.REQUEST_LOADING = BI.createWidget({
@@ -1062,6 +1055,7 @@ if (!window.BI) {
                 error: function () {
                     //失败 取消、重新加载
                     BI.REQUEST_LOADING.setCallback(function () {
+                        decondBIParam(option.data);
                         BI.ajax(option);
                     });
                     BI.REQUEST_LOADING.showError();
@@ -1076,7 +1070,8 @@ if (!window.BI) {
                                 type: "bi.login_timeout"
                             });
                             loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
-                                BI.ajax(opt);
+                                decondBIParam(option.data);
+                                BI.ajax(option);
                                 BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
                             });
                             BI.Popovers.create(BI.LoginTimeOut.POPOVER_ID, loginTimeout, {
@@ -1092,6 +1087,24 @@ if (!window.BI) {
                     }
                 }
             });
+
+            function encodeBIParam(data) {
+                for (var key in data) {
+                    if (_.isObject(data[key])) {
+                        data[key] = window.encodeURIComponent(FR.jsonEncode(data[key]));
+                    } else {
+                        data[key] = window.encodeURIComponent(data[key]);
+                    }
+                }
+            }
+            function decondBIParam(data) {
+                for (var key in data) {
+                    data[key] = window.decodeURIComponent(data[key]);
+                    if (_.isObject(data[key])) {
+                        data[key] = FR.jsonDecode(data[key]);
+                    }
+                }
+            }
         },
 
         /**
