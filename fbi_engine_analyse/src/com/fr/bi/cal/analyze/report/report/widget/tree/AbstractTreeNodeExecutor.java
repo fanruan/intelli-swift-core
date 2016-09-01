@@ -12,11 +12,9 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.stable.StableUtils;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
-import org.h2.util.StringUtils;
 
 import java.util.*;
 
@@ -70,7 +68,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     groupValue[0] = e.getKey();
                     if (!filterGvi.AND((GroupValueIndex) e.getValue()).isAllEmpty()) {
                         String k = e.getKey().toString();
-                        if (!StringUtils.equals(k, BIReportConstant.SPECIAL_FIELD_VALUE)) {
+                        if (!ComparatorUtils.equals(k, BIReportConstant.SPECIAL_FIELD_VALUE)) {
                             dataList.add(k);
                         }
                     }
@@ -92,7 +90,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                         count++;
                         if (count > start) {
                             String k = dataReader.getGroupValue(i).toString();
-                            if (!StringUtils.equals(k, BIReportConstant.SPECIAL_FIELD_VALUE)) {
+                            if (!ComparatorUtils.equals(k, BIReportConstant.SPECIAL_FIELD_VALUE)) {
                                 dataList.add(k);
                             }
                         }

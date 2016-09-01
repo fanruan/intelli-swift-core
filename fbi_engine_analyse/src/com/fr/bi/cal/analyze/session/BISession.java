@@ -290,19 +290,6 @@ public class BISession extends BIAbstractSession {
         return jo;
     }
 
-    public JSONObject getAllFieldsByPackage(String packageId) throws Exception {
-        long userId = this.getUserId();
-        JSONObject allFields = new JSONObject();
-        Set tables = BICubeConfigureCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables();
-        Iterator<BusinessTable> tableIterator = tables.iterator();
-        while (tableIterator.hasNext()) {
-            BusinessTable table = tableIterator.next();
-            allFields.put(table.getID().getIdentityValue(), table.createJSONWithFieldsInfo(userId));
-        }
-        return allFields;
-    }
-
-
     public CubeGenerateStatusProvider getProvider() {
         return provider;
     }
