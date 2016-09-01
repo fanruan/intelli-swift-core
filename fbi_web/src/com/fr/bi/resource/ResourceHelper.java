@@ -843,6 +843,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/linkage/linkage.target.css",
                 "com/fr/bi/web/css/modules/linkage/linkage.css",
 
+                "com/fr/bi/web/css/modules/logintimeout/login.timeout.css",
+
                 //cube日志
                 "com/fr/bi/web/css/modules/cubelog/items/title.item.wronginfo.cubelog.css",
                 "com/fr/bi/web/css/modules/cubelog/items/item.wronginfo.cubelog.css",
@@ -995,6 +997,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/model.dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.control.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",
@@ -1498,6 +1501,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/linkage/linkage.target.js",
                 "com/fr/bi/web/js/modules/linkage/linkage.targets.js",
                 "com/fr/bi/web/js/modules/linkage/linkage.js",
+
+                "com/fr/bi/web/js/modules/logintimeout/login.timeout.js",
 
                 //onewidget
                 "com/fr/bi/web/js/modules/onewidget/onewidget.js",

@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by Young's on 2016/8/29.
+ * Created by Young's on 2016/9/1.
  */
-public class FCGetAllPackagesAction extends ActionNoSessionCMD {
+public class FCGetAllAvailableCubeDataAction extends ActionNoSessionCMD {
     @Override
     public String getCMD() {
-        return "fc_get_all_packages";
+        return "fc_get_all_available_cube_data";
     }
 
     @Override
@@ -27,9 +27,8 @@ public class FCGetAllPackagesAction extends ActionNoSessionCMD {
             result.put("error", "no session!");
         } else {
             BISession session = (BISession) sessionInfo;
-            result = session.getAllAvailablePackagesGroups(req);
+            result = session.getAllAvailableCubeData(req);
         }
-
         WebUtils.printAsJSON(res, result);
     }
 }
