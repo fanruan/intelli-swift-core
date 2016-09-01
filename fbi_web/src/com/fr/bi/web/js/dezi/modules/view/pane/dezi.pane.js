@@ -224,10 +224,10 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                 self.globalStyle = BI.createWidget({
                     type: "bi.global_style"
                 });
-                self.globalStyle.on(BI.GlobalStyle.EVENT_PREVIEW, function() {
+                self.globalStyle.on(BI.GlobalStyle.EVENT_PREVIEW, function () {
 
                 });
-                self.globalStyle.on(BI.GlobalStyle.EVENT_SAVE, function() {
+                self.globalStyle.on(BI.GlobalStyle.EVENT_SAVE, function () {
 
                 });
             } else {

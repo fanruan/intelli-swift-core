@@ -10,6 +10,7 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
     _init:function () {
         BI.GlobalStyleIndexPredictionStyle.superclass._init.apply(this,arguments);
 
+        var self=this;
         this.leftButton=BI.createWidget({
             type:"bi.icon_button",
             cls:"layout-bg1",
@@ -33,10 +34,8 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
         });
 
         this.centerButtonGroup=BI.createWidget({
-            // //type:"bi.button"
-            // type:"bi.global_style_prediction_style_button_group"
             type:"bi.button_group",
-            items:[this._createButton(1),this._createButton(2),this._createButton(3),this._createButton(4),this._createButton(5)],
+            items:[],
             layouts:[{
                 type:"bi.inline",
                 lgap: 5,
@@ -45,18 +44,21 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
                 bgap: 5
             }]
         });
-
+        this.centerButtonGroup.on(BI.ButtonGroup.EVENT_CHANGE,function () {
+            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE,this)
+        });
+        this.centerButtonGroup.populate([this._createAdministratorStyle(),this._createPredictionStyleOne(),this._createPredictionStyleTwo(),this._createPredictionStyleThree(),this._createPredictionStyleFour()])
 
         var centerItems=BI.createWidget({
             type:"bi.htape",
             items:[{
                 el:leftLayout,
-                width:30
+                width:29
             },{
                 el:this.centerButtonGroup
             },{
                 el:rightLayout,
-                width:30
+                width:29
             }]
         });
 
@@ -89,26 +91,53 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
                 height:9
             },{
                 el:centerItems,
-                //tgap:14,
                 height:160
             },{
                 el:this.bottomItem
             }]
         })
     },
-    _createButton:function (value) {
+    _createButton:function (value,title,cls) {
         return BI.createWidget({
             type:"bi.icon_button",
             cls:"button-shadow",
-            text:"default",
+            title:title,
             value:value,
             height:70,
-            width:108
+            width:110
         })
+    },
+
+    _createAdministratorStyle:function () {
+        return this._createButton(0,BI.i18nText("BI-Administrator_Set_Style"))
+    },
+    _createPredictionStyleOne:function () {
+        return this._createButton(1,BI.i18nText("BI-Prediction_Style_One"))
+    },
+    _createPredictionStyleTwo:function () {
+        return this._createButton(2,BI.i18nText("BI-Prediction_Style_Two"))
+    },
+    _createPredictionStyleThree:function () {
+        return this._createButton(3,BI.i18nText("BI-Prediction_Style_Three"))
+    },
+    _createPredictionStyleFour:function () {
+        return this._createButton(4,BI.i18nText("BI-Prediction_Style_Four"))
+    },
+
+    getValue:function () {
+        var value=this.centerButtonGroup.getValue();
+        return{
+            "currentStyle":value[0]
+        }
+    },
+
+    setValue:function () {
+
     },
 
     populate:function () {
         
     }
 });
+BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE="BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE";
 $.shortcut("bi.global_style_index_prediction_style",BI.GlobalStyleIndexPredictionStyle);
