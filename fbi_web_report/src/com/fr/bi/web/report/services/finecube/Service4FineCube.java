@@ -17,8 +17,7 @@ public class Service4FineCube implements Service {
             new FCUpdateSessionAction(),
             new FCCheckSessionAction(),
             new FCCloseSessionAction(),
-            new FCGetAllPackagesAction(),
-            new FCGetAllFieldsByPackageAction()
+            new FCGetAllAvailableCubeDataAction()
 
     };
 

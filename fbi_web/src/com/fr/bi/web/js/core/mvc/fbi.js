@@ -1317,18 +1317,7 @@
 
     // Set the default implementation of `BI.ajax` to proxy through to `$`.
     // Override this if you'd like to use a different library.
-    BI.ajax = function(option) {
-        option || (option={});
-        //encode
-        for(var key in option.data){
-            if(_.isObject(option.data[key])){
-                option.data[key] = window.encodeURIComponent(FR.jsonEncode(option.data[key]));
-            } else{
-                option.data[key] = window.encodeURIComponent(option.data[key]);
-            }
-        }
-        return FR.ajax.apply(FR, [option]);
-    };
+    BI.ajax = $.ajax;
 
     // BI.Router
     // ---------------

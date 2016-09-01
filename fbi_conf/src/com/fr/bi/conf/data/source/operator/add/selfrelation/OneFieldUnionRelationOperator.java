@@ -2,7 +2,9 @@ package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -141,7 +143,8 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     int start = startCol;
                     for (String s : showFields) {
                         for (int j = 0; j < columnLength; j++) {
-                            travel.actionPerformed(new BIDataValue(i, start++, res[index++]));
+                            travel.actionPerformed(new BIDataValue(i, start++, res[index] == null ? BIReportConstant.SPECIAL_FIELD_VALUE : res[index]));
+                            index++;
                         }
                     }
                 }
