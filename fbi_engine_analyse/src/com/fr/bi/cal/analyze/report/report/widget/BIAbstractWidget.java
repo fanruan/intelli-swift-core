@@ -194,11 +194,6 @@ public abstract class BIAbstractWidget implements BIWidget {
                 gvi = GVIUtils.AND(gvi, filter.createFilterIndex(row[i], targetKey, loader, userId));
             }
         }
-        //去掉一些特殊标记的值
-        for (DimensionCalculator r : row) {
-            GroupValueIndex n = loader.getTableIndex(targetKey.getTableSource()).getIndexes(r.createKey(), new Object[]{BIValueConstant.SPECIAL_FIELD_VALUE})[0];
-            gvi = GVIUtils.AND(gvi, n.NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
-        }
         return gvi;
     }
 

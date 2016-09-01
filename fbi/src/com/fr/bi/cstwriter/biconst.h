@@ -239,6 +239,7 @@
 # define BI_BI_REPORT_SUBMITED 1
 # define BI_BI_REPORT_PUBLISHED 2
 # define BI_SYSTEM_TIME @"__system_time-3e1d05defe78__"
+# define BI_SPECIAL_FIELD_VALUE @"__BI_GUY_SPECIAL_FIELD_VALUE__"
 
 # define BI_ETL_ADD_COLUMN_TYPE_FORMULA @"formula"
 # define BI_ETL_ADD_COLUMN_TYPE_DATE_DIFF @"date_diff"
@@ -321,8 +322,6 @@
 # define BI_CLASS_TIME 9
 # define BI_CLASS_BYTE 10
 # define BI_CLASS_ROW 16
-# define BI_CUBE_UPDATE_TYPE_GLOBAL_UPDATE @"__global_update__"
-# define BI_CUBE_UPDATE_TYPE_SINGLETABLE_UPDATE @"__singleTable_update__"
 # define BI_SYSTEM_USER_NAME @"__system_user_name__"
 
 # define BI_FUNCTION_TEXT 1
