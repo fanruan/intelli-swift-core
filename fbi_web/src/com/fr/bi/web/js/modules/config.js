@@ -1206,6 +1206,14 @@ BICst.CHART_COLORS = [{
     header: BI.i18nText("BI-Elegant"),
     text: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"],
     value: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"]
+},{
+    header: BI.i18nText("BI-Prediction_Style_One"),
+    text: ["#79d2f4","#55b5e5","#25cdea","#1ba8ed","#537af4"],
+    value: ["#79d2f4","#55b5e5","#25cdea","#1ba8ed","#537af4"]
+},{
+    header: BI.i18nText("BI-Prediction_Style_Two"),
+    text: ["#f4ab98","#f1c15f","#e18169","#af7e7e","#6f6870"],
+    value: ["#f4ab98","#f1c15f","#e18169","#af7e7e","#6f6870"]
 }];
 
 //图值轴格式

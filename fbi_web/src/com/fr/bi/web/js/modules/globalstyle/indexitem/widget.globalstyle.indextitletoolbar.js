@@ -10,45 +10,35 @@ BI.GlobalStyleIndexTitleToolBar=BI.inherit(BI.Widget,{
     _init:function () {
         BI.GlobalStyleIndexTitleToolBar.superclass._init.apply(this,arguments);
 
-        var self=this,o=this.options;
 
         this.bold = BI.createWidget({
             type: "bi.icon_button",
+            title:BI.i18nText("BI-Bold"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-bold-font"
         });
-        this.bold.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, arguments);
-        });
 
         this.italic = BI.createWidget({
             type: "bi.icon_button",
+            title:BI.i18nText("BI-Italic"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-italic-font"
-        });
-        this.italic.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, arguments);
         });
 
         this.alignChooser=BI.createWidget({
             type:"bi.global_style_index_align_chooser",
             cls: "text-toolbar-button"
         });
-        this.alignChooser.on(BI.GlobalStyleIndexAlignChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, arguments);
-        });
 
         this.colorchooser = BI.createWidget({
             type: "bi.color_chooser",
             el: {
                 type: "bi.text_toolbar_color_chooser_trigger",
+                title:BI.i18nText("BI-Font_Colour"),
                 cls: "text-toolbar-button"
             }
-        });
-        this.colorchooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, arguments);
         });
 
         BI.createWidget({
@@ -75,5 +65,4 @@ BI.GlobalStyleIndexTitleToolBar=BI.inherit(BI.Widget,{
         this.colorchooser.setValue(v["color"] || "#000000");
     }
 });
-BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE="BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE";
 $.shortcut("bi.global_style_index_title_tool_bar",BI.GlobalStyleIndexTitleToolBar);
