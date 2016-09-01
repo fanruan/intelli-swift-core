@@ -110,6 +110,11 @@ public class CubeTreeMap<K> extends TreeMap implements ICubeColumnIndexReader, R
         return getKey(position);
     }
 
+    @Override
+    public GroupValueIndex getGroupValueIndex(int groupValuePosition) {
+        return (GroupValueIndex) get(getKey(groupValuePosition));
+    }
+
     private Object getKey(int keyIndex) {
         Iterator it = keySet().iterator();
         int i = 0;

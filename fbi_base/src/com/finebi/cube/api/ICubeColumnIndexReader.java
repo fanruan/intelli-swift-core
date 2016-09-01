@@ -71,7 +71,13 @@ public interface ICubeColumnIndexReader<T> {
      * @return Group的值
      */
     T getGroupValue(int position);
-
+    /**
+     * 获得相应位置的索引。
+     *
+     * @param groupValuePosition 分组位置
+     * @return Group的值
+     */
+    GroupValueIndex getGroupValueIndex(int groupValuePosition);
 
     T getOriginalValue(int rowNumber);
 
