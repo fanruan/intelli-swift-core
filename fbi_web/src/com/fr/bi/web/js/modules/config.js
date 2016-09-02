@@ -1577,11 +1577,24 @@ BICst.DEFAULT_CHART_SETTING = {
     mini_enable_tick: false,
     enable_minor_tick: true,
     mini_enable_minor_tick: false,
-    show_custom_scale: false,
+    show_y_custom_scale: false,
+    show_x_custom_scale: false,
+    show_z_custom_scale: false,
     show_zoom: false,
     null_continue: true,
     bubble_display: BICst.DISPLAY_RULES.DIMENSION,
-    bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR
+    bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
+    custom_scale: {
+        maxScale: {
+            scale: null
+        },
+        minScale: {
+            scale: null
+        },
+        interval: {
+            scale: null
+        }
+    }
 };
 
 BICst.DASHBOARD_STYLE_CONDITIONS = [{

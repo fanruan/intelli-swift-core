@@ -13,7 +13,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _init: function () {
         BI.AccumulateRadarChartSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -41,7 +41,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         this.chartTypeGroup = BI.createWidget({
@@ -60,7 +60,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
         this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -137,6 +137,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
+        //轴刻度自定义
         this.showCustomScale = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Scale_Customize"),
@@ -145,11 +146,15 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.showCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
             self.customScale.setVisible(this.isSelected());
+            if(!this.isSelected()){
+                self.customScale.setValue({})
+            }
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
         this.customScale = BI.createWidget({
-            type: "bi.custom_scale"
+            type: "bi.custom_scale",
+            wId: o.wId
         });
 
         this.customScale.on(BI.CustomScale.EVENT_CHANGE, function () {
@@ -309,10 +314,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
-        this.showCustomScale.setSelected(BI.Utils.getWSShowCustomScale(wId));
-        this.customScale.setValue(BI.Utils.getWSCustomScale(wId));
-        this.customScale.setVisible(BI.Utils.getWSShowCustomScale(wId));
-
+        this.showCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
+        this.customScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.customScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
     },
 
     getValue: function () {
@@ -326,8 +330,8 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
-            show_custom_scale: this.showCustomScale.isSelected(),
-            custom_scale: this.customScale.getValue()
+            show_y_custom_scale: this.showCustomScale.isSelected(),
+            custom_y_scale: this.customScale.getValue()
         }
     },
 
@@ -341,8 +345,8 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
-        this.showCustomScale.setSelected(v.show_custom_scale);
-        this.customScale.setValue(v.custom_scale)
+        this.showCustomScale.setSelected(v.show_y_custom_scale);
+        this.customScale.setValue(v.custom_y_scale)
     }
 });
 BI.AccumulateRadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

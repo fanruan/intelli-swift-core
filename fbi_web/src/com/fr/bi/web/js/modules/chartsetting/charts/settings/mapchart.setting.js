@@ -185,7 +185,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({

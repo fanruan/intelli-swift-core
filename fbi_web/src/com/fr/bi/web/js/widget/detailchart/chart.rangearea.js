@@ -77,6 +77,9 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
             enableMinorTick: this.config.enable_minor_tick,
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             reversed: config.yAxis[0].reversed = this.config.left_y_axis_reversed,
+            max: self.config.custom_y_scale.minScale.scale || null,
+            min: self.config.custom_y_scale.maxScale.scale || null,
+            tickInterval: self.config.custom_y_scale.interval.scale || null,
             formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level)
         });
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
@@ -274,7 +277,8 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
-            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE
         };
         this.options.items = items;
 
