@@ -143,8 +143,7 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     int start = startCol;
                     for (String s : showFields) {
                         for (int j = 0; j < columnLength; j++) {
-                            travel.actionPerformed(new BIDataValue(i, start++, res[index] == null ? BIReportConstant.SPECIAL_FIELD_VALUE : res[index]));
-                            index++;
+                            travel.actionPerformed(new BIDataValue(i, start++, res[index++]));
                         }
                     }
                 }

@@ -549,7 +549,4 @@ public class BIReportConstant {
         }
     }
 
-    public static String SPECIAL_FIELD_VALUE = "__BI_GUY_SPECIAL_FIELD_VALUE__";
-
-
 }

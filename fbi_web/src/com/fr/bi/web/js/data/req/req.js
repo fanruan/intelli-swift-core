@@ -71,38 +71,9 @@ Data.Req = BIReq = {
     },
 
     reqWidgetSettingByData: function (data, callback, complete) {
-        var self = this;
         BI.requestAsync("fr_bi_dezi", "widget_setting", data, function (res) {
-            res = self._widgetDataHandler(res);
             callback(res);
         }, complete);
-    },
-
-    _widgetDataHandler: function (res) {
-        var track = function (node) {
-            if (!node) {
-                return;
-            }
-            if (node.n === BICst.SPECIAL_FIELD_VALUE) {
-                node.n = "";
-            }
-            if (node.c) {
-                if (node.c.length > 1) {
-                    var filter = [];
-                    for (var i = 0; i < node.c.length; i++) {
-                        if (node.c[i].n !== BICst.SPECIAL_FIELD_VALUE) {
-                            filter.push(node.c[i]);
-                        }
-                    }
-                    node.c = filter;
-                }
-                for (var i = 0; i < node.c.length; i++) {
-                    track(node.c[i]);
-                }
-            }
-        };
-        track(res.data);
-        return res;
     },
 
     reqDeziNumberFieldMinMaxValueByfieldId: function (data, callback, complete) {

@@ -137,8 +137,7 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     int start = startCol;
                     for (String s : showFields) {
                         for (int j = 0; j < columnLength; j++) {
-                            travel.actionPerformed(new BIDataValue(i, start++,  vals[cnt] == null ? BIReportConstant.SPECIAL_FIELD_VALUE : vals[cnt]));
-                            cnt++;
+                            travel.actionPerformed(new BIDataValue(i, start++,  vals[cnt++]));
                         }
                     }
                 } catch (StackOverflowError e) {
