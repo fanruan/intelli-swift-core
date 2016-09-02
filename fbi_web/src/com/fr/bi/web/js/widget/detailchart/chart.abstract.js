@@ -45,6 +45,17 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             "fontFamily": "inherit",
             "color": "#808080",
             "fontSize": "12px"
+        },
+        CUSTOM_SCALE: {
+            maxScale: {
+                scale: null
+            },
+            minScale: {
+                scale: null
+            },
+            interval: {
+                scale: null
+            }
         }
     },
 

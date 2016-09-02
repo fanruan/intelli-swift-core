@@ -6,7 +6,7 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.CustomScaleFormula.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-custom-scale-formula",
-            items: {}
+            wId: ""
         })
     },
 
@@ -117,15 +117,15 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
         var fieldMap = {};
         if (state) {
             BI.each(items[targetType], function (idx, item) {
-                fieldMap["max(" + axis + (idx + 1) + ")"] = item + text[0];
-                fieldMap["min(" + axis + (idx + 1) + ")"] = item + text[1];
-                fieldMap["average(" + axis + (idx + 1) + ")"] = item + text[2]
+                fieldMap["max(" + axis + (idx + 1) + ")"] = item + 0;
+                fieldMap["min(" + axis + (idx + 1) + ")"] = item + 1;
+                fieldMap["average(" + axis + (idx + 1) + ")"] = item + 2
             });
         } else {
             BI.each(items[targetType], function (idx, item) {
-                fieldMap[item + text[0]] = "max(" + axis + (idx + 1) + ")";
-                fieldMap[item + text[1]] = "min(" + axis + (idx + 1) + ")";
-                fieldMap[item + text[2]] = "average(" + axis + (idx + 1) + ")"
+                fieldMap[item + 0] = "max(" + axis + (idx + 1) + ")";
+                fieldMap[item + 1] = "min(" + axis + (idx + 1) + ")";
+                fieldMap[item + 2] = "average(" + axis + (idx + 1) + ")"
             });
         }
 
@@ -191,6 +191,7 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
                     BI.i18nText("BI-Right_Value_Axis_One"), BI.i18nText("BI-Right_Value_Axis_Two"));
                 break;
             case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
                 return this._createTwoTargetsMap(true, text, items, BI.i18nText("BI-Y_Value_Axis"),
                     BI.i18nText("BI-X_Value_Axis"));
                 break;
@@ -237,6 +238,7 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
                     BI.i18nText("BI-Right_Value_Axis_One"), BI.i18nText("BI-Right_Value_Axis_Two"));
                 break;
             case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
                 return this._createTwoTargetsMap(false, text, items, BI.i18nText("BI-Y_Value_Axis"),
                     BI.i18nText("BI-X_Value_Axis"));
                 break;
@@ -271,6 +273,11 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
         return v.match(regx);
     },
 
+    getAnalyzeContent: function () {
+        var v = this.getValue();
+        return this._analyzeContent(v)
+    },
+
     refresh: function () {
         this.formulaEditor.refresh();
     },
@@ -287,12 +294,12 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
         var self = this, result;
         self.formulaEditor.refresh();
         self.formulaEditor.setValue("");
-        result = this._analyzeContent(v);
+        result = this._analyzeContent(v || "");
         BI.each(result, function (i, item) {
             var fieldRegx = /\$[\{][^\]*[\}]/;
             var str = item.match(fieldRegx);
             if (BI.isNotEmptyArray(str)) {
-                self.formulaEditor.insertField(self.fieldValueTextMap[str[0].substring(2, item.length - 1)])
+                self.formulaEditor.insertField(self.fieldValueTextMap[item.substring(2, item.length - 1)])
             } else {
                 self.formulaEditor.insertString(item)
             }
@@ -303,12 +310,21 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
         return this.formulaEditor.getValue()
     },
 
-    populate: function (items) {
-        this.options.items = items;
-        this.fieldTextValueMap = this._createFieldTextValueMap(items);
-        this.fieldValueTextMap = this._createFieldValueTextMap(items);
+    populate: function () {
+        var wid = this.options.wId;
+        var view = BI.Utils.getWidgetViewByID(wid);
+        BI.each(view, function (regionType, arr) {
+            if (regionType >= BICst.REGION.TARGET1) {
+                view[regionType] = BI.filter(arr, function (idx, id) {
+                    return BI.Utils.isDimensionUsable(id)
+                })
+            }
+        });
+        view.type = BI.Utils.getWidgetTypeByID(wid);
+        this.fieldTextValueMap = this._createFieldTextValueMap(view);
+        this.fieldValueTextMap = this._createFieldValueTextMap(view);
         this.formulaEditor.setFieldTextValueMap(this.fieldTextValueMap);
-        this.formulaTree.populate(items);
+        this.formulaTree.populate(view);
         this._bindDragEvent();
     }
 

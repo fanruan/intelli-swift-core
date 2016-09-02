@@ -1134,6 +1134,18 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalabel/condition/bubble/item.notypefieldl.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/bubble/widget.datalabelselectfield.js",
 
+                //数据图片
+                "com/fr/bi/web/js/modules/dataimage/dataimage.js",
+                "com/fr/bi/web/js/modules/dataimage/dataimage.popup.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/group.condition.dataimage.js",
+                "com/fr/bi/web/js/modules/dataimage/image/styleset.dataimage.js",
+                "com/fr/bi/web/js/modules/dataimage/image/image.combo.dataimage.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/common/item.notypefield.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/common/item.numberfield.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/common/item.stringfield.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/common/factory.filteritem.dataimage.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/common/widget.dataimageselectfield.js",
+
                 //计算指标
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/calculatetargetpopup.summary.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/model.calculatetargetpopup.summary.js",

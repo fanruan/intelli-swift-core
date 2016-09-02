@@ -57,7 +57,13 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
             var t = {};
             switch (self.chartType) {
                 case BICst.WIDGET.SCATTER:
-                    t = BI.ScatterFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+                    if(cdt.key === "z")  {
+                        t = {
+                            type: "bi.scatter_no_type_field_filter_item"
+                        };
+                    } else {
+                        t = BI.ScatterFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
+                    }
                     break;
                 case BICst.WIDGET.BUBBLE:
                     t = BI.BubbleFilterItemFactory.createFilterItemByFilterType(cdt.filter_type);
@@ -84,8 +90,9 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
     getValue: function () {
         var result = [];
         BI.each(this.buttons, function (i, el) {
-            if (el.getValue() !== "") {
-                result.push(el.getValue());
+            var value = el.getValue();
+            if (!BI.isEmptyString(value)) {
+                result.push(value);
             }
         });
         return result;
