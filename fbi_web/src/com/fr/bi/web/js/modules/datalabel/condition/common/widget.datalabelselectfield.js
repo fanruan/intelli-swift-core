@@ -53,7 +53,7 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                 } else {
                     var widgetId = BI.Utils.getWidgetIDByDimensionID(o.dId);
                     var result = [];
-                    BI.each(BI.Utils.getAllUsableDimDimensionIDs(widgetId), function (i, dId) {
+                    BI.each(BI.Utils.getAllDimDimensionIDs(widgetId), function (i, dId) {
                         result.push({
                             id: dId,
                             pId: self._constant.OTHER_FIELD,

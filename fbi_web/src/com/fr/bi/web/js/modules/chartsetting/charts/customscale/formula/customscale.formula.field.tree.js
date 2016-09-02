@@ -106,7 +106,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 pId: pId,
                 id: pId + text,
                 text: text,
-                value: pId + text,
+                value: pId + idx,
                 lgap: 48
             })
         });
@@ -144,9 +144,11 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.FALL_AXIS:
+                nodes = this._createOneAxis(nodes, usedTargets, BI.i18nText("BI-Value_Axis"));
+                break;
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
-                nodes = this._createOneAxis(nodes, usedTargets, BI.i18nText("BI-Value_Axis"));
+                nodes = this._createOneAxis(nodes, usedTargets, BI.i18nText("BI-Target"));
                 break;
             case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
@@ -162,6 +164,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 nodes = this._createThreeAxis(nodes, usedTargets, BI.i18nText("BI-Left_Value_Axis"), BI.i18nText("BI-Right_Value_Axis_One"), BI.i18nText("BI-Right_Value_Axis_Two"));
                 break;
             case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
                 nodes = this._createTwoAxis(nodes, usedTargets, BI.i18nText("BI-Y_Value_Axis"), BI.i18nText("BI-X_Value_Axis"));
                 break;
         }

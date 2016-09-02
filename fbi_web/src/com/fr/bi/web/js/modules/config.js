@@ -1451,6 +1451,66 @@ BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
 
 BICst.Font_Family_COMBO = [];
 
+BICst.BACKGROUND_TYPE = {
+    COLOR: 1,
+    IMAGE: 2
+};
+
+BICst.FONT_FAMILY_COMBO = [{
+    text: "微软雅黑",
+    value: "Microsoft YaHei"
+},{
+    text: "黑体",
+    value: "SimHei"
+},{
+    text: "幼圆",
+    value: "YouYuan"
+},{
+    text: "宋体",
+    value: "SimSun"
+},{
+    text: "楷体",
+    value: "KaiTi"
+},{
+    text: "华文细黑",
+    value: "STXihei"
+},{
+    text: "华文黑体",
+    value: "STHeiti"
+},{
+    text: "华文楷体",
+    value: "STKaiti"
+},{
+    text: "华文宋体",
+    value: "STSong"
+},{
+    text: "冬青黑体简体中文",
+    value: "Hiragino Sans GB W3"
+},{
+    text: "Arial",
+    value: "Arial"
+},{
+    text: "Microsoft Tai Le",
+    value: "Microsoft Tai Le"
+},{
+    text: "Times New Roman",
+    value: "Times New Roman"
+},{
+    text: "Tahoma",
+    value: "Tahoma"
+},{
+    text: "Helvetica",
+    value: "Helvetica"
+},{
+    text: "Verdana",
+    value: "Verdana"
+},{
+    text: "Times New Roman",
+    value: "Times New Roman"
+},{
+    text: "Tahoma",
+    value: "Tahoma"
+}];
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
     table_form: BICst.TABLE_FORM.OPEN_ROW,
@@ -1524,11 +1584,24 @@ BICst.DEFAULT_CHART_SETTING = {
     mini_enable_tick: false,
     enable_minor_tick: true,
     mini_enable_minor_tick: false,
-    show_custom_scale: false,
+    show_y_custom_scale: false,
+    show_x_custom_scale: false,
+    show_z_custom_scale: false,
     show_zoom: false,
     null_continue: true,
     bubble_display: BICst.DISPLAY_RULES.DIMENSION,
-    bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR
+    bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
+    custom_scale: {
+        maxScale: {
+            scale: null
+        },
+        minScale: {
+            scale: null
+        },
+        interval: {
+            scale: null
+        }
+    }
 };
 
 BICst.DASHBOARD_STYLE_CONDITIONS = [{

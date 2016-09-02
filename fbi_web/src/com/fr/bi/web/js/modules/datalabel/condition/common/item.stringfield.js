@@ -16,7 +16,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DataLabelStringFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "data-label-condition-item"
+            extraCls: "condition-item"
         })
     },
 
@@ -122,7 +122,7 @@ BI.DataLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.filterWidget = BI.createWidget({
             type: "bi.select_dimension_data_combo",
             dId: o.dId,
-            width: 230,
+            width: this._constant.INPUT_WIDTH,
             height: this._constant.BUTTON_HEIGHT
         });
 

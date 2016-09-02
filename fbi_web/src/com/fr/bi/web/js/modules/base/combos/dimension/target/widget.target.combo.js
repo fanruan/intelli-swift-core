@@ -171,6 +171,10 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text: BI.i18nText("BI-Data_Label"),
                         value: BICst.TARGET_COMBO.DATA_LABEL,
                         warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                    },{
+                        text: BI.i18nText("BI-Data_Image"),
+                        value: BICst.TARGET_COMBO.DATA_IMAGE,
+                        warningTitle: BI.i18nText("BI-Data_Image_Donnot_Show")
                     }]
                 };
                 if(minimalist){

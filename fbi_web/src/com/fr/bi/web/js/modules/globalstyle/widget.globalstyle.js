@@ -11,7 +11,7 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.GlobalStyle.superclass._init.apply(this, arguments);
-        //var self=this;
+        var self = this;
         var layer = BI.Layers.create(BICst.GLOBAL_STYLE_LAYER);
         this.globalStyleSetting = BI.createWidget({
             type: "bi.global_style_setting"
@@ -19,17 +19,14 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
         BI.Layers.show(BICst.GLOBAL_STYLE_LAYER);
         this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CANCEL, function () {
             BI.Layers.hide(BICst.GLOBAL_STYLE_LAYER);
+            self.fireEvent(BI.GlobalStyle.EVENT_CANCEL);
         });
-        this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_PREVIEW, function () {
-
+        this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GlobalStyle.EVENT_PREVIEW);
         });
         this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_SAVE, function () {
             BI.Layers.hide(BICst.GLOBAL_STYLE_LAYER);
-            var value = this.getValue();
-            console.log(value);
-            alert(value);
-            console.log(JSON.stringify(value));
-            alert(JSON.stringify(value));
+            self.fireEvent(BI.GlobalStyle.EVENT_SAVE);
         });
         BI.createWidget({
             type: "bi.absolute",
@@ -53,9 +50,8 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
         })
     },
 
-    getCurrentStyle: function () {
-        var currentStyle = {};
-        return currentStyle;
+    getValue: function () {
+        return this.globalStyleSetting.getValue();
     },
 
     populate: function () {
@@ -65,4 +61,5 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
 });
 BI.GlobalStyle.EVENT_PREVIEW = "EVENT_PREVIEW";
 BI.GlobalStyle.EVENT_SAVE = "EVENT_SAVE";
+BI.GlobalStyle.EVENT_CANCEL = "EVENT_CANCEL";
 $.shortcut("bi.global_style", BI.GlobalStyle);

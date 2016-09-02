@@ -7,7 +7,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.MapSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-map-chart-setting"
         })
     },
 
@@ -185,7 +185,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({
