@@ -42,7 +42,8 @@ BI.DataImagePane = BI.inherit(BI.Widget, {
         });
         this.chart = BI.createWidget({
             type: "bi.data_label_chart",
-            chartType: o.chartType
+            chartType: o.chartType,
+            showType: "data_image"
         });
     },
 

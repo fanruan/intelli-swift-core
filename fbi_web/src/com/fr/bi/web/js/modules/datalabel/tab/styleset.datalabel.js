@@ -19,7 +19,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         BI.DataLabelStyleSet.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.textTrigger = BI.createWidget({
-            type: "bi.text_button",
+            type: "bi.label",
             text: BI.i18nText("BI-Set_Style"),
             height: this._constant.BUTTON_HEIGHT
         });
@@ -76,7 +76,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             switch (style.type) {
                 case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
                     self.textTrigger.setValue("text");
-                    $(self.textTrigger.element).css(style.textStyle);
+                    self.textTrigger.setStyle(style.textStyle);
                     self.imgTrigger.setVisible(false);
                     self.textTrigger.setVisible(true);
                     break;
@@ -92,12 +92,10 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         switch (v.type) {
             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
                 this.textTrigger.setValue("text");
-                //todo
-                $(this.textTrigger.element).css(v.textStyle);
+                this.textTrigger.setStyle(v.textStyle);
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
                 this.imgTrigger.setSrc(v.imgStyle.src);
-                this.imgTrigger.element.css({"display": "block"});
                 this.imgTrigger.setVisible(true);
                 this.textTrigger.setVisible(false);
         }

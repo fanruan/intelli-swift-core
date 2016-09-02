@@ -170,6 +170,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var self = this, o = this.options;
         var data = this._formatDataForCommon(da);
         this._setDataLabelSettingForAxis(data);
+        this._setDataImageSettingForAxis(data);
         if (BI.isEmptyArray(data)) {
             return [];
         }
@@ -538,6 +539,72 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
     },
 
+    _setDataImageSettingForAxis: function(data){
+        var self = this, o = this.options;
+        var hasSeries = this._checkSeriesExist();
+        var allSeries = BI.pluck(data, "name");
+        var cataArrayMap = {};  //值按分类分组
+        var seriesArrayMap = {}; //值按系列分组
+        var allValueArray = []; //所有值
+        BI.each(data, function(idx, da){
+            seriesArrayMap[da.name] = [];
+            BI.each(da.data, function(id, obj){
+                if(!BI.has(cataArrayMap, obj.x)){
+                    cataArrayMap[obj.x] = [];
+                }
+                cataArrayMap[obj.x].push(obj.y);
+                seriesArrayMap[da.name].push(obj.y);
+                allValueArray.push(obj.y);
+            })
+        });
+        BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function(i, dId){
+            BI.each(BI.Utils.getDataimageByID(dId), function (id, dataLabel) {
+                var filter =  BI.FilterFactory.parseFilter(dataLabel);
+                BI.any(data, function(idx, series){
+                    if(hasSeries === true){
+                        //有系列
+                        //分类
+                        if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
+                            formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
+                        }
+                        //系列
+                        if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2){
+                            var filterArray = filter.getFilterResult(allSeries);
+                            if(BI.contains(filterArray, series.name)){
+                                BI.each(series.data, function(id, da){
+                                    self._createDataImage(da, dataLabel);
+                                });
+                                return true;
+                            }
+                        }
+                    }else{
+                        //当前指标所在系列
+                        if(series.name === BI.Utils.getDimensionNameByID(dId)){
+                            //分类
+                            if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1){
+                                formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
+                            }
+                            //指标自身
+                            if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1){
+                                self._createDataImage(data, dataLabel);
+                            }
+                            return true;
+                        }
+                    }
+                });
+            });
+        });
+
+        function formatDataLabelForClassify(series, filter, array, labelStyle){
+            var filterArray = filter.getFilterResult(array);
+            BI.each(series.data, function(id, data){
+                if(BI.contains(filterArray, data.x)){
+                    self._createDataImage(data, labelStyle);
+                }
+            });
+        }
+    },
+
     _createDataLabel: function (data, label) {
         var show = "";
         var chartType = BI.Utils.getWidgetTypeByID(this.options.wId);
@@ -582,8 +649,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         data.dataLabels = dataLabels;
     },
 
-    _createDataImage: function () {
-
+    _createDataImage: function (data, label) {
+        data.imageHeight = 20;
+        data.imageWidth = 20;
+        data.image = label.style_setting.src;
     },
 
     getCordon: function () {
