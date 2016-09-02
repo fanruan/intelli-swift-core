@@ -1062,7 +1062,9 @@ if (!window.BI) {
                 },
                 complete: function (res, status) {
                     //登录超时
-                    if (BI.isNotNull(res.responseText) && res.responseText.indexOf("fs-login-content") > -1) {
+                    if (BI.isNotNull(res.responseText) &&
+                        res.responseText.indexOf("fs-login-content") > -1 &&
+                        res.responseText.indexOf("fs-login-input-password-confirm") === -1) {
                         if (BI.isNotNull(BI.Popovers.get(BI.LoginTimeOut.POPOVER_ID))) {
                             BI.Popovers.open(BI.LoginTimeOut.POPOVER_ID);
                         } else {
@@ -1079,7 +1081,7 @@ if (!window.BI) {
                                 height: 400
                             }).open(BI.LoginTimeOut.POPOVER_ID);
                         }
-                    } else if(status === "success" && BI.isFunction(option.success)) {
+                    } else if (status === "success" && BI.isFunction(option.success)) {
                         option.success(FR.jsonDecode(res.responseText));
                     }
                     if (BI.isFunction(option.complete)) {
@@ -1097,6 +1099,7 @@ if (!window.BI) {
                     }
                 }
             }
+
             function decodeBIParam(data) {
                 for (var key in data) {
                     data[key] = window.decodeURIComponent(data[key]);

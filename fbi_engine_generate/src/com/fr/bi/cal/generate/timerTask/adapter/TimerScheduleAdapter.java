@@ -3,13 +3,13 @@ package com.fr.bi.cal.generate.timerTask.adapter;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
+import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
 import com.fr.bi.conf.manager.update.source.TimeFrequency;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
-import com.fr.bi.stable.constant.CubeConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class TimerScheduleAdapter {
         List<TimerTaskSchedule> scheduleList = new ArrayList<TimerTaskSchedule>();
         for (String keys : allTimeTaskMap.keySet()) {
             UpdateSettingSource settingSource = allTimeTaskMap.get(keys);
-            boolean isGlobalUpdate = keys.equals(CubeConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
+            boolean isGlobalUpdate = keys.equals(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
             for (TimeFrequency frequency : settingSource.getTimeList()) {
                 String scheduleTime = BIDateUtils.getScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
                 if (isGlobalUpdate) {

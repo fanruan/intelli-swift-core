@@ -1,9 +1,6 @@
 package com.fr.bi.cstwriter;
 
-import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.constant.FunctionConstant;
+import com.fr.bi.stable.constant.*;
 
 import java.io.File;
 
