@@ -2,7 +2,28 @@
  * Created by Young's on 2016/8/24.
  */
 BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
-    _const: {},
+    _const: {
+        PREDICTIONSTYLEONE:{
+            "backgroundColour":{"selectType":"colour","Value":"#212338"},
+            "widgetBackgroundColour":{"selectType":"colour","Value":"#2b2d4a"},
+            "titleColour":{"selectType":"colour","Value":"#2b2d3a"},
+            "titleWordStyle":{"font-weight":"bold","font-style":"normal","text-align":"left","color":"#ffffff"},
+            "chartStyle":[1],
+            "chartColour":["#79d2f4","#55b5e5","#25cdea","#1ba8ed","#537af4"],
+            "chartWordStyle":{"font-weight":"normal","font-style":"normal","color":"#b2b2b2"},
+            "controlTheme":"#25cdea"
+        },
+        PREDICTIONSTYLETWO:{
+            "backgroundColour":{"selectType":"colour","Value":"#dae0e0"},
+            "widgetBackgroundColour":{"selectType":"colour","Value":"#f7f7f7"},
+            "titleColour":{"selectType":"colour","Value":"#5e6472"},
+            "titleWordStyle":{"font-weight":"bold","font-style":"italic","text-align":"left","color":"#ffffff"},
+            "chartStyle":[1],
+            "chartColour":["#f4ab98","#f1c15f","#e18169","#af7e7e","#6f6870"],
+            "chartWordStyle":{"font-weight":"normal","font-style":"normal","color":"#5e6472"},
+            "controlTheme":"#af7e7e"
+        }
+    },
     _defaultConfig: function () {
         return BI.extend(BI.GlobalStyleSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-global-style-setting"
@@ -46,11 +67,20 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
 
         //预设样式
         this.predictionStyle = BI.createWidget({
-            // type: "bi.button",
-            // text: "wahaha",
-            // level: "common",
-            // height: 190
             type:"bi.global_style_index_prediction_style"
+        });
+        this.predictionStyle.on(BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE,function () {
+            //self.setValue(self._const.PREDICTIONSTYLEONE);
+            var value = this.getValue();
+            if(value["currentStyle"]==1){
+                self.setValue(self._const.PREDICTIONSTYLEONE)
+            }else if(value["currentStyle"]==2){
+                self.setValue(self._const.PREDICTIONSTYLETWO)
+            }
+            // console.log(value);
+            // alert(value);
+            // console.log(JSON.stringify(value));
+            // alert(JSON.stringify(value));
         });
         this._initCenter();
 
@@ -69,10 +99,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 },
                 height: 40
             },{
-                el:{
-                    type:"bi.vertical",
-                    items:[this.predictionStyle]
-                },
+                el:this.predictionStyle,
                 height:190
             },{
                 el: this.centerItems
@@ -121,10 +148,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         this.backgroundColour = BI.createWidget({
             type: "bi.global_style_index_background"
         });
-        this.backgroundColour.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
-        });
         var backgroundColourWrapper=BI.createWidget({
             type: "bi.left",
             cls: "bi-wrapper-bottom",
@@ -142,19 +165,11 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         this.widgetBackgroundColour = BI.createWidget({
             type: "bi.global_style_index_background"
         });
-        this.widgetBackgroundColour.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
-        });
         var widgetBackgroundColourWrapper = this._createComboWrapper(BI.i18nText("BI-Widget_Background_Colour"), this.widgetBackgroundColour);
 
         //标题栏
         this.titleColour = BI.createWidget({
             type: "bi.global_style_index_background"
-        });
-        this.titleColour.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
         var titleColourWrapper = this._createComboWrapper(BI.i18nText("BI-Title_Colour"), this.titleColour);
 
@@ -163,10 +178,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             //type: "bi.text_toolbar"
             type:"bi.global_style_index_title_tool_bar",
             cls:"border"
-        });
-        this.titleWordStyle.on(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
         var titleWordStyleWrapper = this._createWrapper(BI.i18nText("BI-Title_Word_Style"), this.titleWordStyle);
 
@@ -186,10 +197,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 height: 30
             }]
         });
-        this.chartStyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
-        });
         var chartStyleWrapper = this._createWrapper(BI.i18nText("BI-Chart_Style"), this.chartStyle);
 
         //图表配色
@@ -200,10 +207,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         });
         this.chartColour.populate();
         this.chartColour.setValue(BICst.CHART_COLORS[0]["value"]);
-        this.chartColour.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
-        });
         var chartColourWrapper = this._createWrapper(BI.i18nText("BI-Chart_Colour"), this.chartColour);
 
         //图表文字
@@ -211,10 +214,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             //type: "bi.text_toolbar"
             type:"bi.global_style_index_chart_tool_bar",
             cls:"border"
-        });
-        this.chartWordStyle.on(BI.GlobalStyleIndexChartToolBar.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
         var chartWordWrapper=BI.createWidget({
             type: "bi.left",
@@ -234,10 +233,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             type: "bi.color_chooser",
             height: 30,
             width: 160
-        });
-        this.controlTheme.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self._backgroundColour(this.getValue());
-            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
         var controlThemeWrapper=BI.createWidget({
             type: "bi.left",
@@ -300,13 +295,6 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         }
     },
 
-    _backgroundColour: function (value) {
-        // console.log(value);
-        // alert(value);
-        // console.log(JSON.stringify(value));
-        // alert(JSON.stringify(value));
-    },
-
     _saveTextButton: function () {
         // console.log("123");
         // alert("123");
@@ -327,7 +315,14 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-
+        this.backgroundColour.setValue(v["backgroundColour"]);
+        this.widgetBackgroundColour.setValue(v["widgetBackgroundColour"]);
+        this.titleColour.setValue(v["titleColour"]);
+        this.titleWordStyle.setValue(v["titleWordStyle"]);
+        this.chartStyle.setValue(v["chartStyle"]);
+        this.chartColour.setValue(v["chartColour"]);
+        this.chartWordStyle.setValue(v["chartWordStyle"]);
+        this.controlTheme.setValue(v["controlTheme"])
     },
 
     populate: function (v) {
