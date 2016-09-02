@@ -6,44 +6,20 @@ BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TextToolbarFontChooser.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-data-tab-text-toolbar-font-chooser",
-            width: 50,
-            height: 20
         });
     },
 
     _init: function () {
         BI.TextToolbarFontChooser.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
-        this.trigger = BI.createWidget({
-            type: "bi.editor_trigger",
-            height: o.height,
-            triggerWidth: 12
-        });
-        this.trigger.on(BI.EditorTrigger.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TextToolbarFontChooser.EVENT_CHANGE, arguments);
-        });
-
+        var self = this;
         this.combo = BI.createWidget({
-            type: "bi.combo",
+            type: "bi.text_value_combo",
             element: this.element,
-            el: this.trigger,
-            adjustLength: 1,
-            popup: {
-                minWidth: 50,
-                el: {
-                    type: "bi.button_group",
-                    items: BI.createItems(BICst.Font_Family_COMBO, {
-                        type: "bi.single_select_item"
-                    }),
-                    layouts: [{
-                        type: "bi.vertical"
-                    }]
-                }
-            }
+            items: BICst.FONT_FAMILY_COMBO,
+            height: 24
         });
-        this.combo.on(BI.Combo.EVENT_CHANGE, function () {
-            this.hideView();
-            self.fireEvent(BI.TextToolbarFontChooser.EVENT_CHANGE, arguments);
+        this.combo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.TextToolbarFontChooser.EVENT_CHANGE);
         })
     },
 
@@ -52,7 +28,7 @@ BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this.combo.getValue();
+        return this.combo.getValue()[0];
     }
 });
 BI.TextToolbarFontChooser.EVENT_CHANGE = "BI.TextToolbarFontChooser.EVENT_CHANGE";

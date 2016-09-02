@@ -1,7 +1,4 @@
-/**
- * Created by lfhli on 2016/7/15.
- */
-BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
+BI.DataImageNoTypeFieldFilterItem = BI.inherit(BI.Widget, {
 
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
@@ -15,13 +12,13 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.ScatterNoTypeFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.DataImageNoTypeFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "condition-item"
         })
     },
 
     _init: function () {
-        BI.ScatterNoTypeFieldFilterItem.superclass._init.apply(this, arguments);
+        BI.DataImageNoTypeFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this;
 
         var left = this._buildConditionsNoType();
@@ -31,7 +28,7 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.destroy();
-            BI.ScatterNoTypeFieldFilterItem.superclass.destroy.apply(this, arguments);
+            BI.DataImageNoTypeFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
         this.itemContainer = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
@@ -43,8 +40,7 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
                 right: [this.deleteButton]
             },
             lhgap: this._constant.LEFT_ITEMS_H_GAP,
-            rhgap: this._constant.LEFT_ITEMS_H_GAP,
-            scrolly: false
+            rhgap: this._constant.LEFT_ITEMS_H_GAP
         });
 
         BI.createWidget({
@@ -64,7 +60,7 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _buildConditionsNoType: function () {
         var self = this, o = this.options;
         var selectFieldPane = BI.createWidget({
-            type: "bi.scatter_filter_select_field",
+            type: "bi.data_label_filter_select_field",
             height: this._constant.MAX_HEIGHT,
             dId: o.sdId
         });
@@ -85,35 +81,23 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             }
         });
 
-        selectFieldPane.on(BI.ScatterFilterSelectField.EVENT_CLICK_ITEM, function (v) {
+        selectFieldPane.on(BI.DataImageFilterSelectField.EVENT_CLICK_ITEM, function (v) {
             self._onTypeSelected(v);
         });
         return this.selectCondition;
     },
 
     _onTypeSelected: function (v) {
+        var fieldType = BI.Utils.getFieldTypeByDimensionID(v);
         var self = this, o = this.options;
-        var fieldType;
-        switch (v) {
-            case BICst.DATACOLUMN.X:
-                fieldType = BICst.DATACOLUMN.X;
-                break;
-            case BICst.DATACOLUMN.Y:
-                fieldType = BICst.DATACOLUMN.Y;
-                break;
-            case BICst.DATACOLUMN.XANDY:
-                fieldType = BICst.DATACOLUMN.XANDY;
-                break;
-            default:
-                fieldType = BI.Utils.getFieldTypeByDimensionID(v);
-        }
-        var filterItem = BI.ScatterFilterItemFactory.createFilterItemByFieldType(fieldType);
+        var filterItem = BI.DataImageFilterItemFactory.createFilterItemByFieldType(fieldType);
         this.itemContainer.destroy();
         this.itemContainer = null;
 
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
             dId: v,
+            sdId: o.sdId,
             chartType: o.chartType
         });
         this.typeSelectedItem.on(BI.Controller.EVENT_CHANGE, function () {
@@ -121,7 +105,7 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         });
         this.typeSelectedItem.on(BI.AbstractDataLabelFilterItem.DELETE, function () {
             self.destroy();
-            BI.DataLabelNoTypeFieldFilterItem.superclass.destroy.apply(this, arguments);
+            BI.DataImageNoTypeFieldFilterItem.superclass.destroy.apply(this, arguments);
         })
     },
 
@@ -135,5 +119,4 @@ BI.ScatterNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         }
     }
 });
-BI.ScatterNoTypeFieldFilterItem.EVENT_CHANGE = "BI.ScatterNoTypeFieldFilterItem.EVENT_CHANGE";
-$.shortcut("bi.scatter_no_type_field_filter_item", BI.ScatterNoTypeFieldFilterItem);
+$.shortcut("bi.data_image_no_type_field_filter_item", BI.DataImageNoTypeFieldFilterItem);

@@ -82,6 +82,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
         config.yAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
         config.yAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
+        config.yAxis[0].showLabel = this.config.show_label;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
         formatNumberLevelInXaxis(this.config.x_axis_number_level, c.X_AXIS);
@@ -91,6 +92,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
         config.xAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
         config.xAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
+        config.xAxis[0].showLabel = this.config.show_label;
         config.chartType = "scatter";
 
         if(config.plotOptions.dataLabels.enabled === true){
@@ -251,9 +253,14 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
             tooltip: options.tooltip || "",
+<<<<<<< HEAD
             big_data_mode: options.big_data_mode || false,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE
+=======
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            big_data_mode: options.big_data_mode || false
+>>>>>>> 6059b85c773d181654f41e1bb36cf07a171a4a7c
         };
         this.options.items = items;
         var types = [];

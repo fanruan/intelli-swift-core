@@ -13,6 +13,25 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         ],
         "name": "data"
     }]],
+    _bubble_data: [[{
+        "data": [
+            {"x": 30, "y": 40, "z":20},
+            {"x": 40, "y": 70, "z":50},
+            {"x": 50, "y": 100, "z":60},
+            {"x": 20, "y": 30, "z":10},
+            {"x": 70, "y": 10, "z":80}
+        ]
+    }]],
+    _scatter_data: [[{
+        "data": [
+            {"x": 30, "y": 40},
+            {"x": 40, "y": 70},
+            {"x": 50, "y": 100},
+            {"x": 20, "y": 30},
+            {"x": 70, "y": 10}
+        ],
+        "name": "data"
+    }]],
     _constant: {
         ICON_WIDTH: 20,
         ICON_HEIGHT: 20
@@ -33,12 +52,11 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         });
         this.xAxis = [{type: "category"}];
         var type = this.createChartByType(o.chartType);
+        this.config = this._formatConfig();
         this.combineChart = BI.createWidget({
             type: type,
-            width: 150,
-            height: 130,
-            xAxis: this.xAxis,
-            formatConfig: BI.bind(this._formatConfig, this)
+            width: 170,
+            height: 140
         });
         BI.createWidget({
             type: "bi.absolute",
@@ -51,41 +69,40 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
                 left: 20,
                 top: 5
             }],
-            width: 150,
-            height: 130
+            width: 170,
+            height: 140
         });
     },
 
     createChartByType: function (type) {
         switch (type) {
             case BICst.WIDGET.AXIS:
-                return "bi.combine_chart";
+                this.data = this._data;
+                return "bi.axis_chart";
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+                this.data = this._data;
+                return "bi.accumulate";
             case BICst.WIDGET.BUBBLE:
-                return "bi.combine_chart";
+                this.data = this._bubble_data;
+                return "bi.bubble_chart";
             case BICst.WIDGET.SCATTER:
-                return "bi.combine_chart";
+                this.data = this._scatter_data;
+                return "bi.scatter_chart";
+            default:
+                this.data = this._data;
+                return "bi.axis_chart";
         }
     },
 
-    _formatConfig: function (config, items) {
-        config.legend.enabled = false;
-        config.legend.visible = false;
-        config.legend.margin = 0;
-        config.xAxis[0].showLabel = false;
-        config.xAxis[0].enableTick = false;
-        config.yAxis[0].showLabel = false;
-        config.yAxis[0].lineWidth = 0;
-        config.yAxis[0].tickInterval = 25;
-        config.plotOptions.dataLabels.enabled = true;
-        config.plotOptions.dataLabels.align = "inside";
-        config.plotOptions.dataLabels.style = {
-            color: "#ffffff"
-        };
-        return [items, config];
+    _formatConfig: function () {
+        var config = {};
+        config.chart_legend = BICst.CHART_LEGENDS.NOT_SHOW;
+        config.show_label = false;
+        return config;
     },
 
     populate: function (src) {
-        var data = BI.deepClone(this._data);
+        var data = BI.deepClone(this.data);
         if (src) {
             var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + src + "></div>'}";
             data[0][0].data[0].dataLabels = {
@@ -95,7 +112,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
                 formatter: formatter
             };
         }
-        this.combineChart.populate(data);
+        this.combineChart.populate(data, this.config);
     }
 });
 BI.DataLabelChart.EVENT_CHANGE = "BI.DataLabelChart.EVENT_CHANGE";

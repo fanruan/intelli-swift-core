@@ -39,7 +39,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 cls: "image-set-tab-item"
             }],
             width: 380,
-            height: 24,
+            height: 30,
             layouts: [{
                 type: "bi.left_vertical_adapt",
                 items: [{
@@ -64,10 +64,10 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             items: [{
                 el: tab,
                 left: 0,
-                top: 105
+                top: 110
             }],
             width: 380,
-            height: 130
+            height: 140
         })
     },
 
@@ -161,7 +161,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             var img = {
                 type: "bi.image_button",
                 width: 50,
-                height: 48,
+                height: 50,
                 handler: function () {
                     self._imageSelect = this.getSrc();
                     self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
@@ -201,7 +201,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         var img = {
             type: "bi.image_button",
             width: 50,
-            height: 32,
+            height: 35,
             handler: function () {
                 self._imageSelect = this.getSrc();
                 self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
@@ -235,7 +235,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                     right: 0
                 }],
                 width: 50,
-                height: 32
+                height: 35
             });
             button.element.hover(function () {
                 iconButton.setVisible(true);
