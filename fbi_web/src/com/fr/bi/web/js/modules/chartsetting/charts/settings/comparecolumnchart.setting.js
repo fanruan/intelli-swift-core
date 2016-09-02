@@ -45,7 +45,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
-        var tableStyle = BI.createWidget({
+        this.tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [100],
             cls: "single-line-settings",
@@ -333,7 +333,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             if (!this.isSelected()) {
                 self.customYScale.setValue({})
             }
-            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
         });
 
         this.customYScale = BI.createWidget({
@@ -342,7 +342,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.customYScale.on(BI.CustomScale.EVENT_CHANGE, function () {
-            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
         });
 
         //逆轴刻度自定义
@@ -357,7 +357,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             if (!this.isSelected()) {
                 self.customXScale.setValue({})
             }
-            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
         });
 
         this.customXScale = BI.createWidget({
@@ -366,7 +366,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.customXScale.on(BI.CustomScale.EVENT_CHANGE, function () {
-            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
         });
 
         this.showElement = BI.createWidget({
@@ -564,7 +564,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
         this.otherAttr = BI.createWidget({
@@ -590,7 +590,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.minimalistModel.on(BI.Controller.EVENT_CHANGE, function () {
             self._invisible(!this.isSelected());
-            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
         });
 
         var modelChange = BI.createWidget({
@@ -610,12 +610,13 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, this.lYAxis, this.rYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
+            items: [this.tableStyle, this.lYAxis, this.rYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
             hgap: 10
         })
     },
 
     _invisible: function (v) {
+        this.tableStyle.setVisible(v);
         this.lYAxis.setVisible(v);
         this.rYAxis.setVisible(v);
         this.xAxis.setVisible(v);

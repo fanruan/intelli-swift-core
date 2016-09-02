@@ -26,7 +26,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.rulesDisplay.on(BI.Segment.EVENT_CHANGE, function (v) {
             self._colorSettingChange(v);
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         this.addConditionButton = BI.createWidget({
@@ -37,7 +37,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.addConditionButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fixedConditions.addItem();
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         this.centerConditionButton1 = BI.createWidget({
@@ -51,7 +51,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.fixedConditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         this.colorSetting = BI.createWidget({
@@ -77,7 +77,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.gradientConditions.on(BI.ChartAddGradientConditionGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         this.addGradientButton = BI.createWidget({
@@ -88,7 +88,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.addGradientButton.on(BI.Button.EVENT_CHANGE, function () {
             self.gradientConditions.addItem();
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         this.centerConditionButton2 = BI.createWidget({
@@ -227,7 +227,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.bubbleSizeFrom.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         this.bubbleSizeTo = BI.createWidget({
@@ -242,7 +242,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.bubbleSizeTo.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         var showElement = BI.createWidget({
@@ -293,7 +293,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({

@@ -155,7 +155,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.bubbleStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -593,7 +593,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({

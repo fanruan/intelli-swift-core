@@ -41,7 +41,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
         this.chartTypeGroup = BI.createWidget({
@@ -60,7 +60,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
         this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
-            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -279,7 +279,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({

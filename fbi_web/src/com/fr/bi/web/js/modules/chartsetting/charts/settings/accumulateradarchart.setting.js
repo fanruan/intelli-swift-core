@@ -41,7 +41,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
         this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         this.chartTypeGroup = BI.createWidget({
@@ -60,7 +60,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
         this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
