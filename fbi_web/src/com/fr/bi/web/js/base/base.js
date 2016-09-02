@@ -94,16 +94,21 @@ if (!window.BI) {
             }
             if (item && (item.type || options.type)) {
                 el = BI.extend({}, options, item);
+                if (el.element) {
+                    el.renderEl = el.renderEl || el.element.element || el.element;
+                }
                 return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el)));
             }
             if (item && item.el && (item.el.type || options.type)) {
                 el = BI.extend({}, options, item.el);
+                if (el.element) {
+                    el.renderEl = el.renderEl || el.element.element || el.element;
+                }
                 return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el)));
             }
             if (item && BI.isWidget(item.el)) {
                 return item.el;
             }
-            throw new Error('无法根据item创建组件');
         },
 
         createWidgets: function (items, options) {
@@ -738,7 +743,7 @@ if (!window.BI) {
             try {
                 return parseInt(number, radix);
             } catch (e) {
-                throw new Error("转成int类型失败");
+                throw new Error(number + "转成int类型失败");
                 return NaN;
             }
         },
@@ -747,7 +752,7 @@ if (!window.BI) {
             try {
                 return parseFloat(number);
             } catch (e) {
-                throw new Error("转成float类型失败");
+                throw new Error(number + "转成float类型失败");
                 return NaN;
             }
         },
