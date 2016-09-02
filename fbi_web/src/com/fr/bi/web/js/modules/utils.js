@@ -1372,6 +1372,13 @@
             return {};
         },
 
+        getDataimageByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "data_image") || {};
+            }
+            return {};
+        },
+
         getDatalabelByWidgetID: function (wid) {
             var settings = this.getWidgetSettingsByID(wid);
             return settings.data_label || {};

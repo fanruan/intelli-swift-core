@@ -72,12 +72,9 @@ BI.BubbleFilterSelectField = BI.inherit(BI.Widget, {
                 }]
             },
             fieldsCreator: function () {
-                var categories = BI.Utils.getAllUsableDimDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
+                var categories = BI.Utils.getAllDimDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
                 var result = [];
                 BI.each(categories, function (i, dId) {
-                    if (!BI.Utils.isDimensionUsable(dId)) {
-                        return;
-                    }
                     result.push({
                         id: dId,
                         pId: self._constant.DIMENSION_FIELD,

@@ -1,7 +1,7 @@
 /**
- * Created by fay on 2016/8/22.
+ * Created by fay on 2016/9/1.
  */
-BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
+BI.DataImageNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _constant: {
         LEFT_ITEMS_H_GAP: 5,
         CONTAINER_HEIGHT: 40,
@@ -14,16 +14,20 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BI.ScatterNumberFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.DataImageNumberFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "condition-item"
         })
     },
 
     _init: function () {
-        BI.ScatterNumberFieldFilterItem.superclass._init.apply(this, arguments);
+        BI.DataImageNumberFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.key = "";
+
         this.isDimension = false;
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        if (BI.contains(BI.Utils.getAllDimDimensionIDs(wId), o.dId)) {
+            this.isDimension = true;
+        }
         var left = this._buildConditions();
         this.styleSetting = this._createStyle(o.style_setting);
         this.deleteButton = BI.createWidget({
@@ -33,7 +37,7 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AbstractDataLabelFilterItem.DELETE, self);
             self.destroy();
-            BI.ScatterNumberFieldFilterItem.superclass.destroy.apply(this, arguments);
+            BI.DataImageNumberFieldFilterItem.superclass.destroy.apply(this, arguments);
         });
 
         BI.createWidget({
@@ -60,53 +64,20 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _buildConditions: function () {
         var self = this, o = this.options;
-        var fieldName = "";
-        if (BI.isNull(o.dId) && BI.isEmptyString(o.key)) {
+        o.filter_type = this.isDimension === false ? o.filter_type : BICst.DIMENSION_FILTER_STRING.BELONG_VALUE;
+        if (BI.isNull(o.dId)) {
             return [];
         }
-        if (BI.isNull(o.dId)) {
-            switch (o.key) {
-                case "x":
-                    this.key = "x";
-                    fieldName = BI.i18nText("BI-Uppercase_X_Axis");
-                    break;
-                case "y":
-                    this.key = "y";
-                    fieldName = BI.i18nText("BI-Uppercase_Y_Axis");
-                    break;
-                case "z":
-                    this.key = "z";
-                    fieldName = BI.i18nText("BI-Bubble_Size");
-                    break;
-                default:
-                    fieldName = BI.Utils.getDimensionNameByID(o.dId);
-                    this.isDimension = true;
-            }
-        } else {
-            switch (o.dId) {
-                case BICst.DATACOLUMN.X:
-                    this.key = "x";
-                    fieldName = BI.i18nText("BI-Uppercase_X_Axis");
-                    break;
-                case BICst.DATACOLUMN.Y:
-                    this.key = "y";
-                    fieldName = BI.i18nText("BI-Uppercase_Y_Axis");
-                    break;
-                case BICst.DATACOLUMN.Z:
-                    this.key = "z";
-                    fieldName = BI.i18nText("BI-Bubble_Size");
-                    break;
-                default:
-                    fieldName = BI.Utils.getDimensionNameByID(o.dId);
-                    this.isDimension = true;
-            }
-        }
-        o.filter_type = this.isDimension === false ? o.filter_type : BICst.DIMENSION_FILTER_STRING.BELONG_VALUE;
+
+        var fieldName = BI.Utils.getDimensionNameByID(o.dId);
+        var selfName = BI.Utils.getDimensionNameByID(o.sdId);
+
+        this.isSelf = fieldName === selfName;
 
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
-            text: fieldName,
-            title: fieldName,
+            text: this.isSelf ? BI.i18nText("BI-Self") : fieldName,
+            title: this.isSelf ? BI.i18nText("BI-Self") : fieldName,
             width: this._constant.FIELD_NAME_BUTTON_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
             textAlign: "left",
@@ -116,6 +87,12 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             arguments[2] = self;
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
+        if (this.isSelf) {
+            this.filterType = BI.createWidget();
+            this.filterWidgetContainer = BI.createWidget();
+            this.filterWidget = BI.createWidget();
+            return [this.fieldButton, this.filterType, this.filterWidgetContainer];
+        }
         this.filterWidgetContainer = BI.createWidget({
             type: "bi.left"
         });
@@ -140,6 +117,7 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             case BICst.DIMENSION_FILTER_STRING.BELONG_VALUE:
             case BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE:
                 addItem = this._createStringBelongCombo(initData);
+
                 break;
             case BICst.DIMENSION_FILTER_STRING.CONTAIN:
             case BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN:
@@ -244,7 +222,7 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _createStyle: function (initData) {
         var o = this.options;
         this.style = BI.createWidget({
-            type: "bi.data_label_style_set",
+            type: "bi.data_image_style_set",
             chartType: o.chartType
         });
         BI.isNotNull(initData) && this.style.setValue(initData);
@@ -252,16 +230,12 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     },
 
     getValue: function () {
-        var result = {
-            key: this.key,
-            filter_type: this.filterType.getValue()[0],
-            filter_value: this.filterWidget.getValue(),
+        return {
+            target_id: this.options.dId,
+            filter_type: this.filterType ? this.filterType.getValue()[0] : "",
+            filter_value: this.filterWidget ? this.filterWidget.getValue() : "",
             style_setting: this.style.getValue()
-        };
-        if (this.isDimension) {
-            result.target_id = this.options.dId;
         }
-        return result;
     }
 });
-$.shortcut("bi.scatter_number_field_filter_item", BI.ScatterNumberFieldFilterItem);
+$.shortcut("bi.data_image_number_field_filter_item", BI.DataImageNumberFieldFilterItem);
