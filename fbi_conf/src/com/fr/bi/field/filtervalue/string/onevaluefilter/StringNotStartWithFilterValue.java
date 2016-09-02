@@ -38,7 +38,7 @@ public class StringNotStartWithFilterValue extends StringOneValueFilterValue {
         for (int i = 0; i < start; i ++){
             gvi.or(sgm.getGroupValueIndex(i));
         }
-        for (int i = end; i < sgm.sizeOfGroup(); i ++){
+        for (int i = end + 1; i < sgm.sizeOfGroup(); i ++){
             gvi.or(sgm.getGroupValueIndex(i));
         }
         return gvi;

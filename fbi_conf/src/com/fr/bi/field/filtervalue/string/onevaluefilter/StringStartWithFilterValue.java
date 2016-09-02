@@ -30,7 +30,7 @@ public class StringStartWithFilterValue extends StringOneValueFilterValue {
 
         ICubeColumnIndexReader sgm = dimension.createNoneSortNoneGroupValueMapGetter(target, loader);
         int start = ArrayLookupHelper.getStartIndex4StartWith(sgm, value, dimension.getComparator());
-        int end = ArrayLookupHelper.getEndIndex4StartWith(sgm, value, dimension.getComparator());
+        int end = ArrayLookupHelper.getEndIndex4StartWith(sgm, value, dimension.getComparator()) + 1;
         if (start == -1){
             return GVIFactory.createAllEmptyIndexGVI();
         }
