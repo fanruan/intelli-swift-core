@@ -1451,6 +1451,11 @@ BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
 
 BICst.Font_Family_COMBO = [];
 
+BICst.BACKGROUND_TYPE = {
+    COLOR: 1,
+    IMAGE: 2
+};
+
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
     table_form: BICst.TABLE_FORM.OPEN_ROW,

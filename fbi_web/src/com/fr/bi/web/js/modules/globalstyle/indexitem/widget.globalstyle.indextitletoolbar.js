@@ -1,34 +1,40 @@
 /**
  * Created by zcf on 2016/8/29.
  */
-BI.GlobalStyleIndexTitleToolBar=BI.inherit(BI.Widget,{
-    _defaultConfig:function () {
-        return BI.extend(BI.GlobalStyleIndexTitleToolBar.superclass._defaultConfig.apply(this,arguments),{
-            baseCls:"bi-global-style-title-toolbar"
+BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
+    _defaultConfig: function () {
+        return BI.extend(BI.GlobalStyleIndexTitleToolBar.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-global-style-title-toolbar"
         })
     },
-    _init:function () {
-        BI.GlobalStyleIndexTitleToolBar.superclass._init.apply(this,arguments);
+    _init: function () {
+        BI.GlobalStyleIndexTitleToolBar.superclass._init.apply(this, arguments);
 
-
+        var self = this;
         this.bold = BI.createWidget({
             type: "bi.icon_button",
-            title:BI.i18nText("BI-Bold"),
+            title: BI.i18nText("BI-Bold"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-bold-font"
         });
+        this.bold.on(BI.IconButton.EVENT_CHANGE, function() {
+            self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE);
+        });
 
         this.italic = BI.createWidget({
             type: "bi.icon_button",
-            title:BI.i18nText("BI-Italic"),
+            title: BI.i18nText("BI-Italic"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-italic-font"
         });
+        this.italic.on(BI.IconButton.EVENT_CHANGE, function() {
+            self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE);
+        });
 
-        this.alignChooser=BI.createWidget({
-            type:"bi.global_style_index_align_chooser",
+        this.alignChooser = BI.createWidget({
+            type: "bi.global_style_index_align_chooser",
             cls: "text-toolbar-button"
         });
 
@@ -36,9 +42,12 @@ BI.GlobalStyleIndexTitleToolBar=BI.inherit(BI.Widget,{
             type: "bi.color_chooser",
             el: {
                 type: "bi.text_toolbar_color_chooser_trigger",
-                title:BI.i18nText("BI-Font_Colour"),
+                title: BI.i18nText("BI-Font_Colour"),
                 cls: "text-toolbar-button"
             }
+        });
+        this.colorchooser.on(BI.ColorChooser.EVENT_CHANGE, function() {
+            self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE);
         });
 
         BI.createWidget({
@@ -49,15 +58,15 @@ BI.GlobalStyleIndexTitleToolBar=BI.inherit(BI.Widget,{
             vgap: 3
         })
     },
-    getValue:function () {
-        return{
+    getValue: function () {
+        return {
             "font-weight": this.bold.isSelected() ? "bold" : "normal",
             "font-style": this.italic.isSelected() ? "italic" : "normal",
             "text-align": this.alignChooser.getValue(),
             "color": this.colorchooser.getValue()
         }
     },
-    setValue:function (v) {
+    setValue: function (v) {
         v || (v = {});
         this.bold.setSelected(v["font-weight"] === "bold");
         this.italic.setSelected(v["font-style"] === "italic");
@@ -65,4 +74,5 @@ BI.GlobalStyleIndexTitleToolBar=BI.inherit(BI.Widget,{
         this.colorchooser.setValue(v["color"] || "#000000");
     }
 });
-$.shortcut("bi.global_style_index_title_tool_bar",BI.GlobalStyleIndexTitleToolBar);
+BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.global_style_index_title_tool_bar", BI.GlobalStyleIndexTitleToolBar);
