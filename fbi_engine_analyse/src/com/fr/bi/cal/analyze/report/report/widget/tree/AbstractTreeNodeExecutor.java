@@ -68,9 +68,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     groupValue[0] = e.getKey();
                     if (!filterGvi.AND((GroupValueIndex) e.getValue()).isAllEmpty()) {
                         String k = e.getKey().toString();
-                        if (!ComparatorUtils.equals(k, BIReportConstant.SPECIAL_FIELD_VALUE)) {
-                            dataList.add(k);
-                        }
+                        dataList.add(k);
                     }
                 }
                 if (dimension.getSortType() == BIReportConstant.SORT.DESC) {
@@ -90,9 +88,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                         count++;
                         if (count > start) {
                             String k = dataReader.getGroupValue(i).toString();
-                            if (!ComparatorUtils.equals(k, BIReportConstant.SPECIAL_FIELD_VALUE)) {
-                                dataList.add(k);
-                            }
+                            dataList.add(k);
                         }
                     }
                 }
