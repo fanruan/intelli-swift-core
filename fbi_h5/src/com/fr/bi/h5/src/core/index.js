@@ -62,6 +62,5 @@ export translateDOMPositionXY from './dom/translateDOMPositionXY'
 //    isFunction, isArray, isInteger, isNil, isNumber, isObject, isPlainObject, isString
 //} from 'lodash'
 //
-//export {each, size, keys} from 'lodash'
 //
 //export {clamp, debounce, throttle, nth, now} from 'lodash'

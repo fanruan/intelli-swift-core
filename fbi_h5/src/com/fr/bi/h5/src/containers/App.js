@@ -49,7 +49,7 @@ import Main from '../components/Main.js'
 //import Animatable from '../examples/base/3/Animatable/Animatable'
 //
 //import FixedDataTableResizeExample from '../examples/base/3/FixedDataTable/ResizeExample'
-//import FixedDataTableColumnGroupsExample from '../examples/base/3/FixedDataTable/ColumnGroupsExample'
+import FixedDataTableColumnGroupsExample from '../examples/base/3/FixedDataTable/ColumnGroupsExample'
 //import FixedDataTableFilterExample from '../examples/base/3/FixedDataTable/FilterExample'
 //import FixedDataTableFlexGrowExample from '../examples/base/3/FixedDataTable/FlexGrowExample'
 //import FixedDataTableObjectDataExample from '../examples/base/3/FixedDataTable/ObjectDataExample'
@@ -63,7 +63,7 @@ class App extends Component {
   render() {
     const {template, actions} = this.props;
     return (
-      <Main template={template} actions={actions} />
+      <FixedDataTableColumnGroupsExample template={template} actions={actions} />
     )
   }
 }

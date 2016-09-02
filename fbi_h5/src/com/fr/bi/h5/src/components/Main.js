@@ -10,9 +10,10 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
 import {Grid} from 'base'
+import {TableWidget} from 'widgets'
 
 import ChartComponent from './charts/ChartComponent.js'
 const {width, height} = Dimensions.get('window');
@@ -31,26 +32,68 @@ class Main extends Component {
     }
 
     render() {
-        return <Grid
-            cellRenderer = {this._cellRender.bind(this)}
-            columnWidth = {width}
-            columnCount = {1}
-            rowCount = {this.rows.length}
-            height = {height}
-            width = {width}
-            overscanColumnCount = {0}
-            overscanRowCount = {0}
-            rowHeight = {height/2}
-            scrollToColumn = {0}
-            scrollToRow = {0}
-            >
-
-        </Grid>
-        //return <ListView
+        // return <Grid
+        //     cellRenderer = {this._cellRender.bind(this)}
+        //     columnWidth = {width}
+        //     columnCount = {1}
+        //     rowCount = {this.rows.length}
+        //     height = {height}
+        //     width = {width}
+        //     overscanColumnCount = {0}
+        //     overscanRowCount = {0}
+        //     rowHeight = {height/2}
+        //     scrollToColumn = {0}
+        //     scrollToRow = {0}
+        //     >
+        //
+        // </Grid>
+        // return <ListView
         //    initialListSize={3}
         //    dataSource={this.state.dataSource}
         //    renderRow={this._renderRow.bind(this)}
         //    />
+        return <View
+            style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
+        >
+            <TableWidget
+                isNeedFreeze={true}
+                rowCount={100}
+                freezeCols={true}
+                headerRowCount={1}
+
+                regions={{
+                    topLeft: {
+                        columnCount: 5,
+                        columnWidth: 50,
+                        cellRenderer: ({columnIndex, rowIndex})=> {
+                            return <Text>{`${columnIndex}-${rowIndex}`}</Text>
+                        }
+                    },
+                    topRight: {
+                        columnCount: 10,
+                        columnWidth: 50,
+                        cellRenderer: ({columnIndex, rowIndex})=> {
+                            return <Text>{`${columnIndex}-${rowIndex}`}</Text>
+                        }
+                    },
+                    bottomLeft: {
+                        columnCount: 5,
+                        columnWidth: 50,
+                        cellRenderer: ({columnIndex, rowIndex})=> {
+                            return <Text>{`${columnIndex}-${rowIndex}`}</Text>
+                        }
+                    },
+                    bottomRight: {
+                        columnCount: 10,
+                        columnWidth: 50,
+                        cellRenderer: ({columnIndex, rowIndex})=> {
+                            return <Text>{`${columnIndex}-${rowIndex}`}</Text>
+                        }
+                    }
+                }}
+            >
+            </TableWidget>
+        </View>
     }
 
     _cellRender({columnIndex, rowIndex}) {

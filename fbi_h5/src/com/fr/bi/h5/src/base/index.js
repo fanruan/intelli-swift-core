@@ -18,5 +18,6 @@ export InfiniteLoader from './InfiniteLoader'
 export Grid from './Grid'
 export VirtualScroll from './VirtualScroll'
 export Collection from './Collection'
+export FixedDataTable from './FixedDataTable'
 
 export default module.exports;
