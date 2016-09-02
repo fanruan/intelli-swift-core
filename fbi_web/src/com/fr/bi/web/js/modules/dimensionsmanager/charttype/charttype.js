@@ -82,7 +82,14 @@ BI.ChartType = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        v = v || MapConst.INNER_MAP_INFO.MAP_NAME[BI.i18nText("BI-China")];
+        if(BI.isNull(v)){
+            BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function(path, layer){
+                if(layer === 0){
+                    v = path;
+                    return true;
+                }
+            });
+        }
         this.buttonTree.setValue(v);
     }
 });

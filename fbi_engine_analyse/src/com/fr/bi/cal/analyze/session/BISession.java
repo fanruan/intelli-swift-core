@@ -3,7 +3,10 @@ package com.fr.bi.cal.analyze.session;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
@@ -13,6 +16,7 @@ import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.utils.BIModuleUtils;
@@ -176,84 +180,115 @@ public class BISession extends BIAbstractSession {
         }
     }
 
-    public JSONObject getAllAvailablePackagesGroups(HttpServletRequest req) throws Exception {
-        JSONObject jo = new JSONObject();
-        JSONObject packages = new JSONObject();
-        JSONObject groups = new JSONObject();
+    public JSONObject getAllAvailableCubeData(HttpServletRequest req) throws Exception {
         long userId = this.getUserId();
-        JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
-        JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
-        List<BIPackageID> authPacks = new ArrayList<BIPackageID>();
-        //从分组中去掉allPacks没有的业务包
-        Iterator<String> gIds = allGroups.keys();
-        while (gIds.hasNext()) {
-            String gId = gIds.next();
-            JSONObject oneGroup = allGroups.getJSONObject(gId);
-            JSONArray nChildren = new JSONArray();
-            if (oneGroup.has("children")) {
-                JSONArray children = oneGroup.getJSONArray("children");
-                for (int i = 0; i < children.length(); i++) {
-                    JSONObject child = children.getJSONObject(i);
-                    if (allPacks.has(child.getString("id"))) {
-                        nChildren.put(child);
-                    }
-                }
-                oneGroup.put("children", nChildren);
-            }
-            allGroups.put(gId, oneGroup);
-        }
-        //管理员
-        if (UserControl.getInstance().getSuperManagerID() == userId) {
-            packages = allPacks;
-            groups = allGroups;
-        } else {
-            //前台能看到的业务包
-            authPacks = BIModuleUtils.getAvailablePackID(userId);
-            for (BIPackageID pId : authPacks) {
-                if (allPacks.has(pId.getIdentityValue())) {
-                    packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
-                }
-            }
-
-            //分组
-            Iterator<String> groupIds = allGroups.keys();
-            while (groupIds.hasNext()) {
-                String groupId = groupIds.next();
-                JSONObject group = allGroups.getJSONObject(groupId);
+        long manageId = UserControl.getInstance().getSuperManagerID();
+        JSONObject groups = new JSONObject();
+        JSONObject packages = new JSONObject();
+        JSONObject relations = new JSONObject();
+        JSONObject connections = new JSONObject();
+        JSONObject tables = new JSONObject();
+        JSONObject source = new JSONObject();
+        JSONObject fields = new JSONObject();
+        JSONObject translations = new JSONObject();
+        JSONObject excelViews = new JSONObject();
+        try {
+            JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
+            JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
+            List<BIPackageID> authPacks = new ArrayList<BIPackageID>();
+            //从分组中去掉allPacks没有的业务包
+            Iterator<String> gIds = allGroups.keys();
+            while (gIds.hasNext()) {
+                String gId = gIds.next();
+                JSONObject oneGroup = allGroups.getJSONObject(gId);
                 JSONArray nChildren = new JSONArray();
-                if (group.has("children")) {
-                    JSONArray children = group.getJSONArray("children");
-                    for (int i = 0; i < children.length(); i++) {
+                if(oneGroup.has("children")) {
+                    JSONArray children = oneGroup.getJSONArray("children");
+                    for(int i = 0; i < children.length(); i++) {
                         JSONObject child = children.getJSONObject(i);
-                        String childId = child.getString("id");
-                        if (packages.has(childId)) {
+                        if(allPacks.has(child.getString("id"))) {
                             nChildren.put(child);
                         }
                     }
-                    group.put("children", nChildren);
+                    oneGroup.put("children", nChildren);
                 }
-                if (nChildren.length() > 0) {
-                    groups.put(groupId, group);
+                allGroups.put(gId, oneGroup);
+            }
+            //管理员
+            if (manageId == userId) {
+                packages = allPacks;
+                groups = allGroups;
+            } else {
+                //前台能看到的业务包
+                authPacks = BIModuleUtils.getAvailablePackID(userId);
+                for (BIPackageID pId : authPacks) {
+                    if (allPacks.has(pId.getIdentityValue())) {
+                        packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
+                    }
+                }
+
+                //分组
+                Iterator<String> groupIds = allGroups.keys();
+                while (groupIds.hasNext()) {
+                    String groupId = groupIds.next();
+                    JSONObject group = allGroups.getJSONObject(groupId);
+                    JSONArray nChildren = new JSONArray();
+                    if(group.has("children")) {
+                        JSONArray children = group.getJSONArray("children");
+                        for(int i = 0; i < children.length(); i++) {
+                            JSONObject child = children.getJSONObject(i);
+                            String childId = child.getString("id");
+                            if(packages.has(childId)) {
+                                nChildren.put(child);
+                            }
+                        }
+                        group.put("children", nChildren);
+                    }
+                    if(nChildren.length() > 0) {
+                        groups.put(groupId, group);
+                    }
                 }
             }
+
+            translations = BIModuleUtils.createAliasJSON(userId);
+            relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(manageId);
+            excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(manageId);
+            Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
+            for (IBusinessPackageGetterService p : packs) {
+                if (manageId != userId && !authPacks.contains(p.getID())) {
+                    continue;
+                }
+                for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
+                    JSONObject jo = t.createJSONWithFieldsInfo(userId);
+                    JSONObject tableFields = jo.getJSONObject("tableFields");
+                    tables.put(t.getID().getIdentityValue(), tableFields);
+                    JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
+                    fields.join(fieldsInfo);
+                }
+            }
+            Set<BITableRelation> connectionSet = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
+            JSONArray connectionJA = new JSONArray();
+            for (BITableRelation connection : connectionSet) {
+                connectionJA.put(connection.createJSON());
+            }
+            connections.put("connectionSet", connectionJA);
+
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
         }
+
+        JSONObject jo = new JSONObject();
+        jo.put("source", source);
         jo.put("groups", groups);
         jo.put("packages", packages);
+        jo.put("relations", relations == null ? new JSONObject() : relations);
+        jo.put("connections", connections);
+        jo.put("translations", translations);
+        jo.put("tables", tables);
+        jo.put("fields", fields);
+        jo.put("excel_views", excelViews);
         return jo;
     }
-
-    public JSONObject getAllFieldsByPackage(String packageId) throws Exception {
-        long userId = this.getUserId();
-        JSONObject allFields = new JSONObject();
-        Set tables = BICubeConfigureCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables();
-        Iterator<BusinessTable> tableIterator = tables.iterator();
-        while (tableIterator.hasNext()) {
-            BusinessTable table = tableIterator.next();
-            allFields.put(table.getID().getIdentityValue(), table.createJSONWithFieldsInfo(userId));
-        }
-        return allFields;
-    }
-
 
     public CubeGenerateStatusProvider getProvider() {
         return provider;

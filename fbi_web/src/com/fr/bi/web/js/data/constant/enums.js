@@ -530,6 +530,8 @@ BICst.VALUE_SAVE_TWO_DECAML = 3;
 
 BICst.DI_TU = "MAP_";
 BICst.GIS_ICON_PATH = FR.serverURL + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/address_marker_big.png";
+BICst.WMS_SERVER = "wms";
+BICst.TILELAYER_SERVER = "tileLayer";
 
 //定义组件的三个状态，查看状态的dashboard、编辑状态的dashboard、详细设置
 BICst.WIDGET_STATUS = {

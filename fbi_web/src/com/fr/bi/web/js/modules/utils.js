@@ -478,24 +478,51 @@
                 };
                 obj.settings = widget.settings;
                 obj.value = widget.value;
+                //组件表头上指标的排序和过滤
+                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort)){
+                    obj.sort = BI.extend({}, widget.sort, {
+                        sort_target: createDimensionsAndTargets(widget.sort.sort_target).id
+                    })
+                }
+
+                if(BI.has(widget, "sort_sequence") && BI.isNotNull(widget.sort_sequence)){
+                    obj.sort_sequence = [];
+                    BI.each(widget.sort_sequence, function(idx, dId){
+                        obj.sort_sequence.push(createDimensionsAndTargets(dId).id);
+                    })
+                }
+
+                if(BI.has(widget, "filter_value") && BI.isNotNull(widget.filter_value)){
+                    var filterValue = {};
+                    BI.each(widget.filter_value, function(target_id, filter_value){
+                        var newId = createDimensionsAndTargets(target_id).id;
+                        filterValue[newId] = checkFilter(filter_value, target_id, newId);
+                    });
+                    obj.filter_value = filterValue;
+                }
+
                 return obj;
             }
 
-            function checkFilter(oldFilter, dId) {
+            function checkFilter(oldFilter, dId, newId) {
                 var filter = {};
                 var filterType = oldFilter.filter_type, filterValue = oldFilter.filter_value;
                 filter.filter_type = oldFilter.filter_type;
                 if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
                     filter.filter_value = [];
                     BI.each(filterValue, function (i, value) {
-                        filter.filter_value.push(checkFilter(value, dId));
+                        filter.filter_value.push(checkFilter(value, dId, newId));
                     });
                 } else {
                     BI.extend(filter, oldFilter);
                     //防止死循环
-                    if (BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId) {
-                        var result = createDimensionsAndTargets(oldFilter.target_id);
-                        filter.target_id = result.id;
+                    if (BI.has(oldFilter, "target_id")) {
+                        if(oldFilter.target_id !== dId){
+                            var result = createDimensionsAndTargets(oldFilter.target_id);
+                            filter.target_id = result.id;
+                        }else{
+                            filter.target_id = newId;
+                        }
                     }
                 }
                 return filter;
@@ -524,7 +551,7 @@
                             });
                         }
                         if (BI.has(widget.dimensions[idx], "filter_value") && BI.isNotNull(widget.dimensions[idx].filter_value)) {
-                            dimension.filter_value = checkFilter(widget.dimensions[idx].filter_value, dimTarIdMap[idx] || idx);
+                            dimension.filter_value = checkFilter(widget.dimensions[idx].filter_value, dimTarIdMap[idx] || idx, newId);
                         }
                         if (BI.has(widget.dimensions[idx], "sort")) {
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
@@ -997,6 +1024,18 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.text_direction) ? ws.text_direction :
                 BICst.DEFAULT_CHART_SETTING.text_direction;
+        },
+
+        getWSShowBackgroundByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_background_layer) ? ws.show_background_layer :
+                BICst.DEFAULT_CHART_SETTING.show_background_layer;
+        },
+
+        getWSBackgroundLayerInfoByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.background_layer_info) ? ws.background_layer_info :
+                BICst.DEFAULT_CHART_SETTING.background_layer_info;
         },
 
         //settings  ---- end ----
@@ -2643,7 +2682,10 @@
                 filterValue.start = parseComplexDate(start);
             }
             if (BI.isNotNull(end)) {
-                filterValue.end = new Date(parseComplexDate(end)).getOffsetDate(1).getTime() - 1
+                var endTime = parseComplexDate(end);
+                if(BI.isNotNull(endTime)){
+                    filterValue.end = new Date(endTime).getOffsetDate(1).getTime() - 1
+                }
             }
         }
         if (filterType === BICst.FILTER_DATE.BELONG_WIDGET_VALUE || filterType === BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE) {
@@ -2658,15 +2700,22 @@
                         filterValue.start = parseComplexDate(wValue.start);
                     }
                     if (BI.isNotNull(wValue.end)) {
-                        filterValue.end = new Date(parseComplexDate(wValue.end)).getOffsetDate(1).getTime() - 1
+                        var endTime = parseComplexDate(wValue.end);
+                        if(BI.isNotNull(endTime)){
+                            filterValue.end = new Date(endTime).getOffsetDate(1).getTime() - 1;
+                        }
                     }
                     break;
                 case BICst.LAST_SAME_PERIOD:
                     if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.end)) {
                         var s = parseComplexDate(wValue.start);
                         var e = parseComplexDate(wValue.end);
-                        filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
-                        filterValue.end = new Date(s).getTime() - 1;
+                        if(BI.isNotNull(s) && BI.isNotNull(e)){
+                            filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
+                        }
+                        if(BI.isNotNull(s)){
+                            filterValue.end = new Date(s).getTime() - 1;
+                        }
                     } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
                         filterValue.start = parseComplexDate(wValue.start);
                     } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
@@ -2684,7 +2733,9 @@
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
                         filterValue.start = value.start;
-                        filterValue.end = new Date(value.end).getOffsetDate(1).getTime() - 1;
+                        if(BI.isNotNull(value.end)){
+                            filterValue.end = new Date(value.end).getOffsetDate(1).getTime() - 1;
+                        }
                     }
                     break;
             }
@@ -2693,14 +2744,18 @@
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                filterValue.end = new Date(value.start).getTime() - 1;
+                if(BI.isNotNull(value.start)){
+                    filterValue.end = new Date(value.start).getTime() - 1;
+                }
             }
         }
         if (filterType === BICst.FILTER_DATE.LATER_THAN) {
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                filterValue.start = new Date(value.start).getTime();
+                if(BI.isNotNull(value.start)){
+                    filterValue.start = new Date(value.start).getTime();
+                }
             }
         }
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {

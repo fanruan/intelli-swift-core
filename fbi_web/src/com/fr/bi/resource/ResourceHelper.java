@@ -68,12 +68,14 @@ public class ResourceHelper {
 
         private JSONObject innerMapInfo = new JSONObject();
         private JSONObject customMapInfo = new JSONObject();
+        private JSONObject wmsInfo = new JSONObject();
 
         @Override
         public String transmit(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String[] files) {
             Map<String, JSONObject> map = new HashMap<String, JSONObject>();
             StringBuilder buffer = new StringBuilder();
             try {
+                map.put("wmsInfo", wmsInfo);
                 map.put("custom_map_info", customMapInfo);
                 map.put("inner_map_info", innerMapInfo);
                 customMapInfo.put("MAP_NAME", new JSONObject());
@@ -87,6 +89,7 @@ public class ResourceHelper {
                 innerMapInfo.put("MAP_LAYER", new JSONObject());
                 innerMapInfo.put("MAP_PARENT_CHILDREN", new JSONObject());
 
+                formatWMSData();
                 String innerMapPath = new File(GeneralContext.getEnvProvider().getPath(), "resources/geojson/map").getAbsolutePath();
                 String customMapPath = new File(GeneralContext.getEnvProvider().getPath(), "resources/geojson/image").getAbsolutePath();
                 editFileNames(innerMapPath, "map", "map", innerMapInfo, "MAP_", 0);
@@ -98,6 +101,16 @@ public class ResourceHelper {
                 BILogger.getLogger().error(e.getMessage());
             }
             return buffer.toString();
+        }
+
+        private void formatWMSData() throws JSONException {
+            BIWMSManager manager = BIWMSManager.getInstance();
+            Map<String, JSONObject> map = manager.getWMSInfo();
+            for (Map.Entry<String, JSONObject> entry : map.entrySet()) {
+                String key = entry.getKey();
+                JSONObject value = entry.getValue();
+                wmsInfo.put(key, value);
+            }
         }
 
         private void editFileNames(String path, String parentPath, String parentName, JSONObject obj, String prev, int layer) throws JSONException {
@@ -995,6 +1008,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/model.dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.control.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",
@@ -1753,6 +1767,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/layer/layer.multiselect.css",
                 "com/fr/bi/web/css/base/layer/layer.panel.css",
                 "com/fr/bi/web/css/base/reqloading/loading.request.css",
+                "com/fr/bi/web/css/base/logintimeout/login.timeout.css",
 
                 "com/fr/bi/web/css/utils/widget.css",
                 "com/fr/bi/web/css/utils/color.css",
@@ -2362,6 +2377,8 @@ public class ResourceHelper {
                 //chart
                 "com/fr/bi/web/js/case/chart/chart.combine.js",
                 "com/fr/bi/web/js/case/chart/factory.charts.js",
+
+                "com/fr/bi/web/js/case/logintimeout/login.timeout.js",
 
                 /**
                  * 基础类控件

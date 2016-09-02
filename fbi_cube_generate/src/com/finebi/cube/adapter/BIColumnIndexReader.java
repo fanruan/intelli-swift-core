@@ -101,7 +101,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         return columnReaderService.getGroupObjectValue(groupValuePosition);
     }
 
-    private GroupValueIndex getGroupValueIndex(int groupValuePosition) {
+    public GroupValueIndex getGroupValueIndex(int groupValuePosition) {
         try {
             return indexDataGetterService.getBitmapIndex(groupValuePosition);
         } catch (BICubeIndexException e) {
