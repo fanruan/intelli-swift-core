@@ -2,6 +2,8 @@ package com.fr.bi.field.target.detailtarget.field;
 
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.general.ComparatorUtils;
 
 import java.util.Map;
 
@@ -15,6 +17,9 @@ public class BIStringDetailTarget extends BIAbstractDetailTarget {
      */
     @Override
     public Object createShowValue(Object value) {
+        if (ComparatorUtils.equals(value, BIReportConstant.SPECIAL_FIELD_VALUE)) {
+            return "";
+        }
         return value;
     }
 

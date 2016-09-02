@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
@@ -74,27 +75,27 @@ public class StringControlWidget extends BISummaryWidget {
         }
     }
 
-    private enum SearchMode{
+    private enum SearchMode {
         PY, START_WITH
     }
 
-    private abstract class SimpleIntArray{
+    private abstract class SimpleIntArray {
         public abstract int get(int index);
 
         public abstract int size();
     }
 
-    private JSONObject createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException{
+    private JSONObject createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException {
         SearchMode mode = SearchMode.PY;
         int start = 0, end = getter.getGroupSize();
-        if (getter.getGroupSize() > BIBaseConstant.LARGE_GROUP_LINE){
+        if (getter.getGroupSize() > BIBaseConstant.LARGE_GROUP_LINE) {
             mode = SearchMode.START_WITH;
             start = ArrayLookupHelper.getStartIndex4StartWith(reader, keyword, comparator);
             end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator) + 1;
         }
         SimpleIntArray groupArray;
-        if (gvi instanceof AllShowRoaringGroupValueIndex){
-            final int fstart = start, size = start == -1 ? 0 :  end - start;
+        if (gvi instanceof AllShowRoaringGroupValueIndex) {
+            final int fstart = start, size = start == -1 ? 0 : end - start;
             groupArray = new SimpleIntArray() {
                 @Override
                 public int get(int index) {
@@ -119,9 +120,9 @@ public class StringControlWidget extends BISummaryWidget {
                 }
             });
             final IntArray array = new IntArray();
-            if (start != -1){
-                for (int i = start; i < end; i ++){
-                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE){
+            if (start != -1) {
+                for (int i = start; i < end; i++) {
+                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE) {
                         array.add(i);
                     }
                 }
@@ -131,6 +132,7 @@ public class StringControlWidget extends BISummaryWidget {
                 public int get(int index) {
                     return array.get(index);
                 }
+
                 @Override
                 public int size() {
                     return array.size;
@@ -167,7 +169,7 @@ public class StringControlWidget extends BISummaryWidget {
     }
 
     private int getSearchCount(ICubeColumnIndexReader reader, Set selectedValue, SimpleIntArray array, SearchMode mode) {
-        if (selectedValue.isEmpty() && mode == SearchMode.START_WITH){
+        if (selectedValue.isEmpty() && mode == SearchMode.START_WITH) {
             return array.size();
         }
         int count = 0;
@@ -188,7 +190,7 @@ public class StringControlWidget extends BISummaryWidget {
     private int getSearchCount(Set selectedValue, List<Object> list) {
         int count = 0;
         String keyword = this.keyword.toLowerCase();
-        for (Object ob : list){
+        for (Object ob : list) {
             if (ob == null) {
                 continue;
             }
@@ -200,13 +202,16 @@ public class StringControlWidget extends BISummaryWidget {
     }
 
     private boolean match(String value, String keyword, Set selectedValue, SearchMode mode) {
+        if (ComparatorUtils.equals(value, BIReportConstant.SPECIAL_FIELD_VALUE)) {
+            return false;
+        }
         if (selectedValue.contains(value)) {
             return false;
         }
         if (StringUtils.isEmpty(keyword)) {
             return true;
         }
-        if (mode == SearchMode.START_WITH){
+        if (mode == SearchMode.START_WITH) {
             return true;
         }
         String strPinyin = BIPhoneticismUtils.getPingYin(value).toLowerCase();
@@ -243,7 +248,7 @@ public class StringControlWidget extends BISummaryWidget {
         List<String> match = new ArrayList<String>();
         int matched = 0;
         String key = this.keyword.toLowerCase();
-        for (Object ob : list){
+        for (Object ob : list) {
             if (calculator instanceof DateDimensionCalculator && calculator.getGroup().getType() == BIReportConstant.GROUP.M) {
                 ob = ((Integer) ob) + 1;
             }
@@ -267,10 +272,14 @@ public class StringControlWidget extends BISummaryWidget {
             }
         }
         for (String s : match) {
-            ja.put(s);
+            if (!ComparatorUtils.equals(s, BIReportConstant.SPECIAL_FIELD_VALUE)) {
+                ja.put(s);
+            }
         }
         for (String s : find) {
-            ja.put(s);
+            if (!ComparatorUtils.equals(s, BIReportConstant.SPECIAL_FIELD_VALUE)) {
+                ja.put(s);
+            }
         }
         jo.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
         jo.put(BIJSONConstant.JSON_KEYS.HAS_NEXT, hasNext);
