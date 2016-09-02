@@ -12,10 +12,13 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
 
         var self=this;
         this.leftButton=BI.createWidget({
-            type:"bi.icon_button",
-            cls:"layout-bg1",
-            height:26,
-            width:14
+            type:"bi.global_style_canvas_button",
+            direction:"left",
+            initState:false
+        });
+        this.leftButton.on(BI.GlobalStyleCanvasButton.EVENT_CHANGE,function () {
+            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.PAGE_CHANGE,"left");
+            self.bottomItem.populate([self._currentPager(3,1)]);
         });
         var leftLayout=BI.createWidget({
             type:"bi.float_center_adapt",
@@ -23,10 +26,13 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
         });
 
         this.rightButton=BI.createWidget({
-            type:"bi.text_button",
-            cls:"layout-bg2",
-            height:26,
-            width:14
+            type:"bi.global_style_canvas_button",
+            direction:"right",
+            initState:true
+        });
+        this.rightButton.on(BI.GlobalStyleCanvasButton.EVENT_CHANGE,function () {
+            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.PAGE_CHANGE,"right");
+            self.bottomItem.populate([self._currentPager(3,2)]);
         });
         var rightLayout=BI.createWidget({
             type:"bi.float_center_adapt",
@@ -71,15 +77,7 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
             }],
             height:40
         });
-        var buttonOne=BI.createWidget({
-            type:"bi.canvas",
-            height:10,
-            width:25
-        });
-        buttonOne.circle(5,5,5,"#ffffff");
-        buttonOne.circle(20,5,5,"#cccccc");
-        buttonOne.stroke();
-        this.bottomItem.populate([buttonOne]);
+        this.bottomItem.populate([self._currentPager(3,2)]);
 
         BI.createWidget({
             type:"bi.vtape",
@@ -107,7 +105,26 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
             width:110
         })
     },
-
+    _getCanvasColour:function (isSelected) {
+        if(isSelected){
+            return "#ffffff"
+        }else {
+            return "#cccccc"
+        }
+    },
+    _currentPager:function (totalNumber,currentNumber) {
+        var self=this;
+        var canvas=BI.createWidget({
+            type:"bi.canvas",
+            height:10,
+            width:totalNumber*15-5
+        });
+        BI.each(BI.makeArray(totalNumber),function (i) {
+            canvas.circle(i*15+5,5,5,self._getCanvasColour(i==(currentNumber-1)))
+        });
+        canvas.stroke();
+        return canvas
+    },
     _createAdministratorStyle:function () {
         return this._createButton(0,BI.i18nText("BI-Administrator_Set_Style"))
     },
@@ -134,10 +151,13 @@ BI.GlobalStyleIndexPredictionStyle=BI.inherit(BI.Widget,{
     setValue:function () {
 
     },
-
+    pageChange:function (direction) {
+        console.log(direction)
+    },
     populate:function () {
         
     }
 });
+BI.GlobalStyleIndexPredictionStyle.PAGE_CHANGE="BI.GlobalStyleIndexPredictionStyle.PAGE_CHANGE";
 BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE="BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE";
 $.shortcut("bi.global_style_index_prediction_style",BI.GlobalStyleIndexPredictionStyle);

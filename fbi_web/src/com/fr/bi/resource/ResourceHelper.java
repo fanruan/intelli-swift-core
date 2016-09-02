@@ -1464,6 +1464,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcharttoolbar.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.leftright.canvasbutton.js",
 
                 //联动
                 "com/fr/bi/web/js/modules/linkage/model.linkage.js",

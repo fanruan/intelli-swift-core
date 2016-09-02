@@ -82,6 +82,9 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             // console.log(JSON.stringify(value));
             // alert(JSON.stringify(value));
         });
+        this.predictionStyle.on(BI.GlobalStyleIndexPredictionStyle.PAGE_CHANGE,function (direction) {
+            self.predictionStyle.pageChange(direction);
+        });
         this._initCenter();
 
         BI.createWidget({
