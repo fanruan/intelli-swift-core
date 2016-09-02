@@ -85,7 +85,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].title.rotation = this.constants.ROTATION;
         config.yAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
         config.yAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
-        config.yAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
+        config.yAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+            self.config.custom_y_scale.interval.scale : null;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
         self.formatNumberLevelInXaxis(items, this.config.x_axis_number_level);
@@ -94,7 +95,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.xAxis[0].min = this.config.custom_x_scale.minScale.scale || null;
         config.xAxis[0].max = this.config.custom_x_scale.maxScale.scale || null;
-        config.xAxis[0].tickInterval = this.config.custom_x_scale.interval.scale || null;
+        config.xAxis[0].tickInterval = BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
+            self.config.custom_x_scale.interval.scale : null;
         config.chartType = "bubble";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉

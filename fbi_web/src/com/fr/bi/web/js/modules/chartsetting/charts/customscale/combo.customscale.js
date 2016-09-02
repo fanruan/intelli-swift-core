@@ -89,7 +89,11 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
                 formula += item
             }
         });
-        this.trigger.setValue(eval(formula) || "")
+        if(/[a-zA-Z]/.test(formula) || BI.isEmptyString(formula)){
+            this.trigger.setValue(formula)
+        }else{
+            this.trigger.setValue( eval(formula) === false ? "" : eval(formula))
+        }
     },
 
     setTitle: function (title) {

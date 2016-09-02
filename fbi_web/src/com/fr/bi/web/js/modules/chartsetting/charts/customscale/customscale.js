@@ -43,13 +43,13 @@ BI.CustomScale = BI.inherit(BI.Widget, {
         });
 
         this.interval.on(BI.ComboCustomScale.EVENT_CHANGE, function () {
-            var v = BI.parseFloat(self.interval.getValue().scale);
-            if(BI.isNotNull(v) && v <= 0) {
-                self.interval.setValue({
-                    formula: ""
-                });
-                self.interval.setTitle(BI.i18nText("BI-Interval_Value_Should_Be_Positive"))
-            }
+            // var scale = self.interval.getValue().scale;
+            // if(BI.parseFloat(scale) <= 0) {
+            //     self.interval.setValue({
+            //         formula: ""
+            //     });
+            //     self.interval.setTitle(BI.i18nText("BI-Interval_Value_Should_Be_Positive"))
+            // }
             self.fireEvent(BI.CustomScale.EVENT_CHANGE)
         });
 
