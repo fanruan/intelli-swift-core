@@ -105,6 +105,8 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         var data = BI.deepClone(this.data);
         if (src) {
             if(this.options.showType === "data_image"){
+                data[0][0].data[0].imageHeight = 20;
+                data[0][0].data[0].imageWidth = 20;
                 data[0][0].data[0].image = src
             } else {
                 var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + src + "></div>'}";

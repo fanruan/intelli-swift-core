@@ -253,14 +253,10 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
             tooltip: options.tooltip || "",
-<<<<<<< HEAD
-            big_data_mode: options.big_data_mode || false,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE
-=======
+            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             big_data_mode: options.big_data_mode || false
->>>>>>> 6059b85c773d181654f41e1bb36cf07a171a4a7c
         };
         this.options.items = items;
         var types = [];

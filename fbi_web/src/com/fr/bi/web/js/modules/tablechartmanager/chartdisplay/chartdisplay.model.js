@@ -538,6 +538,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             });
         }
     },
+
     _setDataImageSettingForAxis: function(data){
         var self = this, o = this.options;
         var hasSeries = this._checkSeriesExist();
@@ -585,7 +586,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             }
                             //指标自身
                             if(BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1){
-                                self._createDataImage(da, dataLabel);
+                                self._createDataImage(data, dataLabel);
                             }
                             return true;
                         }
@@ -649,6 +650,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataImage: function (data, label) {
+        data.imageHeight = 20;
+        data.imageWidth = 20;
         data.image = label.style_setting.src;
     },
 
