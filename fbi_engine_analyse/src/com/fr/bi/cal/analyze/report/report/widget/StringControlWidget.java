@@ -90,7 +90,7 @@ public class StringControlWidget extends BISummaryWidget {
         if (getter.getGroupSize() > BIBaseConstant.LARGE_GROUP_LINE){
             mode = SearchMode.START_WITH;
             start = ArrayLookupHelper.getStartIndex4StartWith(reader, keyword, comparator);
-            end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator);
+            end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator) + 1;
         }
         SimpleIntArray groupArray;
         if (gvi instanceof AllShowRoaringGroupValueIndex){
