@@ -2682,7 +2682,10 @@
                 filterValue.start = parseComplexDate(start);
             }
             if (BI.isNotNull(end)) {
-                filterValue.end = new Date(parseComplexDate(end)).getOffsetDate(1).getTime() - 1
+                var endTime = parseComplexDate(end);
+                if(BI.isNotNull(endTime)){
+                    filterValue.end = new Date(endTime).getOffsetDate(1).getTime() - 1
+                }
             }
         }
         if (filterType === BICst.FILTER_DATE.BELONG_WIDGET_VALUE || filterType === BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE) {
@@ -2697,15 +2700,22 @@
                         filterValue.start = parseComplexDate(wValue.start);
                     }
                     if (BI.isNotNull(wValue.end)) {
-                        filterValue.end = new Date(parseComplexDate(wValue.end)).getOffsetDate(1).getTime() - 1
+                        var endTime = parseComplexDate(wValue.end);
+                        if(BI.isNotNull(endTime)){
+                            filterValue.end = new Date(endTime).getOffsetDate(1).getTime() - 1;
+                        }
                     }
                     break;
                 case BICst.LAST_SAME_PERIOD:
                     if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.end)) {
                         var s = parseComplexDate(wValue.start);
                         var e = parseComplexDate(wValue.end);
-                        filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
-                        filterValue.end = new Date(s).getTime() - 1;
+                        if(BI.isNotNull(s) && BI.isNotNull(e)){
+                            filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
+                        }
+                        if(BI.isNotNull(s)){
+                            filterValue.end = new Date(s).getTime() - 1;
+                        }
                     } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
                         filterValue.start = parseComplexDate(wValue.start);
                     } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
@@ -2723,7 +2733,9 @@
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
                         filterValue.start = value.start;
-                        filterValue.end = new Date(value.end).getOffsetDate(1).getTime() - 1;
+                        if(BI.isNotNull(value.end)){
+                            filterValue.end = new Date(value.end).getOffsetDate(1).getTime() - 1;
+                        }
                     }
                     break;
             }
@@ -2732,14 +2744,18 @@
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                filterValue.end = new Date(value.start).getTime() - 1;
+                if(BI.isNotNull(value.start)){
+                    filterValue.end = new Date(value.start).getTime() - 1;
+                }
             }
         }
         if (filterType === BICst.FILTER_DATE.LATER_THAN) {
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                filterValue.start = new Date(value.start).getTime();
+                if(BI.isNotNull(value.start)){
+                    filterValue.start = new Date(value.start).getTime();
+                }
             }
         }
         if (filterType === BICst.FILTER_DATE.EQUAL_TO || filterType === BICst.FILTER_DATE.NOT_EQUAL_TO) {

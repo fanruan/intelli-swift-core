@@ -49,7 +49,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         };
 
         config.geo = this.config.geo;
-        if(this.config.show_background_layer === true){
+        if(this.config.show_background_layer === true && BI.isNotNull(this.config.background_layer_info)){
             if(this.config.background_layer_info.type === BICst.WMS_SERVER){
                 config.geo.tileLayer = false;
                 config.geo.wmsUrl = this.config.background_layer_info.url;
