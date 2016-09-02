@@ -74,7 +74,8 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         config.radiusAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.radiusAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
         config.radiusAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
-        config.radiusAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
+        config.radiusAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+            self.config.custom_y_scale.interval.scale : null;
         config.chartType = "radar";
         config.plotOptions.columnType = true;
         delete config.xAxis;

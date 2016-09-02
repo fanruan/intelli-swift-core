@@ -80,7 +80,8 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
                         enableMinorTick: self.config.enable_minor_tick,
                         min: self.config.custom_y_scale.minScale.scale || null,
                         max: self.config.custom_y_scale.maxScale.scale || null,
-                        tickInterval: self.config.custom_y_scale.interval.scale || null,
+                        tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+                            self.config.custom_y_scale.interval.scale : null,
                         formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level),
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0
                     });
@@ -98,7 +99,8 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
                         enableMinorTick: self.config.enable_minor_tick,
                         min: self.config.custom_x_scale.minScale.scale || null,
                         max: self.config.custom_x_scale.maxScale.scale || null,
-                        tickInterval: self.config.custom_x_scale.interval.scale || null,
+                        tickInterval: BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
+                            self.config.custom_x_scale.interval.scale : null,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
                         formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level)
                     });
