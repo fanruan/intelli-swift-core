@@ -15,7 +15,7 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
     _defaultConfig: function () {
         return BI.extend(BI.ScatterNumberFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "data-label-condition-item"
+            extraCls: "condition-item"
         })
     },
 

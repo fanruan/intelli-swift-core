@@ -56,5 +56,5 @@ BI.DataLabel = BI.inherit(BI.Widget, {
     }
 });
 
-BI.DataLabel.EVENT_CHANGE = "BI.DataBabel.EVENT_CHANGE";
+BI.DataLabel.EVENT_CHANGE = "BI.DataLabel.EVENT_CHANGE";
 $.shortcut("bi.data_label", BI.DataLabel);

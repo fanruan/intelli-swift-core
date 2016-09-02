@@ -63,6 +63,9 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
         config.radiusAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.radiusAxis[0].title.text : config.radiusAxis[0].title.text;
         config.radiusAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.radiusAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
+        config.radiusAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
+        config.radiusAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
         config.chartType = "radar";
         delete config.xAxis;
         delete config.yAxis;
@@ -160,7 +163,8 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
-            cordon: options.cordon || []
+            cordon: options.cordon || [],
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE
         };
         this.options.items = items;
         var types = [];
