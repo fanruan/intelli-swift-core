@@ -94,8 +94,8 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
             enableTick: this.config.enable_tick,
             lineWidth: this.config.line_width,
             enableMinorTick: this.config.enable_minor_tick,
-            max: self.config.custom_y_scale.minScale.scale || null,
-            min: self.config.custom_y_scale.maxScale.scale || null,
+            min: self.config.custom_y_scale.minScale.scale || null,
+            max: self.config.custom_y_scale.maxScale.scale || null,
             tickInterval: self.config.custom_y_scale.interval.scale || null
         });
         config.chartType = "bar";

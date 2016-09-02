@@ -7,7 +7,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.MultiAxisChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-multi-axis-chart-setting"
         })
     },
 

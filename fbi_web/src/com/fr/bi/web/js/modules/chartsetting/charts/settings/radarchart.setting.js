@@ -7,7 +7,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.RadarChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting bi-radar-chart"
+            baseCls: "bi-charts-setting bi-radar-chart-setting"
         })
     },
 

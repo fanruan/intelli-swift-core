@@ -7,7 +7,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.RangeAreaChartsSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-range-area-chart-setting"
         })
     },
 

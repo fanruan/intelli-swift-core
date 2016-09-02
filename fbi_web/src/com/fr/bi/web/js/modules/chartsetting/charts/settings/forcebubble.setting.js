@@ -7,7 +7,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.ForceBubbleSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-force-bubble-chart-setting"
         })
     },
 
