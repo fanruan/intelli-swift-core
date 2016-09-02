@@ -7,7 +7,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.FallAxisChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-fall-axis-chart"
         })
     },
 

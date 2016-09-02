@@ -1,13 +1,13 @@
 /**
  * @class BI.CompareAreaChartsSetting
  * @extends BI.Widget
- * 对比柱状样式
+ * 对比面积样式
  */
 BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.CompareAreaChartsSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-compare-area-chart"
         })
     },
 

@@ -14,7 +14,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.DashboardChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-dashboard-chart"
         })
     },
 

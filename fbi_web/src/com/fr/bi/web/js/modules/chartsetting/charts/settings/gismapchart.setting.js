@@ -7,7 +7,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.GISMapSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-gis-map-chart"
         })
     },
 
