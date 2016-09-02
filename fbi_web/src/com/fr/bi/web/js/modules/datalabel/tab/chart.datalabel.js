@@ -76,12 +76,21 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
 
     createChartByType: function (type) {
         switch (type) {
-            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.LINE:
                 this.data = this._data;
-                return "bi.axis_chart";
-            case BICst.WIDGET.ACCUMULATE_AXIS:
+                return "bi.line_chart";
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
                 this.data = this._data;
-                return "bi.accumulate";
+                return "bi.area_chart";
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+                this.data = this._data;
+                return "bi.bar_chart";
             case BICst.WIDGET.BUBBLE:
                 this.data = this._bubble_data;
                 return "bi.bubble_chart";
