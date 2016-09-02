@@ -315,7 +315,7 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
         var view = BI.Utils.getWidgetViewByID(wid);
         BI.each(view, function (regionType, arr) {
             if (regionType >= BICst.REGION.TARGET1) {
-                BI.filter(arr, function (idx, id) {
+                view[regionType] = BI.filter(arr, function (idx, id) {
                     return BI.Utils.isDimensionUsable(id)
                 })
             }
