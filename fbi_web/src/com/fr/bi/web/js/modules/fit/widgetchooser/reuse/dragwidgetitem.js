@@ -141,6 +141,28 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 var dimensionsAndView = self._createDimensionsAndView(widget);
                 result.dimensions = dimensionsAndView.dimensions;
                 result.view = dimensionsAndView.view;
+                //组件表头上指标的排序和过滤
+                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort)){
+                    result.sort = BI.extend({}, widget.sort, {
+                        sort_target: self._createDimensionsAndTargets(widget.sort.sort_target).id
+                    })
+                }
+
+                if(BI.has(widget, "sort_sequence") && BI.isNotNull(widget.sort_sequence)){
+                    result.sort_sequence = [];
+                    BI.each(widget.sort_sequence, function(idx, dId){
+                        result.sort_sequence.push(self._createDimensionsAndTargets(dId).id);
+                    })
+                }
+
+                if(BI.has(widget, "filter_value") && BI.isNotNull(widget.filter_value)){
+                    var filterValue = {};
+                    BI.each(widget.filter_value, function(target_id, filter_value){
+                        var newId = self._createDimensionsAndTargets(target_id).id;
+                        filterValue[newId] = self._checkFilter(filter_value, target_id, newId);
+                    });
+                    result.filter_value = filterValue;
+                }
                 o.stop.apply(self, [widget.bounds, ui.position, result]);
                 BI.Utils.broadcastAllWidgets2Refresh();
             },
@@ -171,20 +193,25 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
         }
     },
 
-    _checkFilter: function(oldFilter, dId){
+    _checkFilter: function(oldFilter, dId, newId){
+        var self = this;
         var filter = {};
         var filterType = oldFilter.filter_type, filterValue = oldFilter.filter_value;
         filter.filter_type = oldFilter.filter_type;
         if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
             filter.filter_value = [];
             BI.each(filterValue, function (i, value) {
-                filter.filter_value.push(this._checkFilter(value, dId));
+                filter.filter_value.push(self._checkFilter(value, dId, newId));
             });
         }else{
             BI.extend(filter, oldFilter);
-            if(BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId){
-                var result = this._createDimensionsAndTargets(oldFilter.target_id);
-                filter.target_id = result.id;
+            if(BI.has(oldFilter, "target_id")){
+                if(oldFilter.target_id !== dId){
+                    var result = this._createDimensionsAndTargets(oldFilter.target_id);
+                    filter.target_id = result.id;
+                }else{
+                    filter.target_id = newId;
+                }
             }
         }
         return filter;
@@ -214,7 +241,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                     });
                 }
                 if(BI.has(self.oldDimensions[idx], "filter_value") && BI.isNotNull(self.oldDimensions[idx].filter_value)){
-                    dimension.filter_value = this._checkFilter(self.oldDimensions[idx].filter_value, self.dimTarIdMap[idx] || idx);
+                    dimension.filter_value = this._checkFilter(self.oldDimensions[idx].filter_value, self.dimTarIdMap[idx] || idx, newId);
                 }
                 if(BI.has(self.oldDimensions[idx], "sort")){
                     dimension.sort = BI.deepClone(self.oldDimensions[idx].sort);

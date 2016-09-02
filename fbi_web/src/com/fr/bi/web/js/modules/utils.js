@@ -478,26 +478,51 @@
                 };
                 obj.settings = widget.settings;
                 obj.value = widget.value;
-                //表头上指标的排序和过滤
+                //组件表头上指标的排序和过滤
+                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort)){
+                    obj.sort = BI.extend({}, widget.sort, {
+                        sort_target: createDimensionsAndTargets(widget.sort.sort_target).id
+                    })
+                }
+
+                if(BI.has(widget, "sort_sequence") && BI.isNotNull(widget.sort_sequence)){
+                    obj.sort_sequence = [];
+                    BI.each(widget.sort_sequence, function(idx, dId){
+                        obj.sort_sequence.push(createDimensionsAndTargets(dId).id);
+                    })
+                }
+
+                if(BI.has(widget, "filter_value") && BI.isNotNull(widget.filter_value)){
+                    var filterValue = {};
+                    BI.each(widget.filter_value, function(target_id, filter_value){
+                        var newId = createDimensionsAndTargets(target_id).id;
+                        filterValue[newId] = checkFilter(filter_value, target_id, newId);
+                    });
+                    obj.filter_value = filterValue;
+                }
 
                 return obj;
             }
 
-            function checkFilter(oldFilter, dId) {
+            function checkFilter(oldFilter, dId, newId) {
                 var filter = {};
                 var filterType = oldFilter.filter_type, filterValue = oldFilter.filter_value;
                 filter.filter_type = oldFilter.filter_type;
                 if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
                     filter.filter_value = [];
                     BI.each(filterValue, function (i, value) {
-                        filter.filter_value.push(checkFilter(value, dId));
+                        filter.filter_value.push(checkFilter(value, dId, newId));
                     });
                 } else {
                     BI.extend(filter, oldFilter);
                     //防止死循环
-                    if (BI.has(oldFilter, "target_id") && oldFilter.target_id !== dId) {
-                        var result = createDimensionsAndTargets(oldFilter.target_id);
-                        filter.target_id = result.id;
+                    if (BI.has(oldFilter, "target_id")) {
+                        if(oldFilter.target_id !== dId){
+                            var result = createDimensionsAndTargets(oldFilter.target_id);
+                            filter.target_id = result.id;
+                        }else{
+                            filter.target_id = newId;
+                        }
                     }
                 }
                 return filter;
@@ -526,7 +551,7 @@
                             });
                         }
                         if (BI.has(widget.dimensions[idx], "filter_value") && BI.isNotNull(widget.dimensions[idx].filter_value)) {
-                            dimension.filter_value = checkFilter(widget.dimensions[idx].filter_value, dimTarIdMap[idx] || idx);
+                            dimension.filter_value = checkFilter(widget.dimensions[idx].filter_value, dimTarIdMap[idx] || idx, newId);
                         }
                         if (BI.has(widget.dimensions[idx], "sort")) {
                             dimension.sort = BI.deepClone(widget.dimensions[idx].sort);
