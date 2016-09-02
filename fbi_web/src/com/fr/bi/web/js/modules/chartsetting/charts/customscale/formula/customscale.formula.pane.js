@@ -34,6 +34,7 @@ BI.CustomScaleFormulaPane = BI.inherit(BI.Widget, {
         });
 
         confirmButton.on(BI.Button.EVENT_CHANGE, function () {
+            self.oldValue = self.getValue();
             self.fireEvent(BI.CustomScaleFormulaPane.EVENT_CHANGE)
         });
 
