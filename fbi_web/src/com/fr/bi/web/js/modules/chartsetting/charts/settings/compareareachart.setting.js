@@ -7,7 +7,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.CompareAreaChartsSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting bi-compare-area-chart"
+            baseCls: "bi-charts-setting bi-compare-area-chart-setting"
         })
     },
 

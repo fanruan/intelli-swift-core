@@ -7,7 +7,7 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.BarChartsSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting bi-bar-chart"
+            baseCls: "bi-charts-setting bi-bar-chart-setting"
         })
     },
 
