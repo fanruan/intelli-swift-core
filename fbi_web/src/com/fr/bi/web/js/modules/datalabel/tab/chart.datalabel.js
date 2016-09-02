@@ -104,13 +104,17 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
     populate: function (src) {
         var data = BI.deepClone(this.data);
         if (src) {
-            var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + src + "></div>'}";
-            data[0][0].data[0].dataLabels = {
-                enabled: true,
-                align: "outside",
-                useHtml: true,
-                formatter: formatter
-            };
+            if(this.options.showType === "data_image"){
+                data[0][0].data[0].image = src
+            } else {
+                var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + src + "></div>'}";
+                data[0][0].data[0].dataLabels = {
+                    enabled: true,
+                    align: "outside",
+                    useHtml: true,
+                    formatter: formatter
+                };
+            }
         }
         this.combineChart.populate(data, this.config);
     }
