@@ -82,8 +82,8 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             reversed: this.config.left_y_axis_reversed,
             enableMinorTick: this.config.enable_minor_tick,
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
-            max: self.config.custom_y_scale.minScale.scale || null,
-            min: self.config.custom_y_scale.maxScale.scale || null,
+            min: self.config.custom_y_scale.minScale.scale || null,
+            max: self.config.custom_y_scale.maxScale.scale || null,
             tickInterval: self.config.custom_y_scale.interval.scale || null,
             formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level)
         });

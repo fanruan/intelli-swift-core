@@ -75,8 +75,8 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                         reversed: self.config.left_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        max: self.config.custom_y_scale.minScale.scale || null,
-                        min: self.config.custom_y_scale.maxScale.scale || null,
+                        min: self.config.custom_y_scale.minScale.scale || null,
+                        max: self.config.custom_y_scale.maxScale.scale || null,
                         tickInterval: self.config.custom_y_scale.interval.scale || null,
                         formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level)
                     });
@@ -92,8 +92,8 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                         reversed: self.config.right_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        max: self.config.custom_x_scale.minScale.scale || null,
-                        min: self.config.custom_x_scale.maxScale.scale || null,
+                        min: self.config.custom_x_scale.minScale.scale || null,
+                        max: self.config.custom_x_scale.maxScale.scale || null,
                         tickInterval: self.config.custom_x_scale.interval.scale || null,
                         formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level)
                     });
