@@ -73,10 +73,6 @@ public class CubeConstant {
 //    }
     public static final String CUBE_PROPERTY = "property";
 
-    public static final class CUBE_UPDATE_TYPE {
-        public static final String GLOBAL_UPDATE = "__global_update__";
-        public static final String SINGLETABLE_UPDATE = "__singleTable_update__";
-    }
     /*每隔多少行输出一次信息*/
     public static final long LOG_SEPERATOR_ROW = 1l<<12;
 }

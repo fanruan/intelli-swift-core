@@ -1067,7 +1067,9 @@ if (!window.BI) {
                 },
                 complete: function (res, status) {
                     //登录超时
-                    if (BI.isNotNull(res.responseText) && res.responseText.indexOf("fs-login-content") > -1) {
+                    if (BI.isNotNull(res.responseText) &&
+                        res.responseText.indexOf("fs-login-content") > -1 &&
+                        res.responseText.indexOf("fs-login-input-password-confirm") === -1) {
                         if (BI.isNotNull(BI.Popovers.get(BI.LoginTimeOut.POPOVER_ID))) {
                             BI.Popovers.open(BI.LoginTimeOut.POPOVER_ID);
                         } else {
