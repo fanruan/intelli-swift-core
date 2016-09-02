@@ -13,7 +13,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _init: function(){
         BI.RangeAreaChartsSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -45,7 +45,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
-        var tableStyle = BI.createWidget({
+        this.tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [100],
             cls: "single-line-settings",
@@ -204,6 +204,30 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
+        //左轴刻度自定义
+        this.showYCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showYCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customYScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customYScale.setValue({})
+            }
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
+        });
+
+        this.customYScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customYScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
+        });
+
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -307,6 +331,12 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showYCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customYScale]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -321,7 +351,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.otherAttr = BI.createWidget({
@@ -347,7 +377,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.minimalistModel.on(BI.Controller.EVENT_CHANGE, function () {
             self._invisible(!this.isSelected());
-            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         var modelChange = BI.createWidget({
@@ -367,12 +397,13 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, this.lYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
+            items: [this.tableStyle, this.lYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
             hgap: 10
         })
     },
 
     _invisible: function (v) {
+        this.tableStyle.setVisible(v);
         this.lYAxis.setVisible(v);
         this.xAxis.setVisible(v);
         this.showElement.setVisible(v);
@@ -419,6 +450,10 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
+        this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
+        this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -444,7 +479,9 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             text_direction: this.text_direction.getValue(),
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
-            minimalist_model: this.minimalistModel.isSelected()
+            minimalist_model: this.minimalistModel.isSelected(),
+            show_y_custom_scale: this.showYCustomScale.isSelected(),
+            custom_y_scale: this.customYScale.getValue()
         }
     },
 
@@ -462,7 +499,9 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.text_direction.setValue(v.text_direction);
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
-        this.minimalistModel.setSelected(v.minimalist_model)
+        this.minimalistModel.setSelected(v.minimalist_model);
+        this.showYCustomScale.setSelected(v.show_y_custom_scale);
+        this.customYScale.setValue(v.custom_y_scale)
     }
 });
 BI.RangeAreaChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";

@@ -84,6 +84,9 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         reversed: self.config.left_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        max: self.config.custom_y_scale.minScale.scale || null,
+                        min: self.config.custom_y_scale.maxScale.scale || null,
+                        tickInterval: self.config.custom_y_scale.interval.scale || null,
                         formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level)
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
@@ -100,6 +103,9 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         reversed: self.config.right_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        max: self.config.custom_x_scale.minScale.scale || null,
+                        min: self.config.custom_x_scale.maxScale.scale || null,
+                        tickInterval: self.config.custom_x_scale.interval.scale || null,
                         formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level)
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
@@ -116,6 +122,9 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         reversed: self.config.right_y_axis_second_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        max: self.config.custom_z_scale.minScale.scale || null,
+                        min: self.config.custom_z_scale.maxScale.scale || null,
+                        tickInterval: self.config.custom_z_scale.interval.scale || null,
                         formatter: self.formatTickInXYaxis(self.config.right_y_axis_second_style, self.config.right_y_axis_second_number_level)
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_second_number_level, idx, axis.formatter);
@@ -320,7 +329,10 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
-            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
+            custom_z_scale: options.custom_z_scale || c.CUSTOM_SCALE
         };
         this.options.items = items;
 

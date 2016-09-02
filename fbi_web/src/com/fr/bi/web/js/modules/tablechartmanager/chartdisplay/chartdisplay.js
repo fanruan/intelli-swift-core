@@ -382,7 +382,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         bubble_min_size: BI.Utils.getWSMinBubbleSizeByID(o.wId),
                         bubble_max_size: BI.Utils.getWSMaxBubbleSizeByID(o.wId),
                         gradient_colors: BI.Utils.getWSBubbleGradientsByID(o.wId),
-                        fixed_colors: BI.Utils.getWSBubbleFixedColorsByID(o.wId)
+                        fixed_colors: BI.Utils.getWSBubbleFixedColorsByID(o.wId),
+                        custom_y_scale: BI.Utils.getWSCustomYScale(o.wId),
+                        custom_x_scale: BI.Utils.getWSCustomXScale(o.wId)
                     }, {
                         cordon: self.model.getCordon(),
                         tooltip: self.model.getToolTip(type),
