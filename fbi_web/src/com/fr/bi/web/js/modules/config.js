@@ -1449,6 +1449,13 @@ BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
     cls: "dot-e-font"
 }]];
 
+BICst.Font_Family_COMBO = [];
+
+BICst.BACKGROUND_TYPE = {
+    COLOR: 1,
+    IMAGE: 2
+};
+
 BICst.FONT_FAMILY_COMBO = [{
     text: "微软雅黑",
     value: "Microsoft YaHei"

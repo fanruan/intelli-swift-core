@@ -564,6 +564,33 @@
             }
         },
 
+        //global style ---- start ----
+        getGlobalStyle: function() {
+            return Data.SharingPool.get("globalStyle") || {};
+        },
+
+        getGSMainBackground: function() {
+            var gs = this.getGlobalStyle();
+            return gs.mainBackground;
+        },
+
+        getGSWidgetBackground: function() {
+            var gs = this.getGlobalStyle();
+            return gs.widgetBackground;
+        },
+        
+        getGSTitleBackground: function() {
+            var gs = this.getGlobalStyle();
+            return gs.titleBackground;
+        },
+        
+        getGSTitleFont: function() {
+            var gs = this.getGlobalStyle();
+            return gs.titleFont;
+        },
+
+        //global style ---- end ----
+
         getCalculateValue: function(did){
             return Data.SharingPool.get("calculateValue", did) || []
         },
