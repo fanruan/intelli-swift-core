@@ -15,6 +15,9 @@
 var FakeObjectDataListStore = require('../../helpers/FakeObjectDataListStore');
 var {FixedDataTable} = require('base');
 var React = require('react');
+var {Dimensions} = require('lib')
+
+const {width, height} = Dimensions.get('window');
 
 const {Table, Column, ColumnGroup, Cell} = FixedDataTable;
 
@@ -29,7 +32,7 @@ class ColumnGroupsExample extends React.Component {
     super(props);
 
     this.state = {
-      dataList: new FakeObjectDataListStore(1000000),
+      dataList: new FakeObjectDataListStore(100),
     };
   }
 
@@ -42,8 +45,8 @@ class ColumnGroupsExample extends React.Component {
         groupHeaderHeight={30}
         headerHeight={30}
         rowsCount={dataList.getSize()}
-        width={1000}
-        height={500}
+        width={width}
+        height={height}
         {...this.props}>
         <ColumnGroup
           fixed={true}

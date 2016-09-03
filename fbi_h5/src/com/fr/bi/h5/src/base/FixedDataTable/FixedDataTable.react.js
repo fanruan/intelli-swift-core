@@ -16,7 +16,7 @@
 var React = require('react');
 var ReactComponentWithPureRenderMixin = require('react-addons-pure-render-mixin');
 var {WheelHandler} = require('core');
-var {View, PanResponder}  = require('lib');
+var {View, PanResponder, Easing, Animated}  = require('lib');
 var FixedDataTableBufferedRows = require('./FixedDataTableBufferedRows.react');
 var FixedDataTableColumnResizeHandle = require('./FixedDataTableColumnResizeHandle.react');
 var FixedDataTableRow = require('./FixedDataTableRow.react');
@@ -295,6 +295,9 @@ var FixedDataTable = React.createClass({
         if (scrollToColumn !== undefined && scrollToColumn !== null) {
             this._columnToScrollTo = scrollToColumn;
         }
+
+        this.trans = new Animated.ValueXY();
+
         this._wheelHandler = new WheelHandler(
             this._onWheel,
             this._shouldHandleWheelX,
@@ -304,24 +307,37 @@ var FixedDataTable = React.createClass({
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: ()=>true,
             onMoveShouldSetPanResponder: ()=>true,
-            onPanResponderGrant: this._handlePanResponderGrant.bind(this),
-            // onPanResponderMove: this._handlePanResponderMove.bind(this),
-            onPanResponderMove: this._handlePanResponderMove.bind(this),
-            onPanResponderRelease: this._handlePanResponderEnd.bind(this),
-            onPanResponderTerminate: this._handlePanResponderEnd.bind(this)
+            onPanResponderGrant: this._handlePanResponderGrant,
+            onPanResponderMove: this._handlePanResponderMove,
+            onPanResponderRelease: this._handlePanResponderEnd,
+            onPanResponderTerminate: this._handlePanResponderEnd
         });
     },
 
     _handlePanResponderGrant(e, gestureState) {
-
+        this.dx = 0;
+        this.dy = 0;
+        this.trans.setOffset({x: 0, y: this.trans.y.__getAnimatedValue()});
+        this.trans.setValue({x: 0, y: 0});
+        e.stopPropagation();
+        e.preventDefault();
     },
 
     _handlePanResponderMove(e, gestureState) {
-        this._onWheel(gestureState.dx, gestureState.dy);
+        Animated.event([null, {
+            dy: this.trans.y
+        }])(e, gestureState);
+
+        //this._onWheel(-gestureState.dx + this.dx, -gestureState.dy + this.dy);
+        this.dx = gestureState.dx;
+        this.dy = gestureState.dy;
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
     },
 
     _handlePanResponderEnd(e, gestureState) {
-
+        this.trans.flattenOffset();
     },
 
     _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
@@ -438,7 +454,7 @@ var FixedDataTable = React.createClass({
                     fixedColumns={state.groupHeaderFixedColumns}
                     scrollableColumns={state.groupHeaderScrollableColumns}
                     onColumnResize={this._onColumnResize}
-                />
+                    />
             );
         }
 
@@ -478,7 +494,7 @@ var FixedDataTable = React.createClass({
                 initialEvent={state.columnResizingData.initialEvent}
                 onColumnResizeEnd={props.onColumnResizeEndCallback}
                 columnKey={state.columnResizingData.key}
-            />;
+                />;
 
         var footer = null;
         if (state.footerHeight) {
@@ -498,7 +514,7 @@ var FixedDataTable = React.createClass({
                     fixedColumns={state.footFixedColumns}
                     scrollableColumns={state.footScrollableColumns}
                     scrollLeft={state.scrollX}
-                />;
+                    />;
         }
 
         var rows = this._renderRows(bodyOffsetTop);
@@ -520,7 +536,7 @@ var FixedDataTable = React.createClass({
                 fixedColumns={state.headFixedColumns}
                 scrollableColumns={state.headScrollableColumns}
                 onColumnResize={this._onColumnResize}
-            />;
+                />;
 
         var topShadow;
         var bottomShadow;
@@ -532,7 +548,7 @@ var FixedDataTable = React.createClass({
                         cx('public/fixedDataTable/topShadow')
                     )}
                     style={{top: bodyOffsetTop}}
-                />;
+                    />;
         }
 
         if (
@@ -548,7 +564,7 @@ var FixedDataTable = React.createClass({
                         cx('public/fixedDataTable/bottomShadow')
                     )}
                     style={{top: footOffsetTop}}
-                />;
+                    />;
         }
 
         return (
@@ -599,8 +615,9 @@ var FixedDataTable = React.createClass({
                 scrollableColumns={state.bodyScrollableColumns}
                 showLastRowBorder={true}
                 width={state.width}
+                animated= {this.trans}
                 rowPositionGetter={this._scrollHelper.getRowPosition}
-            />
+                />
         );
     },
 
@@ -609,13 +626,13 @@ var FixedDataTable = React.createClass({
      * resizer knob clicked on. It displays the resizer and puts in the correct
      * location on the table.
      */
-    _onColumnResize(/*number*/ combinedWidth,
-                    /*number*/ leftOffset,
-                    /*number*/ cellWidth,
-                    /*?number*/ cellMinWidth,
-                    /*?number*/ cellMaxWidth,
-                    /*number|string*/ columnKey,
-                    /*object*/ event) {
+        _onColumnResize(/*number*/ combinedWidth,
+                        /*number*/ leftOffset,
+                        /*number*/ cellWidth,
+                        /*?number*/ cellMinWidth,
+                        /*?number*/ cellMaxWidth,
+                        /*number|string*/ columnKey,
+                        /*object*/ event) {
         this.setState({
             isColumnResizing: true,
             columnResizingData: {

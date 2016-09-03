@@ -18,6 +18,7 @@ var cx = require('fbjs/lib/cx');
 var {emptyFunction} = require('core');
 var joinClasses = require('fbjs/lib/joinClasses');
 var translateDOMPositionXY = require('./vendor/dom/translateDOMPositionXY');
+var {Animated,Easing, View} = require('lib');
 
 var {PropTypes} = React;
 
@@ -43,7 +44,7 @@ var FixedDataTableBufferedRows = React.createClass({
     scrollLeft: PropTypes.number.isRequired,
     scrollableColumns: PropTypes.array.isRequired,
     showLastRowBorder: PropTypes.bool,
-    width: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired
   },
 
   getInitialState() /*object*/ {
@@ -58,7 +59,7 @@ var FixedDataTableBufferedRows = React.createClass({
       rowsToRender: this._rowBuffer.getRows(
         this.props.firstRowIndex,
         this.props.firstRowOffset
-      ),
+      )
     });
   },
 
@@ -89,7 +90,7 @@ var FixedDataTableBufferedRows = React.createClass({
         rowsToRender: this._rowBuffer.getRows(
           nextProps.firstRowIndex,
           nextProps.firstRowOffset
-        ),
+        )
       });
     }
   },
@@ -97,7 +98,7 @@ var FixedDataTableBufferedRows = React.createClass({
   _updateBuffer() {
     if (this.isMounted()) {
       this.setState({
-        rowsToRender: this._rowBuffer.getRowsWithUpdatedBuffer(),
+        rowsToRender: this._rowBuffer.getRowsWithUpdatedBuffer()
       });
     }
   },
@@ -148,7 +149,7 @@ var FixedDataTableBufferedRows = React.createClass({
             cx('public/fixedDataTable/bodyRow'),
             cx({
               'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
-              'public/fixedDataTable/hasBottomBorder': hasBottomBorder,
+              'public/fixedDataTable/hasBottomBorder': hasBottomBorder
             })
           )}
         />;
@@ -158,16 +159,16 @@ var FixedDataTableBufferedRows = React.createClass({
 
     var style = {
       position: 'absolute',
-      pointerEvents: props.isScrolling ? 'none' : 'auto',
+      pointerEvents: props.isScrolling ? 'none' : 'auto'
     };
 
-    translateDOMPositionXY(
-      style,
-      0,
-      props.firstRowOffset - firstRowPosition + props.offsetTop
-    );
+    //translateDOMPositionXY(
+    //  style,
+    //  0,
+    //  props.firstRowOffset - firstRowPosition + props.offsetTop
+    //);
 
-    return <div style={style}>{this._staticRowArray}</div>;
+    return <Animated.View style={style}>{this._staticRowArray}</Animated.View>;
   },
 
   _getRowHeight(/*number*/ index) /*number*/ {

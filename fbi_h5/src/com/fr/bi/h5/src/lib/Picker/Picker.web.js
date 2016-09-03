@@ -113,6 +113,8 @@ class Picker extends Component {
     _handlePanResponderGrant(e, gestureState) {
         this.state.trans.setOffset({x: 0, y: this.state.trans.y.__getAnimatedValue()});
         this.state.trans.setValue({x: 0, y: 0});
+        e.stopPropagation();
+        e.preventDefault();
     }
 
     _handlePanResponderEnd(e, gestureState) {
