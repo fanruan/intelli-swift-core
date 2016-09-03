@@ -283,6 +283,7 @@ var FixedDataTable = React.createClass({
         }
         this._didScrollStop = debounce(this._didScrollStop, 200).bind(this);
 
+        this.trans = new Animated.ValueXY({x: 0, y: 0});
         return this._calculateState(this.props);
     },
 
@@ -295,8 +296,6 @@ var FixedDataTable = React.createClass({
         if (scrollToColumn !== undefined && scrollToColumn !== null) {
             this._columnToScrollTo = scrollToColumn;
         }
-
-        this.trans = new Animated.ValueXY();
 
         this._wheelHandler = new WheelHandler(
             this._onWheel,
@@ -315,10 +314,10 @@ var FixedDataTable = React.createClass({
     },
 
     _handlePanResponderGrant(e, gestureState) {
-        this.dx = 0;
-        this.dy = 0;
         this.trans.setOffset({x: 0, y: this.trans.y.__getAnimatedValue()});
         this.trans.setValue({x: 0, y: 0});
+        this.dx = 0;
+        this.dy = 0;
         e.stopPropagation();
         e.preventDefault();
     },
@@ -327,7 +326,18 @@ var FixedDataTable = React.createClass({
         Animated.event([null, {
             dy: this.trans.y
         }])(e, gestureState);
-
+        //var scrollY = this.state.scrollY;
+        //var minScrollY = this.state.useGroupHeader ? this.state.groupHeaderHeight : 0;
+        //var maxScrollY = this.state.maxScrollY;
+        //var dy = gestureState.dy;
+        //scrollY = scrollY - dy;
+        //if (-scrollY < minScrollY) {
+        //    scrollY = Math.pow(-scrollY - minScrollY, 0.8);
+        //}
+        //if (-scrollY > this.state.maxScrollY) {
+        //    scrollY = -maxScrollY - Math.pow(-scrollY - maxScrollY, 0.8);
+        //}
+        //this.trans.setValue({x: 0, y: -this.state.scrollY + scrollY});
         //this._onWheel(-gestureState.dx + this.dx, -gestureState.dy + this.dy);
         this.dx = gestureState.dx;
         this.dy = gestureState.dy;
@@ -338,6 +348,7 @@ var FixedDataTable = React.createClass({
 
     _handlePanResponderEnd(e, gestureState) {
         this.trans.flattenOffset();
+        this._onWheel(-gestureState.dx - gestureState.vx * 200, -gestureState.dy - gestureState.vy * 200);
     },
 
     _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
@@ -394,6 +405,9 @@ var FixedDataTable = React.createClass({
 
     componentDidMount() {
         this._reportContentHeight();
+        var headerOffsetTop = this.state.useGroupHeader ? this.state.groupHeaderHeight : 0;
+        var bodyOffsetTop = headerOffsetTop + this.state.headerHeight;
+        this.trans.setValue({x: 0, y: bodyOffsetTop});
     },
 
     componentWillReceiveProps(/*object*/ nextProps) {
@@ -615,7 +629,7 @@ var FixedDataTable = React.createClass({
                 scrollableColumns={state.bodyScrollableColumns}
                 showLastRowBorder={true}
                 width={state.width}
-                animated= {this.trans}
+                trans={this.trans}
                 rowPositionGetter={this._scrollHelper.getRowPosition}
                 />
         );
@@ -974,13 +988,25 @@ var FixedDataTable = React.createClass({
                     0,
                     scrollState.contentHeight - this.state.bodyHeight
                 );
-                this.setState({
-                    firstRowIndex: scrollState.index,
-                    firstRowOffset: scrollState.offset,
-                    scrollY: scrollState.position,
-                    scrollContentHeight: scrollState.contentHeight,
-                    maxScrollY: maxScrollY
+                var headerOffsetTop = this.state.useGroupHeader ? this.state.groupHeaderHeight : 0;
+                var bodyOffsetTop = headerOffsetTop + this.state.headerHeight;
+                var y = scrollState.offset - this._scrollHelper.getRowPosition(scrollState.index) + bodyOffsetTop;
+                Animated.timing(this.trans.y, {
+                    toValue: y,
+                    easing: Easing.out(Easing.ease),
+                    duration: 300
+                }).start(endState => {
+                    if (endState.finished) {
+                        this.setState({
+                            firstRowIndex: scrollState.index,
+                            firstRowOffset: scrollState.offset,
+                            scrollY: scrollState.position,
+                            scrollContentHeight: scrollState.contentHeight,
+                            maxScrollY: maxScrollY
+                        });
+                    }
                 });
+
             } else if (deltaX && this.props.overflowX !== 'hidden') {
                 x += deltaX;
                 x = x < 0 ? 0 : x;

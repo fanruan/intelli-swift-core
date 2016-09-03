@@ -34,13 +34,17 @@ class Picker extends Component {
 
     componentWillMount() {
         this._panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: ()=>true,
+            onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder.bind(this),
             onMoveShouldSetPanResponder: ()=>true,
             onPanResponderGrant: this._handlePanResponderGrant.bind(this),
             // onPanResponderMove: this._handlePanResponderMove.bind(this),
-            onPanResponderMove: Animated.event([null, {
-                dy: this.state.trans.y
-            }]),
+            onPanResponderMove: (e, gestureState)=> {
+                Animated.event([null, {
+                    dy: this.state.trans.y
+                }])(e, gestureState);
+                e.stopPropagation();
+                e.preventDefault();
+            },
             onPanResponderRelease: this._handlePanResponderEnd.bind(this),
             onPanResponderTerminate: this._handlePanResponderEnd.bind(this)
         });
@@ -80,7 +84,11 @@ class Picker extends Component {
                 <View style={styles.highlight}></View>
                 <Animated.View className={''} style={[{
                     transform: [{
-                      translateY: this.state.trans.y
+                        translateX: this.state.trans.x
+                    }, {
+                        translateY: this.state.trans.y
+                    }, {
+                        translateZ: 0
                     }]
                 },styles.container]}>
                     {childDisplay}
@@ -108,6 +116,10 @@ class Picker extends Component {
                 }
             }
         });
+    }
+
+    _handleStartShouldSetPanResponder(e) {
+        return e.nativeEvent.target === ReactDOM.findDOMNode(this.refs[PICKER])
     }
 
     _handlePanResponderGrant(e, gestureState) {
@@ -189,7 +201,8 @@ const styles = StyleSheet.create({
     },
 
     container: {
-
+        transitionDuration: '0ms',
+        transitionTimingFunction: 'ease-out'
     },
 
     highlight: {

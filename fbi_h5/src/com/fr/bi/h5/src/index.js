@@ -14,8 +14,6 @@ class AppContainer extends Component {
     render() {
         return (
             <View
-                onTouchStart={(e)=>{console.log(e); e.preventDefault();}}
-                onTouchMove={(e)=>{console.log(e); e.preventDefault();}}
                 ref="main"
                 className={StyleSheet.rootClassName}
                 style={styles.appContainer}>
