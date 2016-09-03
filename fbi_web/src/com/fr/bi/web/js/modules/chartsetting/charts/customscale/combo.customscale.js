@@ -68,6 +68,12 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
             self.pane.refresh()
         });
 
+        this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
+            var scale = self._calculate(self.pane.getAnalyzeContent());
+            self.trigger.setValue(scale);
+            self.pane.setOldValue(self.pane.getValue())
+        });
+
         BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             element: this.element,
