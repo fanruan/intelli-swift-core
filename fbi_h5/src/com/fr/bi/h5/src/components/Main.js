@@ -61,7 +61,7 @@ class Main extends Component {
     }
 
     _renderRow(rowData, sectionID, rowID) {
-        const type = this.props.template.widgets[rowData].type;
+        const type = this.props.template.popConfig.widgets[rowData].type;
         switch (type) {
             case BICst.WIDGET.TABLE:
                 return <TableComponent key={rowData} template={this.props.template} id={rowData}

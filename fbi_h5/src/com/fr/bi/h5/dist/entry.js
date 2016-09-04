@@ -59701,7 +59701,7 @@
 	    }, {
 	        key: '_renderRow',
 	        value: function _renderRow(rowData, sectionID, rowID) {
-	            var type = this.props.template.widgets[rowData].type;
+	            var type = this.props.template.popConfig.widgets[rowData].type;
 	            switch (type) {
 	                case BICst.WIDGET.TABLE:
 	                    return _lib2.default.createElement(TableComponent, { key: rowData, template: this.props.template, id: rowData,
