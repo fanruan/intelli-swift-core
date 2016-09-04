@@ -5,7 +5,7 @@ export PrefixIntervalTree from './structure/PrefixIntervalTree'
 
 export normalizeWheel from './events/normalizeWheel'
 export WheelHandler from './events/WheelHandler'
-export DOMMouseMoveTracker from './events/MouseMoveTracker'
+export MouseMoveTracker from './events/MouseMoveTracker'
 
 
 export UserAgent from './UserAgent'

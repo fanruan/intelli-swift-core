@@ -10,12 +10,13 @@ import React, {
     ListView,
     View,
     Fetch
-} from 'lib'
+    } from 'lib'
 
 import {Grid} from 'base'
 import {TableWidget} from 'widgets'
 
 import ChartComponent from './charts/ChartComponent.js'
+import TablleComponent from './tables/TableComponent.js'
 const {width, height} = Dimensions.get('window');
 
 class Main extends Component {
@@ -27,7 +28,7 @@ class Main extends Component {
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.rows = BI.keys(props.template.popConfig.widgets);
         this.state = {
-            dataSource: ds.cloneWithRows(this.rows),
+            dataSource: ds.cloneWithRows(this.rows)
         }
     }
 
@@ -47,53 +48,11 @@ class Main extends Component {
         //     >
         //
         // </Grid>
-        // return <ListView
-        //    initialListSize={3}
-        //    dataSource={this.state.dataSource}
-        //    renderRow={this._renderRow.bind(this)}
-        //    />
-        return <View
-            style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
-        >
-            <TableWidget
-                isNeedFreeze={true}
-                rowCount={100}
-                freezeCols={true}
-                headerRowCount={1}
-
-                regions={{
-                    topLeft: {
-                        columnCount: 5,
-                        columnWidth: 50,
-                        cellRenderer: ({columnIndex, rowIndex})=> {
-                            return <Text>{`${columnIndex}-${rowIndex}`}</Text>
-                        }
-                    },
-                    topRight: {
-                        columnCount: 10,
-                        columnWidth: 50,
-                        cellRenderer: ({columnIndex, rowIndex})=> {
-                            return <Text>{`${columnIndex}-${rowIndex}`}</Text>
-                        }
-                    },
-                    bottomLeft: {
-                        columnCount: 5,
-                        columnWidth: 50,
-                        cellRenderer: ({columnIndex, rowIndex})=> {
-                            return <Text>{`${columnIndex}-${rowIndex}`}</Text>
-                        }
-                    },
-                    bottomRight: {
-                        columnCount: 10,
-                        columnWidth: 50,
-                        cellRenderer: ({columnIndex, rowIndex})=> {
-                            return <Text>{`${columnIndex}-${rowIndex}`}</Text>
-                        }
-                    }
-                }}
-            >
-            </TableWidget>
-        </View>
+        return <ListView
+            initialListSize={3}
+            dataSource={this.state.dataSource}
+            renderRow={this._renderRow.bind(this)}
+            />
     }
 
     _cellRender({columnIndex, rowIndex}) {
@@ -102,8 +61,15 @@ class Main extends Component {
     }
 
     _renderRow(rowData, sectionID, rowID) {
-        return <ChartComponent key={rowData} template={this.props.template} id={rowData}
-                               height={height / 2}></ChartComponent>
+        const type = this.props.template.widgets[rowData].type;
+        switch (type) {
+            case BICst.WIDGET.TABLE:
+                return <TableComponent key={rowData} template={this.props.template} id={rowData}
+                                       width={width} height={height / 2}></TableComponent>
+            default:
+                return <ChartComponent key={rowData} template={this.props.template} id={rowData}
+                                       width={width} height={height / 2}></ChartComponent>
+        }
     }
 }
 mixin.onClass(Main, PureRenderMixin);

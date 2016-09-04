@@ -21,24 +21,24 @@
  */
 
 .fixedDataTableCellGroupLayout-cellGroup {
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
-  left: 0;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  white-space: nowrap;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
 }
 
 .fixedDataTableCellGroupLayout-cellGroup > .public-fixedDataTableCell-main {
-  display: inline-block;
-  vertical-align: top;
-  white-space: normal;
+    display: inline-block;
+    vertical-align: top;
+    white-space: normal;
 }
 
 .fixedDataTableCellGroupLayout-cellGroupWrapper {
-  position: absolute;
-  top: 0;
+    position: absolute;
+    top: 0;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
@@ -52,61 +52,61 @@
  */
 
 .fixedDataTableCellLayout-main {
-  border-right-style: solid;
-  border-right-width: 1px;
-  border-width: 0 1px 0 0;
-  box-sizing: border-box;
-  display: block;
-  overflow: hidden;
-  position: absolute;
-  white-space: normal;
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-width: 0 1px 0 0;
+    box-sizing: border-box;
+    display: block;
+    overflow: hidden;
+    position: absolute;
+    white-space: normal;
 }
 
 .fixedDataTableCellLayout-lastChild {
-  border-width: 0 1px 1px 0;
+    border-width: 0 1px 1px 0;
 }
 
 .fixedDataTableCellLayout-alignRight {
-  text-align: right;
+    text-align: right;
 }
 
 .fixedDataTableCellLayout-alignCenter {
-  text-align: center;
+    text-align: center;
 }
 
 .fixedDataTableCellLayout-wrap1 {
-  display: table;
+    display: table;
 }
 
 .fixedDataTableCellLayout-wrap2 {
-  display: table-row;
+    display: table-row;
 }
 
 .fixedDataTableCellLayout-wrap3 {
-  display: table-cell;
-  vertical-align: middle;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .fixedDataTableCellLayout-columnResizerContainer {
-  position: absolute;
-  right: 0px;
-  width: 6px;
-  z-index: 1;
+    position: absolute;
+    right: 0px;
+    width: 6px;
+    z-index: 1;
 }
 
 .fixedDataTableCellLayout-columnResizerContainer:hover {
-  cursor: ew-resize;
+    cursor: ew-resize;
 }
 
 .fixedDataTableCellLayout-columnResizerContainer:hover .fixedDataTableCellLayout-columnResizerKnob {
-  visibility: visible;
+    visibility: visible;
 }
 
 .fixedDataTableCellLayout-columnResizerKnob {
-  position: absolute;
-  right: 0px;
-  visibility: hidden;
-  width: 4px;
+    position: absolute;
+    right: 0px;
+    visibility: hidden;
+    width: 4px;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
@@ -120,30 +120,30 @@
  */
 
 .fixedDataTableColumnResizerLineLayout-mouseArea {
-  cursor: ew-resize;
-  position: absolute;
-  right: -5px;
-  width: 12px;
+    cursor: ew-resize;
+    position: absolute;
+    right: -5px;
+    width: 12px;
 }
 
 .fixedDataTableColumnResizerLineLayout-main {
-  border-right-style: solid;
-  border-right-width: 1px;
-  box-sizing: border-box;
-  position: absolute;
-  z-index: 10;
+    border-right-style: solid;
+    border-right-width: 1px;
+    box-sizing: border-box;
+    position: absolute;
+    z-index: 10;
 }
 
 body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
-  /* the resizer line is in the wrong position in RTL with no easy fix.
-   * Disabling is more useful than displaying it.
-   * #167 (github) should look into this and come up with a permanent fix.
-   */
-  display: none !important;
+    /* the resizer line is in the wrong position in RTL with no easy fix.
+     * Disabling is more useful than displaying it.
+     * #167 (github) should look into this and come up with a permanent fix.
+     */
+    display: none !important;
 }
 
 .fixedDataTableColumnResizerLineLayout-hiddenElem {
-  display: none !important;
+    display: none !important;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
@@ -157,45 +157,45 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
  */
 
 .fixedDataTableLayout-main {
-  border-style: solid;
-  border-width: 1px;
-  box-sizing: border-box;
-  overflow: hidden;
-  position: relative;
+    border-style: solid;
+    border-width: 1px;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
 }
 
 .fixedDataTableLayout-header,
 .fixedDataTableLayout-hasBottomBorder {
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
 }
 
 .fixedDataTableLayout-footer .public-fixedDataTableCell-main {
-  border-top-style: solid;
-  border-top-width: 1px;
+    border-top-style: solid;
+    border-top-width: 1px;
 }
 
 .fixedDataTableLayout-topShadow,
 .fixedDataTableLayout-bottomShadow {
-  height: 4px;
-  left: 0;
-  position: absolute;
-  right: 0;
-  z-index: 1;
+    height: 4px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    z-index: 1;
 }
 
 .fixedDataTableLayout-bottomShadow {
-  margin-top: -4px;
+    margin-top: -4px;
 }
 
 .fixedDataTableLayout-rowsContainer {
-  overflow: hidden;
-  position: relative;
+    overflow: hidden;
+    position: relative;
 }
 
 .fixedDataTableLayout-horizontalScrollbar {
-  bottom: 0;
-  position: absolute;
+    bottom: 0;
+    position: absolute;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
@@ -209,36 +209,36 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
  */
 
 .fixedDataTableRowLayout-main {
-  box-sizing: border-box;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
 }
 
 .fixedDataTableRowLayout-body {
-  left: 0;
-  position: absolute;
-  top: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
 }
 
 .fixedDataTableRowLayout-fixedColumnsDivider {
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
-  border-left-style: solid;
-  border-left-width: 1px;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-left-style: solid;
+    border-left-width: 1px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 0;
 }
 
 .fixedDataTableRowLayout-columnsShadow {
-  width: 4px;
+    width: 4px;
 }
 
 .fixedDataTableRowLayout-rowWrapper {
-  position: absolute;
-  top: 0;
+    position: absolute;
+    top: 0;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
@@ -252,53 +252,53 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
  */
 
 .ScrollbarLayout-main {
-  box-sizing: border-box;
-  outline: none;
-  overflow: hidden;
-  position: absolute;
-  -webkit-transition-duration: 250ms;
-          transition-duration: 250ms;
-  -webkit-transition-timing-function: ease;
-          transition-timing-function: ease;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+    box-sizing: border-box;
+    outline: none;
+    overflow: hidden;
+    position: absolute;
+    -webkit-transition-duration: 250ms;
+    transition-duration: 250ms;
+    -webkit-transition-timing-function: ease;
+    transition-timing-function: ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .ScrollbarLayout-mainVertical {
-  bottom: 0;
-  right: 0;
-  top: 0;
-  -webkit-transition-property: background-color width;
-          transition-property: background-color width;
-  width: 15px;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    -webkit-transition-property: background-color width;
+    transition-property: background-color width;
+    width: 15px;
 }
 
 .ScrollbarLayout-mainVertical.public-Scrollbar-mainActive,
 .ScrollbarLayout-mainVertical:hover {
-  width: 17px;
+    width: 17px;
 }
 
 .ScrollbarLayout-mainHorizontal {
-  bottom: 0;
-  height: 15px;
-  left: 0;
-  -webkit-transition-property: background-color height;
-          transition-property: background-color height;
+    bottom: 0;
+    height: 15px;
+    left: 0;
+    -webkit-transition-property: background-color height;
+    transition-property: background-color height;
 }
 
 /* Touching the scroll-track directly makes the scroll-track bolder */
 .ScrollbarLayout-mainHorizontal.public-Scrollbar-mainActive,
 .ScrollbarLayout-mainHorizontal:hover {
-  height: 17px;
+    height: 17px;
 }
 
 .ScrollbarLayout-face {
-  left: 0;
-  overflow: hidden;
-  position: absolute;
-  z-index: 1;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: 1;
 }
 
 /**
@@ -308,38 +308,38 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
  * scrollface element while dragging it.
  */
 .ScrollbarLayout-face:after {
-  border-radius: 6px;
-  content: '';
-  display: block;
-  position: absolute;
-  -webkit-transition: background-color 250ms ease;
-          transition: background-color 250ms ease;
+    border-radius: 6px;
+    content: '';
+    display: block;
+    position: absolute;
+    -webkit-transition: background-color 250ms ease;
+    transition: background-color 250ms ease;
 }
 
 .ScrollbarLayout-faceHorizontal {
-  bottom: 0;
-  left: 0;
-  top: 0;
+    bottom: 0;
+    left: 0;
+    top: 0;
 }
 
 .ScrollbarLayout-faceHorizontal:after {
-  bottom: 4px;
-  left: 0;
-  top: 4px;
-  width: 100%;
+    bottom: 4px;
+    left: 0;
+    top: 4px;
+    width: 100%;
 }
 
 .ScrollbarLayout-faceVertical {
-  left: 0;
-  right: 0;
-  top: 0;
+    left: 0;
+    right: 0;
+    top: 0;
 }
 
 .ScrollbarLayout-faceVertical:after {
-  height: 100%;
-  left: 4px;
-  right: 4px;
-  top: 0;
+    height: 100%;
+    left: 4px;
+    right: 4px;
+    top: 0;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
@@ -357,40 +357,40 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
  * Table.
  */
 .public-fixedDataTable-main {
-  border-color: #d3d3d3;
+    border-color: #d3d3d3;
 }
 
 .public-fixedDataTable-header,
 .public-fixedDataTable-hasBottomBorder {
-  border-color: #d3d3d3;
+    border-color: #d3d3d3;
 }
 
 .public-fixedDataTable-header .public-fixedDataTableCell-main {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .public-fixedDataTable-header,
 .public-fixedDataTable-header .public-fixedDataTableCell-main {
-  background-color: #f6f7f8;
-  background-image: -webkit-linear-gradient(#fff, #efefef);
-  background-image: linear-gradient(#fff, #efefef);
+    background-color: #f6f7f8;
+    background-image: -webkit-linear-gradient(#fff, #efefef);
+    background-image: linear-gradient(#fff, #efefef);
 }
 
 .public-fixedDataTable-footer .public-fixedDataTableCell-main {
-  background-color: #f6f7f8;
-  border-color: #d3d3d3;
+    background-color: #f6f7f8;
+    border-color: #d3d3d3;
 }
 
 .public-fixedDataTable-topShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAF0lEQVR4AWPUkNeSBhHCjJoK2twgFisAFagCCp3pJlAAAAAASUVORK5CYII=) repeat-x;
+    background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAF0lEQVR4AWPUkNeSBhHCjJoK2twgFisAFagCCp3pJlAAAAAASUVORK5CYII=) repeat-x;
 }
 
 .public-fixedDataTable-bottomShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAHElEQVQI12MwNjZmZdAT1+Nm0JDWEGZQk1GTBgAWkwIeAEp52AAAAABJRU5ErkJggg==) repeat-x;
+    background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAHElEQVQI12MwNjZmZdAT1+Nm0JDWEGZQk1GTBgAWkwIeAEp52AAAAABJRU5ErkJggg==) repeat-x;
 }
 
 .public-fixedDataTable-horizontalScrollbar .public-Scrollbar-mainHorizontal {
-  background-color: #fff;
+    background-color: #fff;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
@@ -407,20 +407,20 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
  * Table cell.
  */
 .public-fixedDataTableCell-main {
-  background-color: #fff;
-  border-color: #d3d3d3;
+    background-color: #fff;
+    border-color: #d3d3d3;
 }
 
 .public-fixedDataTableCell-highlighted {
-  background-color: #f4f4f4;
+    background-color: #f4f4f4;
 }
 
 .public-fixedDataTableCell-cellContent {
-  padding: 8px;
+    padding: 8px;
 }
 
 .public-fixedDataTableCell-columnResizerKnob {
-  background-color: #0284ff;
+    background-color: #0284ff;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
@@ -438,7 +438,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
  * Column resizer line.
  */
 .public-fixedDataTableColumnResizerLine-main {
-  border-color: #0284ff;
+    border-color: #0284ff;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
@@ -455,20 +455,20 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
  * Table row.
  */
 .public-fixedDataTableRow-main {
-  background-color: #fff;
+    background-color: #fff;
 }
 
 .public-fixedDataTableRow-highlighted,
 .public-fixedDataTableRow-highlighted .public-fixedDataTableCell-main {
-  background-color: #f6f7f8;
+    background-color: #f6f7f8;
 }
 
 .public-fixedDataTableRow-fixedColumnsDivider {
-  border-color: #d3d3d3;
+    border-color: #d3d3d3;
 }
 
 .public-fixedDataTableRow-columnsShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) repeat-y;
+    background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) repeat-y;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
@@ -489,21 +489,21 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
 /* Touching the scroll-track directly makes the scroll-track bolder */
 .public-Scrollbar-main.public-Scrollbar-mainActive,
 .public-Scrollbar-main:hover {
-  background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 .public-Scrollbar-mainOpaque,
 .public-Scrollbar-mainOpaque.public-Scrollbar-mainActive,
 .public-Scrollbar-mainOpaque:hover {
-  background-color: #fff;
+    background-color: #fff;
 }
 
 .public-Scrollbar-face:after {
-  background-color: #c2c2c2;
+    background-color: #c2c2c2;
 }
 
 .public-Scrollbar-main:hover .public-Scrollbar-face:after,
 .public-Scrollbar-mainActive .public-Scrollbar-face:after,
 .public-Scrollbar-faceActive:after {
-  background-color: #7d7d7d;
+    background-color: #7d7d7d;
 }

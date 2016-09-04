@@ -1,27 +1,9 @@
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule FixedDataTableRowBuffer
- * @typechecks
- */
-
-'use strict';
-
-var {IntegerBufferSet} = require('core');
+var {IntegerBufferSet, invariant} = require('core');
 
 var clamp = require('lodash/clamp');
-var invariant = require('fbjs/lib/invariant');
 var MIN_BUFFER_ROWS = 3;
 var MAX_BUFFER_ROWS = 6;
 
-// FixedDataTableRowBuffer is a helper class that executes row buffering
-// logic for FixedDataTable. It figures out which rows should be rendered
-// and in which positions.
 class FixedDataTableRowBuffer {
   constructor(
     /*number*/ rowsCount,

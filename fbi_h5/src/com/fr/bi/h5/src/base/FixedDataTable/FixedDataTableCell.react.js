@@ -1,20 +1,7 @@
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule FixedDataTableCell.react
- * @typechecks
- */
-
 var FixedDataTableCellDefault = require('./FixedDataTableCellDefault.react');
 var FixedDataTableHelper = require('./FixedDataTableHelper');
 var React = require('react');
-var cx = require('fbjs/lib/cx');
-var joinClasses = require('fbjs/lib/joinClasses');
+var cn = require('classnames');
 
 var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
@@ -22,16 +9,11 @@ var {PropTypes} = React;
 
 var DEFAULT_PROPS = {
   align: 'left',
-  highlighted: false,
+  highlighted: false
 };
 
 var FixedDataTableCell = React.createClass({
 
-  /**
-   * PropTypes are disabled in this component, because having them on slows
-   * down the FixedDataTable hugely in DEV mode. You can enable them back for
-   * development, but please don't commit this component with enabled propTypes.
-   */
   propTypes_DISABLED_FOR_PERFORMANCE: {
     isScrolling: PropTypes.bool,
     align: PropTypes.oneOf(['left', 'center', 'right']),
@@ -45,37 +27,19 @@ var FixedDataTableCell = React.createClass({
     cell: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.element,
-      PropTypes.func,
+      PropTypes.func
     ]),
 
     columnKey: PropTypes.oneOfType([
       PropTypes.string,
-      PropTypes.number,
+      PropTypes.number
     ]),
 
-    /**
-     * The row index that will be passed to `cellRenderer` to render.
-     */
     rowIndex: PropTypes.number.isRequired,
 
-    /**
-     * Callback for when resizer knob (in FixedDataTableCell) is clicked
-     * to initialize resizing. Please note this is only on the cells
-     * in the header.
-     * @param number combinedWidth
-     * @param number left
-     * @param number width
-     * @param number minWidth
-     * @param number maxWidth
-     * @param number|string columnKey
-     * @param object event
-     */
     onColumnResize: PropTypes.func,
 
-    /**
-     * The left offset in pixels of the cell.
-     */
-    left: PropTypes.number,
+    left: PropTypes.number
   },
 
   shouldComponentUpdate(nextProps) {
@@ -95,7 +59,7 @@ var FixedDataTableCell = React.createClass({
 
     var style = {
       height,
-      width,
+      width
     };
 
     if (DIR_SIGN === 1) {
@@ -104,17 +68,17 @@ var FixedDataTableCell = React.createClass({
       style.right = props.left;
     }
 
-    var className = joinClasses(
-      cx({
-        'fixedDataTableCellLayout/main': true,
-        'fixedDataTableCellLayout/lastChild': props.lastChild,
-        'fixedDataTableCellLayout/alignRight': props.align === 'right',
-        'fixedDataTableCellLayout/alignCenter': props.align === 'center',
-        'public/fixedDataTableCell/alignRight': props.align === 'right',
-        'public/fixedDataTableCell/highlighted': props.highlighted,
-        'public/fixedDataTableCell/main': true,
+    var className = cn(
+      cn({
+        'fixedDataTableCellLayout-main': true,
+        'fixedDataTableCellLayout-lastChild': props.lastChild,
+        'fixedDataTableCellLayout-alignRight': props.align === 'right',
+        'fixedDataTableCellLayout-alignCenter': props.align === 'center',
+        'public-fixedDataTableCell-alignRight': props.align === 'right',
+        'public-fixedDataTableCell-highlighted': props.highlighted,
+        'public-fixedDataTableCell-main': true
       }),
-      props.className,
+      props.className
     );
 
     var columnResizerComponent;
@@ -124,13 +88,13 @@ var FixedDataTableCell = React.createClass({
       };
       columnResizerComponent = (
         <div
-          className={cx('fixedDataTableCellLayout/columnResizerContainer')}
+          className={'fixedDataTableCellLayou-columnResizerContainer'}
           style={columnResizerStyle}
           onMouseDown={this._onColumnResizerMouseDown}>
           <div
-            className={joinClasses(
-              cx('fixedDataTableCellLayout/columnResizerKnob'),
-              cx('public/fixedDataTableCell/columnResizerKnob'),
+            className={cn(
+              'fixedDataTableCellLayout-columnResizerKnob',
+              'public-fixedDataTableCell-columnResizerKnob'
             )}
             style={columnResizerStyle}
           />
@@ -179,7 +143,7 @@ var FixedDataTableCell = React.createClass({
       this.props.columnKey,
       event
     );
-  },
+  }
 });
 
 module.exports = FixedDataTableCell;

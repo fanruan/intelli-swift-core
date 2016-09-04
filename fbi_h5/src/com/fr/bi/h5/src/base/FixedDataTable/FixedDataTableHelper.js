@@ -1,17 +1,3 @@
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule FixedDataTableHelper
- * @typechecks
- */
-
-'use strict';
-
 var React = require('react');
 var FixedDataTableColumnGroup = require('./FixedDataTableColumnGroup.react');
 var FixedDataTableColumn = require('./FixedDataTableColumn.react');
@@ -28,14 +14,6 @@ function renderToString(value) /*string*/ {
   }
 }
 
-/**
- * Helper method to execute a callback against all columns given the children
- * of a table.
- * @param {?object|array} children
- *    Children of a table.
- * @param {function} callback
- *    Function to excecute for each column. It is passed the column.
- */
 function forEachColumn(children, callback) {
   React.Children.forEach(children, (child) => {
     if (child.type === FixedDataTableColumnGroup) {
@@ -46,15 +24,6 @@ function forEachColumn(children, callback) {
   });
 }
 
-/**
- * Helper method to map columns to new columns. This takes into account column
- * groups and will generate a new column group if its columns change.
- * @param {?object|array} children
- *    Children of a table.
- * @param {function} callback
- *    Function to excecute for each column. It is passed the column and should
- *    return a result column.
- */
 function mapColumns(children, callback) {
   var newChildren = [];
   React.Children.forEach(children, originalChild => {
@@ -79,7 +48,7 @@ function mapColumns(children, callback) {
       // new children
       if (haveColumnsChanged) {
         newChild = React.cloneElement(originalChild, {
-          children: newColumns,
+          children: newColumns
         });
       }
     } else if (originalChild.type === FixedDataTableColumn) {
@@ -97,7 +66,7 @@ var FixedDataTableHelper = {
   CELL_VISIBILITY_TOLERANCE,
   renderToString,
   forEachColumn,
-  mapColumns,
+  mapColumns
 };
 
 module.exports = FixedDataTableHelper;

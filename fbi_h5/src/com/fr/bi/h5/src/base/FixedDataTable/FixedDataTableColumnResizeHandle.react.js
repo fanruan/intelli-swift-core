@@ -1,25 +1,9 @@
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * This is to be used with the FixedDataTable. It is a read line
- * that when you click on a column that is resizable appears and allows
- * you to resize the corresponding column.
- *
- * @providesModule FixedDataTableColumnResizeHandle.react
- * @typechecks
- */
-
-var DOMMouseMoveTracker = require('./../../core/events/MouseMoveTracker');
+var {MouseMoveTracker} = require('core');
 var React = require('react');
 var ReactComponentWithPureRenderMixin = require('react-addons-pure-render-mixin');
 
 var clamp = require('lodash/clamp');
-var cx = require('fbjs/lib/cx');
+var cn = require('classnames');
 
 var {PropTypes} = React;
 
@@ -29,57 +13,26 @@ var FixedDataTableColumnResizeHandle = React.createClass({
     propTypes: {
         visible: PropTypes.bool.isRequired,
 
-        /**
-         * This is the height of the line
-         */
         height: PropTypes.number.isRequired,
 
-        /**
-         * Offset from left border of the table, please note
-         * that the line is a border on diff. So this is really the
-         * offset of the column itself.
-         */
         leftOffset: PropTypes.number.isRequired,
 
-        /**
-         * Height of the clickable region of the line.
-         * This is assumed to be at the top of the line.
-         */
         knobHeight: PropTypes.number.isRequired,
 
-        /**
-         * The line is a border on a diff, so this is essentially
-         * the width of column.
-         */
         initialWidth: PropTypes.number,
 
-        /**
-         * The minimum width this dragger will collapse to
-         */
         minWidth: PropTypes.number,
 
-        /**
-         * The maximum width this dragger will collapse to
-         */
         maxWidth: PropTypes.number,
 
-        /**
-         * Initial click event on the header cell.
-         */
         initialEvent: PropTypes.object,
 
-        /**
-         * When resizing is complete this is called.
-         */
         onColumnResizeEnd: PropTypes.func,
 
-        /**
-         * Column key for the column being resized.
-         */
         columnKey: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.number
-        ]),
+        ])
     },
 
     getInitialState() /*object*/ {
@@ -100,7 +53,7 @@ var FixedDataTableColumnResizeHandle = React.createClass({
     },
 
     componentDidMount() {
-        this._mouseMoveTracker = new DOMMouseMoveTracker(
+        this._mouseMoveTracker = new MouseMoveTracker(
             this._onMove,
             this._onColumnResizeEnd,
             document.body
@@ -120,14 +73,14 @@ var FixedDataTableColumnResizeHandle = React.createClass({
         style.left = this.props.leftOffset;
         return (
             <div
-                className={cx({
-          'fixedDataTableColumnResizerLineLayout/main': true,
-          'fixedDataTableColumnResizerLineLayout/hiddenElem': !this.props.visible,
-          'public/fixedDataTableColumnResizerLine/main': true,
+                className={cn({
+          'fixedDataTableColumnResizerLineLayout-main': true,
+          'fixedDataTableColumnResizerLineLayout-hiddenElem': !this.props.visible,
+          'public-fixedDataTableColumnResizerLine-main': true
         })}
                 style={style}>
                 <div
-                    className={cx('fixedDataTableColumnResizerLineLayout/mouseArea')}
+                    className={'fixedDataTableColumnResizerLineLayout-mouseArea'}
                     style={{height: this.props.height}}
                 />
             </div>
@@ -153,7 +106,7 @@ var FixedDataTableColumnResizeHandle = React.createClass({
             this.state.width,
             this.props.columnKey
         );
-    },
+    }
 });
 
 module.exports = FixedDataTableColumnResizeHandle;

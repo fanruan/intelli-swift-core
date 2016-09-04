@@ -28,7 +28,7 @@ import Main from '../components/Main.js'
 //import ScrollViewDemo from '../examples/base/2/ScrollView/ScrollView'
 //import ListViewDemo from '../examples/base/2/ListView/ListView';
 //import PickerDemo from '../examples/base/2/Picker/Picker'
-import DatePickerIOSDemo from '../examples/base/2/DatePickerIOS/DatePickerIOS'
+//import DatePickerIOSDemo from '../examples/base/2/DatePickerIOS/DatePickerIOS'
 //
 //import AutoSizerDemo from '../examples/base/3/AutoSizer/AutoSizer';
 //import WheelerDemo from '../examples/base/3/Wheeler/Wheeler';
@@ -49,9 +49,9 @@ import DatePickerIOSDemo from '../examples/base/2/DatePickerIOS/DatePickerIOS'
 //import Animatable from '../examples/base/3/Animatable/Animatable'
 //
 //import FixedDataTableResizeExample from '../examples/base/3/FixedDataTable/ResizeExample'
-import FixedDataTableColumnGroupsExample from '../examples/base/3/FixedDataTable/ColumnGroupsExample'
+//import FixedDataTableColumnGroupsExample from '../examples/base/3/FixedDataTable/ColumnGroupsExample'
 //import FixedDataTableFilterExample from '../examples/base/3/FixedDataTable/FilterExample'
-import FixedDataTableFlexGrowExample from '../examples/base/3/FixedDataTable/FlexGrowExample'
+//import FixedDataTableFlexGrowExample from '../examples/base/3/FixedDataTable/FlexGrowExample'
 //import FixedDataTableObjectDataExample from '../examples/base/3/FixedDataTable/ObjectDataExample'
 //import FixedDataTableSortExample from '../examples/base/3/FixedDataTable/SortExample'
 
@@ -63,7 +63,7 @@ class App extends Component {
   render() {
     const {template, actions} = this.props;
     return (
-      <FixedDataTableColumnGroupsExample template={template} actions={actions} />
+      <Main template={template} actions={actions} />
     )
   }
 }

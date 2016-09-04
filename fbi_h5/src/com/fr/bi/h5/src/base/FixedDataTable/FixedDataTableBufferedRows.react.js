@@ -1,23 +1,9 @@
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule FixedDataTableBufferedRows.react
- * @typechecks
- */
-
 var React = require('react');
 var FixedDataTableRowBuffer = require('./FixedDataTableRowBuffer');
 var FixedDataTableRow = require('./FixedDataTableRow.react');
 
-var cx = require('fbjs/lib/cx');
-var {emptyFunction} = require('core');
-var joinClasses = require('fbjs/lib/joinClasses');
-var translateDOMPositionXY = require('./vendor/dom/translateDOMPositionXY');
+var cn = require('classnames');
+var {emptyFunction, translateDOMPositionXY} = require('core');
 var {View, Animated, Easing} = require('lib');
 
 var {PropTypes} = React;
@@ -144,13 +130,14 @@ var FixedDataTableBufferedRows = React.createClass({
                     onMouseDown={props.onRowMouseDown}
                     onMouseEnter={props.onRowMouseEnter}
                     onMouseLeave={props.onRowMouseLeave}
-                    className={joinClasses(
-            rowClassNameGetter(rowIndex),
-            cx('public/fixedDataTable/bodyRow'),
-            cx({
-              'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
-              'public/fixedDataTable/hasBottomBorder': hasBottomBorder
-            })
+                    trans={props.trans}
+                    className={cn(
+                        rowClassNameGetter(rowIndex),
+                        'public-fixedDataTable-bodyRow',
+                        cn({
+                          'fixedDataTableLayout-hasBottomBorder': hasBottomBorder,
+                          'public-fixedDataTable-hasBottomBorder': hasBottomBorder
+                        })
           )}
                     />;
         }
@@ -172,7 +159,7 @@ var FixedDataTableBufferedRows = React.createClass({
 
         return <Animated.View style={{
             transform: [{
-                translateX: this.props.trans.x
+                translateX: 0
             }, {
                 translateY: this.props.trans.y
             }, {
