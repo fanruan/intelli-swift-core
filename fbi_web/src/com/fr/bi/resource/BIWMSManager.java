@@ -25,7 +25,6 @@ public class BIWMSManager extends XMLFileManager {
         synchronized (BIWMSManager.class) {
             if (manager == null) {
                 manager = new BIWMSManager();
-                manager.readXMLFile();
             }
             return manager;
         }
@@ -74,6 +73,10 @@ public class BIWMSManager extends XMLFileManager {
     @Override
     public void writeXML(XMLPrintWriter xmlPrintWriter) {
 
+    }
+
+    public void clear(){
+        gisMap.clear();
     }
 
     public Map<String, JSONObject> getWMSInfo(){

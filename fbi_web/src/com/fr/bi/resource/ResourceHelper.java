@@ -66,15 +66,18 @@ public class ResourceHelper {
 
     public static class MapConstantTransmitter implements Transmitter {
 
-        private JSONObject innerMapInfo = new JSONObject();
-        private JSONObject customMapInfo = new JSONObject();
-        private JSONObject wmsInfo = new JSONObject();
+        private JSONObject innerMapInfo;
+        private JSONObject customMapInfo;
+        private JSONObject wmsInfo;
 
         @Override
         public String transmit(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String[] files) {
             Map<String, JSONObject> map = new HashMap<String, JSONObject>();
             StringBuilder buffer = new StringBuilder();
             try {
+                innerMapInfo = new JSONObject();
+                customMapInfo = new JSONObject();
+                wmsInfo = new JSONObject();
                 map.put("wmsInfo", wmsInfo);
                 map.put("custom_map_info", customMapInfo);
                 map.put("inner_map_info", innerMapInfo);
@@ -105,6 +108,8 @@ public class ResourceHelper {
 
         private void formatWMSData() throws JSONException {
             BIWMSManager manager = BIWMSManager.getInstance();
+            manager.clear();
+            manager.readXMLFile();
             Map<String, JSONObject> map = manager.getWMSInfo();
             for (Map.Entry<String, JSONObject> entry : map.entrySet()) {
                 String key = entry.getKey();
