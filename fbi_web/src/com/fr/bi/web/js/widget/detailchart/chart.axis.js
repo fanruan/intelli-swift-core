@@ -59,8 +59,7 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
         }
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
-        config.xAxis[0].showLabel = !config.dataSheet.enabled;
-        config.xAxis[0].showLabel = this.config.show_label;
+        config.xAxis[0].showLabel = this.config.chart_demo ? this.config.show_label : !config.dataSheet.enabled;
         config.zoom.zoomTool.visible = this.config.show_zoom;
         if(this.config.show_zoom === true){
             delete config.dataSheet;
@@ -276,7 +275,8 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE
+            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
+            chart_demo: options.chart_demo || false
         };
         this.options.items = items;
 
