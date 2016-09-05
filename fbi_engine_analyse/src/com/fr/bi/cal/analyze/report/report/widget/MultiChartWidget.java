@@ -1,31 +1,24 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.ChinesePinyinComparator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by User on 2016/4/25.
  */
 public class MultiChartWidget extends TableWidget {
-
-    private Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
-    private Map<String, BIDimension> dimensions = new HashMap<String, BIDimension>();
-    private Map<String, BISummaryTarget> targets = new HashMap<String, BISummaryTarget>();
-    private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
-
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         if (jo.has("view")) {
             JSONObject vjo = jo.optJSONObject("view");
-            parseView(vjo);
             JSONArray ja = new JSONArray();
             Iterator it = vjo.keys();
             List<String> sorted = new ArrayList<String>();
@@ -48,127 +41,10 @@ public class MultiChartWidget extends TableWidget {
             vjo.put(BIReportConstant.REGION.TARGET1, ja);
         }
         super.parseJSON(jo, userId);
-        createDimensionAndTargetMap();
-    }
-
-    private void createDimensionAndTargetMap() {
-        for(BIDimension dimension : this.getDimensions()){
-            for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
-                Integer key = entry.getKey();
-                if(key <= Integer.parseInt(BIReportConstant.REGION.DIMENSION2)){
-                    List<String> dIds = entry.getValue();
-                    if(dIds.contains(dimension.getValue())){
-                        dimensions.put(dimension.getValue(), dimension);
-                        break;
-                    }
-                }
-            }
-        }
-        for(BISummaryTarget target : this.getTargets()){
-            for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
-                Integer key = entry.getKey();
-                if(key >= Integer.parseInt(BIReportConstant.REGION.TARGET1)){
-                    List<String> dIds = entry.getValue();
-                    if(dIds.contains(target.getValue())){
-                        targets.put(target.getValue(), target);
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     @Override
     public int getType() {
         return BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART;
     }
-
-    private void parseView(JSONObject jo) throws Exception {
-        Iterator<Integer> it = jo.keys();
-        while (it.hasNext()) {
-            Integer region = it.next();
-            List<String> dimensionIds = new ArrayList<String>();
-            view.put(region, dimensionIds);
-            JSONArray tmp =  jo.getJSONArray(region.toString());
-            for(int j = 0; j < tmp.length(); j++){
-                dimensionIds.add(tmp.getString(j));
-            }
-        }
-    }
-
-    public BIDimension getCategoryDimension(){
-        List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION1));
-        for(BIDimension dimension : this.getViewDimensions()){
-            if(dimensionIds.contains(dimension.getValue())){
-                return dimension;
-            }
-        }
-        return null;
-    }
-
-    public BIDimension getSeriesDimension(){
-        List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION2));
-        for(BIDimension dimension : this.getViewDimensions()){
-            if(dimensionIds.contains(dimension.getValue())){
-                return dimension;
-            }
-        }
-        return null;
-    }
-
-    public Set<String> getAllDimensionIds(){
-        Set<String> dimensionIds = new HashSet<String>();
-        for(BIDimension dimension : this.getDimensions()){
-            dimensionIds.add(dimension.getValue());
-        }
-        return dimensionIds;
-    }
-
-    public Set<String> getAllTargetIds(){
-        Set<String> targetIds = new HashSet<String>();
-        for(BISummaryTarget target : this.getTargets()){
-            targetIds.add(target.getValue());
-        }
-        return targetIds;
-    }
-
-    public JSONObject getWidgetDrill() throws JSONException {
-        JSONObject drills = new JSONObject();
-        Set<String> dimensionIds = this.getAllDimensionIds();
-
-        for (Map.Entry<String, JSONArray> entry : clicked.entrySet()) {
-            String dId = entry.getKey();
-            if(dimensionIds.contains(dId)){
-                drills.put(dId, entry.getValue());
-            }
-        }
-        return drills;
-    }
-
-    public BIDimension getDrillDimension(JSONArray drill) throws JSONException {
-        if (drill == null || drill.length() == 0) {
-            return null;
-        }
-        String id = drill.getJSONObject(drill.length() - 1).getString("dId");
-        return dimensions.get(id);
-    }
-
-    public BIDimension getDimensionById(String id){
-        for (BIDimension dimension : this.getDimensions()){
-            if(ComparatorUtils.equals(dimension.getValue(), id)){
-                return dimension;
-            }
-        }
-        return null;
-    }
-
-    public BISummaryTarget getTargetById(String id){
-        for (BISummaryTarget target : this.getTargets()){
-            if(ComparatorUtils.equals(target.getValue(), id)){
-                return target;
-            }
-        }
-        return null;
-    }
-
 }
