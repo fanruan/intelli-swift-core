@@ -1,6 +1,6 @@
 var React = require('react');
-var FixedDataTableRowBuffer = require('./FixedDataTableRowBuffer');
-var FixedDataTableRow = require('./FixedDataTableRow.react');
+var TableRowBuffer = require('./TableRowBuffer');
+var TableRow = require('./TableRow');
 
 var cn = require('classnames');
 var {emptyFunction, translateDOMPositionXY} = require('core');
@@ -8,7 +8,7 @@ var {View, Animated, Easing} = require('lib');
 
 var {PropTypes} = React;
 
-var FixedDataTableBufferedRows = React.createClass({
+var TableBufferedRows = React.createClass({
 
     propTypes: {
         isScrolling: PropTypes.bool,
@@ -35,7 +35,7 @@ var FixedDataTableBufferedRows = React.createClass({
 
     getInitialState() /*object*/ {
         this._rowBuffer =
-            new FixedDataTableRowBuffer(
+            new TableRowBuffer(
                 this.props.rowsCount,
                 this.props.defaultRowHeight,
                 this.props.height,
@@ -62,7 +62,7 @@ var FixedDataTableBufferedRows = React.createClass({
             nextProps.defaultRowHeight !== this.props.defaultRowHeight ||
             nextProps.height !== this.props.height) {
             this._rowBuffer =
-                new FixedDataTableRowBuffer(
+                new TableRowBuffer(
                     nextProps.rowsCount,
                     nextProps.defaultRowHeight,
                     nextProps.height,
@@ -115,7 +115,7 @@ var FixedDataTableBufferedRows = React.createClass({
                 rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
 
             this._staticRowArray[i] =
-                <FixedDataTableRow
+                <TableRow
                     key={i}
                     isScrolling={props.isScrolling}
                     index={rowIndex}
@@ -174,4 +174,4 @@ var FixedDataTableBufferedRows = React.createClass({
     }
 });
 
-module.exports = FixedDataTableBufferedRows;
+module.exports = TableBufferedRows;

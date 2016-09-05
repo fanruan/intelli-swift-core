@@ -1,6 +1,6 @@
 var React = require('react');
-var FixedDataTableColumnGroup = require('./FixedDataTableColumnGroup.react');
-var FixedDataTableColumn = require('./FixedDataTableColumn.react');
+var TableColumnGroup = require('./TableColumnGroup');
+var TableColumn = require('./TableColumn');
 
 var DIR_SIGN = +1;
 // A cell up to 5px outside of the visible area will still be considered visible
@@ -16,9 +16,9 @@ function renderToString(value) /*string*/ {
 
 function forEachColumn(children, callback) {
   React.Children.forEach(children, (child) => {
-    if (child.type === FixedDataTableColumnGroup) {
+    if (child.type === TableColumnGroup) {
       forEachColumn(child.props.children, callback);
-    } else if (child.type === FixedDataTableColumn) {
+    } else if (child.type === TableColumn) {
       callback(child);
     }
   });
@@ -32,7 +32,7 @@ function mapColumns(children, callback) {
     // The child is either a column group or a column. If it is a column group
     // we need to iterate over its columns and then potentially generate a
     // new column group
-    if (originalChild.type === FixedDataTableColumnGroup) {
+    if (originalChild.type === TableColumnGroup) {
       var haveColumnsChanged = false;
       var newColumns = [];
 
@@ -51,7 +51,7 @@ function mapColumns(children, callback) {
           children: newColumns
         });
       }
-    } else if (originalChild.type === FixedDataTableColumn) {
+    } else if (originalChild.type === TableColumn) {
       newChild = callback(originalChild);
     }
 
@@ -61,7 +61,7 @@ function mapColumns(children, callback) {
   return newChildren;
 }
 
-var FixedDataTableHelper = {
+var TableHelper = {
   DIR_SIGN,
   CELL_VISIBILITY_TOLERANCE,
   renderToString,
@@ -69,4 +69,4 @@ var FixedDataTableHelper = {
   mapColumns
 };
 
-module.exports = FixedDataTableHelper;
+module.exports = TableHelper;

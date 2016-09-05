@@ -13,10 +13,10 @@
 "use strict";
 
 var FakeObjectDataListStore = require('../../helpers/FakeObjectDataListStore');
-var {FixedDataTable} = require('base');
+var {Table} = require('base');
 var React = require('react');
 
-const {Table, Column, Cell} = FixedDataTable;
+const {Column, Cell} = Table;
 
 const TextCell = ({rowIndex, data, columnKey, ...props}) => (
   <Cell {...props}>

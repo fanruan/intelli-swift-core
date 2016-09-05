@@ -14,10 +14,10 @@
 
 var ExampleImage = require('../../helpers/ExampleImage');
 var FakeObjectDataListStore = require('../../helpers/FakeObjectDataListStore');
-var {FixedDataTable} = require('base');
+var {Table} = require('base');
 var React = require('react');
 
-const {Table, Column, Cell} = FixedDataTable;
+const {Column, Cell} = Table;
 
 const DateCell = ({rowIndex, data, col, ...props}) => (
   <Cell {...props}>

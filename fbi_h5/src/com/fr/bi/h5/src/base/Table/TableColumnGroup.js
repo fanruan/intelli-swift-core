@@ -2,7 +2,7 @@ var React = require('react');
 
 var {PropTypes} = React;
 
-var FixedDataTableColumnGroup = React.createClass({
+var TableColumnGroup = React.createClass({
   statics: {
     __TableColumnGroup__: true
   },
@@ -28,11 +28,11 @@ var FixedDataTableColumnGroup = React.createClass({
   render() {
     if (__DEV__) {
       throw new Error(
-        'Component <FixedDataTableColumnGroup /> should never render'
+        'Component <TableColumnGroup /> should never render'
       );
     }
     return null;
   }
 });
 
-module.exports = FixedDataTableColumnGroup;
+module.exports = TableColumnGroup;

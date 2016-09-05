@@ -9,7 +9,7 @@ var NO_ROWS_SCROLL_RESULT = {
   contentHeight: 0
 };
 
-class FixedDataTableScrollHelper {
+class TableScrollHelper {
   constructor(
     /*number*/ rowCount,
     /*number*/ defaultRowHeight,
@@ -262,4 +262,4 @@ class FixedDataTableScrollHelper {
   }
 }
 
-module.exports = FixedDataTableScrollHelper;
+module.exports = TableScrollHelper;

@@ -1,9 +1,9 @@
-var FixedDataTableCellDefault = require('./FixedDataTableCellDefault.react');
-var FixedDataTableHelper = require('./FixedDataTableHelper');
+var TableCellDefault = require('./TableCellDefault');
+var TableHelper = require('./TableHelper');
 var React = require('react');
 var cn = require('classnames');
 
-var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
+var DIR_SIGN = TableHelper.DIR_SIGN;
 
 var {PropTypes} = React;
 
@@ -12,7 +12,7 @@ var DEFAULT_PROPS = {
   highlighted: false
 };
 
-var FixedDataTableCell = React.createClass({
+var TableCell = React.createClass({
 
   propTypes_DISABLED_FOR_PERFORMANCE: {
     isScrolling: PropTypes.bool,
@@ -119,10 +119,10 @@ var FixedDataTableCell = React.createClass({
       content = props.cell(cellProps);
     } else {
       content = (
-        <FixedDataTableCellDefault
+        <TableCellDefault
           {...cellProps}>
           {props.cell}
-        </FixedDataTableCellDefault>
+        </TableCellDefault>
       );
     }
 
@@ -146,4 +146,4 @@ var FixedDataTableCell = React.createClass({
   }
 });
 
-module.exports = FixedDataTableCell;
+module.exports = TableCell;

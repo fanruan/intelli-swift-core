@@ -4,7 +4,7 @@ var clamp = require('lodash/clamp');
 var MIN_BUFFER_ROWS = 3;
 var MAX_BUFFER_ROWS = 6;
 
-class FixedDataTableRowBuffer {
+class TableRowBuffer {
   constructor(
     /*number*/ rowsCount,
     /*number*/  defaultRowHeight,
@@ -13,7 +13,7 @@ class FixedDataTableRowBuffer {
   ) {
     invariant(
       defaultRowHeight !== 0,
-      "defaultRowHeight musn't be equal 0 in FixedDataTableRowBuffer"
+      "defaultRowHeight musn't be equal 0 in TableRowBuffer"
     );
 
     this._bufferSet = new IntegerBufferSet();
@@ -119,4 +119,4 @@ class FixedDataTableRowBuffer {
   }
 }
 
-module.exports = FixedDataTableRowBuffer;
+module.exports = TableRowBuffer;

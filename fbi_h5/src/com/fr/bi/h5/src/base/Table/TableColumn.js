@@ -2,7 +2,7 @@ var React = require('react');
 
 var {PropTypes} = React;
 
-var FixedDataTableColumn = React.createClass({
+var TableColumn = React.createClass({
   statics: {
     __TableColumn__: true
   },
@@ -55,11 +55,11 @@ var FixedDataTableColumn = React.createClass({
   render() {
     if (__DEV__) {
       throw new Error(
-        'Component <FixedDataTableColumn /> should never render'
+        'Component <TableColumn /> should never render'
       );
     }
     return null;
   },
 });
 
-module.exports = FixedDataTableColumn;
+module.exports = TableColumn;

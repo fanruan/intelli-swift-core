@@ -1,12 +1,12 @@
 var React = require('react');
-var FixedDataTableCellGroup = require('./FixedDataTableCellGroup.react');
+var TableCellGroup = require('./TableCellGroup');
 
 var cn = require('classnames');
 var {translateDOMPositionXY} = require('core');
 
 var {PropTypes} = React;
 
-var FixedDataTableRowImpl = React.createClass({
+var TableRowImpl = React.createClass({
 
     propTypes: {
 
@@ -47,7 +47,7 @@ var FixedDataTableRowImpl = React.createClass({
 
         var fixedColumnsWidth = this._getColumnsWidth(this.props.fixedColumns);
         var fixedColumns =
-            <FixedDataTableCellGroup
+            <TableCellGroup
                 key="fixed_cells"
                 isScrolling={this.props.isScrolling}
                 height={this.props.height}
@@ -61,7 +61,7 @@ var FixedDataTableRowImpl = React.createClass({
                 />;
         var columnsShadow = this._renderColumnsShadow(fixedColumnsWidth);
         var scrollableColumns =
-            <FixedDataTableCellGroup
+            <TableCellGroup
                 key="scrollable_cells"
                 isScrolling={this.props.isScrolling}
                 height={this.props.height}
@@ -140,7 +140,7 @@ var FixedDataTableRowImpl = React.createClass({
     }
 });
 
-var FixedDataTableRow = React.createClass({
+var TableRow = React.createClass({
 
     propTypes: {
 
@@ -167,7 +167,7 @@ var FixedDataTableRow = React.createClass({
             <div
                 style={style}
                 className={'fixedDataTableRowLayout-rowWrapper'}>
-                <FixedDataTableRowImpl
+                <TableRowImpl
                     {...this.props}
                     offsetTop={undefined}
                     zIndex={undefined}
@@ -178,4 +178,4 @@ var FixedDataTableRow = React.createClass({
 });
 
 
-module.exports = FixedDataTableRow;
+module.exports = TableRow;

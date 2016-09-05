@@ -124,7 +124,7 @@ function adjustColumnWidths(/*array*/ columns,
     return columns;
 }
 
-var FixedDataTableWidthHelper = {
+var TableWidthHelper = {
     getTotalWidth,
     getTotalFlexGrow,
     distributeFlexWidth,
@@ -132,4 +132,4 @@ var FixedDataTableWidthHelper = {
     adjustColumnGroupWidths
 };
 
-module.exports = FixedDataTableWidthHelper;
+module.exports = TableWidthHelper;

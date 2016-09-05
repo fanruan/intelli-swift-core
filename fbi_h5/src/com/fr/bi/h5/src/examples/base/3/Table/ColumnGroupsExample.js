@@ -13,13 +13,13 @@
 "use strict";
 
 var FakeObjectDataListStore = require('../../helpers/FakeObjectDataListStore');
-var {FixedDataTable} = require('base');
+var {Table} = require('base');
 var React = require('react');
 var {Dimensions} = require('lib')
 
 const {width, height} = Dimensions.get('window');
 
-const {Table, Column, ColumnGroup, Cell} = FixedDataTable;
+const {Column, ColumnGroup, Cell} = Table;
 
 const TextCell = ({rowIndex, data, col, ...props}) => (
     <Cell {...props}>
@@ -42,7 +42,7 @@ class ColumnGroupsExample extends React.Component {
         return (
             <Table
                 rowHeight={30}
-                groupHeaderHeight={30}
+                groupHeaderHeight={60}
                 headerHeight={30}
                 rowsCount={dataList.getSize()}
                 width={width}

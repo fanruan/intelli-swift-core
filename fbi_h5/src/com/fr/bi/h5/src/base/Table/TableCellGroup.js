@@ -1,6 +1,6 @@
-var FixedDataTableHelper = require('./FixedDataTableHelper');
+var TableHelper = require('./TableHelper');
 var React = require('react');
-var FixedDataTableCell = require('./FixedDataTableCell.react');
+var TableCell = require('./TableCell');
 
 var {translateDOMPositionXY} = require('core');
 var {Animated, Easing, View} = require('lib');
@@ -9,9 +9,9 @@ var cn = require('classnames');
 
 var {PropTypes} = React;
 
-var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
+var DIR_SIGN = TableHelper.DIR_SIGN;
 
-var FixedDataTableCellGroupImpl = React.createClass({
+var TableCellGroupImpl = React.createClass({
 
     propTypes_DISABLED_FOR_PERFORMANCE: {
 
@@ -109,7 +109,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
         var className = columnProps.cellClassName;
 
         return (
-            <FixedDataTableCell
+            <TableCell
                 isScrolling={this.props.isScrolling}
                 align={columnProps.align}
                 className={className}
@@ -136,7 +136,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
     },
 });
 
-var FixedDataTableCellGroup = React.createClass({
+var TableCellGroup = React.createClass({
 
     propTypes_DISABLED_FOR_PERFORMANCE: {
         isScrolling: PropTypes.bool,
@@ -181,7 +181,7 @@ var FixedDataTableCellGroup = React.createClass({
             <div
                 style={style}
                 className={'fixedDataTableCellGroupLayout-cellGroupWrapper'}>
-                <FixedDataTableCellGroupImpl
+                <TableCellGroupImpl
                     {...props}
                     onColumnResize={onColumnResize}
                     />
@@ -208,4 +208,4 @@ var FixedDataTableCellGroup = React.createClass({
 });
 
 
-module.exports = FixedDataTableCellGroup;
+module.exports = TableCellGroup;

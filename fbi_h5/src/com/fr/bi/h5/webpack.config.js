@@ -1,9 +1,10 @@
 const path = require('path');
-var webpack = require('webpack')
+var webpack = require('webpack');
 var srcPath = path.join(__dirname, '/src');
 module.exports = {
     entry: {
         entry: `${srcPath}/index.js`,
+        vendor: ['react', 'react-dom', 'core', 'data', 'lib', 'base']
     },
     output: {
         filename: "[name].js",
@@ -14,6 +15,7 @@ module.exports = {
         extensions: ['', '.js', '.jsx'],
         alias: {
             core: `${srcPath}/core/`,
+            data: `${srcPath}/data/`,
             lib: `${srcPath}/lib/`,
             base: `${srcPath}/base/`,
             widgets: `${srcPath}/widgets/`,
@@ -62,6 +64,7 @@ module.exports = {
         ]
     },
     plugins: [
+        new webpack.optimize.CommonsChunkPlugin('vendor',  'vendor.js')
         //new webpack.DefinePlugin({
         //    'process.env.NODE_ENV': '"production"'
         //}),

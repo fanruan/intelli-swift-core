@@ -25,7 +25,8 @@ class Main extends Component {
     }
 
     render() {
-        const wi = this.props.template.popConfig.widgets[this.props.id];
+        const widgetObj = this.props.widget;
+        const wi = widgetObj.createJson();
         return <View ref={function (ob) {
             var w = {...wi, page: -1};
             Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {

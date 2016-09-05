@@ -18,6 +18,7 @@ import React, {
 } from 'lib';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {Template} from 'data';
 import * as TodoActions from '../actions/todos';
 require('styles/App.css');
 
@@ -48,12 +49,12 @@ import Main from '../components/Main.js'
 //import SortableDemo from '../examples/base/3/Sortable/Sortable'
 //import Animatable from '../examples/base/3/Animatable/Animatable'
 //
-//import FixedDataTableResizeExample from '../examples/base/3/FixedDataTable/ResizeExample'
-//import FixedDataTableColumnGroupsExample from '../examples/base/3/FixedDataTable/ColumnGroupsExample'
-//import FixedDataTableFilterExample from '../examples/base/3/FixedDataTable/FilterExample'
-//import FixedDataTableFlexGrowExample from '../examples/base/3/FixedDataTable/FlexGrowExample'
-//import FixedDataTableObjectDataExample from '../examples/base/3/FixedDataTable/ObjectDataExample'
-//import FixedDataTableSortExample from '../examples/base/3/FixedDataTable/SortExample'
+//import TableResizeExample from '../examples/base/3/Table/ResizeExample'
+//import TableColumnGroupsExample from '../examples/base/3/Table/ColumnGroupsExample'
+//import TableFilterExample from '../examples/base/3/Table/FilterExample'
+//import TableFlexGrowExample from '../examples/base/3/Table/FlexGrowExample'
+//import TableObjectDataExample from '../examples/base/3/Table/ObjectDataExample'
+//import TableSortExample from '../examples/base/3/Table/SortExample'
 
 
 // import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
@@ -63,7 +64,7 @@ class App extends Component {
   render() {
     const {template, actions} = this.props;
     return (
-      <Main template={template} actions={actions} />
+      <Main template={new Template(template)} actions={actions} />
     )
   }
 }

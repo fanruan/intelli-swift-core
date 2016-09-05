@@ -7,7 +7,7 @@ var cn = require('classnames');
 
 var {PropTypes} = React;
 
-var FixedDataTableColumnResizeHandle = React.createClass({
+var TableColumnResizeHandle = React.createClass({
     mixins: [ReactComponentWithPureRenderMixin],
 
     propTypes: {
@@ -109,4 +109,4 @@ var FixedDataTableColumnResizeHandle = React.createClass({
     }
 });
 
-module.exports = FixedDataTableColumnResizeHandle;
+module.exports = TableColumnResizeHandle;

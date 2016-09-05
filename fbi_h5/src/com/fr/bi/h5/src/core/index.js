@@ -57,7 +57,6 @@ export BrowserSupportCore from './dom/BrowserSupportCore'
 export getVendorPrefixedName from './dom/getVendorPrefixedName'
 export translateDOMPositionXY from './dom/translateDOMPositionXY'
 
-
 //export {
 //    isFunction, isArray, isInteger, isNil, isNumber, isObject, isPlainObject, isString
 //} from 'lodash'

@@ -4,7 +4,7 @@ var cn = require('classnames');
 
 var {PropTypes} = React;
 
-var FixedDataTableCellDefault = React.createClass({
+var TableCellDefault = React.createClass({
   propTypes: {
 
     height: PropTypes.number,
@@ -64,4 +64,4 @@ var FixedDataTableCellDefault = React.createClass({
   }
 });
 
-module.exports = FixedDataTableCellDefault;
+module.exports = TableCellDefault;
