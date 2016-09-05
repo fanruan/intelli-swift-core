@@ -33,7 +33,7 @@ webpackJsonp([0],{
 
 	var _View2 = _interopRequireDefault(_View);
 
-	var _Portal = __webpack_require__(510);
+	var _Portal = __webpack_require__(512);
 
 	var _Portal2 = _interopRequireDefault(_Portal);
 
@@ -1537,6 +1537,65 @@ webpackJsonp([0],{
 
 /***/ },
 
+/***/ 194:
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	'use strict';
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var invariant = function(condition, format, a, b, c, d, e, f) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  }
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error(
+	        'Minified exception occurred; use the non-minified dev environment ' +
+	        'for the full error message and additional helpful warnings.'
+	      );
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(
+	        format.replace(/%s/g, function() { return args[argIndex++]; })
+	      );
+	      error.name = 'Invariant Violation';
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	};
+
+	module.exports = invariant;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+
 /***/ 195:
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1999,13 +2058,13 @@ webpackJsonp([0],{
 
 	var _reactRedux = __webpack_require__(172);
 
-	var _data = __webpack_require__(527);
+	var _data = __webpack_require__(529);
 
-	var _todos = __webpack_require__(532);
+	var _todos = __webpack_require__(534);
 
 	var TodoActions = _interopRequireWildcard(_todos);
 
-	var _Main = __webpack_require__(533);
+	var _Main = __webpack_require__(535);
 
 	var _Main2 = _interopRequireDefault(_Main);
 
@@ -2024,7 +2083,7 @@ webpackJsonp([0],{
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *          you edit them, they are not updated again.
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
-	__webpack_require__(740);
+	__webpack_require__(742);
 
 	//import PanResponderDemo from '../examples/base/2/PanResponder/PanResponder'
 	//import ViewDemo from '../examples/base/2/View/View'
@@ -2112,7 +2171,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 532:
+/***/ 534:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2159,7 +2218,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 533:
+/***/ 535:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2182,21 +2241,21 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _core = __webpack_require__(325);
+	var _core = __webpack_require__(326);
 
 	var _lib = __webpack_require__(202);
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(534);
+	var _base = __webpack_require__(536);
 
-	var _widgets = __webpack_require__(735);
+	var _widgets = __webpack_require__(737);
 
-	var _ChartComponent = __webpack_require__(737);
+	var _ChartComponent = __webpack_require__(739);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-	var _TableComponent = __webpack_require__(738);
+	var _TableComponent = __webpack_require__(740);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
@@ -2269,7 +2328,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 735:
+/***/ 737:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2279,7 +2338,7 @@ webpackJsonp([0],{
 	});
 	exports.TableWidget = undefined;
 
-	var _TableWidget2 = __webpack_require__(736);
+	var _TableWidget2 = __webpack_require__(738);
 
 	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
 
@@ -2290,7 +2349,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 736:
+/***/ 738:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2315,13 +2374,13 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _core = __webpack_require__(325);
+	var _core = __webpack_require__(326);
 
 	var _lib = __webpack_require__(202);
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(534);
+	var _base = __webpack_require__(536);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2420,7 +2479,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 737:
+/***/ 739:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2445,7 +2504,7 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _core = __webpack_require__(325);
+	var _core = __webpack_require__(326);
 
 	var _lib = __webpack_require__(202);
 
@@ -2513,7 +2572,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 738:
+/***/ 740:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2538,19 +2597,19 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _core = __webpack_require__(325);
+	var _core = __webpack_require__(326);
 
 	var _lib = __webpack_require__(202);
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _widgets = __webpack_require__(735);
+	var _widgets = __webpack_require__(737);
 
-	var _TableComponentHelper = __webpack_require__(739);
+	var _TableComponentHelper = __webpack_require__(741);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _base = __webpack_require__(534);
+	var _base = __webpack_require__(536);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2641,6 +2700,7 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(_widgets.TableWidget, {
 	                        width: width - 20,
 	                        height: height - 20,
+	                        isNeedFreeze: this._tableHelper.isFreeze(),
 	                        freezeCols: [0],
 	                        columnSize: [300, 300],
 	                        header: this._tableHelper.getHeader(),
@@ -2685,7 +2745,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 739:
+/***/ 741:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2696,7 +2756,7 @@ webpackJsonp([0],{
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _core = __webpack_require__(325);
+	var _core = __webpack_require__(326);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2777,6 +2837,11 @@ webpackJsonp([0],{
 	            track(this.data.data, -1);
 	            return result;
 	        }
+	    }, {
+	        key: 'isFreeze',
+	        value: function isFreeze() {
+	            return this.widget.isFreeze();
+	        }
 	    }]);
 
 	    return TableComponentHelper;
@@ -2786,16 +2851,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 740:
+/***/ 742:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(741);
+	var content = __webpack_require__(743);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(382)(content, {});
+	var update = __webpack_require__(383)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -2813,10 +2878,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 741:
+/***/ 743:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(381)();
+	exports = module.exports = __webpack_require__(382)();
 	// imports
 
 

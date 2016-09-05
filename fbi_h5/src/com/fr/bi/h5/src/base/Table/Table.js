@@ -112,6 +112,7 @@ var Table = React.createClass({
         this._didScrollStop = debounce(this._didScrollStop, 200).bind(this);
 
         this.trans = new Animated.ValueXY({x: 0, y: 0});
+        this.offset = new Animated.Value(0);
         return this._calculateState(this.props);
     },
 
@@ -146,6 +147,8 @@ var Table = React.createClass({
     },
 
     _handlePanResponderGrant(e, gestureState) {
+        this.offset.setOffset(this.offset.__getAnimatedValue());
+        this.offset.setValue(0);
         this.trans.setOffset({x: this.trans.x.__getAnimatedValue(), y: this.trans.y.__getAnimatedValue()});
         this.trans.setValue({x: 0, y: 0});
         this.dx = 0;
@@ -158,8 +161,8 @@ var Table = React.createClass({
         //Animated.event([null, {
         //    dy: this.trans.y
         //}])(e, gestureState);
-        var scrollX = this.state.scrollX, scrollY = this.state.scrollY;
-        var maxScrollX = this.state.maxScrollX, maxScrollY = this.state.maxScrollY;
+        var scrollX = this.state.scrollX, scrollY = this.state.scrollY, offsetX = this.state.offsetX;
+        var maxScrollX = this.state.maxScrollX, maxScrollY = this.state.maxScrollY, maxOffsetScroll = this.state.offsetWidth - this.state.width;
         var dx = gestureState.dx, dy = gestureState.dy;
 
         if (Math.abs(dy) > Math.abs(dx)) {
@@ -174,6 +177,7 @@ var Table = React.createClass({
 
         scrollX -= dx;
         scrollY -= dy;
+        offsetX -= dx;
         if (scrollX < 0) {
             scrollX = 0 - Math.pow(0 - scrollX, 0.8);
         }
@@ -186,10 +190,32 @@ var Table = React.createClass({
         if (scrollY > maxScrollY) {
             scrollY = maxScrollY + Math.pow(scrollY - maxScrollY, 0.8);
         }
+        if (offsetX < 0) {
+            offsetX = 0 - Math.pow(0 - offsetX, 0.8);
+        }
+        if (offsetX > maxOffsetScroll) {
+            offsetX = maxOffsetScroll + Math.pow(offsetX - maxOffsetScroll, 0.8);
+        }
         if (Math.abs(dy) > Math.abs(dx)) {
             this.trans.setValue({x: 0, y: this.state.scrollY - scrollY});
         } else {
-            this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
+            var x = this.state.scrollX;
+            //if (dx < 0 && x === 0) {
+            //    this.setState({
+            //        offsetWidth: this.state.offsetWidth - dx
+            //    }, ()=> {
+            //        this.offset.setValue(this.state.offsetX - offsetX);
+            //    });
+            //    return;
+            //}
+            x += Math.round(-gestureState.dx);
+
+            if ((x > 0 && x <= this.state.maxScrollX) || this._lock) {
+                this._lock = true;
+                this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
+            } else {
+                this.offset.setValue(this.state.offsetX - offsetX);
+            }
         }
 
         //this._onWheel(-gestureState.dx + this.dx, -gestureState.dy + this.dy);
@@ -202,21 +228,30 @@ var Table = React.createClass({
 
     _handlePanResponderEnd(e, gestureState) {
         var dx = gestureState.dx, dy = gestureState.dy;
-        if (Math.abs(dy) > Math.abs(dx)) {
-            if (this._xScrolling) {
-                this.trans.setValue({x: 0, y: 0});
-                this._runScrollX();
-                return;
-            }
-        } else {
-            if (this._yScrolling) {
-                this.trans.setValue({x: 0, y: 0});
-                this._runScrollY();
+        var quit = false;
+        if (this._xScrolling) {
+            this.trans.setValue({x: 0, y: 0});
+            this._runScrollX();
+            quit = true;
+        }
+        if (this._yScrolling) {
+            this.trans.setValue({x: 0, y: 0});
+            this._runScrollY();
+            quit = true;
+        }
+        if (quit) {
+            return;
+        }
+        if (Math.abs(dy) <= Math.abs(dx)) {
+            if (!this._lock) {
+                this._onSwipe(-gestureState.dx);
                 return;
             }
         }
         this.trans.flattenOffset();
+
         this._onWheel(-gestureState.dx - gestureState.vx * 200, -gestureState.dy - gestureState.vy * 200);
+        this._lock = false;
     },
 
     _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
@@ -327,7 +362,7 @@ var Table = React.createClass({
                         'fixedDataTableLayout-header',
                         'public-fixedDataTable-header'
                     )}
-                    width={state.width}
+                    width={state.offsetWidth}
                     height={state.groupHeaderHeight}
                     index={0}
                     zIndex={1}
@@ -337,7 +372,7 @@ var Table = React.createClass({
                     scrollableColumns={state.groupHeaderScrollableColumns}
                     onColumnResize={this._onColumnResize}
                     trans={this.trans}
-                />
+                    />
             );
         }
 
@@ -377,7 +412,7 @@ var Table = React.createClass({
                 initialEvent={state.columnResizingData.initialEvent}
                 onColumnResizeEnd={props.onColumnResizeEndCallback}
                 columnKey={state.columnResizingData.key}
-            />;
+                />;
 
         var footer = null;
         if (state.footerHeight) {
@@ -389,7 +424,7 @@ var Table = React.createClass({
                         'fixedDataTableLayout-footer',
                         'public-fixedDataTable-footer'
                     )}
-                    width={state.width}
+                    width={state.offsetWidth}
                     height={state.footerHeight}
                     index={-1}
                     zIndex={1}
@@ -398,7 +433,7 @@ var Table = React.createClass({
                     scrollableColumns={state.footScrollableColumns}
                     scrollLeft={state.scrollX}
                     trans={this.trans}
-                />;
+                    />;
         }
 
         var rows = this._renderRows(bodyOffsetTop);
@@ -411,7 +446,7 @@ var Table = React.createClass({
                     'fixedDataTableLayout-header',
                     'public-fixedDataTable-header'
                 )}
-                width={state.width}
+                width={state.offsetWidth}
                 height={state.headerHeight}
                 index={-1}
                 zIndex={1}
@@ -421,7 +456,7 @@ var Table = React.createClass({
                 scrollableColumns={state.headScrollableColumns}
                 onColumnResize={this._onColumnResize}
                 trans={this.trans}
-            />;
+                />;
 
         var topShadow;
         var bottomShadow;
@@ -433,7 +468,7 @@ var Table = React.createClass({
                         'public-fixedDataTable-topShadow'
                     )}
                     style={{top: bodyOffsetTop}}
-                />;
+                    />;
         }
 
         if (
@@ -449,7 +484,7 @@ var Table = React.createClass({
                         'public-fixedDataTable-bottomShadow'
                     )}
                     style={{top: footOffsetTop}}
-                />;
+                    />;
         }
 
         return (
@@ -461,9 +496,17 @@ var Table = React.createClass({
                 )}
                 onWheel={this._wheelHandler.onWheel}
                 style={{height: state.height, width: state.width}} {...this._panResponder.panHandlers}>
-                <View
+                <Animated.View
                     className={'fixedDataTableLayout-rowsContainer'}
-                    style={{height: rowsContainerHeight, width: state.width}}>
+                    style={{
+                        transform: [{
+                            translateX: this.offset
+                        }, {
+                            translateY: 0
+                        }, {
+                            translateZ: 0
+                        }],
+                        height: rowsContainerHeight, width: state.offsetWidth}}>
                     {dragKnob}
                     {groupHeader}
                     {header}
@@ -471,7 +514,7 @@ var Table = React.createClass({
                     {footer}
                     {topShadow}
                     {bottomShadow}
-                </View>
+                </Animated.View>
             </View>
         );
     },
@@ -500,10 +543,10 @@ var Table = React.createClass({
                 scrollLeft={state.scrollX}
                 scrollableColumns={state.bodyScrollableColumns}
                 showLastRowBorder={true}
-                width={state.width}
+                width={state.offsetWidth}
                 trans={this.trans}
                 rowPositionGetter={this._scrollHelper.getRowPosition}
-            />
+                />
         );
     },
 
@@ -512,13 +555,13 @@ var Table = React.createClass({
      * resizer knob clicked on. It displays the resizer and puts in the correct
      * location on the table.
      */
-    _onColumnResize(/*number*/ combinedWidth,
-                    /*number*/ leftOffset,
-                    /*number*/ cellWidth,
-                    /*?number*/ cellMinWidth,
-                    /*?number*/ cellMaxWidth,
-                    /*number|string*/ columnKey,
-                    /*object*/ event) {
+        _onColumnResize(/*number*/ combinedWidth,
+                        /*number*/ leftOffset,
+                        /*number*/ cellWidth,
+                        /*?number*/ cellMinWidth,
+                        /*?number*/ cellMaxWidth,
+                        /*number|string*/ columnKey,
+                        /*object*/ event) {
         this.setState({
             isColumnResizing: true,
             columnResizingData: {
@@ -638,6 +681,7 @@ var Table = React.createClass({
 
         var firstRowIndex = (oldState && oldState.firstRowIndex) || 0;
         var firstRowOffset = (oldState && oldState.firstRowOffset) || 0;
+        var offsetX = 0, offsetWidth = props.width;
         var scrollX, scrollY;
         if (oldState && props.overflowX !== 'hidden') {
             scrollX = oldState.scrollX;
@@ -803,6 +847,8 @@ var Table = React.createClass({
             maxScrollY,
             reservedHeight: totalHeightReserved,
             scrollContentHeight,
+            offsetX,
+            offsetWidth,
             scrollX,
             scrollY,
 
@@ -847,13 +893,60 @@ var Table = React.createClass({
         };
     },
 
+    _onSwipe(deltaX){
+        if (this.isMounted()) {
+            if (!this._isScrolling) {
+                this._didScrollStart();
+            }
+            var x = this.state.offsetX;
+            var abortX = false, ready = false;
+            if (deltaX && this.props.overflowX !== 'hidden') {
+                if (this._yScrolling) {
+                    return;
+                }
+                this._xScrolling = true;
+                x += Math.round(deltaX);
+                x = x < 0 ? 0 : x;
+                x = x > this.state.offsetWidth - this.state.width ? this.state.offsetWidth - this.state.width : x;
+                var f = this._runScrollX = ()=> {
+                    abortX = false;
+                    this._xScrolling = false;
+                    this.offset.setValue(-x);
+                    this.offset.setOffset(0);
+                    this._didScrollStop();
+                };
+                Animated.timing(this.offset, {
+                    toValue: -x,
+                    easing: Easing.out(Easing.ease),
+                    duration: 300
+                }).start(endState => {
+                    if (!endState.finished) {
+                        abortX = true;
+                    }
+                    if (endState.finished && !abortX) {
+                        f();
+                        ready = true;
+                    }
+                });
+                if (!this._debounceOffsetX) {
+                    this._debounceOffsetX = debounce((callback)=>(callback()), 400);
+                }
+                this._debounceOffsetX(()=> {
+                    if (!abortX && !ready) {
+                        f();
+                    }
+                });
+            }
+        }
+    },
+
     _onWheel(/*number*/ deltaX, /*number*/ deltaY) {
         if (this.isMounted()) {
             if (!this._isScrolling) {
                 this._didScrollStart();
             }
             var x = this.state.scrollX;
-            var abortX = false, abortY = false;
+            var abortX = false, abortY = false, ready = false;
             if (Math.abs(deltaY) > Math.abs(deltaX) &&
                 this.props.overflowY !== 'hidden') {
                 if (this._xScrolling) {
@@ -868,7 +961,7 @@ var Table = React.createClass({
                 var headerOffsetTop = this.state.useGroupHeader ? this.state.groupHeaderHeight : 0;
                 var bodyOffsetTop = headerOffsetTop + this.state.headerHeight;
                 var y = scrollState.offset - this._scrollHelper.getRowPosition(scrollState.index) + bodyOffsetTop;
-                this._runScrollY = ()=> {
+                var f = this._runScrollY = ()=> {
                     abortY = false;
                     this.setState({
                         firstRowIndex: scrollState.index,
@@ -890,7 +983,17 @@ var Table = React.createClass({
                         abortY = true;
                     }
                     if (endState.finished && !abortY) {
-                        this._runScrollY();
+                        f();
+                        ready = true;
+                    }
+                });
+
+                if (!this._debounceScrollY) {
+                    this._debounceScrollY = debounce((callback)=>(callback()), 400);
+                }
+                this._debounceScrollY(()=> {
+                    if (!abortX && !ready) {
+                        f();
                     }
                 });
 
@@ -902,7 +1005,7 @@ var Table = React.createClass({
                 x += Math.round(deltaX);
                 x = x < 0 ? 0 : x;
                 x = x > this.state.maxScrollX ? this.state.maxScrollX : x;
-                this._runScrollX = ()=> {
+                var f = this._runScrollX = ()=> {
                     abortX = false;
                     this.setState({
                         scrollX: x
@@ -920,7 +1023,16 @@ var Table = React.createClass({
                         abortX = true;
                     }
                     if (endState.finished && !abortX) {
-                        this._runScrollX();
+                        f();
+                        ready = true;
+                    }
+                });
+                if (!this._debounceScrollX) {
+                    this._debounceScrollX = debounce((callback)=>(callback()), 400);
+                }
+                this._debounceScrollX(()=> {
+                    if (!abortX && !ready) {
+                        f();
                     }
                 });
             }

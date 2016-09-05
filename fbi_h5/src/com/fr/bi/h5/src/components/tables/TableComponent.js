@@ -10,7 +10,7 @@ import React, {
     ListView,
     View,
     Fetch
-} from 'lib'
+    } from 'lib'
 
 import {TableWidget} from 'widgets';
 
@@ -73,13 +73,14 @@ class TableComponent extends Component {
         this._tableHelper.setData(data);
         return <View
             style={{width: width, height: height}}
-        >
+            >
             <View
                 style={{position: 'absolute', left: 10, right: 10, top: 10, bottom: 10}}
-            >
+                >
                 <TableWidget
                     width={width - 20}
                     height={height - 20}
+                    isNeedFreeze={this._tableHelper.isFreeze()}
                     freezeCols={[0]}
                     columnSize={[300, 300]}
                     header={this._tableHelper.getHeader()}
@@ -92,7 +93,7 @@ class TableComponent extends Component {
                             {items[colIndex][rowIndex].text}
                         </Cell>
                     }}
-                >
+                    >
                 </TableWidget>
             </View>
         </View>

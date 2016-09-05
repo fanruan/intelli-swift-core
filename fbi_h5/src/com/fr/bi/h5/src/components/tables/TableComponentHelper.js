@@ -69,6 +69,10 @@ class TableComponentHelper {
         track(this.data.data, -1);
         return result;
     }
+
+    isFreeze(){
+        return this.widget.isFreeze();
+    }
 }
 
 export default TableComponentHelper;

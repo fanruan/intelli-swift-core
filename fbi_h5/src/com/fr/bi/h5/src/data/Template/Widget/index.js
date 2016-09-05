@@ -120,6 +120,10 @@ class Widget {
     createJson() {
         return this.widget;
     }
+
+    isFreeze() {
+        return this.widget.settings.freeze_dim;
+    }
 }
 
 export default Widget;
