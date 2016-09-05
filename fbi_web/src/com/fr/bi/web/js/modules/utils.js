@@ -2072,13 +2072,15 @@
                             case BICst.WIDGET.DATE:
                                 fType = BICst.FILTER_DATE.BELONG_DATE_RANGE;
                                 var start = fValue.start, end = fValue.end;
+                                fValue = {};
                                 if (BI.isNotNull(start)) {
                                     start = parseComplexDate(start);
+                                    fValue.start = start;
                                 }
                                 if (BI.isNotNull(end)) {
                                     end = parseComplexDate(end);
+                                    fValue.end = end;
                                 }
-                                fValue = {start: start, end: end};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -2600,11 +2602,12 @@
                 }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
                     paramdate = parseComplexDateCommon(wWValue.start);
-                } else {
+                }
+                if (se === BI.MultiDateParamPane.end && BI.isNotNull(wWValue.end)) {
                     paramdate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
-                if (BI.isNull(widgetInfo.wId) && BI.isNull(BI.Utils.getWidgetValueByID(widgetInfo.wId))) {
+                if (BI.isNull(widgetInfo.wId) || BI.isNull(BI.Utils.getWidgetValueByID(widgetInfo.wId))) {
                     return;
                 }
                 paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
@@ -2685,6 +2688,8 @@
                 var endTime = parseComplexDate(end);
                 if(BI.isNotNull(endTime)){
                     filterValue.end = new Date(endTime).getOffsetDate(1).getTime() - 1
+                }else{
+                    delete filterValue.end;
                 }
             }
         }
@@ -2703,6 +2708,8 @@
                         var endTime = parseComplexDate(wValue.end);
                         if(BI.isNotNull(endTime)){
                             filterValue.end = new Date(endTime).getOffsetDate(1).getTime() - 1;
+                        }else{
+                            delete filterValue.end;
                         }
                     }
                     break;
@@ -2712,9 +2719,13 @@
                         var e = parseComplexDate(wValue.end);
                         if(BI.isNotNull(s) && BI.isNotNull(e)){
                             filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
+                        }else{
+                            delete filterValue.start
                         }
                         if(BI.isNotNull(s)){
                             filterValue.end = new Date(s).getTime() - 1;
+                        }else{
+                            delete filterValue.end;
                         }
                     } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
                         filterValue.start = parseComplexDate(wValue.start);

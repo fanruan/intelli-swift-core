@@ -11,19 +11,15 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
-import com.fr.general.GeneralContext;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
-import com.fr.stable.CodeUtils;
 import com.fr.stable.StableUtils;
-import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.Transmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -93,10 +89,7 @@ public class ResourceHelper {
                 innerMapInfo.put("MAP_PARENT_CHILDREN", new JSONObject());
 
                 formatWMSData();
-                String innerMapPath = new File(GeneralContext.getEnvProvider().getPath(), "resources/geojson/map").getAbsolutePath();
-                String customMapPath = new File(GeneralContext.getEnvProvider().getPath(), "resources/geojson/image").getAbsolutePath();
-                editFileNames(innerMapPath, "map", "map", innerMapInfo, "MAP_", 0);
-                editFileNames(customMapPath, "image", "image", customMapInfo, "MAP_", 0);
+                formatMapData();
                 for (String file : files) {
                     buffer.append(TemplateUtils.renderTemplate(file, map));
                 }
@@ -106,6 +99,40 @@ public class ResourceHelper {
             return buffer.toString();
         }
 
+        private void formatMapData() throws JSONException{
+            BIMapInfoManager manager = BIMapInfoManager.getInstance();
+            for (Map.Entry<String, Integer> innerLayerEntry : manager.getinnerMapLayer().entrySet()) {
+                innerMapInfo.getJSONObject("MAP_LAYER").put(innerLayerEntry.getKey(), innerLayerEntry.getValue());
+            }
+            for (Map.Entry<String, String> innerNameEntry : manager.getinnerMapName().entrySet()) {
+                innerMapInfo.getJSONObject("MAP_NAME").put(innerNameEntry.getKey(), innerNameEntry.getValue());
+            }
+            for (Map.Entry<String, String> innerTypeNameEntry : manager.getinnerMapTypeName().entrySet()) {
+                innerMapInfo.getJSONObject("MAP_TYPE_NAME").put(innerTypeNameEntry.getKey(), innerTypeNameEntry.getValue());
+            }
+            for (Map.Entry<String, String> innerPathEntry : manager.getinnerMapPath().entrySet()) {
+                innerMapInfo.getJSONObject("MAP_PATH").put(innerPathEntry.getKey(), innerPathEntry.getValue());
+            }
+            for (Map.Entry<String, List<String>> innerParentChildrenEntry : manager.getinnerMapParentChildrenRelation().entrySet()) {
+                innerMapInfo.getJSONObject("MAP_PARENT_CHILDREN").put(innerParentChildrenEntry.getKey(), innerParentChildrenEntry.getValue());
+            }
+            for (Map.Entry<String, Integer> customLayerEntry : manager.getCustomMapLayer().entrySet()) {
+                customMapInfo.getJSONObject("MAP_LAYER").put(customLayerEntry.getKey(), customLayerEntry.getValue());
+            }
+            for (Map.Entry<String, String> customNameEntry : manager.getCustomMapName().entrySet()) {
+                customMapInfo.getJSONObject("MAP_NAME").put(customNameEntry.getKey(), customNameEntry.getValue());
+            }
+            for (Map.Entry<String, String> customTypeNameEntry : manager.getCustomMapTypeName().entrySet()) {
+                customMapInfo.getJSONObject("MAP_TYPE_NAME").put(customTypeNameEntry.getKey(), customTypeNameEntry.getValue());
+            }
+            for (Map.Entry<String, String> customPathEntry : manager.getCustomMapPath().entrySet()) {
+                customMapInfo.getJSONObject("MAP_PATH").put(customPathEntry.getKey(), customPathEntry.getValue());
+            }
+            for (Map.Entry<String, List<String>> customParentChildrenEntry : manager.getCustomMapParentChildrenRelation().entrySet()) {
+                customMapInfo.getJSONObject("MAP_PARENT_CHILDREN").put(customParentChildrenEntry.getKey(), customParentChildrenEntry.getValue());
+            }
+        }
+
         private void formatWMSData() throws JSONException {
             BIWMSManager manager = BIWMSManager.getInstance();
             Map<String, JSONObject> map = manager.getWMSInfo();
@@ -113,42 +140,6 @@ public class ResourceHelper {
                 String key = entry.getKey();
                 JSONObject value = entry.getValue();
                 wmsInfo.put(key, value);
-            }
-        }
-
-        private void editFileNames(String path, String parentPath, String parentName, JSONObject obj, String prev, int layer) throws JSONException {
-            File file = new File(path);
-            File[] array = file.listFiles();
-            if(array == null){
-                return;
-            }
-            List<File> dirs = new ArrayList<File>();
-            List<File> files = new ArrayList<File>();
-            for(File f : array){
-                if(f.isFile()){
-                    files.add(f);
-                }else{
-                    if (f.isDirectory()){
-                        dirs.add(f);
-                    }
-                }
-            }
-            JSONArray children = new JSONArray();
-            for(File f : files){
-                String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
-                String currentName = (StringUtils.isEmpty(parentName) ? fileName : parentName + File.separator + fileName);
-                obj.getJSONObject("MAP_NAME").put(fileName, prev + currentName);
-                obj.getJSONObject("MAP_TYPE_NAME").put(prev + currentName, fileName);
-                obj.getJSONObject("MAP_PATH").put(prev + currentName, "?op=fr_bi&cmd=get_map_json&file_path=" + CodeUtils.cjkEncode(currentName) + ".json");
-                obj.getJSONObject("MAP_LAYER").put(prev + currentName, layer);
-                children.put(prev + currentName);
-            }
-            obj.getJSONObject("MAP_PARENT_CHILDREN").put(parentName, children);
-            for(File f : dirs){
-                String currentName = (StringUtils.isEmpty(parentName) ? f.getName() : parentName + File.separator + f.getName());
-                String currentPath = StringUtils.isEmpty(parentPath) ? f.getName() : parentPath + File.separator + f.getName();
-                editFileNames(f.getAbsolutePath(), currentPath, currentName, obj, prev, layer + 1);
-
             }
         }
     }
@@ -2834,6 +2825,9 @@ public class ResourceHelper {
         return new String[] {
                 "com/fr/bi/web/mobile/mobile.jQuery.js",
                 "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/es5-sham.js",
+                "com/fr/bi/web/js/third/raphael.js",
+                "com/fr/bi/web/js/third/leaflet.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/core/underscore.js",
                 "com/fr/bi/web/js/base/base.js",

@@ -1,7 +1,9 @@
 package com.finebi.cube.data.disk;
 
 import com.finebi.cube.data.ICubePrimitiveResourceDiscovery;
+import com.finebi.cube.data.disk.reader.BIStringNIOReader;
 import com.finebi.cube.data.disk.reader.primitive.BIByteNIOReader;
+import com.finebi.cube.data.disk.writer.BIStringNIOWriter;
 import com.finebi.cube.data.disk.writer.primitive.BIByteNIOWriter;
 import com.finebi.cube.tools.BILocationBuildTestTool;
 import com.finebi.cube.location.ICubeResourceLocation;
@@ -119,6 +121,24 @@ public class BIDiskWriterReaderTest extends TestCase {
 //                BIByteNIOWriter writer = new BIByteNIOWriter("D:\\temp\\arrayBasic.xml");
             }
             System.out.println(System.currentTimeMillis() - time);
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+    }
+
+    public void testWriteNull() {
+        try {
+            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer");
+            location.setStringType();
+            location.setWriterSourceLocation();
+            BIStringNIOWriter writer1 = (BIStringNIOWriter) BICubeDiskDiscovery.getInstance().getCubeWriter(location);
+            location.setReaderSourceLocation();
+            BIStringNIOReader reader1 = (BIStringNIOReader) BICubeDiskDiscovery.getInstance().getCubeReader(location);
+
+            writer1.recordSpecificValue(0, null);
+            assertEquals(reader1.getSpecificValue(0), null);
+            System.out.println(reader1.getSpecificValue(0));
+
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
