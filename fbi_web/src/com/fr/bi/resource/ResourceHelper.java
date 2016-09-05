@@ -108,8 +108,6 @@ public class ResourceHelper {
 
         private void formatWMSData() throws JSONException {
             BIWMSManager manager = BIWMSManager.getInstance();
-            manager.clear();
-            manager.readXMLFile();
             Map<String, JSONObject> map = manager.getWMSInfo();
             for (Map.Entry<String, JSONObject> entry : map.entrySet()) {
                 String key = entry.getKey();

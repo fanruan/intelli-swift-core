@@ -25,6 +25,7 @@ public class BIWMSManager extends XMLFileManager {
         synchronized (BIWMSManager.class) {
             if (manager == null) {
                 manager = new BIWMSManager();
+                manager.readXMLFile();
             }
             return manager;
         }
