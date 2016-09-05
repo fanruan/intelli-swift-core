@@ -136,6 +136,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                     self.tabs.setSelect(2);
                 }
             })
+            self.fireEvent(BI.DataLabelImageSet.IMAGE_SAVE, arguments);
         });
         var header = BI.createWidget({
             type: "bi.center_adapt",
@@ -273,4 +274,5 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     }
 });
 BI.DataLabelImageSet.EVENT_CHANGE = "BI.DataLabelImageSet.EVENT_CHANGE";
+BI.DataLabelImageSet.IMAGE_SAVE = "BI.DataLabelImageSet.IMAGE_SAVE";
 $.shortcut("bi.data_label_image_set", BI.DataLabelImageSet);
