@@ -2831,6 +2831,9 @@ public class ResourceHelper {
         return new String[] {
                 "com/fr/bi/web/mobile/mobile.jQuery.js",
                 "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/es5-sham.js",
+                "com/fr/bi/web/js/third/raphael.js",
+                "com/fr/bi/web/js/third/leaflet.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/core/underscore.js",
                 "com/fr/bi/web/js/base/base.js",
@@ -2841,6 +2844,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/proto/number.js",
                 "com/fr/bi/web/js/base/proto/array.js",
                 "com/fr/bi/web/js/base/proto/date.js",
+                "com/fr/bi/web/js/template/map.js",
                 "com/fr/bi/web/js/data/utils.js"
         };
     }
