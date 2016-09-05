@@ -156,6 +156,9 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             self.chart.populate(self.imageSet.getValue().src);
             self.fireEvent(BI.DataLabelTab.IMG_CHANGE, arguments);
         });
+        this.imageSet.on(BI.DataLabelImageSet.IMAGE_SAVE, function () {
+            self._style.imgStyle = self.imageSet.getValue();
+        });
         this.chart = BI.createWidget({
             type: "bi.data_label_chart",
             chartType: o.chartType
@@ -168,7 +171,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                     cls: "img-select",
                     items: [this.chart, {
                         el: this.imageSet,
-                        lgap: 20
+                        lgap: 2
                     }],
                     scrollable: null,
                     scrolly: false,
@@ -178,11 +181,13 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             }
         );
     },
+
     setValue: function (v) {
         this._style = v;
         this.textToolbar.setValue(v.textStyle);
         this.showLabels.setValue(v.showLabels);
     },
+
     getValue: function () {
         return this._style;
     }
