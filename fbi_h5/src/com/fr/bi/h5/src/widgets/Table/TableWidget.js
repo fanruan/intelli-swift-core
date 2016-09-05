@@ -26,6 +26,7 @@ class TableWidget extends Component {
     static defaultProps = {
         isNeedFreeze: true,
         freezeCols: [],
+        columnSize: [],
         rowHeight: 30,
         headerRowHeight: 30,
         header: [],
@@ -37,14 +38,14 @@ class TableWidget extends Component {
     state = {};
 
     render() {
-        const {isNeedFreeze, freezeCols, rowHeight, headerRowHeight, header, items, itemsCellRenderer, headerCellRenderer, width, height} = this.props;
+        const {isNeedFreeze, freezeCols, columnSize, rowHeight, headerRowHeight, header, items, itemsCellRenderer, headerCellRenderer, width, height, ...others} = this.props;
         const columns = [];
-        header.forEach((row, index)=> {
+        header.forEach((row, colIndex)=> {
             columns.push(<Column
-                fixed={freezeCols.indexOf(index) > -1}
-                header={headerCellRenderer(index)}
-                cell={itemsCellRenderer(index)}
-                width={300}
+                fixed={isNeedFreeze && freezeCols.indexOf(colIndex) > -1}
+                header={headerCellRenderer(colIndex, row)}
+                cell={(props)=>(itemsCellRenderer({colIndex, items, ...props}))}
+                width={columnSize[colIndex]}
             ></Column>)
         });
 
@@ -54,7 +55,9 @@ class TableWidget extends Component {
             headerHeight={headerRowHeight}
             rowsCount={items[0] ? items[0].length : 0}
             width={width}
-            height={height}>
+            height={height}
+            {...others}
+        >
             {columns}
         </Table>
     }

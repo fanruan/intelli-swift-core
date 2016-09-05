@@ -1,6 +1,7 @@
 class Dimension {
-    constructor(dimension, id) {
+    constructor(dimension, id, widget) {
         this.dimension = dimension;
+        this._parent = widget;
     }
 
     getName() {
@@ -9,6 +10,10 @@ class Dimension {
 
     isUsed() {
         return this.dimension.used;
+    }
+
+    getWidgetBelongTo() {
+        return this._parent;
     }
 }
 export default Dimension

@@ -15,7 +15,7 @@ class Widget {
         if (this._dimensions[id]) {
             return this._dimensions[id];
         }
-        this._dimensions[id] = new Dimension(this.widget.dimensions[id], id);
+        this._dimensions[id] = new Dimension(this.widget.dimensions[id], id, this);
         return this._dimensions[id];
     }
 
@@ -24,7 +24,7 @@ class Widget {
         if (this._targets[id]) {
             return this._targets[id];
         }
-        this._targets[id] = new Target(this.widget.dimensions[id], id);
+        this._targets[id] = new Target(this.widget.dimensions[id], id, this);
         return this._targets[id];
     }
 

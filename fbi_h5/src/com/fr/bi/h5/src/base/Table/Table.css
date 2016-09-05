@@ -1,25 +1,3 @@
-/**
- * Table v0.6.3
- *
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
-
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTableCellGroupLayout
- */
-
 .fixedDataTableCellGroupLayout-cellGroup {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -40,16 +18,6 @@
     position: absolute;
     top: 0;
 }
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTableCellLayout
- */
 
 .fixedDataTableCellLayout-main {
     border-right-style: solid;
@@ -108,16 +76,6 @@
     visibility: hidden;
     width: 4px;
 }
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTableColumnResizerLineLayout
- */
 
 .fixedDataTableColumnResizerLineLayout-mouseArea {
     cursor: ew-resize;
@@ -145,16 +103,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
 .fixedDataTableColumnResizerLineLayout-hiddenElem {
     display: none !important;
 }
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTableLayout
- */
 
 .fixedDataTableLayout-main {
     border-style: solid;
@@ -197,16 +145,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
     bottom: 0;
     position: absolute;
 }
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTableRowLayout
- */
 
 .fixedDataTableRowLayout-main {
     box-sizing: border-box;
@@ -240,118 +178,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
     position: absolute;
     top: 0;
 }
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule ScrollbarLayout
- */
-
-.ScrollbarLayout-main {
-    box-sizing: border-box;
-    outline: none;
-    overflow: hidden;
-    position: absolute;
-    -webkit-transition-duration: 250ms;
-    transition-duration: 250ms;
-    -webkit-transition-timing-function: ease;
-    transition-timing-function: ease;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.ScrollbarLayout-mainVertical {
-    bottom: 0;
-    right: 0;
-    top: 0;
-    -webkit-transition-property: background-color width;
-    transition-property: background-color width;
-    width: 15px;
-}
-
-.ScrollbarLayout-mainVertical.public-Scrollbar-mainActive,
-.ScrollbarLayout-mainVertical:hover {
-    width: 17px;
-}
-
-.ScrollbarLayout-mainHorizontal {
-    bottom: 0;
-    height: 15px;
-    left: 0;
-    -webkit-transition-property: background-color height;
-    transition-property: background-color height;
-}
-
-/* Touching the scroll-track directly makes the scroll-track bolder */
-.ScrollbarLayout-mainHorizontal.public-Scrollbar-mainActive,
-.ScrollbarLayout-mainHorizontal:hover {
-    height: 17px;
-}
-
-.ScrollbarLayout-face {
-    left: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: 1;
-}
-
-/**
- * This selector renders the "nub" of the scrollface. The nub must
- * be rendered as pseudo-element so that it won't receive any UI events then
- * we can get the correct `event.offsetX` and `event.offsetY` from the
- * scrollface element while dragging it.
- */
-.ScrollbarLayout-face:after {
-    border-radius: 6px;
-    content: '';
-    display: block;
-    position: absolute;
-    -webkit-transition: background-color 250ms ease;
-    transition: background-color 250ms ease;
-}
-
-.ScrollbarLayout-faceHorizontal {
-    bottom: 0;
-    left: 0;
-    top: 0;
-}
-
-.ScrollbarLayout-faceHorizontal:after {
-    bottom: 4px;
-    left: 0;
-    top: 4px;
-    width: 100%;
-}
-
-.ScrollbarLayout-faceVertical {
-    left: 0;
-    right: 0;
-    top: 0;
-}
-
-.ScrollbarLayout-faceVertical:after {
-    height: 100%;
-    left: 4px;
-    right: 4px;
-    top: 0;
-}
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTable
- *
- */
 
 /**
  * Table.
@@ -389,20 +215,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
     background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAHElEQVQI12MwNjZmZdAT1+Nm0JDWEGZQk1GTBgAWkwIeAEp52AAAAABJRU5ErkJggg==) repeat-x;
 }
 
-.public-fixedDataTable-horizontalScrollbar .public-Scrollbar-mainHorizontal {
-    background-color: #fff;
-}
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTableCell
- */
-
 /**
  * Table cell.
  */
@@ -422,17 +234,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
 .public-fixedDataTableCell-columnResizerKnob {
     background-color: #0284ff;
 }
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTableColumnResizerLine
- *
- */
 
 /**
  * Column resizer line.
@@ -440,16 +241,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
 .public-fixedDataTableColumnResizerLine-main {
     border-color: #0284ff;
 }
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTableRow
- */
 
 /**
  * Table row.
@@ -469,41 +260,4 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
 
 .public-fixedDataTableRow-columnsShadow {
     background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) repeat-y;
-}
-/**
- * Copyright (c) 2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule Scrollbar
- *
- */
-
-/**
- * Scrollbars.
- */
-
-/* Touching the scroll-track directly makes the scroll-track bolder */
-.public-Scrollbar-main.public-Scrollbar-mainActive,
-.public-Scrollbar-main:hover {
-    background-color: rgba(255, 255, 255, 0.8);
-}
-
-.public-Scrollbar-mainOpaque,
-.public-Scrollbar-mainOpaque.public-Scrollbar-mainActive,
-.public-Scrollbar-mainOpaque:hover {
-    background-color: #fff;
-}
-
-.public-Scrollbar-face:after {
-    background-color: #c2c2c2;
-}
-
-.public-Scrollbar-main:hover .public-Scrollbar-face:after,
-.public-Scrollbar-mainActive .public-Scrollbar-face:after,
-.public-Scrollbar-faceActive:after {
-    background-color: #7d7d7d;
 }

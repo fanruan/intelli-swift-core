@@ -1,6 +1,7 @@
 class Target {
-    constructor(target, id) {
+    constructor(target, id, widget) {
         this.target = target;
+        this._parent = widget;
     }
 
     getName() {
@@ -9,6 +10,10 @@ class Target {
 
     isUsed() {
         return this.target.used;
+    }
+
+    getWidgetBelongTo() {
+        return this._parent;
     }
 }
 export default Target

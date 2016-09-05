@@ -71,23 +71,31 @@ class TableComponent extends Component {
         const {width, height} = this.props;
         const {data} = this.state;
         this._tableHelper.setData(data);
-        return <TableWidget
-            width={width}
-            height={height}
-            header={this._tableHelper.getHeader()}
-            items={this._tableHelper.getItems()}
-            headerCellRenderer={(cell)=> {
-                return <Cell>{cell.text}</Cell>
-            }}
-            itemsCellRenderer={(col)=> {
-                return ({rowIndex, items, ...props}) => (
-                    <Cell {...props}>
-                        {items[col][rowIndex].text}
-                    </Cell>
-                )
-            }}
+        return <View
+            style={{width: width, height: height}}
         >
-        </TableWidget>
+            <View
+                style={{position: 'absolute', left: 10, right: 10, top: 10, bottom: 10}}
+            >
+                <TableWidget
+                    width={width - 20}
+                    height={height - 20}
+                    freezeCols={[0]}
+                    columnSize={[300, 300]}
+                    header={this._tableHelper.getHeader()}
+                    items={this._tableHelper.getItems()}
+                    headerCellRenderer={(colIndex, cell)=> {
+                        return <Cell>{cell.text}</Cell>
+                    }}
+                    itemsCellRenderer={({colIndex, rowIndex, items, ...props}) => {
+                        return <Cell {...props}>
+                            {items[colIndex][rowIndex].text}
+                        </Cell>
+                    }}
+                >
+                </TableWidget>
+            </View>
+        </View>
     }
 }
 mixin.onClass(TableComponent, PureRenderMixin);

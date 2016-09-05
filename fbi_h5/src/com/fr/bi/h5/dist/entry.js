@@ -2299,6 +2299,8 @@ webpackJsonp([0],{
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _reactAddonsPureRenderMixin = __webpack_require__(226);
@@ -2322,6 +2324,8 @@ webpackJsonp([0],{
 	var _base = __webpack_require__(534);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2351,6 +2355,7 @@ webpackJsonp([0],{
 	            var _props = this.props;
 	            var isNeedFreeze = _props.isNeedFreeze;
 	            var freezeCols = _props.freezeCols;
+	            var columnSize = _props.columnSize;
 	            var rowHeight = _props.rowHeight;
 	            var headerRowHeight = _props.headerRowHeight;
 	            var header = _props.header;
@@ -2360,25 +2365,30 @@ webpackJsonp([0],{
 	            var width = _props.width;
 	            var height = _props.height;
 
+	            var others = _objectWithoutProperties(_props, ['isNeedFreeze', 'freezeCols', 'columnSize', 'rowHeight', 'headerRowHeight', 'header', 'items', 'itemsCellRenderer', 'headerCellRenderer', 'width', 'height']);
+
 	            var columns = [];
-	            header.forEach(function (row, index) {
+	            header.forEach(function (row, colIndex) {
 	                columns.push(_lib2.default.createElement(Column, {
-	                    fixed: freezeCols.indexOf(index) > -1,
-	                    header: headerCellRenderer(index),
-	                    cell: itemsCellRenderer(index),
-	                    width: 300
+	                    fixed: isNeedFreeze && freezeCols.indexOf(colIndex) > -1,
+	                    header: headerCellRenderer(colIndex, row),
+	                    cell: function cell(props) {
+	                        return itemsCellRenderer(_extends({ colIndex: colIndex, items: items }, props));
+	                    },
+	                    width: columnSize[colIndex]
 	                }));
 	            });
 
 	            return _lib2.default.createElement(
 	                _base.Table,
-	                {
+	                _extends({
 	                    rowHeight: rowHeight,
 	                    groupHeaderHeight: 0,
 	                    headerHeight: headerRowHeight,
 	                    rowsCount: items[0] ? items[0].length : 0,
 	                    width: width,
-	                    height: height },
+	                    height: height
+	                }, others),
 	                columns
 	            );
 	        }
@@ -2391,6 +2401,7 @@ webpackJsonp([0],{
 	TableWidget.defaultProps = {
 	    isNeedFreeze: true,
 	    freezeCols: [],
+	    columnSize: [],
 	    rowHeight: 30,
 	    headerRowHeight: 30,
 	    header: [],
@@ -2617,33 +2628,46 @@ webpackJsonp([0],{
 	            var data = this.state.data;
 
 	            this._tableHelper.setData(data);
-	            return _lib2.default.createElement(_widgets.TableWidget, {
-	                width: width,
-	                height: height,
-	                header: this._tableHelper.getHeader(),
-	                items: this._tableHelper.getItems(),
-	                headerCellRenderer: function headerCellRenderer(cell) {
-	                    return _lib2.default.createElement(
-	                        Cell,
-	                        null,
-	                        cell.text
-	                    );
+	            return _lib2.default.createElement(
+	                _lib.View,
+	                {
+	                    style: { width: width, height: height }
 	                },
-	                itemsCellRenderer: function itemsCellRenderer(col) {
-	                    return function (_ref) {
-	                        var rowIndex = _ref.rowIndex;
-	                        var items = _ref.items;
+	                _lib2.default.createElement(
+	                    _lib.View,
+	                    {
+	                        style: { position: 'absolute', left: 10, right: 10, top: 10, bottom: 10 }
+	                    },
+	                    _lib2.default.createElement(_widgets.TableWidget, {
+	                        width: width - 20,
+	                        height: height - 20,
+	                        freezeCols: [0],
+	                        columnSize: [300, 300],
+	                        header: this._tableHelper.getHeader(),
+	                        items: this._tableHelper.getItems(),
+	                        headerCellRenderer: function headerCellRenderer(colIndex, cell) {
+	                            return _lib2.default.createElement(
+	                                Cell,
+	                                null,
+	                                cell.text
+	                            );
+	                        },
+	                        itemsCellRenderer: function itemsCellRenderer(_ref) {
+	                            var colIndex = _ref.colIndex;
+	                            var rowIndex = _ref.rowIndex;
+	                            var items = _ref.items;
 
-	                        var props = _objectWithoutProperties(_ref, ['rowIndex', 'items']);
+	                            var props = _objectWithoutProperties(_ref, ['colIndex', 'rowIndex', 'items']);
 
-	                        return _lib2.default.createElement(
-	                            Cell,
-	                            props,
-	                            items[col][rowIndex].text
-	                        );
-	                    };
-	                }
-	            });
+	                            return _lib2.default.createElement(
+	                                Cell,
+	                                props,
+	                                items[colIndex][rowIndex].text
+	                            );
+	                        }
+	                    })
+	                )
+	            );
 	        }
 	    }]);
 
