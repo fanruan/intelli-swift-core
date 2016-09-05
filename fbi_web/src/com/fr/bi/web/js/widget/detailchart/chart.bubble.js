@@ -86,6 +86,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
         config.yAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
         config.yAxis[0].showLabel = this.config.show_label;
+        config.yAxis[0].enableTick = this.config.enable_tick;
+        config.yAxis[0].enableMinorTick = this.config.enable_minor_tick;
         config.yAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
             self.config.custom_y_scale.interval.scale : null;
 
@@ -97,6 +99,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].min = this.config.custom_x_scale.minScale.scale || null;
         config.xAxis[0].max = this.config.custom_x_scale.maxScale.scale || null;
         config.xAxis[0].showLabel = this.config.show_label;
+        config.xAxis[0].enableTick = this.config.enable_tick;
+        config.xAxis[0].enableMinorTick = this.config.enable_minor_tick;
         config.xAxis[0].tickInterval = BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
             self.config.custom_x_scale.interval.scale : null;
         config.chartType = "bubble";
@@ -440,7 +444,9 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             gradient_colors: options.gradient_colors || [],
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
-            show_label: BI.isNull(options.show_label) ? true : options.show_label
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
         };
         this.options.items = items;
         var types = [];

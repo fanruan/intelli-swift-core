@@ -85,6 +85,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
             self.config.custom_y_scale.interval.scale : null;
         config.yAxis[0].showLabel = this.config.show_label;
+        config.yAxis[0].enableTick = this.config.enable_tick;
+        config.yAxis[0].enableMinorTick = this.config.enable_minor_tick;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
         formatNumberLevelInXaxis(this.config.x_axis_number_level, c.X_AXIS);
@@ -96,6 +98,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].tickInterval = BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
             self.config.custom_x_scale.interval.scale : null;
         config.xAxis[0].showLabel = this.config.show_label;
+        config.xAxis[0].enableTick = this.config.enable_tick;
+        config.xAxis[0].enableMinorTick = this.config.enable_minor_tick;
         config.chartType = "scatter";
 
         if(config.plotOptions.dataLabels.enabled === true){
@@ -260,7 +264,9 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             big_data_mode: options.big_data_mode || false,
-            line_width: options.line_width || 0
+            line_width: options.line_width || 0,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
         };
         this.options.items = items;
         var types = [];

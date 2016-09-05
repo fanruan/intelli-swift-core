@@ -109,6 +109,8 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         config.show_label = false;
         config.chart_demo = true;
         config.line_width = 0;
+        config.enable_tick = false;
+        config.enable_minor_tick = false;
         return config;
     },
 

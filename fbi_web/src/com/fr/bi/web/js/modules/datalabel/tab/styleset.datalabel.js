@@ -3,8 +3,8 @@
  */
 BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
     _constant: {
-        ICON_WIDTH: 20,
-        ICON_HEIGHT: 20,
+        ICON_WIDTH: 30,
+        ICON_HEIGHT: 30,
         BUTTON_HEIGHT: 40,
         TRIGGER_BUTTON_WIDTH: 50,
         TRIGGER_ICON_WIDTH: 12,

@@ -443,6 +443,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForAxis: function (data) {
         var self = this, o = this.options;
+        if(BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
+            return ;
+        }
         var hasSeries = this._checkSeriesExist();
         var allSeries = BI.pluck(data, "name");
         var cataArrayMap = {};  //值按分类分组
@@ -541,6 +544,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataImageSettingForAxis: function (data) {
         var self = this, o = this.options;
+        if(BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
+            return ;
+        }
         var hasSeries = this._checkSeriesExist();
         var allSeries = BI.pluck(data, "name");
         var cataArrayMap = {};  //值按分类分组
@@ -848,7 +854,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.DASHBOARD:
                 BI.each(data, function (i, items) {
