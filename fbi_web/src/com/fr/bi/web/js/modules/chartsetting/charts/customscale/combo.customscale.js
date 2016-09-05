@@ -29,7 +29,7 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
         });
 
         this.pane.on(BI.CustomScaleFormulaPane.EVENT_CHANGE, function () {
-            var scale = self._calculate(self.pane.getAnalyzeContent());
+            var scale = self.calculate();
             self.trigger.setValue(scale);
             self.combo.hideView();
             self.fireEvent(BI.ComboCustomScale.EVENT_CHANGE)
@@ -69,9 +69,7 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
         });
 
         this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
-            var scale = self._calculate(self.pane.getAnalyzeContent());
-            self.trigger.setValue(scale);
-            self.pane.setOldValue(self.pane.getValue())
+            self.pane.setValue(self.pane.getOldValue())
         });
 
         BI.createWidget({
@@ -86,8 +84,8 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
         })
     },
 
-    _calculate: function (v) {
-        v = v || [];
+    calculate: function () {
+        var v = this.pane.getAnalyzeContent() || [];
         var formula = "";
         BI.each(v, function (id, item) {
             var fieldRegx = /\$[\{][^\]*[\}]/;
@@ -107,9 +105,19 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
         }
     },
 
-    showBubble: function () {
+    showBubble: function (v) {
         var self = this;
-        var scale = this._calculate(this.pane.getAnalyzeContent());
+        BI.Bubbles.hide(self.trigger.getName() + "invalid");
+        if(v) {
+            BI.Bubbles.show(self.trigger.getName() + "invalid", BI.i18nText("BI-Minimum_Less_Than_Maximum"), self, {
+                offsetStyle: "center"
+            });
+        }
+    },
+
+    showIntervalBubble: function () {
+        var self = this;
+        var scale = this.calculate();
         if(/[a-zA-Z]/.test(scale) || BI.parseFloat(scale) <= 0) {
             BI.Bubbles.show(self.trigger.getName() + "invalid", BI.i18nText("BI-Interval_Value_Should_Be_Positive"), self, {
                 offsetStyle: "center"
@@ -132,7 +140,7 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         this.pane.setValue(v.formula || "");
-        var scale = this._calculate(this.pane.getAnalyzeContent());
+        var scale = this.calculate();
         this.trigger.setValue(scale)
     }
 });
