@@ -23,7 +23,8 @@ BI.CustomScaleFormulaPane = BI.inherit(BI.Widget, {
         });
         this.formula.populate();
         this.formula.on(BI.CustomScaleFormula.EVENT_CHANGE, function () {
-            confirmButton.setEnable(self.formula.checkValidation())
+            confirmButton.setEnable(self.formula.checkValidation());
+            self.fireEvent(BI.CustomScaleFormulaPane.EVENT_VALUE_CHANGE)
         });
 
         var confirmButton = BI.createWidget({
@@ -70,6 +71,14 @@ BI.CustomScaleFormulaPane = BI.inherit(BI.Widget, {
         })
     },
 
+    setOldValue: function (v) {
+          this.oldValue = v
+    },
+
+    getOldValue: function () {
+        return this.oldValue
+    },
+
     refresh: function () {
         this.formula.refresh()
     },
@@ -88,5 +97,6 @@ BI.CustomScaleFormulaPane = BI.inherit(BI.Widget, {
     }
 });
 BI.CustomScaleFormulaPane.EVENT_CHANGE = "EVENT_CHANGE";
+BI.CustomScaleFormulaPane.EVENT_VALUE_CHANGE = "EVENT_VALUE_CHANGE";
 BI.CustomScaleFormulaPane.EVENT_VALUE_CANCEL = "EVENT_VALUE_CANCEL";
 $.shortcut("bi.custom_scale_formula_pane",BI.CustomScaleFormulaPane);

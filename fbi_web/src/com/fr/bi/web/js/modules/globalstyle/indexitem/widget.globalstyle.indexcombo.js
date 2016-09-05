@@ -20,105 +20,67 @@ BI.GlobalStyleIndexBackground = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Colors"),
             items: [{
                 text: BI.i18nText("BI-Colors"),
-                value: "colour"
+                value: BICst.BACKGROUND_TYPE.COLOR
             }, {
                 text: BI.i18nText("BI-Pictures"),
-                value: "picture"
+                value: BICst.BACKGROUND_TYPE.IMAGE
             }]
         });
         this.combo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
-            self._createComboItems(this.getValue());
-            self.fireEvent(BI.GlobalStyleIndexBackground.EVENT_CHANGE)
+            self.tab.setSelect(this.getValue()[0]);
+            self.fireEvent(BI.GlobalStyleIndexBackground.EVENT_CHANGE);
         });
-        this.comboItem = BI.createWidget({
-            type: "bi.button_group",
-            items: [],
-            height: 30,
-            width: 30
+        this.tab = BI.createWidget({
+            type: "bi.tab",
+            cardCreator: function (v) {
+                switch (v) {
+                    case BICst.BACKGROUND_TYPE.COLOR:
+                        var colorChooser = BI.createWidget({
+                            type: "bi.color_chooser",
+                            height: 30,
+                            width: 30
+                        });
+                        colorChooser.on(BI.ColorChooser.EVENT_CHANGE, function() {
+                            self.fireEvent(BI.GlobalStyleIndexBackground.EVENT_CHANGE);
+                        });
+                        return colorChooser;
+                    case BICst.BACKGROUND_TYPE.IMAGE:
+                        var uploadImage = BI.createWidget({
+                            type: "bi.multifile_editor",
+                            accept: "*.jpg;*.png;*.gif;*.bmp;*.jpeg;",
+                            maxSize: 1024 * 1024 * 100
+                        });
+                        uploadImage.on(BI.MultifileEditor.EVENT_CHANGE, function() {
+
+                        });
+                        return uploadImage;
+                }
+            },
+            width: 30,
+            height: 30
         });
-        this.comboItem.populate([self._selectColour()]);
         BI.createWidget({
             type: "bi.left",
-            cls:"bi-global-style-indexcombo",
+            cls: "bi-global-style-indexcombo",
             element: this.element,
-            items: [self.combo, self.comboItem
-            ],
+            items: [this.combo, this.tab],
             hgap: 5
         })
     },
 
-    _selectColour: function () {
-        var self = this;
-        this.selectColour = BI.createWidget({
-            type: "bi.color_chooser",
-            height: 30,
-            width: 30
-        });
-        this.selectColour.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GlobalStyleIndexBackground.EVENT_CHANGE)
-        });
-        return this.selectColour;
-    },
-
-    _selectPicture: function () {
-        var self = this;
-        this.selectPicture = BI.createWidget({
-            type: "bi.upload_image",
-            invisible: false,
-            height: 30,
-            width: 30
-        });
-        this.selectPicture.on(BI.UploadImage.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GlobalStyleIndexBackground.EVENT_CHANGE)
-        });
-        return this.selectPicture;
-    },
-
-    _createComboItems: function (value) {
-        var self = this;
-        if (value[0] == "colour") {
-            self.comboItem.populate([self._selectColour()]);
-        } else if (value[0] == "picture") {
-            self.comboItem.populate([self._selectPicture()]);
-        } else {
-            BI.Msg.toast("widget type error")
-        }
-    },
-
     getValue: function () {
-        var self = this;
-        var value = {};
-        var comboType = self.combo.getValue();
-        if (comboType[0] == "colour") {
-            value = {
-                "selectType": "colour",
-                "Value": self.selectColour.getValue()
-            }
-        } else if (comboType[0] == "picture") {
-            value = {
-                "selectType": "picture",
-                "Value": self.selectPicture.getValue()
-            }
-        } else {
-            BI.Msg.toast("widget type getValue error");
-        }
-        return value;
-    },
-
-    setValue: function (values) {
-        if(values["selectType"]=="colour"){
-            this.combo.setValue(["colour"]);
-            this._createComboItems(["colour"]);
-            this.selectColour.setValue(values["Value"])
-        }else if(values["selectType"]=="picture"){
-            this.combo.setValue(["picture"]);
-            this._createComboItems(["picture"]);
-            this.selectPicture.setValue(values["Value"])
+        return {
+            type: this.combo.getValue()[0],
+            value: this.tab.getValue()
         }
     },
 
-    populate: function (values) {
-
+    setValue: function (v) {
+        if (BI.isNotNull(v) && BI.isNotNull(v.type)) {
+            this.combo.setValue(v.type);
+            this.tab.setSelect(v.type);
+            this.tab.setValue(v.value);
+        }
     }
 });
 BI.GlobalStyleIndexBackground.EVENT_CHANGE = "EVENT_CHANGE";

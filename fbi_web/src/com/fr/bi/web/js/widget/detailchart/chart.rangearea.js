@@ -79,7 +79,8 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
             reversed: config.yAxis[0].reversed = this.config.left_y_axis_reversed,
             min: self.config.custom_y_scale.minScale.scale || null,
             max: self.config.custom_y_scale.maxScale.scale || null,
-            tickInterval: self.config.custom_y_scale.interval.scale || null,
+            tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+                self.config.custom_y_scale.interval.scale : null,
             formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level)
         });
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);

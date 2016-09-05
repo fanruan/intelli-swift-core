@@ -98,7 +98,8 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             enableTick: this.config.enable_tick,
             min: self.config.custom_y_scale.minScale.scale || null,
             max: self.config.custom_y_scale.maxScale.scale || null,
-            tickInterval: self.config.custom_y_scale.interval.scale || null,
+            tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+                self.config.custom_y_scale.interval.scale : null,
             enableMinorTick: this.config.enable_minor_tick
         });
 

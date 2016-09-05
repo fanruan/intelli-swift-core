@@ -81,7 +81,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].title.rotation = c.ROTATION;
         config.yAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
         config.yAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
-        config.yAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
+        config.yAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+            self.config.custom_y_scale.interval.scale : null;
         config.yAxis[0].showLabel = this.config.show_label;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
@@ -89,9 +90,10 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + xTitle : xTitle;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
-        config.xAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
-        config.xAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
-        config.xAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
+        config.xAxis[0].min = this.config.custom_x_scale.minScale.scale || null;
+        config.xAxis[0].max = this.config.custom_x_scale.maxScale.scale || null;
+        config.xAxis[0].tickInterval = BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
+            self.config.custom_x_scale.interval.scale : null;
         config.xAxis[0].showLabel = this.config.show_label;
         config.chartType = "scatter";
 
