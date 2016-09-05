@@ -60,6 +60,7 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
+        config.xAxis[0].showLabel = this.config.show_label;
         config.zoom.zoomTool.visible = this.config.show_zoom;
         if(this.config.show_zoom === true){
             delete config.dataSheet;

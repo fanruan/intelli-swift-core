@@ -86,6 +86,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
         config.yAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
         config.yAxis[0].tickInterval = this.config.custom_y_scale.interval.scale || null;
+        config.yAxis[0].showLabel = this.config.show_label;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
         self.formatNumberLevelInXaxis(items, this.config.x_axis_number_level);
@@ -95,6 +96,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].min = this.config.custom_x_scale.minScale.scale || null;
         config.xAxis[0].max = this.config.custom_x_scale.maxScale.scale || null;
         config.xAxis[0].tickInterval = this.config.custom_x_scale.interval.scale || null;
+        config.xAxis[0].showLabel = this.config.show_label;
         config.chartType = "bubble";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
@@ -435,7 +437,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             fixed_colors: options.fixed_colors || [],
             gradient_colors: options.gradient_colors || [],
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE
+            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
+            show_label: BI.isNull(options.show_label) ? true : options.show_label
         };
         this.options.items = items;
         var types = [];
