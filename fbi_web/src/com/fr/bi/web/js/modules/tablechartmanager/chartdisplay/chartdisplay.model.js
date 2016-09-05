@@ -849,7 +849,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.DASHBOARD:
-            case BICst.WIDGET.FORCE_BUBBLE:
                 BI.each(data, function (i, items) {
                     BI.each(items, function (id, item) {
                         var max = null, min = null, average = null, targetId = null;
@@ -863,12 +862,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             average += da.y;
                             targetId = da.targetIds[0];
                         });
-                        calculateValue[targetId] = [BI.contentFormat(max, "#.##"), BI.contentFormat(min, "#.##"), BI.contentFormat(average / (item.data.length), "#.##")];
+                        calculateValue[targetId] = [BI.contentFormat(max, "#.##"), BI.contentFormat(min, "#.##"),
+                            BI.contentFormat(average / (item.data.length), "#.##")];
                     })
                 });
                 Data.SharingPool.put("calculateValue", calculateValue);
                 break;
             case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
                 var max = null, min = null, average = null, targetId = null;
                 var x_max = null, x_min = null, x_average = null, x_targetId = null;
                 BI.each(data[0], function (i, item) {
@@ -890,8 +891,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     x_average += item.data[0].x;
                     x_targetId = item.data[0].targetIds[0];
                 });
-                calculateValue[targetId] = [BI.contentFormat(max, "#.##"), BI.contentFormat(min, "#.##"), BI.contentFormat(average / (data[0].length), "#.##")];
-                calculateValue[x_targetId] = [BI.contentFormat(x_max, "#.##"), BI.contentFormat(x_min, "#.##"), BI.contentFormat(x_average / (data[0].length), "#.##")];
+                calculateValue[targetId] = [BI.contentFormat(max, "#.##"), BI.contentFormat(min, "#.##"),
+                    BI.contentFormat(average / (data[0].length), "#.##")];
+                calculateValue[x_targetId] = [BI.contentFormat(x_max, "#.##"), BI.contentFormat(x_min, "#.##"),
+                    BI.contentFormat(x_average / (data[0].length), "#.##")];
                 Data.SharingPool.put("calculateValue", calculateValue);
                 break;
         }

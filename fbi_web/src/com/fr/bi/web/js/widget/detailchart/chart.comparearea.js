@@ -79,9 +79,10 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                         enableTick: self.config.enable_tick,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        max: self.config.custom_y_scale.minScale.scale || null,
-                        min: self.config.custom_y_scale.maxScale.scale || null,
-                        tickInterval: self.config.custom_y_scale.interval.scale || null,
+                        min: self.config.custom_y_scale.minScale.scale || null,
+                        max: self.config.custom_y_scale.maxScale.scale || null,
+                        tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+                            self.config.custom_y_scale.interval.scale : null,
                         formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level)
                     });
                     formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
@@ -97,9 +98,10 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                         enableTick: self.config.enable_tick,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        max: self.config.custom_x_scale.minScale.scale || null,
-                        min: self.config.custom_x_scale.maxScale.scale || null,
-                        tickInterval: self.config.custom_x_scale.interval.scale || null,
+                        min: self.config.custom_x_scale.minScale.scale || null,
+                        max: self.config.custom_x_scale.maxScale.scale || null,
+                        tickInterval: BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
+                            self.config.custom_x_scale.interval.scale : null,
                         formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.constants.right_y_axis_number_level)
                     });
                     formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);

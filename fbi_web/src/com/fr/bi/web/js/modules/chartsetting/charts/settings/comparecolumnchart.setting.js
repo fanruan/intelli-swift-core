@@ -7,7 +7,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.CompareColumnChartsSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-compare-column-chart-setting"
         })
     },
 

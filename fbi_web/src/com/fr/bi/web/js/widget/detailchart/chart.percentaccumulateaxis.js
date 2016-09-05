@@ -83,9 +83,10 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             reversed: this.config.left_y_axis_reversed,
             enableMinorTick: this.config.enable_minor_tick,
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
-            max: self.config.custom_y_scale.minScale.scale || null,
-            min: self.config.custom_y_scale.maxScale.scale || null,
-            tickInterval: self.config.custom_y_scale.interval.scale || null,
+            min: self.config.custom_y_scale.minScale.scale || null,
+            max: self.config.custom_y_scale.maxScale.scale || null,
+            tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+                self.config.custom_y_scale.interval.scale : null,
             formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level)
         });
         self.formatNumberLevelInYaxis(config, items, this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);

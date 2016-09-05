@@ -94,9 +94,10 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
             enableTick: this.config.enable_tick,
             lineWidth: this.config.line_width,
             enableMinorTick: this.config.enable_minor_tick,
-            max: self.config.custom_y_scale.minScale.scale || null,
-            min: self.config.custom_y_scale.maxScale.scale || null,
-            tickInterval: self.config.custom_y_scale.interval.scale || null
+            min: self.config.custom_y_scale.minScale.scale || null,
+            max: self.config.custom_y_scale.maxScale.scale || null,
+            tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+                self.config.custom_y_scale.interval.scale : null
         });
         config.chartType = "bar";
         //为了给数据标签加个%,还要遍历所有的系列，唉

@@ -20,7 +20,6 @@ BI.CustomScale = BI.inherit(BI.Widget, {
         });
 
         this.minScale.on(BI.ComboCustomScale.EVENT_CHANGE, function () {
-            self._setTitle(BI.parseFloat(self.minScale.getValue().scale), BI.parseFloat(self.maxScale.getValue().scale));
             self.fireEvent(BI.CustomScale.EVENT_CHANGE)
         });
 
@@ -32,7 +31,6 @@ BI.CustomScale = BI.inherit(BI.Widget, {
         });
 
         this.maxScale.on(BI.ComboCustomScale.EVENT_CHANGE, function () {
-            self._setTitle(BI.parseFloat(self.minScale.getValue().scale), BI.parseFloat(self.maxScale.getValue().scale));
             self.fireEvent(BI.CustomScale.EVENT_CHANGE)
         });
 
@@ -43,14 +41,12 @@ BI.CustomScale = BI.inherit(BI.Widget, {
         });
 
         this.interval.on(BI.ComboCustomScale.EVENT_CHANGE, function () {
-            var v = BI.parseFloat(self.interval.getValue().scale);
-            if(BI.isNotNull(v) && v <= 0) {
-                self.interval.setValue({
-                    formula: ""
-                });
-                self.interval.setTitle(BI.i18nText("BI-Interval_Value_Should_Be_Positive"))
-            }
+            this.showBubble();
             self.fireEvent(BI.CustomScale.EVENT_CHANGE)
+        });
+
+        this.interval.on(BI.ComboCustomScale.EVENT_VALUE_CHANGE, function () {
+            this.showBubble();
         });
 
         BI.createWidget({
@@ -58,13 +54,6 @@ BI.CustomScale = BI.inherit(BI.Widget, {
             element: this.element,
             items: [this.minScale, this.maxScale, this.interval]
         });
-    },
-
-    _setTitle: function (min, max) {
-        if(BI.isNotNull(min) && BI.isNotNull(max) && min > max) {
-            this.minScale.setTitle(BI.i18nText("BI-Minimum_Less_Than_Maximum"));
-            this.maxScale.setTitle(BI.i18nText("BI-Minimum_Less_Than_Maximum"))
-        }
     },
 
     getValue: function () {
