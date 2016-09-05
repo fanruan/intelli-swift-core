@@ -29,13 +29,18 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
         });
 
         this.pane.on(BI.CustomScaleFormulaPane.EVENT_CHANGE, function () {
-            self._calculate(self.pane.getAnalyzeContent());
+            var scale = self._calculate(self.pane.getAnalyzeContent());
+            self.trigger.setValue(scale);
             self.combo.hideView();
             self.fireEvent(BI.ComboCustomScale.EVENT_CHANGE)
         });
 
         this.pane.on(BI.CustomScaleFormulaPane.EVENT_VALUE_CANCEL, function () {
             self.combo.hideView()
+        });
+
+        this.pane.on(BI.CustomScaleFormulaPane.EVENT_VALUE_CHANGE, function () {
+             self.fireEvent(BI.ComboCustomScale.EVENT_VALUE_CHANGE)
         });
 
         this.trigger = BI.createWidget({
@@ -61,6 +66,12 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
 
         this.combo.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function () {
             self.pane.refresh()
+        });
+
+        this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
+            var scale = self._calculate(self.pane.getAnalyzeContent());
+            self.trigger.setValue(scale);
+            self.pane.setOldValue(self.pane.getValue())
         });
 
         BI.createWidget({
@@ -90,9 +101,21 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
             }
         });
         if(/[a-zA-Z]/.test(formula) || BI.isEmptyString(formula)){
-            this.trigger.setValue(formula)
+            return formula
         }else{
-            this.trigger.setValue( eval(formula) === false ? "" : eval(formula))
+            return eval(formula) === false ? "" : eval(formula)
+        }
+    },
+
+    showBubble: function () {
+        var self = this;
+        var scale = this._calculate(this.pane.getAnalyzeContent());
+        if(/[a-zA-Z]/.test(scale) || BI.parseFloat(scale) <= 0) {
+            BI.Bubbles.show(self.trigger.getName() + "invalid", BI.i18nText("BI-Interval_Value_Should_Be_Positive"), self, {
+                offsetStyle: "center"
+            });
+        }else {
+            BI.Bubbles.hide(self.trigger.getName() + "invalid");
         }
     },
 
@@ -109,8 +132,10 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         this.pane.setValue(v.formula || "");
-        this._calculate(this.pane.getAnalyzeContent())
+        var scale = this._calculate(this.pane.getAnalyzeContent());
+        this.trigger.setValue(scale)
     }
 });
 BI.ComboCustomScale.EVENT_CHANGE = "EVENT_CHANGE";
+BI.ComboCustomScale.EVENT_VALUE_CHANGE = "EVENT_VALUE_CHANGE";
 $.shortcut("bi.combo_custom_scale", BI.ComboCustomScale);
