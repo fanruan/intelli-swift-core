@@ -8,7 +8,6 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -84,10 +83,13 @@ public class StringControlWidget extends BISummaryWidget {
         public abstract int size();
     }
 
+    //超过50w只搜索开头是
+    private static final int START_WITH_LIMIT = 500000;
+
     private JSONObject createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException{
         SearchMode mode = SearchMode.PY;
         int start = 0, end = getter.getGroupSize();
-        if (getter.getGroupSize() > BIBaseConstant.LARGE_GROUP_LINE){
+        if (getter.getGroupSize() > START_WITH_LIMIT){
             mode = SearchMode.START_WITH;
             start = ArrayLookupHelper.getStartIndex4StartWith(reader, keyword, comparator);
             end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator) + 1;
