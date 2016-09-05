@@ -838,6 +838,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     .addClass(c === rows.length - 1 ? "last-col" : "");
                 var w = BI.createWidget(map[r][c], {
                     type: "bi.table_cell",
+                    textAlign: "center",
                     width: BI.isNumeric(width) ? width : "",
                     height: BI.isNumeric(height) ? height : "",
                     _row: r,
