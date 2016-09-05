@@ -133,13 +133,14 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             type: "bi.vertical",
             items: [{
                 el: this.textToolbar,
-                lgap: 5,
+                height: 30,
                 tgap: 30
             }, {
                 el: this.showLabels,
-                lgap: 10,
-                tgap: 5
-            }]
+                height: 30,
+                tgap: 4
+            }],
+            lgap: 10
         })
     },
 

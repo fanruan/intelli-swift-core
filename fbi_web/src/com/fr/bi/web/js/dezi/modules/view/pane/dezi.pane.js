@@ -218,17 +218,25 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             text: BI.i18nText("BI-Global_Style"),
             width: 90
         });
-        globalStyleButton.setVisible(false);
+        // globalStyleButton.setVisible(false);
         globalStyleButton.on(BI.Button.EVENT_CHANGE, function () {
             if (BI.isNull(self.globalStyle)) {
                 self.globalStyle = BI.createWidget({
                     type: "bi.global_style"
                 });
                 self.globalStyle.on(BI.GlobalStyle.EVENT_PREVIEW, function () {
-
+                    var gs = this.getValue();
+                    self._refreshGlobalStyle(gs);
+                    BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, gs);
                 });
                 self.globalStyle.on(BI.GlobalStyle.EVENT_SAVE, function () {
-
+                    var gs = this.getValue();
+                    self.model.set("globalStyle", gs);
+                    self._refreshGlobalStyle(gs);
+                });
+                self.globalStyle.on(BI.GlobalStyle.EVENT_CANCEL, function() {
+                    self._refreshGlobalStyle();
+                    BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, self.model.get("globalStyle"));
                 });
             } else {
                 self.globalStyle.populate();
@@ -283,6 +291,12 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         }
     },
 
+    _refreshGlobalStyle: function (gs) {
+        var globalStyle = gs || this.model.get("globalStyle");
+        if (BI.isNotNull(globalStyle.mainBackground)) {
+            this.dashboard.element.find(".fit-dashboard").css("background", globalStyle.mainBackground.value);
+        }
+    },
 
     _createDashBoard: function () {
         var self = this;
@@ -317,5 +331,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         this._refreshButtons();
         this.dashboard.populate();
         this._refreshWidgets();
+
+        this._refreshGlobalStyle();
     }
 });

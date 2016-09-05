@@ -9,9 +9,9 @@ BI.BubbleLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem,
         CONTAINER_HEIGHT: 40,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
-        FIELD_NAME_BUTTON_WIDTH: 80,
+        FIELD_NAME_BUTTON_WIDTH: 85,
         TEXT_BUTTON_H_GAP: 10,
-        INPUT_WIDTH: 230
+        INPUT_WIDTH: 240
     },
 
     _defaultConfig: function () {

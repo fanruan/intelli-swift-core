@@ -43,6 +43,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
         });
+        //全局样式的修改
+        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
+            self._refreshGlobalStyle(globalStyle);
+        });
     },
 
     _render: function (vessel) {
@@ -74,9 +78,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 right: 10
             }, {
                 el: this.title,
-                left: 10,
-                top: 10,
-                right: 10
+                left: 0,
+                top: 0,
+                right: 0
             }, {
                 el: this.tableChart,
                 left: 10,
@@ -119,7 +123,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     "dashboard-title-left" : "dashboard-title-center",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 25,
+                height: 40,
+                lgap: 10,
                 allowBlank: false,
                 errorText: function (v) {
                     if (BI.isNotNull(v) && BI.trim(v) !== "") {
@@ -330,6 +335,24 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
+    _refreshGlobalStyle: function (globalStyle) {
+        var widgetBackground = BI.isNotNull(globalStyle) ?
+            globalStyle.widgetBackground : BI.Utils.getGSWidgetBackground();
+        var titleBackground = BI.isNotNull(globalStyle) ?
+            globalStyle.titleBackground : BI.Utils.getGSTitleBackground();
+        var titleFont = BI.isNotNull(globalStyle) ?
+            globalStyle.titleFont : BI.Utils.getGSTitleFont();
+        if (BI.isNotNull(widgetBackground) && BI.isNotNull(widgetBackground.type)) {
+            this.element.css("background", widgetBackground.value);
+        }
+        if (BI.isNotNull(titleBackground) && BI.isNotNull(titleBackground.type)) {
+            this.title.element.css("background", titleBackground.value);
+        }
+        if(BI.isNotNull(titleFont)) {
+            this.title.element.find(".shelter-editor-text .bi-text").css(titleFont);
+        }
+    },
+
     _expandWidget: function () {
         var wId = this.model.get("id");
         var type = this.model.get("type");
@@ -410,5 +433,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this._refreshTableAndFilter();
         this._refreshLayout();
         this._refreshTitlePosition();
+
+        this._refreshGlobalStyle();
     }
 });

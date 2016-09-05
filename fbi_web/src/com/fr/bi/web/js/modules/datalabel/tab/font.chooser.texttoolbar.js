@@ -18,6 +18,7 @@ BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
             items: BICst.FONT_FAMILY_COMBO,
             height: 24
         });
+        this.combo.setValue("Microsoft YaHei");
         this.combo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.TextToolbarFontChooser.EVENT_CHANGE);
         })

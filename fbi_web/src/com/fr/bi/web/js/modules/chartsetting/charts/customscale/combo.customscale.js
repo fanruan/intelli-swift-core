@@ -29,13 +29,18 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
         });
 
         this.pane.on(BI.CustomScaleFormulaPane.EVENT_CHANGE, function () {
-            self._calculate(self.pane.getAnalyzeContent());
+            var scale = self.calculate();
+            self.trigger.setValue(scale);
             self.combo.hideView();
             self.fireEvent(BI.ComboCustomScale.EVENT_CHANGE)
         });
 
         this.pane.on(BI.CustomScaleFormulaPane.EVENT_VALUE_CANCEL, function () {
             self.combo.hideView()
+        });
+
+        this.pane.on(BI.CustomScaleFormulaPane.EVENT_VALUE_CHANGE, function () {
+             self.fireEvent(BI.ComboCustomScale.EVENT_VALUE_CHANGE)
         });
 
         this.trigger = BI.createWidget({
@@ -63,6 +68,10 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
             self.pane.refresh()
         });
 
+        this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
+            self.pane.setValue(self.pane.getOldValue())
+        });
+
         BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             element: this.element,
@@ -75,8 +84,8 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
         })
     },
 
-    _calculate: function (v) {
-        v = v || [];
+    calculate: function () {
+        var v = this.pane.getAnalyzeContent() || [];
         var formula = "";
         BI.each(v, function (id, item) {
             var fieldRegx = /\$[\{][^\]*[\}]/;
@@ -89,7 +98,33 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
                 formula += item
             }
         });
-        this.trigger.setValue(eval(formula) || "")
+        if(/[a-zA-Z]/.test(formula) || BI.isEmptyString(formula)){
+            return formula
+        }else{
+            return eval(formula) === false ? "" : eval(formula)
+        }
+    },
+
+    showBubble: function (v) {
+        var self = this;
+        BI.Bubbles.hide(self.trigger.getName() + "invalid");
+        if(v) {
+            BI.Bubbles.show(self.trigger.getName() + "invalid", BI.i18nText("BI-Minimum_Less_Than_Maximum"), self, {
+                offsetStyle: "center"
+            });
+        }
+    },
+
+    showIntervalBubble: function () {
+        var self = this;
+        var scale = this.calculate();
+        if(/[a-zA-Z]/.test(scale) || BI.parseFloat(scale) <= 0) {
+            BI.Bubbles.show(self.trigger.getName() + "invalid", BI.i18nText("BI-Interval_Value_Should_Be_Positive"), self, {
+                offsetStyle: "center"
+            });
+        }else {
+            BI.Bubbles.hide(self.trigger.getName() + "invalid");
+        }
     },
 
     setTitle: function (title) {
@@ -105,8 +140,10 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         this.pane.setValue(v.formula || "");
-        this._calculate(this.pane.getAnalyzeContent())
+        var scale = this.calculate();
+        this.trigger.setValue(scale)
     }
 });
 BI.ComboCustomScale.EVENT_CHANGE = "EVENT_CHANGE";
+BI.ComboCustomScale.EVENT_VALUE_CHANGE = "EVENT_VALUE_CHANGE";
 $.shortcut("bi.combo_custom_scale", BI.ComboCustomScale);
