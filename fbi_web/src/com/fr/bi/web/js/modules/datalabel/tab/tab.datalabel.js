@@ -178,11 +178,13 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             }
         );
     },
+
     setValue: function (v) {
         this._style = v;
         this.textToolbar.setValue(v.textStyle);
         this.showLabels.setValue(v.showLabels);
     },
+
     getValue: function () {
         return this._style;
     }

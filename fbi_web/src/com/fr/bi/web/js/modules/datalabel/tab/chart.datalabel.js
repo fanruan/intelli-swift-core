@@ -15,11 +15,11 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
     }]],
     _bubble_data: [[{
         "data": [
-            {"x": 10, "y": 10, "z":5},
-            {"x": 20, "y": 20, "z":8},
-            {"x": 40, "y": 40, "z":10},
-            {"x": 60, "y": 60, "z":15},
-            {"x": 90, "y": 80, "z":40}
+            {"x": 10, "y": 10, "z": 5},
+            {"x": 20, "y": 20, "z": 8},
+            {"x": 40, "y": 40, "z": 10},
+            {"x": 60, "y": 60, "z": 15},
+            {"x": 90, "y": 80, "z": 40}
         ]
     }]],
     _scatter_data: [[{
@@ -115,7 +115,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
     populate: function (src) {
         var data = BI.deepClone(this.data);
         if (src) {
-            if(this.options.showType === "data_image"){
+            if (this.options.showType === "data_image") {
                 data[0][0].data[0].imageHeight = 20;
                 data[0][0].data[0].imageWidth = 20;
                 data[0][0].data[0].image = src
