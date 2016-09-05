@@ -1,0 +1,13 @@
+package com.fr.bi.cal.analyze.report.report.widget.chart.newstyle;
+
+import com.fr.json.JSONObject;
+
+/**
+ * Created by User on 2016/8/31.
+ */
+public interface BIChartSetting{
+
+    JSONObject formatItems();
+
+    JSONObject formatConfig();
+}
