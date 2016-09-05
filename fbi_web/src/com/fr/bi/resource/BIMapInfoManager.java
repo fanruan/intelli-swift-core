@@ -1,7 +1,5 @@
 package com.fr.bi.resource;
 
-import com.fr.general.GeneralContext;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.CodeUtils;
@@ -9,7 +7,6 @@ import com.fr.stable.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -108,10 +105,10 @@ public class BIMapInfoManager {
     }
 
     public Map<String, List<String>> getMapParentChildrenRelation(){
-        
+        return getMapParentChildrenRelation();
     }
 
     public Map<String, String> getMapTypeName(){
-
+        return mapTypeName;
     }
 }
