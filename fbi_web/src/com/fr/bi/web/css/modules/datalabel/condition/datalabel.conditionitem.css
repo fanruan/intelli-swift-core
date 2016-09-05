@@ -5,9 +5,6 @@
   min-width: 560px;
   border-bottom: 1px solid #d4dadd;
 }
-.condition-item:last-child {
-  border-bottom: 0;
-}
 .condition-item .condition-trigger {
   border-left: 1px solid #d4dadd;
   border-right: 1px solid #d4dadd;
