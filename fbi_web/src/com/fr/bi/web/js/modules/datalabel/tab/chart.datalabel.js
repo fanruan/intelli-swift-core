@@ -7,7 +7,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         "data": [
             {"x": "data1", "y": 40},
             {"x": "data2", "y": 70},
-            {"x": "data3", "y": 100},
+            {"x": "data3", "y": 20},
             {"x": "data4", "y": 30},
             {"x": "data5", "y": 10}
         ],
@@ -15,20 +15,20 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
     }]],
     _bubble_data: [[{
         "data": [
-            {"x": 30, "y": 40, "z":20},
-            {"x": 40, "y": 70, "z":50},
-            {"x": 50, "y": 100, "z":60},
-            {"x": 20, "y": 30, "z":10},
-            {"x": 70, "y": 10, "z":80}
+            {"x": 10, "y": 10, "z":5},
+            {"x": 20, "y": 20, "z":8},
+            {"x": 40, "y": 40, "z":10},
+            {"x": 60, "y": 60, "z":15},
+            {"x": 90, "y": 80, "z":40}
         ]
     }]],
     _scatter_data: [[{
         "data": [
-            {"x": 30, "y": 40},
-            {"x": 40, "y": 70},
-            {"x": 50, "y": 100},
-            {"x": 20, "y": 30},
-            {"x": 70, "y": 10}
+            {"x": 10, "y": 10},
+            {"x": 20, "y": 20},
+            {"x": 40, "y": 40},
+            {"x": 60, "y": 60},
+            {"x": 90, "y": 90}
         ],
         "name": "data"
     }]],
@@ -107,6 +107,8 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         var config = {};
         config.chart_legend = BICst.CHART_LEGENDS.NOT_SHOW;
         config.show_label = false;
+        config.chart_demo = true;
+        config.line_width = 0;
         return config;
     },
 
@@ -127,7 +129,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
                 };
             }
         }
-        this.combineChart.populate(data, this.config);
+        this.combineChart.populate(data, this.config, [BICst.WIDGET.AXIS]);
     }
 });
 BI.DataLabelChart.EVENT_CHANGE = "BI.DataLabelChart.EVENT_CHANGE";

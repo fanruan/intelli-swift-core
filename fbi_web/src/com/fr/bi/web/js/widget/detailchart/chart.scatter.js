@@ -70,6 +70,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         }
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
+        config.plotOptions.lineWidth = this.config.line_width;
 
         config.yAxis = this.yAxis;
         config.xAxis = this.xAxis;
@@ -258,7 +259,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
-            big_data_mode: options.big_data_mode || false
+            big_data_mode: options.big_data_mode || false,
+            line_width: options.line_width || 0
         };
         this.options.items = items;
         var types = [];
