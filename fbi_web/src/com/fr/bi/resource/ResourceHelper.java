@@ -2844,7 +2844,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/proto/number.js",
                 "com/fr/bi/web/js/base/proto/array.js",
                 "com/fr/bi/web/js/base/proto/date.js",
-                "com/fr/bi/web/js/template/map.js",
                 "com/fr/bi/web/js/data/utils.js"
         };
     }
