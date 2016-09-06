@@ -113,7 +113,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Upload_Image"),
             width: 70,
             height: 26,
-            hgap: 6
+            hgap: 5
         });
         var image = BI.createWidget({
             type: "bi.multifile_editor",

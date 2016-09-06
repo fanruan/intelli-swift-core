@@ -3,9 +3,9 @@
  */
 BI.DataLabelTab = BI.inherit(BI.Widget, {
     _constant: {
-        DEFAULT_TEXT_TOOL_BAR_HEIGHT: 70,
-        TEXT_TOOL_BAR_HEIGHT: 100,
-        IMAGE_SET_HEIGHT: 175
+        DEFAULT_TEXT_TOOL_BAR_HEIGHT: 80,
+        TEXT_TOOL_BAR_HEIGHT: 110,
+        IMAGE_SET_HEIGHT: 186
     },
 
     _defaultConfig: function () {
@@ -28,31 +28,34 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         }
         var tab = BI.createWidget({
             type: "bi.button_group",
+            cls: "data-label-tab",
             items: [{
                 type: "bi.radio",
                 value: 1
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Text_Label"),
-                rgap: 20
+                rgap: 20,
+                height: 30
             }, {
                 type: "bi.radio",
                 value: 2
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Image_Label")
+                text: BI.i18nText("BI-Image_Label"),
+                height: 30
             }],
             layouts: [{
                 type: "bi.left_vertical_adapt",
                 items: [{
                     el: {
                         type: "bi.horizontal",
-                        width: 550,
-                        tgap: 5,
-                        lgap: 10
+                        width: 530,
+                        vgap: 5
                     }
                 }]
-            }]
+            }],
+            width: 530
         });
         this.tabs = BI.createWidget({
             direction: "custom",
@@ -73,7 +76,8 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             type: "bi.vertical",
             element: this.element,
             items: [{
-                el: tab
+                el: tab,
+                lgap: 10
             }],
             width: 550,
             height: this._CARDHEIGHT,
@@ -133,14 +137,14 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             type: "bi.vertical",
             items: [{
                 el: this.textToolbar,
-                height: 30,
-                tgap: 30
+                height: 40,
+                tgap: 45
             }, {
                 el: this.showLabels,
-                height: 30,
-                tgap: 4
+                height: 40,
+                lgap: 2
             }],
-            lgap: 10
+            lgap: 8
         })
     },
 
@@ -177,7 +181,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                     scrolly: false,
                     scrollx: false
                 })],
-                tgap: 28
+                tgap: 40
             }
         );
     },

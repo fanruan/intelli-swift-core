@@ -2,11 +2,6 @@
  * Created by fay on 2016/9/1.
  */
 BI.DataImagePane = BI.inherit(BI.Widget, {
-    _constant: {
-        DEFAULT_TEXT_TOOL_BAR_HEIGHT: 70,
-        TEXT_TOOL_BAR_HEIGHT: 100,
-        IMAGE_SET_HEIGHT: 160
-    },
 
     _defaultConfig: function () {
         var conf = BI.DataImagePane.superclass._defaultConfig.apply(this, arguments);
