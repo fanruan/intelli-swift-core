@@ -2,16 +2,15 @@
 
 .image-set-tab {
   border-top: 1px solid @border-color-normal;
+  background-color: @color-bi-background-gray;
 }
 
 .image-set-tab-item {
-  &:hover{
-    color: @color-bi-text-highlight;
-  }
   &.active {
-    color: @color-bi-text-highlight;
+    background-color: @color-bi-background-default;
   }
   color: @color-bi-text-black;
+  border-right: 1px solid @border-color-normal;
 }
 
 .image-set-delete.close-font {
@@ -26,13 +25,14 @@
   border-top: 1px solid @border-color-normal;
 }
 
-.image-set-header {
-  border-bottom: 1px solid @border-color-normal;
-}
 .bi-image-set {
   border-left: 1px solid @border-color-normal;
 }
 
 .image-group {
   white-space: normal;
+}
+
+.header-label {
+  color: @color-bi-text-gray
 }

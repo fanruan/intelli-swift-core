@@ -31,12 +31,14 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 type: "bi.single_select_item",
                 text: BI.i18nText("BI-Default_Image"),
                 value: 1,
-                cls: "image-set-tab-item"
+                cls: "image-set-tab-item",
+                height: 30
             }, {
                 type: "bi.single_select_item",
                 text: BI.i18nText("BI-Custom_Image"),
                 value: 2,
-                cls: "image-set-tab-item"
+                cls: "image-set-tab-item",
+                height: 30
             }],
             width: 380,
             height: 30,
@@ -44,8 +46,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 type: "bi.left_vertical_adapt",
                 items: [{
                     el: {
-                        type: "bi.horizontal",
-                        lgap: 6
+                        type: "bi.horizontal"
                     }
                 }]
             }]
@@ -64,10 +65,10 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             items: [{
                 el: tab,
                 left: 0,
-                top: 110
+                top: 115
             }],
             width: 380,
-            height: 140
+            height: 145
         })
     },
 
@@ -103,10 +104,12 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var headerLabel = BI.createWidget({
             type: "bi.label",
-            text: BI.i18nText("BI-Added")
+            text: BI.i18nText("BI-Added"),
+            cls: "header-label"
         });
         var headerButton = BI.createWidget({
             type: "bi.button",
+            cls: "button-ignore",
             text: BI.i18nText("BI-Upload_Image"),
             width: 70,
             height: 26,
@@ -166,7 +169,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 rgap: 6
             }],
             width: 380,
-            height: 30
+            height: 35
         });
         return header;
     },
@@ -191,7 +194,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             cls: "image-group",
             items: result,
             hgap: 2,
-            vgap: 2
+            tgap: 5
         });
     },
 
