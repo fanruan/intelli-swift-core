@@ -26,14 +26,25 @@ BI.ChartSettingSelectColorItem = BI.inherit(BI.BasicButton, {
             return a;
         });
 
-        BI.createWidget({
+        this.colorContainer = BI.createWidget({
             type: "bi.button_group",
-            element: this.element,
             items: colorBlocks,
             layouts: [{
                 type: "bi.center",
                 hgap: 1,
                 vgap: 3
+            }]
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.colorContainer,
+                left: 2,
+                right: 2,
+                top: 0,
+                bottom: 0
             }]
         })
     },
