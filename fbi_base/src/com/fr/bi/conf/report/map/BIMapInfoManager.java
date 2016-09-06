@@ -1,4 +1,4 @@
-package com.fr.bi.resource;
+package com.fr.bi.conf.report.map;
 
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.GeneralContext;
