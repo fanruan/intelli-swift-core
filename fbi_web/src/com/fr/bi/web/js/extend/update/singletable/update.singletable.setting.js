@@ -62,11 +62,12 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
         //增量更新设置面板
         var partUpdate = this._createPartUpdateTab();
-        partUpdate.setVisible(this.model.getUpdateType() === BICst.SINGLE_TABLE_UPDATE_TYPE.PART);
+        partUpdate.setVisible(true);
 
 
         //定时设置
         var timeSetting = this._createTimeSetting();
+        partUpdate.setVisible(true);
 
         var popup = BI.createWidget({
             type: "bi.button_group",
