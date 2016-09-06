@@ -30,7 +30,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -128,27 +127,21 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
             sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
             try {
-                String modifySql = getModifySql(tableUpdateSetting.getPartModifySQL());
+                String modifySql;
+                if (tableSource.getType() != BIBaseConstant.TABLETYPE.SQL) {
+                    modifySql = getModifySql(addDateCondition(tableUpdateSetting.getPartModifySQL()));
+                } else {
+                    modifySql = addDateCondition(tableUpdateSetting.getPartModifySQL());
+                }
                 rowCount = dealWidthAdd(cubeFieldSources, modifySql, rowCount);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(),e);
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         }
         if (null != sortRemovedList && sortRemovedList.size() != 0) {
             tableEntityService.recordRemovedLine(sortRemovedList);
         }
         return rowCount;
-    }
-
-    private String getModifySql(String sql) throws Exception {
-        sql=addDateCondition(sql);
-        com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
-        SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
-        sqlStatement.setSql(addDateCondition(sql));
-        Dialect dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
-        Table table = new Table(BIConnectionManager.getInstance().getSchema(((DBTableSource) tableSource).getDbName()), tableSource.getTableName());
-        String columnName = getColumnName(connection, sqlStatement, sql);
-        return "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
     }
 
 
@@ -170,11 +163,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
 
     private TreeSet<Integer> dealWithRemove(ICubeFieldSource[] fields, String partDeleteSQL, final TreeSet<Integer> sortRemovedList, ICubeDataLoader loader) {
-        SQLRegUtils regUtils = new SQLRegUtils(partDeleteSQL);
-        if (!regUtils.isSql()) {
-            BILogger.getLogger().error("SQL syntax error");
-            return null;
-        }
         com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(partDeleteSQL);
@@ -224,5 +212,13 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         return sql;
     }
 
-
+    private String getModifySql(String sql) throws Exception {
+        com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
+        SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
+        sqlStatement.setSql(addDateCondition(sql));
+        Dialect dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
+        Table table = new Table(BIConnectionManager.getInstance().getSchema(((DBTableSource) tableSource).getDbName()), tableSource.getTableName());
+        String columnName = getColumnName(connection, sqlStatement, sql);
+        return "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
+    }
 }
