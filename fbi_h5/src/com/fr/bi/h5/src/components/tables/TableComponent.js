@@ -77,8 +77,7 @@ class TableComponent extends Component {
                 <TableWidget
                     width={width - 20}
                     height={height - 20}
-                    isNeedFreeze={this._tableHelper.isFreeze()}
-                    freezeCols={[0]}
+                    freezeCols={this._tableHelper.isFreeze()?[0]:[]}
                     columnSize={[300, 300]}
                     header={this._tableHelper.getHeader()}
                     items={this._tableHelper.getItems()}

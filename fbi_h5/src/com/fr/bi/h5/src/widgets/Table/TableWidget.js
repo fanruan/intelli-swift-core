@@ -10,7 +10,7 @@ import React, {
     ListView,
     View,
     Fetch
-} from 'lib'
+    } from 'lib'
 
 import {Table} from 'base'
 
@@ -42,11 +42,11 @@ class TableWidget extends Component {
         const columns = [];
         header.forEach((row, colIndex)=> {
             columns.push(<Column
-                fixed={isNeedFreeze && freezeCols.indexOf(colIndex) > -1}
+                fixed={freezeCols.indexOf(colIndex) > -1}
                 header={headerCellRenderer(colIndex, row)}
-                cell={(props)=>(itemsCellRenderer({colIndex, items, ...props}))}
+                cell={(...props)=>(itemsCellRenderer({colIndex, items, ...props}))}
                 width={columnSize[colIndex]}
-            ></Column>)
+                ></Column>)
         });
 
         return <Table
@@ -57,9 +57,9 @@ class TableWidget extends Component {
             width={width}
             height={height}
             {...others}
-        >
+            >
             {columns}
-        </Table>
+        </Table>;
     }
 
 }

@@ -2433,7 +2433,7 @@ webpackJsonp([0],{
 	            var columns = [];
 	            header.forEach(function (row, colIndex) {
 	                columns.push(_lib2.default.createElement(Column, {
-	                    fixed: isNeedFreeze && freezeCols.indexOf(colIndex) > -1,
+	                    fixed: freezeCols.indexOf(colIndex) > -1,
 	                    header: headerCellRenderer(colIndex, row),
 	                    cell: function cell(props) {
 	                        return itemsCellRenderer(_extends({ colIndex: colIndex, items: items }, props));
@@ -2701,8 +2701,7 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(_widgets.TableWidget, {
 	                        width: width - 20,
 	                        height: height - 20,
-	                        isNeedFreeze: this._tableHelper.isFreeze(),
-	                        freezeCols: [0],
+	                        freezeCols: this._tableHelper.isFreeze() ? [0] : [],
 	                        columnSize: [300, 300],
 	                        header: this._tableHelper.getHeader(),
 	                        items: this._tableHelper.getItems(),
