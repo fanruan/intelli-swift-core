@@ -1053,10 +1053,16 @@ if (!window.BI) {
                 });
             }
 
+            var async = true;
+            if(BI.isNotNull(option.async)) {
+                async = option.async;
+            }
+
             FR.ajax({
                 url: option.url,
                 type: "POST",
                 data: option.data,
+                async: async,
                 error: function () {
                     //失败 取消、重新加载
                     BI.REQUEST_LOADING.setCallback(function () {
@@ -1090,7 +1096,7 @@ if (!window.BI) {
                         option.success(FR.jsonDecode(res.responseText));
                     }
                     if (BI.isFunction(option.complete)) {
-                        option.complete(FR.jsonDecode(res.responseText));
+                        option.complete(FR.jsonDecode(res.responseText), status);
                     }
                 }
             });
@@ -1169,7 +1175,7 @@ if (!window.BI) {
             }
             var url = FR.servletURL + '?op=' + op + '&cmd=' + cmd + "&_=" + Math.random();
             var result = {};
-            (BI.ajax || FR.ajax)({
+            (BI.ajax)({
                 url: url,
                 type: 'POST',
                 async: false,
@@ -1179,7 +1185,7 @@ if (!window.BI) {
                 },
                 complete: function (res, status) {
                     if (status === 'success') {
-                        result = FR.jsonDecode(res.responseText);
+                        result = res;
                     }
                 }
             });

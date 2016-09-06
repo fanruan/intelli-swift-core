@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class BINationDataFactory {
     public static CubeTableSource createTablePerson() {
-        BINationDataSourceTool source = new BINationDataSourceTool();
+        BINationDataSource source = new BINationDataSource();
         List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource(source, "id", DBConstant.CLASS.LONG, 255));
         columns.add(new BICubeFieldSource(source, "name", DBConstant.CLASS.STRING, 255));
@@ -47,7 +47,7 @@ public class BINationDataFactory {
     }
 
     public static CubeTableSource createTableNation() {
-        BINationDataSourceTool source = new BINationDataSourceTool();
+        BINationDataSource source = new BINationDataSource();
         List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource(source, "id", DBConstant.CLASS.LONG, 255));
         columns.add(new BICubeFieldSource(source, "name", DBConstant.CLASS.STRING, 10));
@@ -71,7 +71,7 @@ public class BINationDataFactory {
         return source;
     }
     public static CubeTableSource createTableNationByPart() {
-        BINationDataSourceTool source = new BINationDataSourceTool();
+        BINationDataSource source = new BINationDataSource();
         List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
         columns.add(new BICubeFieldSource(source, "id", DBConstant.CLASS.LONG, 255));
         columns.add(new BICubeFieldSource(source, "name", DBConstant.CLASS.STRING, 10));
@@ -90,6 +90,30 @@ public class BINationDataFactory {
         content.put(0, id);
         content.put(1, name);
 
+        source.setFieldList(columns);
+        source.setContents(content);
+        source.setSourceID("nations");
+        source.getPersistentTable();
+        return source;
+    }
+
+    public static CubeTableSource createBigDataForPartUpdate() {
+        BINationDataSource source = new BINationDataSource();
+        List<ICubeFieldSource> columns = new ArrayList<ICubeFieldSource>();
+        columns.add(new BICubeFieldSource(source, "id", DBConstant.CLASS.LONG, 255));
+        columns.add(new BICubeFieldSource(source, "name", DBConstant.CLASS.STRING, 10));
+
+        List<Long> id = new ArrayList<Long>();
+        List<String> name = new ArrayList<String>();
+        for (int i = 0; i < 10000; i++) {
+           id.add(Long.valueOf(i));
+            name.add("name"+i);
+        }
+        source.setRowCount(id.size());
+
+        Map<Integer, List> content = new HashMap<Integer, List>();
+        content.put(0, id);
+        content.put(1, name);
         source.setFieldList(columns);
         source.setContents(content);
         source.setSourceID("nations");

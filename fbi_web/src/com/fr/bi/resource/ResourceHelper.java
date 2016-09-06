@@ -2827,6 +2827,9 @@ public class ResourceHelper {
         return new String[] {
                 "com/fr/bi/web/mobile/mobile.jQuery.js",
                 "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/es5-sham.js",
+                "com/fr/bi/web/js/third/raphael.js",
+                "com/fr/bi/web/js/third/leaflet.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/core/underscore.js",
                 "com/fr/bi/web/js/base/base.js",
