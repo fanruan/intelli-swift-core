@@ -144,17 +144,11 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                         self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
                     });
                     button.on(BI.DataLabelImageButton.DELETE_IMAGE, function () {
-                        self._img = [];
-                        BI.each(self.imageGroup.getAllButtons(),function (i, image) {
-                            self._img.push(image.getSrc());
-                        });
+                        self.refreshImg();
                         self.fireEvent(BI.DataLabelImageSet.IMAGE_CHANGE, arguments);
                     });
                     self.imageGroup.addItems([button]);
-                    self._img = [];
-                    BI.each(self.imageGroup.getAllButtons(),function (i, image) {
-                        self._img.push(image.getSrc());
-                    });
+                    self.refreshImg();
                     self.fireEvent(BI.DataLabelImageSet.IMAGE_CHANGE, arguments);
                 }
             });
@@ -232,10 +226,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
             });
             button.on(BI.DataLabelImageButton.DELETE_IMAGE, function () {
-                self._img = [];
-                BI.each(self.imageGroup.getAllButtons(),function (i, image) {
-                    self._img.push(image.getSrc());
-                });
+                self.refreshImg();
                 self.fireEvent(BI.DataLabelImageSet.IMAGE_CHANGE, arguments);
             });
             result.push(button)
@@ -243,6 +234,13 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         return result;
     },
 
+    refreshImg: function () {
+        var self = this;
+        this._img = [];
+        BI.each(self.imageGroup.getAllButtons(),function (i, image) {
+            self._img.push(image.getSrc());
+        });
+    },
 
     setValue: function (v) {
         v || (v = {});
