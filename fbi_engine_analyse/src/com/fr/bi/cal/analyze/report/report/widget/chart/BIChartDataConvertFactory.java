@@ -3,11 +3,13 @@ package com.fr.bi.cal.analyze.report.report.widget.chart;
 import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -179,12 +181,13 @@ public class BIChartDataConvertFactory {
                                 res = new JSONObject("{ " +
                                         "x:" + item.getString("n") + "," +
                                         "y:" + (Double.isFinite(y) ? y : 0) + "}");
+                                break;
                         }
                     }else{
                         res = new JSONObject("{ " +
                                 "x:" + item.getString("n") + "," +
                                 "y:" + (Double.isFinite(y) ? y : 0) +
-                                //settings: BI.Utils.getDimensionSettingsByID(targetIds[idx]),
+                                "settings:" + showTarget[i].getChartSetting().getSettings().toString() +
                                 "}");
                     }
                     if(item.has("c")){
@@ -205,7 +208,7 @@ public class BIChartDataConvertFactory {
                 if(type != 0){
                     o.put("type", "bubble");
                 }
-                //obj.settings = BI.Utils.getDimensionSettingsByID(targetIds[idx]);
+                o.put("settings", showTarget[i].getChartSetting().getSettings());
                 result.put(o);
             }
             return result;
@@ -419,5 +422,80 @@ public class BIChartDataConvertFactory {
             return result;
         }
         return new JSONArray();
+    }
+
+    private String getToolTip(int type, BISummaryTarget[] showTargets){
+        switch (type) {
+            case BIReportConstant.WIDGET.SCATTER:
+                if(showTargets.length < 2){
+                    return "";
+                }else{
+                    return "function(){ return this.seriesName+'<div>(X)" + showTargets[1].getText() +":'+ this.x +'</div><div>(Y)"
+                            + showTargets[0].getText() +":'+ this.y +'</div>'}";
+                }
+            case BIReportConstant.WIDGET.BUBBLE:
+                if(showTargets.length < 3){
+                    return "";
+                }else{
+                    return "function(){ return this.seriesName+'<div>(X)" + showTargets[1].getText() +":'+ this.x +'</div><div>(Y)"
+                            + showTargets[0].getText() +":'+ this.y +'</div><div>(" + Inter.getLocText("BI-Size") + ")" + showTargets[2].getText()
+                            + ":'+ this.size +'</div>'}";
+                }
+            default:
+                return "";
+        }
+    }
+
+    private JSONArray getCordon(MultiChartWidget widget, BIAbstractTargetAndDimension[] showDimensionAndTargets) throws JSONException{
+        JSONObject cordon = new JSONObject();
+        JSONArray result = new JSONArray();
+        for(int i = 0; i < showDimensionAndTargets.length; i++){
+            JSONArray items = new JSONArray();
+            JSONArray cordons = showDimensionAndTargets[i].getChartSetting().getCordon();
+            for(int j = 0; j < cordon.length(); j++){
+                JSONObject cor = cordons.getJSONObject(j);
+                items.put(new JSONObject("{" +
+                    "text:" + cor.getString("cordon_name") + "," +
+                    "value:" + cor.getString("cordon_value") + "," +
+                    "color: " + cor.getString("cordon_color") + "}"
+                ));
+            }
+            String regionType = widget.getRegionTypeByDimensionOrTarget(showDimensionAndTargets[i]).toString();
+            if(items.length() > 0){
+                if(!cordon.has(regionType)){
+                    cordon.put(regionType, new JSONArray());
+                }
+                for(int j = 0; j < items.length(); j++){
+                    cordon.getJSONArray(regionType).put(items.getJSONObject(j));
+                }
+            }
+
+        }
+        int type = widget.getType();
+        if(type == BIReportConstant.WIDGET.SCATTER || type == BIReportConstant.WIDGET.BUBBLE){
+            result.put(cordon.getJSONArray(BIReportConstant.REGION.TARGET2) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET2));
+            result.put(cordon.getJSONArray(BIReportConstant.REGION.TARGET1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET1));
+            return result;
+        }
+        if(type == BIReportConstant.WIDGET.BAR || type == BIReportConstant.WIDGET.ACCUMULATE_BAR){
+            result.put(cordon.getJSONArray(BIReportConstant.REGION.TARGET1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET1));
+            result.put(cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1));
+            return result;
+        }
+        if(type == BIReportConstant.WIDGET.COMPARE_BAR){
+            JSONArray negativeAxis = cordon.getJSONArray(BIReportConstant.REGION.TARGET1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET1);
+            JSONArray positiveAxis = cordon.getJSONArray(BIReportConstant.REGION.TARGET2) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET2);
+            for(int i = 0; i < positiveAxis.length(); i++){
+                negativeAxis.put(positiveAxis.get(i));
+            }
+            result.put(negativeAxis);
+            result.put(cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1));
+            return result;
+        }
+        result.put(cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1));
+        result.put(cordon.getJSONArray(BIReportConstant.REGION.TARGET1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET1));
+        result.put(cordon.getJSONArray(BIReportConstant.REGION.TARGET2) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET2));
+        result.put(cordon.getJSONArray(BIReportConstant.REGION.TARGET3) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET3));
+        return result;
     }
 }
