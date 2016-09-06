@@ -81,7 +81,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             }],
             width: 550,
             height: this._CARDHEIGHT,
-            scrollable: null,
+            scrollable: false,
             scrolly: false,
             scrollx: false
         })
@@ -177,7 +177,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                         el: this.imageSet,
                         lgap: 2
                     }],
-                    scrollable: null,
+                    scrollable: false,
                     scrolly: false,
                     scrollx: false
                 })],

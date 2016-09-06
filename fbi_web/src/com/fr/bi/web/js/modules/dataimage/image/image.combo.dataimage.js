@@ -18,7 +18,7 @@ BI.DataImagePane = BI.inherit(BI.Widget, {
                     type: "bi.horizontal",
                     element: this.element,
                     items: [this.chart, this.imageSet],
-                    scrollable: null,
+                    scrollable: false,
                     scrolly: false,
                     scrollx: false
                 })]

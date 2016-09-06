@@ -56,22 +56,25 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         this.config = this._formatConfig();
         this.combineChart = BI.createWidget({
             type: type,
-            width: 170,
-            height: 140
+            width: 180,
+            height: 160
         });
         BI.createWidget({
             type: "bi.absolute",
             cls: "bi-data-tab-chart",
             element: this.element,
             items: [{
-                el: this.combineChart
+                el: this.combineChart,
+                top: -5,
+                left: -5
             }, {
                 el: title,
-                left: 20,
+                left: 15,
                 top: 5
             }],
             width: 170,
-            height: 140
+            height: 140,
+            scrollable: false
         });
     },
 
