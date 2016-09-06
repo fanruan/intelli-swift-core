@@ -242,10 +242,10 @@ var Table = React.createClass({
     _handlePanResponderEnd(e, gestureState) {
         var dx = gestureState.dx, dy = gestureState.dy, vx = gestureState.vx, vy = gestureState.vy;
         this.setScrollEnd();
-        if (!this._lockX && !this._lockY) {
+        if (!this._lockX && !this._lockY && this._lockA) {
             this.offset.flattenOffset();
             this._onSwipe(-dx - vx * 200);
-        } else {
+        } else if (this._lockX || this._lockY) {
             this.trans.flattenOffset();
             this._onWheel(this._lockX ? (-dx - vx * 200) : 0, this._lockY ? (-dy - vy * 200) : 0);
         }
@@ -505,7 +505,7 @@ var Table = React.createClass({
                     'public-fixedDataTable-main'
                 )}
                 onWheel={this._wheelHandler.onWheel}
-                style={{height: state.height, width: state.width}} {...this._panResponder.panHandlers}>
+                style={{height: state.height, width: props.width}} {...this._panResponder.panHandlers}>
                 <Animated.View
                     ref="rowsContainer"
                     className={'fixedDataTableLayout-rowsContainer'}
@@ -922,7 +922,7 @@ var Table = React.createClass({
             props.width = props.width + x;
             var newState = this._calculateState(props);
             delete newState.width;
-            newState.offsetWidth = Math.min(props.width, newState.scrollContentWidth);
+            newState.offsetWidth = Math.min(newState.offsetWidth, newState.scrollContentWidth);
             this.setState(newState);
             this.offset.setValue(-x);
         }
