@@ -64,7 +64,7 @@ class App extends Component {
   render() {
     const {template, actions} = this.props;
     return (
-      <DatePickerIOSDemo template={new Template(template)} actions={actions} />
+      <Main template={new Template(template)} actions={actions} />
     )
   }
 }

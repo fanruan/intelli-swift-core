@@ -2141,7 +2141,7 @@ webpackJsonp([0],{
 	      var template = _props.template;
 	      var actions = _props.actions;
 
-	      return _lib2.default.createElement(_DatePickerIOS2.default, { template: new _data.Template(template), actions: actions });
+	      return _lib2.default.createElement(_Main2.default, { template: new _data.Template(template), actions: actions });
 	    }
 	  }]);
 

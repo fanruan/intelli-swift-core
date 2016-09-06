@@ -91,7 +91,6 @@ class Picker extends Component {
                 style={[styles.picker, this.props.style]} {...this._panResponder.panHandlers}>
                 <View style={styles.highlight}></View>
                 <Animated.View
-                    ref={'container'}
                     className={''}
                     style={[{
                     transform: [{
@@ -108,20 +107,25 @@ class Picker extends Component {
         );
     }
 
-    _setScrolling() {
-        ReactDOM.findDOMNode(this.refs['container']).style.transitionDuration = '0ms';
-    }
+    _moveToValue(value) {
+        let y = -this.state.defaultOffset + this._getPositionByValue(value);
 
-    _setScrollEnd() {
-        ReactDOM.findDOMNode(this.refs['container']).style.transitionDuration = '300ms';
-    }
-
-    _moveToValue(selectedValue) {
-        let y = this.state.defaultOffset + this._getPositionByValue(selectedValue);
-
-        this.trans.setValue({x: 0, y: y});
-        this.setState({selectedValue: selectedValue, scrollY: -y});
-        this.props.onValueChange && this.props.onValueChange(selectedValue);
+        var abort = false;
+        Animated.timing(this.trans.y, {
+            toValue: -y,
+            easing: Easing.out(Easing.ease),
+            duration: 300
+        }).start(endState => {
+            if (!endState.finished) {
+                abort = true;
+            }
+            if (endState.finished && !abort) {
+                if (value !== this.state.selectedValue) {
+                    this.setState({selectedValue: value, scrollY: y});
+                    this.props.onValueChange && this.props.onValueChange(value);
+                }
+            }
+        });
     }
 
     _handleStartShouldSetPanResponder(e) {
@@ -136,7 +140,6 @@ class Picker extends Component {
     }
 
     _handlePanResponderMove(e, gestureState) {
-        this._setScrolling();
         let scrollY = this.state.scrollY;
         const minScrollY = -this.state.defaultOffset, maxScrollY = this.state.maxScrollY;
 
@@ -149,15 +152,14 @@ class Picker extends Component {
         if (scrollY > maxScrollY) {
             scrollY = maxScrollY + Math.pow(scrollY - maxScrollY, 0.8);
         }
-        this.trans.setValue({x: 0, y: this.state.scrollY - scrollY})
+        this.trans.setValue({x: 0, y: this.state.scrollY - scrollY});
         e.stopPropagation();
         e.preventDefault();
     }
 
     _handlePanResponderEnd(e, gestureState) {
-        this._setScrollEnd();
         this.trans.flattenOffset();
-        let toValue = Math.round((this.trans.y.__getAnimatedValue() - this.state.defaultOffset + gestureState.vy * 200)
+        let toValue = Math.round((this.trans.y.__getAnimatedValue() - this.state.defaultOffset + gestureState.vy * 100)
                 / PICKER_ITEM_HEIGHT) * PICKER_ITEM_HEIGHT + this.state.defaultOffset;
         if (toValue < -this.state.maxScrollY) {
             toValue = -this.state.maxScrollY;
@@ -167,10 +169,22 @@ class Picker extends Component {
         }
 
         const value = this._getValueByPosition(toValue - this.state.defaultOffset);
-
-        this.trans.setValue({x: 0, y: toValue});
-        this.setState({selectedValue: value, scrollY: -toValue});
-        this.props.onValueChange && this.props.onValueChange(value);
+        var abort = false;
+        Animated.timing(this.trans.y, {
+            toValue: toValue,
+            easing: Easing.out(Easing.ease),
+            duration: 300
+        }).start(endState => {
+            if (!endState.finished) {
+                abort = true;
+            }
+            if (endState.finished && !abort) {
+                if (value !== this.state.selectedValue) {
+                    this.setState({selectedValue: value, scrollY: -toValue});
+                    this.props.onValueChange && this.props.onValueChange(value);
+                }
+            }
+        });
     }
 
     _getOffsetPosition() {
@@ -188,7 +202,7 @@ class Picker extends Component {
                 pos = index * PICKER_ITEM_HEIGHT;
             }
         });
-        return -1 * pos;
+        return pos;
     }
 
     _getValueByPosition(pos) {
@@ -212,7 +226,7 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        transitionDuration: '300ms',
+        transitionDuration: '0ms',
         transitionTimingFunction: 'ease-out'
     },
 

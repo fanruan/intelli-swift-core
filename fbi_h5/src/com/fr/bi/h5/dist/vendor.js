@@ -23976,7 +23976,6 @@
 	                _react2.default.createElement(
 	                    _Animated2.default.View,
 	                    {
-	                        ref: 'container',
 	                        className: '',
 	                        style: [{
 	                            transform: [{
@@ -23992,23 +23991,28 @@
 	            );
 	        }
 	    }, {
-	        key: '_setScrolling',
-	        value: function _setScrolling() {
-	            _reactDom2.default.findDOMNode(this.refs['container']).style.transitionDuration = '0ms';
-	        }
-	    }, {
-	        key: '_setScrollEnd',
-	        value: function _setScrollEnd() {
-	            _reactDom2.default.findDOMNode(this.refs['container']).style.transitionDuration = '300ms';
-	        }
-	    }, {
 	        key: '_moveToValue',
-	        value: function _moveToValue(selectedValue) {
-	            var y = this.state.defaultOffset + this._getPositionByValue(selectedValue);
+	        value: function _moveToValue(value) {
+	            var _this5 = this;
 
-	            this.trans.setValue({ x: 0, y: y });
-	            this.setState({ selectedValue: selectedValue, scrollY: -y });
-	            this.props.onValueChange && this.props.onValueChange(selectedValue);
+	            var y = -this.state.defaultOffset + this._getPositionByValue(value);
+
+	            var abort = false;
+	            _Animated2.default.timing(this.trans.y, {
+	                toValue: -y,
+	                easing: _Easing2.default.out(_Easing2.default.ease),
+	                duration: 300
+	            }).start(function (endState) {
+	                if (!endState.finished) {
+	                    abort = true;
+	                }
+	                if (endState.finished && !abort) {
+	                    if (value !== _this5.state.selectedValue) {
+	                        _this5.setState({ selectedValue: value, scrollY: y });
+	                        _this5.props.onValueChange && _this5.props.onValueChange(value);
+	                    }
+	                }
+	            });
 	        }
 	    }, {
 	        key: '_handleStartShouldSetPanResponder',
@@ -24026,7 +24030,6 @@
 	    }, {
 	        key: '_handlePanResponderMove',
 	        value: function _handlePanResponderMove(e, gestureState) {
-	            this._setScrolling();
 	            var scrollY = this.state.scrollY;
 	            var minScrollY = -this.state.defaultOffset,
 	                maxScrollY = this.state.maxScrollY;
@@ -24047,9 +24050,10 @@
 	    }, {
 	        key: '_handlePanResponderEnd',
 	        value: function _handlePanResponderEnd(e, gestureState) {
-	            this._setScrollEnd();
+	            var _this6 = this;
+
 	            this.trans.flattenOffset();
-	            var toValue = Math.round((this.trans.y.__getAnimatedValue() - this.state.defaultOffset + gestureState.vy * 200) / PICKER_ITEM_HEIGHT) * PICKER_ITEM_HEIGHT + this.state.defaultOffset;
+	            var toValue = Math.round((this.trans.y.__getAnimatedValue() - this.state.defaultOffset + gestureState.vy * 100) / PICKER_ITEM_HEIGHT) * PICKER_ITEM_HEIGHT + this.state.defaultOffset;
 	            if (toValue < -this.state.maxScrollY) {
 	                toValue = -this.state.maxScrollY;
 	            }
@@ -24058,10 +24062,22 @@
 	            }
 
 	            var value = this._getValueByPosition(toValue - this.state.defaultOffset);
-
-	            this.trans.setValue({ x: 0, y: toValue });
-	            this.setState({ selectedValue: value, scrollY: -toValue });
-	            this.props.onValueChange && this.props.onValueChange(value);
+	            var abort = false;
+	            _Animated2.default.timing(this.trans.y, {
+	                toValue: toValue,
+	                easing: _Easing2.default.out(_Easing2.default.ease),
+	                duration: 300
+	            }).start(function (endState) {
+	                if (!endState.finished) {
+	                    abort = true;
+	                }
+	                if (endState.finished && !abort) {
+	                    if (value !== _this6.state.selectedValue) {
+	                        _this6.setState({ selectedValue: value, scrollY: -toValue });
+	                        _this6.props.onValueChange && _this6.props.onValueChange(value);
+	                    }
+	                }
+	            });
 	        }
 	    }, {
 	        key: '_getOffsetPosition',
@@ -24081,7 +24097,7 @@
 	                    pos = index * PICKER_ITEM_HEIGHT;
 	                }
 	            });
-	            return -1 * pos;
+	            return pos;
 	        }
 	    }, {
 	        key: '_getValueByPosition',
@@ -24115,7 +24131,7 @@
 	    },
 
 	    container: {
-	        transitionDuration: '300ms',
+	        transitionDuration: '0ms',
 	        transitionTimingFunction: 'ease-out'
 	    },
 
@@ -72307,20 +72323,6 @@
 	        e.stopPropagation();
 	        e.preventDefault();
 	    },
-	    setScrolling: function setScrolling() {
-	        ReactDOM.findDOMNode(this.refs['rowsContainer']).style.transitionDuration = '0ms';
-	        this.refs['bufferedRows'].setScrolling();
-	        this.refs['header'] && this.refs['header'].setScrolling();
-	        this.refs['footer'] && this.refs['footer'].setScrolling();
-	        this.refs['group_header'] && this.refs['group_header'].setScrolling();
-	    },
-	    setScrollEnd: function setScrollEnd() {
-	        ReactDOM.findDOMNode(this.refs['rowsContainer']).style.transitionDuration = '300ms';
-	        this.refs['bufferedRows'].setScrollEnd();
-	        this.refs['header'] && this.refs['header'].setScrollEnd();
-	        this.refs['footer'] && this.refs['footer'].setScrollEnd();
-	        this.refs['group_header'] && this.refs['group_header'].setScrollEnd();
-	    },
 	    _handlePanResponderMove: function _handlePanResponderMove(e, gestureState) {
 	        var scrollX = this.state.scrollX,
 	            scrollY = this.state.scrollY,
@@ -72330,7 +72332,6 @@
 	            maxOffsetScroll = this.state.offsetWidth - this.state.width;
 	        var dx = gestureState.dx,
 	            dy = gestureState.dy;
-	        this.setScrolling();
 
 	        scrollX -= dx;
 	        scrollY -= dy;
@@ -72385,7 +72386,6 @@
 	            dy = gestureState.dy,
 	            vx = gestureState.vx,
 	            vy = gestureState.vy;
-	        this.setScrollEnd();
 	        if (!this._lockX && !this._lockY && this._lockA) {
 	            this.offset.flattenOffset();
 	            this._onSwipe(-dx - vx * 200);
@@ -72393,9 +72393,9 @@
 	            this.trans.flattenOffset();
 	            this._onWheel(this._lockX ? -dx - vx * 200 : 0, this._lockY ? -dy - vy * 200 : 0);
 	        }
-	        this._lockX = false;
-	        this._lockY = false;
-	        this._lockA = false;
+	        //this._lockX = false;
+	        //this._lockY = false;
+	        //this._lockA = false;
 	    },
 	    _shouldHandleWheelX: function _shouldHandleWheelX( /*number*/delta) /*boolean*/{
 	        if (this.props.overflowX === 'hidden') {
@@ -72487,7 +72487,6 @@
 	        var groupHeader;
 	        if (state.useGroupHeader) {
 	            groupHeader = React.createElement(TableRow, {
-	                ref: 'group_header',
 	                key: 'group_header',
 	                isScrolling: this._isScrolling,
 	                className: cn('fixedDataTableLayout-header', 'public-fixedDataTable-header'),
@@ -72538,7 +72537,6 @@
 	        var footer = null;
 	        if (state.footerHeight) {
 	            footer = React.createElement(TableRow, {
-	                ref: 'footer',
 	                key: 'footer',
 	                isScrolling: this._isScrolling,
 	                className: cn('fixedDataTableLayout-footer', 'public-fixedDataTable-footer'),
@@ -72557,7 +72555,6 @@
 	        var rows = this._renderRows(bodyOffsetTop);
 
 	        var header = React.createElement(TableRow, {
-	            ref: 'header',
 	            key: 'header',
 	            isScrolling: this._isScrolling,
 	            className: cn('fixedDataTableLayout-header', 'public-fixedDataTable-header'),
@@ -72599,7 +72596,6 @@
 	            React.createElement(
 	                Animated.View,
 	                {
-	                    ref: 'rowsContainer',
 	                    className: 'fixedDataTableLayout-rowsContainer',
 	                    style: {
 	                        transform: [{
@@ -72610,7 +72606,7 @@
 	                            translateZ: 0
 	                        }],
 	                        height: rowsContainerHeight, width: state.offsetWidth,
-	                        transitionDuration: '300ms',
+	                        transitionDuration: '0ms',
 	                        transitionTimingFunction: 'ease-out',
 	                        pointerEvents: this.isScrolling ? 'none' : 'auto'
 	                    } },
@@ -72628,7 +72624,6 @@
 	        var state = this.state;
 
 	        return React.createElement(TableBufferedRows, {
-	            ref: 'bufferedRows',
 	            isScrolling: this._isScrolling,
 	            defaultRowHeight: state.rowHeight,
 	            firstRowIndex: state.firstRowIndex,
@@ -72934,6 +72929,8 @@
 	        };
 	    },
 	    _onSwipe: function _onSwipe(deltaX) {
+	        var _this = this;
+
 	        if (this.isMounted()) {
 	            if (!this._isScrolling) {
 	                this._didScrollStart();
@@ -72943,44 +72940,82 @@
 	                x += Math.round(deltaX);
 	                x = x < 0 ? 0 : x;
 	                x = x > this.state.offsetWidth - this.state.width ? this.state.offsetWidth - this.state.width : x;
-	                this.offset.setValue(-x);
-	                this.setState({
-	                    offsetX: x
+	                var abort = false;
+	                Animated.timing(this.offset, {
+	                    toValue: -x,
+	                    easing: Easing.out(Easing.ease),
+	                    duration: 300
+	                }).start(function (endState) {
+	                    if (!endState.finished) {
+	                        abort = true;
+	                    }
+	                    if (endState.finished && !abort) {
+	                        _this.setState({
+	                            offsetX: x
+	                        });
+	                        _this._lockA = false;
+	                        _this._didScrollStop();
+	                    }
 	                });
 	            }
-	            this._didScrollStop();
 	        }
 	    },
 	    _onWheel: function _onWheel( /*number*/deltaX, /*number*/deltaY) {
+	        var _this2 = this;
+
 	        if (this.isMounted()) {
 	            if (!this._isScrolling) {
 	                this._didScrollStart();
 	            }
 	            var x = this.state.scrollX;
+	            var abort = false;
 	            if (Math.abs(deltaY) > Math.abs(deltaX) && this.props.overflowY !== 'hidden') {
 	                var scrollState = this._scrollHelper.scrollBy(Math.round(deltaY));
 	                var maxScrollY = Math.max(0, scrollState.contentHeight - this.state.bodyHeight);
 	                var headerOffsetTop = this.state.useGroupHeader ? this.state.groupHeaderHeight : 0;
 	                var bodyOffsetTop = headerOffsetTop + this.state.headerHeight;
 	                var y = scrollState.offset - this._scrollHelper.getRowPosition(scrollState.index) + bodyOffsetTop;
-	                this.trans.y.setValue(y);
-	                this.setState({
-	                    firstRowIndex: scrollState.index,
-	                    firstRowOffset: scrollState.offset,
-	                    scrollY: scrollState.position,
-	                    scrollContentHeight: scrollState.contentHeight,
-	                    maxScrollY: maxScrollY
+	                Animated.timing(this.trans.y, {
+	                    toValue: y,
+	                    easing: Easing.out(Easing.ease),
+	                    duration: 300
+	                }).start(function (endState) {
+	                    if (!endState.finished) {
+	                        abort = true;
+	                    }
+	                    if (endState.finished && !abort) {
+	                        _this2.setState({
+	                            firstRowIndex: scrollState.index,
+	                            firstRowOffset: scrollState.offset,
+	                            scrollY: scrollState.position,
+	                            scrollContentHeight: scrollState.contentHeight,
+	                            maxScrollY: maxScrollY
+	                        });
+	                        _this2._lockY = false;
+	                        _this2._didScrollStop();
+	                    }
 	                });
 	            } else if (deltaX && this.props.overflowX !== 'hidden') {
 	                x += Math.round(deltaX);
 	                x = x < 0 ? 0 : x;
 	                x = x > this.state.maxScrollX ? this.state.maxScrollX : x;
-	                this.trans.x.setValue(-x);
-	                this.setState({
-	                    scrollX: x
+	                Animated.timing(this.trans.x, {
+	                    toValue: -x,
+	                    easing: Easing.out(Easing.ease),
+	                    duration: 300
+	                }).start(function (endState) {
+	                    if (!endState.finished) {
+	                        abort = true;
+	                    }
+	                    if (endState.finished && !abort) {
+	                        _this2.setState({
+	                            scrollX: x
+	                        });
+	                        _this2._lockX = false;
+	                        _this2._didScrollStop();
+	                    }
 	                });
 	            }
-	            this._didScrollStop();
 	        }
 	    },
 	    _didScrollStart: function _didScrollStart() {
@@ -73117,7 +73152,6 @@
 	            var hasBottomBorder = rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
 
 	            this._staticRowArray[i] = React.createElement(TableRow, {
-	                ref: 'row_' + i,
 	                key: i,
 	                isScrolling: props.isScrolling,
 	                index: rowIndex,
@@ -73144,7 +73178,7 @@
 
 	        var style = {
 	            position: 'absolute',
-	            transitionDuration: '300ms',
+	            transitionDuration: '0ms',
 	            transitionTimingFunction: 'ease-out',
 	            pointerEvents: props.isScrolling ? 'none' : 'auto'
 	        };
@@ -73157,7 +73191,7 @@
 
 	        return React.createElement(
 	            Animated.View,
-	            { ref: 'wrapper', style: _extends({
+	            { style: _extends({
 	                    transform: [{
 	                        translateX: 0
 	                    }, {
@@ -73167,18 +73201,6 @@
 	                    }] }, style) },
 	            this._staticRowArray
 	        );
-	    },
-	    setScrolling: function setScrolling() {
-	        for (var i = 0; i < this.state.rowsToRender.length; ++i) {
-	            this.refs['row_' + i].setScrolling();
-	        }
-	        ReactDOM.findDOMNode(this.refs['wrapper']).style.transitionDuration = '0ms';
-	    },
-	    setScrollEnd: function setScrollEnd() {
-	        for (var i = 0; i < this.state.rowsToRender.length; ++i) {
-	            this.refs['row_' + i].setScrollEnd();
-	        }
-	        ReactDOM.findDOMNode(this.refs['wrapper']).style.transitionDuration = '300ms';
 	    },
 	    _getRowHeight: function _getRowHeight( /*number*/index) /*number*/{
 	        return this.props.rowHeightGetter ? this.props.rowHeightGetter(index) : this.props.defaultRowHeight;
@@ -73443,7 +73465,6 @@
 
 	        var fixedColumnsWidth = this._getColumnsWidth(this.props.fixedColumns);
 	        var fixedColumns = React.createElement(TableCellGroup, {
-	            ref: 'fixed_cells',
 	            key: 'fixed_cells',
 	            isScrolling: this.props.isScrolling,
 	            height: this.props.height,
@@ -73457,7 +73478,6 @@
 	        });
 	        var columnsShadow = this._renderColumnsShadow(fixedColumnsWidth);
 	        var scrollableColumns = React.createElement(TableCellGroup, {
-	            ref: 'scrollable_cells',
 	            key: 'scrollable_cells',
 	            isScrolling: this.props.isScrolling,
 	            height: this.props.height,
@@ -73528,14 +73548,6 @@
 	    },
 	    _onMouseLeave: function _onMouseLeave( /*object*/event) {
 	        this.props.onMouseLeave(event, this.props.index);
-	    },
-	    setScrolling: function setScrolling() {
-	        this.refs['fixed_cells'].setScrolling();
-	        this.refs['scrollable_cells'].setScrolling();
-	    },
-	    setScrollEnd: function setScrollEnd() {
-	        this.refs['fixed_cells'].setScrollEnd();
-	        this.refs['scrollable_cells'].setScrollEnd();
 	    }
 	});
 
@@ -73569,19 +73581,11 @@
 	            {
 	                style: style,
 	                className: 'fixedDataTableRowLayout-rowWrapper' },
-	            React.createElement(TableRowImpl, _extends({
-	                ref: 'tableRowImpl'
-	            }, this.props, {
+	            React.createElement(TableRowImpl, _extends({}, this.props, {
 	                offsetTop: undefined,
 	                zIndex: undefined
 	            }))
 	        );
-	    },
-	    setScrolling: function setScrolling() {
-	        this.refs['tableRowImpl'].setScrolling();
-	    },
-	    setScrollEnd: function setScrollEnd() {
-	        this.refs['tableRowImpl'].setScrollEnd();
 	    }
 	});
 
@@ -73665,14 +73669,13 @@
 	            position: 'absolute',
 	            width: contentWidth,
 	            zIndex: props.zIndex,
-	            transitionDuration: '300ms',
+	            transitionDuration: '0ms',
 	            transitionTimingFunction: 'ease-out'
 	        };
 	        if (this.props.trans) {
 	            return React.createElement(
 	                Animated.View,
 	                {
-	                    ref: 'cellGroup',
 	                    className: 'fixedDataTableCellGroupLayout-cellGroup',
 	                    style: _extends({
 	                        transform: [{
@@ -73698,12 +73701,6 @@
 	                cells
 	            );
 	        }
-	    },
-	    setScrolling: function setScrolling() {
-	        this.refs['cellGroup'] && (ReactDOM.findDOMNode(this.refs['cellGroup']).style.transitionDuration = '0ms');
-	    },
-	    setScrollEnd: function setScrollEnd() {
-	        this.refs['cellGroup'] && (ReactDOM.findDOMNode(this.refs['cellGroup']).style.transitionDuration = '300ms');
 	    },
 	    _renderCell: function _renderCell( /*number*/rowIndex,
 	    /*number*/height,
@@ -73786,9 +73783,7 @@
 	            {
 	                style: style,
 	                className: 'fixedDataTableCellGroupLayout-cellGroupWrapper' },
-	            React.createElement(TableCellGroupImpl, _extends({
-	                ref: 'cellGroupImpl'
-	            }, props, {
+	            React.createElement(TableCellGroupImpl, _extends({}, props, {
 	                onColumnResize: onColumnResize
 	            }))
 	        );
@@ -73800,12 +73795,6 @@
 	    /*string|number*/columnKey,
 	    /*object*/event) {
 	        this.props.onColumnResize && this.props.onColumnResize(this.props.offsetLeft, left - this.props.left + width, width, minWidth, maxWidth, columnKey, event);
-	    },
-	    setScrolling: function setScrolling() {
-	        this.refs['cellGroupImpl'].setScrolling();
-	    },
-	    setScrollEnd: function setScrollEnd() {
-	        this.refs['cellGroupImpl'].setScrollEnd();
 	    }
 	});
 

@@ -50,8 +50,7 @@ var TableRowImpl = React.createClass({
         var fixedColumnsWidth = this._getColumnsWidth(this.props.fixedColumns);
         var fixedColumns =
             <TableCellGroup
-                ref='fixed_cells'
-                key='fixed_cells'
+                key="fixed_cells"
                 isScrolling={this.props.isScrolling}
                 height={this.props.height}
                 left={0}
@@ -65,8 +64,7 @@ var TableRowImpl = React.createClass({
         var columnsShadow = this._renderColumnsShadow(fixedColumnsWidth);
         var scrollableColumns =
             <TableCellGroup
-                ref='scrollable_cells'
-                key='scrollable_cells'
+                key="scrollable_cells"
                 isScrolling={this.props.isScrolling}
                 height={this.props.height}
                 left={this.props.scrollLeft}
@@ -141,16 +139,6 @@ var TableRowImpl = React.createClass({
 
     _onMouseLeave(/*object*/ event) {
         this.props.onMouseLeave(event, this.props.index);
-    },
-
-    setScrolling(){
-        this.refs['fixed_cells'].setScrolling();
-        this.refs['scrollable_cells'].setScrolling();
-    },
-
-    setScrollEnd(){
-        this.refs['fixed_cells'].setScrollEnd();
-        this.refs['scrollable_cells'].setScrollEnd();
     }
 });
 
@@ -182,21 +170,12 @@ var TableRow = React.createClass({
                 style={style}
                 className={'fixedDataTableRowLayout-rowWrapper'}>
                 <TableRowImpl
-                    ref='tableRowImpl'
                     {...this.props}
                     offsetTop={undefined}
                     zIndex={undefined}
                 />
             </View>
         );
-    },
-
-    setScrolling(){
-        this.refs['tableRowImpl'].setScrolling();
-    },
-
-    setScrollEnd(){
-        this.refs['tableRowImpl'].setScrollEnd();
     }
 });
 

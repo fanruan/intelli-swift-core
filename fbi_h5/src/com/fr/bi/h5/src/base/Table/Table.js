@@ -155,27 +155,10 @@ var Table = React.createClass({
         e.preventDefault();
     },
 
-    setScrolling(){
-        ReactDOM.findDOMNode(this.refs['rowsContainer']).style.transitionDuration = '0ms';
-        this.refs['bufferedRows'].setScrolling();
-        this.refs['header'] && this.refs['header'].setScrolling();
-        this.refs['footer'] && this.refs['footer'].setScrolling();
-        this.refs['group_header'] && this.refs['group_header'].setScrolling();
-    },
-
-    setScrollEnd(){
-        ReactDOM.findDOMNode(this.refs['rowsContainer']).style.transitionDuration = '300ms';
-        this.refs['bufferedRows'].setScrollEnd();
-        this.refs['header'] && this.refs['header'].setScrollEnd();
-        this.refs['footer'] && this.refs['footer'].setScrollEnd();
-        this.refs['group_header'] && this.refs['group_header'].setScrollEnd();
-    },
-
     _handlePanResponderMove(e, gestureState) {
         var scrollX = this.state.scrollX, scrollY = this.state.scrollY, offsetX = this.state.offsetX;
         var maxScrollX = this.state.maxScrollX, maxScrollY = this.state.maxScrollY, maxOffsetScroll = this.state.offsetWidth - this.state.width;
         var dx = gestureState.dx, dy = gestureState.dy;
-        this.setScrolling();
 
         scrollX -= dx;
         scrollY -= dy;
@@ -228,7 +211,6 @@ var Table = React.createClass({
 
     _handlePanResponderEnd(e, gestureState) {
         var dx = gestureState.dx, dy = gestureState.dy, vx = gestureState.vx, vy = gestureState.vy;
-        this.setScrollEnd();
         if (!this._lockX && !this._lockY && this._lockA) {
             this.offset.flattenOffset();
             this._onSwipe(-dx - vx * 200);
@@ -236,9 +218,9 @@ var Table = React.createClass({
             this.trans.flattenOffset();
             this._onWheel(this._lockX ? (-dx - vx * 200) : 0, this._lockY ? (-dy - vy * 200) : 0);
         }
-        this._lockX = false;
-        this._lockY = false;
-        this._lockA = false;
+        //this._lockX = false;
+        //this._lockY = false;
+        //this._lockA = false;
     },
 
     _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
@@ -350,7 +332,6 @@ var Table = React.createClass({
         if (state.useGroupHeader) {
             groupHeader = (
                 <TableRow
-                    ref="group_header"
                     key="group_header"
                     isScrolling={this._isScrolling}
                     className={cn(
@@ -413,7 +394,6 @@ var Table = React.createClass({
         if (state.footerHeight) {
             footer =
                 <TableRow
-                    ref="footer"
                     key="footer"
                     isScrolling={this._isScrolling}
                     className={cn(
@@ -436,7 +416,6 @@ var Table = React.createClass({
 
         var header =
             <TableRow
-                ref="header"
                 key="header"
                 isScrolling={this._isScrolling}
                 className={cn(
@@ -494,7 +473,6 @@ var Table = React.createClass({
                 onWheel={this._wheelHandler.onWheel}
                 style={{height: state.height, width: props.width}} {...this._panResponder.panHandlers}>
                 <Animated.View
-                    ref="rowsContainer"
                     className={'fixedDataTableLayout-rowsContainer'}
                     style={{
                         transform: [{
@@ -505,7 +483,7 @@ var Table = React.createClass({
                             translateZ: 0
                         }],
                         height: rowsContainerHeight, width: state.offsetWidth,
-                        transitionDuration: '300ms',
+                        transitionDuration: '0ms',
                         transitionTimingFunction: 'ease-out',
                         pointerEvents: this.isScrolling ? 'none' : 'auto'
                     }}>
@@ -526,7 +504,6 @@ var Table = React.createClass({
 
         return (
             <TableBufferedRows
-                ref="bufferedRows"
                 isScrolling={this._isScrolling}
                 defaultRowHeight={state.rowHeight}
                 firstRowIndex={state.firstRowIndex}
@@ -907,12 +884,24 @@ var Table = React.createClass({
                 x += Math.round(deltaX);
                 x = x < 0 ? 0 : x;
                 x = x > this.state.offsetWidth - this.state.width ? this.state.offsetWidth - this.state.width : x;
-                this.offset.setValue(-x);
-                this.setState({
-                    offsetX: x
-                })
+                var abort = false;
+                Animated.timing(this.offset, {
+                    toValue: -x,
+                    easing: Easing.out(Easing.ease),
+                    duration: 300
+                }).start(endState => {
+                    if (!endState.finished) {
+                        abort = true;
+                    }
+                    if (endState.finished && !abort) {
+                        this.setState({
+                            offsetX: x
+                        });
+                        this._lockA = false;
+                        this._didScrollStop();
+                    }
+                });
             }
-            this._didScrollStop();
         }
     },
 
@@ -922,6 +911,7 @@ var Table = React.createClass({
                 this._didScrollStart();
             }
             var x = this.state.scrollX;
+            var abort = false;
             if (Math.abs(deltaY) > Math.abs(deltaX) &&
                 this.props.overflowY !== 'hidden') {
                 var scrollState = this._scrollHelper.scrollBy(Math.round(deltaY));
@@ -932,24 +922,47 @@ var Table = React.createClass({
                 var headerOffsetTop = this.state.useGroupHeader ? this.state.groupHeaderHeight : 0;
                 var bodyOffsetTop = headerOffsetTop + this.state.headerHeight;
                 var y = scrollState.offset - this._scrollHelper.getRowPosition(scrollState.index) + bodyOffsetTop;
-                this.trans.y.setValue(y);
-                this.setState({
-                    firstRowIndex: scrollState.index,
-                    firstRowOffset: scrollState.offset,
-                    scrollY: scrollState.position,
-                    scrollContentHeight: scrollState.contentHeight,
-                    maxScrollY: maxScrollY
+                Animated.timing(this.trans.y, {
+                    toValue: y,
+                    easing: Easing.out(Easing.ease),
+                    duration: 300
+                }).start(endState => {
+                    if (!endState.finished) {
+                        abort = true;
+                    }
+                    if (endState.finished && !abort) {
+                        this.setState({
+                            firstRowIndex: scrollState.index,
+                            firstRowOffset: scrollState.offset,
+                            scrollY: scrollState.position,
+                            scrollContentHeight: scrollState.contentHeight,
+                            maxScrollY: maxScrollY
+                        });
+                        this._lockY = false;
+                        this._didScrollStop();
+                    }
                 });
             } else if (deltaX && this.props.overflowX !== 'hidden') {
                 x += Math.round(deltaX);
                 x = x < 0 ? 0 : x;
                 x = x > this.state.maxScrollX ? this.state.maxScrollX : x;
-                this.trans.x.setValue(-x);
-                this.setState({
-                    scrollX: x
+                Animated.timing(this.trans.x, {
+                    toValue: -x,
+                    easing: Easing.out(Easing.ease),
+                    duration: 300
+                }).start(endState => {
+                    if (!endState.finished) {
+                        abort = true;
+                    }
+                    if (endState.finished && !abort) {
+                        this.setState({
+                            scrollX: x
+                        });
+                        this._lockX = false;
+                        this._didScrollStop();
+                    }
                 });
             }
-            this._didScrollStop();
         }
     },
 

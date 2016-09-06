@@ -117,7 +117,6 @@ var TableBufferedRows = React.createClass({
 
             this._staticRowArray[i] =
                 <TableRow
-                    ref={`row_${i}`}
                     key={i}
                     isScrolling={props.isScrolling}
                     index={rowIndex}
@@ -148,7 +147,7 @@ var TableBufferedRows = React.createClass({
 
         var style = {
             position: 'absolute',
-            transitionDuration: '300ms',
+            transitionDuration: '0ms',
             transitionTimingFunction: 'ease-out',
             pointerEvents: props.isScrolling ? 'none' : 'auto'
         };
@@ -159,7 +158,7 @@ var TableBufferedRows = React.createClass({
         //  props.firstRowOffset - firstRowPosition + props.offsetTop
         //);
 
-        return <Animated.View ref="wrapper" style={{
+        return <Animated.View style={{
             transform: [{
                 translateX: 0
             }, {
@@ -168,20 +167,6 @@ var TableBufferedRows = React.createClass({
                 translateZ: 0
             }], ...style
         }}>{this._staticRowArray}</Animated.View>;
-    },
-
-    setScrolling(){
-        for (var i = 0; i < this.state.rowsToRender.length; ++i) {
-            this.refs[`row_${i}`].setScrolling();
-        }
-        ReactDOM.findDOMNode(this.refs['wrapper']).style.transitionDuration = '0ms';
-    },
-
-    setScrollEnd(){
-        for (var i = 0; i < this.state.rowsToRender.length; ++i) {
-            this.refs[`row_${i}`].setScrollEnd();
-        }
-        ReactDOM.findDOMNode(this.refs['wrapper']).style.transitionDuration = '300ms';
     },
 
     _getRowHeight(/*number*/ index) /*number*/ {
