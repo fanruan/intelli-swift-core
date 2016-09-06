@@ -10,6 +10,7 @@ BI.TableCell = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TableCell.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-table-cell",
+            textAlign: "left",
             text: ""
         })
     },
@@ -19,8 +20,8 @@ BI.TableCell = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.label",
             element: this.element,
-            textAlign: "left",
             whiteSpace: "nowrap",
+            textAlign: this.options.textAlign,
             height: this.options.height,
             text: this.options.text,
             value: this.options.value,

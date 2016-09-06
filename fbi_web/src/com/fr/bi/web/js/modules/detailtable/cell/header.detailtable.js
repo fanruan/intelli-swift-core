@@ -38,7 +38,7 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
                     title: name,
                     cls: "header-cell-text",
                     whiteSpace: "nowrap",
-                    textAlign: "left",
+                    textAlign: "center",
                     lgap: 5,
                     height: 25
                 }

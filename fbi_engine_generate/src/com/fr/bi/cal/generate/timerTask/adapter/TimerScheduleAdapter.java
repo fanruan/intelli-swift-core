@@ -5,17 +5,17 @@ import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
 import com.fr.bi.conf.manager.update.source.TimeFrequency;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.time.BIDateUtils;
+import com.fr.general.ComparatorUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Kary on 2016/6/29.
@@ -30,15 +30,35 @@ public class TimerScheduleAdapter {
                 String scheduleTime = BIDateUtils.getScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
                 if (isGlobalUpdate) {
                     CubeBuild cubeBuild = new CubeBuildStaff(new BIUser(userId));
-                    TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuild, keys,userId);
+                    TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuild, keys, userId, DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
                     scheduleList.add(taskSchedule);
                 } else {
                     BusinessTable table = tableCheck(userId, keys);
                     if (table != null) {
-                        CubeBuild cubeBuild = new CubeBuildSingleTable(table, null,userId,0);
-                        TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuild, keys,userId);
+                        TimerTaskSchedule taskSchedule = setBaseTableUpdateSettings(userId, frequency, scheduleTime, table);
                         scheduleList.add(taskSchedule);
+                        List<TimerTaskSchedule> EtlList = seEtlUpdateSettings(userId, keys, frequency, scheduleTime, table);
+                        scheduleList.addAll(EtlList);
                     }
+                }
+            }
+        }
+        return scheduleList;
+    }
+
+    private static TimerTaskSchedule setBaseTableUpdateSettings(long userId, TimeFrequency frequency, String scheduleTime, BusinessTable table) {
+        CubeBuild cubeBuild = new CubeBuildSingleTable(table, null, userId, frequency.getUpdateType());
+        return new TimerTaskSchedule(scheduleTime, cubeBuild, table.getTableSource().getTableName(), userId, frequency.getUpdateType());
+    }
+
+    private static List<TimerTaskSchedule> seEtlUpdateSettings(long userId, String keys, TimeFrequency frequency, String scheduleTime, BusinessTable table) {
+        List<TimerTaskSchedule> scheduleList = new ArrayList<TimerTaskSchedule>();
+        for (BusinessTable businessTable : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
+            Map<BICore, CubeTableSource> sourceMap = businessTable.getTableSource().createSourceMap();
+            for (BICore biCore : sourceMap.keySet()) {
+                if (ComparatorUtils.equals(sourceMap.get(biCore).getSourceID(), keys) && sourceMap.size() > 1) {
+                    CubeBuild EtlCubeBuild = new CubeBuildSingleTable(businessTable, table.getTableSource().getSourceID(), userId, frequency.getUpdateType());
+                    scheduleList.add(new TimerTaskSchedule(scheduleTime, EtlCubeBuild, businessTable.getTableSource().getTableName(), userId, frequency.getUpdateType()));
                 }
             }
         }
@@ -48,11 +68,13 @@ public class TimerScheduleAdapter {
     public static BusinessTable tableCheck(long userId, String keys) {
         Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
         for (BusinessTable table : allTables) {
-            if (table.getTableSource().getSourceID().equals(keys)) {
-                return table;
+            for (BICore biCore : table.getTableSource().createSourceMap().keySet()) {
+                if (table.getTableSource().createSourceMap().get(biCore).getSourceID().equals(keys)) {
+                    return table;
+                }
             }
         }
-
         return null;
     }
+
 }

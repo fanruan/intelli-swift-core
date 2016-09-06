@@ -18,6 +18,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
     _createItem: function () {
         var o = this.options;
         var dId = this.options.dId;
+        var type = BI.Utils.getDimensionTypeByID(dId);
         if (this._checkHyperLinkDimension()) {
             var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId);
             var item = BI.createWidget({
@@ -31,7 +32,20 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
 
             this._createItemWithStyle(item);
 
-        } else {
+        } else if(type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA ){
+            var item = BI.createWidget({
+                type: "bi.label",
+                cls: "detail-table-cell-text",
+                textAlign: "right",
+                whiteSpace: "nowrap",
+                height: this.options.height,
+                text: this.options.text,
+                value: this.options.value,
+                lgap: 5,
+                rgap: 5
+            });
+            this._createItemWithStyle(item);
+        } else{
             var item = BI.createWidget({
                 type: "bi.label",
                 cls: "detail-table-cell-text",

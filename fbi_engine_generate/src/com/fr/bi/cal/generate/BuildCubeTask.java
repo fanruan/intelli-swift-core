@@ -106,6 +106,7 @@ public class BuildCubeTask implements CubeTask {
         } finally {
             try {
                 cube.addVersion(System.currentTimeMillis());
+                BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
                 replaceOldCubes();
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);

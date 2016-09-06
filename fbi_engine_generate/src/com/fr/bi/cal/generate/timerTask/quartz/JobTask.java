@@ -28,14 +28,14 @@ public class JobTask implements Job {
         JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();
         long userId = Long.valueOf(data.get("userId").toString());
         String jobName = data.getString("jobName");
-        String sourceName=data.getString("sourceName");
+        String sourceName = data.getString("sourceName");
+
         boolean tableExisted = null != TimerScheduleAdapter.tableCheck(userId, sourceName);
-        if (!tableExisted&& !DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE.equals(sourceName)){
+        if (!tableExisted && !DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE.equals(sourceName)) {
             return;
         }
-
         CubeBuild cubeBuild = (CubeBuild) data.get("CubeBuild");
-        String message = "timerTask started!Current time is:" + new Date() + "\n Current task：" + jobName + "\nCurrent User：" + userId+"\n";
+        String message = "timerTask started!Current time is:" + new Date() + "\n Current task：" + jobName + "\nCurrent User：" + userId + "\n";
         BILogger.getLogger().info(message);
         CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
     }
