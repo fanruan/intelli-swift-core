@@ -20,6 +20,8 @@ import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
+import com.fr.bi.field.target.detailtarget.field.BINumberDetailTarget;
+import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
@@ -182,7 +184,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             if (t.useHyperLink()) {
                 cell.setNameHyperlinkGroup(t.createHyperLinkNameJavaScriptGroup(v));
             }
-            if (t instanceof BIStyleTarget) {
+            if (t instanceof BINumberDetailTarget || t instanceof BINumberFormulaDetailTarget) {
                 cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, t.useHyperLink()));
                 BIStyleTarget sumCol = (BIStyleTarget) t;
                 TargetStyle style = sumCol.getStyle();
