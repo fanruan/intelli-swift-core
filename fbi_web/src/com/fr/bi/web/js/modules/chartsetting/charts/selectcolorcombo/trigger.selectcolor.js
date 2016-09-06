@@ -29,8 +29,8 @@ BI.ChartSettingSelectColorTrigger = BI.inherit(BI.Trigger, {
             type: "bi.icon_button",
             disableSelected: true,
             cls: "icon-combo-down-icon trigger-triangle-font",
-            width: 12,
-            height: 8
+            width: 15,
+            height: 10
         });
 
         this.colorContainer = BI.createWidget({
@@ -48,14 +48,14 @@ BI.ChartSettingSelectColorTrigger = BI.inherit(BI.Trigger, {
             element: this.element,
             items: [{
                 el: this.colorContainer,
-                left: 0,
-                right: 0,
+                left: 2,
+                right: 2,
                 top: 0,
                 bottom: 0
             }, {
                 el: this.down,
-                right: 0,
-                bottom: 3
+                right: 4,
+                bottom: 5
             }]
         })
     },
