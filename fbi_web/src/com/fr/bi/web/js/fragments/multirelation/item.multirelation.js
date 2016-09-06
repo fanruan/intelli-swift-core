@@ -5,7 +5,6 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.MultirelationItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-multi-relation-item",
-            height: 30,
             relations: []
         })
     },
@@ -31,20 +30,16 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
             },
             items: self._createItems(o.relations),
             layouts: [{
-                type: "bi.left",
+                type: "bi.left"
             }]
         });
 
         BI.createWidget({
-            type: "bi.htape",
+            type: "bi.horizontal",
             element: this.element,
-            rgap:5,
+            rgap: 5,
             items: [{
-                el: {
-                    type: "bi.center_adapt",
-                    items: [this.checkbox]
-                },
-                width: 13
+                el: this.checkbox
             }, {
                 el: this.textGroup
             }]
