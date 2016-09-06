@@ -3,15 +3,14 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .image-set-tab {
   border-top: 1px solid #d4dadd;
+  background-color: #f4f4f4;
 }
 .image-set-tab-item {
   color: #1a1a1a;
-}
-.image-set-tab-item:hover {
-  color: #009de3;
+  border-right: 1px solid #d4dadd;
 }
 .image-set-tab-item.active {
-  color: #009de3;
+  background-color: #ffffff;
 }
 .image-set-delete.close-font {
   background-color: #e85050;
@@ -19,15 +18,12 @@
 .image-set-delete.close-font .b-font:before {
   color: #ffffff;
 }
-.img-select {
-  border-top: 1px solid #d4dadd;
-}
-.image-set-header {
-  border-bottom: 1px solid #d4dadd;
-}
 .bi-image-set {
   border-left: 1px solid #d4dadd;
 }
 .image-group {
   white-space: normal;
+}
+.header-label {
+  color: #808080;
 }

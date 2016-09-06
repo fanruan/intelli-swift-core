@@ -10,3 +10,6 @@
 .bi-data-label .data-label-header .header-icon {
   font-size: 22px;
 }
+.bi-data-label .data-label-tab {
+  border-bottom: 1px solid #d4dadd;
+}
