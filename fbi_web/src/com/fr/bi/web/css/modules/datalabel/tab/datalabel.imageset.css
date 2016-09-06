@@ -28,3 +28,6 @@
 .bi-image-set {
   border-left: 1px solid #d4dadd;
 }
+.image-group {
+  white-space: normal;
+}

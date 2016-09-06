@@ -443,8 +443,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForAxis: function (data) {
         var self = this, o = this.options;
-        if(BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
-            return ;
+        if (BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
+            return;
         }
         var hasSeries = this._checkSeriesExist();
         var allSeries = BI.pluck(data, "name");
@@ -544,8 +544,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataImageSettingForAxis: function (data) {
         var self = this, o = this.options;
-        if(BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
-            return ;
+        if (BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
+            return;
         }
         var hasSeries = this._checkSeriesExist();
         var allSeries = BI.pluck(data, "name");
@@ -630,9 +630,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             dot = BI.isEmptyString(x) || BI.isEmptyString(y) ? "" : ",";
             if (BI.isEmptyString(x) && BI.isEmptyString(y)) {
                 show = z;
-            } else if(BI.isEmptyString(z) && (BI.isEmptyString(x) || BI.isEmptyString(y))){
+            } else if (BI.isEmptyString(z) && (BI.isEmptyString(x) || BI.isEmptyString(y))) {
                 show = x + y;
-            }else{
+            } else {
                 show = "(" + x + dot + y + ") " + z;
             }
         } else if (chartType === BICst.WIDGET.SCATTER) {
@@ -650,7 +650,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             enabled: true,
             align: "outside",
             useHtml: true,
-            style: {},
+            style: {color: "#808080"},
             formatter: "function(){return '" + show + "'}"
         };
         switch (label.style_setting.type) {
