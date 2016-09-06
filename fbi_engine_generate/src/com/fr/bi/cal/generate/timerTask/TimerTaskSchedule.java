@@ -14,13 +14,19 @@ public class TimerTaskSchedule {
     private CubeBuild cubeBuild;
     private String jobName;
     private long userId;
+    private int updateType;
 
-    public TimerTaskSchedule(String schedule, CubeBuild cubeBuild, String sourceName, long userId) {
+    public int getUpdateType() {
+        return updateType;
+    }
+
+    public TimerTaskSchedule(String schedule, CubeBuild cubeBuild, String sourceName, long userId, int updateType) {
         this.timeSchedule = schedule;
-        this.sourceName = sourceName==null? DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE:sourceName;
+        this.sourceName = sourceName == null ? DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE : sourceName;
         this.cubeBuild = cubeBuild;
-        this.userId=userId;
-        this.jobName=sourceName+timeSchedule+ UUID.randomUUID();
+        this.userId = userId;
+        this.jobName = sourceName + timeSchedule + UUID.randomUUID();
+        this.updateType = updateType;
     }
 
     public String getTimeSchedule() {
@@ -39,7 +45,7 @@ public class TimerTaskSchedule {
         return sourceName;
     }
 
-    public String getJobName(){
+    public String getJobName() {
         return jobName;
-    } 
+    }
 }

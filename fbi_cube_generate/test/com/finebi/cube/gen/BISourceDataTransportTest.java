@@ -100,13 +100,6 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         assertTrue(tableEntityService.getRowCount() == 2);
         transportByPart(BINationDataFactory.createTableNationByPart(), 2);
 
-//        for (ICubeFieldSource fieldSource : BINationDataFactory.createTableNation().getSelfFields(null)) {
-//            CubeColumnReaderService column = cube.getCubeColumn(BITableKeyUtils.convert(BINationDataFactory.createTableNation()), BIColumnKey.covertColumnKey(fieldSource));
-//            if (fieldSource.getFieldName().equals("name")) {
-//                column.getOriginalObjectValueByRow(0).equals("China");
-//
-//            }
-//        }
         assertTrue(tableEntityService.getRowCount() == 5);
         assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(0).equals("China"));
         assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(1).equals("US"));
@@ -115,8 +108,29 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         assertTrue(tableEntityService.getColumnDataGetter("name").getOriginalObjectValueByRow(4).equals("Mexico"));
     }
 
+    /*增量更新：重现增量读取时越界异常的情况*/
+    public void testBigDataPartUpdate() throws BICubeColumnAbsentException {
+        CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(BINationDataFactory.createBigDataForPartUpdate()));
+        transport(BINationDataFactory.createBigDataForPartUpdate());
+        assertTrue(tableEntityService.getRowCount() == 10000);
+        transportByPart(BINationDataFactory.createBigDataForPartUpdate(), 10000);
+        assertTrue(tableEntityService.getRowCount() == 20000);
+        CubeColumnReaderService column = null;
+        for (ICubeFieldSource fieldSource : BINationDataFactory.createTableNation().getSelfFields(null)) {
+            if (fieldSource.getFieldName().equals("name")) {
+                column=cube.getCubeColumn(BITableKeyUtils.convert(BINationDataFactory.createTableNation()), BIColumnKey.covertColumnKey(fieldSource));
+            }
+        }
+        try {
+            column.getOriginalObjectValueByRow(16384);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 首次全量更新，之后不更新
+     *
      * @throws BICubeColumnAbsentException
      */
     public void testNeverTransportTable() throws BICubeColumnAbsentException, URISyntaxException {
@@ -128,7 +142,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
             }
         };
         BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
-        if (!new File(to.getAbsolutePath()).exists()){
+        if (!new File(to.getAbsolutePath()).exists()) {
             new File(to.getAbsolutePath()).mkdirs();
         }
         dataTransport = new BISourceDataNeverTransport4Test(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>());
@@ -235,4 +249,5 @@ public class BISourceDataTransportTest extends BICubeTestBase {
             assertTrue(false);
         }
     }
+
 }
