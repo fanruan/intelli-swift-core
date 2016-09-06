@@ -125,7 +125,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         }
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
+            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), sortRemovedList, loader);
             try {
                 String modifySql;
                 if (tableSource.getType() != BIBaseConstant.TABLETYPE.SQL) {
