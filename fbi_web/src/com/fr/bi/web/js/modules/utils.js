@@ -2593,7 +2593,7 @@
             if (BI.isNull(widgetInfo) || BI.isNull(offset)) {
                 return;
             }
-            var paramdate = new Date();
+            var paramdate;
             var wWid = widgetInfo.wId, se = widgetInfo.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
