@@ -16,6 +16,7 @@ import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
@@ -32,6 +33,9 @@ import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.data.core.db.dialect.Dialect;
+import com.fr.data.core.db.dialect.DialectFactory;
+import com.fr.data.core.db.dml.Table;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -65,7 +69,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         try {
             copyFromOldCubes();
             recordTableInfo();
-            buildTableBasicStructure();
             long count = transport();
             ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
             ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
@@ -124,12 +127,28 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
             sortRemovedList = dealWithRemove(cubeFieldSources, tableUpdateSetting.getPartModifySQL(), sortRemovedList, loader);
-            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
+            try {
+                String modifySql = getModifySql(tableUpdateSetting.getPartModifySQL());
+                rowCount = dealWidthAdd(cubeFieldSources, modifySql, rowCount);
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(),e);
+            }
         }
         if (null != sortRemovedList && sortRemovedList.size() != 0) {
             tableEntityService.recordRemovedLine(sortRemovedList);
         }
         return rowCount;
+    }
+
+    private String getModifySql(String sql) throws Exception {
+        sql=addDateCondition(sql);
+        com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
+        SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
+        sqlStatement.setSql(addDateCondition(sql));
+        Dialect dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
+        Table table = new Table(BIConnectionManager.getInstance().getSchema(((DBTableSource) tableSource).getDbName()), tableSource.getTableName());
+        String columnName = getColumnName(connection, sqlStatement, sql);
+        return "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
     }
 
 
