@@ -627,6 +627,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             x = label.style_setting.showLabels[0] ? data.x : "";
             y = label.style_setting.showLabels[1] ? data.y : "";
             z = label.style_setting.showLabels[2] ? data.z : "";
+            if (label.style_setting.showLabels.length === 2) {
+                z = data.z;
+            }
             dot = BI.isEmptyString(x) || BI.isEmptyString(y) ? "" : ",";
             if (BI.isEmptyString(x) && BI.isEmptyString(y)) {
                 show = z;
