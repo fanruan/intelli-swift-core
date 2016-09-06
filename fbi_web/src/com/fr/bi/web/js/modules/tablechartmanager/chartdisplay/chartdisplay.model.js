@@ -656,6 +656,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         switch (label.style_setting.type) {
             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
                 dataLabels.style = BI.deepClone(label.style_setting.textStyle);
+                dataLabels.style.overflow = "visible";
                 dataLabels.style.fontSize += "px";
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
