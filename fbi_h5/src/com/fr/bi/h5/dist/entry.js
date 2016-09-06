@@ -2068,6 +2068,10 @@ webpackJsonp([0],{
 
 	var _Main2 = _interopRequireDefault(_Main);
 
+	var _DatePickerIOS = __webpack_require__(742);
+
+	var _DatePickerIOS2 = _interopRequireDefault(_DatePickerIOS);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -2083,14 +2087,14 @@ webpackJsonp([0],{
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *          you edit them, they are not updated again.
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
-	__webpack_require__(742);
+	__webpack_require__(743);
 
 	//import PanResponderDemo from '../examples/base/2/PanResponder/PanResponder'
 	//import ViewDemo from '../examples/base/2/View/View'
 	//import ScrollViewDemo from '../examples/base/2/ScrollView/ScrollView'
 	//import ListViewDemo from '../examples/base/2/ListView/ListView';
 	//import PickerDemo from '../examples/base/2/Picker/Picker'
-	//import DatePickerIOSDemo from '../examples/base/2/DatePickerIOS/DatePickerIOS'
+
 	//
 	//import AutoSizerDemo from '../examples/base/3/AutoSizer/AutoSizer';
 	//import WheelerDemo from '../examples/base/3/Wheeler/Wheeler';
@@ -2137,7 +2141,7 @@ webpackJsonp([0],{
 	      var template = _props.template;
 	      var actions = _props.actions;
 
-	      return _lib2.default.createElement(_Main2.default, { template: new _data.Template(template), actions: actions });
+	      return _lib2.default.createElement(_DatePickerIOS2.default, { template: new _data.Template(template), actions: actions });
 	    }
 	  }]);
 
@@ -2851,10 +2855,62 @@ webpackJsonp([0],{
 /***/ 742:
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(202);
+	var Component = React.Component;
+	var StyleSheet = React.StyleSheet;
+	var DatePickerIOS = React.DatePickerIOS;
+
+	var DatePickerIOSDemo = function (_Component) {
+	    _inherits(DatePickerIOSDemo, _Component);
+
+	    function DatePickerIOSDemo(props, context) {
+	        _classCallCheck(this, DatePickerIOSDemo);
+
+	        return _possibleConstructorReturn(this, (DatePickerIOSDemo.__proto__ || Object.getPrototypeOf(DatePickerIOSDemo)).call(this, props, context));
+	    }
+
+	    _createClass(DatePickerIOSDemo, [{
+	        key: 'render',
+	        value: function render() {
+
+	            return React.createElement(DatePickerIOS, {
+	                onDateChange: function onDateChange(val) {
+	                    console.log(val);
+	                }
+	            });
+	        }
+	    }]);
+
+	    return DatePickerIOSDemo;
+	}(Component);
+
+	var styles = StyleSheet.create({});
+
+	exports.default = DatePickerIOSDemo;
+
+/***/ },
+
+/***/ 743:
+/***/ function(module, exports, __webpack_require__) {
+
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(743);
+	var content = __webpack_require__(744);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(383)(content, {});
@@ -2875,7 +2931,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 743:
+/***/ 744:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(382)();

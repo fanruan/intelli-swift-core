@@ -23886,32 +23886,44 @@
 
 	        var _this = _possibleConstructorReturn(this, (Picker.__proto__ || Object.getPrototypeOf(Picker)).call(this, props, context));
 
+	        _this.trans = new _Animated2.default.ValueXY();
 	        _this.state = {
-	            selectedValue: props.selectedValue,
-	            trans: new _Animated2.default.ValueXY()
+	            selectedValue: props.selectedValue
 	        };
 	        return _this;
 	    }
 
 	    _createClass(Picker, [{
+	        key: '_calculateState',
+	        value: function _calculateState(props, oldState) {
+	            var selectedValue = props.selectedValue;
+
+	            var _getOffsetPosition2 = this._getOffsetPosition();
+
+	            var defaultOffset = _getOffsetPosition2.defaultOffset;
+	            var clientHeight = _getOffsetPosition2.clientHeight;
+
+	            var contentHeight = _react2.default.Children.count(this.props.children) * PICKER_ITEM_HEIGHT;
+	            var maxScrollY = -defaultOffset + contentHeight - PICKER_ITEM_HEIGHT;
+	            var scrollY = -defaultOffset + this._getPositionByValue(selectedValue);
+	            return {
+	                selectedValue: selectedValue,
+	                defaultOffset: defaultOffset,
+	                contentHeight: contentHeight,
+	                scrollY: scrollY,
+	                maxScrollY: maxScrollY
+	            };
+	        }
+	    }, {
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {
-	            var _this2 = this;
-
 	            this._panResponder = _PanResponder2.default.create({
 	                onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder.bind(this),
 	                onMoveShouldSetPanResponder: function onMoveShouldSetPanResponder() {
 	                    return true;
 	                },
 	                onPanResponderGrant: this._handlePanResponderGrant.bind(this),
-	                // onPanResponderMove: this._handlePanResponderMove.bind(this),
-	                onPanResponderMove: function onPanResponderMove(e, gestureState) {
-	                    _Animated2.default.event([null, {
-	                        dy: _this2.state.trans.y
-	                    }])(e, gestureState);
-	                    e.stopPropagation();
-	                    e.preventDefault();
-	                },
+	                onPanResponderMove: this._handlePanResponderMove.bind(this),
 	                onPanResponderRelease: this._handlePanResponderEnd.bind(this),
 	                onPanResponderTerminate: this._handlePanResponderEnd.bind(this)
 	            });
@@ -23919,18 +23931,20 @@
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            var _this3 = this;
+	            var _this2 = this;
 
-	            this.setState({
-	                selectedValue: nextProps.selectedValue
-	            }, function () {
-	                _this3._moveToValue(_this3.state.selectedValue);
+	            this.setState(this._calculateState(nextProps, this.state), function () {
+	                _this2._moveToValue(_this2.state.selectedValue);
 	            });
 	        }
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            this._moveToValue(this.state.selectedValue);
+	            var _this3 = this;
+
+	            this.setState(this._calculateState(this.props), function () {
+	                _this3._moveToValue(_this3.state.selectedValue);
+	            });
 	        }
 	    }, {
 	        key: 'render',
@@ -23961,11 +23975,14 @@
 	                _react2.default.createElement(_View2.default, { style: styles.highlight }),
 	                _react2.default.createElement(
 	                    _Animated2.default.View,
-	                    { className: '', style: [{
+	                    {
+	                        ref: 'container',
+	                        className: '',
+	                        style: [{
 	                            transform: [{
-	                                translateX: this.state.trans.x
+	                                translateX: this.trans.x
 	                            }, {
-	                                translateY: this.state.trans.y
+	                                translateY: this.trans.y
 	                            }, {
 	                                translateZ: 0
 	                            }]
@@ -23975,31 +23992,23 @@
 	            );
 	        }
 	    }, {
+	        key: '_setScrolling',
+	        value: function _setScrolling() {
+	            _reactDom2.default.findDOMNode(this.refs['container']).style.transitionDuration = '0ms';
+	        }
+	    }, {
+	        key: '_setScrollEnd',
+	        value: function _setScrollEnd() {
+	            _reactDom2.default.findDOMNode(this.refs['container']).style.transitionDuration = '300ms';
+	        }
+	    }, {
 	        key: '_moveToValue',
 	        value: function _moveToValue(selectedValue) {
-	            var _this5 = this;
+	            var y = this.state.defaultOffset + this._getPositionByValue(selectedValue);
 
-	            var _getOffsetPosition2 = this._getOffsetPosition();
-
-	            var topOffset = _getOffsetPosition2.topOffset;
-
-	            var y = topOffset + this._getPositionByValue(selectedValue);
-	            var abort = false;
-	            _Animated2.default.timing(this.state.trans.y, {
-	                toValue: y,
-	                easing: _Easing2.default.out(_Easing2.default.ease),
-	                duration: 300
-	            }).start(function (endState) {
-	                if (!endState.finished) {
-	                    abort = true;
-	                }
-	                if (endState.finished && !abort) {
-	                    if (selectedValue !== _this5.state.selectedValue) {
-	                        _this5.setState({ selectedValue: selectedValue });
-	                        _this5.props.onValueChange && _this5.props.onValueChange(selectedValue);
-	                    }
-	                }
-	            });
+	            this.trans.setValue({ x: 0, y: y });
+	            this.setState({ selectedValue: selectedValue, scrollY: -y });
+	            this.props.onValueChange && this.props.onValueChange(selectedValue);
 	        }
 	    }, {
 	        key: '_handleStartShouldSetPanResponder',
@@ -24009,57 +24018,57 @@
 	    }, {
 	        key: '_handlePanResponderGrant',
 	        value: function _handlePanResponderGrant(e, gestureState) {
-	            this.state.trans.setOffset({ x: 0, y: this.state.trans.y.__getAnimatedValue() });
-	            this.state.trans.setValue({ x: 0, y: 0 });
+	            this.trans.setOffset({ x: 0, y: this.trans.y.__getAnimatedValue() });
+	            this.trans.setValue({ x: 0, y: 0 });
+	            e.stopPropagation();
+	            e.preventDefault();
+	        }
+	    }, {
+	        key: '_handlePanResponderMove',
+	        value: function _handlePanResponderMove(e, gestureState) {
+	            this._setScrolling();
+	            var scrollY = this.state.scrollY;
+	            var minScrollY = -this.state.defaultOffset,
+	                maxScrollY = this.state.maxScrollY;
+
+	            var dy = gestureState.dy;
+
+	            scrollY -= dy;
+	            if (scrollY < minScrollY) {
+	                scrollY = minScrollY - Math.pow(minScrollY - scrollY, 0.8);
+	            }
+	            if (scrollY > maxScrollY) {
+	                scrollY = maxScrollY + Math.pow(scrollY - maxScrollY, 0.8);
+	            }
+	            this.trans.setValue({ x: 0, y: this.state.scrollY - scrollY });
 	            e.stopPropagation();
 	            e.preventDefault();
 	        }
 	    }, {
 	        key: '_handlePanResponderEnd',
 	        value: function _handlePanResponderEnd(e, gestureState) {
-	            var _this6 = this;
-
-	            this.state.trans.flattenOffset();
-
-	            var _getOffsetPosition3 = this._getOffsetPosition();
-
-	            var topOffset = _getOffsetPosition3.topOffset;
-
-	            var contentHeight = _react2.default.Children.count(this.props.children) * PICKER_ITEM_HEIGHT;
-	            var bottomOffset = topOffset + PICKER_ITEM_HEIGHT - contentHeight;
-	            var toValue = Math.round((this.state.trans.y.__getAnimatedValue() - topOffset + gestureState.vy * 100) / PICKER_ITEM_HEIGHT) * PICKER_ITEM_HEIGHT + topOffset;
-	            var abort = false;
-	            if (toValue < bottomOffset) {
-	                toValue = bottomOffset;
+	            this._setScrollEnd();
+	            this.trans.flattenOffset();
+	            var toValue = Math.round((this.trans.y.__getAnimatedValue() - this.state.defaultOffset + gestureState.vy * 200) / PICKER_ITEM_HEIGHT) * PICKER_ITEM_HEIGHT + this.state.defaultOffset;
+	            if (toValue < -this.state.maxScrollY) {
+	                toValue = -this.state.maxScrollY;
 	            }
-	            if (toValue > topOffset) {
-	                toValue = topOffset;
+	            if (toValue > this.state.defaultOffset) {
+	                toValue = this.state.defaultOffset;
 	            }
 
-	            var value = this._getValueByPosition(toValue - topOffset);
+	            var value = this._getValueByPosition(toValue - this.state.defaultOffset);
 
-	            _Animated2.default.timing(this.state.trans.y, {
-	                toValue: toValue,
-	                easing: _Easing2.default.out(_Easing2.default.ease),
-	                duration: 300
-	            }).start(function (endState) {
-	                if (!endState.finished) {
-	                    abort = true;
-	                }
-	                if (endState.finished && !abort) {
-	                    if (value !== null && value !== _this6.state.selectedValue) {
-	                        _this6.setState({ selectedValue: value });
-	                        _this6.props.onValueChange && _this6.props.onValueChange(value);
-	                    }
-	                }
-	            });
+	            this.trans.setValue({ x: 0, y: toValue });
+	            this.setState({ selectedValue: value, scrollY: -toValue });
+	            this.props.onValueChange && this.props.onValueChange(value);
 	        }
 	    }, {
 	        key: '_getOffsetPosition',
 	        value: function _getOffsetPosition() {
 	            var dom = _reactDom2.default.findDOMNode(this.refs[PICKER]);
 	            return {
-	                topOffset: (dom.clientHeight - PICKER_ITEM_HEIGHT) / 2,
+	                defaultOffset: (dom.clientHeight - PICKER_ITEM_HEIGHT) / 2,
 	                clientHeight: dom.clientHeight
 	            };
 	        }
@@ -24106,7 +24115,7 @@
 	    },
 
 	    container: {
-	        transitionDuration: '0ms',
+	        transitionDuration: '300ms',
 	        transitionTimingFunction: 'ease-out'
 	    },
 

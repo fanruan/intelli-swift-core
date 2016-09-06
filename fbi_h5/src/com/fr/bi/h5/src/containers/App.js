@@ -29,7 +29,7 @@ import Main from '../components/Main.js'
 //import ScrollViewDemo from '../examples/base/2/ScrollView/ScrollView'
 //import ListViewDemo from '../examples/base/2/ListView/ListView';
 //import PickerDemo from '../examples/base/2/Picker/Picker'
-//import DatePickerIOSDemo from '../examples/base/2/DatePickerIOS/DatePickerIOS'
+import DatePickerIOSDemo from '../examples/base/2/DatePickerIOS/DatePickerIOS'
 //
 //import AutoSizerDemo from '../examples/base/3/AutoSizer/AutoSizer';
 //import WheelerDemo from '../examples/base/3/Wheeler/Wheeler';
@@ -64,7 +64,7 @@ class App extends Component {
   render() {
     const {template, actions} = this.props;
     return (
-      <Main template={new Template(template)} actions={actions} />
+      <DatePickerIOSDemo template={new Template(template)} actions={actions} />
     )
   }
 }
