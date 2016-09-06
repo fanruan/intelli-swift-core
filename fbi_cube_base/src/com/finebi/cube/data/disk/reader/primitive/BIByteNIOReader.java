@@ -3,7 +3,6 @@ package com.finebi.cube.data.disk.reader.primitive;
 import com.finebi.cube.data.input.primitive.ICubeByteReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
-import com.fr.bi.stable.utils.code.BILogger;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -57,9 +56,10 @@ public class BIByteNIOReader extends BIBasicNIOReader implements ICubeByteReader
                 iter.remove();
             }
             byteBufferArray = new ByteBuffer[1];
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-        } finally {
+//        } catch (Exception e) {
+//            BILogger.getLogger().error(e.getMessage(), e);
+//        }
+ }finally {
             readWriteLock.writeLock().unlock();
         }
     }
