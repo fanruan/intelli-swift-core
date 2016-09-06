@@ -3,9 +3,7 @@
  */
 BI.DataLabelImageButton = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.DataLabelImageButton.superclass._defaultConfig.apply(this, arguments), {
-
-        });
+        return BI.extend(BI.DataLabelImageButton.superclass._defaultConfig.apply(this, arguments), {});
     },
 
     _init: function () {

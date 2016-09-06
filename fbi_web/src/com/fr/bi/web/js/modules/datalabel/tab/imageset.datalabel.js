@@ -237,7 +237,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     refreshImg: function () {
         var self = this;
         this._img = [];
-        BI.each(self.imageGroup.getAllButtons(),function (i, image) {
+        BI.each(self.imageGroup.getAllButtons(), function (i, image) {
             self._img.push(image.getSrc());
         });
     },
@@ -256,5 +256,5 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     }
 });
 BI.DataLabelImageSet.EVENT_CHANGE = "BI.DataLabelImageSet.EVENT_CHANGE";
-BI.DataLabelImageSet.IMAGE_CHANGE= "BI.DataLabelImageSet.IMAGE_CHANGE";
+BI.DataLabelImageSet.IMAGE_CHANGE = "BI.DataLabelImageSet.IMAGE_CHANGE";
 $.shortcut("bi.data_label_image_set", BI.DataLabelImageSet);
