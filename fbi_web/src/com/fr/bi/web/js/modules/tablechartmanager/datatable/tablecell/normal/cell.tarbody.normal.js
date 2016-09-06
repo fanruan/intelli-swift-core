@@ -154,8 +154,8 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 title: text,
                 height: 25,
                 cls: "target-cell-text",
-                textAlign: "left",
-                lgap: 5
+                textAlign: "right",
+                rgap: 5
             });
         } else {
             var textButton = BI.createWidget({
@@ -163,9 +163,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 height: 25,
-                textAlign: "left",
+                textAlign: "right",
                 cls: "target-linkage-label",
-                lgap: 5
+                rgap: 5
             });
             textButton.on(BI.TextButton.EVENT_CHANGE, function () {
                 //这个clicked应该放到子widget中保存起来
