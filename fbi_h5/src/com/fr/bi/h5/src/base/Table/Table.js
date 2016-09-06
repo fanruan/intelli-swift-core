@@ -206,28 +206,15 @@ var Table = React.createClass({
         } else {
             if (!this._lockY) {
                 var x = this.state.scrollX;
-                if (dx < 0 && x === 0) {
-                    this._onSwipeContainer(-(this.state.scrollX - scrollX));
-                }
-                //if (dx < 0 && x === 0) {
-                //    this.setState({
-                //        width: this.state.width - dx
-                //    }, ()=> {
-                //        this.offset.setValue(this.state.offsetX - offsetX);
-                //    });
-                //    return;
-                //}
-                else {
-                    x += Math.round(-dx);
+                x += Math.round(-dx);
 
-                    if (!this._lockA && (x > 0 && x <= this.state.maxScrollX)) {
-                        this._lockX = true;
-                        this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
-                    } else {
-                        if (!this._lockX) {
-                            this._lockA = true;
-                            this.offset.setValue(this.state.offsetX - offsetX);
-                        }
+                if ((!this._lockA && x > 0 && x <= this.state.maxScrollX) || this._lockX) {
+                    this._lockX = true;
+                    this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
+                } else {
+                    if (!this._lockX) {
+                        this._lockA = true;
+                        this.offset.setValue(this.state.offsetX - offsetX);
                     }
                 }
             }
@@ -380,7 +367,7 @@ var Table = React.createClass({
                     scrollableColumns={state.groupHeaderScrollableColumns}
                     onColumnResize={this._onColumnResize}
                     trans={this.trans}
-                />
+                    />
             );
         }
 
@@ -420,7 +407,7 @@ var Table = React.createClass({
                 initialEvent={state.columnResizingData.initialEvent}
                 onColumnResizeEnd={props.onColumnResizeEndCallback}
                 columnKey={state.columnResizingData.key}
-            />;
+                />;
 
         var footer = null;
         if (state.footerHeight) {
@@ -442,7 +429,7 @@ var Table = React.createClass({
                     scrollableColumns={state.footScrollableColumns}
                     scrollLeft={state.scrollX}
                     trans={this.trans}
-                />;
+                    />;
         }
 
         var rows = this._renderRows(bodyOffsetTop);
@@ -466,7 +453,7 @@ var Table = React.createClass({
                 scrollableColumns={state.headScrollableColumns}
                 onColumnResize={this._onColumnResize}
                 trans={this.trans}
-            />;
+                />;
 
         var topShadow;
         var bottomShadow;
@@ -478,7 +465,7 @@ var Table = React.createClass({
                         'public-fixedDataTable-topShadow'
                     )}
                     style={{top: bodyOffsetTop}}
-                />;
+                    />;
         }
 
         if (
@@ -494,7 +481,7 @@ var Table = React.createClass({
                         'public-fixedDataTable-bottomShadow'
                     )}
                     style={{top: footOffsetTop}}
-                />;
+                    />;
         }
 
         return (
@@ -562,7 +549,7 @@ var Table = React.createClass({
                 width={state.offsetWidth}
                 trans={this.trans}
                 rowPositionGetter={this._scrollHelper.getRowPosition}
-            />
+                />
         );
     },
 
@@ -571,13 +558,13 @@ var Table = React.createClass({
      * resizer knob clicked on. It displays the resizer and puts in the correct
      * location on the table.
      */
-    _onColumnResize(/*number*/ combinedWidth,
-                    /*number*/ leftOffset,
-                    /*number*/ cellWidth,
-                    /*?number*/ cellMinWidth,
-                    /*?number*/ cellMaxWidth,
-                    /*number|string*/ columnKey,
-                    /*object*/ event) {
+        _onColumnResize(/*number*/ combinedWidth,
+                        /*number*/ leftOffset,
+                        /*number*/ cellWidth,
+                        /*?number*/ cellMinWidth,
+                        /*?number*/ cellMaxWidth,
+                        /*number|string*/ columnKey,
+                        /*object*/ event) {
         this.setState({
             isColumnResizing: true,
             columnResizingData: {
@@ -910,25 +897,6 @@ var Table = React.createClass({
         };
     },
 
-    _onSwipeContainer(deltaX){
-        if (!this._isScrolling) {
-            this._didScrollStart();
-        }
-        var x = this.state.offsetX;
-        if (deltaX && this.props.overflowX !== 'hidden') {
-            x += Math.round(deltaX);
-            x = x < 0 ? 0 : x;
-            var {...props} = this.props;
-            props.width = props.width + x;
-            var newState = this._calculateState(props);
-            delete newState.width;
-            newState.offsetWidth = Math.min(newState.offsetWidth, newState.scrollContentWidth);
-            this.setState(newState);
-            this.offset.setValue(-x);
-        }
-        this._didScrollStop();
-    },
-
     _onSwipe(deltaX){
         if (this.isMounted()) {
             if (!this._isScrolling) {
@@ -941,7 +909,7 @@ var Table = React.createClass({
                 x = x > this.state.offsetWidth - this.state.width ? this.state.offsetWidth - this.state.width : x;
                 this.offset.setValue(-x);
                 this.setState({
-                    offsetX: x,
+                    offsetX: x
                 })
             }
             this._didScrollStop();
