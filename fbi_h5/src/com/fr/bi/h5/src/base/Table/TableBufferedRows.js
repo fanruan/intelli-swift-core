@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var TableRowBuffer = require('./TableRowBuffer');
 var TableRow = require('./TableRow');
 
@@ -116,6 +117,7 @@ var TableBufferedRows = React.createClass({
 
             this._staticRowArray[i] =
                 <TableRow
+                    ref={`row_${i}`}
                     key={i}
                     isScrolling={props.isScrolling}
                     index={rowIndex}
@@ -135,18 +137,18 @@ var TableBufferedRows = React.createClass({
                         rowClassNameGetter(rowIndex),
                         'public-fixedDataTable-bodyRow',
                         cn({
-                          'fixedDataTableLayout-hasBottomBorder': hasBottomBorder,
-                          'public-fixedDataTable-hasBottomBorder': hasBottomBorder
+                            'fixedDataTableLayout-hasBottomBorder': hasBottomBorder,
+                            'public-fixedDataTable-hasBottomBorder': hasBottomBorder
                         })
-          )}
-                    />;
+                    )}
+                />;
         }
 
         //var firstRowPosition = props.rowPositionGetter(props.firstRowIndex);
 
         var style = {
             position: 'absolute',
-            transitionDuration: '0ms',
+            transitionDuration: '300ms',
             transitionTimingFunction: 'ease-out',
             pointerEvents: props.isScrolling ? 'none' : 'auto'
         };
@@ -157,14 +159,29 @@ var TableBufferedRows = React.createClass({
         //  props.firstRowOffset - firstRowPosition + props.offsetTop
         //);
 
-        return <Animated.View style={{
+        return <Animated.View ref="wrapper" style={{
             transform: [{
                 translateX: 0
             }, {
                 translateY: this.props.trans.y
             }, {
                 translateZ: 0
-            }], ...style}}>{this._staticRowArray}</Animated.View>;
+            }], ...style
+        }}>{this._staticRowArray}</Animated.View>;
+    },
+
+    setScrolling(){
+        for (var i = 0; i < this.state.rowsToRender.length; ++i) {
+            this.refs[`row_${i}`].setScrolling();
+        }
+        ReactDOM.findDOMNode(this.refs['wrapper']).style.transitionDuration = '0ms';
+    },
+
+    setScrollEnd(){
+        for (var i = 0; i < this.state.rowsToRender.length; ++i) {
+            this.refs[`row_${i}`].setScrollEnd();
+        }
+        ReactDOM.findDOMNode(this.refs['wrapper']).style.transitionDuration = '300ms';
     },
 
     _getRowHeight(/*number*/ index) /*number*/ {

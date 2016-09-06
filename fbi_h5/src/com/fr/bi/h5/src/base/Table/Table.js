@@ -151,29 +151,31 @@ var Table = React.createClass({
         this.offset.setValue(0);
         this.trans.setOffset({x: this.trans.x.__getAnimatedValue(), y: this.trans.y.__getAnimatedValue()});
         this.trans.setValue({x: 0, y: 0});
-        this.dx = 0;
-        this.dy = 0;
         e.stopPropagation();
         e.preventDefault();
     },
 
+    setScrolling(){
+        ReactDOM.findDOMNode(this.refs['rowsContainer']).style.transitionDuration = '0ms';
+        this.refs['bufferedRows'].setScrolling();
+        this.refs['header'] && this.refs['header'].setScrolling();
+        this.refs['footer'] && this.refs['footer'].setScrolling();
+        this.refs['group_header'] && this.refs['group_header'].setScrolling();
+    },
+
+    setScrollEnd(){
+        ReactDOM.findDOMNode(this.refs['rowsContainer']).style.transitionDuration = '300ms';
+        this.refs['bufferedRows'].setScrollEnd();
+        this.refs['header'] && this.refs['header'].setScrollEnd();
+        this.refs['footer'] && this.refs['footer'].setScrollEnd();
+        this.refs['group_header'] && this.refs['group_header'].setScrollEnd();
+    },
+
     _handlePanResponderMove(e, gestureState) {
-        //Animated.event([null, {
-        //    dy: this.trans.y
-        //}])(e, gestureState);
         var scrollX = this.state.scrollX, scrollY = this.state.scrollY, offsetX = this.state.offsetX;
         var maxScrollX = this.state.maxScrollX, maxScrollY = this.state.maxScrollY, maxOffsetScroll = this.state.offsetWidth - this.state.width;
         var dx = gestureState.dx, dy = gestureState.dy;
-
-        if (Math.abs(dy) > Math.abs(dx)) {
-            if (this._xScrolling) {
-                return;
-            }
-        } else {
-            if (this._yScrolling) {
-                return;
-            }
-        }
+        this.setScrolling();
 
         scrollX -= dx;
         scrollY -= dy;
@@ -197,61 +199,59 @@ var Table = React.createClass({
             offsetX = maxOffsetScroll + Math.pow(offsetX - maxOffsetScroll, 0.8);
         }
         if (Math.abs(dy) > Math.abs(dx)) {
-            this.trans.setValue({x: 0, y: this.state.scrollY - scrollY});
+            if (!this._lockX && !this._lockA) {
+                this._lockY = true;
+                this.trans.setValue({x: 0, y: this.state.scrollY - scrollY});
+            }
         } else {
-            var x = this.state.scrollX;
-            //if (dx < 0 && x === 0) {
-            //    this.setState({
-            //        offsetWidth: this.state.offsetWidth - dx
-            //    }, ()=> {
-            //        this.offset.setValue(this.state.offsetX - offsetX);
-            //    });
-            //    return;
-            //}
-            x += Math.round(-gestureState.dx);
+            if (!this._lockY) {
+                var x = this.state.scrollX;
+                if (dx < 0 && x === 0) {
+                    this._onSwipeContainer(-(this.state.scrollX - scrollX));
+                }
+                //if (dx < 0 && x === 0) {
+                //    this.setState({
+                //        width: this.state.width - dx
+                //    }, ()=> {
+                //        this.offset.setValue(this.state.offsetX - offsetX);
+                //    });
+                //    return;
+                //}
+                else {
+                    x += Math.round(-dx);
 
-            if ((x > 0 && x <= this.state.maxScrollX) || this._lock) {
-                this._lock = true;
-                this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
-            } else {
-                this.offset.setValue(this.state.offsetX - offsetX);
+                    if (!this._lockA && (x > 0 && x <= this.state.maxScrollX)) {
+                        this._lockX = true;
+                        this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
+                    } else {
+                        if (!this._lockX) {
+                            this._lockA = true;
+                            this.offset.setValue(this.state.offsetX - offsetX);
+                        }
+                    }
+                }
             }
         }
 
         //this._onWheel(-gestureState.dx + this.dx, -gestureState.dy + this.dy);
-        this.dx = gestureState.dx;
-        this.dy = gestureState.dy;
         e.stopPropagation();
         e.preventDefault();
         return false;
     },
 
     _handlePanResponderEnd(e, gestureState) {
-        var dx = gestureState.dx, dy = gestureState.dy;
-        var quit = false;
-        if (this._xScrolling) {
-            this.trans.setValue({x: 0, y: 0});
-            this._runScrollX();
-            quit = true;
+        var dx = gestureState.dx, dy = gestureState.dy, vx = gestureState.vx, vy = gestureState.vy;
+        this.setScrollEnd();
+        if (!this._lockX && !this._lockY) {
+            this.offset.flattenOffset();
+            this._onSwipe(-dx - vx * 200);
+        } else {
+            this.trans.flattenOffset();
+            this._onWheel(this._lockX ? (-dx - vx * 200) : 0, this._lockY ? (-dy - vy * 200) : 0);
         }
-        if (this._yScrolling) {
-            this.trans.setValue({x: 0, y: 0});
-            this._runScrollY();
-            quit = true;
-        }
-        if (quit) {
-            return;
-        }
-        if (Math.abs(dy) <= Math.abs(dx)) {
-            if (!this._lock) {
-                this._onSwipe(-gestureState.dx);
-                return;
-            }
-        }
-        this.trans.flattenOffset();
-
-        this._onWheel(-gestureState.dx - gestureState.vx * 200, -gestureState.dy - gestureState.vy * 200);
-        this._lock = false;
+        this._lockX = false;
+        this._lockY = false;
+        this._lockA = false;
     },
 
     _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
@@ -306,11 +306,18 @@ var Table = React.createClass({
         this._contentHeight = contentHeight;
     },
 
-    componentDidMount() {
-        this._reportContentHeight();
+    _resetAnimate(){
         var headerOffsetTop = this.state.useGroupHeader ? this.state.groupHeaderHeight : 0;
         var bodyOffsetTop = headerOffsetTop + this.state.headerHeight;
         this.trans.setValue({x: 0, y: bodyOffsetTop});
+        this.trans.setOffset({x: 0, y: 0});
+        this.offset.setValue(0);
+        this.offset.setOffset(0);
+    },
+
+    componentDidMount() {
+        this._reportContentHeight();
+        this._resetAnimate();
     },
 
     componentWillReceiveProps(/*object*/ nextProps) {
@@ -356,6 +363,7 @@ var Table = React.createClass({
         if (state.useGroupHeader) {
             groupHeader = (
                 <TableRow
+                    ref="group_header"
                     key="group_header"
                     isScrolling={this._isScrolling}
                     className={cn(
@@ -372,7 +380,7 @@ var Table = React.createClass({
                     scrollableColumns={state.groupHeaderScrollableColumns}
                     onColumnResize={this._onColumnResize}
                     trans={this.trans}
-                    />
+                />
             );
         }
 
@@ -412,12 +420,13 @@ var Table = React.createClass({
                 initialEvent={state.columnResizingData.initialEvent}
                 onColumnResizeEnd={props.onColumnResizeEndCallback}
                 columnKey={state.columnResizingData.key}
-                />;
+            />;
 
         var footer = null;
         if (state.footerHeight) {
             footer =
                 <TableRow
+                    ref="footer"
                     key="footer"
                     isScrolling={this._isScrolling}
                     className={cn(
@@ -433,13 +442,14 @@ var Table = React.createClass({
                     scrollableColumns={state.footScrollableColumns}
                     scrollLeft={state.scrollX}
                     trans={this.trans}
-                    />;
+                />;
         }
 
         var rows = this._renderRows(bodyOffsetTop);
 
         var header =
             <TableRow
+                ref="header"
                 key="header"
                 isScrolling={this._isScrolling}
                 className={cn(
@@ -456,19 +466,19 @@ var Table = React.createClass({
                 scrollableColumns={state.headScrollableColumns}
                 onColumnResize={this._onColumnResize}
                 trans={this.trans}
-                />;
+            />;
 
         var topShadow;
         var bottomShadow;
         if (state.scrollY) {
             topShadow =
-                <div
+                <View
                     className={cn(
                         'fixedDataTableLayout-topShadow',
                         'public-fixedDataTable-topShadow'
                     )}
                     style={{top: bodyOffsetTop}}
-                    />;
+                />;
         }
 
         if (
@@ -478,13 +488,13 @@ var Table = React.createClass({
             state.scrollY < maxScrollY
         ) {
             bottomShadow =
-                <div
+                <View
                     className={cn(
                         'fixedDataTableLayout-bottomShadow',
                         'public-fixedDataTable-bottomShadow'
                     )}
                     style={{top: footOffsetTop}}
-                    />;
+                />;
         }
 
         return (
@@ -497,6 +507,7 @@ var Table = React.createClass({
                 onWheel={this._wheelHandler.onWheel}
                 style={{height: state.height, width: state.width}} {...this._panResponder.panHandlers}>
                 <Animated.View
+                    ref="rowsContainer"
                     className={'fixedDataTableLayout-rowsContainer'}
                     style={{
                         transform: [{
@@ -506,7 +517,11 @@ var Table = React.createClass({
                         }, {
                             translateZ: 0
                         }],
-                        height: rowsContainerHeight, width: state.offsetWidth}}>
+                        height: rowsContainerHeight, width: state.offsetWidth,
+                        transitionDuration: '300ms',
+                        transitionTimingFunction: 'ease-out',
+                        pointerEvents: this.isScrolling ? 'none' : 'auto'
+                    }}>
                     {dragKnob}
                     {groupHeader}
                     {header}
@@ -524,6 +539,7 @@ var Table = React.createClass({
 
         return (
             <TableBufferedRows
+                ref="bufferedRows"
                 isScrolling={this._isScrolling}
                 defaultRowHeight={state.rowHeight}
                 firstRowIndex={state.firstRowIndex}
@@ -546,7 +562,7 @@ var Table = React.createClass({
                 width={state.offsetWidth}
                 trans={this.trans}
                 rowPositionGetter={this._scrollHelper.getRowPosition}
-                />
+            />
         );
     },
 
@@ -555,13 +571,13 @@ var Table = React.createClass({
      * resizer knob clicked on. It displays the resizer and puts in the correct
      * location on the table.
      */
-        _onColumnResize(/*number*/ combinedWidth,
-                        /*number*/ leftOffset,
-                        /*number*/ cellWidth,
-                        /*?number*/ cellMinWidth,
-                        /*?number*/ cellMaxWidth,
-                        /*number|string*/ columnKey,
-                        /*object*/ event) {
+    _onColumnResize(/*number*/ combinedWidth,
+                    /*number*/ leftOffset,
+                    /*number*/ cellWidth,
+                    /*?number*/ cellMinWidth,
+                    /*?number*/ cellMaxWidth,
+                    /*number|string*/ columnKey,
+                    /*object*/ event) {
         this.setState({
             isColumnResizing: true,
             columnResizingData: {
@@ -681,7 +697,7 @@ var Table = React.createClass({
 
         var firstRowIndex = (oldState && oldState.firstRowIndex) || 0;
         var firstRowOffset = (oldState && oldState.firstRowOffset) || 0;
-        var offsetX = 0, offsetWidth = props.width;
+        var offsetX = (oldState && oldState.offsetX) || 0, offsetWidth = (oldState && oldState.offsetWidth) || props.width;
         var scrollX, scrollY;
         if (oldState && props.overflowX !== 'hidden') {
             scrollX = oldState.scrollX;
@@ -847,6 +863,7 @@ var Table = React.createClass({
             maxScrollY,
             reservedHeight: totalHeightReserved,
             scrollContentHeight,
+            scrollContentWidth,
             offsetX,
             offsetWidth,
             scrollX,
@@ -893,50 +910,41 @@ var Table = React.createClass({
         };
     },
 
+    _onSwipeContainer(deltaX){
+        if (!this._isScrolling) {
+            this._didScrollStart();
+        }
+        var x = this.state.offsetX;
+        if (deltaX && this.props.overflowX !== 'hidden') {
+            x += Math.round(deltaX);
+            x = x < 0 ? 0 : x;
+            var {...props} = this.props;
+            props.width = props.width + x;
+            var newState = this._calculateState(props);
+            delete newState.width;
+            newState.offsetWidth = Math.min(props.width, newState.scrollContentWidth);
+            this.setState(newState);
+            this.offset.setValue(-x);
+        }
+        this._didScrollStop();
+    },
+
     _onSwipe(deltaX){
         if (this.isMounted()) {
             if (!this._isScrolling) {
                 this._didScrollStart();
             }
             var x = this.state.offsetX;
-            var abortX = false, ready = false;
             if (deltaX && this.props.overflowX !== 'hidden') {
-                if (this._yScrolling) {
-                    return;
-                }
-                this._xScrolling = true;
                 x += Math.round(deltaX);
                 x = x < 0 ? 0 : x;
                 x = x > this.state.offsetWidth - this.state.width ? this.state.offsetWidth - this.state.width : x;
-                var f = this._runScrollX = ()=> {
-                    abortX = false;
-                    this._xScrolling = false;
-                    this.offset.setValue(-x);
-                    this.offset.setOffset(0);
-                    this._didScrollStop();
-                };
-                Animated.timing(this.offset, {
-                    toValue: -x,
-                    easing: Easing.out(Easing.ease),
-                    duration: 300
-                }).start(endState => {
-                    if (!endState.finished) {
-                        abortX = true;
-                    }
-                    if (endState.finished && !abortX) {
-                        f();
-                        ready = true;
-                    }
-                });
-                if (!this._debounceOffsetX) {
-                    this._debounceOffsetX = debounce((callback)=>(callback()), 400);
-                }
-                this._debounceOffsetX(()=> {
-                    if (!abortX && !ready) {
-                        f();
-                    }
-                });
+                this.offset.setValue(-x);
+                this.setState({
+                    offsetX: x,
+                })
             }
+            this._didScrollStop();
         }
     },
 
@@ -946,13 +954,8 @@ var Table = React.createClass({
                 this._didScrollStart();
             }
             var x = this.state.scrollX;
-            var abortX = false, abortY = false, ready = false;
             if (Math.abs(deltaY) > Math.abs(deltaX) &&
                 this.props.overflowY !== 'hidden') {
-                if (this._xScrolling) {
-                    return;
-                }
-                this._yScrolling = true;
                 var scrollState = this._scrollHelper.scrollBy(Math.round(deltaY));
                 var maxScrollY = Math.max(
                     0,
@@ -961,81 +964,24 @@ var Table = React.createClass({
                 var headerOffsetTop = this.state.useGroupHeader ? this.state.groupHeaderHeight : 0;
                 var bodyOffsetTop = headerOffsetTop + this.state.headerHeight;
                 var y = scrollState.offset - this._scrollHelper.getRowPosition(scrollState.index) + bodyOffsetTop;
-                var f = this._runScrollY = ()=> {
-                    abortY = false;
-                    this.setState({
-                        firstRowIndex: scrollState.index,
-                        firstRowOffset: scrollState.offset,
-                        scrollY: scrollState.position,
-                        scrollContentHeight: scrollState.contentHeight,
-                        maxScrollY: maxScrollY
-                    }, ()=> {
-                        this._yScrolling = false;
-                    });
-                    this._didScrollStop();
-                };
-                Animated.timing(this.trans.y, {
-                    toValue: y,
-                    easing: Easing.out(Easing.ease),
-                    duration: 300
-                }).start(endState => {
-                    if (!endState.finished) {
-                        abortY = true;
-                    }
-                    if (endState.finished && !abortY) {
-                        f();
-                        ready = true;
-                    }
+                this.trans.y.setValue(y);
+                this.setState({
+                    firstRowIndex: scrollState.index,
+                    firstRowOffset: scrollState.offset,
+                    scrollY: scrollState.position,
+                    scrollContentHeight: scrollState.contentHeight,
+                    maxScrollY: maxScrollY
                 });
-
-                if (!this._debounceScrollY) {
-                    this._debounceScrollY = debounce((callback)=>(callback()), 400);
-                }
-                this._debounceScrollY(()=> {
-                    if (!abortX && !ready) {
-                        f();
-                    }
-                });
-
             } else if (deltaX && this.props.overflowX !== 'hidden') {
-                if (this._yScrolling) {
-                    return;
-                }
-                this._xScrolling = true;
                 x += Math.round(deltaX);
                 x = x < 0 ? 0 : x;
                 x = x > this.state.maxScrollX ? this.state.maxScrollX : x;
-                var f = this._runScrollX = ()=> {
-                    abortX = false;
-                    this.setState({
-                        scrollX: x
-                    }, ()=> {
-                        this._xScrolling = false;
-                    });
-                    this._didScrollStop();
-                };
-                Animated.timing(this.trans.x, {
-                    toValue: -x,
-                    easing: Easing.out(Easing.ease),
-                    duration: 300
-                }).start(endState => {
-                    if (!endState.finished) {
-                        abortX = true;
-                    }
-                    if (endState.finished && !abortX) {
-                        f();
-                        ready = true;
-                    }
-                });
-                if (!this._debounceScrollX) {
-                    this._debounceScrollX = debounce((callback)=>(callback()), 400);
-                }
-                this._debounceScrollX(()=> {
-                    if (!abortX && !ready) {
-                        f();
-                    }
+                this.trans.x.setValue(-x);
+                this.setState({
+                    scrollX: x
                 });
             }
+            this._didScrollStop();
         }
     },
 

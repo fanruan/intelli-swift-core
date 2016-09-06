@@ -61,16 +61,13 @@ class TableComponent extends Component {
             return response.json();
         }).then((data)=> {
             console.log(data);
-            this.setState({
-                data: data
-            })
+            this._tableHelper.setData(data);
+            this.forceUpdate();
         });
     }
 
     render() {
         const {width, height} = this.props;
-        const {data} = this.state;
-        this._tableHelper.setData(data);
         return <View
             style={{width: width, height: height}}
             >

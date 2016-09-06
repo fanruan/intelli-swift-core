@@ -1,5 +1,6 @@
 var TableHelper = require('./TableHelper');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var TableCell = require('./TableCell');
 
 var {translateDOMPositionXY} = require('core');
@@ -62,21 +63,23 @@ var TableCellGroupImpl = React.createClass({
             position: 'absolute',
             width: contentWidth,
             zIndex: props.zIndex,
-            transitionDuration: '0ms',
+            transitionDuration: '300ms',
             transitionTimingFunction: 'ease-out'
         };
         if (this.props.trans) {
             return (
                 <Animated.View
+                    ref='cellGroup'
                     className={'fixedDataTableCellGroupLayout-cellGroup'}
                     style={{
-            transform: [{
-                translateX: this.props.trans.x
-            }, {
-                translateY: 0
-            }, {
-                translateZ: 0
-            }], ...style}}>
+                        transform: [{
+                            translateX: this.props.trans.x
+                        }, {
+                            translateY: 0
+                        }, {
+                            translateZ: 0
+                        }], ...style
+                    }}>
                     {cells}
                 </Animated.View>
             );
@@ -89,11 +92,20 @@ var TableCellGroupImpl = React.createClass({
                     style={{
                         transform: 'translate3d(' + -1 * DIR_SIGN * props.left + 'px,' + 0 + 'px,' + 999 + 'px)',
                         backfaceVisibility: 'hidden'
-                        , ...style}}>
+                        , ...style
+                    }}>
                     {cells}
                 </View>
             );
         }
+    },
+
+    setScrolling(){
+        this.refs['cellGroup'] && (ReactDOM.findDOMNode(this.refs['cellGroup']).style.transitionDuration = '0ms');
+    },
+
+    setScrollEnd(){
+        this.refs['cellGroup'] && (ReactDOM.findDOMNode(this.refs['cellGroup']).style.transitionDuration = '300ms');
     },
 
     _renderCell(/*number*/ rowIndex,
@@ -123,7 +135,7 @@ var TableCellGroupImpl = React.createClass({
                 width={columnProps.width}
                 left={left}
                 cell={columnProps.cell}
-                />
+            />
         );
     },
 
@@ -182,9 +194,10 @@ var TableCellGroup = React.createClass({
                 style={style}
                 className={'fixedDataTableCellGroupLayout-cellGroupWrapper'}>
                 <TableCellGroupImpl
+                    ref='cellGroupImpl'
                     {...props}
                     onColumnResize={onColumnResize}
-                    />
+                />
             </div>
         );
     },
@@ -204,6 +217,14 @@ var TableCellGroup = React.createClass({
             columnKey,
             event
         );
+    },
+
+    setScrolling(){
+        this.refs['cellGroupImpl'].setScrolling();
+    },
+
+    setScrollEnd(){
+        this.refs['cellGroupImpl'].setScrollEnd();
     }
 });
 

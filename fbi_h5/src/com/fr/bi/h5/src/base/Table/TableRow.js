@@ -1,8 +1,10 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var TableCellGroup = require('./TableCellGroup');
 
 var cn = require('classnames');
 var {translateDOMPositionXY} = require('core');
+var {Animated, View} = require('lib');
 
 var {PropTypes} = React;
 
@@ -48,7 +50,8 @@ var TableRowImpl = React.createClass({
         var fixedColumnsWidth = this._getColumnsWidth(this.props.fixedColumns);
         var fixedColumns =
             <TableCellGroup
-                key="fixed_cells"
+                ref='fixed_cells'
+                key='fixed_cells'
                 isScrolling={this.props.isScrolling}
                 height={this.props.height}
                 left={0}
@@ -58,11 +61,12 @@ var TableRowImpl = React.createClass({
                 onColumnResize={this.props.onColumnResize}
                 rowHeight={this.props.height}
                 rowIndex={this.props.index}
-                />;
+            />;
         var columnsShadow = this._renderColumnsShadow(fixedColumnsWidth);
         var scrollableColumns =
             <TableCellGroup
-                key="scrollable_cells"
+                ref='scrollable_cells'
+                key='scrollable_cells'
                 isScrolling={this.props.isScrolling}
                 height={this.props.height}
                 left={this.props.scrollLeft}
@@ -74,10 +78,10 @@ var TableRowImpl = React.createClass({
                 rowHeight={this.props.height}
                 rowIndex={this.props.index}
                 trans={this.props.trans}
-                />;
+            />;
 
         return (
-            <div
+            <View
                 className={cn(className, this.props.className)}
                 onClick={this.props.onClick ? this._onClick : null}
                 onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
@@ -85,12 +89,12 @@ var TableRowImpl = React.createClass({
                 onMouseEnter={this.props.onMouseEnter ? this._onMouseEnter : null}
                 onMouseLeave={this.props.onMouseLeave ? this._onMouseLeave : null}
                 style={style}>
-                <div className={'fixedDataTableRowLayout-body'}>
+                <View className={'fixedDataTableRowLayout-body'}>
                     {scrollableColumns}
                     {columnsShadow}
                     {fixedColumns}
-                </div>
-            </div>
+                </View>
+            </View>
         );
     },
 
@@ -137,6 +141,16 @@ var TableRowImpl = React.createClass({
 
     _onMouseLeave(/*object*/ event) {
         this.props.onMouseLeave(event, this.props.index);
+    },
+
+    setScrolling(){
+        this.refs['fixed_cells'].setScrolling();
+        this.refs['scrollable_cells'].setScrolling();
+    },
+
+    setScrollEnd(){
+        this.refs['fixed_cells'].setScrollEnd();
+        this.refs['scrollable_cells'].setScrollEnd();
     }
 });
 
@@ -164,16 +178,25 @@ var TableRow = React.createClass({
         translateDOMPositionXY(style, 0, this.props.offsetTop);
 
         return (
-            <div
+            <View
                 style={style}
                 className={'fixedDataTableRowLayout-rowWrapper'}>
                 <TableRowImpl
+                    ref='tableRowImpl'
                     {...this.props}
                     offsetTop={undefined}
                     zIndex={undefined}
-                    />
-            </div>
+                />
+            </View>
         );
+    },
+
+    setScrolling(){
+        this.refs['tableRowImpl'].setScrolling();
+    },
+
+    setScrollEnd(){
+        this.refs['tableRowImpl'].setScrollEnd();
     }
 });
 
