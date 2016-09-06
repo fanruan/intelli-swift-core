@@ -80,10 +80,10 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
     setValue: function (v) {
         v || (v = {});
         this.family.setValue(v["fontFamily"] || "");
-        this.size.setValue(v["fontSize"] || 14);
+        this.size.setValue(v["fontSize"] || 12);
         this.bold.setSelected(v["fontWeight"] === "bold");
         this.italic.setSelected(v["fontStyle"] === "italic");
-        this.colorchooser.setValue(v["color"] || "#000000");
+        this.colorchooser.setValue(v["color"] || "#808080");
     },
 
     getValue: function () {

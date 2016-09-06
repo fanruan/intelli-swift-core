@@ -650,7 +650,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             enabled: true,
             align: "outside",
             useHtml: true,
-            style: {},
+            style: { color:"#808080" },
             formatter: "function(){return '" + show + "'}"
         };
         switch (label.style_setting.type) {
