@@ -1054,7 +1054,7 @@ if (!window.BI) {
             }
 
             var async = true;
-            if(BI.isNotNull(option.async)) {
+            if (BI.isNotNull(option.async)) {
                 async = option.async;
             }
 
@@ -1077,21 +1077,21 @@ if (!window.BI) {
                         res.responseText.indexOf("fs-login-content") > -1 &&
                         res.responseText.indexOf("fs-login-input-password-confirm") === -1) {
                         if (BI.isNotNull(BI.Popovers.get(BI.LoginTimeOut.POPOVER_ID))) {
-                            BI.Popovers.open(BI.LoginTimeOut.POPOVER_ID);
-                        } else {
-                            var loginTimeout = BI.createWidget({
-                                type: "bi.login_timeout"
-                            });
-                            loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
-                                decodeBIParam(option.data);
-                                BI.ajax(option);
-                                BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
-                            });
-                            BI.Popovers.create(BI.LoginTimeOut.POPOVER_ID, loginTimeout, {
-                                width: 600,
-                                height: 400
-                            }).open(BI.LoginTimeOut.POPOVER_ID);
+                            BI.Popovers.remove(BI.LoginTimeOut.POPOVER_ID);
                         }
+                        var loginTimeout = BI.createWidget({
+                            type: "bi.login_timeout"
+                        });
+                        loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
+                            decodeBIParam(option.data);
+                            BI.ajax(option);
+                            BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
+                        });
+                        BI.Popovers.create(BI.LoginTimeOut.POPOVER_ID, loginTimeout, {
+                            width: 600,
+                            height: 400
+                        }).open(BI.LoginTimeOut.POPOVER_ID);
+
                     } else if (status === "success" && BI.isFunction(option.success)) {
                         option.success(FR.jsonDecode(res.responseText));
                     }
