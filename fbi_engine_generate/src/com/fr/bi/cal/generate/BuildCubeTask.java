@@ -13,6 +13,7 @@ import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
 import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageTopic;
 import com.finebi.cube.impl.operate.BIOperationID;
+import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.message.IMessage;
@@ -31,7 +32,10 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Future;
 
 /**
@@ -39,7 +43,7 @@ import java.util.concurrent.Future;
  *
  * @author Connery
  * @since 4.0
- * <p/>
+ * <p>
  * edit by kary
  */
 public class BuildCubeTask implements CubeTask {
@@ -85,12 +89,18 @@ public class BuildCubeTask implements CubeTask {
     public void end() {
         Future<String> result = finishObserver.getOperationResult();
         try {
+            BILogger.getLogger().info("start persist datas!");
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
             if (!cubeBuild.isSingleTable()) {
                 BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
                 BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
             }
-            BILogger.getLogger().info(result.get());
+            String message = result.get();
+            if (!finishObserver.success()) {
+                checkTaskFinish();
+            }
+            BILogger.getLogger().info(message);
+
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
@@ -103,10 +113,29 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
+    private void checkTaskFinish() {
+        /**
+         * Cube生成任务失败。但是Cube的局部可能还在继续生成。
+         */
+        while (!Thread.currentThread().isInterrupted()) {
+            if (BIProcessorThreadManager.getInstance().isLeisure()) {
+                return;
+            } else {
+                try {
+                    Thread.sleep(100);
+                    BILogger.getLogger().info("Cube thread is busy currently.Monitor will check it again after 100ms ");
+                } catch (InterruptedException e) {
+                    BILogger.getLogger().error(e.getMessage(), e);
+                }
+            }
+
+        }
+    }
+
     private void replaceOldCubes() {
         try {
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            if (!cubeBuild.replaceOldCubes()){
+            if (!cubeBuild.replaceOldCubes()) {
                 BILogger.getLogger().error("replace cube files failed");
             }
         } catch (Exception e) {

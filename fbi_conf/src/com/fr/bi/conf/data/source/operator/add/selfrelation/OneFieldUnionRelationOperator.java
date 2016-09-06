@@ -2,7 +2,9 @@ package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;

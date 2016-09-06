@@ -63,22 +63,26 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        long t=System.currentTimeMillis();
+        long t = System.currentTimeMillis();
         biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
         try {
             initial();
             buildTableIndex();
-            long costTime=System.currentTimeMillis()-t;
-            if (null!=tableSource.getPersistentTable()) {
-                biLogManager.infoColumn(tableSource.getPersistentTable(),hostBICubeFieldSource.getFieldName(),costTime,Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+            long costTime = System.currentTimeMillis() - t;
+            try {
+                biLogManager.infoColumn(tableSource.getPersistentTable(), hostBICubeFieldSource.getFieldName(), costTime, Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-            if (null!=tableSource.getPersistentTable()) {
-                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
-            }
-        } finally {
             return null;
+        } catch (Exception e) {
+            try {
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+            BILogger.getLogger().error(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
@@ -93,7 +97,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         Iterator<Map.Entry<T, IntList>> group2rowNumberIt = group2rowNumber.entrySet().iterator();
         int groupPosition = 0;
         columnEntityService.recordSizeOfGroup(group2rowNumber.size());
-        Integer[] positionOfGroup = new Integer[(int)rowCount];
+        Integer[] positionOfGroup = new Integer[(int) rowCount];
         while (group2rowNumberIt.hasNext()) {
             Map.Entry<T, IntList> entry = group2rowNumberIt.next();
             T groupValue = entry.getKey();
@@ -119,7 +123,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     private void buildPositionOfGroup(Integer[] position) {
-        for (int i = 0; i < position.length; i ++){
+        for (int i = 0; i < position.length; i++) {
             columnEntityService.addPositionOfGroup(i, position[i]);
         }
     }

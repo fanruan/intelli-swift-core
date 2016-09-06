@@ -10,9 +10,16 @@ import com.finebi.cube.message.IMessage;
  * @since 4.0
  */
 class FinishObserverProcessor extends BIProcessor<String> {
+    private boolean success = true;
+
+    public boolean success() {
+        return success;
+    }
+
     @Override
     public String mainTask(IMessage lastReceiveMessage) {
         if (lastReceiveMessage.isStopStatus()) {
+            success = false;
             return "***********************warning:the cube build failure*****************************";
 
         }

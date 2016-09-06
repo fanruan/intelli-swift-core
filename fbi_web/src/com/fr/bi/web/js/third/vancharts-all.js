@@ -467,6 +467,7 @@ define('Constants',[],function(){
         AREA_CHART:'area',//面积图
         PIE_CHART:'pie',//饼图
         MULTIPIE_CHART:'multiPie',//多层饼图
+        TREEMAP_CHART:'treeMap',//矩形树图
         SCATTER_CHART:'scatter',//散点图
         BUBBLE_CHART:'bubble',//气泡图
         GAUGE_CHART:'gauge',//仪表盘
@@ -474,8 +475,6 @@ define('Constants',[],function(){
         MAP_CHART:'map',//地图
         POINT_MAP:'pointMap',
         AREA_MAP:'areaMap',
-
-
         //组件类型
         GEO_COMPONENT:'geo',
         X_AXIS_COMPONENT:'xAxis',
@@ -541,6 +540,7 @@ define('Constants',[],function(){
         DONUT_ICON:'donut-legend-icon',
         BUBBLE_ICON:'bubble-legend-icon',
         SCATTER_ICON:'scatter-legend-icon',
+        TREEMAP_ICON:'treeMap-legend-icon',
 
         //虚线的类型
         DASH_TYPE:{
@@ -577,6 +577,9 @@ define('Constants',[],function(){
 
         MULTIPIE_SVG:'multiPie-svg-render',
         MULTIPIE_VML:'multiPie-vml-render',
+
+        TREEMAP_SVG: 'treeMap-svg-render',
+        TREEMAP_VML: 'treeMap-vml-render',
 
         BAR_SVG:'bar-svg-render',
         BAR_VML:'bar-vml-render',
@@ -1520,6 +1523,7 @@ define('render/RenderFactory',['require','./RenderLibrary','../Constants','../ut
     SVG_MAP[Constants.VANCHART] = Constants.VANCHART_SVG;
     SVG_MAP[Constants.PIE_CHART] = Constants.PIE_SVG;
     SVG_MAP[Constants.MULTIPIE_CHART] = Constants.MULTIPIE_SVG;
+    SVG_MAP[Constants.TREEMAP_CHART] = Constants.TREEMAP_SVG;
     SVG_MAP[Constants.BAR_CHART] = Constants.BAR_SVG;
     SVG_MAP[Constants.COLUMN_CHART] = Constants.BAR_SVG;
     SVG_MAP[Constants.LINE_CHART] = Constants.LINE_SVG;
@@ -1552,6 +1556,7 @@ define('render/RenderFactory',['require','./RenderLibrary','../Constants','../ut
     VML_MAP[Constants.VANCHART] = Constants.VANCHART_VML;
     VML_MAP[Constants.PIE_CHART] = Constants.PIE_VML;
     VML_MAP[Constants.MULTIPIE_CHART] = Constants.MULTIPIE_VML;
+    VML_MAP[Constants.TREEMAP_CHART] = Constants.TREEMAP_VML;
     VML_MAP[Constants.BAR_CHART] = Constants.BAR_VML;
     VML_MAP[Constants.COLUMN_CHART] = Constants.BAR_VML;
     VML_MAP[Constants.LINE_CHART] = Constants.LINE_VML;
@@ -2596,9 +2601,9 @@ define('Handler',['require','./utils/BaseUtils','./Constants','./dom/DomEvent','
                 }
             }
 
-            //没有数据点共享的时候显示当前选中的数据点
-            if(!this.vanchart.coveredKey){
-                tooltip.showWithPoint(chart.hoverPoint, event.originalEvent);
+            //当前没有数据点共享的时候显示当前选中的数据点
+            if(hoverPoint && hoverPoint.category !== this.vanchart.coveredKey){
+                tooltip.showWithPoint(hoverPoint, event.originalEvent);
             }
 
             if ((!isInPlot && this.vanchart.coveredKey) || this._draggingTarget) {
@@ -2770,6 +2775,19 @@ define('theme/options',['require','../Constants'],function (require) {
             startAngle: 0,
             endAngle: 360,
             drilldown: true
+        }
+    };
+
+    options[Constants.TREEMAP_CHART] = {
+        topLabelGap: 6,
+
+        plotOptions: {
+            borderWidth: 2,
+            borderColor: 'rgb(255,255,255)',
+            zoom: true,
+            dataLabels: {
+                align: 'top'
+            }
         }
     };
 
@@ -2948,7 +2966,7 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
             if (series.type === Constants.GAUGE_CHART || this.index < 0) {
                 // don't occupy default color index
                 var color = '#000';
-            } else if (series.type === Constants.MULTIPIE_CHART) {
+            } else if (series.type === Constants.MULTIPIE_CHART || series.type === Constants.TREEMAP_CHART) {
                 var color = chart.vanchart.getDefaultSeriesColor(pointOption.name);
             } else {
                 var color = chart.vanchart.getDefaultSeriesColor(seriesName);
@@ -2975,6 +2993,8 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
             var clickColor = ColorUtils.getClickColor(color);
 
             var mouseOverColor = QueryUtils.queryList(queryList, 'mouseOverColor') || ColorUtils.getHighLightColor(color);
+
+            mouseOverColor = BaseUtils.isSupportSVG() ? mouseOverColor : ColorUtils.colorToHex(mouseOverColor);
 
             QueryUtils.merge(this, {
 
@@ -3008,7 +3028,7 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
                 image:QueryUtils.queryList(queryList, 'image'),
                 imageWidth:QueryUtils.queryList(queryList, 'imageWidth') || 0,
                 imageHeight:QueryUtils.queryList(queryList, 'imageHeight') || 0,
-                dataLabels:isNull ? null : dataLabels,
+                dataLabels:(isNull && series.type !== Constants.MULTIPIE_CHART) ? null : dataLabels,
                 tooltip:tooltip,
                 mouseOverColor: mouseOverColor
             }, true);
@@ -3043,57 +3063,55 @@ define('component/Point',['require','../utils/QueryUtils','../utils/BaseUtils','
             var content = [];
 
             if(typeof formatter == 'object'){
+                var P = this;
 
                 var label = formatter.identifier;
 
-                var items =[];
-                if (label.indexOf(NAME) != -1) {
-                    var nameString = Formatter.format(this.name, formatter.nameFormat);
-                    items.push(nameString);
+                var propMap = {};
+                propMap[NAME] = ['name', 'nameFormat'];
+                propMap[CATEGORY] = ['category', 'categoryFormat'];
+                propMap[SERIES] = ['seriesName', 'seriesFormat'];
+                propMap[VALUE] = ['value', 'valueFormat'];
+                propMap[PERCENT] = ['percentage', 'percentFormat'];
+
+                var names = [NAME, CATEGORY, SERIES],
+                    values = [VALUE, PERCENT];
+
+                var cateStyleFun = P.getCategorySeriesStyle.bind(P),
+                    valueStyleFun = P.getValuePercentageStyle.bind(P);
+
+                // adjust the sequence and style here
+                if (this.series.type === Constants.TREEMAP_CHART) {
+                    values.unshift(names.shift());
+                    valueStyleFun = cateStyleFun;
                 }
-                if (label.indexOf(CATEGORY) != -1) {
-                    var categoryString = Formatter.format(this.category, formatter.categoryFormat);
-                    items.push(categoryString);
+
+                addContent(content, getContentItems(names), cateStyleFun);
+                addContent(content, getContentItems(values), valueStyleFun);
+
+                function getContentItems(items) {
+                    return items.map(fmtStr).filter(clean);
                 }
-                if (label.indexOf(SERIES) != -1) {
-                    var seriesString = Formatter.format(this.seriesName, formatter.seriesFormat);
-                    items.push(seriesString);
+
+                function fmtStr(item) {
+                    return label.indexOf(item) !== -1 ?
+                        Formatter.format(P[propMap[item][0]], formatter[propMap[item][1]]) :
+                        null;
                 }
-                
-                if (items.length) {
+
+                function clean(item) { return item !== null; }
+
+                function addContent(content, items, styleFun) {
+                    if (!items.length) {
+                        return;
+                    }
                     var text = items.join(' ');
-                    var style = this.getCategorySeriesStyle(dataLabels);
+                    var style = styleFun(dataLabels);
                     var dim = BaseUtils.getTextDimension(text, style, useHtml);
                     content.push({
                         text: text,
                         style: style,
                         dim: dim
-                    });
-                }
-
-
-                if(label.indexOf(VALUE) != -1 || label.indexOf(PERCENT) != -1){
-                    
-                    var valueString = Formatter.format(this.value, formatter.valueFormat);
-
-                    var percentString = Formatter.format(this.percentage, formatter.percentFormat);
-
-                    var text = '';
-
-                    if(label.indexOf(VALUE) != -1 && label.indexOf(PERCENT) != -1){
-                        text = valueString + ' ' + percentString;
-                    }else if(label.indexOf(VALUE) != -1){
-                        text = valueString;
-                    }else{
-                        text = percentString;
-                    }
-
-                    var style = this.getValuePercentageStyle(dataLabels);
-                    var dim = BaseUtils.getTextDimension(text, style, useHtml);
-                    content.push({
-                        text:text,
-                        style:style,
-                        dim:dim
                     });
                 }
 
@@ -3259,7 +3277,8 @@ define('component/Series',['require','../utils/BaseUtils','../utils/QueryUtils',
             if ([
                     Constants.PIE_CHART,
                     Constants.GAUGE_CHART,
-                    Constants.MULTIPIE_CHART
+                    Constants.MULTIPIE_CHART,
+                    Constants.TREEMAP_CHART
                 ].indexOf(this.type) === -1) {
                 this.color = QueryUtils.queryList(queryList, 'color') || this.chart._getDefaultSeriesColor(this.name);
             }
@@ -3292,6 +3311,7 @@ define('component/Series',['require','../utils/BaseUtils','../utils/QueryUtils',
             switch (this.type) {
                 case Constants.PIE_CHART:
                 case Constants.MULTIPIE_CHART:
+                case Constants.TREEMAP_CHART:
                     break;
                 case Constants.GAUGE_CHART:
                     this.gaugeAxis = vanchart.gaugeAxis(QueryUtils.queryList(queryList, 'gaugeAxis'));
@@ -3547,6 +3567,12 @@ define('render/LegendIconFactory',['require','../Constants'],function(require){
         height:16
     };
 
+    LegendPath[Constants.TREEMAP_ICON] = 'M9,12H3c-1.6,0-3-1.4-3-3l0-6c0-1.6,1.3-3,3-3l6,0c1.7,0,3,1.4,3,3v6C12,10.6,10.6,12,9,12z';
+    LegendSize[Constants.TREEMAP_ICON] = {
+        width:12,
+        height:12
+    };
+
     LegendPath[Constants.DONUT_ICON] = 'M8.945,11.107c1.671,0,3.181,0.684,4.269,1.786l4.271-4.271c-4.686-4.686-12.284-4.686-16.971,0l4.216,4.216C5.815,11.768,7.302,11.107,8.945,11.107z';
     LegendSize[Constants.DONUT_ICON] = {
         width:18,
@@ -3748,6 +3774,8 @@ define('component/Base',['require','../utils/BaseUtils','../utils/ColorUtils','.
             this.bounds = {x:0, y:0, width:0, height:0};
 
             this.refresh(option, this.componentOption);
+
+            this.listener && vanchart.store.subscribe(this.listener, this);
         },
 
         refresh:function(option, componentOption){
@@ -3831,6 +3859,9 @@ define('component/Base',['require','../utils/BaseUtils','../utils/ColorUtils','.
                     break;
                 case Constants.BUBBLE_CHART:
                     icon = Constants.BUBBLE_ICON;
+                    break;
+                case Constants.TREEMAP_CHART:
+                    icon = Constants.TREEMAP_ICON;
                     break;
                 default:
                     icon = Constants.NORMAL_ICON;
@@ -4165,7 +4196,6 @@ define('component/Title',['require','./Base','../utils/BaseUtils','../Constants'
     var Title = Base.extend({
 
         _refresh:function(){
-            this.initBarWidth = null;
             this.render && this.render.remove();
         },
 
@@ -4188,7 +4218,7 @@ define('component/Title',['require','./Base','../utils/BaseUtils','../Constants'
 
             } else {
 
-                this.initBarWidth = BaseUtils.pick(this.initBarWidth, this.vanchart.getToolbarWidth());
+                this.initBarWidth = this.vanchart.store.getState().initBarWidth;
                 remainWidth -= this.initBarWidth;
 
                 if (cfg.align === 'center') {
@@ -4244,6 +4274,13 @@ define('component/Title',['require','./Base','../utils/BaseUtils','../Constants'
 
         },
 
+        listener: function () {
+            var state = this.vanchart.store.getState();
+            if (state.isInit) {
+                this.changeTextRightSpace(state.changes);
+            }
+        },
+
         getPadding:function(){
             return PADDING;
         },
@@ -4257,7 +4294,7 @@ define('component/Title',['require','./Base','../utils/BaseUtils','../Constants'
         },
 
         changeTextRightSpace: function (changes) {
-            this.render.changeTextRightSpace(changes);
+            // this.render.changeTextRightSpace(changes);
         }
     });
     
@@ -4827,7 +4864,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
                 otherAxis = this.vanchart[otherAxis]();
 
-                axisOption.position = isInverted ^ otherAxis.isHorizontal() ? Constants.RIGHT : Constants.BOTTOM;
+                axisOption.position = isInverted ^ otherAxis.isHorizontal() ? Constants.LEFT : Constants.BOTTOM;
 
                 this._updateFloatBounds(position, usedSize);
 
@@ -4839,8 +4876,16 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             var chartHeight = this.vanchart.chartHeight();
 
             // clip vertical axis tick label
-            if (!isHorizontal) {
+            if (isHorizontal) {
+                //todo 先简化处理,保证一般情况话不会被截断
+                var maxTickWidth = this.bounds.width/Math.max(this.tickData.length - 1, 1);
+                var leftClip = startSize < maxTickWidth ? Math.round(startSize/2) : 0;
+                leftClip = Math.max(leftClip - plotBounds.x, 0);
 
+                var rightClip = endSize  < maxTickWidth ? Math.round(endSize/2) : 0;
+                this._clipPlotBounds(Constants.LEFT, leftClip);
+                this._clipPlotBounds(Constants.RIGHT, rightClip);
+            }else{
                 var topDet = Math.round(endSize/2);
 
                 var bottomDet = Math.round(startSize/2);
@@ -4880,7 +4925,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                     width = plotBounds.width;
                     height = this.bounds.height;
                 }else{
-                    x = pos + plotBounds.x;
+                    x = pos + plotBounds.x - this.bounds.width;
                     y = plotBounds.y;
                     width = this.bounds.width;
                     height = plotBounds.height;
@@ -4984,7 +5029,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
             this.usedTickData = [];
             for(var i = startIndex; i < endIndex; i++){
-                this.usedTickData.push(this.tickData[i]);
+                this.tickData[i] && this.usedTickData.push(this.tickData[i]);
             }
 
             this.minorTickData = [];
@@ -5455,6 +5500,9 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 var longestStep = 1;
 
                 this.tickData.forEach(function(t){
+                    if (t.tickContent === '') {
+                        return;
+                    }
 
                     var pos = isHorizontal ? {x:scale(t.tickValue), y:0} : {x:0, y:scale(t.tickValue)};
                     var bounds = BaseUtils.makeBounds(pos, t.tickDim);
@@ -6150,9 +6198,6 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
                 if(byAxis == this){
                     var points = sery.originalPoints || sery.points;
                     points.forEach(function(point){
-                        if (point.isNull) {
-                            return;
-                        }
                         var label =  isBaseAxis ? point.category : point.value;
                         if(!BaseUtils.isNull(label) && !stored[label]){
                             categories.push(label);
@@ -8107,7 +8152,7 @@ define('render/CanvasRender',['require','../utils/BaseUtils','../Constants'],fun
  * Created by eason on 15/8/13.
  */
 
-define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils','../utils/LabelDivManager','../utils/ColorUtils','../utils/Class','../Constants','./CanvasRender'],function(require){
+define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils','../utils/LabelDivManager','../utils/ColorUtils','../utils/Class','../Constants','./CanvasRender','../utils/BezierEasing'],function(require){
 
     var BaseUtils = require('../utils/BaseUtils');
     var PathUtils = require('../utils/PathUtils');
@@ -8116,11 +8161,16 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
     var Class = require('../utils/Class');
     var Constants = require('../Constants');
     var CanvasRender = require('./CanvasRender');
+    var BezierEasing = require('../utils/BezierEasing');
 
     var MARKER_G = 'markerG';
     var MARKER = 'markerPath';
     var MARKER_STROKE = 'markerStrokePath';
     var MIN_MARKER_R = 2;
+
+    var INIT_MORE_LABEL_ANIMATION_TIME = 250;
+    var KEEP_MORE_LABEL_ANIMATION_TIME = 500;
+    var EXIT_MORE_LABEL_ANIMATION_TIME = 250;
 
     var BaseRender = Class.extend({
 
@@ -8703,7 +8753,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
             this._drawSvgDataLabels(parentG, validPoints, plotBounds.x, plotBounds.y, delay);
         },
 
-        _drawSvgDataLabels:function(parentG, points, transX, transY, delay, key){
+        _drawSvgDataLabels:function(parentG, points, transX, transY, delay, key, styleFun){
 
             delay = delay || 0;
 
@@ -8729,7 +8779,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
                             && d.dataLabels.enabled
                             && !d.dataLabels.useHtml ;
                     })
-                    .each(function(d){
+                    .each(styleFun || function(d){
 
                         var labelContent = d.labelContent;
 
@@ -8889,9 +8939,7 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
             style.textAlign = cfg.align || 'left';
 
             var div = this.labelDivManager.addLabelWidthBounds(cfg.text, bounds, style, 0, true, cfg.useHtml);
-            if (!cfg.useHtml) {
-                div.style.pointerEvents = 'none';
-            }
+            div.style.pointerEvents = 'none';
         },
 
         _renderVmlBackground: function (parentSet, paper, option, bounds) {
@@ -9084,8 +9132,12 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
 
                     var labelDim = label.dim;
 
-                    var midGap = (wholeLabelDim.width - labelDim.width)/2;
-                    midGap = Math.max(0, midGap);
+                    var midGap = 0;
+                    if (this.component.componentType !== Constants.TREEMAP_CHART ||
+                        point.dataLabels.align === Constants.CENTER) {
+                        midGap = (wholeLabelDim.width - labelDim.width) / 2;
+                        midGap = Math.max(0, midGap);
+                    }
 
                     this.labelDivManager.addLabel(label.text, BaseUtils.makeBounds({x:labelX + midGap, y:labelY}, labelDim), label.style, point.category);
 
@@ -9113,6 +9165,191 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
 
                 }
 
+            }
+
+        },
+
+        _getAllMoreLabelAnimationTime:function(){
+            return INIT_MORE_LABEL_ANIMATION_TIME + KEEP_MORE_LABEL_ANIMATION_TIME + EXIT_MORE_LABEL_ANIMATION_TIME;
+        },
+
+        //没有标签的时候各种图的默认标签位置
+        _getMoreLabelDefaultCenter:function(d, moreLabelDim){
+            var centerX = d.x, centerY = d.y;
+
+            if(this.component.componentType == Constants.PIE_CHART) {
+                var centerAngle = d.rotate + (d.startAngle + d.endAngle) / 2 ;
+                var tmpR = d.series.innerRadius + (d.radius - d.series.innerRadius) / 2;
+                var pos = this.component._getArcPoint(tmpR, centerAngle);
+                centerX = pos[0];
+                centerY = pos[1];
+            } else if(this.component.componentType == Constants.BAR_CHART) {
+                centerX += (d.width + moreLabelDim.width/2);
+                centerY += d.height/2;
+            } else if(this.component.componentType == Constants.GAUGE_CHART) {
+                centerX = 0;
+                centerY = 0;
+            } else if(this.component.componentType == Constants.SCATTER_CHART) {
+                centerX = d.posX + d.marker.radius/2;
+                centerY = d.posY - moreLabelDim.height/2 - d.marker.radius/2;
+            } else if(this.component.componentType == Constants.BUBBLE_CHART) {
+                centerX = d.posX;
+                centerY = d.posY;
+            } else if(this.component.componentType == Constants.TREEMAP_CHART) {
+                centerX += d.dx/2;
+                centerY += d.dy/2;
+            } else if(this.component.componentType == Constants.MULTIPIE_CHART) {
+                var rotate = d.rotate || 0;
+                var angle = rotate + d.x + d.dx / 2 ;
+                var r = d.y + d.dy / 2;
+                var center = this.component._getArcPoint(r, angle);
+                centerX = center[0];
+                centerY = center[1];
+            } else if(d.marker) {
+                centerX += d.marker.radius/2;
+                centerY -= (moreLabelDim.height/2 + d.marker.radius/2);
+            } else {
+                centerX += d.width/2;
+                centerY -= moreLabelDim.height/2;
+            }
+
+            return {
+                centerX: centerX,
+                centerY: centerY
+            }
+        },
+
+        _drawVMLMoreLabel: function (seriesS) {
+            var lastValueMap = this.component.vanchart.vancharts.lastValueMap;
+
+            var plotBounds = this.component.getPlotBounds();
+            var transX = plotBounds.x, transY = plotBounds.y;
+
+            if(this.component.componentType == Constants.RADAR_CHART){
+                var radarCenter = this.component.getRadarCenter();
+                transX += radarCenter[0];
+                transY += radarCenter[1];
+            }
+
+            for(var i = 0, count = seriesS.length; i < count; i++){
+                var points = seriesS[i].points;
+
+                if(this.component.componentType == Constants.PIE_CHART && i == 0) {
+                    transX += seriesS[i].centerX;
+                    transY += seriesS[i].centerY;
+                }
+
+                for(var j = 0, len = points.length; j < len; j++){
+                    var point = points[j];
+                    var lastValue = lastValueMap[point.className] || 0;
+                    lastValueMap[point.className] = point.value;
+
+                    this._showAndExitVMLMoreLabel(this._showMoreLabel, point, lastValue, transX, transY);
+                }
+            }
+        },
+
+        _showAndExitVMLMoreLabel: function (showMoreLabel, d, lastValue, transX, transY, key) {
+            if(showMoreLabel) {
+                var moreText = d.value - lastValue;
+                if(moreText == 0){
+                    return;
+                } else if(moreText > 0){
+                    moreText = "+" + moreText;
+                }
+
+                var moreLabel = this.component.vanchart.currentOption.moreLabel;
+                var style = moreLabel.style || {"fontFamily": "verdana", "fontSize": "9pt"};
+
+                var moreLabelDim = BaseUtils.getTextDimension(moreText, style, false);
+
+                var pos = this._getMoreLabelDefaultCenter(d, moreLabelDim);
+                var centerX = pos.centerX, centerY = pos.centerY;
+
+                if(BaseUtils.hasDefined(d.labelPos) && BaseUtils.hasDefined(d.labelDim)) {
+                    centerX = d.labelPos.x + d.labelDim.width / 2;
+                    centerY = d.labelPos.y + d.labelDim.height / 2;
+                }
+
+                var x = centerX - moreLabelDim.width/2 + transX;
+                var y = centerY - moreLabelDim.height/2 + transY;
+                this.labelDivManager.addLabel(moreText, BaseUtils.makeBounds({x:x, y:y}, moreLabelDim), style, key);
+            }
+        },
+
+        _clearMoreLabel:function () {
+            this.labelDivManager.clearAllLabels();
+        },
+
+        _showAndExitMoreLabel:function(parentG, showMoreLabel, d, lastValue){
+            if(showMoreLabel) {
+                var moreText = d.value - lastValue;
+                if(moreText == 0){
+                    return;
+                } else if(moreText > 0){
+                    moreText = "+" + moreText;
+                }
+
+                var moreLabel = this.component.vanchart.currentOption.moreLabel;
+                var style = moreLabel.style || {"fontFamily": "verdana", "fontSize": "9pt"};
+
+                var moreLabelDim = BaseUtils.getTextDimension(moreText, style, false);
+
+                var pos = this._getMoreLabelDefaultCenter(d, moreLabelDim);
+                var centerX = pos.centerX, centerY = pos.centerY;
+
+                if(BaseUtils.hasDefined(d.labelPos) && BaseUtils.hasDefined(d.labelDim)) {
+                    centerX = d.labelPos.x + d.labelDim.width / 2;
+                    centerY = d.labelPos.y + d.labelDim.height / 2;
+                }
+
+                this._showAndExitMoreLabelWithCenter(parentG, showMoreLabel, d, lastValue, centerX, centerY);
+            }
+        },
+
+        _showAndExitMoreLabelWithCenter:function(parentG, showMoreLabel, d, lastValue, centerX, centerY) {
+            if(showMoreLabel) {
+                var moreText = d.value - lastValue;
+                if(moreText == 0){
+                    return;
+                } else if(moreText > 0){
+                    moreText = "+" + moreText;
+                }
+
+                var moreLabel = this.component.vanchart.currentOption.moreLabel;
+                var style = moreLabel.style || {"fontFamily": "verdana", "fontSize": "9pt"};
+
+                var moreLabelG = parentG.append('text');
+                moreLabelG
+                    .append('tspan')
+                    .attr('opacity', 0)
+                    .attr('x', centerX)
+                    .attr('y', centerY + 5)
+                    .attr('dy', '.32em')
+                    .attr("text-anchor", "middle")
+                    .text(moreText)
+                    .call(BaseUtils.setTextStyle, style)
+                    .style('fill', moreText < 0 ? moreLabel.minusColor : moreLabel.plusColor)
+                    .transition()
+                    .duration(INIT_MORE_LABEL_ANIMATION_TIME)
+                    .ease('back-out')
+                    .attr('y', centerY)
+                    .attrTween('opacity', function () {
+                        return function (t) {
+                            return BezierEasing.css.swing(t);
+                        }
+                    })
+                    .transition()
+                    .delay(KEEP_MORE_LABEL_ANIMATION_TIME)
+                    .duration(EXIT_MORE_LABEL_ANIMATION_TIME)
+                    .ease('back-in')
+                    .attr('y', centerY + 5)
+                    .attrTween('opacity', function () {
+                        return function (t) {
+                            return 1 - BezierEasing.css.swing(t);
+                        }
+                    })
+                    .remove();
             }
 
         },
@@ -9185,6 +9422,9 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
         removeDivLabels:function(){
             if(this.labelDivManager){
                 this.labelDivManager.clearAllLabels();
+                for (var i in this.drawLabelTimeOut) {
+                    window.clearTimeout(this.drawLabelTimeOut[i]);
+                }
             }
         },
 
@@ -9447,6 +9687,9 @@ define('render/BaseRender',['require','../utils/BaseUtils','../utils/PathUtils',
 
         _canvasRender:function(){
 
+            this._bodyG && this._bodyG.remove();
+            this._bodyG = null;
+            
             var dom = this.component.vanchart.getParentDom();
             var plotBounds = this.component.getPlotBounds();
 
@@ -9823,6 +10066,19 @@ define('theme/Options',['require','../Constants'],function (require) {
         }
     };
 
+    options[Constants.TREEMAP_CHART] = {
+        topLabelGap: 6,
+
+        plotOptions: {
+            borderWidth: 2,
+            borderColor: 'rgb(255,255,255)',
+            zoom: true,
+            dataLabels: {
+                align: 'top'
+            }
+        }
+    };
+
     options[Constants.COLUMN_CHART] = {
         plotOptions: {
             categoryGap: '20%',
@@ -9929,6 +10185,8 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
     var QueryUtils = require('../utils/QueryUtils');
     var Constants = require('../Constants');
     var Options = require('../theme/Options');
+
+    var _loadedLayerMap = {};//避免创建重复的tileLayer
 
     var POINT  = 'Point';
 
@@ -10049,7 +10307,10 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
             var cfg = this.componentOption, geo = this;
             var leaflet = this.vanchart._leaflet;
 
-            this.maps = []; this._validPointName = {}; this._validAreaName = {};
+            this.maps = [];
+            this._validPointName = {}; this._validAreaName = {};
+            var vanchartsID = BaseUtils.stamp(this.vanchart);
+            _loadedLayerMap[vanchartsID] = _loadedLayerMap[vanchartsID] || {};
 
             if(cfg.data){
                 var maps = BaseUtils.isArray(cfg.data) ? cfg.data : [cfg.data];
@@ -10079,18 +10340,13 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                 });
             }
 
-            if(cfg.tileLayer && !cfg.imageMap){
-                // gis层级
-                L.tileLayer(cfg.tileLayer).addTo(leaflet);
-            }
+            var url = cfg.tileLayer || this.vanchart.restoreOption.geo.tileLayer;
+            var attribution = cfg.attribution || this.vanchart.restoreOption.geo.attribution;
 
-            if(cfg.wmsUrl && cfg.wmsLayer){
-                L.tileLayer.wms(cfg.wmsUrl, {layers: cfg.wmsLayer.join(',')}).addTo(leaflet);
-            }
+            var wmsUrl = cfg.wmsUrl || this.vanchart.restoreOption.geo.wmsUrl;
+            var wmsLayer = cfg.wmsLayer || this.vanchart.restoreOption.geo.wmsLayer;
 
             if(this.imageString){
-                leaflet._imageBackgroundLayer && leaflet._imageBackgroundLayer.remove();
-
                 var chartWidth = this.vanchart.chartWidth();
                 var chartHeight = this.vanchart.chartHeight();
 
@@ -10105,7 +10361,62 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                 this._scaleGeoJson(this.maps, this.scale);
                 var bounds = [[0,0], [showHeight, showWidth]];
                 var url = "data:image/"+this.imageSuffix+";base64," + this.imageString;
-                leaflet._imageBackgroundLayer = L.imageOverlay(url, bounds).addTo(leaflet);
+                this._imageBackgroundLayer = L.imageOverlay(url, bounds).addTo(leaflet);
+                
+                this._attribution && this._attribution.remove();
+                this._attribution = null;
+
+                this._tileLayer && this._tileLayer.remove();
+                this._tileLayer = null;
+
+                this._wmsLayer && this._wmsLayer.remove();
+                this._wmsLayer = null;
+
+            }else if(url){
+
+                if(attribution){
+                    this._attribution = L.control.attribution({position:'bottomright'}).addAttribution(attribution);
+                }else {
+                    this._attribution && this._attribution.remove();
+                    this._attribution = null;
+                }
+
+                this._tileLayer = _loadedLayerMap[vanchartsID][url] || L.tileLayer(url);
+                _loadedLayerMap[vanchartsID][url] = this._tileLayer;
+
+                this._wmsLayer && this._wmsLayer.remove();
+                this._wmsLayer = null;
+
+                this._imageBackgroundLayer && leaflet.removeLayer(this._imageBackgroundLayer)
+                this._imageBackgroundLayer = null;
+
+            }else if(wmsUrl){
+
+                this._wmsLayer = _loadedLayerMap[vanchartsID][wmsUrl] || L.tileLayer.wms(wmsUrl, {layers: wmsLayer.join(',')});
+                _loadedLayerMap[vanchartsID][wmsUrl] = this._wmsLayer;
+
+                this._attribution && this._attribution.remove();
+                this._attribution = null;
+
+                this._tileLayer && this._tileLayer.remove();
+                this._tileLayer = null;
+
+                this._imageBackgroundLayer && leaflet.removeLayer(this._imageBackgroundLayer)
+                this._imageBackgroundLayer = null;
+
+            }else{
+
+                this._attribution && this._attribution.remove();
+                this._attribution = null;
+
+                this._tileLayer && this._tileLayer.remove();
+                this._tileLayer = null;
+
+                this._wmsLayer && this._wmsLayer.remove();
+                this._wmsLayer = null;
+
+                this._imageBackgroundLayer && leaflet.removeLayer(this._imageBackgroundLayer)
+                this._imageBackgroundLayer = null;
             }
         },
 
@@ -10237,6 +10548,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                                     p.feature = f;
                                     p.className = point.className + index;
                                     areaFeatures.push(p);
+                                    p.originPoint = point;
                                 });
                             }
                         }
@@ -10263,6 +10575,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                                     p.feature = f;
                                     p.className = point.className + index;
                                     duplicated.push(p);
+                                    p.originPoint = point;
                                 });
                             }
 
@@ -10349,7 +10662,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
         },
 
         _isImageMap:function(){
-            return this.componentOption.imageMap;
+            return this.imageString;
         },
 
         //这个fitbounds既需要考虑json文件,还要考虑点地图的时候的在数据里写死了经纬度
@@ -10506,24 +10819,24 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../utils/Col
                         break;
                     case Constants.PIE_CHART:
                     case Constants.MULTIPIE_CHART:
+                    case Constants.TREEMAP_CHART:
                         var key = sery.type === Constants.PIE_CHART ? 'seriesName' : 'name';
 
-                        sery.points.map(function (point) {
-                            if(!(namedSeries[point[key]])){
-
-                                var item = {color:point._color, itemName:point[key], visible:point.visible, pieDataIndex:point.index};
-
+                        var list = sery.points
+                            .filter(function (point) {
+                                return !namedSeries[point[key]];
+                            })
+                            .map(function (point) {
+                                var item = {color:point._color, itemName:point[key], visible:point.visible, dataIndex:point.index};
                                 legend._mergeCommonLegendAttr(sery, item);
-
                                 namedSeries[point[key]] = true;
+                                return item;
+                            })
+                            .sort(function (a,b) {
+                                return a.dataIndex - b.dataIndex;
+                            });
 
-                                legend.items.push(item);
-                            }
-                        });
-
-                        legend.items.sort(function (a,b) {
-                            return a.pieDataIndex - b.pieDataIndex;
-                        });
+                        [].push.apply(legend.items, list);
 
                         break;
 
@@ -11095,13 +11408,19 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
 
                 this._tDom = document.createElement('div');
 
+                this._hiddenDom = document.createElement('div');
+
                 this._tDom.onselectstart = function() {
                     return false;
                 };
 
                 this._tDom.style.position = 'absolute';
 
+                this._hiddenDom.style.visibility = 'hidden';
+
                 dom.appendChild(this._tDom);
+
+                dom.appendChild(this._hiddenDom);
 
                 this._tooltipHideTick = null;
             }
@@ -11111,6 +11430,7 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
             if(this._tDom){
                 var dom = this.vanchart.getDivParentDom();
                 dom.removeChild(this._tDom);
+                dom.removeChild(this._hiddenDom);
             }
         },
 
@@ -11178,14 +11498,11 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
 
             opt = opt || '';
 
-            var body = document.getElementsByTagName("body")[0];
-            var testDiv = document.createElement('div');
+            var testDiv = this._hiddenDom;
             testDiv.innerHTML = tooltipText;
             testDiv.style.cssText = this._gCssText + this._style(opt) + 'visibility:hidden;';
-            body.appendChild(testDiv);
             var width = testDiv.offsetWidth;
             var height = testDiv.offsetHeight;
-            body.removeChild(testDiv);
             return {
                 width:width,
                 height:height
@@ -11193,58 +11510,33 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
         },
 
         _calculateTooltipContent:function(points){
-
-            var categoryPoint;
-
-            var tooltipContent = points.reduce(function (a, b) {
-
-                var tooltip = b.tooltip;
-                var formatter = tooltip.formatter;
-
-                if (!formatter) {
-                    return a;
-                }
-
-                categoryPoint = categoryPoint || b;
-
-                if (typeof formatter == 'object') {
-
-                    var style = tooltip.style;
-                    var label = formatter.identifier;
-
-                    var content = '';
-
-                    content += '<span style="font-size:20px; font-family: verdana; color: ' + b.color + '">' + '&#9679  ' + '</span>';
-
-                    content += b.series.chart._createSeriesLine(b, label, style, formatter);
-
-                    content += '<br />';
-
-                    return a + content;
-
-                } else {
-                    return a + BaseUtils.getFormatterFunction(formatter).call(b) + '<br />';
-                }
-
-            }, '');
-
-            if (categoryPoint) {
-
-                var tooltip = categoryPoint.tooltip;
-                var formatter = tooltip.formatter;
-                var style = tooltip.style;
-                var label = formatter.identifier;
-                var cateLabel;
-                if(typeof formatter == 'object'){
-                    cateLabel = categoryPoint.series.chart._createCategoryLine(categoryPoint, label, style, formatter)
-                }else{
-                    cateLabel = BaseUtils.getFormatterFunction(formatter).call(categoryPoint);
-                }
-
-                tooltipContent = cateLabel + tooltipContent;
+            if (!points.length) {
+                return '';
             }
 
-            return tooltipContent;
+            var tooltip = points[0].tooltip;
+            var formatter = tooltip.formatter;
+
+            if (typeof formatter === 'object') {
+                var categoryPoint = points[0];
+
+                var style = tooltip.style;
+                var label = formatter.identifier;
+                var categoryContent = categoryPoint.series.chart._createCategoryLine(categoryPoint, label, style, formatter);
+
+                return points.reduce(function (a, b) {
+
+                    return a + '<span style="font-size:20px; font-family: verdana; color: ' + b.color + '">' + '&#9679  ' + '</span>'
+                        + b.series.chart._createSeriesLine(b, label, style, formatter)
+                        + '<br />';
+
+                }, categoryContent);
+
+
+            } else {
+                return BaseUtils.getFormatterFunction(formatter).call(points[0]);
+            }
+
         }
 
     });
@@ -11518,7 +11810,7 @@ define('render/ToolbarIconSvgRender',['require','../utils/BaseUtils','../Constan
             var toolBar = this.toolbar;
             var vanchart = toolBar.vanchart;
             var toolBarOption = toolBar.componentOption;
-            var dom = toolBar.vanchart.getParentDom();
+            var dom = toolBar.vanchart.getDivParentDom();
             var svgRoot = this.toolbar.getVanchartRender().getRenderRoot();
 
             var icon = this.toolbarIcon;
@@ -11526,25 +11818,32 @@ define('render/ToolbarIconSvgRender',['require','../utils/BaseUtils','../Constan
 
             var chartDim = {width:vanchart.chartWidth(), height:vanchart.chartHeight()};
 
+            function dispatch(type) {
+                vanchart.store.dispatch(toolBar.toolbarChange({ type: type }));
+            }
+
             iconG
                 .style('cursor', 'pointer')
                 .on('click', function(){
                     switch (icon.iconType){
                         case Constants.REFRESH_ICON:
+                            dispatch('refresh');
                             vanchart.refreshRestore();
-                            refreshIcon.hideIcon();
+                            // refreshIcon.hideIcon();
                             break;
                         case Constants.INCREASE_ICON:
                             icon.iconType = Constants.DECREASE_ICON;
                             iconG.select('path').attr('d', icon.getDecreaseIconPath());
+                            dispatch('increase');
                             vanchart.refreshIncreaseOrder();
-                            refreshIcon.showIcon();
+                            // refreshIcon.showIcon();
                             break;
                         case Constants.DECREASE_ICON:
                             icon.iconType = Constants.INCREASE_ICON;
                             iconG.select('path').attr('d', icon.getIncreaseIconPath());
+                            dispatch('decrease');
                             vanchart.refreshDecreaseOrder();
-                            refreshIcon.showIcon();
+                            // refreshIcon.showIcon();
                             break;
                         case Constants.EXPORT_ICON:
                             ExportUtils.toImage(svgRoot.node(), toolBarOption['toImage'], chartDim);
@@ -11556,7 +11855,8 @@ define('render/ToolbarIconSvgRender',['require','../utils/BaseUtils','../Constan
                             BaseUtils.hideLightBox(dom);
                             break;
                         case Constants.MENU_ICON:
-                            toolBar.showOrHide();
+                            // toolBar.showOrHide();
+                            dispatch('showOrHide');
                             break;
                     }
                 })
@@ -11938,7 +12238,7 @@ define('component/ToolbarIcon',['require','./Base','../utils/BaseUtils','../Cons
             var title = this.toolbar.vanchart.getComponent(Constants.TITLE_COMPONENT);
 
             if (this.iconType === Constants.REFRESH_ICON) {
-                title && title.changeTextRightSpace(GAP);
+                // title && title.changeTextRightSpace(GAP);
             }
         },
 
@@ -12072,6 +12372,31 @@ define('component/Toolbar',['require','./Base','../utils/BaseUtils','../Constant
                 }else{
                     this.toolbarIcons.push(new ToolbarIcon(type, this, pos, isOpen));
                 }
+            }
+            this.vanchart.store.dispatch(this.toolbarChange({type:''}));
+        },
+
+        toolbarChange: function (action) {
+            // draft
+            switch (action.type) {
+                case 'refresh':
+                    this.getRefreshIcon().hideIcon();
+                    break;
+                case 'increase':
+                    this.getRefreshIcon().showIcon();
+                    break;
+                case 'decrease':
+                    this.getRefreshIcon().showIcon();
+                    break;
+                case 'showOrHide':
+                    this.showOrHide();
+                    break;
+                default:
+            }
+            return {
+                type: 'toolbarChange',
+                // draft: return simple width changes
+                toolbarWidth: this.getToolbarWidth()
             }
         },
 
@@ -13073,7 +13398,7 @@ define('render/ZoomBarRender',['require','./BaseRender','../utils/BaseUtils','..
                 axis.updateAxisScale(Math.min(startIndex, endIndex), Math.max(startIndex, endIndex), true);
 
                 var vanchart = this.component.vanchart;
-                vanchart.currentOption.state = Constants.STATE_ZOOM_REFRESH;
+                vanchart.setCurrentState(Constants.STATE_ZOOM_REFRESH);
 
                 vanchart.layoutComponentsAndCharts();
 
@@ -14012,13 +14337,17 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
                 temp += this.isIntervalLegend ? this._calculateIntervalTopAndBottomFinalSize()
                     : this._calculateGradientTopAndBottomFinalSize();
                 temp = Math.max(this.bounds.width - temp, 0);
-                this.bounds.x += temp/2;
+                if (!this.isFloat) {
+                    this.bounds.x += temp/2;
+                }
                 this.bounds.width -= temp;
             }else if(position == Constants.LEFT || position == Constants.RIGHT){
                 temp += this.isIntervalLegend ? this._calculateIntervalLeftAndRightFinalSize()
                     : this._calculateGradientLeftAndRightFinalSize();
                 temp = Math.max(this.bounds.height - temp, 0);
-                this.bounds.y += temp/2;
+                if (!this.isFloat) {
+                    this.bounds.y += temp/2;
+                }
                 this.bounds.height -= temp;
             } else if(position == Constants.RIGHT_TOP) {
                 temp += this.isIntervalLegend ? this._calculateIntervalLeftAndRightFinalSize()
@@ -14026,12 +14355,13 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
                 this.bounds.height = temp;
             }
 
-            if(!this.isFloat){
-                var gap = this.componentOption.borderWidth + PADDING * 2;
+            var gap = this.componentOption.borderWidth + PADDING * 2;
+            this.bounds.width -= gap;
+            this.bounds.height -= gap;
+
+            if(!this.isFloat) {
                 this.bounds.x += gap/2;
                 this.bounds.y += gap/2;
-                this.bounds.width -= gap;
-                this.bounds.height -= gap;
 
                 if(position == Constants.BOTTOM) {
                     var zoomComponent = this.vanchart.getComponent(Constants.ZOOM_COMPONENT);
@@ -14044,7 +14374,7 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
                     var toolbarHeight = this.vanchart.getToolbarHeight();
                     this.bounds.y += toolbarHeight;
                 }
-                
+
             }
         },
 
@@ -14246,6 +14576,13 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
     var Series = require('./component/Series');
     var CoordinateSys = require('./component/CoordinateSystem');
 
+    var MAP_CHART_TYPES = [
+        Constants.MAP_CHART,
+        Constants.POINT_MAP,
+        Constants.AREA_MAP
+    ];
+
+
     var COMPONENTS = [
         Constants.GEO_COMPONENT,
         Constants.TOOLBAR_COMPONENT,
@@ -14301,7 +14638,10 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             this.coordinateSys = new CoordinateSys(Constants.PLANE);
 
             dom = this._initLeafLet(option, dom);
-            option.state = Constants.STATE_INIT;
+            if(!BaseUtils.isSupportSVG() && this.currentOption && this.currentOption.state == Constants.STATE_CHANGE_DATA_REFRESH) {
+                //shine:ie低版本下自动刷新，先这样，出了问题再说
+                option.state = Constants.STATE_INIT;
+            }
 
             this.dom = dom;
             this.dom.style.cssText += ';-ms-user-select:none;-webkit-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none;';
@@ -14309,6 +14649,8 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 return false;
             };
             this.vancharts = vancharts;
+
+            this._startLoading(option);
 
             this.handler = new Handler(this, dom);
             this.render = RenderFactory.getRender(Constants.VANCHART, this);
@@ -14324,7 +14666,96 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             this.refresh(option);
         },
 
+        store: (function() {
+            var state = {
+                isInit: false,
+                toolbarWidth: 0,
+                // tmp,
+                initBarWidth: 0,
+                changes: 0
+            };
+
+            var listeners = [];
+
+            var actions = {
+                'init': actInit,
+                'toolbarChange': actToolbarChange,
+                'zoom': actZoom,
+                'refresh': actRefresh
+            };
+
+            function subscribe (fn, context) {
+                var listener = context ? fn.bind(context) : fn;
+                listeners.push(listener);
+                // unsubscribe fun
+                return function () {
+                    var index = listeners.indexOf(listener);
+                    listeners.splice(index, 1);
+                }
+            }
+
+            function dispatch (act) {
+                state = actions[act.type](state, act);
+                listeners.map(function (listener) {
+                    listener();
+                });
+                // console.log(state);
+            }
+            
+            function getState () {
+                return state;
+            }
+
+            function actInit (state, act) {
+                state.isInit = act.isInit;
+                return state;
+            }
+
+            function actToolbarChange (state, act) {
+                state.changes = act.toolbarWidth - state.toolbarWidth; // tmp
+                state.initBarWidth = state.initBarWidth || act.toolbarWidth; // tmp
+                state.toolbarWidth = act.toolbarWidth;
+                return state;
+            }
+
+            function actZoom () {
+
+            }
+
+            function actRefresh () {
+
+            }
+
+            return {
+                subscribe: subscribe,
+                dispatch: dispatch,
+                getState: getState
+            }
+        })(),
+
         componentType:Constants.VANCHART,
+
+        _startLoading: function (option) {
+            if(option && BaseUtils.hasDefined(option.startLoading) && !option.startLoading){
+                //只有设置了loading为false才return
+                return;
+            }
+            this.vancharts.startLoading();
+        },
+
+        _endLoading: function (option) {
+            if(option && BaseUtils.hasDefined(option.endLoading) && !option.endLoading){
+                //只有设置了loading为false才return
+                return;
+            }
+
+            var endLoading = option.endLoading;
+            if(typeof endLoading == 'function'){//endloading函数
+                endLoading();
+            } else {
+                this.vancharts.endLoading();
+            }
+        },
 
         _initLeafLet:function(option, dom){
             if(option.geo){
@@ -14337,7 +14768,10 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                     var layerIndex = map.layerIndex;
 
                     //检查是否要做自动下钻,如果下钻成功,则直接返回
-                    if(hoverPoint && hoverPoint.geo && hoverPoint.drill){
+                    if(hoverPoint && hoverPoint.drill){
+                        if(!hoverPoint.geo){
+                            hoverPoint = map._createDrillDownWhenLoaded(hoverPoint);
+                        }
                         var zoomListener = hoverPoint.geo.getZoomListener();
                         if(zoomListener && zoomListener <= zoomLevel){
                             map.drillDown(hoverPoint);
@@ -14359,18 +14793,10 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 this.coordinateSys.setType(Constants.GEO);
 
                 var options = {zoomControl:false, doubleClickZoom:false};
-                option.geo.imageMap && BaseUtils.extend(options, {crs:L.CRS.Simple});
-
+                
                 this._leaflet = this._leaflet || L.map(dom, options);
                 this._leaflet.on('zoom', viewreset, this._leaflet);
                 this._leaflet.vanchart = this;
-
-                if(option.geo.attribution){
-                    L.control
-                        .attribution({position:'bottomright'})
-                        .addTo(this._leaflet)
-                        .addAttribution(option.geo.attribution);
-                }
 
                 BaseUtils.setDomBackground(dom, {
                     backgroundColor:option.backgroundColor,
@@ -14408,11 +14834,15 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
 
             this.currentOption = BaseUtils.clone(this.restoreOption);
 
-            this.currentOption.state = Constants.STATE_RESTORE_REFRESH;
+            this.setCurrentState(Constants.STATE_RESTORE_REFRESH);
 
             this.scale = 1;
 
             this._refreshOptions();
+        },
+
+        setCurrentState:function(state) {
+            this.currentOption.state = state;
         },
 
         isInitOrRestoreState: function () {
@@ -14420,7 +14850,9 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
         },
 
         isChangeDataState: function () {
-            return this.currentOption.state == Constants.STATE_CHANGE_DATA_REFRESH;
+            var result = this.currentOption.state == Constants.STATE_CHANGE_DATA_REFRESH;
+            this.currentOption.state = null;
+            return result;
         },
 
         isZoomRefreshState: function () {
@@ -14495,7 +14927,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 this.scale = scale * BaseUtils.pick(this.scale, 1);
                 bubble.render.scaleRender();
             }else{
-                this.currentOption.state = Constants.STATE_ZOOM_REFRESH;
+                this.setCurrentState(Constants.STATE_ZOOM_REFRESH);
                 var zoomType = this.currentOption.zoom.zoomType;
 
                 if(this.components.xAxis && zoomType.indexOf('x') != -1){
@@ -14569,7 +15001,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             for(var i = 0, len = option.series.length; i < len; i++){
                 var sery = option.series[i];
                 var seryChartType = sery.type || chartType;
-                var classType = seryChartType.toLowerCase().indexOf(Constants.MAP_CHART) != -1 ? Constants.MAP_CHART : seryChartType;
+                var classType = MAP_CHART_TYPES.indexOf(seryChartType) != -1 ? Constants.MAP_CHART : seryChartType;
                 ChartClass = ChartLibrary.get(classType);
                 if(ChartClass){
                     var chart = this.charts[classType];
@@ -14588,7 +15020,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             this.series.originSeries = option.series;
 
             //对于所有的type都是bubble,scatter的地图,chartType也需要构造一个map对象
-            var isMap = chartType.toLowerCase().indexOf(Constants.MAP_CHART) != -1;
+            var isMap = MAP_CHART_TYPES.indexOf(chartType) != -1;
             var mapKey = Constants.MAP_CHART;
             if(isMap){
                 var map = this.charts[mapKey], MapClass = ChartLibrary.get(mapKey);
@@ -14721,7 +15153,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 });
 
             [
-                Constants.ZOOM_COMPONENT,
+                Constants.ZOOM_COMPONENT
             ]
                 .forEach(function(cName){
 
@@ -14761,7 +15193,11 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 });
             }
 
+            //图表动画之前把加载动画去掉
+            this._endLoading(this.currentOption);
             this.render.render();
+
+            this.store.dispatch({type: 'init', isInit: true});
         },
 
         _buildStacked: function (series) {
@@ -15461,14 +15897,72 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
     return VanChart;
 });
 /**
+ * Created by Mitisky on 16/7/28.
+ */
+define('utils/LoadingManager',[],function(){
+    var loadingMap = {};
+
+    function startLoading(dom, id) {
+        id = id || 'loading-div-id';
+        id = id + ' loading-div-id';
+        if(loadingMap[id] || document.getElementById(id)){
+            return;
+        }
+
+        var background_div = document.createElement('div');
+        var inner_div = document.createElement('div');
+
+        background_div.id = id;
+        background_div.style.backgroundColor = 'white';
+        background_div.style.opacity = 0.75;
+        background_div.style.position = 'absolute';
+        background_div.style.width = '100%';
+        background_div.style.height = '100%';
+        background_div.style.left = 0;
+        background_div.style.top = 0;
+        background_div.style.zIndex = 9999;
+
+        inner_div.style.left = '50%';
+        inner_div.style.top = '50%';
+        inner_div.className = 'loader-inner ball-scale-ripple-multiple';
+        inner_div.innerHTML = '<div></div><div></div><div></div>';
+
+        background_div.appendChild(inner_div);
+        dom.appendChild(background_div);
+        loadingMap[id] = background_div;
+    }
+
+    function endLoading(dom, id) {
+        id = id || 'loading-div-id';
+        id = id + ' loading-div-id';
+
+        if(loadingMap[id]) {
+            dom.removeChild(loadingMap[id]);
+            loadingMap[id] = null;
+        } else {
+            var loadingDiv = document.getElementById(id);
+            if(loadingDiv) {
+                dom.removeChild(loadingDiv);
+            }
+        }
+    }
+
+    return {
+        startLoading:startLoading,
+        endLoading:endLoading
+    };
+});
+
+/**
  * Created by eason on 15/5/15.
  * 管里当前产生的所有
  */
-define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart'],function(require){
+define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart','./utils/LoadingManager'],function(require){
 
     var BaseUtils = require('./utils/BaseUtils');
     var Constants = require('./Constants');
     var VanChart = require('./VanChart');
+    var LoadingManager = require('./utils/LoadingManager');
 
     var _baseIndex = 0;
 
@@ -15498,6 +15992,7 @@ define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart'],fu
     function VanCharts(dom){
         this.dom = dom;
         this.charts = [];
+        this.lastValueMap = {};
     }
 
     VanCharts.prototype = {
@@ -15533,9 +16028,12 @@ define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart'],fu
             }
             this.options = options;
 
+            this.charts.forEach(function(chart, i){
+                options[i].state = Constants.STATE_CHANGE_DATA_REFRESH;
+            });
+
             if(BaseUtils.isSupportSVG()){
                 this.charts.forEach(function(chart, i){
-                    options[i].state = Constants.STATE_CHANGE_DATA_REFRESH;
                     chart.refresh(options[i]);
                 });
             }else{
@@ -15570,6 +16068,14 @@ define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart'],fu
             }
 
             addCssByStyle(cssString);
+        },
+
+        startLoading: function () {
+          //  LoadingManager.startLoading(this.dom, this.dom.getAttribute(Constants.INSTANCES_KEY));
+        },
+
+        endLoading: function () {
+          //  LoadingManager.endLoading(this.dom, this.dom.getAttribute(Constants.INSTANCES_KEY));
         }
     };
 
@@ -16078,15 +16584,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         var rMax = Math.max(min, max);
         var gap = rMax - rMin;
 
-        while(value < rMin){
-            value += gap;
-        }
-
-        while(value > rMax){
-            value -= gap;
-        }
-
-        return value;
+        return ((value-rMin) % gap + gap) % gap + rMin;
     }
 
     function getValueInDomain(value, domain){
@@ -17021,6 +17519,12 @@ define('chart/BaseChart',['require','../utils/BaseUtils','../utils/QueryUtils','
         
         //默认是按照分类总值来排序
         orderData:function(){
+
+            if (this.order === this.option.orderType) {
+                return;
+            } else {
+                this.order = this.option.orderType;
+            }
 
             var orderType = this.option.orderType;
 
@@ -18396,6 +18900,13 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             var endAngle = QueryUtils.queryList(queryList, 'endAngle');
             var rotatable = QueryUtils.queryList(queryList, 'rotatable');
 
+            if(startAngle > endAngle){
+                startAngle -= 360;
+            }else if(startAngle == endAngle){
+                startAngle = 0;
+                endAngle = 360;
+            }
+
             startAngle = BaseUtils.toRadian(startAngle);
             endAngle = BaseUtils.toRadian(endAngle);
 
@@ -18553,6 +19064,11 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                 node.height = 0;
                 node.ancestor = ancestor;
 
+                var _value = node.pointOption.value;
+                _value = isNaN(_value) ? 0 : _value;
+
+                node.chSum = _value;
+
                 if (c && (n = c.length)) {
                     var chSum = 0, i = -1, n;
                     while (++i < n) {
@@ -18574,7 +19090,7 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
                         dfsData(c[i], depth + 1, node, ancestor);
 
-                        chSum += Math.abs(c[i].value);
+                        chSum += Math.abs(c[i].chSum);
                         node.height = Math.max(node.height, c[i].visible ? c[i].height + 1 : 0);
                     }
 
@@ -18592,18 +19108,16 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                         }
                     });
 
-                    node.chSum = chSum;
+                    node.chSum = Math.max(chSum, Math.abs(_value || 0));
                 }
 
-                var _value = node.pointOption.value;
-                _value = isNaN(_value) ? 0 : _value;
-                
                 node.value = _value || node.chSum || 0;
 
                 if (!node.visible) {
                     // set value to 0,
                     // so they can get position but no visible size
                     node.value = 0;
+                    node.chSum = 0;
                 }
             }
 
@@ -18641,12 +19155,14 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
             var self = this;
 
-            function dfsData(node, x, dx, dy, ir, iPr) {
+            // hdx is 'hold dx', hdx >= dx, may leave blank.
+            function dfsData(node, x, dx, hdx, dy, ir, iPr) {
                 var children = node.children;
 
                 node.x = x;
                 node.y = (node.depth - 2) * dy + ir + iPr;
                 node.dx = dx;
+                node.hdx = hdx;
                 node.dy = dy;
 
                 if (node.depth) {
@@ -18684,24 +19200,27 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                 
                 node._x = node.x;
                 node._dx = node.dx;
+                node._hdx = node.hdx;
                 node._y = node.y;
                 node._dy = node.dy;
 
                 if (children && (n = children.length)) {
-                    var i = -1, n, c, d;
-                    dx = node.chSum ? dx / node.chSum : 0;
+                    var i = -1, n, c, d, hd;
+                    dx = node.value ? dx / node.value : 0;
+                    hdx = node.chSum ? hdx / node.chSum : 0;
                     while (++i < n) {
                         c = children[i];
                         d = Math.abs(c.value) * dx;
-                        dfsData(c, x, d, dy, ir, iPr);
-                        x += d;
+                        hd = Math.abs(c.chSum) * hdx;
+                        dfsData(c, x, d, hd, dy, ir, iPr);
+                        x += hd;
                     }
 
                     self._calculatePercentage(children);
                 }
             }
 
-            dfsData(root, startAngle, arc, dRadius, innerRadius, innerPieR);
+            dfsData(root, startAngle, arc, arc, dRadius, innerRadius, innerPieR);
         },
 
         _setColor: function (node, gradual, height) {
@@ -18820,8 +19339,9 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                 arcs = arcs.slice(i, arcs.length);
             }
 
+            var self = this;
             arcs.sort(function(a, b){
-                return a.x - b.x;
+                return self.getCenterAngle(a) - self.getCenterAngle(b);
             });
 
             return arcs;
@@ -18887,7 +19407,8 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                     return;
                 }
 
-                if (node.depth &&
+                if (node.name &&
+                    node.depth &&
                     node.dx &&
                     node.dy &&
                     (this.drilldownNow ? node !== this.drilldownNow.parent : true) &&
@@ -18944,6 +19465,7 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
 
         calcOutsideLabel: function (outPoints, fixedState, radius, center, plotBounds) {
 
+
             var pointsGroups = {};
 
             outPoints.map(function (p) {
@@ -18954,7 +19476,6 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
             }, this);
 
             if (fixedState) {
-
                 pointsGroups = this.ignoreMin(pointsGroups, radius);
                 this.placeOutSideLabels(pointsGroups, radius);
                 return radius;
@@ -18964,7 +19485,7 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                 for (var i = 0, len = DECREASE.length; i < len; i++) {
                     var usedR = radius * DECREASE[i];
                     var usedPointsG = this.ignoreMin(pointsGroups, radius);
-
+                    
                     this.placeOutSideLabels(usedPointsG, usedR);
 
                     if (this.testWithinBounds(usedPointsG, center, plotBounds)) {
@@ -19075,7 +19596,6 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                     var centerY = outerR * Math.cos(angle + Math.PI);
 
                     var bounds = this._getLabelBounds(location, centerX, centerY, hWidth, labelDim);
-
                     if ((preBounds ? !this._isOverlapOrShadow(preBounds, bounds) : true)
                     ) {
                         found = true;
@@ -19243,6 +19763,10 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
                 node.y = this.safeRadius(node._y);
                 node.dy = this.safeRadius(node._y + node._dy) - node.y;
 
+                if (node === this.drilldownNow.parent) {
+                    node.dx = this.safeAngle(7);// to ensure inner pie fill the circle.
+                }
+
             }, this);
 
             this._calculateLabelPos();
@@ -19329,6 +19853,293 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./BaseCh
     });
     
     require('../ChartLibrary').register(Constants.MULTIPIE_CHART, multiPie);
+});
+/**
+ * Created by Yuqian on 16/7/19.
+ */
+
+define('chart/TreeMap',['require','../Constants','../utils/BaseUtils','./BaseChart','../utils/QueryUtils','../utils/ColorUtils','../utils/BoundsManager','../theme/options','../component/Point','../ChartLibrary'],function(require){
+
+    var Constants = require('../Constants');
+    var BaseUtils = require('../utils/BaseUtils');
+    var BaseChart = require('./BaseChart');
+    var QueryUtils = require('../utils/QueryUtils');
+    var ColorUtils = require('../utils/ColorUtils');
+    var BoundsManager = require('../utils/BoundsManager');
+    var Options = require('../theme/options');
+    var Point = require('../component/Point');
+
+    var TOPLABELGAP = Options[Constants.TREEMAP_CHART].topLabelGap;
+
+    var treeMap = BaseChart.extend({
+
+        nodes: [],
+
+        root: null,
+
+        zoomNow: null,
+
+        sx: null,
+        sy: null,
+
+        zoom: null,
+
+        _refresh: function () {
+            this.root = null;
+            this.sx = d3.scale.linear();
+            this.sy = d3.scale.linear();
+        },
+
+        mergeSeriesAttributes: function (series) {
+            var queryList = [
+                series.seriesOption,
+                this.option.plotOptions[this.componentType],
+                this.option.plotOptions,
+                Options[this.componentType].plotOptions
+            ];
+            this.zoom = QueryUtils.queryList(queryList, 'zoom');
+        },
+
+        doLayout: function () {
+            var series = this.getChartData()[0];
+            var plotBounds = this.getPlotBounds();
+
+            this.sx.range([0, plotBounds.width]).domain([0, plotBounds.width]);
+            this.sy.range([0, plotBounds.height]).domain([0, plotBounds.height]);
+
+            if (!this.root) {
+                this.root = new Point(series, series.seriesOption, -1);
+            }
+
+            this._dfsTraverseData(this.root);
+
+            var treeMap = d3.layout.treemap()
+                .value(function (d) { return Math.abs(d.value); })
+                .size([plotBounds.width, plotBounds.height]);
+
+            this.nodes = treeMap.nodes(this.root)
+                .filter(function(d) { return !d.children && d.depth && d.ancestor.visible; })
+                .map(function (d) {
+
+                    d._dx = d.dx;
+                    d._dy = d.dy;
+                    d._x = d.x;
+                    d._y = d.y;
+
+                    this._setVanishPos(d, plotBounds);
+
+                    this._setColor(d);
+
+                    this._calculateLabelPos(d);
+
+                    return d;
+                }, this);
+        },
+
+        _dfsTraverseData: function (root) {
+            var self = this;
+            function dfsData(node, depth, parent, ancestor) {
+                if (!node.children) {
+                    switch (depth) {
+                        case 0:
+                            node.children = node.series.points;
+                            break;
+                        case 1:
+                            node.children = BaseUtils.clone(node.pointOption.children);
+                            break;
+                        default:
+                            node.children = node.pointOption.children;
+                    }
+                }
+                var c = node.children;
+
+                node.parent = parent;
+                node.depth = depth;
+                node.height = 0;
+                node.ancestor = ancestor;
+
+                if (c && (n = c.length)) {
+                    var chSum = 0, i = -1, n;
+                    while (++i < n) {
+
+                        if (depth === 0) {
+                            ancestor = c[i];
+                        }
+
+                        if (depth > 0 && !c[i].isPoint) {
+                            c[i] = new Point(root.series, c[i], -1);
+                            c[i].className = node.className + '-' + i;
+                        }
+
+                        dfsData(c[i], depth + 1, node, ancestor);
+
+                        chSum += Math.abs(c[i].value);
+                        node.height = Math.max(node.height, c[i].visible ? c[i].height + 1 : 0);
+                    }
+
+                    self._calculatePercentage(c);
+
+                    c.map(function (node) {
+                        self._mergeTooltipAttributes(node);
+                    });
+
+                    node.chSum = chSum;
+                }
+
+                var _value = node.pointOption.value;
+                _value = isNaN(_value) ? 0 : _value;
+
+                node.value = _value || node.chSum || 0;
+
+                if (node.ancestor && !node.ancestor.visible) {
+                    node.value = 0;
+                }
+            }
+
+            dfsData(root, 0, null, null);
+        },
+
+
+        _setVanishPos: function (d, plotBounds) {
+            d.vanishPos = [
+                Math.round((d.ancestor.x + d.ancestor.dx / 2) / plotBounds.width) * plotBounds.width,
+                Math.round((d.ancestor.y + d.ancestor.dy / 2) / plotBounds.height) * plotBounds.height
+            ];
+        },
+
+        _setColor: function (node) {
+            if (!node.pointOption.color) {
+                node.color = node.ancestor.color;
+            }
+
+            if (!node.pointOption.mouseOverColor) {
+                if (node.pointOption.color) {
+                    node.mouseOverColor = ColorUtils.getHighLightColor(node.pointOption.color);
+                } else {
+                    node.mouseOverColor = node.ancestor.mouseOverColor;
+                }
+            }
+
+            if (!node.pointOption.clickColor) {
+                if (node.pointOption.color) {
+                    node.clickColor = ColorUtils.getClickColor(node.pointOption.color);
+                } else {
+                    node.clickColor = node.ancestor.clickColor;
+                }
+            }
+        },
+
+        _calculateLabelPos: function (d) {
+            var lbl = d.dataLabels;
+            if (lbl && lbl.enabled) {
+
+                switch (lbl.align) {
+                    case Constants.CENTER:
+                        d.labelPos = {
+                            x: d.x + (d.dx - d.labelDim.width) / 2,
+                            y: d.y + (d.dy - d.labelDim.height) / 2
+                        };
+                        break;
+                    case Constants.TOP:
+                    default:
+                        d.labelPos = {
+                            x: d.x + TOPLABELGAP,
+                            y: d.y + TOPLABELGAP
+                        };
+                }
+
+                var rectBound = {x: d.x, y: d.y, width: d.dx, height: d.dy};
+                var dataBound = {
+                    x: d.labelPos.x,
+                    y: d.labelPos.y,
+                    width: d.labelDim.width,
+                    height: d.labelDim.height
+                };
+                if (!BaseUtils.containsRect(rectBound, dataBound)) {
+                    d.labelPos = null;
+                }
+            }
+        },
+
+        _mergeTooltipAttributes: function (node) {
+            var tooltip = node.tooltip;
+
+            if (tooltip && tooltip.enabled && tooltip.formatter) {
+                var formatter = tooltip.formatter;
+
+                if (typeof formatter == 'object') {
+                    var style = tooltip.style;
+                    var label = formatter.identifier;
+
+                    var content = '';
+
+                    if (tooltip.shared) {
+                        if (label.indexOf('NAME') != -1) {
+                            var p, d = node, points = [node.name];
+                            while ((p = d.parent) && p.depth) {
+                                d = p;
+                                points.unshift(p.name);
+                            }
+                            content += (style ? '<span>' : Constants.TOOLTIP_CATEGORY_STYLE) + points.join(' / ') + '</span><br>';
+                        }
+                        content += this._createSeriesLine(node, label, style, formatter);
+                    } else {
+                        content += this._createCategoryLine(node, label, style, formatter);
+                        content += this._createSeriesLine(node, label, style, formatter);
+                    }
+                } else {
+                    content = BaseUtils.getFormatterFunction(formatter).call(node);
+                }
+
+                node.tooltipText = content;
+
+            } else {
+                node.tooltipText = null;
+            }
+        },
+
+        _getFixedPos:function(datum){
+
+            var plotBounds = this.getPlotBounds();
+
+            var x = plotBounds.x + datum.x + datum.dx;
+            var y = plotBounds.y + datum.y;
+
+            return [x, y];
+        },
+
+        zoomTo: function (d) {
+            d = this.zoomNow == d.parent ? this.root : d.parent;
+            var sx = this.sx.domain([d.x, d.x + d.dx]);
+            var sy = this.sy.domain([d.y, d.y + d.dy]);
+
+            var plotBounds = this.getPlotBounds();
+            var kx = plotBounds.width / d.dx, ky = plotBounds.height / d.dy;
+
+            this.nodes.map(function (node) {
+                node.dx = kx * node._dx;
+                node.dy = ky * node._dy;
+                node.x = sx(node._x);
+                node.y = sy(node._y);
+                this._calculateLabelPos(node);
+            }, this);
+
+            this.render.zoom();
+
+            this.zoomNow = d;
+        },
+
+        getChartNodes: function () {
+            return this.nodes;
+        },
+        
+        getZoom: function () {
+            return this.zoom;
+        }
+
+    });
+
+    require('../ChartLibrary').register(Constants.TREEMAP_CHART, treeMap);
 });
 /**
  * Created by eason on 15/5/4.
@@ -22225,19 +23036,21 @@ define('chart/Bubble',['require','./BaseChart','../utils/BaseUtils','../Constant
                     var seriesMaxSize = -seriesMinSize;
                     for(var index = 0, len = sery.points.length; index < len; index++){
                         var point = sery.points[index];
-                        var pointS = point.size;
-                        if(pointS < 0){
-                            if(point.displayNegative){
-                                pointS = Math.abs(pointS);
-                                if(sery.chart.option.legend.enabled) {
-                                    self._setNegativeColorAttr(point, sery);
+                        if(!point.isNull){
+                            var pointS = point.size;
+                            if(pointS < 0){
+                                if(point.displayNegative){
+                                    pointS = Math.abs(pointS);
+                                    if(sery.chart.option.legend.enabled) {
+                                        self._setNegativeColorAttr(point, sery);
+                                    }
+                                } else {
+                                    continue;
                                 }
-                            } else {
-                                continue;
                             }
+                            seriesMaxSize = Math.max(seriesMaxSize, pointS);
+                            seriesMinSize = Math.min(seriesMinSize, pointS);
                         }
-                        seriesMaxSize = Math.max(seriesMaxSize, pointS);
-                        seriesMinSize = Math.min(seriesMinSize, pointS);
                     }
                     minSize = Math.min(minSize, seriesMinSize);
                     maxSize = Math.max(maxSize, seriesMaxSize);
@@ -23025,124 +23838,118 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
 
         initLayerInfo:function(){
             this.layerMap = [];
-            this.initMapData();
-            var drillTools = this.vanchart.getComponent(Constants.DRILL_TOOLS);
-            var rangeLegend = this.vanchart.getComponent(Constants.RANGE_LEGEND_COMPONENT);
+            this.layerIndex = 0;
 
-            var geo = this.layerMap[0][0].geo;
-            var seriesOptions = this.vanchart.restoreOption.series;
+            var geo = this.vanchart.getComponent(Constants.GEO_COMPONENT);
             var series = this.vanchart.series;
+            var seriesOptions = this.vanchart.currentOption.series;
+            series.originSeries = seriesOptions;
+
+            this.layerMap[0] = [];
+            this.layerMap[0][0] = {series:series, geo:geo, layerIndex:this.layerIndex};
+
+            var drillTools = this.vanchart.getComponent(Constants.DRILL_TOOLS);
 
             if(drillTools){
                 drillTools.addIconData(this.layerMap[0][0]);
+            }
 
-                if(this.option.initDrillPath){
-                    var path = this.option.initDrillPath;
-                    var series = this.vanchart.series;
+            if(this.option.initDrillPath) {
+                var path = this.option.initDrillPath;
+                var series = this.vanchart.series;
 
-                    for(var i = 1; i < path.length; i++){
-                        var name = path[i];
+                for (var i = 1; i < path.length; i++) {
+                    var name = path[i];
 
-                        var point = null;
-                        for(var j = 0; j < series.length; j++){
-                            var points = series[j].points;
+                    var point = null;
+                    for (var j = 0; j < series.length; j++) {
+                        var points = series[j].points;
 
-                            for(var k = 0; k < points.length; k++){
-                                if(points[k].drill && points[k].drill.geo.name == name){
-                                    point = points[k];
-                                    break;
-                                }
-                            }
-
-                            if(point){
+                        for (var k = 0; k < points.length; k++) {
+                            if (points[k].drill && points[k].drill.geo.name == name) {
+                                point = points[k];
                                 break;
                             }
                         }
 
-                        if(point){
-                            var iconData = this.iconDataOfMap(point.drillSeries);
-                            if(drillTools && iconData){
-                                drillTools.addIconData(iconData);
-                            }
+                        if (point) {
+                            break;
                         }
                     }
 
-                    series = point.drillSeries;
-                    seriesOptions = point.drillSeries.originSeries;
+                    if(point && point.drill){
+
+                        if(!point.geo){
+                            point = this._createDrillDownWhenLoaded(point);
+                        }
+
+                        this.vanchart.series = point.drillSeries;
+                        this.vanchart.currentOption.series = point.drillSeries.originSeries;
+                        this.vanchart.components.geo = point.geo;
+
+                        this.vanchart.series.forEach(function(sery){
+                            var points = sery.points;
+                            sery.visible = true;
+                            for(var i = 0, len = points.length; i <len; i++){
+                                points[i].visible = true;
+                            }
+                        });
+
+                        var drillTools = this.vanchart.getComponent(Constants.DRILL_TOOLS);
+                        var iconData = this.iconDataOfMap(point.drillSeries);
+                        if(drillTools && iconData){
+                            drillTools.addIconData(iconData);
+                        }
+
+                        var rangeLegend = this.vanchart.getComponent(Constants.RANGE_LEGEND_COMPONENT);
+                        if(rangeLegend){
+                            rangeLegend.refresh();
+                        }
+                        this.layerIndex++;
+                    }
+                }
+
+                if(point){
                     geo = point.geo;
                 }
             }
 
-            this.vanchart.series = series;
-            this.vanchart.currentOption.series = seriesOptions
-            this.vanchart.components.geo = geo;
-
-            if(rangeLegend){
-                rangeLegend.refresh();
-            }
-
+            this._setNewGeo(geo);
             geo.fitMapBounds();
         },
 
-        //地图因为更具geoJson的数据,不需要布局,但是需要计算标签的位置等信息
-        initMapData:function(series, geo, layerIndex){
-            series = series || this.vanchart.series;
-            geo = geo || this.vanchart.getComponent(Constants.GEO_COMPONENT);
-            var vanchart = this.vanchart;
+        _setNewGeo:function(geo, lastGeo){
 
-            var rangeLegend = this.vanchart.getComponent(Constants.RANGE_LEGEND_COMPONENT);
-
-            layerIndex = layerIndex || 0;
-            var isLeafSeries = true, map = this, vanchart = this.vanchart;
-            for(var i = series.length - 1; i >= 0; i--){
-                var sery = series[i];
-                for(var j = sery.points.length - 1; j >= 0; j--){
-                    var point = sery.points[j];
-                    if(point.drill){
-                        var drill = point.drill, drillSeries = [], drillGeo;
-
-                        map.option.geo = drill.geo;
-                        drillGeo = new Geo(this.vanchart, this.option, Constants.GEO_COMPONENT);
-                        vanchart.components.geo = drillGeo;
-
-                        if(rangeLegend){
-                            map.option.series = drill.series;
-                            rangeLegend.refresh();
-                        }
-
-                        drill.series.forEach(function(sery){
-                            sery.type = sery.type || map.option.chartType;
-                            var classType = sery.type.toLowerCase().indexOf(Constants.MAP_CHART) != -1 ? Constants.MAP_CHART : sery.type;
-
-                            var classTypeObj = vanchart.getChart(classType);
-
-                            if(!classTypeObj){
-                                var ChartClass = ChartLibrary.get(classType);
-                                classTypeObj = new ChartClass(vanchart, vanchart.currentOption, classType);
-                                vanchart.charts[classType] = classTypeObj;
-                            }
-
-                            drillSeries.push(new Series(classTypeObj, sery));
-                        });
-
-                        drillSeries.originSeries = drill.series;
-
-                        point.drillSeries = drillSeries;
-                        point.geo = drillGeo;
-
-                        isLeafSeries = false;
-                        this.layerMap[layerIndex] = this.layerMap[layerIndex] || [];
-                        this.layerMap[layerIndex].push({geo:geo, series:series, layerIndex:layerIndex});
-                        this.initMapData(point.drillSeries, point.geo, layerIndex + 1);
-                    }
-                }
+            var lastTileLayer, lastImageLayer;
+            if(lastGeo){
+                lastTileLayer = lastGeo._tileLayer || lastGeo._wmsLayer;
+                lastImageLayer = lastGeo._imageBackgroundLayer;
+                lastGeo._attribution && lastGeo._attribution.remove();
             }
 
-            if(isLeafSeries){
-                for(var i = series.length - 1; i >= 0; i--){
-                    this.layerMap[layerIndex] = this.layerMap[layerIndex] || [];
-                    this.layerMap[layerIndex].push({geo:geo, series:series, layerIndex:layerIndex});
+            if(geo){
+                geo.loadGeo();
+                var currentImageLayer = geo._imageBackgroundLayer;
+                var currentTileLayer = geo._tileLayer || geo._wmsLayer;
+                
+                var leaflet = this.vanchart._leaflet;
+                if(currentImageLayer){
+                    lastTileLayer && lastTileLayer.remove();
+                    L.setOptions(leaflet, {crs:L.CRS.Simple});
+                    if(lastImageLayer != currentImageLayer){
+                        lastImageLayer && leaflet.removeLayer(lastImageLayer);
+                        currentImageLayer.addTo(leaflet);
+                    }
+                }else if(currentTileLayer){
+                    lastImageLayer && leaflet.removeLayer(lastImageLayer);
+                    L.setOptions(leaflet, {crs:L.CRS.EPSG3857});
+                    if(lastTileLayer != currentTileLayer){
+                        lastTileLayer && lastTileLayer.remove();
+                        currentTileLayer.addTo(leaflet);
+                    }
                 }
+
+                geo._attribution && geo._attribution.addTo(leaflet);
             }
         },
 
@@ -23206,8 +24013,60 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             }
         },
 
+        _createDrillDownWhenLoaded:function(point){
+
+            point = point.originPoint || point;
+
+            var drill = point.drill, map = this, vanchart = map.vanchart;
+            var drillSeries = [], drillGeo;
+            var rangeLegend = this.vanchart.getComponent(Constants.RANGE_LEGEND_COMPONENT);
+            var lastGeo = vanchart.components.geo;
+
+            map.option.geo = drill.geo;
+            drillGeo = new Geo(this.vanchart, map.option, Constants.GEO_COMPONENT);
+            vanchart.components.geo = drillGeo;
+
+            if(rangeLegend){
+                map.option.series = drill.series;
+                rangeLegend.refresh();
+            }
+
+            drill.series.forEach(function(sery){
+                sery.type = sery.type || map.option.chartType;
+                var classType = sery.type.toLowerCase().indexOf(Constants.MAP_CHART) != -1 ? Constants.MAP_CHART : sery.type;
+
+                var classTypeObj = vanchart.getChart(classType);
+
+                if(!classTypeObj){
+                    var ChartClass = ChartLibrary.get(classType);
+                    classTypeObj = new ChartClass(vanchart, vanchart.currentOption, classType);
+                    vanchart.charts[classType] = classTypeObj;
+                }
+
+                drillSeries.push(new Series(classTypeObj, sery));
+            });
+
+            drillSeries.originSeries = drill.series;
+
+            point.geo = drillGeo;
+            point.drillSeries = drillSeries;
+
+            var nextLayerIndex = this.layerIndex + 1;
+
+            this.layerMap[nextLayerIndex] = this.layerMap[nextLayerIndex] || [];
+            this.layerMap[nextLayerIndex].push({geo:point.geo, series:drillSeries, layerIndex:nextLayerIndex});
+
+            vanchart.components.geo = lastGeo;
+
+            return point;
+        },
+
         drillDown:function(dataPoint){
-            if(dataPoint.drillSeries){
+            if(dataPoint.drill){
+
+                if(!dataPoint.geo){
+                    dataPoint = this._createDrillDownWhenLoaded(dataPoint);
+                }
 
                 var vanchart = this.vanchart;
 
@@ -23217,6 +24076,8 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
                     series:vanchart.series,
                     geo:vanchart.getComponent(Constants.GEO_COMPONENT)
                 };
+
+                this._setNewGeo(dataPoint.geo, this.vanchart.components.geo);
 
                 this.vanchart.series = dataPoint.drillSeries;
                 this.vanchart.currentOption.series = dataPoint.drillSeries.originSeries;
@@ -23251,6 +24112,13 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
         },
 
         drillUp:function(iconData){
+
+            if(iconData.geo == this.vanchart.components.geo){
+                return;
+            }
+
+            this._setNewGeo(iconData.geo, this.vanchart.components.geo);
+
             this.vanchart.series = iconData.series;
             this.vanchart.components.geo = iconData.geo;
             this.vanchart.currentOption.series = iconData.series.originSeries;
@@ -23269,6 +24137,11 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             var drillTools = this.vanchart.getComponent(Constants.DRILL_TOOLS);
             if(drillTools){
                 drillTools.deleteIconData(iconData.series);
+
+                //工具栏向上钻取的时候可能有两次
+                this.layerIndex = drillTools.getIconData().length - 1;
+            }else{
+                this.layerIndex--;
             }
 
             var rangeLegend = this.vanchart.getComponent(Constants.RANGE_LEGEND_COMPONENT);
@@ -23277,8 +24150,6 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
             }
 
             this.vanchart.refreshComponentsAndSeries();
-
-            this.layerIndex--;
         },
 
         _getFixedPos:function(point){
@@ -23340,6 +24211,8 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
     var START_STOP = 'start-gradual-stop';
     var END_STOP = 'end-gradual-stop';
 
+    var MORE_LABEL_G = 'more-label-g';
+
     var PieSvgRender = BaseRender.extend({
         
         render:function(){
@@ -23350,6 +24223,8 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
             if(!this._bodyG){
                 this._bodyG = svgRoot.append('g');
             }
+
+            this._showMoreLabel = this.component.vanchart.isChangeDataState() && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
 
             this._bodyG.attr('transform', BaseUtils.makeTranslate(plotBounds));
 
@@ -23370,7 +24245,7 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
 
                     self._updateSlices(pieG.select('g.' + PATH_G), d);
 
-                    self._drawLabel(pieG.select('g.' + LABEL_G), d, ANIMATION_TIME);
+                    self._drawLabel(pieG.select('g.' + LABEL_G), d, SORT_TIME);
                 });
 
             var newPie = pieUpdate.enter()
@@ -23398,6 +24273,41 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
 
                 self._drawLabel(pieG.select('g.' + LABEL_G), d, ANIMATION_TIME);
             });
+
+            this._drawMoreLabel();
+        },
+
+        _drawMoreLabel:function () {
+            if(this._moreLabelTimeOut) {
+                clearTimeout(this._moreLabelTimeOut);
+            }
+
+            var self = this;
+            this._moreLabelTimeOut = setTimeout(function(){
+
+                self._bodyG
+                    .selectAll('g.' + PIE_G)
+                    .each(function(){
+
+                        var pathG = d3.select(this)
+                            .select('g.' + PATH_G);
+
+                        var moreLabelG = pathG.select('g.' + MORE_LABEL_G).remove();
+                        moreLabelG = pathG.append('g').attr('class', MORE_LABEL_G);
+                        moreLabelG.selectAll('text').remove();
+
+                        pathG
+                            .selectAll('path')
+                            .each(function(d){
+                                var lastValue = this._lastValue_ || 0;
+                                this._lastValue_ = d.value;
+
+                                self._showAndExitMoreLabel(moreLabelG, self._showMoreLabel, d, lastValue);
+                            })
+
+                    })
+
+            }, this.component.isSupportAnimation() ? ANIMATION_TIME : 0)
 
         },
 
@@ -23447,6 +24357,7 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
         },
 
         _updateSlices:function(pathG, config, initPie){
+
             var arc = d3.svg.arc().innerRadius(config.innerRadius);
             var points = config.visiblePoints;
 
@@ -23575,6 +24486,7 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
                         this._current_ = self._getArcData(d);
                         return arc.outerRadius(d.radius)(this._current_);
                     })
+                    ;
 
                 }
 
@@ -23585,12 +24497,13 @@ define('render/PieSvgRender',['require','./BaseRender','../utils/BaseUtils','../
 
             delay = delay || 0;
             delay = this.component.isSupportAnimation() ? delay : 0;
+            delay += this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0;
 
             var plotBounds = this.component.getPlotBounds();
             var transX = config.centerX + plotBounds.x;
             var transY = config.centerY + plotBounds.y;
 
-            this._drawSvgDataLabels(labelG, config.visiblePoints, transX, transY, delay, config.name);
+            this._drawSvgDataLabels(labelG, config.visiblePoints, transX, transY, delay, config.name + config.index);
         },
 
         onDragStart:function(target, initPos){
@@ -23850,6 +24763,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                 var wrap = this._bodyG.append('g').attr('class', WRAP);
                 var multiPieG = wrap.append('g').attr('class', MULTIPIE_G);
                 this._bodyG.append('g').attr('class', LABEL_G);
+                this._moreLableG = this._bodyG.append('g').attr('class', 'more-label-g');
 
                 // initial animation
                 if (supportAnimation) {
@@ -23902,6 +24816,9 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                 this._bodyG.datum(multiPieData);
             }
 
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
             this._bodyG.attr('transform', BaseUtils.makeTranslate(center));
 
             this._bodyG.select('.' + DRILLDOWN_RING).attr('display', 'none');
@@ -23939,6 +24856,8 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
 
             updatePath.exit().remove();
 
+            var selfPie = this;
+
             // update
             updatePath
                 .attr("display", function (d) { return (d.name || !d.depth) ? null : 'none';})
@@ -23974,6 +24893,12 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                         self.dy1 = b.dy;
                         return arc(b);
                     };
+                })
+                .each('end', function(d){
+                    var lastValue = this._lastValue_ || 0;
+                    this._lastValue_ = d.value;
+
+                    selfPie._showAndExitMoreLabel(selfPie._moreLableG, selfPie._showMoreLabel, d, lastValue);
                 });
 
 
@@ -23985,6 +24910,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
                 this.y1 = d.y;
                 this.dx1 = d.dx;
                 this.dy1 = d.dy;
+                this._lastValue_ = d.value;
             }
 
             updatePath.enter()
@@ -24006,6 +24932,7 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
 
             delay = delay || 0;
             delay = this.component.isSupportAnimation() ? delay : 0;
+            delay += this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0;
 
             var multiPieData = bodyG.datum();
 
@@ -24236,6 +25163,254 @@ define('render/MultiPieSvgRender',['require','./BaseRender','../utils/BaseUtils'
     return MultiPieSvgRender;
 });
 /**
+ * Created by Yuqian on 16/7/19.
+ */
+
+define('render/TreeMapSvgRender',['require','./BaseRender','../utils/BaseUtils','../Constants','./RenderLibrary'],function(require){
+
+    var BaseRender = require('./BaseRender');
+    var BaseUtils = require('../utils/BaseUtils');
+    var Constants = require('../Constants');
+
+    var TREEMAP_G = 'treeMap-g';
+    var LABEL_G = 'label-g';
+    var LABEL_KEY = 'treeMap-label';
+
+    var ANIMATION_TIME = 800;
+    var INIT_EASE = 'out-bounce';
+
+    var CHANGE_TIME = 1000;
+
+    var VANISH_TIME = 800;
+
+    var CHOSEN_TIME = 100;
+
+    var TreeMapSvgRender = BaseRender.extend({
+
+        _bodyG: null,
+
+        render: function () {
+
+            var plotBounds = this.component.getPlotBounds();
+            var svgRoot = this.component.getVanchartRender().getRenderRoot();
+            var treeMapData = this.component.getChartNodes();
+            var supportAnimation = this.component.isSupportAnimation();
+
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
+            if(!this._bodyG){
+                var clipID = this.component.vanchart.getBodyClipID();
+                this._bodyG = svgRoot.append('g').datum(treeMapData);
+
+                this._bodyG.attr('clip-path', "url(#" + clipID +")");
+                this._bodyG.append('defs').append('clipPath').attr('id', clipID)
+                    .append('rect')
+                    .attr('width', plotBounds.width)
+                    .attr('height', plotBounds.height);
+
+                var treeMapG = this._bodyG.append('g').attr('class', TREEMAP_G);
+                this._bodyG.append('g').attr('class', LABEL_G);
+
+                var cx = plotBounds.width / 2;
+                var cy = plotBounds.height / 2;
+                if (supportAnimation) {
+                    treeMapG
+                        .transition()
+                        .duration(ANIMATION_TIME)
+                        .ease(INIT_EASE)
+                        .attrTween('transform', function () {
+                            var i = d3.interpolate(0, 1);
+                            return function (t) {
+                                var inter = i(t);
+                                return 'matrix(' + 
+                                    inter + ',' + 0 + ',' +
+                                    0 + ',' + inter + ',' +
+                                    (cx - inter * cx) + ',' + (cy - inter * cy) + ')';
+                            };
+                        });
+                }
+
+                this._drawSeries(this._bodyG, true);
+
+            } else {
+                this._bodyG.datum(treeMapData);
+                this._drawSeries(this._bodyG);
+            }
+
+            this._bodyG.attr('transform', BaseUtils.makeTranslate(plotBounds));
+
+            this._drawMoreLabel();
+
+            this._drawLabel(this._bodyG, ANIMATION_TIME);
+
+        },
+
+        _drawMoreLabel:function () {
+            if(!this._moreLabelG){
+                this._moreLabelG = this._bodyG.append('g').attr('class', 'more-label-g');
+            }
+
+            this._moreLabelG.selectAll('text').remove();
+
+            if(this._moreLabelTimeOut) {
+                clearTimeout(this._moreLabelTimeOut);
+            }
+
+            var self = this;
+            this._moreLabelTimeOut = setTimeout(function(){
+
+                var treeMapG = self._bodyG.select('.' + TREEMAP_G);
+                treeMapG
+                    .selectAll('rect')
+                    .each(function(d){
+                        var lastValue = this._lastValue_ || 0;
+                        this._lastValue_ = d.value;
+
+                        self._showAndExitMoreLabel(self._moreLabelG, self._showMoreLabel, d, lastValue);
+                    })
+
+            }, this.component.isSupportAnimation() ? ANIMATION_TIME : 0)
+
+        },
+
+        _drawSeries: function (bodyG, isInit) {
+            var supportAnimation = this.component.isSupportAnimation();
+
+            var treeMapG = bodyG.select('.' + TREEMAP_G);
+            var updatePath = treeMapG
+                .selectAll('rect')
+                .data(function (d) { return d; }, function (d) { return d.className; });
+
+            // enter (append dom)
+            updatePath.enter()
+                .append("rect")
+                .style("stroke", function (d) { return d.borderColor; })
+                .style("stroke-width", function (d) { return d.borderWidth; })
+                .style("fill", function (d) { return d.color; })
+                .attr("width", 0)
+                .attr("height", 0)
+                .attr("transform", function(d) { return "translate(" + d.vanishPos[0] + "," + d.vanishPos[1] + ")"; });
+
+            // update (enter animation)
+            updatePath
+                .transition()
+                .duration((supportAnimation && !isInit) ? CHANGE_TIME : 0)
+                .attr("width", function(d) { return d.dx; })
+                .attr("height", function(d) { return d.dy; })
+                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+            // exit (exit animation and remove dom)
+            updatePath.exit()
+                .transition()
+                .duration(supportAnimation ? VANISH_TIME : 0)
+                .attr("width", 0)
+                .attr("height", 0)
+                .attr("transform", function(d) { return "translate(" + d.vanishPos[0] + "," + d.vanishPos[1] + ")"; })
+                .remove();
+
+            this.addShapeEventHandler(updatePath);
+        },
+
+        zoom: function () {
+            this._drawSeries(this._bodyG);
+            this._drawLabel(this._bodyG, ANIMATION_TIME);
+        },
+
+        _drawLabel:function(bodyG, delay){
+
+            delay = delay || 0;
+            delay = this.component.isSupportAnimation() ? delay : 0;
+            delay += this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0;
+
+            var labelG = bodyG.select('.' + LABEL_G);
+            var treeMapData = bodyG.datum();
+
+            var plotBounds = this.component.vanchart.getPlotBounds();
+
+            this._drawSvgDataLabels(labelG, treeMapData, plotBounds.x, plotBounds.y, delay, LABEL_KEY, this._labelStyle);
+        },
+
+        _labelStyle: function (d) {
+            var labelContent = d.labelContent;
+            var isCenter = d.dataLabels.align === Constants.CENTER;
+
+            var centerX = d.labelPos.x + (isCenter ? d.labelDim.width/2 : 0);
+
+            var startY = d.labelPos.y;
+
+            for(var i = 0, count = labelContent.length; i < count; i++){
+                var label = labelContent[i];
+
+                var labelDim = label.dim;
+                var labelText = label.text;
+                var labelStyle = label.style;
+
+                d3.select(this)
+                    .append('tspan')
+                    .attr('x', centerX)
+                    .attr('y', startY + labelDim.height/2)
+                    .attr('dy', '.32em')
+                    .attr("text-anchor", isCenter ? "middle" : '')
+                    .text(labelText)
+                    .call(BaseUtils.setTextStyle, labelStyle);
+
+                startY += (labelDim.height + 2);
+            }
+        },
+
+        mouseOver:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target
+                    .style('fill', d.mouseOverColor)
+                    .interrupt(Constants.SELECT_ANIMATION)
+                    .transition(Constants.SELECT_ANIMATION)
+                    .duration(CHOSEN_TIME)
+                    .ease('ease-out-in');
+            }
+        },
+
+        mouseOut:function(event){
+            this.component.vanchart.getTooltip().hide();
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target
+                    .style('fill', d.color)
+                    .interrupt(Constants.SELECT_ANIMATION)
+                    .transition(Constants.SELECT_ANIMATION)
+                    .duration(CHOSEN_TIME)
+                    .ease('ease-out-in');
+            }
+        },
+
+        mouseDown: function (event) {
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target.style('fill', d.clickColor);
+            }
+        },
+
+        mouseUp: function (event) {
+            if(event && event.target){
+                var d = event.target.datum();
+
+                event.target.style('fill', d.color);
+
+                if (this.component.getZoom()) {
+                    this.component.zoomTo(d);
+                }
+            }
+        }
+
+    });
+
+    require('./RenderLibrary').register(Constants.TREEMAP_SVG, TreeMapSvgRender);
+
+    return TreeMapSvgRender;
+});
+
+/**
  * Created by eason on 15/9/24.
  */
 
@@ -24275,13 +25450,52 @@ define('render/BarSvgRender',['require','./BaseRender','../utils/BaseUtils','../
 
             var barSeriesS = this._bodyG.selectAll('g.' + BAR_SERIES_GROUP).data(barData, function(d){return d.className});
 
+            this._showMoreLabel = this.component.vanchart.isChangeDataState() && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
             this._dropSeries(barSeriesS);
 
             this._updateSeries(barSeriesS);
 
             this._createSeries(barSeriesS);
 
-            this._drawNormalChartLabels(this._labelG);
+            this._drawMoreLabel();
+
+            var delay = this.component.isSupportAnimation() ? INIT_ANIMATION_TIME : 0;
+            delay += this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0;
+
+            this._drawNormalChartLabels(this._labelG, delay);
+        },
+
+        _drawMoreLabel:function () {
+            if(!this._moreLabelG){
+                this._moreLabelG = this._bodyG.append('g').attr('class', 'more-label-g');
+            }
+
+            this._moreLabelG.selectAll('text').remove();
+
+            if(this._moreLabelTimeOut) {
+                clearTimeout(this._moreLabelTimeOut);
+            }
+
+            var self = this;
+            this._moreLabelTimeOut = setTimeout(function(){
+
+                self._bodyG
+                    .selectAll('g.' + BAR_SERIES_GROUP)
+                    .each(function(){
+                        d3.select(this)
+                            .selectAll('rect')
+                            .each(function(d){
+                                var lastValue = this._lastValue_ || 0;
+                                this._lastValue_ = d.value;
+
+                                self._showAndExitMoreLabel(self._moreLabelG, self._showMoreLabel, d, lastValue);
+                            })
+
+                    })
+
+            }, this.component.isSupportAnimation() ? INIT_ANIMATION_TIME : 0)
+
         },
 
         _dropSeries:function(seriesS){
@@ -24569,7 +25783,6 @@ define('render/BarSvgRender',['require','./BaseRender','../utils/BaseUtils','../
                             .attr('y', d.y)
                             .attr('width', Math.max(d.width, 0))
                             .attr('height', Math.max(d.height, 0));
-
                     }
                 });
         },
@@ -24743,9 +25956,49 @@ define('render/LineSvgRender',['require','./BaseRender','../utils/BaseUtils','..
                 this._updateChartBodyTranslate([this._bodyG], this.component.isSupportAnimation(), LINE_UPDATE_TIME);
             }
 
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
             this._updateLineSeries();
 
-            this._drawNormalChartLabels(this._labelG, this.component.isSupportAnimation() ? LINE_SHOW_TIME : 0);
+            var delay = this.component.isSupportAnimation() ? LINE_SHOW_TIME : 0;
+            delay += this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0;
+
+            this._drawNormalChartLabels(this._labelG, delay);
+
+            this._drawMoreLabel();
+        },
+
+        _drawMoreLabel:function () {
+            if(!this._moreLabelG){
+                this._moreLabelG = this._bodyG.append('g').attr('class', 'more-label-g');
+            }
+
+            this._moreLabelG.selectAll('text').remove();
+
+            if(this._moreLabelTimeOut) {
+                clearTimeout(this._moreLabelTimeOut);
+            }
+
+            var self = this;
+            this._moreLabelTimeOut = setTimeout(function(){
+                self._lineG
+                    .selectAll('g.' + LINE_G_CLASS)
+                    .each(function () {
+
+                        d3.select(this)
+                            .select('g.' + MARKER_G_CLASS)
+                            .selectAll('g')
+                            .each(function (d) {
+                                var lastValue = this._lastValue_ || 0;
+                                this._lastValue_ = d.value;
+
+                                self._showAndExitMoreLabel(self._moreLabelG, self._showMoreLabel, d, lastValue);
+                            })
+                    })
+
+            }, this.component.isSupportAnimation() ? LINE_SHOW_TIME : 0)
+
         },
 
         //animationTime, easeFunc是对update状态的线组
@@ -24883,7 +26136,8 @@ define('render/LineSvgRender',['require','./BaseRender','../utils/BaseUtils','..
                     .duration(animationTime)
                     .attr('transform', function(d){
                         return 'translate(' + d.x + ',' + d.y + ')';
-                    });
+                    })
+                    ;
 
                 markers.exit().remove();
 
@@ -24895,7 +26149,8 @@ define('render/LineSvgRender',['require','./BaseRender','../utils/BaseUtils','..
                         markers.call(self._createSvgMarker.bind(self))
                             .attr('transform', function(d) {
                                 return 'translate(' + d.x + ',' + d.y + ')';
-                            });
+                            })
+                            ;
 
                     });
 
@@ -25114,7 +26369,8 @@ define('render/LineSvgRender',['require','./BaseRender','../utils/BaseUtils','..
                     .ease('ease-out-in')
                     .attr('transform', function(d){
                         return 'translate('+ d.x +','+ d.y +') scale(1)';
-                    });
+                    })
+                    ;
             }else{
                 enterG
                     .append('g')
@@ -25124,7 +26380,8 @@ define('render/LineSvgRender',['require','./BaseRender','../utils/BaseUtils','..
                     .call(this._createSvgMarker.bind(this))
                     .attr('transform', function(d){
                         return 'translate('+ d.x +','+ d.y +')';
-                    });
+                    })
+                    ;
             }
         },
 
@@ -25287,6 +26544,8 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
     var GAUGE_LABEL = 'gauge-label';
     var GAUGE_AXIS = 'gauge-axis';
 
+    var MORE_LABEL_G = 'more-label-g';
+
     var GaugeSvgRender = BaseRender.extend({
         render:function(){
 
@@ -25301,6 +26560,8 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
             this.labelDivManager.clearAllLabels();
 
             var data = this.component.getVisibleChartData();
+
+            this._showMoreLabel = this.component.vanchart.isChangeDataState() && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
 
             var gaugeS = this._bodyG
                 .selectAll('g.' + GAUGE).data(data, function(d){
@@ -25554,7 +26815,24 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
             this._addFilter(gaugeG.select('path.' + POINTER_HINGE), this._getPointerDropShadowID());
         },
 
+        _createMoreLabelG:function(parentG) {
+            parentG.select('g.' + MORE_LABEL_G).remove();
+            var moreLabelG = parentG.append('g').attr('class', MORE_LABEL_G);
+            moreLabelG.selectAll('text').remove();
+            return moreLabelG;
+        },
+
         _drawPointerArrow:function(gaugeG, d, scale){
+            var moreLabelG = this._createMoreLabelG(gaugeG);
+
+            if(this._showMoreLabel) {//相对于圆心
+                var moreLabel = this.component.vanchart.currentOption.moreLabel;
+                var style = moreLabel.style || {"fontFamily": "verdana", "fontSize": "9pt"};
+                var singleLabelHeight = BaseUtils.getTextHeight(style);
+                var totalHeight = singleLabelHeight * d.points.length + singleLabelHeight / 2 * (d.points.length - 1);
+                var gap = Math.max(0, (d.radius - totalHeight)/2);
+                var startY = d.style == Constants.GAUGE_POINTER ?  gap : -d.radius + gap;
+            }
 
             var pointerG = gaugeG.select('g.' + NEEDLE);
 
@@ -25599,7 +26877,16 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
                         }
                     });
 
-                self._addFilter(pointer, self._getPointerDropShadowID(), ANIMATION_TIME)
+                self._addFilter(pointer, self._getPointerDropShadowID(), ANIMATION_TIME);
+
+                var lastValue = this._lastValue_ || 0;
+                this._lastValue_ = point.value;
+
+                if(self._showMoreLabel) {
+                    self._showAndExitMoreLabelWithCenter(moreLabelG, self._showMoreLabel, point, lastValue, 0, startY + singleLabelHeight / 2);
+                    startY += singleLabelHeight + singleLabelHeight / 2;
+                }
+
             });
         },
 
@@ -25839,6 +27126,16 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
             this._addFilter(gaugeG.select('circle.' + NEEDLE), this._getSlotDropShadowID(), ANIMATION_TIME);
 
             this._drawGaugeLabels(gaugeG, d);
+
+            this._drawCenterMoreLabel(gaugeG, point);
+        },
+
+        _drawCenterMoreLabel:function(parentG, point){
+            var lastG = parentG.select('g.' + MORE_LABEL_G);
+            var lastValue = (!lastG.empty() && lastG.attr('lastValue')) ? lastG.attr('lastValue') : 0;
+            var moreLabelG = this._createMoreLabelG(parentG);
+            moreLabelG.attr('lastValue', point.value);
+            this._showAndExitMoreLabelWithCenter(moreLabelG, this._showMoreLabel, point, lastValue, 0, 0);
         },
 
         _createThermometer:function(gaugeG, d){
@@ -25941,6 +27238,23 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
                         'stroke-width': THERMOMETER_R * 0.6,
                         'stroke':ColorUtils.mixColorWithHSB(color, 0, 0.1, -0.1)
                     });
+            }
+
+            if(this._showMoreLabel) {
+                var lastG = gaugeG.select('g.' + MORE_LABEL_G);
+                var lastValue = (!lastG.empty() && lastG.attr('lastValue')) ? lastG.attr('lastValue') : 0;
+                var moreLabelG = this._createMoreLabelG(gaugeG);
+                moreLabelG.attr('lastValue', point.value);
+
+                var moreLabel = this.component.vanchart.currentOption.moreLabel;
+                var style = moreLabel.style || {"fontFamily": "verdana", "fontSize": "9pt"};
+                var labelDim = BaseUtils.getTextDimension(point.value - lastValue, style, false);
+
+                var vertical = d.thermometerLayout == Constants.VERTICAL_LAYOUT;
+                var centerX = vertical ? 0 - labelDim.width/2 - THERMOMETER_R * 2 : endX;
+                var centerY = vertical ? endX : 0 - labelDim.height/2 - THERMOMETER_R * 2;
+
+                this._showAndExitMoreLabelWithCenter(moreLabelG, this._showMoreLabel, point, lastValue, centerX, centerY);
             }
 
             this._drawGaugeLabels(gaugeG, d);
@@ -26160,48 +27474,56 @@ define('render/GaugeSvgRender',['require','../utils/BaseUtils','../utils/ColorUt
 
 
             this._drawGaugeLabels(gaugeG, d);
+
+            this._drawCenterMoreLabel(gaugeG, point);
         },
 
         _drawGaugeLabels:function(gaugeG, d){
-            var labelG = gaugeG.select('g.' + GAUGE_LABEL);
+            var self = this;
+            var delay = this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0;
+            clearTimeout(this.drawLabelTimeOut[d.className]);
+            this.drawLabelTimeOut[d.className] = setTimeout(function() {
 
-            if(d.seriesLabelContent){
-                this._drawLabel(labelG, d.seriesLabelContent, d.seriesLabelPos, d.seriesLabelDim,
-                    d.seriesLabelStyle, d, d.seriesLabel.useHtml);
-            }
+                var labelG = gaugeG.select('g.' + GAUGE_LABEL);
 
-            if(d.percentageLabelContent){
-                this._drawLabel(labelG, d.percentageLabelContent, d.percentageLabelPos, d.percentageLabelDim,
-                    d.percentageLabelStyle, d, d.percentageLabel.useHtml);
-            }
-
-            if(d.valueLabelContent && d.valueLabelContent.length){
-
-                //指针类型的仪表盘值标签后面有背景
-                if(d.valueLabelBackground){
-                    labelG
-                        .append('rect')
-                        .attr('x', d.valueLabelBackground.x)
-                        .attr('y', d.valueLabelBackground.y)
-                        .attr('width', d.valueLabelBackground.width)
-                        .attr('height', d.valueLabelBackground.height)
-                        .attr('rx', d.radius * 0.02)
-                        .attr('ry', d.radius * 0.02)
-                        .style({
-                            fill: d.valueLabel.backgroundColor,
-                            'fill-opacity': ColorUtils.getColorOpacity(d.valueLabel.backgroundColor)
-                        });
-
-                    this._addFilter(labelG, this._getPointerInnerShadowID());
+                if (d.seriesLabelContent) {
+                    self._drawLabel(labelG, d.seriesLabelContent, d.seriesLabelPos, d.seriesLabelDim,
+                        d.seriesLabelStyle, d, d.seriesLabel.useHtml);
                 }
 
-                for(var i = 0, len = d.valueLabelContent.length; i < len; i++){
-                    var valueLabel = d.valueLabelContent[i];
-                    this._drawLabel(labelG, valueLabel.labelContent, valueLabel.labelPos, valueLabel.labelDim,
-                        valueLabel.labelStyle, d, d.valueLabel.useHtml);
+                if (d.percentageLabelContent) {
+                    self._drawLabel(labelG, d.percentageLabelContent, d.percentageLabelPos, d.percentageLabelDim,
+                        d.percentageLabelStyle, d, d.percentageLabel.useHtml);
                 }
 
-            }
+                if (d.valueLabelContent && d.valueLabelContent.length) {
+
+                    //指针类型的仪表盘值标签后面有背景
+                    if (d.valueLabelBackground) {
+                        labelG
+                            .append('rect')
+                            .attr('x', d.valueLabelBackground.x)
+                            .attr('y', d.valueLabelBackground.y)
+                            .attr('width', d.valueLabelBackground.width)
+                            .attr('height', d.valueLabelBackground.height)
+                            .attr('rx', d.radius * 0.02)
+                            .attr('ry', d.radius * 0.02)
+                            .style({
+                                fill: d.valueLabel.backgroundColor,
+                                'fill-opacity': ColorUtils.getColorOpacity(d.valueLabel.backgroundColor)
+                            });
+
+                        self._addFilter(labelG, self._getPointerInnerShadowID());
+                    }
+
+                    for (var i = 0, len = d.valueLabelContent.length; i < len; i++) {
+                        var valueLabel = d.valueLabelContent[i];
+                        self._drawLabel(labelG, valueLabel.labelContent, valueLabel.labelPos, valueLabel.labelDim,
+                            valueLabel.labelStyle, d, d.valueLabel.useHtml);
+                    }
+
+                }
+            }, delay);
 
         },
 
@@ -26541,9 +27863,22 @@ define('render/RadarSvgRender',['require','./BaseRender','../utils/BaseUtils','.
                 this._bodyG.append('defs').append('clipPath').attr('id', this._getRadarClipID());
             }
 
+            if(this._moreLabelG) {
+                this._moreLabelG.selectAll('text').remove();
+            }
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
             this._updateTransform();
 
             this._drawRadarSeries();
+        },
+
+        _createMoreLabelG:function() {
+            if(!this._moreLabelG) {
+                this._moreLabelG = this._bodyG.append('g');
+            }
+            return this._moreLabelG;
         },
 
         _updateTransform:function(){
@@ -26574,7 +27909,9 @@ define('render/RadarSvgRender',['require','./BaseRender','../utils/BaseUtils','.
 
             this._createRadarSeries(updateS);
 
-            this._drawLabel(this.component.isSupportAnimation() ? ANIMATION_TIME : 0);
+            var delay = this.component.isSupportAnimation() ? ANIMATION_TIME : 0;
+            delay += this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0;
+            this._drawLabel(delay);
         },
 
         _deleteRadarSeries:function(updateS){
@@ -26732,11 +28069,29 @@ define('render/RadarSvgRender',['require','./BaseRender','../utils/BaseUtils','.
                                 return self.component._getRadarColumnPath(iR, oR, d.radian);
 
                             }
+                        })
+                        .each('end', function(d){
+                            var lastValue = this._lastValue_ || 0;
+                            this._lastValue_ = d.value;
+                            self._showColumnTypeMoreLabel(d, lastValue);
                         });
                 });
 
             });
 
+        },
+
+        _showColumnTypeMoreLabel:function(d, lastValue){
+            if(this._showMoreLabel) {
+                var pos = this.component._getArcPoint(d.y, d.radian);
+                var centerX = pos[0], centerY = pos[1];
+                if (BaseUtils.hasDefined(d.labelPos) && BaseUtils.hasDefined(d.labelDim)) {
+                    centerX = d.labelPos.x + d.labelDim.width / 2;
+                    centerY = d.labelPos.y + d.labelDim.height / 2;
+                }
+                this._showAndExitMoreLabelWithCenter(this._createMoreLabelG(), this._showMoreLabel,
+                    d, lastValue, centerX, centerY);
+            }
         },
 
         _updatePolygonTypeSeries:function(updateS){
@@ -26837,7 +28192,17 @@ define('render/RadarSvgRender',['require','./BaseRender','../utils/BaseUtils','.
                     .transition()
                     .duration(animationTime)
                     .ease(EASE)
-                    .attr('transform', function(d){return BaseUtils.makeTranslate(d.pos)});
+                    .attr('transform', function(d){return BaseUtils.makeTranslate(d.pos)})
+                    .each('end', function(d){
+                        var lastValue = this._lastValue_ || 0;
+                        this._lastValue_ = d.value;
+                        var centerX = d.pos[0], centerY = d.pos[1];
+                        if(BaseUtils.hasDefined(d.labelPos) && BaseUtils.hasDefined(d.labelDim)) {
+                            centerX = d.labelPos.x + d.labelDim.width / 2;
+                            centerY = d.labelPos.y + d.labelDim.height / 2;
+                        }
+                        self._showAndExitMoreLabelWithCenter(self._createMoreLabelG(), self._showMoreLabel, d, lastValue, centerX, centerY);
+                    });
             });
 
         },
@@ -26879,7 +28244,12 @@ define('render/RadarSvgRender',['require','./BaseRender','../utils/BaseUtils','.
                     })
                     .each('end', function(d){
                         d3.select(this)
-                            .attr('d', self.component._getRadarColumnPath(d.y0, d.y, d.radian))
+                            .attr('d', self.component._getRadarColumnPath(d.y0, d.y, d.radian));
+
+                        var lastValue = this._lastValue_ || 0;
+                        this._lastValue_ = d.value;
+
+                        self._showColumnTypeMoreLabel(d, lastValue);
                     });
 
             });
@@ -26985,6 +28355,15 @@ define('render/RadarSvgRender',['require','./BaseRender','../utils/BaseUtils','.
                     .attr('transform', function(d){
                         return BaseUtils.makeTranslate(d.pos) + 'scale(1)';
                     })
+                    .each('end', function(d){
+                        var lastValue = this._lastValue_ || 0;
+                        this._lastValue_ = d.value;
+                        var centerX = d.pos[0], centerY = d.pos[1];
+                        if(BaseUtils.hasDefined(d.labelPos) && BaseUtils.hasDefined(d.labelDim)) {
+                            centerX = d.labelPos.x + d.labelDim.width / 2;
+                            centerY = d.labelPos.y + d.labelDim.height / 2;
+                        }
+                        self._showAndExitMoreLabelWithCenter(self._createMoreLabelG(), self._showMoreLabel, d, lastValue, centerX, centerY);                    });
 
             });
         },
@@ -27141,6 +28520,9 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
         },
 
         _svgRender:function() {
+            
+            this._canvas && this._canvas.clearAll();
+
             this.component.isUpdateWithForce() ? this._renderForceBubbles() : this._renderNormalBubbles();
         },
 
@@ -27193,6 +28575,12 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                 this._bodyG = svgRoot.append('g');
                 this._createDefs();
             }
+
+            if(this._moreLabelG) {
+                this._moreLabelG.selectAll('text').remove();
+            }
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
 
             this._bodyG
                 .attr('transform', 'translate('+plotBounds.x+','+plotBounds.y+')')
@@ -27272,6 +28660,10 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                             return function(t) { return d.radius = i(t); };
                         })
                         .each('end', function(d){
+                            var lastValue = this._lastValue_ || 0;
+                            this._lastValue_ = d.value;
+                            self._showForceMoreLabel(d, lastValue);
+
                             self._createForceLabel(d, d3.select(this.parentNode));
                         });
 
@@ -27346,6 +28738,17 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
             }
         },
 
+        _createMoreLabelG:function(){
+            if(!this._moreLabelG){
+                this._moreLabelG = this._bodyG.append('g');
+            }
+            return this._moreLabelG;
+        },
+
+        _showForceMoreLabel:function(d, lastValue){
+            this._showAndExitMoreLabelWithCenter(this._createMoreLabelG(), this._showMoreLabel, d, lastValue, d.px, d.py);
+        },
+
         _createNewForceBubble:function(bubbleS, animation){
 
             var self = this;
@@ -27387,6 +28790,11 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                     return function(t) { return d.radius = i(t); };
                 })
                 .each('end', function(d){
+                    var lastValue = this._lastValue_ || 0;
+                    this._lastValue_ = d.value;
+
+                    self._showForceMoreLabel(d, lastValue);
+
                     self._createForceLabel(d, d3.select(this.parentNode));
                 });
         },
@@ -27423,6 +28831,7 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                 }
 
                 text.transition('linear')
+                    .delay(this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0)
                     .duration(400)
                     .style('opacity', 1)
 
@@ -27435,15 +28844,19 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
 
             if(!this._bodyG) {
                 this._bodyG = svgRoot.append('g');
+                this._moreLabelG = this._bodyG.append('g');
                 this._createDefs();
                 this._updateChartBodyTranslate([this._bodyG]);
             } else {
                 this._updateChartBodyTranslate([this._bodyG], supportAnimation, BUBBLE_UPDATE_TIME);
             }
 
+            this._moreLabelG.selectAll('text').remove();
+            this._showMoreLabel = this.component.vanchart.isChangeDataState() && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
             if(this._animationTimeOut){
                 for(var timeOut in this._animationTimeOut){
-                    clearTimeout(this._animationTimeOut[timeOut]);
+                    clearTimeout(timeOut);
                 }
             }
             this._animationTimeOut = {};
@@ -27635,83 +29048,56 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
         },
 
         _updateSeries:function(bubbleSeries, supportAnimation){
-
-            var isChangeData = this.component.vanchart.isChangeDataState();
-
             var self = this;
-            if(isChangeData){
-                this._dropSeries(bubbleSeries, supportAnimation);
+            bubbleSeries.each(function(d){
 
-                clearTimeout(self._animationTimeOut['changeData']);
-                self._animationTimeOut['changeData'] = setTimeout(function () {
-                    bubbleSeries.each(function(d){
-                        d3.select(this)
-                            .selectAll('path')
-                            .remove();
+                var bubbles = d3.select(this)
+                    .selectAll('path')
+                    .data(d.points, function(d){return d.className;});
 
-                        var bubbles = d3.select(this)
-                            .selectAll('path')
-                            .data(d.points, function(d){return d.className;});
+                //自动刷新的时候可能去掉一些点
+                bubbles.exit().remove();
 
+                var parentG = d3.select(this);
+
+                var delayTime = supportAnimation ? (bubbles.empty() ? BUBBLE_EXIT_TIME : BUBBLE_UPDATE_TIME) + 100 : 0;
+                if(bubbles.empty()){
+                    self._createBubbles(bubbles, supportAnimation);
+                } else {
+                    d3.select(this)
+                        .selectAll('text')
+                        .remove();
+
+                    d.points.forEach(function (p) {
+                        self.labelDivManager.clearLabels(p.className);
+                    });
+
+                    self._updateBubbles(bubbles, supportAnimation);
+
+                    if(!bubbles.enter().empty()){
+                        //自动刷新的时候可能会出现一些点
                         self._createBubbles(bubbles, supportAnimation);
-
-                        var labels = d3.select(this)
-                            .selectAll('text')
-                            .data(d.points)
-                            .enter()
-                            .append('text')
-                            .style('opacity', function(d){
-                                return d.visible ? 1 : 0;
-                            })
-                            .each(function (d) {
-                                self._createSingleDataLabel(d, d3.select(this));
-                            });
-
-                        labels.style('pointer-events', 'none');
-                    })
-                }, supportAnimation ? BUBBLE_EXIT_TIME + 100 : 0)
-            } else {
-                bubbleSeries.each(function(d){
-
-                    var bubbles = d3.select(this)
-                        .selectAll('path')
-                        .data(d.points, function(d){return d.className;});
-
-                    var parentG = d3.select(this);
-
-                    var delayTime = supportAnimation ? (bubbles.empty() ? BUBBLE_EXIT_TIME : BUBBLE_UPDATE_TIME) + 100 : 0;
-                    if(bubbles.empty()){
-                        self._createBubbles(bubbles, supportAnimation);
-                    } else {
-                        d3.select(this)
-                            .selectAll('text')
-                            .remove();
-
-                        d.points.forEach(function (p) {
-                            self.labelDivManager.clearLabels(p.className);
-                        });
-
-                        self._updateBubbles(bubbles, supportAnimation);
                     }
+                }
 
-                    clearTimeout(self._animationTimeOut[d.className]);
-                    self._animationTimeOut[d.className] = setTimeout(function () {
-                        var labels = parentG
-                            .selectAll('text')
-                            .data(d.points)
-                            .enter()
-                            .append('text')
-                            .style('opacity', function(d){
-                                return d.visible ? 1 : 0;
-                            })
-                            .each(function (d) {
-                                self._createSingleDataLabel(d, d3.select(this));
-                            });
-                        labels.style('pointer-events', 'none');
-                    }, delayTime)
+                clearTimeout(self._animationTimeOut[d.className]);
+                delayTime += self._showMoreLabel ? self._getAllMoreLabelAnimationTime() : 0;
+                self._animationTimeOut[d.className] = setTimeout(function () {
+                    var labels = parentG
+                        .selectAll('text')
+                        .data(d.points)
+                        .enter()
+                        .append('text')
+                        .style('opacity', function(d){
+                            return d.visible ? 1 : 0;
+                        })
+                        .each(function (d) {
+                            self._createSingleDataLabel(d, d3.select(this));
+                        });
+                    labels.style('pointer-events', 'none');
+                }, delayTime)
 
-                });
-            }
+            });
         },
 
         //系列重现动画
@@ -27731,7 +29117,13 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                     .transition()
                     .ease('back-out')
                     .duration(supportAnimation ? BUBBLE_EXIT_TIME : 0)
-                    .attr('d', d3.svg.arc().outerRadius(d.radius)({startAngle:0, endAngle:2 * Math.PI}));
+                    .attr('d', d3.svg.arc().outerRadius(d.radius)({startAngle:0, endAngle:2 * Math.PI}))
+                    .each('end', function(){
+                        var lastValue = this._lastValue_ || 0;
+                        this._lastValue_ = d.value;
+
+                        self._showAndExitMoreLabel(self._moreLabelG, self._showMoreLabel, d, lastValue);
+                    });
 
                 self._addFilter(d, bubble, supportAnimation ? BUBBLE_EXIT_TIME : 0);
             });
@@ -27742,6 +29134,8 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
         //系列消失或重现时，其他系列位置、大小动画.
         _updateBubbles:function(bubbles, supportAnimation) {
             this.addShapeEventHandler(bubbles);
+
+            var self = this;
 
             bubbles
                 .filter(function(d){return d.visible})
@@ -27756,7 +29150,13 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                         .attr('d', function(d){
                             return d3.svg.arc().outerRadius(d.radius)({startAngle:0, endAngle:2 * Math.PI});
                         })
-                        .attr('transform', 'translate('+ d.posX+','+ d.posY+')');
+                        .attr('transform', 'translate('+ d.posX+','+ d.posY+')')
+                        .each('end', function(){
+                            var lastValue = this._lastValue_ || 0;
+                            this._lastValue_ = d.value;
+
+                            self._showAndExitMoreLabel(self._moreLabelG, self._showMoreLabel, d, lastValue);
+                        });
                 });
         },
 
@@ -27789,7 +29189,13 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                             .delay(supportAnimation ? d.delayTime : 0)
                             .ease('bounce')
                             .duration(supportAnimation ? BUBBLE_INIT_TIME : 0)
-                            .attr('d', d3.svg.arc().outerRadius(d.radius)({startAngle:0, endAngle:2 * Math.PI}));
+                            .attr('d', d3.svg.arc().outerRadius(d.radius)({startAngle:0, endAngle:2 * Math.PI}))
+                            .each('end', function(){
+                                var lastValue = this._lastValue_ || 0;
+                                this._lastValue_ = d.value;
+
+                                self._showAndExitMoreLabel(self._moreLabelG, self._showMoreLabel, d, lastValue);
+                            });
 
                         self._addFilter(d, bubble, supportAnimation ? (BUBBLE_INIT_TIME + d.delayTime) : 0);
                     });
@@ -27801,6 +29207,8 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
                     .data(d.points);
 
                 clearTimeout(self._animationTimeOut[d.className + 'init']);
+                var delay = supportAnimation ? BUBBLE_INIT_TIME + BUBBLES_SHOW_TIME : 0;
+                delay += self._showMoreLabel ? self._getAllMoreLabelAnimationTime() : 0;
                 self._animationTimeOut[d.className + 'init'] = setTimeout(function () {
                     labels
                         .enter()
@@ -27812,7 +29220,7 @@ define('render/BubbleSvgRender',['require','./BaseRender','../utils/BaseUtils','
 
                     labels.style('pointer-events', 'none');
 
-                }, supportAnimation ? BUBBLE_INIT_TIME + BUBBLES_SHOW_TIME : 0)
+                }, delay)
 
             });
         },
@@ -27911,10 +29319,14 @@ define('render/ScatterSvgRender',['require','./BaseRender','../utils/BaseUtils',
 
             if(!this._bodyG) {
                 this._bodyG = svgRoot.append('g');
+                this._moreLabelG = this._bodyG.append('g');
                 this._updateChartBodyTranslate([this._bodyG]);
             } else {
                 this._updateChartBodyTranslate([this._bodyG], supportAnimation, SCATTER_UPDATE_TIME);
             }
+
+            this._moreLabelG.selectAll('text').remove();
+            this._showMoreLabel = this.component.vanchart.isChangeDataState() && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
 
             var scatterData = this.component.getVisibleChartData();
 
@@ -27988,8 +29400,6 @@ define('render/ScatterSvgRender',['require','./BaseRender','../utils/BaseUtils',
 
         _updateSeries:function(scatterSeriesS, supportAnimation){
 
-            var isChangeData = this.component.vanchart.isChangeDataState();
-
             var self = this;
             scatterSeriesS.each(function(d){
                 var parentG = d3.select(this);
@@ -27998,116 +29408,110 @@ define('render/ScatterSvgRender',['require','./BaseRender','../utils/BaseUtils',
                     .selectAll('g')
                     .data(d.points, function(d){return d.className;});
 
+                //自动刷新的时候可能去掉一些点
+                points.exit().remove();
+
                 self.addShapeEventHandler(points);
 
-                if(isChangeData){
-                    //自动刷新动画
-                    parentG.selectAll('path.' + SCATTER_SERIES_LINE_CLASS).remove();
+                if(points.empty()){
+                    self._createSeriesLine(d3.select(this), d, supportAnimation ? SCATTER_INIT_TIME : 0);
 
-                    points
+                    self._createScatters(points, supportAnimation, d);
+                } else {
+                    d.points.forEach(function (p) {
+                        self.labelDivManager.clearLabels(p.className);
+                    });
+
+                    self._updateScatters(points, supportAnimation);
+
+                    parentG.select('path.' + SCATTER_SERIES_LINE_CLASS)
                         .transition()
-                        .duration(supportAnimation ? SCATTER_INIT_TIME : 0)
-                        .ease('back-in')
-                        .attr('transform', function(d){
-                            return 'translate('+ d.posX +','+ d.posY +') scale(0)';
-                        })
-                        .remove();
+                        .duration(supportAnimation ? SCATTER_UPDATE_TIME : 0)
+                        .ease('back-out')
+                        .attr('d',  d.lineSvg(d.points));
 
-                    clearTimeout(self._animationTimeOut[d.className]);
-                    self._animationTimeOut[d.className] = setTimeout(function () {
-                        self._createSeriesLine(parentG, d, supportAnimation ? SCATTER_INIT_TIME : 0);
-
-                        parentG
-                            .selectAll('g')
-                            .data(d.points, function(d){return d.className;})
-                            .call(self._createSvgMarker.bind(self))
-                            .filter(function(d){return d.visible})
-                            .attr('transform', function(d){
-                                return 'translate('+ d.posX +','+ d.posY +') scale(0.01)';
-                            })
-                            .transition()
-                            .duration(supportAnimation ? SCATTER_INIT_TIME : 0)
-                            .ease('back-out')
-                            .attr('transform', function(d){
-                                return 'translate('+ d.posX +','+ d.posY +') scale(1)';
-                            })
-                            .each('end', function () {
-                                var labelG = d3.select(this)
-                                    .append('text')
-                                    .attr('transform', function(d){
-                                        return 'translate('+ (-d.posX) +','+ (-d.posY) +') scale(1)';
-                                    });
-
-                                labelG
-                                    .each(function (p) {
-                                        self._createSingleDataLabel(p, labelG);
-                                    })
-                            });
-                    }, supportAnimation ? SCATTER_INIT_TIME * 2 : SCATTER_INIT_TIME);
-                }else{
-                    if(points.empty()){
-                        //点击图例系列重现
-                        self._createSeriesLine(parentG, d, supportAnimation ? SCATTER_INIT_TIME : 0);
-
-                        points
-                            .call(self._createSvgMarker.bind(self))
-                            .filter(function(d){return d.visible})
-                            .attr('transform', function(d){
-                                return 'translate('+ d.posX +','+ d.posY +') scale(0.01)';
-                            })
-                            .transition()
-                            .duration(supportAnimation ? SCATTER_INIT_TIME : 0)
-                            .ease('back-out')
-                            .attr('transform', function(d){
-                                return 'translate('+ d.posX +','+ d.posY +') scale(1)';
-                            })
-                            .each('end', function () {
-                                var labelG = d3.select(this)
-                                    .append('text')
-                                    .attr('transform', function(d){
-                                        return 'translate('+ (-d.posX) +','+ (-d.posY) +') scale(1)';
-                                    });
-
-                                labelG
-                                    .each(function (p) {
-                                        self._createSingleDataLabel(p, labelG);
-                                    })
-                            });
-                    } else {
-                        //点击图例其他系列移动
-                        d.points.forEach(function (p) {
-                            self.labelDivManager.clearLabels(p.className);
-                        });
-
-                        points
-                            .filter(function(d){return d.visible})
-                            .each(function(d){
-                                self._updateMarkerStyle(d3.select(this), d);
-                            })
-                            .transition()
-                            .duration(supportAnimation ? SCATTER_UPDATE_TIME : 0)
-                            .ease('back-out')
-                            .attr('transform', function(d){
-                                return 'translate('+ d.posX +','+ d.posY +') scale(1)';
-                            })
-                            .each('end', function () {
-                                d3.select(this)
-                                    .append('text')
-                                    .attr('transform', function(d){
-                                        return 'translate('+ (-d.posX) +','+ (-d.posY) +') scale(1)';
-                                    })
-                                    .each(function (p) {
-                                        self._createSingleDivDataLabel(p);
-                                    })
-                            });
-                        parentG.select('path.' + SCATTER_SERIES_LINE_CLASS)
-                            .transition()
-                            .duration(supportAnimation ? SCATTER_UPDATE_TIME : 0)
-                            .ease('back-out')
-                            .attr('d',  d.lineSvg(d.points));
+                    if(!points.enter().empty()){
+                        //自动刷新的时候可能会出现一些点
+                        self._createScatters(points, supportAnimation);
                     }
                 }
             });
+        },
+
+        //点击图例系列重现
+        _createScatters:function(points, supportAnimation) {
+            var self = this;
+
+            points
+                .call(self._createSvgMarker.bind(this))
+                .filter(function(d){return d.visible})
+                .attr('transform', function(d){
+                    return 'translate('+ d.posX +','+ d.posY +') scale(0.01)';
+                })
+                .transition()
+                .duration(supportAnimation ? SCATTER_INIT_TIME : 0)
+                .ease('back-out')
+                .attr('transform', function(d){
+                    return 'translate('+ d.posX +','+ d.posY +') scale(1)';
+                })
+                .each('end', function (d) {
+                    var labelG = d3.select(this)
+                        .append('text')
+                        .attr('transform', function(d){
+                            return 'translate('+ (-d.posX) +','+ (-d.posY) +') scale(1)';
+                        });
+
+                    labelG
+                        .each(function (p) {
+                            self._createSingleDataLabel(p, labelG);
+                        })
+                        .attr('opacity', 0)
+                        .transition()
+                        .delay(self._showMoreLabel ? self._getAllMoreLabelAnimationTime() : 0)
+                        .duration(0)
+                        .attr('opacity', 1);
+
+                    var lastValue = this._lastValue_ || 0;
+                    this._lastValue_ = d.value;
+
+                    self._showAndExitMoreLabel(self._moreLabelG, self._showMoreLabel, d, lastValue);
+                });
+        },
+
+        //系列消失或重现时，其他系列位置、大小动画.
+        _updateScatters:function(points, supportAnimation){
+            var self = this;
+
+            points
+                .each(function(){
+                    d3.select(this)
+                        .select('text')
+                        .attr('opacity', 0)
+                })
+                .filter(function(d){return d.visible})
+                .each(function(d){
+                    self._updateMarkerStyle(d3.select(this), d);
+                })
+                .transition()
+                .duration(supportAnimation ? SCATTER_UPDATE_TIME : 0)
+                .ease('back-out')
+                .attr('transform', function(d){
+                    return 'translate('+ d.posX +','+ d.posY +') scale(1)';
+                })
+                .each('end', function (d) {
+                    d3.select(this)
+                        .select('text')
+                        .transition()
+                        .delay(self._showMoreLabel ? self._getAllMoreLabelAnimationTime() : 0)
+                        .duration(0)
+                        .attr('opacity', 1)
+                    ;
+
+                    var lastValue = this._lastValue_ || 0;
+                    this._lastValue_ = d.value;
+
+                    self._showAndExitMoreLabel(self._moreLabelG, self._showMoreLabel, d, lastValue);
+                });
         },
 
         //初始化
@@ -28142,7 +29546,7 @@ define('render/ScatterSvgRender',['require','./BaseRender','../utils/BaseUtils',
                 .attr('transform', function(d){
                     return 'translate('+ d.posX +','+ d.posY +') scale(1)';
                 })
-                .each('end', function () {
+                .each('end', function (d) {
                     var labelG = d3.select(this)
                         .append('text')
                         .attr('transform', function(d){
@@ -28153,6 +29557,16 @@ define('render/ScatterSvgRender',['require','./BaseRender','../utils/BaseUtils',
                         .each(function (p) {
                             self._createSingleDataLabel(p, labelG);
                         })
+                        .attr('opacity', 0)
+                        .transition()
+                        .delay(self._showMoreLabel ? self._getAllMoreLabelAnimationTime() : 0)
+                        .duration(0)
+                        .attr('opacity', 1);
+
+                    var lastValue = this._lastValue_ || 0;
+                    this._lastValue_ = d.value;
+
+                    self._showAndExitMoreLabel(self._moreLabelG, self._showMoreLabel, d, lastValue);
                 });
 
         },
@@ -28237,6 +29651,16 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
 
     var MapSvgRender = BaseRender.extend({
         render:function(){
+
+            this._showMoreLabel = this.component.vanchart.isChangeDataState() && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
+            //var svgRoot = this.component.getVanchartRender().getRenderRoot();
+            //if(!this._moreLabelG){
+            //    this._moreLabelG = svgRoot.append('g').attr('class', 'more-label-g');
+            //    this._updateChartBodyTranslate([this._moreLabelG]);
+            //}
+            //this._moreLabelG.selectAll('text').remove();
+
             var map = this.component, geo = map.vanchart.getComponent(Constants.GEO_COMPONENT);
             var featureMap = geo.getFeatureMap(map.vanchart.series);
             this._updateShape(featureMap);
@@ -28262,6 +29686,34 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
 
             this._fixConflictLabel(area, bubble, scatter, image);
 
+            if(this._showMoreLabel) {
+                if (this._moreLabelTimeOut) {
+                    clearTimeout(this._moreLabelTimeOut);
+                }
+
+                var self = this;
+                var areaLabelLayers = this._removeNormalLabel(this._areaLabelLayer),
+                    bubbleLabelLayers = this._removeNormalLabel(this._bubbleLabelLayer),
+                    scatterLabelLayers = this._removeNormalLabel(this._scatterLabelLayer),
+                    imageLabelLayers = this._removeNormalLabel(this._imageLabelLayer);
+
+                this._moreLabelTimeOut = setTimeout(function () {
+                    self._reAddNormalLabel(self._areaLabelLayer, areaLabelLayers);
+                    self._reAddNormalLabel(self._bubbleLabelLayer, bubbleLabelLayers);
+                    self._reAddNormalLabel(self._scatterLabelLayer, scatterLabelLayers);
+                    self._reAddNormalLabel(self._imageLabelLayer, imageLabelLayers);
+
+                    self.updateNormalLabel(area, bubble, scatter, image, leaflet);
+
+                }, this._getAllMoreLabelAnimationTime());
+
+            } else {
+
+                this.updateNormalLabel(area, bubble, scatter, image, leaflet);
+            }
+        },
+
+        updateNormalLabel:function(area, bubble, scatter, image, leaflet){
             var areaText = area.filter(labelFilter), bubbleText = bubble.filter(labelFilter), scatterText = scatter.filter(labelFilter), imageText = image.filter(labelFilter);
 
             this._areaLabelLayer = this._areaLabelLayer || L.layerGroup().addTo(leaflet);
@@ -28277,17 +29729,49 @@ define('render/MapSvgRender',['require','../utils/BaseUtils','../utils/ColorUtil
             this._updatePointLayerGroup(this._imageLabelLayer, L.text, imageText, null, pointKeyFunc);
         },
 
+        //自动刷新,显示值变化的标签,需要先去掉常规标签
+        _removeNormalLabel: function (layerGroup) {
+            var layers = [];
+            if(layerGroup){
+                layers = layerGroup.getLayers();
+                for (var i in layers) {
+                    layerGroup.removeLayer(layers[i]);
+                }
+            }
+            return layers;
+        },
+
+        _reAddNormalLabel: function (layerGroup, layers) {
+            if(layerGroup){
+                for (var i in layers) {
+                    layerGroup.addLayer(layers[i]);
+                }
+            }
+        },
+
         //重新计算每个标签的位置
         _fixConflictLabel:function(areaText, bubbleText, scatterText, imageText){
+            var geo = this.component.vanchart.getComponent(Constants.GEO_COMPONENT);
+            var leaflet = this.component.vanchart._leaflet;
 
             var pointsText = areaText.concat(bubbleText, scatterText, imageText);
+
+            var self = this;
+            var lastValueMap = this.component.vanchart.vancharts.lastValueMap;
+            pointsText.forEach(function(point){
+                var lastValue = lastValueMap[pointKeyFunc(point)] || 0;
+                lastValueMap[pointKeyFunc(point)] = point.value;
+
+                if(lastValue - point.value != 0 && self._showMoreLabel) {
+                    var latlng = geo.getDataPointLatLng(point);
+                    var pixels = leaflet.latLngToContainerPoint(latlng);
+                    self._showAndExitMoreLabelWithCenter(self._moreLabelG, self._showMoreLabel, point, lastValue, pixels.x, pixels.y);
+                }
+            });
 
             pointsText = pointsText.filter(validLabelFilter);
 
             var manager = new BoundsManager();
-
-            var geo = this.component.vanchart.getComponent(Constants.GEO_COMPONENT);
-            var leaflet = this.component.vanchart._leaflet;
 
             pointsText.forEach(function(point){
                 if(point.dataLabels && point.feature && point.feature.properties.center){
@@ -28712,7 +30196,17 @@ define('render/DrillToolsSvgRender',['require','./BaseRender','../utils/BaseUtil
             var iconS = this._bodyG.selectAll('g').data(this.component.getIconData(), function(d){return d.layerIndex});
 
             //update状态的标签注意改文字颜色
-            iconS.select('text').style('fill', function(d){return dTools.textColor(d);});
+            iconS.select('text')
+                .text(function(d){return  d.geo.geoName})
+                .style('fill', function(d){return dTools.textColor(d);});
+
+            iconS.select('path').attr('d', function (d) {
+                return dTools.getBookMarkPath(d);
+            });
+            
+            iconS.attr('transform', function(d){
+                return BaseUtils.makeTranslate([d.aniEnd, 0]);
+            });
 
             var exitData = [];
             var exit = iconS.exit().each(function(d){exitData.push(d)});
@@ -28828,7 +30322,9 @@ define('render/TitleSvgRender',['require','./BaseRender','../utils/BaseUtils','.
 
                 var result = BaseUtils.splitText(cfg.text, cfg.style, textBounds.width);
 
-                var lineHeight = textDim.height / result.length;
+                var lineHeight = BaseUtils.getTextHeight(cfg.style);
+
+                result.length = Math.floor(textDim.height / lineHeight) || 1;
 
                 var x, textAnchor;
                 var align = cfg.align || 'left';
@@ -28933,7 +30429,9 @@ define('render/TitleSvgRender',['require','./BaseRender','../utils/BaseUtils','.
         remove:function(){
             if(this._titleG){
                 this._titleG.remove();
+                this._backgroundG.remove();
                 this._titleG = null;
+                this._backgroundG = null;
             }
             this.removeDivLabels();
         }
@@ -30034,12 +31532,16 @@ define('render/RadiusAxisSvgRender',['require','./BaseRender','../utils/BaseUtil
                     if(cfg.showLabel){
                         valueText.exit().remove();
                         valueText.enter().append('text').attr('class', VALUE_TEXT)
-                            .attr('x', -VALUE_TICK_GAP)
+                            .attr('x', function (d) {
+                                return -(VALUE_TICK_GAP + d.tickDim.width/2)
+                            })
                             .attr('y', function(d){
-                                return -lastScale(d.tickValue);
+                                return -(lastScale(d.tickValue) + d.tickDim.height/2);
                             })
                             .attr('transform', function(d){
-                                return 'rotate(' + labelRotation + ' 0 0)';
+                                var rx = -(VALUE_TICK_GAP + d.tickDim.width/2);
+                                var ry = -(lastScale(d.tickValue) + d.tickDim.height/2);
+                                return 'rotate(' + labelRotation + ' ' + rx + ' ' + ry + ')';
                             });
 
                         valueText.call(BaseUtils.setTextStyle, labelStyle);
@@ -30047,9 +31549,14 @@ define('render/RadiusAxisSvgRender',['require','./BaseRender','../utils/BaseUtil
                         d3.transition(valueText)
                             .text(function(d){return d.tickContent;})
                             .attr('y', function(d){
-                                return -scale(d.tickValue);
+                                return -(scale(d.tickValue) + d.tickDim.height/2);
                             })
-                            .style('text-anchor', 'end')
+                            .attr('transform', function(d){
+                                var rx = -(VALUE_TICK_GAP + d.tickDim.width/2);
+                                var ry = -(scale(d.tickValue) + d.tickDim.height/2);
+                                return 'rotate(' + labelRotation + ' ' + rx + ' ' + ry + ')';
+                            })
+                            .style('text-anchor', 'middle')
                     }else{
                         valueText.remove();
                     }
@@ -30775,7 +32282,9 @@ define('render/LegendSvgRender',['require','./BaseRender','../utils/BaseUtils','
                     var name = d.itemName;
                     vanchart.series.map(function(sery){
 
-                        if(sery.type == Constants.PIE_CHART || sery.type === Constants.MULTIPIE_CHART){
+                        if(sery.type == Constants.PIE_CHART ||
+                            sery.type === Constants.MULTIPIE_CHART ||
+                            sery.type === Constants.TREEMAP_CHART){
 
                             var key = sery.type == Constants.PIE_CHART ? 'seriesName': 'name';
                             sery.points.map(function(point){
@@ -31955,10 +33464,11 @@ define('render/VanChartSvgRender',['require','../Constants','./BaseRender','../u
  * Created by eason on 16/2/5.
  */
 
-define('ModernBrowserRequire',['require','./chart/Pie','./chart/MultiPie','./chart/Bar','./chart/Line','./chart/Area','./chart/Gauge','./chart/Radar','./chart/Bubble','./chart/Scatter','./chart/Map','./render/PieSvgRender','./render/MultiPieSvgRender','./render/BarSvgRender','./render/LineSvgRender','./render/AreaSvgRender','./render/GaugeSvgRender','./render/RadarSvgRender','./render/BubbleSvgRender','./render/ScatterSvgRender','./render/MapSvgRender','./render/DrillToolsSvgRender','./render/TitleSvgRender','./render/CategoryAxisSvgRender','./render/ValueAxisSvgRender','./render/RadiusAxisSvgRender','./render/AngleAxisSvgRender','./render/DateAxisSvgRender','./render/LegendSvgRender','./render/ToolbarSvgRender','./render/DataSheetSvgRender','./render/RangeLegendSvgRender','./VanCharts','./render/VanChartSvgRender'],function(require){
+define('ModernBrowserRequire',['require','./chart/Pie','./chart/MultiPie','./chart/TreeMap','./chart/Bar','./chart/Line','./chart/Area','./chart/Gauge','./chart/Radar','./chart/Bubble','./chart/Scatter','./chart/Map','./render/PieSvgRender','./render/MultiPieSvgRender','./render/TreeMapSvgRender','./render/BarSvgRender','./render/LineSvgRender','./render/AreaSvgRender','./render/GaugeSvgRender','./render/RadarSvgRender','./render/BubbleSvgRender','./render/ScatterSvgRender','./render/MapSvgRender','./render/DrillToolsSvgRender','./render/TitleSvgRender','./render/CategoryAxisSvgRender','./render/ValueAxisSvgRender','./render/RadiusAxisSvgRender','./render/AngleAxisSvgRender','./render/DateAxisSvgRender','./render/LegendSvgRender','./render/ToolbarSvgRender','./render/DataSheetSvgRender','./render/RangeLegendSvgRender','./VanCharts','./render/VanChartSvgRender'],function(require){
 
     require('./chart/Pie');
     require('./chart/MultiPie');
+    require('./chart/TreeMap');
     require('./chart/Bar');
     require('./chart/Line');
     require('./chart/Area');
@@ -31970,6 +33480,7 @@ define('ModernBrowserRequire',['require','./chart/Pie','./chart/MultiPie','./cha
 
     require('./render/PieSvgRender');
     require('./render/MultiPieSvgRender');
+    require('./render/TreeMapSvgRender');
     require('./render/BarSvgRender');
     require('./render/LineSvgRender');
     require('./render/AreaSvgRender');
@@ -32010,6 +33521,9 @@ define('render/RadarVmlRender',['require','./BaseRender','../utils/BaseUtils','.
     var RadarVmlRender = BaseRender.extend({
         render:function(){
 
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
             this._removeAll();
 
             var paper = this.component.getVanchartRender().getRenderRoot();
@@ -32024,16 +33538,25 @@ define('render/RadarVmlRender',['require','./BaseRender','../utils/BaseUtils','.
 
             this.markerMap = {};
 
-            this._drawRadarAxis(paper, radarCenter);
-
-            this._drawRadarSeries(paper, radarCenter);
-
-            this._drawDataLabels(paper, radarCenter);
-        },
-
-        _drawDataLabels:function(paper, radarCenter){
             var radarData = this.component.getVisibleChartData();
 
+            this._drawRadarAxis(paper, radarCenter);
+
+            this._drawRadarSeries(paper, radarCenter, radarData);
+
+            var self = this;
+            setTimeout(function(){
+
+                self._clearMoreLabel();
+
+                self._drawDataLabels(paper, radarCenter, radarData);
+
+            }, this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0);
+
+            this._drawVMLMoreLabel(radarData);
+        },
+
+        _drawDataLabels:function(paper, radarCenter, radarData){
             var labelSet = paper.set();
 
             this._axisSet.push(labelSet);
@@ -32046,8 +33569,7 @@ define('render/RadarVmlRender',['require','./BaseRender','../utils/BaseUtils','.
             }
         },
 
-        _drawRadarSeries:function(paper, radarCenter){
-            var radarData = this.component.getVisibleChartData();
+        _drawRadarSeries:function(paper, radarCenter, radarData){
 
             for(var i = 0, count = radarData.length; i < count; i++){
                 var seryData = radarData[i];
@@ -32434,8 +33956,14 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
 
     var THERMOMETER_R = 5;
 
+    var MORE_LABEL_KEY = 'more-label-key';
+
     var GaugeVmlRender = BaseRender.extend({
         render:function(){
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
+            this._lastValueMap = this.component.vanchart.vancharts.lastValueMap;
 
             this._removeAll();
 
@@ -32512,6 +34040,8 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
 
             this._drawGaugeLabels(paper, gaugeSet, d);
 
+            this._drawPointMoreLabel(d);
+
             this._drawPointerTicks(paper, gaugeSet, d, scale);
             //
             this._drawPointerArrow(paper, gaugeSet, d, scale);
@@ -32560,6 +34090,8 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
 
             this._drawGaugeLabels(paper, gaugeSet, d);
 
+            this._drawPointMoreLabel(d);
+
             this._drawPointerTicks(paper, gaugeSet, d, scale);
             //
             this._drawPointerArrow(paper, gaugeSet, d, scale);
@@ -32575,7 +34107,18 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
             );
         },
 
-        _drawGaugeLabels:function(paper, gaugeSet, d){
+        _drawGaugeLabels:function(paper, gaugeSet, d) {
+            var self = this;
+            setTimeout(function(){
+
+                self.labelDivManager.clearLabels(MORE_LABEL_KEY);
+
+                self._drawNormalLabels(paper, gaugeSet, d);
+
+            }, this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0);
+        },
+
+        _drawNormalLabels:function(paper, gaugeSet, d){
 
             if(d.seriesLabelContent){
                 this._drawLabel(paper, gaugeSet, d.seriesLabelContent, d.seriesLabelPos, d.seriesLabelStyle,
@@ -32627,6 +34170,68 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
             };
 
             this.labelDivManager.addLabel(labelContent, labelPos, labelStyle);
+        },
+
+        _drawPointMoreLabel: function (d) {
+            var plotBounds = this.component.getPlotBounds();
+
+            if(this._showMoreLabel) {//相对于圆心
+                var moreLabel = this.component.vanchart.currentOption.moreLabel;
+                var style = moreLabel.style || {"fontFamily": "verdana", "fontSize": "9pt"};
+                var singleLabelHeight = BaseUtils.getTextHeight(style);
+                var totalHeight = singleLabelHeight * d.points.length + singleLabelHeight / 2 * (d.points.length - 1);
+                var gap = Math.max(0, (d.radius - totalHeight)/2);
+                var startY = d.style == Constants.GAUGE_POINTER ?  gap : -d.radius + gap;
+                startY += (d.centerY + plotBounds.y);
+            }
+
+            for(var j = 0, len = d.points.length; j < len; j++){
+                var point = d.points[j];
+                var lastValue = this._lastValueMap[point.className] || 0;
+                this._lastValueMap[point.className] = point.value;
+
+                if(this._showMoreLabel) {
+                    this._showAndExitVMLMoreLabel(this._showMoreLabel, point,
+                        lastValue, d.centerX + plotBounds.x, startY, MORE_LABEL_KEY);
+                    startY += singleLabelHeight + singleLabelHeight / 2;
+                }
+            }
+        },
+
+        _drawRingAndSlotMoreLabel: function (d) {
+            var plotBounds = this.component.getPlotBounds();
+
+            var point = d.points[0];
+
+            if(!point){
+                return;
+            }
+            var lastValue = this._lastValueMap[point.className] || 0;
+            this._lastValueMap[point.className] = point.value;
+
+            this._showAndExitVMLMoreLabel(this._showMoreLabel, point,
+                lastValue, d.centerX + plotBounds.x, d.centerY + plotBounds.y, MORE_LABEL_KEY);
+        },
+
+        _drawThermometerMoreLabel: function (d, point, index) {
+            var plotBounds = this.component.getPlotBounds();
+
+            var lastValue = this._lastValueMap[point.className] || 0;
+            this._lastValueMap[point.className] = point.value;
+
+            if(this._showMoreLabel) {
+                var moreLabel = this.component.vanchart.currentOption.moreLabel;
+                var style = moreLabel.style || {"fontFamily": "verdana", "fontSize": "9pt"};
+                var labelDim = BaseUtils.getTextDimension(point.value - lastValue, style, false);
+
+                var vertical = d.thermometerLayout == Constants.VERTICAL_LAYOUT;
+
+                var centerX = vertical ? 0 - labelDim.width / 2 - THERMOMETER_R * 2 : index;
+                var centerY = vertical ? index : 0 - labelDim.height / 2 - THERMOMETER_R * 2;
+
+                this._showAndExitVMLMoreLabel(this._showMoreLabel, point,
+                    lastValue, d.centerX + centerX + plotBounds.x, d.centerY + centerY + plotBounds.y, MORE_LABEL_KEY);
+            }
         },
 
         _drawPointerArrow:function(paper, gaugeSet, d, scale){
@@ -32828,6 +34433,8 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
             );
 
             this._drawGaugeLabels(paper, gaugeSet, d);
+
+            this._drawRingAndSlotMoreLabel(d);
         },
 
         _createThermometer:function(paper, gaugeSet, d){
@@ -32884,6 +34491,8 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
             );
 
             this._drawGaugeLabels(paper, gaugeSet, d);
+
+            this._drawThermometerMoreLabel(d, point, scale(valueInDomain));
 
             this._drawHorizontalThermometerTicks(paper, gaugeSet, d, scale);
         },
@@ -32997,6 +34606,8 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
             );
 
             this._drawGaugeLabels(paper, gaugeSet, d);
+
+            this._drawThermometerMoreLabel(d, point, scale(valueInDomain));
 
             this._drawVerticalThermometerTicks(paper, gaugeSet, d, scale);
         },
@@ -33122,6 +34733,8 @@ define('render/GaugeVmlRender',['require','../utils/BaseUtils','../Constants','.
             );
 
             this._drawGaugeLabels(paper, gaugeSet, d);
+
+            this._drawRingAndSlotMoreLabel(d);
         },
 
         _removeAll:function(){
@@ -33146,6 +34759,9 @@ define('render/LineVmlRender',['require','./BaseRender','../utils/BaseUtils','..
 
     var LineVmlRender = BaseRender.extend({
         render:function(){
+
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
 
             this._removeAll();
 
@@ -33268,7 +34884,15 @@ define('render/LineVmlRender',['require','./BaseRender','../utils/BaseUtils','..
                 });
             });
 
-            this._drawDataLabels(paper);
+            setTimeout(function(){
+
+                self._clearMoreLabel();
+
+                self._drawDataLabels(paper);
+
+            }, this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0);
+
+            this._drawVMLMoreLabel(lines);
 
             this._lineSet.transform('t' + plotBounds.x + ',' + plotBounds.y);
         },
@@ -33357,6 +34981,9 @@ define('render/BarVmlRender',['require','./BaseRender','../utils/BaseUtils','../
 
         render:function(){
 
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
             this._removeAll();
 
             var paper = this.component.getVanchartRender().getRenderRoot();
@@ -33384,7 +35011,16 @@ define('render/BarVmlRender',['require','./BaseRender','../utils/BaseUtils','../
 
             barSet.transform('t' + plotBounds.x + ',' + plotBounds.y);
 
-            this._drawDataLabels(paper);
+            var self = this;
+            setTimeout(function(){
+
+                self._clearMoreLabel();
+
+                self._drawDataLabels(paper);
+
+            }, this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0);
+
+            this._drawVMLMoreLabel(series);
         },
 
         _createBar:function(d, paper, clipRect){
@@ -33506,6 +35142,9 @@ define('render/PieVmlRender',['require','./BaseRender','../utils/BaseUtils','../
     var PieVmlRender = BaseRender.extend({
         render:function(){
 
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
             this._removeAll();
 
             var paper = this.component.getVanchartRender().getRenderRoot();
@@ -33563,8 +35202,19 @@ define('render/PieVmlRender',['require','./BaseRender','../utils/BaseUtils','../
 
                 pathSet.transform('t' + translateX + ',' + translateY);
             }
-            //标签
-            this._renderDataLabels(paper);
+
+            var self = this;
+            setTimeout(function(){
+
+                self._clearMoreLabel();
+
+                //标签
+                self._renderDataLabels(paper);
+
+            }, this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0);
+
+            this._drawVMLMoreLabel(arcMap);
+
         },
 
         _renderDataLabels:function(paper){
@@ -33653,6 +35303,9 @@ define('render/MultiPieVmlRender',['require','./BaseRender','../utils/BaseUtils'
     var MultiPieVmlRender = BaseRender.extend({
         render:function(){
 
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
             this._removeAll();
         
             var paper = this.component.getVanchartRender().getRenderRoot();
@@ -33707,8 +35360,36 @@ define('render/MultiPieVmlRender',['require','./BaseRender','../utils/BaseUtils'
 
             pathSet.transform('t' + center[0] + ',' + center[1]);
 
-            //标签
-            this._renderDataLabels(paper);
+            var self = this;
+            setTimeout(function(){
+
+                self._clearMoreLabel();
+
+                //标签
+                this._renderDataLabels(paper);
+
+            }, this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0);
+
+            this._drawMoreLabel(points);
+        },
+
+
+        _drawMoreLabel: function (nodes) {
+            var lastValueMap = this.component.vanchart.vancharts.lastValueMap;
+
+            var plotBounds = this.component.getPlotBounds();
+            var transX = plotBounds.x, transY = plotBounds.y;
+            var center = this.component.getCenter();
+            transX += center[0];
+            transY += center[1];
+
+            for(var j = 0, len = nodes.length; j < len; j++){
+                var point = nodes[j];
+                var lastValue = lastValueMap[point.className] || 0;
+                lastValueMap[point.className] = point.value;
+
+                this._showAndExitVMLMoreLabel(this._showMoreLabel, point, lastValue, transX, transY);
+            }
         },
 
         _renderDataLabels:function(paper){
@@ -33837,6 +35518,166 @@ define('render/MultiPieVmlRender',['require','./BaseRender','../utils/BaseUtils'
     return MultiPieVmlRender;
 });
 /**
+ * Created by Yuqian on 16/7/21.
+ */
+define('render/TreeMapVmlRender',['require','./BaseRender','../Constants','../utils/BaseUtils','../utils/ColorUtils','./RenderLibrary'],function(require){
+
+    var BaseRender = require('./BaseRender');
+    var Constants = require('../Constants');
+    var BaseUtils = require('../utils/BaseUtils');
+    var ColorUtils = require('../utils/ColorUtils');
+
+    var DET_MIN = 1E-8;
+
+    var TreeMapVmlRender = BaseRender.extend({
+        render:function(){
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
+            this._removeAll();
+
+            var paper = this.component.getVanchartRender().getRenderRoot();
+            var plotBounds = this.component.getPlotBounds();
+
+            this._bodySet = paper.set();
+
+            var rectSet = paper.set();
+            this._bodySet.push(rectSet);
+
+            var bounds = {x: 0, y: 0, width: plotBounds.width + DET_MIN, height: plotBounds.height + DET_MIN};
+            var nodes = this.component.getChartNodes()
+                .filter(function (node) {
+                    return BaseUtils.containsRect(
+                        bounds,
+                        {x: node.x, y: node.y, width: node.dx, height: node.dy}
+                    )
+                });
+
+            nodes.map(function (d) {
+                rectSet.push(this._createRect(d, paper));
+            }, this);
+
+            rectSet.transform('t' + plotBounds.x + ',' + plotBounds.y);
+
+            var self = this;
+            setTimeout(function(){
+
+                self._clearMoreLabel();
+
+                self._renderDataLabels(paper);
+
+            }, this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0);
+
+            this._drawMoreLabel(nodes);
+        },
+
+        _drawMoreLabel: function (nodes) {
+            var lastValueMap = this.component.vanchart.vancharts.lastValueMap;
+
+            var plotBounds = this.component.getPlotBounds();
+            var transX = plotBounds.x, transY = plotBounds.y;
+
+            for(var j = 0, len = nodes.length; j < len; j++){
+                var point = nodes[j];
+                var lastValue = lastValueMap[point.className] || 0;
+                lastValueMap[point.className] = point.value;
+
+                this._showAndExitVMLMoreLabel(this._showMoreLabel, point, lastValue, transX, transY);
+            }
+        },
+
+        _createRect:function(d, paper){
+
+            var rect = paper.rect(d.x, d.y, d.dx, d.dy)
+                .attr({
+                    fill: d.color,
+                    'fill-opacity': ColorUtils.getColorOpacityWithoutDefault(d.color),
+                    stroke: d.borderColor,
+                    'stroke-width': d.borderWidth
+                })
+                .datum(d);
+
+            this.addShapeEventHandler(rect);
+
+            return rect;
+        },
+
+        zoom: function () {
+            this.render();
+        },
+
+        _renderDataLabels:function(paper){
+
+            var plotBounds = this.component.getPlotBounds();
+
+            var labelSet = paper.set();
+            this._bodySet.push(labelSet);
+
+            var points = this.component.getChartNodes();
+
+            this._drawVmlDataLabels(paper, labelSet, points, plotBounds.x, plotBounds.y);
+        },
+
+        _removeAll:function(){
+            if(this._bodySet){
+                this._bodySet.remove();
+            }
+            this.labelDivManager.clearAllLabels();
+        },
+
+        mouseOver:function(event){
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target.attr({
+                    'fill': d.mouseOverColor,
+                    'fill-opacity': ColorUtils.getColorOpacityWithoutDefault(d.mouseOverColor)
+                });
+            }
+        },
+
+        mouseOut:function(event){
+            this.component.vanchart.getTooltip().hide();
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target.attr({
+                    'fill': d.color,
+                    'fill-opacity': ColorUtils.getColorOpacityWithoutDefault(d.color)
+                });
+
+            }
+        },
+
+        mouseDown: function (event) {
+            if(event && event.target){
+                var d = event.target.datum();
+                event.target.attr({
+                    'fill': d.clickColor,
+                    'fill-opacity': ColorUtils.getColorOpacityWithoutDefault(d.clickColor)
+                });
+            }
+        },
+
+        mouseUp: function (event) {
+            if(event && event.target){
+                var d = event.target.datum();
+
+                event.target.attr({
+                    'fill': d.color,
+                    'fill-opacity': ColorUtils.getColorOpacityWithoutDefault(d.color)
+                });
+
+                if (this.component.getZoom()) {
+                    this.component.zoomTo(d);
+                }
+            }
+        }
+    });
+
+    require('./RenderLibrary').register(Constants.TREEMAP_VML, TreeMapVmlRender);
+
+    return TreeMapVmlRender;
+});
+/**
  * Created by Mitisky on 16/3/14.
  */
 define('render/BubbleVmlRender',['require','./BaseRender','../utils/BaseUtils','../Constants','./RenderLibrary'],function(require){
@@ -33847,6 +35688,9 @@ define('render/BubbleVmlRender',['require','./BaseRender','../utils/BaseUtils','
     var BubbleVmlRender = BaseRender.extend({
 
         render:function(){
+            this._showMoreLabel = this.component.vanchart.isChangeDataState()
+                && BaseUtils.hasDefined(this.component.vanchart.currentOption.moreLabel);
+
             this._removeAll();
 
             var paper = this.component.getVanchartRender().getRenderRoot();
@@ -33854,16 +35698,44 @@ define('render/BubbleVmlRender',['require','./BaseRender','../utils/BaseUtils','
             this._bodySet = paper.set();
 
             this.shapeMap = {};
-            this._createBubbles(paper);
+
+            var seriesS = this.component.getVisibleChartData();
+
+            this._createBubbles(paper, seriesS);
+
+            var self = this;
+            setTimeout(function(){
+
+                self._clearMoreLabel();
+
+                self._drawNormalLabel(paper, seriesS);
+
+            }, this._showMoreLabel ? this._getAllMoreLabelAnimationTime() : 0);
+
+            this._drawVMLMoreLabel(seriesS);
         },
 
         filterRender: function () {
             this.render();
         },
 
-        _createBubbles:function(paper){
+        _drawNormalLabel: function (paper, seriesS) {
             var plotBounds = this.component.getPlotBounds();
-            var seriesS = this.component.getVisibleChartData();
+
+            var transX = plotBounds.x;
+            var transY = plotBounds.y;
+
+            for(var i = 0, count = seriesS.length; i < count; i++){
+                var points = seriesS[i].points;
+
+                var labelSet = paper.set();
+                this._bodySet.push(labelSet);
+                this._drawVmlDataLabels(paper, labelSet, points, transX, transY);
+            }
+        },
+
+        _createBubbles:function(paper, seriesS){
+            var plotBounds = this.component.getPlotBounds();
 
             var bubbleSet = paper.set();
 
@@ -33884,10 +35756,6 @@ define('render/BubbleVmlRender',['require','./BaseRender','../utils/BaseUtils','
                         );
                     }
                 }
-
-                var labelSet = paper.set();
-                this._bodySet.push(labelSet);
-                this._drawVmlDataLabels(paper, labelSet, points, transX, transY);
             }
 
             this._bodySet.push(bubbleSet);
@@ -34088,7 +35956,6 @@ define('render/MapVmlRender',['require','../utils/ColorUtils','../Constants','./
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
                             areaLayers[i].setStyle({
-                                stroke:false,
                                 fillColor:feature.color,
                                 fillOpacity:feature.fillColorOpacity,
                                 weight:0
@@ -34210,7 +36077,7 @@ define('render/DrillToolsVmlRender',['require','./BaseRender','../Constants','..
                             map.drillUp(d);
                         });
 
-                    var text = paper.text((dTools.leftPadding(d)*textHeight) + textDim.width/2, (dTools.topPadding() + 0.5) * textHeight, label)
+                    var text = paper.text((dTools.leftPadding(d)*textHeight) + textDim.width/2, (dTools.topPadding() + 0.85) * textHeight, label)
                         .attr(BaseUtils.cssNormalization(textStyle))
                         .transform('t' + transX + ',' + transY)
                         .click(function(){
@@ -34967,7 +36834,9 @@ define('render/LegendVmlRender',['require','./BaseRender','../utils/BaseUtils','
 
             vanchart.series.map(function(sery){
 
-                if(sery.type == Constants.PIE_CHART || sery.type === Constants.MULTIPIE_CHART){
+                if(sery.type == Constants.PIE_CHART ||
+                    sery.type === Constants.MULTIPIE_CHART ||
+                    sery.type === Constants.TREEMAP_CHART){
 
                     var key = sery.type == Constants.PIE_CHART ? 'seriesName': 'name';
                     sery.points.map(function(point){
@@ -36142,7 +38011,9 @@ define('render/TitleVmlRender',['require','./BaseRender','../utils/BaseUtils','.
             } else {
                 var result = BaseUtils.splitText(cfg.text, cfg.style, textBounds.width);
 
-                var lineHeight = textDim.height / result.length;
+                var lineHeight = BaseUtils.getTextHeight(cfg.style);
+
+                result.length = Math.floor(textDim.height / lineHeight) || 1;
 
                 var textStyle = BaseUtils.cssNormalization(cfg.style);
 
@@ -36857,10 +38728,11 @@ define('render/VanChartVmlRender',['require','./BaseRender','../utils/BaseUtils'
  * Created by eason on 16/2/5.
  */
 
-define('IERequire',['require','./chart/Pie','./chart/MultiPie','./chart/Bar','./chart/Line','./chart/Area','./chart/Gauge','./chart/Radar','./chart/Bubble','./chart/Scatter','./chart/Map','./render/RadarVmlRender','./render/GaugeVmlRender','./render/AreaVmlRender','./render/LineVmlRender','./render/BarVmlRender','./render/PieVmlRender','./render/MultiPieVmlRender','./render/BubbleVmlRender','./render/ScatterVmlRender','./render/MapVmlRender','./render/DrillToolsVmlRender','./render/DataSheetVmlRender','./render/ToolbarVmlRender','./render/LegendVmlRender','./render/AngleAxisVmlRender','./render/RadiusAxisVmlRender','./render/DateAxisVmlRender','./render/ValueAxisVmlRender','./render/CategoryAxisVmlRender','./render/TitleVmlRender','./render/RangeLegendVmlRender','./VanCharts','./render/VanChartVmlRender'],function(require){
+define('IERequire',['require','./chart/Pie','./chart/MultiPie','./chart/TreeMap','./chart/Bar','./chart/Line','./chart/Area','./chart/Gauge','./chart/Radar','./chart/Bubble','./chart/Scatter','./chart/Map','./render/RadarVmlRender','./render/GaugeVmlRender','./render/AreaVmlRender','./render/LineVmlRender','./render/BarVmlRender','./render/PieVmlRender','./render/MultiPieVmlRender','./render/TreeMapVmlRender','./render/BubbleVmlRender','./render/ScatterVmlRender','./render/MapVmlRender','./render/DrillToolsVmlRender','./render/DataSheetVmlRender','./render/ToolbarVmlRender','./render/LegendVmlRender','./render/AngleAxisVmlRender','./render/RadiusAxisVmlRender','./render/DateAxisVmlRender','./render/ValueAxisVmlRender','./render/CategoryAxisVmlRender','./render/TitleVmlRender','./render/RangeLegendVmlRender','./VanCharts','./render/VanChartVmlRender'],function(require){
 
     require('./chart/Pie');
     require('./chart/MultiPie');
+    require('./chart/TreeMap');
     require('./chart/Bar');
     require('./chart/Line');
     require('./chart/Area');
@@ -36877,6 +38749,7 @@ define('IERequire',['require','./chart/Pie','./chart/MultiPie','./chart/Bar','./
     require('./render/BarVmlRender');
     require('./render/PieVmlRender');
     require('./render/MultiPieVmlRender');
+    require('./render/TreeMapVmlRender');
     require('./render/BubbleVmlRender');
     require('./render/ScatterVmlRender');
     require('./render/MapVmlRender');
@@ -36916,6 +38789,7 @@ require('chart/Radar');
 require('chart/Scatter');
 require('chart/Bubble');
 require('chart/Map');
+require('chart/TreeMap');
 
 require('render/VanChartSvgRender');
 require('render/VanChartVmlRender');
@@ -36934,6 +38808,7 @@ require('render/DrillToolsSvgRender');
 
 require('render/PieSvgRender');
 require('render/MultiPieSvgRender');
+require('render/TreeMapSvgRender');
 require('render/BarSvgRender');
 require('render/LineSvgRender');
 require('render/AreaSvgRender');
@@ -36950,6 +38825,7 @@ require('render/LineVmlRender');
 require('render/BarVmlRender');
 require('render/PieVmlRender');
 require('render/MultiPieVmlRender');
+require('render/TreeMapVmlRender');
 require('render/ScatterVmlRender');
 require('render/BubbleVmlRender');
 require('render/MapVmlRender');

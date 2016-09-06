@@ -28,6 +28,7 @@ import java.util.*;
  */
 public class ResourceHelper {
     public static Transmitter DataTransmitter = new Transmitter() {
+
         @Override
         public String transmit(HttpServletRequest req, HttpServletResponse res, String[] files) {
             return getDataJs(req, files);
@@ -59,11 +60,100 @@ public class ResourceHelper {
         }
     }
 
-    public static FormulaTransmitter FormulaTransmitter = new FormulaTransmitter();
+    public static class MapConstantTransmitter implements Transmitter {
 
+        private JSONObject innerMapInfo;
+        private JSONObject customMapInfo;
+        private JSONObject wmsInfo;
+
+        @Override
+        public String transmit(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String[] files) {
+            Map<String, JSONObject> map = new HashMap<String, JSONObject>();
+            StringBuilder buffer = new StringBuilder();
+            try {
+                innerMapInfo = new JSONObject();
+                customMapInfo = new JSONObject();
+                wmsInfo = new JSONObject();
+                map.put("wmsInfo", wmsInfo);
+                map.put("custom_map_info", customMapInfo);
+                map.put("inner_map_info", innerMapInfo);
+                customMapInfo.put("MAP_NAME", new JSONObject());
+                customMapInfo.put("MAP_TYPE_NAME", new JSONObject());
+                customMapInfo.put("MAP_PATH", new JSONObject());
+                customMapInfo.put("MAP_LAYER", new JSONObject());
+                customMapInfo.put("MAP_PARENT_CHILDREN", new JSONObject());
+                innerMapInfo.put("MAP_NAME", new JSONObject());
+                innerMapInfo.put("MAP_TYPE_NAME", new JSONObject());
+                innerMapInfo.put("MAP_PATH", new JSONObject());
+                innerMapInfo.put("MAP_LAYER", new JSONObject());
+                innerMapInfo.put("MAP_PARENT_CHILDREN", new JSONObject());
+
+                formatWMSData();
+                formatMapData();
+                for (String file : files) {
+                    buffer.append(TemplateUtils.renderTemplate(file, map));
+                }
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage());
+            }
+            return buffer.toString();
+        }
+
+        private void formatMapData() throws JSONException{
+            BIMapInfoManager manager = BIMapInfoManager.getInstance();
+            for (Map.Entry<String, Integer> innerLayerEntry : manager.getinnerMapLayer().entrySet()) {
+                innerMapInfo.getJSONObject("MAP_LAYER").put(innerLayerEntry.getKey(), innerLayerEntry.getValue());
+            }
+            for (Map.Entry<String, String> innerNameEntry : manager.getinnerMapName().entrySet()) {
+                innerMapInfo.getJSONObject("MAP_NAME").put(innerNameEntry.getKey(), innerNameEntry.getValue());
+            }
+            for (Map.Entry<String, String> innerTypeNameEntry : manager.getinnerMapTypeName().entrySet()) {
+                innerMapInfo.getJSONObject("MAP_TYPE_NAME").put(innerTypeNameEntry.getKey(), innerTypeNameEntry.getValue());
+            }
+            for (Map.Entry<String, String> innerPathEntry : manager.getinnerMapPath().entrySet()) {
+                innerMapInfo.getJSONObject("MAP_PATH").put(innerPathEntry.getKey(), innerPathEntry.getValue());
+            }
+            for (Map.Entry<String, List<String>> innerParentChildrenEntry : manager.getinnerMapParentChildrenRelation().entrySet()) {
+                innerMapInfo.getJSONObject("MAP_PARENT_CHILDREN").put(innerParentChildrenEntry.getKey(), innerParentChildrenEntry.getValue());
+            }
+            for (Map.Entry<String, Integer> customLayerEntry : manager.getCustomMapLayer().entrySet()) {
+                customMapInfo.getJSONObject("MAP_LAYER").put(customLayerEntry.getKey(), customLayerEntry.getValue());
+            }
+            for (Map.Entry<String, String> customNameEntry : manager.getCustomMapName().entrySet()) {
+                customMapInfo.getJSONObject("MAP_NAME").put(customNameEntry.getKey(), customNameEntry.getValue());
+            }
+            for (Map.Entry<String, String> customTypeNameEntry : manager.getCustomMapTypeName().entrySet()) {
+                customMapInfo.getJSONObject("MAP_TYPE_NAME").put(customTypeNameEntry.getKey(), customTypeNameEntry.getValue());
+            }
+            for (Map.Entry<String, String> customPathEntry : manager.getCustomMapPath().entrySet()) {
+                customMapInfo.getJSONObject("MAP_PATH").put(customPathEntry.getKey(), customPathEntry.getValue());
+            }
+            for (Map.Entry<String, List<String>> customParentChildrenEntry : manager.getCustomMapParentChildrenRelation().entrySet()) {
+                customMapInfo.getJSONObject("MAP_PARENT_CHILDREN").put(customParentChildrenEntry.getKey(), customParentChildrenEntry.getValue());
+            }
+        }
+
+        private void formatWMSData() throws JSONException {
+            BIWMSManager manager = BIWMSManager.getInstance();
+            Map<String, JSONObject> map = manager.getWMSInfo();
+            for (Map.Entry<String, JSONObject> entry : map.entrySet()) {
+                String key = entry.getKey();
+                JSONObject value = entry.getValue();
+                wmsInfo.put(key, value);
+            }
+        }
+    }
+
+    public static MapConstantTransmitter MapTransmitter = new MapConstantTransmitter();
+
+    public static FormulaTransmitter FormulaTransmitter = new FormulaTransmitter();
 
     public static String[] getDataJS() {
         return new String[]{"/com/fr/bi/web/js/template/pool.data.js"};
+    }
+
+    public static String[] getMapJS() {
+        return new String[]{"/com/fr/bi/web/js/template/map.js"};
     }
 
     public static String[] getFormulaCollectionJS() {
@@ -912,6 +1002,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/model.dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.control.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",
@@ -1516,6 +1607,7 @@ public class ResourceHelper {
                 //表更新
                 "com/fr/bi/web/js/extend/update/update.tabledata.js",
                 "com/fr/bi/web/js/extend/update/update.tabledata.model.js",
+                "com/fr/bi/web/js/extend/update/singletable/item/item.singletable.timesetting.js",
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.js",
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.js",
@@ -1669,6 +1761,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/layer/layer.multiselect.css",
                 "com/fr/bi/web/css/base/layer/layer.panel.css",
                 "com/fr/bi/web/css/base/reqloading/loading.request.css",
+                "com/fr/bi/web/css/base/logintimeout/login.timeout.css",
 
                 "com/fr/bi/web/css/utils/widget.css",
                 "com/fr/bi/web/css/utils/color.css",
@@ -1900,6 +1993,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/css/widget/sequencetable/listnumber.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/treenumber.sequencetable.css",
+                "com/fr/bi/web/css/widget/sequencetable/dynamicnumber.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/sequencetable.css",
 
 
@@ -2278,6 +2372,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/chart/chart.combine.js",
                 "com/fr/bi/web/js/case/chart/factory.charts.js",
 
+                "com/fr/bi/web/js/case/logintimeout/login.timeout.js",
+
                 /**
                  * 基础类控件
                  */
@@ -2621,7 +2717,7 @@ public class ResourceHelper {
                 //带序号表格
                 "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
-                "com/fr/bi/web/js/widget/sequencetable/summarynumber.sequencetable.js",
+                "com/fr/bi/web/js/widget/sequencetable/dynamicnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/sequencetable.js",
 
                 //图片组件
@@ -2729,6 +2825,9 @@ public class ResourceHelper {
         return new String[] {
                 "com/fr/bi/web/mobile/mobile.jQuery.js",
                 "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/es5-sham.js",
+                "com/fr/bi/web/js/third/raphael.js",
+                "com/fr/bi/web/js/third/leaflet.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
                 "com/fr/bi/web/js/core/underscore.js",
                 "com/fr/bi/web/js/base/base.js",

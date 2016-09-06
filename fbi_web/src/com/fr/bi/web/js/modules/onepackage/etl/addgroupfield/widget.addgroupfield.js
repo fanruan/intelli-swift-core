@@ -329,9 +329,22 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
                 etl_value: {
                     new_groups: new_groups
                 },
-                tables: self.model.getAllTables(),
+                tables: self.model.getAllTables()
             };
-            self.fireEvent(BI.AddGroupField.EVENT_SAVE, data);
+            var mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: self.element,
+                text: BI.i18nText("BI-Loading")
+            });
+            BI.Utils.getTablesDetailInfoByTables([data], function (sourceTables) {
+                var table = sourceTables[0];
+                if(BI.isNotNull(table)) {
+                    data.fields = table.fields;
+                }
+                self.fireEvent(BI.AddGroupField.EVENT_SAVE, data);
+            }, function() {
+                mask.destroy();
+            });
         });
 
         cancel.on(BI.Button.EVENT_CHANGE, function () {

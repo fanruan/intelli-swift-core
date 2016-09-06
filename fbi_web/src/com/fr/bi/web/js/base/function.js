@@ -114,7 +114,7 @@ $(function () {
             var url2 = /\/[^\s]*/;
             if (address.match(url1) || address.match(url2)) {
                 temp = address;
-            } else {
+            } else if (BI.isNotEmptyString(address)) {
                 temp = "http://" + address;
             }
             return temp;

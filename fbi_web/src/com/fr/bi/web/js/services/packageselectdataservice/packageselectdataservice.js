@@ -15,6 +15,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             showRelativeTables: false,
             showExcelView: false,
             showDateGroup: false,
+            showTime: false,    //时刻
             packageCreator: function () {
                 return BI.Utils.getAllGroupedPackagesTreeJSON();
             },
@@ -637,7 +638,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         var fieldName = field.text || BI.Utils.getFieldNameByID(fieldId) || "";
         var drag = this._createDrag(fieldName);
         var prefix = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName + ".";
-        return [BI.extend({
+
+        var children = [BI.extend({
             wId: o.wId,
             type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
             fieldType: BICst.COLUMN.DATE,
@@ -712,22 +714,27 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.YMD}
             }
-        }), BI.extend({
-            wId: o.wId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            fieldType: BICst.COLUMN.DATE,
-            drag: drag
-        }, field, {
-            id: fieldId + BICst.GROUP.YMDHMS,
-            pId: fieldId,
-            text: BI.i18nText("BI-Time_ShiKe"),
-            title: prefix + BI.i18nText("BI-Time_ShiKe"),
-            layer: isRelation ? 3 : 2,
-            value: {
-                field_id: fieldId,
-                group: {type: BICst.GROUP.YMDHMS}
-            }
         })];
+        //时刻加在明细表里面
+        if (o.showTime === true) {
+            children.push(BI.extend({
+                wId: o.wId,
+                type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+                fieldType: BICst.COLUMN.DATE,
+                drag: drag
+            }, field, {
+                id: fieldId + BICst.GROUP.YMDHMS,
+                pId: fieldId,
+                text: BI.i18nText("BI-Time_ShiKe"),
+                title: prefix + BI.i18nText("BI-Time_ShiKe"),
+                layer: isRelation ? 3 : 2,
+                value: {
+                    field_id: fieldId,
+                    group: {type: BICst.GROUP.YMDHMS}
+                }
+            }));
+        }
+        return children;
     },
 
     setPackage: function (id) {

@@ -76,14 +76,10 @@ BI.ChartTypeShow = BI.inherit(BI.Widget, {
                 }
             } else {
                 if (item.value === BICst.WIDGET.MAP) {
-                    BI.each(BICst.SVG_MAP_TYPE, function (i, it) {
-                        it.iconClass = it.cls;
-                    });
                     if (item.value === wType) {
                         result.push(BI.extend({
                             type: "bi.map_type_combo_show",
                             width: 40,
-                            items: BICst.SVG_MAP_TYPE,
                             iconWidth: 24,
                             iconHeight: 24
                         }, {

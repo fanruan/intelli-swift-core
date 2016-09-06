@@ -172,7 +172,7 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager",
+            type: "bi.dimensions_manager_control",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
                 if (!dimensionsVessel[dId]) {
@@ -193,7 +193,7 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
             }
         });
 
-        this.dimensionsManager.on(BI.DimensionsManager.EVENT_CHANGE, function () {
+        this.dimensionsManager.on(BI.DimensionsManagerControl.EVENT_CHANGE, function () {
             var values = this.getValue();
             var dimArr = values.view[BICst.REGION.DIMENSION1];
             values.view[BICst.REGION.DIMENSION1] = [BI.last(dimArr)];
@@ -222,6 +222,8 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             this.dimensionsManager.populate();
+            this.combo.setValue();
+            this.model.set("value", this.combo.getValue());
         }
     },
 

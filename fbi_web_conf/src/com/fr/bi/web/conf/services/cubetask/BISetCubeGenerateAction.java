@@ -23,20 +23,16 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        String baseTableId = WebUtils.getHTTPRequestParameter(req, "baseTableId");
-        String ELTTableId = WebUtils.getHTTPRequestParameter(req, "ETLTableId");
-        Boolean isETL = Boolean.valueOf(WebUtils.getHTTPRequestParameter(req, "isETL"));
+        String baseTableSourceId = WebUtils.getHTTPRequestParameter(req, "baseTableSourceId");
+        String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
+//        Boolean isETL = Boolean.valueOf(WebUtils.getHTTPRequestParameter(req, "isETL"));
+        int updateType = WebUtils.getHTTPRequestIntParameter(req, "updateType");
         BIConfigureManagerCenter.getLogManager().logStart(userId);
         boolean cubeBuild;
-        if (StringUtils.isEmpty(baseTableId)) {
+        if (StringUtils.isEmpty(baseTableSourceId)) {
             cubeBuild = CubeTaskHelper.CubeBuildStaff(userId);
         } else {
-            if (isETL) {
-                cubeBuild = CubeTaskHelper.CubeBuildETL(userId, new BITableID(ELTTableId), new BITableID(baseTableId));
-            } else {
-                cubeBuild = CubeTaskHelper.CubeBuildSingleTable(userId, new BITableID(baseTableId));
-            }
-        }
+            cubeBuild = CubeTaskHelper.CubeBuildSingleTable(userId, new BITableID(tableId), baseTableSourceId,updateType);        }
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
         BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
