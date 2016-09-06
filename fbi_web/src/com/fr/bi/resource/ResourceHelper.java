@@ -7,6 +7,8 @@ import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.report.map.BIMapInfoManager;
+import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
