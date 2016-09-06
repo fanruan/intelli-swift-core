@@ -15,6 +15,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.*;
@@ -55,6 +56,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     public void buildStructure() {
         columnManager.buildStructure();
+        tableProperty.buildStructure();
     }
 
     private void flushProperty() {
@@ -94,6 +96,10 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
+        try {
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
         Iterator<Integer> it = removedLine.iterator();
         int row = 0;
         while (it.hasNext()) {
