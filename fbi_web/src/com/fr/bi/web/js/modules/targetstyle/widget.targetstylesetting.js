@@ -57,6 +57,13 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         });
         this.format.setValue(styleSettings.format);
 
+        this.separators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+        this.separators.setSelected(styleSettings.num_separators);
+
         this.numLevel = BI.createWidget({
             type: "bi.segment",
             items: BICst.TARGET_STYLE_LEVEL,
@@ -135,7 +142,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
                     height: this.constants.LABEL_HEIGHT,
                     width: this.constants.LABEL_WIDTH,
                     textAlign: "left"
-                }, this.format],
+                }, this.format, this.separators],
                 hgap: 5
             }, {
                 type: "bi.left",
@@ -182,7 +189,8 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
             unit: this.unit.getValue(),
             icon_style: this.iconStyle.getValue()[0],
             mark: BI.isNotNull(this.mark) ? this.mark.getValue() : 0,
-            conditions: this.conditions.getValue()
+            conditions: this.conditions.getValue(),
+            num_separators: this.separators.isSelected()
         }
     }
 });

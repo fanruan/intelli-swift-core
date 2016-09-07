@@ -7,6 +7,8 @@ import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.report.map.BIMapInfoManager;
+import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
@@ -802,6 +804,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/combo.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",
 
                 //警戒线

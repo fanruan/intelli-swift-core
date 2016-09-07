@@ -33,5 +33,6 @@ public class BIChartSettingConstant {
     public final static int RIGHT_AXIS_SECOND = 2;
     public final static int PERCENT_DASHBOARD = 10;
     public final static int PERCENT_SCALE_SLOT = 11;
-    
+    public final static String GIS_MAP_PATH = "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}";
+    public final static String KNOWLEDGE_RIGHT = "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>";
 }

@@ -605,5 +605,15 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     public boolean isCubeLastUpdateTimeAvailable() {
         return getTimeStampReader().canRead();
     }
+
+    @Override
+    public void buildStructure()  {
+        try {
+            initialRemovedListReader();
+            initialRemovedListWriter();
+        } catch (Exception e) {
+            BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
+    }
 }
 
