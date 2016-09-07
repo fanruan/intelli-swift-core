@@ -7,7 +7,6 @@ import com.fr.bi.stable.utils.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import java.util.HashSet;
 

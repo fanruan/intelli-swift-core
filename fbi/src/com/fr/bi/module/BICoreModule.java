@@ -341,7 +341,7 @@ public class BICoreModule extends AbstractModule {
             BILogger.getLogger().info("Table " + tableName + " has been deleted successfully");
             cn.commit();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            //BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             DBUtils.closeStatement(ps);
             DBUtils.closeConnection(cn);
