@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.report.report.widget.chart;
 import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -16,7 +15,10 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by User on 2016/8/31.
@@ -122,6 +124,7 @@ public class BIChartDataConvertFactory {
             if(type == BIReportConstant.WIDGET.GIS_MAP){
                 options.put("geo", new JSONObject().put("tileLayer", BIChartSettingConstant.GIS_MAP_PATH).put("attribution", BIChartSettingConstant.KNOWLEDGE_RIGHT));
             }
+            options.put("cordon", getCordon(widget, widget.getDimensions(), showTargets)).put("tooltip", getToolTip(type, showTargets));
             return new JSONObject().put("types", types).put("data", convertedData).put("options", options);
         } catch (JSONException e) {
             BILogger.getLogger().error(e.getMessage());
@@ -494,7 +497,7 @@ public class BIChartDataConvertFactory {
         return new JSONArray();
     }
 
-    private String getToolTip(int type, BISummaryTarget[] showTargets){
+    private static String getToolTip(int type, BISummaryTarget[] showTargets){
         switch (type) {
             case BIReportConstant.WIDGET.SCATTER:
                 if(showTargets.length < 2){
@@ -516,12 +519,15 @@ public class BIChartDataConvertFactory {
         }
     }
 
-    private JSONArray getCordon(MultiChartWidget widget, BIAbstractTargetAndDimension[] showDimensionAndTargets) throws JSONException{
+    private static JSONArray getCordon(MultiChartWidget widget, BIDimension[] dimensions, BISummaryTarget[] targets) throws JSONException{
         JSONObject cordon = new JSONObject();
         JSONArray result = new JSONArray();
-        for(int i = 0; i < showDimensionAndTargets.length; i++){
+        for(int i = 0; i < dimensions.length + targets.length; i++){
+            if(i < dimensions.length && !dimensions[i].isUsed()){
+                continue;
+            }
             JSONArray items = new JSONArray();
-            JSONArray cordons = showDimensionAndTargets[i].getChartSetting().getCordon();
+            JSONArray cordons = (i >= dimensions.length ? targets[i - dimensions.length].getChartSetting().getCordon() : dimensions[i].getChartSetting().getCordon());
             for(int j = 0; j < cordon.length(); j++){
                 JSONObject cor = cordons.getJSONObject(j);
                 items.put(new JSONObject("{" +
@@ -530,7 +536,7 @@ public class BIChartDataConvertFactory {
                     "color: " + cor.getString("cordon_color") + "}"
                 ));
             }
-            String regionType = widget.getRegionTypeByDimensionOrTarget(showDimensionAndTargets[i]).toString();
+            String regionType = (i > dimensions.length ? widget.getRegionTypeByTarget(targets[i - dimensions.length]).toString() : widget.getRegionTypeByDimension(dimensions[i]).toString());
             if(items.length() > 0){
                 if(!cordon.has(regionType)){
                     cordon.put(regionType, new JSONArray());

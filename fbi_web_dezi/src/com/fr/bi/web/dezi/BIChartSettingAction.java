@@ -3,6 +3,9 @@ package com.fr.bi.web.dezi;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
+import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
+import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartDataConvertFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartSettingFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.stable.engine.TempPathGenerator;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
@@ -24,9 +27,11 @@ import javax.servlet.http.HttpServletResponse;
  * Created by User on 2016/8/31.
  */
 public class BIChartSettingAction extends AbstractBIDeziAction {
+    public static final String CMD = "chart_setting";
+
     @Override
     public String getCMD() {
-        return "chart_setting";
+        return CMD;
     }
 
     @Override
@@ -64,7 +69,9 @@ public class BIChartSettingAction extends AbstractBIDeziAction {
         }
         sessionIDInfor.getLoader().releaseCurrentThread();
 
-        //BIChartSettingFactory.newChartSettingByType();
+        JSONObject data = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.getJSONObject("data"));
+
+        BIChartSettingFactory.parseChartSetting();
 
         WebUtils.printAsJSON(res, jo);
     }

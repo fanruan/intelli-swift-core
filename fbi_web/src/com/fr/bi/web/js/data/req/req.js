@@ -71,7 +71,7 @@ Data.Req = BIReq = {
     },
 
     reqWidgetSettingByData: function (data, callback, complete) {
-        BI.requestAsync("fr_bi_dezi", "widget_setting", data, function (res) {
+        BI.requestAsync("fr_bi_dezi", "chart_setting", data, function (res) {
             callback(res);
         }, complete);
     },
