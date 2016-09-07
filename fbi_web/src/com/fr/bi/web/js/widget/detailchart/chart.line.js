@@ -65,7 +65,7 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
                         reversed: self.config.left_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level)
+                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)
                     });
                     self.formatNumberLevelInYaxis(config, items,self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
@@ -80,7 +80,7 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
                         reversed: self.config.right_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level)
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
@@ -105,12 +105,12 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
                 var isNeedFormatDataLabel = false;
                 switch (config.yAxis[item.yAxis].axisIndex) {
                     case self.constants.LEFT_AXIS:
-                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators){
                             isNeedFormatDataLabel = true;
                         }
                         break;
                     case self.constants.RIGHT_AXIS:
-                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators){
                             isNeedFormatDataLabel = true;
                         }
                         break;
@@ -263,7 +263,9 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
-            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            num_separators: options.num_separators || false,
+            right_num_separators: options.right_num_separators || false
         };
         this.options.items = items;
 

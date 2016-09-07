@@ -39,6 +39,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         AUTO: 1,
         NOT_SHOW: 2,
         LINE_WIDTH: 1,
+        NUM_SEPARATORS: false,
         FONT_STYLE: {
             "fontFamily": "inherit",
             "color": "#808080",
@@ -76,7 +77,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                     da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
                 }
             });
-            if (position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+            if (position === item.yAxis) {
                 item.tooltip = BI.deepClone(config.plotOptions.tooltip);
                 item.tooltip.formatter.valueFormat = formatter;
             }
@@ -162,7 +163,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : "(" + unit + axis_unit + ")";
     },
 
-    formatTickInXYaxis: function (type, number_level) {
+    formatTickInXYaxis: function (type, number_level, separators) {
         var formatter = '#.##';
         switch (type) {
             case this.constants.NORMAL:
@@ -178,8 +179,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 formatter = '#0.00';
                 break;
         }
+        if (separators) {
+            formatter = '#,##0'
+        }
         if (number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-            if (type === this.constants.NORMAL) {
+            if (separators) {
+                formatter = '#,##0%'
+            } else if (type === this.constants.NORMAL) {
                 formatter = '#0.##%';
             } else {
                 formatter += '%';

@@ -77,7 +77,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + xTitle : xTitle;
         config.xAxis[0].title.align = "center";
         BI.extend(config.xAxis[0], {
-            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level),
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators),
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             lineWidth: this.config.line_width,
             showLabel: this.config.show_label,
@@ -89,7 +89,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
                     item.dataLabels = {
                         "style": self.constants.FONT_STYLE,
                         "align": "outside",
@@ -238,7 +238,8 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
-            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            num_separators: options.num_separators || false
         };
         this.options.items = items;
         var types = [];

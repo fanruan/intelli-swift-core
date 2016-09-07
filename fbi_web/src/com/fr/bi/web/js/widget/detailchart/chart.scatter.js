@@ -59,14 +59,14 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.yAxis = this.yAxis;
         config.xAxis = this.xAxis;
 
-        config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
+        config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
 
-        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
+        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level, this.config.right_num_separators);
         formatNumberLevelInXaxis(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
@@ -78,10 +78,10 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             BI.each(items, function(idx, item){
                 var isNeedFormatDataLabelX = false;
                 var isNeedFormatDataLabelY = false;
-                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators) {
                     isNeedFormatDataLabelX = true;
                 }
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
                     isNeedFormatDataLabelY = true;
                 }
                 if(isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true){
@@ -231,7 +231,9 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
-            tooltip: options.tooltip || ""
+            tooltip: options.tooltip || "",
+            num_separators: options.num_separators || false,
+            right_num_separators: options.right_num_separators || false,
         };
         this.options.items = items;
         var types = [];
