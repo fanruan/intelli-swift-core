@@ -9,8 +9,9 @@ import com.fr.json.JSONParser;
  */
 public class ChartSetting implements JSONParser {
 
-    private JSONArray cordon;
-    private JSONObject settings;
+    private JSONArray cordon = new JSONArray();
+    private JSONObject settings = new JSONObject();
+    private JSONObject styleOfChart = new JSONObject();
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
@@ -20,6 +21,9 @@ public class ChartSetting implements JSONParser {
         if(jo.has("settings")){
             settings = jo.getJSONObject("settings");
         }
+        if(jo.has("style_of_chart")){
+            styleOfChart = jo.getJSONObject("settings");
+        }
     }
 
     public JSONObject getSettings(){
@@ -28,5 +32,9 @@ public class ChartSetting implements JSONParser {
 
     public JSONArray getCordon(){
         return cordon;
+    }
+
+    public JSONObject getStyleOfChart() {
+        return styleOfChart;
     }
 }
