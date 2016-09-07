@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.ChinesePinyinComparator;
@@ -16,6 +17,8 @@ import java.util.*;
  */
 public class MultiChartWidget extends TableWidget {
 
+    private int type;
+    private String subType;
     private Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
     private Map<String, BIDimension> dimensions = new HashMap<String, BIDimension>();
     private Map<String, BISummaryTarget> targets = new HashMap<String, BISummaryTarget>();
@@ -47,6 +50,20 @@ public class MultiChartWidget extends TableWidget {
             vjo.remove(BIReportConstant.REGION.TARGET3);
             vjo.put(BIReportConstant.REGION.TARGET1, ja);
         }
+//        if(jo.has("type")){
+//            type = jo.getInt("type");
+//        }
+//        if(jo.has("sub_type")){
+//            subType = jo.getString("sub_type");
+//        }
+//        if(jo.has("clicked")){
+//            JSONObject c = jo.getJSONObject("clicked");
+//            Iterator it = c.keys();
+//            while (it.hasNext()){
+//                String key = it.next().toString();
+//                clicked.put(key, c.getJSONArray(key));
+//            }
+//        }
         super.parseJSON(jo, userId);
         //createDimensionAndTargetMap();
     }
@@ -80,7 +97,7 @@ public class MultiChartWidget extends TableWidget {
 
     @Override
     public int getType() {
-        return BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART;
+        return type;
     }
 
     private void parseView(JSONObject jo) throws Exception {
@@ -181,4 +198,18 @@ public class MultiChartWidget extends TableWidget {
         return view;
     }
 
+    public Integer getRegionTypeByDimensionOrTarget(BIAbstractTargetAndDimension dimension){
+        for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
+            Integer key = entry.getKey();
+            List<String> dIds = entry.getValue();
+            if (dIds.contains(dimension.getValue())) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    public String getSubType(){
+        return subType;
+    }
 }
