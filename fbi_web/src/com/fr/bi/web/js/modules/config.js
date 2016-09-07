@@ -1493,9 +1493,6 @@ BICst.FONT_FAMILY_COMBO = [{
     text: "Microsoft Tai Le",
     value: "Microsoft Tai Le"
 },{
-    text: "Times New Roman",
-    value: "Times New Roman"
-},{
     text: "Tahoma",
     value: "Tahoma"
 },{
