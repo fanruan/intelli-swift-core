@@ -13,7 +13,7 @@ export default class MultiSelectorWidgetHelper {
 
     _disSelectOneValue(val) {
         let idx;
-        if ((idx = this.value.indexOf(val)) === -1) {
+        if ((idx = this.value.indexOf(val)) >= -1) {
             this.value.splice(idx, 1);
         }
     }
@@ -38,9 +38,9 @@ export default class MultiSelectorWidgetHelper {
         const front = [], items = [];
         this.items.forEach((item)=> {
             if (this.value.indexOf(item.value) > -1) {
-                front.push({selected: this.type !== 1, ...item});
+                front.push({...item, selected: this.type !== 1});
             } else {
-                items.push({selected: this.type === 1, ...item})
+                items.push({...item, selected: this.type === 1})
             }
         });
         return front.concat(items);

@@ -49,12 +49,17 @@ class MultiSelectorComponent extends Component {
 
     render() {
         const {...props} = this.props;
+        const items = [];
+        for (let i = 0; i < 1000; i++) {
+            items.push({
+                value: i
+            })
+        }
         return <MultiSelectorWidget
-            items={[{value: 1}, {value: 2}, {value: 3}, {value: 4}]}
+            items={items}
         >
         </MultiSelectorWidget>
     }
-
 }
 mixin.onClass(MultiSelectorComponent, PureRenderMixin);
 const styles = StyleSheet.create({

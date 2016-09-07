@@ -68,7 +68,7 @@ class App extends Component {
     render() {
         const {template, actions} = this.props;
         return (
-            <Test template={new Template(template)} actions={actions}/>
+            <Main template={new Template(template)} actions={actions}/>
         )
     }
 }

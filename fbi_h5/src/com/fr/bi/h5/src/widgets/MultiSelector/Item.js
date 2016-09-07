@@ -63,7 +63,7 @@ class Item extends Component {
         }} underlayColor="transparent">
             <View style={[styles.row, sc([styles.selected, state.selected])]}>
                 <Text>
-                    {state.value || state.text}
+                    {state.value == null ? state.text : state.value}
                 </Text>
             </View>
         </TouchableHighlight>

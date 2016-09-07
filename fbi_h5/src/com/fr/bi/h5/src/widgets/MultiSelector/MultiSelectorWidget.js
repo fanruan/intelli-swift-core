@@ -58,13 +58,14 @@ class MultiSelectorWidget extends Component {
         const {...props} = this.props;
         return <ListView
             dataSource={this.state.dataSource}
+            initialListSize={100}
             renderRow={this._renderRow.bind(this)}
         >
         </ListView>
     }
 
     _renderRow(rowData, sectionID, rowID) {
-        return <Item key={rowData.value || rowData.text} onSelected={(sel)=> {
+        return <Item key={rowData.value} onSelected={(sel)=> {
             if (sel) {
                 this._helper.selectOneValue(rowData.value);
             } else {

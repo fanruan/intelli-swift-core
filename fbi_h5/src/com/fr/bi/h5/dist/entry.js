@@ -2085,7 +2085,7 @@ webpackJsonp([0],{
 	            var template = _props.template;
 	            var actions = _props.actions;
 
-	            return _lib2.default.createElement(_Test2.default, { template: new _data.Template(template), actions: actions });
+	            return _lib2.default.createElement(_Main2.default, { template: new _data.Template(template), actions: actions });
 	        }
 	    }]);
 
@@ -2525,6 +2525,7 @@ webpackJsonp([0],{
 
 	            return _lib2.default.createElement(_lib.ListView, {
 	                dataSource: this.state.dataSource,
+	                initialListSize: 100,
 	                renderRow: this._renderRow.bind(this)
 	            });
 	        }
@@ -2533,7 +2534,7 @@ webpackJsonp([0],{
 	        value: function _renderRow(rowData, sectionID, rowID) {
 	            var _this2 = this;
 
-	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value || rowData.text, onSelected: function onSelected(sel) {
+	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
 	                    if (sel) {
 	                        _this2._helper.selectOneValue(rowData.value);
 	                    } else {
@@ -2663,7 +2664,7 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(
 	                        _lib.Text,
 	                        null,
-	                        state.value || state.text
+	                        state.value == null ? state.text : state.value
 	                    )
 	                )
 	            );
@@ -2731,7 +2732,7 @@ webpackJsonp([0],{
 	        key: "_disSelectOneValue",
 	        value: function _disSelectOneValue(val) {
 	            var idx = void 0;
-	            if ((idx = this.value.indexOf(val)) === -1) {
+	            if ((idx = this.value.indexOf(val)) >= -1) {
 	                this.value.splice(idx, 1);
 	            }
 	        }
@@ -2762,9 +2763,9 @@ webpackJsonp([0],{
 	                items = [];
 	            this.items.forEach(function (item) {
 	                if (_this.value.indexOf(item.value) > -1) {
-	                    front.push(_extends({ selected: _this.type !== 1 }, item));
+	                    front.push(_extends({}, item, { selected: _this.type !== 1 }));
 	                } else {
-	                    items.push(_extends({ selected: _this.type === 1 }, item));
+	                    items.push(_extends({}, item, { selected: _this.type === 1 }));
 	                }
 	            });
 	            return front.concat(items);
@@ -3304,8 +3305,14 @@ webpackJsonp([0],{
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
 
+	            var items = [];
+	            for (var i = 0; i < 1000; i++) {
+	                items.push({
+	                    value: i
+	                });
+	            }
 	            return _lib2.default.createElement(_widgets.MultiSelectorWidget, {
-	                items: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }]
+	                items: items
 	            });
 	        }
 	    }]);
