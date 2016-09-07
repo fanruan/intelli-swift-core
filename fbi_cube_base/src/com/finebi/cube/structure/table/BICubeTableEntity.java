@@ -55,6 +55,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     public void buildStructure() {
         columnManager.buildStructure();
+        tableProperty.buildStructure();
     }
 
     private void flushProperty() {
