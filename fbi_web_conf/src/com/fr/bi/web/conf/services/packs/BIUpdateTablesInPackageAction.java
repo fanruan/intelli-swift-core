@@ -58,7 +58,6 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             BICubeConfigureCenter.getAliasManager().persistData(userId);
             BICubeConfigureCenter.getDataSourceManager().persistData(userId);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
-            BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
