@@ -1,0 +1,17 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-left-pointer-button {
+  position: relative;
+  color: #ffffff;
+}
+.bi-left-pointer-button .bi-pointer-button-background {
+  background: #009de3;
+}
+.bi-left-pointer-button .bi-pointer-button-mask .x-pointer-left {
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  border-right-color: #1a1a1a;
+}
