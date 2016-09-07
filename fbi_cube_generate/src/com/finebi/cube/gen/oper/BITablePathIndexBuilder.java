@@ -70,7 +70,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 frontRelationPathReader = buildFrontRelationPathReader();
                 targetPathEntity = buildTargetRelationPathWriter();
                 final GroupValueIndex appearPrimaryValue = GVIFactory.createAllEmptyIndexGVI();
-                Integer[] reverse = new Integer[getJuniorTableRowCount()];
+                int[] reverse = new int[getJuniorTableRowCount()];
                 for (int row = 0; row < primaryRowCount; row++) {
                     GroupValueIndex frontGroupValueIndex = frontRelationPathReader.getBitmapIndex(row);
                     GroupValueIndex resultGroupValueIndex = getTableLinkedOrGVI(frontGroupValueIndex, lastRelationEntity);
@@ -110,7 +110,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
         }
     }
 
-    private void initReverseIndex(final Integer[] index, final Integer row, GroupValueIndex gvi) {
+    private void initReverseIndex(final int[] index, final int row, GroupValueIndex gvi) {
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndex) {
@@ -119,7 +119,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
         });
     }
 
-    private void buildReverseIndex(ICubeRelationEntityService tableRelation, Integer[] index) {
+    private void buildReverseIndex(ICubeRelationEntityService tableRelation, int[] index) {
         for (int i = 0; i < index.length; i++) {
             tableRelation.addReverseIndex(i, index[i]);
         }

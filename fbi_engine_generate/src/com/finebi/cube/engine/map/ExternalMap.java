@@ -3,6 +3,7 @@ package com.finebi.cube.engine.map;
 
 import com.finebi.cube.engine.map.mem.MemoryHelper;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 
 import java.io.*;
 import java.util.*;
@@ -63,7 +64,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
             file.mkdirs();
         }
         else {
-            deleteDir(file);
+            BIFileUtils.deleteFiles(file);
             file.mkdirs();
         }
         if (DEBUG) {
@@ -264,7 +265,8 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
 
     @Override
 	public void clear() {
-
+            currentContainer.clear();
+            release();
     }
 
     @Override
@@ -286,15 +288,6 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
 	public void putAll(Map<? extends K, ? extends V> t) {
 
     }
-    private  void deleteDir(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i=0; i<children.length; i++) {
-                deleteDir(new File(dir, children[i]));
-            }
-        }
-        dir.delete();
-    }
 
     public void release() {
 
@@ -303,7 +296,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
         if (this.containerFolderNeedDel) {
             File file = new File(diskContainerPath);
             if (file.exists()) {
-                deleteDir(file);
+                BIFileUtils.deleteFiles(file);
             }
         }
     }

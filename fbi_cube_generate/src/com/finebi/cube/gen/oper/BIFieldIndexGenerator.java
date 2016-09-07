@@ -2,6 +2,8 @@ package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.engine.map.ExternalIntListMapFactory;
 import com.finebi.cube.engine.map.IntListExternalMap;
+import com.finebi.cube.engine.map.map2.ExternalIntArrayMapFactory;
+import com.finebi.cube.engine.map.map2.IntArrayListExternalMap;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
@@ -19,6 +21,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.structure.collection.list.IntArrayList;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -105,10 +108,11 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     public void buildTableIndex() {
-        IntList nullRowNumbers = new IntList();
-        Map<T, IntList> group2rowNumber = createTreeMap(nullRowNumbers);
-        Iterator<Map.Entry<T, IntList>> group2rowNumberIt = group2rowNumber.entrySet().iterator();
-        Integer[] positionOfGroup =  doBuildTableIndex(group2rowNumberIt);
+        IntArrayList nullRowNumbers = new IntArrayList();
+        Map<T, IntArrayList> group2rowNumber = createTreeMap(nullRowNumbers);
+        Iterator<Map.Entry<T, IntArrayList>> group2rowNumberIt = group2rowNumber.entrySet().iterator();
+        int[] positionOfGroup =  doBuildTableIndex(group2rowNumberIt);
+        group2rowNumber.clear();
         GroupValueIndex nullIndex = buildGroupValueIndex(nullRowNumbers);
         buildPositionOfGroup(positionOfGroup);
         columnEntityService.addNULLIndex(0, nullIndex);
@@ -116,22 +120,23 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     public void buildTableIndexExternal() {
-        IntList nullRowNumbers = new IntList();
-        IntListExternalMap group2rowNumber = createExternalMap(nullRowNumbers);
-        Iterator<Map.Entry<T, IntList>> group2rowNumberIt=  group2rowNumber.getIterator();
-        Integer[] positionOfGroup = doBuildTableIndex(group2rowNumberIt);
+        IntArrayList nullRowNumbers = new IntArrayList();
+        IntArrayListExternalMap group2rowNumber = createExternalMap(nullRowNumbers);
+        Iterator<Map.Entry<T, IntArrayList>> group2rowNumberIt=  group2rowNumber.getIterator();
+        int[] positionOfGroup = doBuildTableIndex(group2rowNumberIt);
+        group2rowNumber.clear();
         GroupValueIndex nullIndex = buildGroupValueIndex(nullRowNumbers);
         buildPositionOfGroup(positionOfGroup);
         columnEntityService.addNULLIndex(0, nullIndex);
 //        group2rowNumber.release();
     }
-    private Integer[] doBuildTableIndex(Iterator<Map.Entry<T, IntList>> group2rowNumberIt){
+    private int[] doBuildTableIndex(Iterator<Map.Entry<T, IntArrayList>> group2rowNumberIt){
         int groupPosition = 0;
-        Integer[] positionOfGroup = new Integer[(int)rowCount];
+        int[] positionOfGroup = new int[(int)rowCount];
         while (group2rowNumberIt.hasNext()) {
-            Map.Entry<T, IntList> entry = group2rowNumberIt.next();
+            Map.Entry<T, IntArrayList> entry = group2rowNumberIt.next();
             T groupValue = entry.getKey();
-            IntList groupRowNumbers = entry.getValue();
+            IntArrayList groupRowNumbers = entry.getValue();
             columnEntityService.addGroupValue(groupPosition, groupValue);
             GroupValueIndex groupValueIndex = buildGroupValueIndex(groupRowNumbers);
             columnEntityService.addGroupIndex(groupPosition, groupValueIndex);
@@ -142,7 +147,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         return positionOfGroup;
     }
 
-    private void initPositionOfGroup(final Integer[] position, final Integer groupPosition, GroupValueIndex groupValueIndex) {
+    private void initPositionOfGroup(final int[] position, final int groupPosition, GroupValueIndex groupValueIndex) {
         groupValueIndex.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
@@ -151,22 +156,22 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         });
     }
 
-    private void buildPositionOfGroup(Integer[] position) {
+    private void buildPositionOfGroup(int[] position) {
         for (int i = 0; i < position.length; i++) {
             columnEntityService.addPositionOfGroup(i, position[i]);
         }
     }
 
-    private GroupValueIndex buildGroupValueIndex(IntList groupRowNumbers) {
+    private GroupValueIndex buildGroupValueIndex(IntArrayList groupRowNumbers) {
         return GVIFactory.createGroupValueIndexBySimpleIndex(groupRowNumbers);
     }
-    private void constructMap(Map<T, IntList> map,IntList nullRowNumbers){
+    private void constructMap(Map<T, IntArrayList> map,IntArrayList nullRowNumbers){
         for (int i = 0; i < rowCount; i++) {
             T originalValue = columnEntityService.getOriginalObjectValueByRow(i);
             if (originalValue != null) {
-                IntList list = map.get(originalValue);
+                IntArrayList list = map.get(originalValue);
                 if (list == null) {
-                    list = new IntList();
+                    list = new IntArrayList();
                     map.put(originalValue, list);
                 }
                 list.add(i);
@@ -175,14 +180,14 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             }
         }
     }
-    private Map<T, IntList> createTreeMap(IntList nullRowNumbers) {
-        Map<T, IntList> group2rowNumber = new TreeMap<T, IntList>(columnEntityService.getGroupComparator());
+    private Map<T, IntArrayList> createTreeMap(IntArrayList nullRowNumbers) {
+        Map<T, IntArrayList> group2rowNumber = new TreeMap<T, IntArrayList>(columnEntityService.getGroupComparator());
         constructMap(group2rowNumber,nullRowNumbers);
         return group2rowNumber;
     }
-    private IntListExternalMap<T> createExternalMap(IntList nullRowNumbers) {
+    private IntArrayListExternalMap<T> createExternalMap(IntArrayList nullRowNumbers) {
         String dataFloder = FRContext.getCurrentEnv().getPath() + BASEPATH + File.separator +((DBTableSource)tableSource).getDbName() + File.separator + tableSource.getTableName() + File.separator + targetColumnKey.getColumnName();
-        IntListExternalMap<T> group2rowNumber = ExternalIntListMapFactory.getIntListExternalMap(columnEntityService.getClassType(),columnEntityService.getGroupComparator(),dataFloder);
+        IntArrayListExternalMap<T> group2rowNumber = ExternalIntArrayMapFactory.getIntListExternalMap(columnEntityService.getClassType(),columnEntityService.getGroupComparator(),dataFloder);
         constructMap(group2rowNumber,nullRowNumbers);
         return group2rowNumber;
     }
