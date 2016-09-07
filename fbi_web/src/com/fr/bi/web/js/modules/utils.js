@@ -996,6 +996,24 @@
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
         },
 
+        getWSNumberSeparatorsByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.num_separators) ? ws.num_separators :
+                BICst.DEFAULT_CHART_SETTING.num_separators;
+        },
+
+        getWSRightNumberSeparatorsByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.right_num_separators) ? ws.right_num_separators :
+                BICst.DEFAULT_CHART_SETTING.right_num_separators;
+        },
+
+        getWSRight2NumberSeparatorsByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.right2_num_separators) ? ws.right2_num_separators :
+                BICst.DEFAULT_CHART_SETTING.right_num_separators;
+        },
+
         getWSMinimalistByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.minimalist_model) ? ws.minimalist_model :
@@ -2593,7 +2611,7 @@
             if (BI.isNull(widgetInfo) || BI.isNull(offset)) {
                 return;
             }
-            var paramdate = new Date();
+            var paramdate;
             var wWid = widgetInfo.wId, se = widgetInfo.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);

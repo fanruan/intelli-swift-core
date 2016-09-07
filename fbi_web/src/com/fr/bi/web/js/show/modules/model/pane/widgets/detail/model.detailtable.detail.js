@@ -127,7 +127,7 @@ BIShow.DetailTableDetailModel = BI.inherit(BI.Model, {
             var dim = dimensions[dId];
             var dimension_map = {};
             dimension_map[targetTableId] = {};
-            dimension_map[targetTableId].target_relation = target_relation[dId];
+            dimension_map[targetTableId].target_relation = target_relation[dId] || [];
             dim.dimension_map = dimension_map;
             this.set("dimensions", dimensions);
             return true;

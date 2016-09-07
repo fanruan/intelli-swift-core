@@ -119,16 +119,15 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         //只需要遍历connectionSet
         var connectionSet = relations.connectionSet;
         this.allRelationFields = [];
-        var tableId = this.model.getTableIdByFieldId(fieldId);
         BI.each(connectionSet, function (i, pf) {
             var primaryKey = pf.primaryKey, foreignKey = pf.foreignKey;
             //修改的就不用灰化了
             if(self.fieldId === primaryKey.field_id || self.fieldId === foreignKey.field_id) {
                 return;
             }
-            if (tableId === self.model.getTableIdByFieldId(primaryKey.field_id)) {
+            if (fieldId === primaryKey.field_id) {
                 self.allRelationFields.push(foreignKey.field_id);
-            } else if (tableId === self.model.getTableIdByFieldId(foreignKey.field_id)) {
+            } else if (fieldId === foreignKey.field_id) {
                 self.allRelationFields.push(primaryKey.field_id);
             }
         });

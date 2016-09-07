@@ -163,7 +163,13 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
         }
         return ans;
     }
-
+    public static RoaringBitmap bitmapOf(final int... dat) {
+        final RoaringBitmap ans = new RoaringBitmap();
+        for (final int i : dat){
+            ans.add(i);
+        }
+        return ans;
+    }
     /**
      * Complements the bits in the given range, from rangeStart (inclusive)
      * rangeEnd (exclusive). The given bitmap is unchanged.

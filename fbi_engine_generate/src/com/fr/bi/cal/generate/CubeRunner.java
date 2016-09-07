@@ -167,7 +167,6 @@ public class CubeRunner {
 
     private void finish() {
         setStatue(Status.REPLACING);
-        BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         long start = System.currentTimeMillis();

@@ -16,10 +16,10 @@ public class HiveExtractor extends DBExtractorImpl {
     @Override
     public Statement createStatement(Connection conn, Dialect dialect) throws SQLException {
         Statement stmt = conn.createStatement();
-        try {
-            stmt.setFetchSize(dialect.getFetchSize());
-        } catch (Exception e) {
-        }
+//        try {
+//        //    stmt.setFetchSize(dialect.getFetchSize());
+//        } catch (Exception e) {
+//        }
         return stmt;
     }
 }

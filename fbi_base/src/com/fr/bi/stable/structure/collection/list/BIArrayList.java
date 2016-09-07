@@ -39,14 +39,14 @@ public abstract class BIArrayList<T> implements Cloneable, Serializable, BIList<
     /*
      * test subList
      */
-    public static void main(String[] args) {
-        IntList list = new IntList();
-        for (int i = 0; i < 100; i++) {
-            list.add(1000 - i);
-        }
-        list.subList(10);
-//        System.out.println(list);
-    }
+//    public static void main(String[] args) {
+//        IntList list = new IntList();
+//        for (int i = 0; i < 100; i++) {
+//            list.add(1000 - i);
+//        }
+//        list.subList(10);
+////        System.out.println(list);
+//    }
 
 //    /**
 //     * 将一个整数数组转化成一个整数链表

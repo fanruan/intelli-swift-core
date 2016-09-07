@@ -1,7 +1,6 @@
 package com.fr.bi.stable.dbdealer;
 
 import com.fr.bi.stable.utils.code.BILogger;
-
 import java.sql.ResultSet;
 import java.util.Date;
 
@@ -15,7 +14,7 @@ public class DateDealer extends AbstractDealer<Long> {
     public Long dealWithResultSet(ResultSet rs) {
         Date date = null;
         try {
-            date = rs.getTimestamp(rsColumn);
+            date = rs.getDate(rsColumn);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
