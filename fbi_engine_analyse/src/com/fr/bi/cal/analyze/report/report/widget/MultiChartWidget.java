@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.ChinesePinyinComparator;
@@ -23,6 +23,7 @@ public class MultiChartWidget extends TableWidget {
     private Map<String, BIDimension> dimensions = new HashMap<String, BIDimension>();
     private Map<String, BISummaryTarget> targets = new HashMap<String, BISummaryTarget>();
     private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
+    private DetailChartSetting settings = new DetailChartSetting();
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
@@ -64,8 +65,12 @@ public class MultiChartWidget extends TableWidget {
 //                clicked.put(key, c.getJSONArray(key));
 //            }
 //        }
+//        if(jo.has("settings")){
+//            settings = new DetailChartSetting();
+//            settings.parseJSON(jo);
+//        }
         super.parseJSON(jo, userId);
-        //createDimensionAndTargetMap();
+       // createDimensionAndTargetMap();
     }
 
     private void createDimensionAndTargetMap() {
@@ -198,12 +203,27 @@ public class MultiChartWidget extends TableWidget {
         return view;
     }
 
-    public Integer getRegionTypeByDimensionOrTarget(BIAbstractTargetAndDimension dimension){
+    public Integer getRegionTypeByDimension(BIDimension dimension){
         for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
-            Integer key = entry.getKey();
-            List<String> dIds = entry.getValue();
-            if (dIds.contains(dimension.getValue())) {
-                return key;
+            if(entry.getKey() <= Integer.parseInt(BIReportConstant.REGION.DIMENSION2)){
+                Integer key = entry.getKey();
+                List<String> dIds = entry.getValue();
+                if (dIds.contains(dimension.getValue())) {
+                    return key;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Integer getRegionTypeByTarget(BISummaryTarget target){
+        for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
+            if(entry.getKey() >= Integer.parseInt(BIReportConstant.REGION.TARGET1)){
+                Integer key = entry.getKey();
+                List<String> dIds = entry.getValue();
+                if (dIds.contains(target.getValue())) {
+                    return key;
+                }
             }
         }
         return null;
@@ -211,5 +231,9 @@ public class MultiChartWidget extends TableWidget {
 
     public String getSubType(){
         return subType;
+    }
+
+    public DetailChartSetting getChatSetting(){
+        return settings;
     }
 }
