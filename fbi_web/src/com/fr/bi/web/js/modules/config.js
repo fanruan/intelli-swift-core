@@ -1504,9 +1504,6 @@ BICst.FONT_FAMILY_COMBO = [{
 },{
     text: "Times New Roman",
     value: "Times New Roman"
-},{
-    text: "Tahoma",
-    value: "Tahoma"
 }];
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
