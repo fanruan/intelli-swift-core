@@ -79,6 +79,9 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         config.yAxis = this.yAxis;
         config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         config.yAxis[0].title.rotation = this.constants.ROTATION;
+        if(this.config.chart_demo) {
+            config.yAxis[0].showLabel = this.config.show_label;
+        }
         BI.extend(config.yAxis[0], {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             labelRotation: this.config.text_direction,
@@ -99,7 +102,8 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             enableMinorTick: this.config.enable_minor_tick,
             min: self.config.custom_y_scale.minScale.scale || null,
             max: self.config.custom_y_scale.maxScale.scale || null,
-            tickInterval: self.config.custom_y_scale.interval.scale || null
+            tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+                self.config.custom_y_scale.interval.scale : null
         });
         config.chartType = "bar";
 
@@ -246,7 +250,8 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            chart_demo : options.chart_demo || false
         };
         this.options.items = items;
         var types = [];

@@ -7,9 +7,9 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         CONTAINER_HEIGHT: 80,
         BUTTON_HEIGHT: 30,
         COMBO_WIDTH: 120,
-        FIELD_NAME_BUTTON_WIDTH: 53,
+        FIELD_NAME_BUTTON_WIDTH: 57,
         TEXT_BUTTON_H_GAP: 10,
-        INPUT_WIDTH: 230,
+        INPUT_WIDTH: 240,
         LABEL_WIDTH: 30
     },
 
@@ -72,8 +72,9 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _buildConditions: function () {
         var self = this, o = this.options;
         this.filterItems = [];
-        if(o.filter_value.length >= 2) {
-            this.filterValues = o.filter_value.slice(0,2) || this.filterField;
+        this.filterValues = o.filter_value || this.filterField;
+        if (this.filterValues.length > 2) {
+            this.filterValues = o.filter_value.slice(0, 2);
         }
         BI.each(this.filterValues, function (i, filter) {
             if (BI.isNull(filter.filter_type)) {

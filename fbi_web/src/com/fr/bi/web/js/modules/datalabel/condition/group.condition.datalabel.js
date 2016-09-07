@@ -57,7 +57,7 @@ BI.DataLabelConditionGroup = BI.inherit(BI.Widget, {
             var t = {};
             switch (self.chartType) {
                 case BICst.WIDGET.SCATTER:
-                    if(cdt.key === "z")  {
+                    if (cdt.key === "z") {
                         t = {
                             type: "bi.scatter_no_type_field_filter_item"
                         };

@@ -60,12 +60,9 @@ BI.TextToolbarContentSelect = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         v || (v = []);
-        var self = this;
-        if (v.length <= self.items.length) {
-            BI.each(v, function (i, value) {
-                self.items[i].setSelected(value);
-            });
-        }
+        BI.each(this.items, function (i, item) {
+            item.setSelected(BI.isNull(v[i]) ? false : v[i]);
+        });
         this._checkState();
     },
 
