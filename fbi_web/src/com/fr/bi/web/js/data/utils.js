@@ -67,15 +67,27 @@ Data.Utils = {
             });
         });
         if (type === BICst.WIDGET.MAP) {
-            var subType = widget.sub_type || MapConst.INNER_MAP_INFO.MAP_NAME[BI.i18nText("BI-China")];
-            options.initDrillPath = [MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType]];
+            var subType = widget.sub_type;
+            if(BI.isNull(subType)){
+                BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function(path, layer){
+                    if(layer === 0){
+                        subType = path;
+                        return true;
+                    }
+                });
+            }
+            var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
+            if(BI.isNull(name)){
+                name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
+            }
+            options.initDrillPath = [name];
             var drill = BI.values(getDrill())[0];
             BI.each(drill, function (idx, dri) {
                 options.initDrillPath.push(dri.values[0].value[0]);
             });
             options.geo = {
-                data: MapConst.INNER_MAP_INFO.MAP_PATH[subType],
-                name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[BI.i18nText("BI-China")]
+                data: MapConst.INNER_MAP_INFO.MAP_PATH[subType] || MapConst.CUSTOM_MAP_INFO.MAP_PATH[subType],
+                name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
             }
         }
         if (type === BICst.WIDGET.GIS_MAP) {
@@ -713,7 +725,7 @@ Data.Utils = {
             x_axis_style: options.x_axis_style || constants.NORMAL,
             x_axis_number_level: options.x_axis_number_level || constants.NORMAL,
             tooltip: options.tooltip || "",
-            geo: options.geo || {data: MapConst.INNER_MAP_INFO.MAP_PATH[BI.i18nText("BI-China")], name: BI.i18nText("BI-China")},
+            geo: options.geo,
             theme_color: options.theme_color || "#65bce7",
             map_styles: options.map_styles || [],
             auto_custom: BI.isNull(options.map_styles) ? false : options.auto_custom,
@@ -4923,7 +4935,7 @@ Data.Utils = {
             BI.extend(configs.xAxis, {
                 lineWidth: config.line_width,
                 enableTick: config.enable_tick,
-                enableMinorTick: self.config.enable_minor_tick,
+                enableMinorTick: config.enable_minor_tick,
                 labelRotation: config.text_direction,
                 gridLineWidth: config.show_grid_line === true ? 1 : 0
             });

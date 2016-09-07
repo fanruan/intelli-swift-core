@@ -1,0 +1,32 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-analysis-etl-operator-add-column-pane .bi-formula-insert .bi-formula-field-pane {
+  border-color: #eaeaea;
+  border-left: none;
+}
+.bi-analysis-etl-operator-add-column-pane .bi-formula-insert .bi-formula-editor {
+  border-color: #eaeaea;
+}
+.bi-analysis-etl-operator-add-column-pane .bi-formula-insert .symbol-group-column {
+  border-color: #eaeaea;
+}
+.bi-analysis-etl-operator-add-column-pane .bi-formula-insert .list-view-outer {
+  border: none;
+  border-top: 1px solid #eaeaea;
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-analysis-etl-operator-add-column-pane .bi-formula-insert .list-view-outer .bi-search-editor {
+  border-color: #eaeaea;
+}
+.bi-analysis-etl-operator-add-column-pane .bi-formula-insert .list-view-outer .bi-formula-function-pane .style-left {
+  border-color: #eaeaea;
+}
+.bi-analysis-etl-operator-add-column-pane .bi-formula-insert .list-view-outer .bi-formula-function-pane .style-top {
+  border-color: #eaeaea;
+}
+.bi-analysis-etl-operator-add-column-pane .bi-formula-insert .list-view-outer .bi-formula-function-pane .style-inner {
+  border-color: #eaeaea;
+}

@@ -3,19 +3,117 @@ package com.fr.bi.cal.analyze.report.report.widget.chart;
 import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.BIChartSetting;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.general.ComparatorUtils;
+import com.fr.general.Inter;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+
+import java.util.Iterator;
 
 /**
  * Created by User on 2016/8/31.
  */
 public class BIChartSettingFactory {
 
-    public static BIChartSetting parseChartSetting(MultiChartWidget widget, JSONObject data) throws Exception {
+    public static JSONObject parseChartSetting(MultiChartWidget widget, JSONObject data, JSONObject options, JSONArray types) throws Exception {
         int type = widget.getType();
         BIChartSetting chartSetting = newChartSettingByType(type);
-        //chartSetting.parseJSON(jo);
-        return chartSetting;
+        JSONObject lnglat = widget.getViewDimensions()[0].getChartSetting().getPosition();
+        JSONObject settings = widget.getChatSetting().getDetailChartSetting();
+        boolean isMinimalistModel = false;
+        if(settings.optBoolean("minimalist_model", false)){
+            for(int i = 0; i < BIChartSettingConstant.MINIMALIST_WIDGET.length; i++){
+                if(BIChartSettingConstant.MINIMALIST_WIDGET[i] == type){
+                    isMinimalistModel = true;
+                    break;
+                }
+            }
+        }
+        JSONObject op;
+        if(isMinimalistModel == true){
+            op = new JSONObject("{" +
+                    "chart_color:" + settings.optJSONArray("chart_color") + "," +
+                    "chart_style:" + settings.optInt("chart_style", BIChartSettingConstant.CHART_STYLE.STYLE_NORMAL) + "," +
+                    "chart_line_type:" + settings.optInt("chart_line_type", BIChartSettingConstant.CHART_SHAPE.NORMAL) + "," +
+                    "transfer_filter:" + settings.optBoolean("transfer_filter", true) + "," +
+                    "left_y_axis_reversed:" + settings.optBoolean("left_y_axis_reversed", false) + "," +
+                    "right_y_axis_reversed:" + settings.optBoolean("right_y_axis_reversed", false) + "," +
+                    "line_width:" + settings.optInt("line_width", BIChartSettingConstant.LINE_WIDTH.ZERO) + "," +
+                    "show_label:" + settings.optBoolean("show_label", false) + "," +
+                    "enable_tick:" + settings.optBoolean("enable_tick", false) + "," +
+                    "left_y_axis_unit:" + settings.optString("left_y_axis_unit", "") + "," +
+                    "show_x_axis_title:" + settings.optString("show_x_axis_title", "") + "," +
+                    "show_left_y_axis_title:" + settings.optBoolean("show_left_y_axis_title", false) + "," +
+                    "chart_legend:" + settings.optInt("chart_legend", BIChartSettingConstant.CHART_LEGENDS.NOT_SHOW) + "," +
+                    "show_data_label:" + settings.optBoolean("show_data_label", true) + "," +
+                    "enable_minor_tick:" + settings.optBoolean("enable_minor_tick", false) + "," +
+                    "show_grid_line:" + settings.optBoolean("show_grid_line", false) + "}");
+        }else{
+            op = new JSONObject("{" +
+                    "chart_color:" + settings.optJSONArray("chart_color") + "," +
+                    "chart_style:" + settings.optInt("chart_style", BIChartSettingConstant.CHART_STYLE.STYLE_NORMAL) + "," +
+                    "chart_line_type:" + settings.optInt("chart_line_type", BIChartSettingConstant.CHART_SHAPE.NORMAL) + "," +
+                    "chart_pie_type:" + settings.optInt("chart_pie_type", BIChartSettingConstant.CHART_SHAPE.NORMAL) + "," +
+                    "chart_radar_type:" + settings.optInt("chart_radar_type", BIChartSettingConstant.CHART_SHAPE.POLYGON) + "," +
+                    "chart_dashboard_type:" + settings.optInt("chart_dashboard_type", BIChartSettingConstant.CHART_SHAPE.NORMAL) + "," +
+                    "chart_inner_radius:" + settings.optInt("chart_inner_radius", 0) + "," +
+                    "chart_total_angle:" + settings.optInt("chart_total_angle", BIChartSettingConstant.PIE_ANGLES.TOTAL) + "," +
+                    "left_y_axis_style:" + settings.optInt("left_y_axis_style", BIChartSettingConstant.CHART_TARGET_STYLE.FORMAT.NORMAL) + "," +
+                    "x_axis_style:" + settings.optInt("x_axis_style", BIChartSettingConstant.CHART_TARGET_STYLE.FORMAT.NORMAL) + "," +
+                    "right_y_axis_style:" + settings.optInt("right_y_axis_style", BIChartSettingConstant.CHART_TARGET_STYLE.FORMAT.NORMAL) + "," +
+                    "right_y_axis_second_style:" + settings.optInt("right_y_axis_second_style", BIChartSettingConstant.CHART_TARGET_STYLE.FORMAT.NORMAL) + "," +
+                    "left_y_axis_number_level:" + settings.optInt("left_y_axis_number_level", BIChartSettingConstant.CHART_TARGET_STYLE.FORMAT.NORMAL) + "," +
+                    "number_of_pointer:" + settings.optInt("number_of_pointer", BIChartSettingConstant.POINTER.ONE) + "," +
+                    "dashboard_number_level:" + settings.optInt("dashboard_number_level", BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.NORMAL) + "," +
+                    "x_axis_number_level:" + settings.optInt("x_axis_number_level", BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.NORMAL) + "," +
+                    "right_y_axis_number_level:" + settings.optInt("right_y_axis_number_level", BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.NORMAL) + "," +
+                    "right_y_axis_second_number_level:" + settings.optInt("right_y_axis_second_number_level", BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.NORMAL) + "," +
+                    "left_y_axis_unit:" + settings.optString("left_y_axis_unit", "") + "," +
+                    "dashboard_unit:" + settings.optString("dashboard_unit", "") + "," +
+                    "x_axis_unit:" + settings.optString("x_axis_unit", "") + "," +
+                    "right_y_axis_unit:" + settings.optString("right_y_axis_unit", "") + "," +
+                    "right_y_axis_second_unit:" + settings.optString("right_y_axis_second_unit", "") + "," +
+                    "show_left_y_axis_title:" + settings.optString("show_left_y_axis_title", "") + "," +
+                    "show_right_y_axis_second_title:" + settings.optString("show_right_y_axis_second_title", "") + "," +
+                    "left_y_axis_title:" + settings.optString("left_y_axis_title", "") + "," +
+                    "right_y_axis_title:" + settings.optString("right_y_axis_title", "") + "," +
+                    "right_y_axis_second_title:" + settings.optString("right_y_axis_second_title", "") + "," +
+                    "left_y_axis_reversed:" + settings.optBoolean("left_y_axis_reversed", false) + "," +
+                    "right_y_axis_reversed:" + settings.optBoolean("right_y_axis_reversed", false) + "," +
+                    "right_y_axis_second_reversed:" + settings.optBoolean("right_y_axis_second_reversed", false) + "," +
+                    "show_x_axis_title:" + settings.optBoolean("show_x_axis_title", false) + "," +
+                    "x_axis_title:" + settings.optString("x_axis_title", "") + "," +
+                    "text_direction:" + settings.optString("text_direction", "0") + "," +
+                    "chart_legend:" + settings.optInt("chart_legend", BIChartSettingConstant.CHART_LEGENDS.BOTTOM) + "," +
+                    "show_data_label:" + settings.optBoolean("show_data_label", false) + "," +
+                    "show_data_table:" + settings.optBoolean("show_data_table", false) + "," +
+                    "show_grid_line:" + settings.optBoolean("show_grid_line", true) + "," +
+                    "show_zoom:" + settings.optBoolean("show_zoom", false) + "," +
+                    "style_conditions:" + settings.optJSONArray("style_conditions") + "," +
+                    "auto_custom:" + settings.optInt("auto_custom", BIChartSettingConstant.SCALE_SETTING.AUTO) + "," +
+                    "theme_color:" + settings.optString("theme_color", "#65bce7") + "," +
+                    "transfer_filter:" + settings.optBoolean("transfer_filter", true) + "," +
+                    "rules_display:" + settings.optInt("rules_display", BIChartSettingConstant.DISPLAY_RULES.DIMENSION) + "," +
+                    "bubble_style:" + settings.optInt("bubble_style", BIChartSettingConstant.CHART_SHAPE.NO_PROJECTOR) + "," +
+                    "max_scale:" + settings.optString("max_scale", "") + "," +
+                    "min_scale:" + settings.optString("min_scale", "") + "," +
+                    "show_percentage:" + settings.optBoolean("show_percentage", false) + "," +
+                    "show_background_layer:" + settings.optBoolean("show_background_layer", true) + "," +
+                    "background_layer_info:" + settings.optString("background_layer_info", Inter.getLocText("BI-GAO_DE_MAP")) + "," +
+                    "map_styles:" + settings.optJSONArray("map_styles") + "}"
+            );
+        }
+        Iterator it = options.keys();
+        while (it.hasNext()){
+            String key = it.next().toString();
+            if(isMinimalistModel && ComparatorUtils.equals(key, "cordon")){
+               continue;
+            }
+            op.put(key, options.get(key));
+        }
+        return null;
     }
 
 
