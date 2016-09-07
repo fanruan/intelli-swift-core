@@ -1,8 +1,8 @@
 package com.fr.bi.stable.gvi;
 
 import com.fr.bi.stable.constant.CubeConstant;
-import com.fr.bi.stable.structure.collection.list.IntArrayList;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.stable.collections.array.IntArray;
 
 /**
  * Created by GUY on 2015/3/11.
@@ -45,8 +45,8 @@ public class GVIFactory {
      *
      * @param rowCount 行数
      */
-    public static GroupValueIndex createGroupValueIndexBySimpleIndex(IntArrayList list) {
-        if(list.size() == 0){
+    public static GroupValueIndex createGroupValueIndexBySimpleIndex(IntArray list) {
+        if(list.size == 0){
             return RoaringGroupValueIndex.createAllEmptyGroupValueIndex();
         }
         return RoaringGroupValueIndex.createGroupValueIndex(list.toArray());

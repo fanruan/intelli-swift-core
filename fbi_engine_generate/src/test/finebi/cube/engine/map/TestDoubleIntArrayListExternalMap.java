@@ -2,9 +2,8 @@ package test.finebi.cube.engine.map;
 
 import com.finebi.cube.engine.map.ExternalMap;
 import com.finebi.cube.engine.map.map2.DoubleIntArrayListExternalMap;
-import com.finebi.cube.engine.map.map2.IntegerIntArrayListExternalMap;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.fr.bi.stable.structure.collection.list.IntArrayList;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -16,7 +15,7 @@ public class TestDoubleIntArrayListExternalMap {
     public static void main(String[] args) {
         DoubleIntArrayListExternalMap map = new DoubleIntArrayListExternalMap(ComparatorFacotry.DOUBLE_DESC,"test/Double");
         for (int c = 1; c < 40000; c++) {
-            IntArrayList list = new IntArrayList();
+            IntArray list = new IntArray();
             for (int i = 3; i >0; i--) {
                 list.add(i*c);
                 list.add(i*c+4);
@@ -24,11 +23,13 @@ public class TestDoubleIntArrayListExternalMap {
             map.put(c*1.1,list);
         }
 
-        Iterator<ExternalMap.Entry<Double, IntArrayList>> it = map.getIterator();
+        Iterator<ExternalMap.Entry<Double, IntArray>> it = map.getIterator();
         while (it.hasNext()) {
-            Map.Entry<Double, IntArrayList> entry = it.next();
+            Map.Entry<Double, IntArray> entry = it.next();
             System.out.println(entry.getKey());
         }
         System.err.println(map.size());
+
+        map.clear();
     }
 }

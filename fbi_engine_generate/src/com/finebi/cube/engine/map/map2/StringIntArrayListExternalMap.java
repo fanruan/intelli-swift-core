@@ -1,7 +1,7 @@
 package com.finebi.cube.engine.map.map2;
 
 import com.finebi.cube.engine.map.ExternalMapIO;
-import com.fr.bi.stable.structure.collection.list.IntArrayList;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.Comparator;
 import java.util.TreeMap;
@@ -23,12 +23,12 @@ public class StringIntArrayListExternalMap extends IntArrayListExternalMap<Strin
         return (ExternalMapIO) new StringIntArrayListMapIO(id_filePath);
     }
 
-    public ExternalMapIO<String, IntArrayList> getMemMapIO(TreeMap<String, IntArrayList> currentContainer) {
+    public ExternalMapIO<String, IntArray> getMemMapIO(TreeMap<String, IntArray> currentContainer) {
         return new StringMemMapIO(currentContainer);
     }
 
     private class StringMemMapIO extends MemIntArrayExternalMapIO<String> {
-        public StringMemMapIO(TreeMap<String, IntArrayList> currentContainer) {
+        public StringMemMapIO(TreeMap<String, IntArray> currentContainer) {
             super(currentContainer);
         }
     }
