@@ -17,10 +17,10 @@ import {Table, AutoSizer} from 'base'
 
 import {Template} from 'data'
 
-import {MultiSelectorWidget} from 'widgets'
+import {MultiTreeSelectorWidget} from 'widgets'
 
 
-class MultiSelectorComponent extends Component {
+class MultiTreeSelectorComponent extends Component {
     constructor(props, context) {
         super(props, context);
     }
@@ -55,18 +55,20 @@ class MultiSelectorComponent extends Component {
                 value: i
             })
         }
-        return <MultiSelectorWidget
+        return <MultiTreeSelectorWidget
             items={items}
-            width={props.width}
-            height={props.height}
+            style={{
+                width: props.width,
+                height: props.height
+            }}
             >
-        </MultiSelectorWidget>
+        </MultiTreeSelectorWidget>
     }
 }
-mixin.onClass(MultiSelectorComponent, PureRenderMixin);
+mixin.onClass(MultiTreeSelectorComponent, PureRenderMixin);
 const styles = StyleSheet.create({
     region: {
         position: 'absolute'
     }
 });
-export default MultiSelectorComponent
+export default MultiTreeSelectorComponent

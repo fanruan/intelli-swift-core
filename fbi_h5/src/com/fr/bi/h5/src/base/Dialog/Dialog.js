@@ -97,7 +97,7 @@ class Dialog extends Component {
                 {
                     easing: Easing.linear,
                     duration: 500,
-                    toValue: 1,
+                    toValue: 1
                 }
             ),
             Animated.timing(
@@ -105,7 +105,7 @@ class Dialog extends Component {
                 {
                     easing: Easing.linear,
                     duration: 500,
-                    toValue: 1,
+                    toValue: 1
                 }
             )
         ]).start();
@@ -119,7 +119,7 @@ class Dialog extends Component {
                 {
                     easing: Easing.linear,
                     duration: 500,
-                    toValue: 0,
+                    toValue: 0
                 }
             ),
             Animated.timing(
@@ -127,7 +127,7 @@ class Dialog extends Component {
                 {
                     easing: Easing.linear,
                     duration: 500,
-                    toValue: 0,
+                    toValue: 0
                 }
             )
         ]).start((endState)=> {

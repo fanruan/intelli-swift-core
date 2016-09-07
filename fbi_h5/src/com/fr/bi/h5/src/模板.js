@@ -11,9 +11,9 @@ import React, {
     ListView,
     View,
     Fetch
-} from 'lib'
+    } from 'lib'
 
-import {Template} from 'data'
+import {Colors, Template} from 'data'
 
 import {Table, AutoSizer} from 'base'
 

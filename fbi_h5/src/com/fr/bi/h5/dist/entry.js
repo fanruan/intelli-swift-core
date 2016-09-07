@@ -33,7 +33,7 @@ webpackJsonp([0],{
 
 	var _View2 = _interopRequireDefault(_View);
 
-	var _Portal = __webpack_require__(512);
+	var _Portal = __webpack_require__(514);
 
 	var _Portal2 = _interopRequireDefault(_Portal);
 
@@ -1537,6 +1537,65 @@ webpackJsonp([0],{
 
 /***/ },
 
+/***/ 194:
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	'use strict';
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var invariant = function(condition, format, a, b, c, d, e, f) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  }
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error(
+	        'Minified exception occurred; use the non-minified dev environment ' +
+	        'for the full error message and additional helpful warnings.'
+	      );
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(
+	        format.replace(/%s/g, function() { return args[argIndex++]; })
+	      );
+	      error.name = 'Invariant Violation';
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	};
+
+	module.exports = invariant;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+
 /***/ 195:
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1999,19 +2058,15 @@ webpackJsonp([0],{
 
 	var _reactRedux = __webpack_require__(172);
 
-	var _data = __webpack_require__(529);
+	var _data = __webpack_require__(531);
 
-	var _todos = __webpack_require__(535);
+	var _todos = __webpack_require__(537);
 
 	var TodoActions = _interopRequireWildcard(_todos);
 
-	var _Main = __webpack_require__(536);
+	var _Main = __webpack_require__(538);
 
 	var _Main2 = _interopRequireDefault(_Main);
-
-	var _Test = __webpack_require__(747);
-
-	var _Test2 = _interopRequireDefault(_Test);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -2028,7 +2083,9 @@ webpackJsonp([0],{
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *          you edit them, they are not updated again.
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
-	__webpack_require__(749);
+	__webpack_require__(754);
+
+	//import Test from '../components/Test.js'
 
 	//import PanResponderDemo from '../examples/base/2/PanResponder/PanResponder'
 	//import ViewDemo from '../examples/base/2/View/View'
@@ -2119,7 +2176,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 535:
+/***/ 537:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2166,7 +2223,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 536:
+/***/ 538:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2189,23 +2246,27 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _core = __webpack_require__(325);
+	var _core = __webpack_require__(326);
 
 	var _lib = __webpack_require__(202);
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(537);
-
-	var _widgets = __webpack_require__(739);
-
-	var _ChartComponent = __webpack_require__(744);
+	var _ChartComponent = __webpack_require__(539);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-	var _TableComponent = __webpack_require__(745);
+	var _TableComponent = __webpack_require__(540);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
+
+	var _MultiSelectorComponent = __webpack_require__(752);
+
+	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
+
+	var _MultiTreeSelectorComponent = __webpack_require__(753);
+
+	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2243,7 +2304,7 @@ webpackJsonp([0],{
 	        key: 'render',
 	        value: function render() {
 	            return _lib2.default.createElement(_lib.ListView, {
-	                initialListSize: 3,
+	                initialListSize: 2,
 	                dataSource: this.state.dataSource,
 	                renderRow: this._renderRow.bind(this)
 	            });
@@ -2255,13 +2316,65 @@ webpackJsonp([0],{
 
 	            var widgetObj = template.getWidgetById(rowData);
 	            var type = widgetObj.getType();
+	            var props = {
+	                key: rowData,
+	                widget: widgetObj,
+	                width: width,
+	                height: height / 3 * 2
+	            };
 	            switch (type) {
 	                case BICst.WIDGET.TABLE:
-	                    return _lib2.default.createElement(_TableComponent2.default, { key: rowData, widget: widgetObj,
-	                        width: width, height: height / 2 });
+	                    return _lib2.default.createElement(_TableComponent2.default, props);
+	                //case BICst.WIDGET.CROSS_TABLE:
+	                //case BICst.WIDGET.COMPLEX_TABLE:
+	                //
+	                //case BICst.WIDGET.DETAIL:
+
+	                case BICst.WIDGET.AXIS:
+	                case BICst.WIDGET.ACCUMULATE_AXIS:
+	                case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+	                case BICst.WIDGET.COMPARE_AXIS:
+	                case BICst.WIDGET.FALL_AXIS:
+	                case BICst.WIDGET.BAR:
+	                case BICst.WIDGET.ACCUMULATE_BAR:
+	                case BICst.WIDGET.COMPARE_BAR:
+	                case BICst.WIDGET.LINE:
+	                case BICst.WIDGET.AREA:
+	                case BICst.WIDGET.ACCUMULATE_AREA:
+	                case BICst.WIDGET.COMPARE_AREA:
+	                case BICst.WIDGET.RANGE_AREA:
+	                case BICst.WIDGET.COMBINE_CHART:
+	                case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+	                case BICst.WIDGET.PIE:
+	                case BICst.WIDGET.DONUT:
+	                case BICst.WIDGET.MAP:
+	                case BICst.WIDGET.GIS_MAP:
+	                case BICst.WIDGET.DASHBOARD:
+	                case BICst.WIDGET.BUBBLE:
+	                case BICst.WIDGET.FORCE_BUBBLE:
+	                case BICst.WIDGET.SCATTER:
+	                case BICst.WIDGET.RADAR:
+	                case BICst.WIDGET.ACCUMULATE_RADAR:
+	                case BICst.WIDGET.FUNNEL:
+	                    //case BICst.WIDGET.STRING:
+	                    //case BICst.WIDGET.NUMBER:
+	                    //case BICst.WIDGET.DATE:
+	                    //case BICst.WIDGET.YEAR:
+	                    //case BICst.WIDGET.QUARTER:
+	                    //case BICst.WIDGET.MONTH:
+	                    //case BICst.WIDGET.YMD:
+	                    //case BICst.WIDGET.QUERY:
+	                    //case BICst.WIDGET.RESET:
+	                    //case BICst.WIDGET.CONTENT:
+	                    //case BICst.WIDGET.IMAGE:
+	                    //case BICst.WIDGET.WEB:
+	                    return _lib2.default.createElement(_ChartComponent2.default, props);
+	                case BICst.WIDGET.STRING:
+	                    return _lib2.default.createElement(_MultiSelectorComponent2.default, props);
+	                case BICst.WIDGET.TREE:
+	                    return _lib2.default.createElement(_MultiTreeSelectorComponent2.default, props);
 	                default:
-	                    return _lib2.default.createElement(_ChartComponent2.default, { key: rowData, widget: widgetObj,
-	                        width: width, height: height / 2 });
+	                    return null;
 	            }
 	        }
 	    }]);
@@ -2276,33 +2389,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 739:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.MultiSelectorWidget = exports.TableWidget = undefined;
-
-	var _TableWidget2 = __webpack_require__(740);
-
-	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
-
-	var _MultiSelectorWidget2 = __webpack_require__(741);
-
-	var _MultiSelectorWidget3 = _interopRequireDefault(_MultiSelectorWidget2);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.TableWidget = _TableWidget3.default;
-	exports.MultiSelectorWidget = _MultiSelectorWidget3.default;
-	exports.default = module.exports;
-
-/***/ },
-
-/***/ 740:
+/***/ 539:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2327,484 +2414,7 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _core = __webpack_require__(325);
-
-	var _lib = __webpack_require__(202);
-
-	var _lib2 = _interopRequireDefault(_lib);
-
-	var _base = __webpack_require__(537);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ColumnGroup = _base.Table.ColumnGroup;
-	var Column = _base.Table.Column;
-	var Cell = _base.Table.Cell;
-
-	var TableWidget = function (_Component) {
-	    _inherits(TableWidget, _Component);
-
-	    function TableWidget(props, context) {
-	        _classCallCheck(this, TableWidget);
-
-	        var _this = _possibleConstructorReturn(this, (TableWidget.__proto__ || Object.getPrototypeOf(TableWidget)).call(this, props, context));
-
-	        _this.state = {};
-	        return _this;
-	    }
-
-	    _createClass(TableWidget, [{
-	        key: 'render',
-	        value: function render() {
-	            var _props = this.props;
-	            var isNeedFreeze = _props.isNeedFreeze;
-	            var freezeCols = _props.freezeCols;
-	            var columnSize = _props.columnSize;
-	            var rowHeight = _props.rowHeight;
-	            var headerRowHeight = _props.headerRowHeight;
-	            var header = _props.header;
-	            var items = _props.items;
-	            var itemsCellRenderer = _props.itemsCellRenderer;
-	            var headerCellRenderer = _props.headerCellRenderer;
-	            var width = _props.width;
-	            var height = _props.height;
-
-	            var others = _objectWithoutProperties(_props, ['isNeedFreeze', 'freezeCols', 'columnSize', 'rowHeight', 'headerRowHeight', 'header', 'items', 'itemsCellRenderer', 'headerCellRenderer', 'width', 'height']);
-
-	            var columns = [];
-	            header.forEach(function (row, colIndex) {
-	                columns.push(_lib2.default.createElement(Column, {
-	                    fixed: freezeCols.indexOf(colIndex) > -1,
-	                    header: headerCellRenderer(colIndex, row),
-	                    cell: function cell(props) {
-	                        return itemsCellRenderer(_extends({ colIndex: colIndex, items: items }, props));
-	                    },
-	                    width: columnSize[colIndex]
-	                }));
-	            });
-
-	            return _lib2.default.createElement(
-	                _base.Table,
-	                _extends({
-	                    rowHeight: rowHeight,
-	                    groupHeaderHeight: 0,
-	                    headerHeight: headerRowHeight,
-	                    rowsCount: items[0] ? items[0].length : 0,
-	                    width: width,
-	                    height: height
-	                }, others),
-	                columns
-	            );
-	        }
-	    }]);
-
-	    return TableWidget;
-	}(_lib.Component);
-
-	TableWidget.propTypes = {};
-	TableWidget.defaultProps = {
-	    isNeedFreeze: true,
-	    freezeCols: [],
-	    columnSize: [],
-	    rowHeight: 30,
-	    headerRowHeight: 30,
-	    header: [],
-	    items: [],
-	    itemsCellRenderer: _core.emptyFunction,
-	    headerCellRenderer: _core.emptyFunction
-	};
-
-	_reactMixin2.default.onClass(TableWidget, _reactAddonsPureRenderMixin2.default);
-	var style = _lib.StyleSheet.create({
-	    region: {
-	        position: 'absolute'
-	    }
-	});
-	exports.default = TableWidget;
-
-/***/ },
-
-/***/ 741:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(226);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
-
-	var _reactMixin = __webpack_require__(223);
-
-	var _reactMixin2 = _interopRequireDefault(_reactMixin);
-
-	var _reactDom = __webpack_require__(34);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _core = __webpack_require__(325);
-
-	var _lib = __webpack_require__(202);
-
-	var _lib2 = _interopRequireDefault(_lib);
-
-	var _base = __webpack_require__(537);
-
-	var _Item = __webpack_require__(742);
-
-	var _Item2 = _interopRequireDefault(_Item);
-
-	var _MultiSelectorWidgetHelper = __webpack_require__(743);
-
-	var _MultiSelectorWidgetHelper2 = _interopRequireDefault(_MultiSelectorWidgetHelper);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var MultiSelectorWidget = function (_Component) {
-	    _inherits(MultiSelectorWidget, _Component);
-
-	    function MultiSelectorWidget(props, context) {
-	        _classCallCheck(this, MultiSelectorWidget);
-
-	        var _this = _possibleConstructorReturn(this, (MultiSelectorWidget.__proto__ || Object.getPrototypeOf(MultiSelectorWidget)).call(this, props, context));
-
-	        _this.state = {};
-
-	        _this.ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
-	                return r1.value !== r2.value;
-	            } });
-	        _this._helper = new _MultiSelectorWidgetHelper2.default(props);
-	        _this.state = {
-	            dataSource: _this.ds.cloneWithRows(_this._helper.getItems())
-	        };
-	        return _this;
-	    }
-
-	    _createClass(MultiSelectorWidget, [{
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {}
-	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
-	    }, {
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(nextProps) {
-	            this._helper = new _MultiSelectorWidgetHelper2.default(nextProps);
-	            this.setState({ dataSource: this.ds.cloneWithRows(this._helper.getItems()) });
-	        }
-	    }, {
-	        key: 'componentWillUpdate',
-	        value: function componentWillUpdate() {}
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var props = _objectWithoutProperties(this.props, []);
-
-	            return _lib2.default.createElement(_lib.ListView, {
-	                dataSource: this.state.dataSource,
-	                initialListSize: 100,
-	                renderRow: this._renderRow.bind(this)
-	            });
-	        }
-	    }, {
-	        key: '_renderRow',
-	        value: function _renderRow(rowData, sectionID, rowID) {
-	            var _this2 = this;
-
-	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
-	                    if (sel) {
-	                        _this2._helper.selectOneValue(rowData.value);
-	                    } else {
-	                        _this2._helper.disSelectOneValue(rowData.value);
-	                    }
-	                    _this2.setState({
-	                        dataSource: _this2.ds.cloneWithRows(_this2._helper.getItems())
-	                    });
-	                } }, rowData));
-	        }
-	    }]);
-
-	    return MultiSelectorWidget;
-	}(_lib.Component);
-
-	MultiSelectorWidget.propTypes = {};
-	MultiSelectorWidget.defaultProps = {
-	    items: []
-	};
-
-	_reactMixin2.default.onClass(MultiSelectorWidget, _reactAddonsPureRenderMixin2.default);
-	var styles = _lib.StyleSheet.create({
-	    region: {
-	        position: 'absolute'
-	    }
-	});
-	exports.default = MultiSelectorWidget;
-
-/***/ },
-
-/***/ 742:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(226);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
-
-	var _reactMixin = __webpack_require__(223);
-
-	var _reactMixin2 = _interopRequireDefault(_reactMixin);
-
-	var _reactDom = __webpack_require__(34);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _core = __webpack_require__(325);
-
-	var _lib = __webpack_require__(202);
-
-	var _lib2 = _interopRequireDefault(_lib);
-
-	var _base = __webpack_require__(537);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Item = function (_Component) {
-	    _inherits(Item, _Component);
-
-	    function Item(props, context) {
-	        _classCallCheck(this, Item);
-
-	        var _this = _possibleConstructorReturn(this, (Item.__proto__ || Object.getPrototypeOf(Item)).call(this, props, context));
-
-	        _this.state = {};
-	        var text = props.text;
-	        var value = props.value;
-	        var selected = props.selected;
-
-	        _this.state = { text: text, value: value, selected: selected };
-	        return _this;
-	    }
-
-	    _createClass(Item, [{
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {}
-	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
-	    }, {
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(props) {
-	            var text = props.text;
-	            var value = props.value;
-	            var selected = props.selected;
-
-	            this.state = { text: text, value: value, selected: selected };
-	        }
-	    }, {
-	        key: 'componentWillUpdate',
-	        value: function componentWillUpdate() {}
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this2 = this;
-
-	            var props = _objectWithoutProperties(this.props, []);
-	            var state = _objectWithoutProperties(this.state, []);
-
-	            return _lib2.default.createElement(
-	                _lib.TouchableHighlight,
-	                { onPress: function onPress() {
-	                        _this2.setState({
-	                            selected: !_this2.state.selected
-	                        }, function () {
-	                            _this2.props.onSelected(_this2.state.selected);
-	                        });
-	                    }, underlayColor: 'transparent' },
-	                _lib2.default.createElement(
-	                    _lib.View,
-	                    { style: [styles.row, (0, _core.sc)([styles.selected, state.selected])] },
-	                    _lib2.default.createElement(
-	                        _lib.Text,
-	                        null,
-	                        state.value == null ? state.text : state.value
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return Item;
-	}(_lib.Component);
-
-	Item.propTypes = {};
-	Item.defaultProps = {
-	    text: '',
-	    value: '',
-	    selected: false,
-	    onSelected: _core.emptyFunction
-	};
-
-	_reactMixin2.default.onClass(Item, _reactAddonsPureRenderMixin2.default);
-	var styles = _lib.StyleSheet.create({
-	    row: {
-	        justifyContent: 'center',
-	        height: 30
-	    },
-
-	    selected: {
-	        backgroundColor: '#03A9F4'
-	    }
-	});
-	exports.default = Item;
-
-/***/ },
-
-/***/ 743:
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var MultiSelectorWidgetHelper = function () {
-	    function MultiSelectorWidgetHelper(props) {
-	        _classCallCheck(this, MultiSelectorWidgetHelper);
-
-	        this.items = props.items;
-	        this.value = Array.from(props.value || []);
-	        this.type = props.type;
-	    }
-
-	    _createClass(MultiSelectorWidgetHelper, [{
-	        key: "_selectOneValue",
-	        value: function _selectOneValue(val) {
-	            if (this.value.indexOf(val) === -1) {
-	                this.value.push(val);
-	            }
-	        }
-	    }, {
-	        key: "_disSelectOneValue",
-	        value: function _disSelectOneValue(val) {
-	            var idx = void 0;
-	            if ((idx = this.value.indexOf(val)) >= -1) {
-	                this.value.splice(idx, 1);
-	            }
-	        }
-	    }, {
-	        key: "selectOneValue",
-	        value: function selectOneValue(val) {
-	            if (this.type === 1) {
-	                this._disSelectOneValue(val);
-	            } else {
-	                this._selectOneValue(val);
-	            }
-	        }
-	    }, {
-	        key: "disSelectOneValue",
-	        value: function disSelectOneValue(val) {
-	            if (this.type === 1) {
-	                this._selectOneValue(val);
-	            } else {
-	                this._disSelectOneValue(val);
-	            }
-	        }
-	    }, {
-	        key: "getItems",
-	        value: function getItems() {
-	            var _this = this;
-
-	            var front = [],
-	                items = [];
-	            this.items.forEach(function (item) {
-	                if (_this.value.indexOf(item.value) > -1) {
-	                    front.push(_extends({}, item, { selected: _this.type !== 1 }));
-	                } else {
-	                    items.push(_extends({}, item, { selected: _this.type === 1 }));
-	                }
-	            });
-	            return front.concat(items);
-	        }
-	    }]);
-
-	    return MultiSelectorWidgetHelper;
-	}();
-
-	exports.default = MultiSelectorWidgetHelper;
-
-/***/ },
-
-/***/ 744:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(226);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
-
-	var _reactMixin = __webpack_require__(223);
-
-	var _reactMixin2 = _interopRequireDefault(_reactMixin);
-
-	var _reactDom = __webpack_require__(34);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _core = __webpack_require__(325);
+	var _core = __webpack_require__(326);
 
 	var _lib = __webpack_require__(202);
 
@@ -2872,7 +2482,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 745:
+/***/ 540:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2897,19 +2507,19 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _core = __webpack_require__(325);
+	var _core = __webpack_require__(326);
 
 	var _lib = __webpack_require__(202);
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _widgets = __webpack_require__(739);
+	var _widgets = __webpack_require__(541);
 
-	var _TableComponentHelper = __webpack_require__(746);
+	var _TableComponentHelper = __webpack_require__(751);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _base = __webpack_require__(537);
+	var _base = __webpack_require__(543);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3041,6 +2651,307 @@ webpackJsonp([0],{
 
 /***/ },
 
+/***/ 541:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
+
+	var _TableWidget2 = __webpack_require__(542);
+
+	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
+
+	var _MultiSelectorWidget2 = __webpack_require__(745);
+
+	var _MultiSelectorWidget3 = _interopRequireDefault(_MultiSelectorWidget2);
+
+	var _MultiTreeSelectorWidget2 = __webpack_require__(748);
+
+	var _MultiTreeSelectorWidget3 = _interopRequireDefault(_MultiTreeSelectorWidget2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.TableWidget = _TableWidget3.default;
+	exports.MultiSelectorWidget = _MultiSelectorWidget3.default;
+	exports.MultiTreeSelectorWidget = _MultiTreeSelectorWidget3.default;
+	exports.default = module.exports;
+
+/***/ },
+
+/***/ 542:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(226);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _reactMixin = __webpack_require__(223);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _core = __webpack_require__(326);
+
+	var _lib = __webpack_require__(202);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _base = __webpack_require__(543);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ColumnGroup = _base.Table.ColumnGroup;
+	var Column = _base.Table.Column;
+	var Cell = _base.Table.Cell;
+
+	var TableWidget = function (_Component) {
+	    _inherits(TableWidget, _Component);
+
+	    function TableWidget(props, context) {
+	        _classCallCheck(this, TableWidget);
+
+	        var _this = _possibleConstructorReturn(this, (TableWidget.__proto__ || Object.getPrototypeOf(TableWidget)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(TableWidget, [{
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props;
+	            var isNeedFreeze = _props.isNeedFreeze;
+	            var freezeCols = _props.freezeCols;
+	            var columnSize = _props.columnSize;
+	            var rowHeight = _props.rowHeight;
+	            var headerRowHeight = _props.headerRowHeight;
+	            var header = _props.header;
+	            var items = _props.items;
+	            var itemsCellRenderer = _props.itemsCellRenderer;
+	            var headerCellRenderer = _props.headerCellRenderer;
+	            var width = _props.width;
+	            var height = _props.height;
+
+	            var others = _objectWithoutProperties(_props, ['isNeedFreeze', 'freezeCols', 'columnSize', 'rowHeight', 'headerRowHeight', 'header', 'items', 'itemsCellRenderer', 'headerCellRenderer', 'width', 'height']);
+
+	            var columns = [];
+	            header.forEach(function (row, colIndex) {
+	                columns.push(_lib2.default.createElement(Column, {
+	                    fixed: freezeCols.indexOf(colIndex) > -1,
+	                    header: headerCellRenderer(colIndex, row),
+	                    cell: function cell(props) {
+	                        return itemsCellRenderer(_extends({ colIndex: colIndex, items: items }, props));
+	                    },
+	                    width: columnSize[colIndex]
+	                }));
+	            });
+
+	            return _lib2.default.createElement(
+	                _base.Table,
+	                _extends({
+	                    rowHeight: rowHeight,
+	                    groupHeaderHeight: 0,
+	                    headerHeight: headerRowHeight,
+	                    rowsCount: items[0] ? items[0].length : 0,
+	                    width: width,
+	                    height: height
+	                }, others),
+	                columns
+	            );
+	        }
+	    }]);
+
+	    return TableWidget;
+	}(_lib.Component);
+
+	TableWidget.propTypes = {};
+	TableWidget.defaultProps = {
+	    isNeedFreeze: true,
+	    freezeCols: [],
+	    columnSize: [],
+	    rowHeight: 30,
+	    headerRowHeight: 30,
+	    header: [],
+	    items: [],
+	    itemsCellRenderer: _core.emptyFunction,
+	    headerCellRenderer: _core.emptyFunction
+	};
+
+	_reactMixin2.default.onClass(TableWidget, _reactAddonsPureRenderMixin2.default);
+	var style = _lib.StyleSheet.create({
+	    region: {
+	        position: 'absolute'
+	    }
+	});
+	exports.default = TableWidget;
+
+/***/ },
+
+/***/ 745:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(226);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _reactMixin = __webpack_require__(223);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _core = __webpack_require__(326);
+
+	var _lib = __webpack_require__(202);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _base = __webpack_require__(543);
+
+	var _Item = __webpack_require__(746);
+
+	var _Item2 = _interopRequireDefault(_Item);
+
+	var _MultiSelectorWidgetHelper = __webpack_require__(747);
+
+	var _MultiSelectorWidgetHelper2 = _interopRequireDefault(_MultiSelectorWidgetHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var MultiSelectorWidget = function (_Component) {
+	    _inherits(MultiSelectorWidget, _Component);
+
+	    function MultiSelectorWidget(props, context) {
+	        _classCallCheck(this, MultiSelectorWidget);
+
+	        var _this = _possibleConstructorReturn(this, (MultiSelectorWidget.__proto__ || Object.getPrototypeOf(MultiSelectorWidget)).call(this, props, context));
+
+	        _this.state = {};
+
+	        _this._helper = new _MultiSelectorWidgetHelper2.default(props);
+	        _this.state = {
+	            value: props.value,
+	            type: props.type
+	        };
+	        return _this;
+	    }
+
+	    _createClass(MultiSelectorWidget, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            this._helper = new _MultiSelectorWidgetHelper2.default(nextProps);
+	            this.setState({ value: nextProps.value, type: nextProps.type });
+	        }
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+
+	            return _lib2.default.createElement(_base.VirtualScroll, {
+	                width: props.width,
+	                height: props.height,
+	                overscanRowCount: 0
+	                //noRowsRenderer={this._noRowsRenderer.bind(this)}
+	                , rowCount: this.props.items.length,
+	                rowHeight: 30,
+	                rowRenderer: this._rowRenderer.bind(this)
+	                //scrollToIndex={scrollToIndex}
+	            });
+	        }
+	    }, {
+	        key: '_rowRenderer',
+	        value: function _rowRenderer(_ref) {
+	            var _this2 = this;
+
+	            var index = _ref.index;
+	            var isScrolling = _ref.isScrolling;
+
+	            var rowData = this._helper.getSortedItems()[index];
+	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
+	                    if (sel) {
+	                        _this2._helper.selectOneValue(rowData.value);
+	                    } else {
+	                        _this2._helper.disSelectOneValue(rowData.value);
+	                    }
+	                    _this2.setState({
+	                        value: _this2._helper.getSelectedValue()
+	                    });
+	                } }, rowData));
+	        }
+	    }]);
+
+	    return MultiSelectorWidget;
+	}(_lib.Component);
+
+	MultiSelectorWidget.propTypes = {};
+	MultiSelectorWidget.defaultProps = {
+	    items: []
+	};
+
+	_reactMixin2.default.onClass(MultiSelectorWidget, _reactAddonsPureRenderMixin2.default);
+	var styles = _lib.StyleSheet.create({
+	    region: {
+	        position: 'absolute'
+	    }
+	});
+	exports.default = MultiSelectorWidget;
+
+/***/ },
+
 /***/ 746:
 /***/ function(module, exports, __webpack_require__) {
 
@@ -3052,7 +2963,585 @@ webpackJsonp([0],{
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _core = __webpack_require__(325);
+	var _reactAddonsPureRenderMixin = __webpack_require__(226);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _reactMixin = __webpack_require__(223);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _core = __webpack_require__(326);
+
+	var _lib = __webpack_require__(202);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(531);
+
+	var _base = __webpack_require__(543);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Item = function (_Component) {
+	    _inherits(Item, _Component);
+
+	    function Item(props, context) {
+	        _classCallCheck(this, Item);
+
+	        var _this = _possibleConstructorReturn(this, (Item.__proto__ || Object.getPrototypeOf(Item)).call(this, props, context));
+
+	        _this.state = {};
+	        var text = props.text;
+	        var value = props.value;
+	        var selected = props.selected;
+
+	        _this.state = { text: text, value: value, selected: selected };
+	        return _this;
+	    }
+
+	    _createClass(Item, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(props) {
+	            var text = props.text;
+	            var value = props.value;
+	            var selected = props.selected;
+
+	            this.state = { text: text, value: value, selected: selected };
+	        }
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            return _lib2.default.createElement(
+	                _lib.TouchableHighlight,
+	                { onPress: function onPress() {
+	                        _this2.setState({
+	                            selected: !_this2.state.selected
+	                        }, function () {
+	                            _this2.props.onSelected(_this2.state.selected);
+	                        });
+	                    }, underlayColor: _data.Colors.PRESS },
+	                _lib2.default.createElement(
+	                    _lib.View,
+	                    { style: [styles.row, (0, _core.sc)([styles.selected, state.selected])] },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        null,
+	                        state.value == null ? state.text : state.value
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Item;
+	}(_lib.Component);
+
+	Item.propTypes = {};
+	Item.defaultProps = {
+	    text: '',
+	    value: '',
+	    selected: false,
+	    onSelected: _core.emptyFunction
+	};
+
+	_reactMixin2.default.onClass(Item, _reactAddonsPureRenderMixin2.default);
+	var styles = _lib.StyleSheet.create({
+	    row: {
+	        justifyContent: 'center',
+	        height: 30
+	    },
+
+	    selected: {
+	        backgroundColor: _data.Colors.SELECTED
+	    }
+	});
+	exports.default = Item;
+
+/***/ },
+
+/***/ 747:
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var MultiSelectorWidgetHelper = function () {
+	    function MultiSelectorWidgetHelper(props) {
+	        _classCallCheck(this, MultiSelectorWidgetHelper);
+
+	        this.items = props.items;
+	        this.sorted = this.items;
+	        this.value = Array.from(props.value || []);
+	        this.type = props.type;
+	    }
+
+	    _createClass(MultiSelectorWidgetHelper, [{
+	        key: "_selectOneValue",
+	        value: function _selectOneValue(val) {
+	            if (this.value.indexOf(val) === -1) {
+	                this.value.push(val);
+	                this.sorted = this._sortItems();
+	            }
+	        }
+	    }, {
+	        key: "_disSelectOneValue",
+	        value: function _disSelectOneValue(val) {
+	            var idx = void 0;
+	            if ((idx = this.value.indexOf(val)) >= -1) {
+	                this.value.splice(idx, 1);
+	                this.sorted = this._sortItems();
+	            }
+	        }
+	    }, {
+	        key: "_sortItems",
+	        value: function _sortItems() {
+	            var _this = this;
+
+	            var front = [],
+	                items = [];
+	            this.items.forEach(function (item) {
+	                if (_this.value.indexOf(item.value) > -1) {
+	                    front.push(_extends({}, item, { selected: _this.type !== 1 }));
+	                } else {
+	                    items.push(_extends({}, item, { selected: _this.type === 1 }));
+	                }
+	            });
+	            return front.concat(items);
+	        }
+	    }, {
+	        key: "selectOneValue",
+	        value: function selectOneValue(val) {
+	            if (this.type === 1) {
+	                this._disSelectOneValue(val);
+	            } else {
+	                this._selectOneValue(val);
+	            }
+	        }
+	    }, {
+	        key: "disSelectOneValue",
+	        value: function disSelectOneValue(val) {
+	            if (this.type === 1) {
+	                this._selectOneValue(val);
+	            } else {
+	                this._disSelectOneValue(val);
+	            }
+	        }
+	    }, {
+	        key: "getSelectedValue",
+	        value: function getSelectedValue() {
+	            return Array.from(this.value);
+	        }
+	    }, {
+	        key: "getSortedItems",
+	        value: function getSortedItems() {
+	            return this.sorted;
+	        }
+	    }]);
+
+	    return MultiSelectorWidgetHelper;
+	}();
+
+	exports.default = MultiSelectorWidgetHelper;
+
+/***/ },
+
+/***/ 748:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(226);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _reactMixin = __webpack_require__(223);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _core = __webpack_require__(326);
+
+	var _lib = __webpack_require__(202);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _base = __webpack_require__(543);
+
+	var _Item = __webpack_require__(749);
+
+	var _Item2 = _interopRequireDefault(_Item);
+
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(750);
+
+	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var MultiTreeSelectorWidget = function (_Component) {
+	    _inherits(MultiTreeSelectorWidget, _Component);
+
+	    function MultiTreeSelectorWidget(props, context) {
+	        _classCallCheck(this, MultiTreeSelectorWidget);
+
+	        var _this = _possibleConstructorReturn(this, (MultiTreeSelectorWidget.__proto__ || Object.getPrototypeOf(MultiTreeSelectorWidget)).call(this, props, context));
+
+	        _this.state = {};
+
+	        _this.ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
+	                return r1.value !== r2.value;
+	            } });
+	        _this._helper = new _MultiTreeSelectorWidgetHelper2.default(props);
+	        _this.state = {
+	            dataSource: _this.ds.cloneWithRows(_this._helper.getItems())
+	        };
+	        return _this;
+	    }
+
+	    _createClass(MultiTreeSelectorWidget, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            this._helper = new _MultiTreeSelectorWidgetHelper2.default(nextProps);
+	            this.setState({ dataSource: this.ds.cloneWithRows(this._helper.getItems()) });
+	        }
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+
+	            return _lib2.default.createElement(_lib.ListView, _extends({}, props, {
+	                dataSource: this.state.dataSource,
+	                initialListSize: 100,
+	                renderRow: this._renderRow.bind(this)
+	            }));
+	        }
+	    }, {
+	        key: '_renderRow',
+	        value: function _renderRow(rowData, sectionID, rowID) {
+	            var _this2 = this;
+
+	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
+	                    if (sel) {
+	                        _this2._helper.selectOneValue(rowData.value);
+	                    } else {
+	                        _this2._helper.disSelectOneValue(rowData.value);
+	                    }
+	                    _this2.setState({
+	                        dataSource: _this2.ds.cloneWithRows(_this2._helper.getItems())
+	                    });
+	                } }, rowData));
+	        }
+	    }]);
+
+	    return MultiTreeSelectorWidget;
+	}(_lib.Component);
+
+	MultiTreeSelectorWidget.propTypes = {};
+	MultiTreeSelectorWidget.defaultProps = {
+	    items: []
+	};
+
+	_reactMixin2.default.onClass(MultiTreeSelectorWidget, _reactAddonsPureRenderMixin2.default);
+	var styles = _lib.StyleSheet.create({
+	    region: {
+	        position: 'absolute'
+	    }
+	});
+	exports.default = MultiTreeSelectorWidget;
+
+/***/ },
+
+/***/ 749:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(226);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _reactMixin = __webpack_require__(223);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _core = __webpack_require__(326);
+
+	var _lib = __webpack_require__(202);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(531);
+
+	var _base = __webpack_require__(543);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Item = function (_Component) {
+	    _inherits(Item, _Component);
+
+	    function Item(props, context) {
+	        _classCallCheck(this, Item);
+
+	        var _this = _possibleConstructorReturn(this, (Item.__proto__ || Object.getPrototypeOf(Item)).call(this, props, context));
+
+	        _this.state = {};
+	        var text = props.text;
+	        var value = props.value;
+	        var selected = props.selected;
+
+	        _this.state = { text: text, value: value, selected: selected };
+	        return _this;
+	    }
+
+	    _createClass(Item, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(props) {
+	            var text = props.text;
+	            var value = props.value;
+	            var selected = props.selected;
+
+	            this.state = { text: text, value: value, selected: selected };
+	        }
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            return _lib2.default.createElement(
+	                _lib.TouchableHighlight,
+	                { onPress: function onPress() {
+	                        _this2.setState({
+	                            selected: !_this2.state.selected
+	                        }, function () {
+	                            _this2.props.onSelected(_this2.state.selected);
+	                        });
+	                    }, underlayColor: _data.Colors.PRESS },
+	                _lib2.default.createElement(
+	                    _lib.View,
+	                    { style: [styles.row, (0, _core.sc)([styles.selected, state.selected])] },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        null,
+	                        state.value == null ? state.text : state.value
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Item;
+	}(_lib.Component);
+
+	Item.propTypes = {};
+	Item.defaultProps = {
+	    text: '',
+	    value: '',
+	    selected: false,
+	    onSelected: _core.emptyFunction
+	};
+
+	_reactMixin2.default.onClass(Item, _reactAddonsPureRenderMixin2.default);
+	var styles = _lib.StyleSheet.create({
+	    row: {
+	        justifyContent: 'center',
+	        height: 30
+	    },
+
+	    selected: {
+	        backgroundColor: _data.Colors.SELECTED
+	    }
+	});
+	exports.default = Item;
+
+/***/ },
+
+/***/ 750:
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var MultiSelectorWidgetHelper = function () {
+	    function MultiSelectorWidgetHelper(props) {
+	        _classCallCheck(this, MultiSelectorWidgetHelper);
+
+	        this.items = props.items;
+	        this.value = Array.from(props.value || []);
+	        this.type = props.type;
+	    }
+
+	    _createClass(MultiSelectorWidgetHelper, [{
+	        key: "_selectOneValue",
+	        value: function _selectOneValue(val) {
+	            if (this.value.indexOf(val) === -1) {
+	                this.value.push(val);
+	            }
+	        }
+	    }, {
+	        key: "_disSelectOneValue",
+	        value: function _disSelectOneValue(val) {
+	            var idx = void 0;
+	            if ((idx = this.value.indexOf(val)) >= -1) {
+	                this.value.splice(idx, 1);
+	            }
+	        }
+	    }, {
+	        key: "selectOneValue",
+	        value: function selectOneValue(val) {
+	            if (this.type === 1) {
+	                this._disSelectOneValue(val);
+	            } else {
+	                this._selectOneValue(val);
+	            }
+	        }
+	    }, {
+	        key: "disSelectOneValue",
+	        value: function disSelectOneValue(val) {
+	            if (this.type === 1) {
+	                this._selectOneValue(val);
+	            } else {
+	                this._disSelectOneValue(val);
+	            }
+	        }
+	    }, {
+	        key: "getItems",
+	        value: function getItems() {
+	            var _this = this;
+
+	            var front = [],
+	                items = [];
+	            this.items.forEach(function (item) {
+	                if (_this.value.indexOf(item.value) > -1) {
+	                    front.push(_extends({}, item, { selected: _this.type !== 1 }));
+	                } else {
+	                    items.push(_extends({}, item, { selected: _this.type === 1 }));
+	                }
+	            });
+	            return front.concat(items);
+	        }
+	    }]);
+
+	    return MultiSelectorWidgetHelper;
+	}();
+
+	exports.default = MultiSelectorWidgetHelper;
+
+/***/ },
+
+/***/ 751:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(326);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3104,6 +3593,17 @@ webpackJsonp([0],{
 	                        dId: dimensionIds[layer],
 	                        text: node.n
 	                    });
+	                    if (node.s) {
+	                        node.s.forEach(function (v, idx) {
+	                            if (!result[idx + 1]) {
+	                                result[idx + 1] = [];
+	                            }
+	                            result[idx + 1].push({
+	                                dId: targetIds[idx],
+	                                text: v
+	                            });
+	                        });
+	                    }
 	                }
 	                if (node.c) {
 	                    node.c.forEach(function (child) {
@@ -3117,17 +3617,17 @@ webpackJsonp([0],{
 	                    result[0].push({
 	                        text: '汇总'
 	                    });
-	                }
-	                if (node.s) {
-	                    node.s.forEach(function (v, idx) {
-	                        if (!result[idx + 1]) {
-	                            result[idx + 1] = [];
-	                        }
-	                        result[idx + 1].push({
-	                            dId: targetIds[idx],
-	                            text: v
+	                    if (node.s) {
+	                        node.s.forEach(function (v, idx) {
+	                            if (!result[idx + 1]) {
+	                                result[idx + 1] = [];
+	                            }
+	                            result[idx + 1].push({
+	                                dId: targetIds[idx],
+	                                text: v
+	                            });
 	                        });
-	                    });
+	                    }
 	                }
 	            };
 	            track(this.data.data, -1);
@@ -3147,7 +3647,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 747:
+/***/ 752:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3170,101 +3670,17 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _core = __webpack_require__(325);
+	var _core = __webpack_require__(326);
 
 	var _lib = __webpack_require__(202);
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(537);
+	var _base = __webpack_require__(543);
 
-	var _widgets = __webpack_require__(739);
+	var _data = __webpack_require__(531);
 
-	var _ChartComponent = __webpack_require__(744);
-
-	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
-
-	var _TableComponent = __webpack_require__(745);
-
-	var _TableComponent2 = _interopRequireDefault(_TableComponent);
-
-	var _MultiSelectorComponent = __webpack_require__(748);
-
-	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var _Dimensions$get = _lib.Dimensions.get('window');
-
-	var width = _Dimensions$get.width;
-	var height = _Dimensions$get.height;
-
-	var Test = function (_Component) {
-	    _inherits(Test, _Component);
-
-	    function Test(props, context) {
-	        _classCallCheck(this, Test);
-
-	        return _possibleConstructorReturn(this, (Test.__proto__ || Object.getPrototypeOf(Test)).call(this, props, context));
-	    }
-
-	    _createClass(Test, [{
-	        key: 'render',
-	        value: function render() {
-	            return _lib2.default.createElement(_MultiSelectorComponent2.default, null);
-	        }
-	    }]);
-
-	    return Test;
-	}(_lib.Component);
-
-	Test.propTypes = {};
-
-	_reactMixin2.default.onClass(Test, _reactAddonsPureRenderMixin2.default);
-	exports.default = Test;
-
-/***/ },
-
-/***/ 748:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(226);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
-
-	var _reactMixin = __webpack_require__(223);
-
-	var _reactMixin2 = _interopRequireDefault(_reactMixin);
-
-	var _reactDom = __webpack_require__(34);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _core = __webpack_require__(325);
-
-	var _lib = __webpack_require__(202);
-
-	var _lib2 = _interopRequireDefault(_lib);
-
-	var _base = __webpack_require__(537);
-
-	var _data = __webpack_require__(529);
-
-	var _widgets = __webpack_require__(739);
+	var _widgets = __webpack_require__(541);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3312,7 +3728,9 @@ webpackJsonp([0],{
 	                });
 	            }
 	            return _lib2.default.createElement(_widgets.MultiSelectorWidget, {
-	                items: items
+	                items: items,
+	                width: props.width,
+	                height: props.height
 	            });
 	        }
 	    }]);
@@ -3333,16 +3751,122 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 749:
+/***/ 753:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(226);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _reactMixin = __webpack_require__(223);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _core = __webpack_require__(326);
+
+	var _lib = __webpack_require__(202);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _base = __webpack_require__(543);
+
+	var _data = __webpack_require__(531);
+
+	var _widgets = __webpack_require__(541);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var MultiTreeSelectorComponent = function (_Component) {
+	    _inherits(MultiTreeSelectorComponent, _Component);
+
+	    function MultiTreeSelectorComponent(props, context) {
+	        _classCallCheck(this, MultiTreeSelectorComponent);
+
+	        var _this = _possibleConstructorReturn(this, (MultiTreeSelectorComponent.__proto__ || Object.getPrototypeOf(MultiTreeSelectorComponent)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(MultiTreeSelectorComponent, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps() {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+
+	            var items = [];
+	            for (var i = 0; i < 1000; i++) {
+	                items.push({
+	                    value: i
+	                });
+	            }
+	            return _lib2.default.createElement(_widgets.MultiTreeSelectorWidget, {
+	                items: items,
+	                style: {
+	                    width: props.width,
+	                    height: props.height
+	                }
+	            });
+	        }
+	    }]);
+
+	    return MultiTreeSelectorComponent;
+	}(_lib.Component);
+
+	MultiTreeSelectorComponent.propTypes = {};
+	MultiTreeSelectorComponent.defaultProps = {};
+
+	_reactMixin2.default.onClass(MultiTreeSelectorComponent, _reactAddonsPureRenderMixin2.default);
+	var styles = _lib.StyleSheet.create({
+	    region: {
+	        position: 'absolute'
+	    }
+	});
+	exports.default = MultiTreeSelectorComponent;
+
+/***/ },
+
+/***/ 754:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(750);
+	var content = __webpack_require__(755);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(384)(content, {});
+	var update = __webpack_require__(385)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -3360,10 +3884,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 750:
+/***/ 755:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(383)();
+	exports = module.exports = __webpack_require__(384)();
 	// imports
 
 

@@ -39,7 +39,18 @@ class TableComponentHelper {
                 result[0].push({
                     dId: dimensionIds[layer],
                     text: node.n
-                })
+                });
+                if (node.s) {
+                    node.s.forEach((v, idx)=> {
+                        if (!result[idx + 1]) {
+                            result[idx + 1] = [];
+                        }
+                        result[idx + 1].push({
+                            dId: targetIds[idx],
+                            text: v
+                        })
+                    })
+                }
             }
             if (node.c) {
                 node.c.forEach((child)=> {
@@ -52,18 +63,18 @@ class TableComponentHelper {
                 }
                 result[0].push({
                     text: '汇总'
-                })
-            }
-            if (node.s) {
-                node.s.forEach((v, idx)=> {
-                    if (!result[idx + 1]) {
-                        result[idx + 1] = [];
-                    }
-                    result[idx + 1].push({
-                        dId: targetIds[idx],
-                        text: v
+                });
+                if (node.s) {
+                    node.s.forEach((v, idx)=> {
+                        if (!result[idx + 1]) {
+                            result[idx + 1] = [];
+                        }
+                        result[idx + 1].push({
+                            dId: targetIds[idx],
+                            text: v
+                        })
                     })
-                })
+                }
             }
         };
         track(this.data.data, -1);

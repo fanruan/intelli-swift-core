@@ -23,7 +23,7 @@ import * as TodoActions from '../actions/todos';
 require('styles/App.css');
 
 import Main from '../components/Main.js'
-import Test from '../components/Test.js'
+//import Test from '../components/Test.js'
 
 //import PanResponderDemo from '../examples/base/2/PanResponder/PanResponder'
 //import ViewDemo from '../examples/base/2/View/View'

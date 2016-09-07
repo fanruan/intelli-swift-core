@@ -12,15 +12,15 @@ import React, {
     Fetch
     } from 'lib'
 
-import {Grid} from 'base'
-import {TableWidget} from 'widgets'
-
 import ChartComponent from './Chart/ChartComponent.js'
 import TableComponent from './Table/TableComponent.js'
+import MultiSelectorComponent from './MultiSelector/MultiSelectorComponent.js'
+import MultiTreeSelectorComponent from './MultiTreeSelector/MultiTreeSelectorComponent.js'
+
 const {width, height} = Dimensions.get('window');
 
 class Main extends Component {
-    static propTypes = {}
+    static propTypes = {};
 
     constructor(props, context) {
         super(props, context);
@@ -34,7 +34,7 @@ class Main extends Component {
 
     render() {
         return <ListView
-            initialListSize={3}
+            initialListSize={2}
             dataSource={this.state.dataSource}
             renderRow={this._renderRow.bind(this)}
             />
@@ -44,13 +44,65 @@ class Main extends Component {
         const {template} = this.props;
         const widgetObj = template.getWidgetById(rowData);
         const type = widgetObj.getType();
+        const props = {
+            key: rowData,
+            widget: widgetObj,
+            width: width,
+            height: height / 3 * 2
+        };
         switch (type) {
             case BICst.WIDGET.TABLE:
-                return <TableComponent key={rowData} widget={widgetObj}
-                                       width={width} height={height / 2}></TableComponent>
+                return <TableComponent {...props}></TableComponent>;
+            //case BICst.WIDGET.CROSS_TABLE:
+            //case BICst.WIDGET.COMPLEX_TABLE:
+            //
+            //case BICst.WIDGET.DETAIL:
+
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.PIE :
+            case BICst.WIDGET.DONUT :
+            case BICst.WIDGET.MAP:
+            case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.FUNNEL:
+                //case BICst.WIDGET.STRING:
+                //case BICst.WIDGET.NUMBER:
+                //case BICst.WIDGET.DATE:
+                //case BICst.WIDGET.YEAR:
+                //case BICst.WIDGET.QUARTER:
+                //case BICst.WIDGET.MONTH:
+                //case BICst.WIDGET.YMD:
+                //case BICst.WIDGET.QUERY:
+                //case BICst.WIDGET.RESET:
+                //case BICst.WIDGET.CONTENT:
+                //case BICst.WIDGET.IMAGE:
+                //case BICst.WIDGET.WEB:
+                return <ChartComponent {...props}></ChartComponent>;
+            case BICst.WIDGET.STRING:
+                return <MultiSelectorComponent {...props}></MultiSelectorComponent>;
+            case BICst.WIDGET.TREE:
+                return <MultiTreeSelectorComponent {...props}></MultiTreeSelectorComponent>;
             default:
-                return <ChartComponent key={rowData} widget={widgetObj}
-                                       width={width} height={height / 2}></ChartComponent>
+                return null;
         }
     }
 }
