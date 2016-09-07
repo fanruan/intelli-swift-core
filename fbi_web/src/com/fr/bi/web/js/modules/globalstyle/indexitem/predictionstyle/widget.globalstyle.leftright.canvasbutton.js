@@ -66,7 +66,17 @@ BI.GlobalStyleCanvasButton=BI.inherit(BI.BasicButton,{
         canvas.stroke();
         return canvas
     },
-    _switchState:function () {
+    setState:function (state) {
+        var o=this.options;
+        if(o.direction==="left"){
+            this.buttonGroup.populate([this._createLeftCanvasButton(state)]);
+
+        }
+        if(o.direction==="right"){
+            this.buttonGroup.populate([this._createRightCanvasButton(state)])
+        }
+    },
+    switchState:function () {
         var o=this.options;
         var switchState=!this.currentState;
         if(o.direction==="left"){
@@ -81,7 +91,6 @@ BI.GlobalStyleCanvasButton=BI.inherit(BI.BasicButton,{
     doClick: function () {
         BI.GlobalStyleCanvasButton.superclass.doClick.apply(this, arguments);
         if (this.isValid()) {
-            this._switchState();
             this.fireEvent(BI.GlobalStyleCanvasButton.EVENT_CHANGE, this);
         }
     }
