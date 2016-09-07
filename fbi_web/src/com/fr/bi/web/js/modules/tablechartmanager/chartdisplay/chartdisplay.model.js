@@ -677,19 +677,27 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 identifier: "${VALUE}"
             };
         }
-        var dataLabels = {
-            enabled: true,
-            align: "outside",
-            style: {color: "#808080"},
-            formatter: formatter
-        };
+        var dataLabels = {};
         switch (label.style_setting.type) {
             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
+                dataLabels = {
+                    enabled: true,
+                    align: "outside",
+                    style: {color: "#808080"},
+                    formatter: formatter
+                };
                 dataLabels.style = BI.deepClone(label.style_setting.textStyle);
                 dataLabels.style.overflow = "visible";
                 dataLabels.style.fontSize += "px";
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
+                dataLabels = {
+                    enabled: true,
+                    align: "outside",
+                    style: {color: "#808080"},
+                    formatter: formatter,
+                    useHtml: true
+                };
                 dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + label.style_setting.imgStyle.src + "\">';}";
                 break;
         }
