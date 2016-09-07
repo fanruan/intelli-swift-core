@@ -15,9 +15,10 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var text = o.text;
         var iconCls = "", color = "";
-        var format = styleSettings.format, numLevel = styleSettings.num_level;
+        var format = styleSettings.format, numLevel = styleSettings.num_level, num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
         text = this._parseFloatByDot(text, format);
+        text = this._numSeparator(text, num_separators);
         var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
@@ -98,6 +99,20 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 return snum;
         }
         return text;
+    },
+
+    _numSeparator: function (text, num_separators){
+        if (text === Infinity || text !== text) {
+            return text;
+        }
+        if (!BI.isNumeric(text)) {
+            return text;
+        }
+        if(num_separators){
+            return BI.contentFormat(BI.parseFloat(text), "#,##0")
+        } else {
+            return text
+        }
     },
 
     _getIconByStyleAndMark: function (text, style, mark) {
