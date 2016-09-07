@@ -694,8 +694,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dataLabels = {
                     enabled: true,
                     align: "outside",
-                    style: {color: "#808080"},
-                    formatter: formatter,
                     useHtml: true
                 };
                 dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + label.style_setting.imgStyle.src + "\">';}";
