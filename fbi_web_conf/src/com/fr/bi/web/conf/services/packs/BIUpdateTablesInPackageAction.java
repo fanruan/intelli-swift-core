@@ -58,6 +58,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             BICubeConfigureCenter.getAliasManager().persistData(userId);
             BICubeConfigureCenter.getDataSourceManager().persistData(userId);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+            BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }
@@ -198,18 +199,6 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             source.parseJSON(updateSettingJO.getJSONObject(sourceTableId));
             BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(sourceTableId, source, userId);
         }
-        /*此处加个判断，万一前台删除业务表时没有删除updateSettings，这边再删除下
-        * 已经在前台删除了*/
-//        Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
-//        Set<String> removedSet = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(userId).keySet();
-//        for (BusinessTable table : allTables) {
-//            if (removedSet.contains(table.getTableSource().getSourceID())){
-//                removedSet.remove(table.getID().getIdentity());
-//            }
-//        }
-//        for (String s : removedSet) {
-//            BIConfigureManagerCenter.getUpdateFrequencyManager().removeUpdateSetting(s,userId);
-//        }
         BICubeManager biCubeManager = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManager.class);
         biCubeManager.resetCubeGenerationHour(userId);
     }
