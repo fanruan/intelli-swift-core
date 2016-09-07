@@ -3,7 +3,7 @@
  */
 BI.SingleTableTimeSettingItem = BI.inherit(BI.Widget, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.SingleTableTimeSettingItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-time-setting-item",
             frequency: BICst.UPDATE_FREQUENCY.EVER_DAY,
@@ -11,7 +11,7 @@ BI.SingleTableTimeSettingItem = BI.inherit(BI.Widget, {
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.SingleTableTimeSettingItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.id = BI.UUID();
@@ -48,20 +48,31 @@ BI.SingleTableTimeSettingItem = BI.inherit(BI.Widget, {
             width: 160,
             height: 30
         });
-        this.frequency.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(v){
+        this.frequency.on(BI.TextValueCheckCombo.EVENT_CHANGE, function (v) {
             var v = this.getValue()[0];
             self.day.setVisible(v === BICst.UPDATE_FREQUENCY.EVER_MONTH);
             self.hour.setVisible(v !== BICst.UPDATE_FREQUENCY.EVER_MONTH);
+            self.fireEvent(BI.SingleTableTimeSettingItem.EVENT_CHANGE);
         });
         this.frequency.setValue(o.frequency);
 
         this.day = BI.createWidget({
             type: "bi.day_time_setting"
         });
+
+        this.day.on(BI.DayTimeSetting.EVENT_CHANGE, function () {
+            self.fireEvent(BI.SingleTableTimeSettingItem.EVENT_CHANGE);
+        });
+
         this.hour = BI.createWidget({
             type: "bi.hour_time_setting"
         });
-        if(o.frequency === BICst.UPDATE_FREQUENCY.EVER_MONTH) {
+
+        this.hour.on(BI.HourTimeSetting.EVENT_CHANGE, function () {
+            self.fireEvent(BI.SingleTableTimeSettingItem.EVENT_CHANGE);
+        });
+
+        if (o.frequency === BICst.UPDATE_FREQUENCY.EVER_MONTH) {
             this.day.setVisible(true);
             this.hour.setVisible(false);
             this.day.setValue(o.time);
@@ -83,6 +94,9 @@ BI.SingleTableTimeSettingItem = BI.inherit(BI.Widget, {
             height: 30
         });
         this.updateType.setValue(o.updateType || BICst.SINGLE_TABLE_UPDATE_TYPE.ALL);
+        this.updateType.on(BI.SmallTextValueCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.SingleTableTimeSettingItem.EVENT_CHANGE);
+        });
 
         var remove = BI.createWidget({
             type: "bi.icon_button",
@@ -90,8 +104,9 @@ BI.SingleTableTimeSettingItem = BI.inherit(BI.Widget, {
             width: 25,
             height: 25
         });
-        remove.on(BI.IconButton.EVENT_CHANGE, function(){
+        remove.on(BI.IconButton.EVENT_CHANGE, function () {
             self.options.onRemoveSetting(self.id);
+            self.fireEvent(BI.SingleTableTimeSettingItem.EVENT_CHANGE);
         });
 
         BI.createWidget({
@@ -111,15 +126,15 @@ BI.SingleTableTimeSettingItem = BI.inherit(BI.Widget, {
         })
     },
 
-    isSelected: function(){
+    isSelected: function () {
         return true;
     },
 
-    setSelected: function(){
+    setSelected: function () {
 
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             frequency: this.frequency.getValue()[0],
             time: this.day.isVisible() ? this.day.getValue() : this.hour.getValue(),
@@ -128,10 +143,12 @@ BI.SingleTableTimeSettingItem = BI.inherit(BI.Widget, {
         }
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.frequency.setValue(v.frequency);
         this.time.setValue(v.time);
         this.updateType.setValue(v.updateType || BICst.SINGLE_TABLE_UPDATE_TYPE.ALL);
     }
 });
+BI.SingleTableTimeSettingItem.EVENT_CHANGE = "EVENT_CHANGE";
+
 $.shortcut("bi.single_table_time_setting_item", BI.SingleTableTimeSettingItem);
