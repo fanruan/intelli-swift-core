@@ -680,7 +680,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var dataLabels = {
             enabled: true,
             align: "outside",
-            useHtml: true,
             style: {color: "#808080"},
             formatter: formatter
         };
