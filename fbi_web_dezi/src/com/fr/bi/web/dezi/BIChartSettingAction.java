@@ -5,7 +5,6 @@ import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartDataConvertFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartSettingFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.stable.engine.TempPathGenerator;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
@@ -71,7 +70,7 @@ public class BIChartSettingAction extends AbstractBIDeziAction {
 
         JSONObject data = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.getJSONObject("data"));
 
-        BIChartSettingFactory.parseChartSetting();
+        //BIChartSettingFactory.parseChartSetting();
 
         WebUtils.printAsJSON(res, jo);
     }

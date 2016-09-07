@@ -25,7 +25,7 @@ public class TimerScheduleAdapter {
         List<TimerTaskSchedule> scheduleList = new ArrayList<TimerTaskSchedule>();
         for (String keys : allTimeTaskMap.keySet()) {
             UpdateSettingSource settingSource = allTimeTaskMap.get(keys);
-            boolean isGlobalUpdate = keys.equals("__global_update__");
+            boolean isGlobalUpdate = keys.equals(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
             for (TimeFrequency frequency : settingSource.getTimeList()) {
                 String scheduleTime = BIDateUtils.getScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
                 if (isGlobalUpdate) {

@@ -1,6 +1,7 @@
 package com.fr.bi.cal.generate.timerTask;
 
 import com.finebi.cube.conf.CubeBuild;
+import com.fr.bi.stable.constant.DBConstant;
 
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public class TimerTaskSchedule {
 
     public TimerTaskSchedule(String schedule, CubeBuild cubeBuild, String sourceName, long userId, int updateType) {
         this.timeSchedule = schedule;
-        this.sourceName = sourceName == null ? "__global_update__" : sourceName;
+        this.sourceName = sourceName == null ? DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE : sourceName;
         this.cubeBuild = cubeBuild;
         this.userId = userId;
         this.jobName = sourceName + timeSchedule + UUID.randomUUID();
