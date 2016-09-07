@@ -694,9 +694,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dataLabels = {
                     enabled: true,
                     align: "outside",
+                    formatter: "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + label.style_setting.imgStyle.src + "\">';}",
                     useHtml: true
                 };
-                dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + label.style_setting.imgStyle.src + "\">';}";
                 break;
         }
         data.dataLabels = dataLabels;
