@@ -6,15 +6,15 @@
  */
 
 import React, {
-  Component,
-  PropTypes,
-  Text,
-  View,
-  ListView,
-  TouchableBounce,
-  TouchableHighlight,
-  TouchableOpacity,
-  TouchableWithoutFeedback
+    Component,
+    PropTypes,
+    Text,
+    View,
+    ListView,
+    TouchableBounce,
+    TouchableHighlight,
+    TouchableOpacity,
+    TouchableWithoutFeedback
 } from 'lib';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -23,13 +23,16 @@ import * as TodoActions from '../actions/todos';
 require('styles/App.css');
 
 import Main from '../components/Main.js'
+import Test from '../components/Test.js'
 
 //import PanResponderDemo from '../examples/base/2/PanResponder/PanResponder'
 //import ViewDemo from '../examples/base/2/View/View'
 //import ScrollViewDemo from '../examples/base/2/ScrollView/ScrollView'
 //import ListViewDemo from '../examples/base/2/ListView/ListView';
 //import PickerDemo from '../examples/base/2/Picker/Picker'
-import DatePickerIOSDemo from '../examples/base/2/DatePickerIOS/DatePickerIOS'
+//import DatePickerIOSDemo from '../examples/base/2/DatePickerIOS/DatePickerIOS'
+//import ViewPagerDemo from '../examples/base/2/ViewPager/ViewPager'
+//import NavigatorDemo from '../examples/base/2/Navigator/Navigator'
 //
 //import AutoSizerDemo from '../examples/base/3/AutoSizer/AutoSizer';
 //import WheelerDemo from '../examples/base/3/Wheeler/Wheeler';
@@ -56,17 +59,18 @@ import DatePickerIOSDemo from '../examples/base/2/DatePickerIOS/DatePickerIOS'
 //import TableObjectDataExample from '../examples/base/3/Table/ObjectDataExample'
 //import TableSortExample from '../examples/base/3/Table/SortExample'
 
+// import DialogDemo from '../examples/base/3/Dialog/Dialog'
 
-// import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
+//import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 
 /* Populated by react-webpack-redux:reducer */
 class App extends Component {
-  render() {
-    const {template, actions} = this.props;
-    return (
-      <Main template={new Template(template)} actions={actions} />
-    )
-  }
+    render() {
+        const {template, actions} = this.props;
+        return (
+            <Test template={new Template(template)} actions={actions}/>
+        )
+    }
 }
 
 /* Populated by react-webpack-redux:reducer
@@ -75,19 +79,19 @@ class App extends Component {
  *       adjust it here.
  */
 App.propTypes = {
-  actions: PropTypes.object.isRequired,
-  template: PropTypes.object.isRequired
+    actions: PropTypes.object.isRequired,
+    template: PropTypes.object.isRequired
 };
 function mapStateToProps(state) {
-  /* Populated by react-webpack-redux:reducer */
-  const props = {
-    template: state.template
-  };
-  return props;
+    /* Populated by react-webpack-redux:reducer */
+    const props = {
+        template: state.template
+    };
+    return props;
 }
 function mapDispatchToProps(dispatch) {
-  /* Populated by react-webpack-redux:action */
-  const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
-  return actionMap;
+    /* Populated by react-webpack-redux:action */
+    const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
+    return actionMap;
 }
 export default connect(mapStateToProps, mapDispatchToProps)(App);

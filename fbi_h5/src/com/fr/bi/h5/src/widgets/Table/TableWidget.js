@@ -44,7 +44,7 @@ class TableWidget extends Component {
             columns.push(<Column
                 fixed={freezeCols.indexOf(colIndex) > -1}
                 header={headerCellRenderer(colIndex, row)}
-                cell={(...props)=>(itemsCellRenderer({colIndex, items, ...props}))}
+                cell={(props)=>(itemsCellRenderer({colIndex, items, ...props}))}
                 width={columnSize[colIndex]}
                 ></Column>)
         });

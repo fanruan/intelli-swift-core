@@ -3,6 +3,8 @@ export IntegerBufferSet from './structure/IntegerBufferSet'
 export PrefixIntervalTree from './structure/PrefixIntervalTree'
 
 
+export cn from 'classnames'
+export sc from './dom/StyleConcat'
 export normalizeWheel from './events/normalizeWheel'
 export WheelHandler from './events/WheelHandler'
 export MouseMoveTracker from './events/MouseMoveTracker'

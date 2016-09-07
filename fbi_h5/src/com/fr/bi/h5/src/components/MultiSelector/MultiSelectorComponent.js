@@ -2,7 +2,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {cn, sc, requestAnimationFrame, emptyFunction, shallowEqual, isEqual} from 'core'
+import {requestAnimationFrame, emptyFunction} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -13,14 +13,14 @@ import React, {
     Fetch
 } from 'lib'
 
-import {Template} from 'data'
-
 import {Table, AutoSizer} from 'base'
+
+import {Template} from 'data'
 
 import {MultiSelectorWidget} from 'widgets'
 
 
-class TableWidget extends Component {
+class MultiSelectorComponent extends Component {
     constructor(props, context) {
         super(props, context);
     }
@@ -48,15 +48,18 @@ class TableWidget extends Component {
     }
 
     render() {
-        const {...props} = this.props, {...state} = this.state;
-        return <View></View>
+        const {...props} = this.props;
+        return <MultiSelectorWidget
+            items={[{value: 1}, {value: 2}, {value: 3}, {value: 4}]}
+        >
+        </MultiSelectorWidget>
     }
 
 }
-mixin.onClass(TableWidget, PureRenderMixin);
+mixin.onClass(MultiSelectorComponent, PureRenderMixin);
 const styles = StyleSheet.create({
     region: {
         position: 'absolute'
     }
 });
-export default TableWidget
+export default MultiSelectorComponent

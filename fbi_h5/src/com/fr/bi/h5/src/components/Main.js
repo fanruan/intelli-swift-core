@@ -15,8 +15,8 @@ import React, {
 import {Grid} from 'base'
 import {TableWidget} from 'widgets'
 
-import ChartComponent from './charts/ChartComponent.js'
-import TableComponent from './tables/TableComponent.js'
+import ChartComponent from './Chart/ChartComponent.js'
+import TableComponent from './Table/TableComponent.js'
 const {width, height} = Dimensions.get('window');
 
 class Main extends Component {
