@@ -24,11 +24,11 @@ BI.StyleLoaderManager = BI.inherit(FR.OB, {
     },
 
     get: function (name) {
-        return this.layerManager[name];
+        return this.stylesManager[name];
     },
 
     has: function (name) {
-        return this.layerManager[name] != null;
+        return this.stylesManager[name] != null;
     },
 
     removeStyle: function (name) {
