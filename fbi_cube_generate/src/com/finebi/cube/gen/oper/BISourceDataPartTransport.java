@@ -128,12 +128,16 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), sortRemovedList, loader);
             try {
                 String modifySql;
-                if (tableSource.getType() != BIBaseConstant.TABLETYPE.SQL) {
-                    modifySql = getModifySql(addDateCondition(tableUpdateSetting.getPartModifySQL()));
+                if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
+                    modifySql = getModifySql(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()));
                 } else {
                     modifySql = addDateCondition(tableUpdateSetting.getPartModifySQL());
                 }
-                rowCount = dealWidthAdd(cubeFieldSources, modifySql, rowCount);
+                if (null == modifySql) {
+                    BILogger.getLogger().error("current table: " + tableSource.getTableName() + " modifySql error: " + tableUpdateSetting.getPartModifySQL());
+                }else {
+                    rowCount = dealWidthAdd(cubeFieldSources, modifySql, rowCount);
+                }
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
@@ -212,13 +216,24 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         return sql;
     }
 
-    private String getModifySql(String sql) throws Exception {
+    private String getModifySql(ICubeFieldSource[] fields, String sql) throws Exception {
         com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(addDateCondition(sql));
         Dialect dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
         Table table = new Table(BIConnectionManager.getInstance().getSchema(((DBTableSource) tableSource).getDbName()), tableSource.getTableName());
         String columnName = getColumnName(connection, sqlStatement, sql);
+        ICubeFieldSource f = null;
+        for (ICubeFieldSource field : fields) {
+            if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
+                f = field;
+                break;
+            }
+        }
+        if (f == null) {
+            BILogger.getLogger().error("can not find field " + columnName);
+            return null;
+        }
         return "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
     }
 }

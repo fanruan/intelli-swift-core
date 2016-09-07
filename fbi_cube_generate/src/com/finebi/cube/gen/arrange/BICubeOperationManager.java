@@ -32,6 +32,7 @@ import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.ExcelTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -155,7 +156,7 @@ public class BICubeOperationManager {
                 if (!isGenerated(tableSource)) {
                     BIOperation<Object> operation = new BIOperation<Object>(
                             tableSource.getSourceID(),
-                            getDataTransportBuilder(cube, tableSource, originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
+                            getDataTransportBuilder(cube, addConnection(tableSource), originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource));
                     try {
@@ -182,6 +183,7 @@ public class BICubeOperationManager {
             parentTables = sameLevelTable;
         }
     }
+
 
     private BIOperation buildTableWatcher(CubeTableSource tableSource) {
         BIOperation<Object> operation = new BIOperation<Object>(
@@ -411,7 +413,7 @@ public class BICubeOperationManager {
         }
     }
 
-    public com.fr.data.impl.Connection getConnection(CubeTableSource tableSource) {
+    private com.fr.data.impl.Connection getConnection(CubeTableSource tableSource) {
         if (connectionMap != null && connectionMap.containsKey(tableSource)) {
             return connectionMap.get(tableSource);
         } else {
@@ -419,6 +421,18 @@ public class BICubeOperationManager {
         }
     }
 
+    /*为tableSource指定connection*/
+    private CubeTableSource addConnection(CubeTableSource tableSource) {
+        Connection connection = getConnection(tableSource);
+            if (null!=connection&&(tableSource.getType()== BIBaseConstant.TABLETYPE.SQL||tableSource.getType()== BIBaseConstant.TABLETYPE.DB)){
+                for (CubeTableSource source : connectionMap.keySet()) {
+                        if (source.getSourceID().equals(tableSource.getSourceID())){
+                        return source;
+                    }
+                }
+            }
+        return tableSource;
+    }
     protected BIRelationIndexGenerator getRelationBuilder(Cube cube, BITableSourceRelation relation) {
         return new BIRelationIndexGenerator(cube, BICubeRelationUtils.convert(relation));
     }
