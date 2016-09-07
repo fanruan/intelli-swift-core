@@ -45,7 +45,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             var v = this.getValue()[0];
             switch (v) {
                 case BICst.SINGLE_TABLE_UPDATE_TYPE.ALL:
-                    partUpdate.setVisible(false);
+                    partUpdate.setVisible(true);
                     timeSetting.setVisible(true);
                     break;
                 case BICst.SINGLE_TABLE_UPDATE_TYPE.PART:
@@ -53,8 +53,8 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     timeSetting.setVisible(true);
                     break;
                 case BICst.SINGLE_TABLE_UPDATE_TYPE.NEVER:
-                    partUpdate.setVisible(false);
-                    timeSetting.setVisible(false);
+                    partUpdate.setVisible(true);
+                    timeSetting.setVisible(true);
                     break;
             }
             self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CHANGE);
@@ -62,11 +62,12 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
         //增量更新设置面板
         var partUpdate = this._createPartUpdateTab();
-        partUpdate.setVisible(this.model.getUpdateType() === BICst.SINGLE_TABLE_UPDATE_TYPE.PART);
+        partUpdate.setVisible(true);
 
 
         //定时设置
         var timeSetting = this._createTimeSetting();
+        partUpdate.setVisible(true);
 
         var popup = BI.createWidget({
             type: "bi.button_group",
