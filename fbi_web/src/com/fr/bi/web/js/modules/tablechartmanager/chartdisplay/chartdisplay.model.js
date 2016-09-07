@@ -683,7 +683,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             useHtml: true,
             style: {color: "#808080"},
             formatter: formatter
-            }
         };
         switch (label.style_setting.type) {
             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
