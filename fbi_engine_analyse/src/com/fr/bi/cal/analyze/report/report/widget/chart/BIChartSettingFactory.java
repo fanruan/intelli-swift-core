@@ -113,7 +113,7 @@ public class BIChartSettingFactory {
             }
             op.put(key, options.get(key));
         }
-        return chartSetting.getConvertedDataAndSettings();
+        return null;
     }
 
 
