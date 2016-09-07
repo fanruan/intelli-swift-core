@@ -16,6 +16,7 @@ BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
             type: "bi.text_value_combo",
             element: this.element,
             items: BICst.FONT_FAMILY_COMBO,
+            width: 100,
             height: 24
         });
         this.combo.setValue("Microsoft YaHei");
@@ -25,7 +26,7 @@ BI.TextToolbarFontChooser = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        this.combo.setValue(v);
+        this.combo.setValue(v || "Microsoft YaHei");
     },
 
     getValue: function () {

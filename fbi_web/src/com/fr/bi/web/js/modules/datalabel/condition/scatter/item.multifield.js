@@ -73,8 +73,8 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         var self = this, o = this.options;
         this.filterItems = [];
         this.filterValues = o.filter_value || this.filterField;
-        if(this.filterValues.length > 2) {
-            this.filterValues = o.filter_value.slice(0,2);
+        if (this.filterValues.length > 2) {
+            this.filterValues = o.filter_value.slice(0, 2);
         }
         BI.each(this.filterValues, function (i, filter) {
             if (BI.isNull(filter.filter_type)) {

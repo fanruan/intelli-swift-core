@@ -70,6 +70,9 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     BI.each(dimension.data_label, function(idx, filter){
                         checkFilter(filter);
                     });
+                    BI.each(dimension.data_image, function (idx, filter) {
+                        checkFilter(filter);
+                    })
                 }
             });
             var allIds = BI.keys(dimensions);

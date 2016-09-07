@@ -418,8 +418,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         BI.each(BI.Utils.getDatalabelByWidgetID(o.wId), function (id, dataLabel) {
             var filter = null;
             if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1) {
+                if(!BI.Utils.isDimensionUsable(dataLabel.target_id)) {
+                    return;
+                }
+                var filterArray = [];
                 filter = BI.FilterFactory.parseFilter(dataLabel);
-                var filterArray = filter.getFilterResult(allSeries);
+                if (filter.filterValue.type === BI.Selection.All) {
+                    filterArray = allSeries;
+                } else {
+                    filterArray = filter.getFilterResult(allSeries);
+                }
                 BI.any(data, function (idx, series) {
                     if (BI.contains(filterArray, series.name)) {
                         BI.each(series.data, function (id, da) {
@@ -443,6 +451,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForAxis: function (data) {
         var self = this, o = this.options;
+        if (BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
+            return;
+        }
         var hasSeries = this._checkSeriesExist();
         var allSeries = BI.pluck(data, "name");
         var cataArrayMap = {};  //值按分类分组
@@ -472,7 +483,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         }
                         //系列
                         if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2) {
-                            var filterArray = filter.getFilterResult(allSeries);
+                            var filterArray = [];
+                            if (filter.filterValue.type === BI.Selection.All) {
+                                filterArray = allSeries;
+                            } else {
+                                filterArray = filter.getFilterResult(allSeries);
+                            }
                             if (BI.contains(filterArray, series.name)) {
                                 BI.each(series.data, function (id, da) {
                                     self._createDataLabel(da, dataLabel);
@@ -521,7 +537,15 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         });
 
         function formatDataLabelForClassify(series, filter, array, labelStyle) {
-            var filterArray = filter.getFilterResult(array);
+            var filterArray = [];
+            if(!BI.Utils.isDimensionUsable(labelStyle.target_id)) {
+                return;
+            }
+            if(filter.filterValue.type === BI.Selection.All) {
+                filterArray = array;
+            } else {
+                filterArray = filter.getFilterResult(array);
+            }
             BI.each(series.data, function (id, data) {
                 if (BI.contains(filterArray, data.x)) {
                     self._createDataLabel(data, labelStyle);
@@ -530,7 +554,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
 
         function formatDataLabelForSelf(series, filter, array, labelStyle) {
-            var filterArray = filter.getFilterResult(array);
+            var filterArray = [];
+            if(filter.filterValue.type === BI.Selection.All) {
+                filterArray = array;
+            } else {
+                filterArray = filter.getFilterResult(array);
+            }
             BI.each(series.data, function (id, data) {
                 if (BI.contains(filterArray, data.y)) {
                     self._createDataLabel(data, labelStyle);
@@ -541,6 +570,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataImageSettingForAxis: function (data) {
         var self = this, o = this.options;
+        if (BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
+            return;
+        }
         var hasSeries = this._checkSeriesExist();
         var allSeries = BI.pluck(data, "name");
         var cataArrayMap = {};  //值按分类分组
@@ -558,21 +590,26 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             })
         });
         BI.each(BI.Utils.getAllUsableTargetDimensionIDs(o.wId), function (i, dId) {
-            BI.each(BI.Utils.getDataimageByID(dId), function (id, dataLabel) {
-                var filter = BI.FilterFactory.parseFilter(dataLabel);
+            BI.each(BI.Utils.getDataimageByID(dId), function (id, dataImage) {
+                var filter = BI.FilterFactory.parseFilter(dataImage);
                 BI.any(data, function (idx, series) {
                     if (hasSeries === true) {
                         //有系列
                         //分类
-                        if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1) {
-                            formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
+                        if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION1) {
+                            formatDataImageForClassify(series, filter, BI.pluck(series.data, "x"), dataImage);
                         }
                         //系列
-                        if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2) {
-                            var filterArray = filter.getFilterResult(allSeries);
+                        if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION2) {
+                            var filterArray = [];
+                            if (filter.filterValue.type === BI.Selection.All) {
+                                filterArray = allSeries;
+                            } else {
+                                filterArray = filter.getFilterResult(allSeries);
+                            }
                             if (BI.contains(filterArray, series.name)) {
                                 BI.each(series.data, function (id, da) {
-                                    self._createDataImage(da, dataLabel);
+                                    self._createDataImage(da, dataImage);
                                 });
                                 return true;
                             }
@@ -583,11 +620,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                 self._createDataImage(da, dataImage);
                             })
                         }
-                    }else{
+                    } else {
                         //当前指标所在系列
                         if (series.name === BI.Utils.getDimensionNameByID(dId)) {
                             //分类
-                            if(BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION1){
+                            if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION1) {
                                 formatDataImageForClassify(series, filter, BI.pluck(series.data, "x"), dataImage);
                             }
                             //指标自身
@@ -603,8 +640,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             });
         });
 
-        function formatDataLabelForClassify(series, filter, array, labelStyle) {
-            var filterArray = filter.getFilterResult(array);
+        function formatDataImageForClassify(series, filter, array, labelStyle) {
+            var filterArray = [];
+            if(!BI.Utils.isDimensionUsable(labelStyle.target_id)) {
+                return;
+            }
+            if(filter.filterValue.type === BI.Selection.All) {
+                filterArray = array;
+            } else {
+                filterArray = filter.getFilterResult(array);
+            }
             BI.each(series.data, function (id, data) {
                 if (BI.contains(filterArray, data.x)) {
                     self._createDataImage(data, labelStyle);
@@ -614,40 +659,34 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataLabel: function (data, label) {
-        var show = "";
+        var formatter = "";
         var chartType = BI.Utils.getWidgetTypeByID(this.options.wId);
-        var x, y, z, dot;
+        var x = label.style_setting.showLabels[0] ? "${X}": "";
+        var y = label.style_setting.showLabels[1] ? "${Y}" : "";
+        var z = label.style_setting.showLabels[2] ? "${SIZE}" : "";
         if (chartType === BICst.WIDGET.BUBBLE) {
-            x = label.style_setting.showLabels[0] ? data.x : "";
-            y = label.style_setting.showLabels[1] ? data.y : "";
-            z = label.style_setting.showLabels[2] ? data.z : "";
-            dot = BI.isEmptyString(x) && BI.isEmptyString(y) ? "," : "";
-            if(BI.isEmptyString(x) && BI.isEmptyString(y)) {
-                show = z;
-            } else {
-                show = "(" + x + dot + y + ") " + z;
-            }
+            formatter = {
+                identifier: x + y + z
+            };
         } else if (chartType === BICst.WIDGET.SCATTER) {
-            x = label.style_setting.showLabels[0] ? data.x : "";
-            y = label.style_setting.showLabels[1] ? data.y : "";
-            if (!BI.isEmptyString(x) && !BI.isEmptyString(y)) {
-                show = "(" + x + "," + y + ") ";
-            } else {
-                show = x + y;
-            }
+            formatter = {
+                identifier: x + y
+            };
         } else {
-            show = data.y;
+            formatter = {
+                identifier: "${VALUE}"
+            };
         }
         var dataLabels = {
             enabled: true,
             align: "outside",
-            useHtml: true,
-            style: {},
-            formatter: "function(){return '" + show + "'}"
+            style: {color: "#808080"},
+            formatter: formatter
         };
         switch (label.style_setting.type) {
             case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
                 dataLabels.style = BI.deepClone(label.style_setting.textStyle);
+                dataLabels.style.overflow = "visible";
                 dataLabels.style.fontSize += "px";
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
@@ -846,7 +885,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.DASHBOARD:
                 BI.each(data, function (i, items) {
