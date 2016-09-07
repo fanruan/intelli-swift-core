@@ -30,6 +30,7 @@ import com.fr.bi.util.BIConfUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
 import java.util.*;
@@ -169,7 +170,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
                 v = DateUtils.DATEFORMAT1.format(new Date(Long.parseLong(v.toString())));
             }
 
-            CBCell cell = new CBCell(v == null ? NONEVALUE : v);
+            CBCell cell = new CBCell(v == null ? NONEVALUE : v.toString());
             cell.setRow(row);
             cell.setColumn(i + widget.isOrder());
             cell.setRowSpan(1);
