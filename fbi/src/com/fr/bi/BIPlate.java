@@ -8,7 +8,6 @@ import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.generate.TimerRunner;
-import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
