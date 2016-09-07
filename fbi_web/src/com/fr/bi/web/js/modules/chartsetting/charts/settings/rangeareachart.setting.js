@@ -143,6 +143,17 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
+        //千分符
+        this.separators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
+        });
+
         //横轴文本方向
         this.text_direction = BI.createWidget({
             type: "bi.sign_editor",
@@ -307,6 +318,9 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -419,6 +433,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
+        this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -444,7 +459,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             text_direction: this.text_direction.getValue(),
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
-            minimalist_model: this.minimalistModel.isSelected()
+            minimalist_model: this.minimalistModel.isSelected(),
+            num_separators: this.separators.isSelected()
         }
     },
 
@@ -462,7 +478,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.text_direction.setValue(v.text_direction);
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
-        this.minimalistModel.setSelected(v.minimalist_model)
+        this.minimalistModel.setSelected(v.minimalist_model);
+        this.separators.setSelected(v.num_separators);
     }
 });
 BI.RangeAreaChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";

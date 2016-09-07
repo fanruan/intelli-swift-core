@@ -69,7 +69,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
             enableMinorTick: this.config.enable_minor_tick,
             reversed: this.config.left_y_axis_reversed,
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
-            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level)
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators)
         });
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
         config.yAxis[0].title.rotation = this.constants.ROTATION;
@@ -276,7 +276,8 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
-            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            num_separators: options.num_separators || false,
         };
         this.options.items = items;
         var types = [];

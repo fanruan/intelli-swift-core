@@ -171,6 +171,17 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
+        //千分符
+        this.separators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+        });
+
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -235,6 +246,9 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.numberLevellY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -285,6 +299,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
+        this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
     },
 
     getValue: function(){
@@ -297,7 +312,8 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
-            show_grid_line: this.gridLine.isSelected()
+            show_grid_line: this.gridLine.isSelected(),
+            num_separators: this.separators.isSelected()
         }
     },
 
@@ -311,6 +327,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
+        this.separators.setSelected(v.num_separators);
     }
 });
 BI.RadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

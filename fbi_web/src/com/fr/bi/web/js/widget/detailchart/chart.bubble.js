@@ -55,14 +55,14 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.shadow = this.config.bubble_style !== this.constants.NO_PROJECT;
         config.yAxis = this.yAxis;
 
-        config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
+        config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
 
-        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
+        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level, this.config.right_num_separators);
         self.formatNumberLevelInXaxis(items, this.config.x_axis_number_level);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
@@ -70,15 +70,15 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "bubble";
 
-        ////为了给数据标签加个%,还要遍历所有的系列，唉
+        //为了给数据标签加个%,还要遍历所有的系列，唉
         if(config.plotOptions.dataLabels.enabled === true){
             BI.each(items, function(idx, item){
                 var isNeedFormatDataLabelX = false;
                 var isNeedFormatDataLabelY = false;
-                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators) {
                     isNeedFormatDataLabelX = true;
                 }
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
                     isNeedFormatDataLabelY = true;
                 }
                 if(isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true){
@@ -233,7 +233,9 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
             tooltip: options.tooltip || "",
-            bubble_style: options.bubble_style || c.NO_PROJECT
+            bubble_style: options.bubble_style || c.NO_PROJECT,
+            num_separators: options.num_separators || false,
+            right_num_separators: options.right_num_separators || false
         };
         this.options.items = items;
         var types = [];
