@@ -10,7 +10,7 @@
 
         isStringNotIn: function(value){
             if(BI.isNull(this.valueSet) || BI.isEmptyArray(this.valueSet)){
-                return true;
+                return false;
             }
             return !BI.contains(this.valueSet, value);
         },
