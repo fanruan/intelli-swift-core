@@ -1,7 +1,7 @@
 package com.finebi.cube.gen.oper;
 
-import com.finebi.cube.engine.map.map2.ExternalIntArrayMapFactory;
-import com.finebi.cube.engine.map.map2.IntArrayListExternalMap;
+import com.finebi.cube.map.map2.ExternalIntArrayMapFactory;
+import com.finebi.cube.map.map2.IntArrayListExternalMap;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
