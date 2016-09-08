@@ -1,7 +1,7 @@
 /**
  * Created by roy on 15/11/2.
  */
-BI.CustomGroup = BI.inherit(BI.Pane, {
+BI.CustomGroup = BI.inherit(BI.Widget, {
     _constant: {
         OTHER_GROUP_EN: "other"
 
@@ -381,12 +381,12 @@ BI.CustomGroup = BI.inherit(BI.Pane, {
     populate: function (table, fieldName, groupedItems, ungroup2Other, ungroup2OtherName) {
         var self = this, o = this.options;
         var did = o.dId;
-        this.loading();
+        this.fieldPane.loading();
         self.bottom.populate(ungroup2Other, ungroup2OtherName);
         BI.Utils.getConfDataByField(table, fieldName, {
             type: BICst.REQ_DATA_TYPE.REQ_GET_ALL_DATA
         }, function (unGroupedFields) {
-            self.loaded();
+            self.fieldPane.loaded();
             if (BI.size(unGroupedFields) > 1000) {
                 if (!BI.Maskers.has(self.getName())) {
                     self._tooManyFieldsPane = BI.createWidget({

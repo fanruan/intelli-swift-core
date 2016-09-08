@@ -1,7 +1,7 @@
 /**
  * Created by roy on 15/11/2.
  */
-BI.CustomGroup = BI.inherit(BI.Pane, {
+BI.CustomGroup = BI.inherit(BI.Widget, {
     _constant: {
         OTHER_GROUP_EN: "other"
     },
@@ -467,10 +467,10 @@ BI.CustomGroup = BI.inherit(BI.Pane, {
         var self = this, o = this.options;
         var groupedItems = configs.details, ungroup2Other = configs.ungroup2Other, ungroup2OtherName = configs.ungroup2OtherName;
         var fieldName = o.fieldName;
-        this.loading();
+        this.fieldPane.loading();
         self.bottom.populate(ungroup2Other, ungroup2OtherName);
         o.model.getValuesForCustomGroup(o.dId, function (unGroupedFields) {
-            self.loaded();
+            self.fieldPane.loaded();
             if (BI.size(unGroupedFields) > 1000) {
                 if (!BI.Maskers.has(self.getName())) {
                     self._tooManyFieldsPane = BI.createWidget({
