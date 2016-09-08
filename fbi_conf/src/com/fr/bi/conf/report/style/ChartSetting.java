@@ -24,7 +24,7 @@ public class ChartSetting implements JSONParser {
             settings = jo.getJSONObject("settings");
         }
         if(jo.has("style_of_chart")){
-            styleOfChart = jo.getJSONObject("settings");
+            styleOfChart = jo.getJSONObject("style_of_chart");
         }
         if(jo.has("position")){
             position = jo.getJSONObject("position");
