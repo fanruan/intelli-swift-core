@@ -4,8 +4,6 @@
 BI.CustomGroup = BI.inherit(BI.Widget, {
     _constant: {
         OTHER_GROUP_EN: "other"
-
-
     },
     _defaultConfig: function () {
         return BI.extend(BI.CustomGroup.superclass._defaultConfig.apply(this, arguments), {
@@ -470,8 +468,10 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
     populate: function (groupedItems, ungroup2Other, ungroup2OtherName) {
         var self = this, o = this.options;
         var did = o.dId;
+        this.fieldPane.loading();
         self.bottom.populate(ungroup2Other, ungroup2OtherName);
         BI.Utils.getNoGroupedDataByDimensionID(did, function (unGroupedFields) {
+            self.fieldPane.loaded();
             if (BI.size(unGroupedFields) > 1000) {
                 if (!BI.Maskers.has(self.getName())) {
                     self._tooManyFieldsPane = BI.createWidget({
@@ -527,7 +527,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
         group.details = self.fieldPane.createItemFromGroupMap();
         BI.each(group.details, function (i, groupobj) {
             sort.details.push(groupobj.value);
-        })
+        });
         if (self.bottom.isSelected()) {
             group.ungroup2Other = BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED;
             group.ungroup2OtherName = ungroupedName;

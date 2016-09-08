@@ -1,7 +1,7 @@
 /**
  * Created by roy on 15/11/4.
  */
-BI.CustomGroupAllFieldsPane = BI.inherit(BI.Widget, {
+BI.CustomGroupAllFieldsPane = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.CustomGroupAllFieldsPane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-custom-group-all-fields-pane",
