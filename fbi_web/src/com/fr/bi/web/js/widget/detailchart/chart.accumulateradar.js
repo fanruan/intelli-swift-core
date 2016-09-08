@@ -54,7 +54,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
 
         config.radiusAxis = this.radiusAxis;
-        config.radiusAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
+        config.radiusAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.radiusAxis[0].formatter);
         config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + title : title;
         config.radiusAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
@@ -65,7 +65,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if(config.plotOptions.dataLabels.enabled === true){
             BI.each(items, function(idx, item){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators){
                     item.dataLabels = {
                         "style": self.constants.FONT_STYLE,
                         "align": "outside",
@@ -156,7 +156,8 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
-            cordon: options.cordon || []
+            cordon: options.cordon || [],
+            num_separators: options.num_separators || false
         };
         this.options.items = items;
         var types = [];

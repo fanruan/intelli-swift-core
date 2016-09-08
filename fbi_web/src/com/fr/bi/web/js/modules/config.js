@@ -1236,6 +1236,8 @@ BICst.DEFAULT_CHART_SETTING = {
     mini_show_data_label: true,
     show_data_table: false,
     show_grid_line: true,
+    num_separators: false,
+    right_num_separators: false,
     mini_show_grid_line: false,
     minimalist_model: false,
     line_width: BICst.LINE_WIDTH.ONE,
