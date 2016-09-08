@@ -34,7 +34,7 @@ BI.ChartSettingWrapSelectColorItem = BI.inherit(BI.Single, {
                 lgap: 3
             }, {
                 el: this.item,
-                height: 30
+                height: 28
             }]
         });
 

@@ -31,8 +31,8 @@ BI.ChartSettingSelectColorItem = BI.inherit(BI.BasicButton, {
             items: colorBlocks,
             layouts: [{
                 type: "bi.center",
-                hgap: 1,
-                vgap: 3
+                hgap: 0.5,
+                vgap: 2
             }]
         });
 
@@ -41,7 +41,7 @@ BI.ChartSettingSelectColorItem = BI.inherit(BI.BasicButton, {
             element: this.element,
             items: [{
                 el: this.colorContainer,
-                left: 2,
+                left: 1,
                 right: 2,
                 top: 0,
                 bottom: 0
