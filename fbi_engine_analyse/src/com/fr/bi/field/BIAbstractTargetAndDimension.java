@@ -7,6 +7,7 @@ import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.BIID;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -34,6 +35,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
     private String hyperLinkExpression = StringUtils.EMPTY;
     private boolean useHyperLink = false;
     private boolean used = true;
+    private ChartSetting chartSetting;
 
     @Override
     public BusinessField getStatisticElement() {
@@ -101,6 +103,8 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
                 column = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldJo.getString("field_id")));
             }
         }
+        chartSetting = new ChartSetting();
+        chartSetting.parseJSON(jo);
     }
 
     @Override
@@ -153,6 +157,10 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         if (column != null){
             column = BIModuleUtils.getBusinessFieldById(column.getFieldID());
         }
+    }
+
+    public ChartSetting getChartSetting(){
+        return chartSetting;
     }
 
 }

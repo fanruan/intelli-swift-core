@@ -24,7 +24,7 @@ public class BISourceDataPartTransport4Test extends BISourceDataPartTransport {
     }
 
     public BISourceDataPartTransport4Test(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, int oldCount) {
-        super(cube, tableSource, allSources, parentTableSource, 1,null);
+        super(cube, tableSource, allSources, parentTableSource, oldCount, null);
         this.oldCount = oldCount;
     }
 
@@ -37,7 +37,7 @@ public class BISourceDataPartTransport4Test extends BISourceDataPartTransport {
         }
         tableEntityService.addVersion(version);
         tableEntityService.recordRowCount(count);
-    return null;
+        return null;
     }
 
     private long transport() {

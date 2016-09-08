@@ -172,7 +172,7 @@ BIDezi.YearDetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager",
+            type: "bi.dimensions_manager_control",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
                 if (!dimensionsVessel[dId]) {
@@ -193,7 +193,7 @@ BIDezi.YearDetailView = BI.inherit(BI.View, {
             }
         });
 
-        this.dimensionsManager.on(BI.DimensionsManager.EVENT_CHANGE, function () {
+        this.dimensionsManager.on(BI.DimensionsManagerControl.EVENT_CHANGE, function () {
             var values = this.getValue();
             self.model.set(values);
             this.populate();

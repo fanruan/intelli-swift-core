@@ -1,0 +1,20 @@
+@import "../../../bibase";
+@import "../../../animate";
+
+
+.bi-analysis-etl-p-t-h-cell {
+  background: @background-color-active;
+  height: 100%;
+  & .bi-etl-filter-combo{
+    background: @background-color-default;
+    border : 1px solid @border-color-normal;
+    .border-radius(2px);
+  }
+
+  & .bi-label{
+    font-size: @font-size-14;
+  }
+
+}
+
+.transition(bi-analysis-etl-p-t-h-cell, width);

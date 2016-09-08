@@ -377,7 +377,12 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         bubble_style: BI.Utils.getWSBubbleStyleByID(o.wId),
                         max_scale: BI.Utils.getWSMaxScaleByID(o.wId),
                         min_scale: BI.Utils.getWSMinScaleByID(o.wId),
-                        show_percentage: BI.Utils.getWSShowPercentageByID(o.wId)
+                        show_percentage: BI.Utils.getWSShowPercentageByID(o.wId),
+                        show_background_layer: BI.Utils.getWSShowBackgroundByID(o.wId),
+                        num_separators: BI.Utils.getWSNumberSeparatorsByID(o.wId),
+                        right_num_separators: BI.Utils.getWSRightNumberSeparatorsByID(o.wId),
+                        right2_num_separators: BI.Utils.getWSRight2NumberSeparatorsByID(o.wId),
+                        background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
                     }, {
                         cordon: self.model.getCordon(),
                         tooltip: self.model.getToolTip(type),

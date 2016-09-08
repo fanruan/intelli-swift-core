@@ -343,6 +343,27 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         });
 
+        //千分符
+        this.YSeparators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.YSeparators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.XSeparators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.XSeparators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
         var YAxis = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -385,6 +406,9 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.YSeparators]
                 }/*, {
                     type: "bi.center_adapt",
                     items: [this.YScale]
@@ -437,6 +461,9 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleX, this.editTitleX]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.XSeparators]
                 }/*, {
                     type: "bi.center_adapt",
                     items: [this.XScale]
@@ -675,6 +702,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
+        this.YSeparators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
+        this.XSeparators.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -698,7 +727,9 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             x_axis_title: this.editTitleX.getValue(),
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
-            show_grid_line: this.gridLine.isSelected()
+            show_grid_line: this.gridLine.isSelected(),
+            num_separators: this.YSeparators.isSelected(),
+            right_num_separators: this.XSeparators.isSelected()
         }
     },
 
@@ -720,6 +751,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
+        this.YSeparators.setSelected(v.num_separators);
+        this.XSeparators.setSelected(v.right_num_separators)
     }
 });
 BI.BubbleChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

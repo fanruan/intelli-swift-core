@@ -43,9 +43,10 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         this.updateType.setValue(this.model.getUpdateType());
         this.updateType.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
             var v = this.getValue()[0];
+            self.model.setUpdateType(v);
             switch (v) {
                 case BICst.SINGLE_TABLE_UPDATE_TYPE.ALL:
-                    partUpdate.setVisible(false);
+                    partUpdate.setVisible(true);
                     timeSetting.setVisible(true);
                     break;
                 case BICst.SINGLE_TABLE_UPDATE_TYPE.PART:
@@ -53,8 +54,8 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     timeSetting.setVisible(true);
                     break;
                 case BICst.SINGLE_TABLE_UPDATE_TYPE.NEVER:
-                    partUpdate.setVisible(false);
-                    timeSetting.setVisible(false);
+                    partUpdate.setVisible(true);
+                    timeSetting.setVisible(true);
                     break;
             }
             self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CHANGE);
@@ -62,11 +63,12 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
         //增量更新设置面板
         var partUpdate = this._createPartUpdateTab();
-        partUpdate.setVisible(this.model.getUpdateType() === BICst.SINGLE_TABLE_UPDATE_TYPE.PART);
+        partUpdate.setVisible(true);
 
 
         //定时设置
         var timeSetting = this._createTimeSetting();
+        partUpdate.setVisible(true);
 
         var popup = BI.createWidget({
             type: "bi.button_group",
@@ -99,10 +101,10 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 el: popup
             }
         });
-        popup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+        popup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.immediateCombo.hideView();
         });
-        this.immediateCombo.on(BI.Combo.EVENT_CHANGE, function(v){
+        this.immediateCombo.on(BI.Combo.EVENT_CHANGE, function (v) {
             self.immediateButton.setEnable(false);
             self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
             var tableInfo = {
@@ -294,6 +296,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
     },
 
     _createPartUpdateCard: function (v) {
+        var self = this;
         switch (v) {
             case this._constants.PART_ADD:
                 this.partAddSql = BI.createWidget({
@@ -301,6 +304,9 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     cls: "sql-container"
                 });
                 this.partAddSql.setValue(this.model.getAddSql());
+                this.partAddSql.on(BI.CodeEditor.EVENT_BLUR, function () {
+                    self.model.setAddSql(self.partAddSql.getValue());
+                });
                 return BI.createWidget({
                     type: "bi.absolute",
                     items: [{
@@ -317,6 +323,9 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     cls: "sql-container"
                 });
                 this.partDeleteSql.setValue(this.model.getDeleteSql());
+                this.partDeleteSql.on(BI.CodeEditor.EVENT_BLUR, function () {
+                    self.model.setDeleteSql(self.partDeleteSql.getValue());
+                });
                 return BI.createWidget({
                     type: "bi.absolute",
                     items: [{
@@ -333,6 +342,9 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     cls: "sql-container"
                 });
                 this.partModifySql.setValue(this.model.getModifySql());
+                this.partModifySql.on(BI.CodeEditor.EVENT_BLUR, function () {
+                    self.model.setModifySql(self.partModifySql.getValue());
+                });
                 return BI.createWidget({
                     type: "bi.absolute",
                     items: [{
@@ -354,24 +366,24 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             text: "+" + BI.i18nText("BI-Timing_Set")
         });
         addTime.on(BI.Button.EVENT_CHANGE, function () {
-            self.timeSettingGroup.addItems([{
+            var item = BI.createWidget({
                 type: "bi.single_table_time_setting_item",
                 id: BI.UUID(),
                 onRemoveSetting: function (id) {
                     self._removeSettingById(id);
                 }
-            }]);
+            });
+
+            item.on(BI.SingleTableTimeSettingItem.EVENT_CHANGE, function () {
+                self.model.setTimeList(self.timeSettingGroup.getValue())
+            });
+            self.timeSettingGroup.addItems([item]);
+            self.model.setTimeList(self.timeSettingGroup.getValue());
         });
 
         this.timeSettingGroup = BI.createWidget({
             type: "bi.button_group",
-            items: BI.createItems(this.model.getTimeList(), {
-                type: "bi.single_table_time_setting_item",
-                id: BI.UUID(),
-                onRemoveSetting: function (id) {
-                    self._removeSettingById(id);
-                }
-            }),
+            items: self._createTimeSettingListItems(),
             layouts: [{
                 type: "bi.vertical"
             }]
@@ -411,26 +423,30 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        //单个表的更新属性
-        var partAddSql = "", partDeleteSql = "", partModifySql = "";
-        if (BI.isNotNull(this.partAddSql)) {
-            partAddSql = this.partAddSql.getValue();
-        }
-        if (BI.isNotNull(this.partDeleteSql)) {
-            partDeleteSql = this.partDeleteSql.getValue();
-        }
-        if (BI.isNotNull(this.partModifySql)) {
-            partModifySql = this.partModifySql.getValue();
-        }
-
-        return {
-            update_type: this.updateType.getValue()[0],
-            add_sql: partAddSql,
-            delete_sql: partDeleteSql,
-            modify_sql: partModifySql,
-            time_list: this.timeSettingGroup.getValue()
-        }
+        return this.model.getValue();
     },
+
+    _createTimeSettingListItems: function () {
+        var self = this;
+        var items = [];
+        BI.each(this.model.getTimeList(), function (index, valueObj) {
+            var item = BI.createWidget(BI.extend(
+                valueObj, {
+                    type: "bi.single_table_time_setting_item",
+                    id: BI.UUID(),
+                    onRemoveSetting: function (id) {
+                        self._removeSettingById(id);
+                    }
+                }
+            ));
+            item.on(BI.SingleTableTimeSettingItem.EVENT_CHANGE, function () {
+                self.model.setTimeList(self.timeSettingGroup.getValue())
+            });
+            items.push(item);
+        });
+        return items;
+    },
+
     _createCheckInterval: function () {
         var self = this;
         self.cubeInterval = setInterval(function () {

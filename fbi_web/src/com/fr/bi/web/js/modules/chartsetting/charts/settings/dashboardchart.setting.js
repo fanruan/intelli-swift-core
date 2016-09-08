@@ -88,6 +88,17 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
+        //千分符
+        this.separators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
+        });
+
         this.scale = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.CHART_SCALE_SETTING, {
@@ -295,6 +306,9 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.LYUnit],
                     lgap: constant.SIMPLE_H_GAP
                 }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separators]
+                }, {
                     type: "bi.center_adapt",
                     items: [this.scale],
                     lgap: constant.SIMPLE_H_GAP
@@ -381,6 +395,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.minScale.setValue(BI.Utils.getWSMinScaleByID(wId));
         this.maxScale.setValue(BI.Utils.getWSMaxScaleByID(wId));
         this.percentage.setValue(BI.Utils.getWSShowPercentageByID(wId));
+        this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
 
     },
 
@@ -395,7 +410,8 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             dashboard_unit: this.LYUnit.getValue(),
             min_scale: this.minScale.getValue(),
             max_scale: this.maxScale.getValue(),
-            show_percentage: this.percentage.getValue()[0]
+            show_percentage: this.percentage.getValue()[0],
+            num_separators: this.separators.isSelected()
         }
     },
 
@@ -409,7 +425,8 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.LYUnit.setValue(v.dashboard_unit);
         this.minScale.setValue(v.min_scale);
         this.maxScale.setValue(v.max_scale);
-        this.percentage.setValue(v.show_percentage)
+        this.percentage.setValue(v.show_percentage);
+        this.separators.setSelected(v.num_separators);
     }
 });
 BI.DashboardChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

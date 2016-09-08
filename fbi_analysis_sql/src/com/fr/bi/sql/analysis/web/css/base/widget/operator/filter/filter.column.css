@@ -1,0 +1,16 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-analysis-etl-operator-filter-single-column {
+  background: #f4f4f4;
+  border: 1px solid #d4dadd;
+  color: #1a1a1a;
+}
+.bi-analysis-etl-operator-filter-single-column .title {
+  font-size: 14px;
+}
+.bi-analysis-etl-operator-filter-single-column .operator {
+  font-size: 13px;
+}

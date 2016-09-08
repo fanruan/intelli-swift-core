@@ -29,15 +29,14 @@ public class BIPersistTableInfoAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        WebUtils.printAsJSON(res, new JSONObject().put("tableInfo", saveTableInfos(userId)));
+        WebUtils.printAsJSON(res, new JSONObject().put("tableInfo", saveTableInfo(userId)));
     }
-
     @Override
     public String getCMD() {
         return "table_info_get";
     }
 
-    private static Map saveTableInfos(long userId) {
+    private static Map saveTableInfo(long userId) {
         Set<CubeTableSource> sources = new HashSet<CubeTableSource>();
         Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
         for (BusinessTable table : allTables) {

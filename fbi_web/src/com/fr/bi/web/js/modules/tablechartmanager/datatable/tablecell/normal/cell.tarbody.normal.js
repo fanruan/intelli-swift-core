@@ -15,9 +15,10 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var text = o.text;
         var iconCls = "", color = "";
-        var format = styleSettings.format, numLevel = styleSettings.num_level;
+        var format = styleSettings.format, numLevel = styleSettings.num_level, num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
         text = this._parseFloatByDot(text, format);
+        text = this._numSeparator(text, num_separators);
         var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
@@ -100,6 +101,20 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         return text;
     },
 
+    _numSeparator: function (text, num_separators){
+        if (text === Infinity || text !== text) {
+            return text;
+        }
+        if (!BI.isNumeric(text)) {
+            return text;
+        }
+        if(num_separators){
+            return BI.contentFormat(BI.parseFloat(text), "#,##0")
+        } else {
+            return text
+        }
+    },
+
     _getIconByStyleAndMark: function (text, style, mark) {
         var num = BI.parseFloat(text), nMark = BI.parseFloat(mark);
         switch (style) {
@@ -143,7 +158,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
 
         if (text === Infinity) {
             text = "N/0";
-        } else if(BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+        } else if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNotNull(text)) {
             text += "%";
         }
 
@@ -154,8 +169,8 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 title: text,
                 height: 25,
                 cls: "target-cell-text",
-                textAlign: "left",
-                lgap: 5
+                textAlign: "right",
+                rgap: 5
             });
         } else {
             var textButton = BI.createWidget({
@@ -163,9 +178,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 height: 25,
-                textAlign: "left",
+                textAlign: "right",
                 cls: "target-linkage-label",
-                lgap: 5
+                rgap: 5
             });
             textButton.on(BI.TextButton.EVENT_CHANGE, function () {
                 //这个clicked应该放到子widget中保存起来

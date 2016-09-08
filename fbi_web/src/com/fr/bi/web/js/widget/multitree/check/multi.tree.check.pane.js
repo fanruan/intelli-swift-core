@@ -105,7 +105,7 @@ BI.MultiTreeCheckPane = BI.inherit(BI.Pane, {
     },
 
     getValue: function () {
-        throw new Error("Error");
+
     }
 });
 

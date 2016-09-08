@@ -2,8 +2,8 @@ package com.fr.bi.cal.generate.timerTask;
 
 import com.fr.bi.cal.generate.timerTask.quartz.JobTask;
 import com.fr.bi.cal.generate.timerTask.quartz.QuartzManager;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.general.jsqlparser.parser.ParseException;
 import com.fr.third.org.quartz.SchedulerException;
 
 import java.util.List;
@@ -20,25 +20,21 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
         for (TimerTaskSchedule schedule : scheduleList) {
             JobTask jobTask = new JobTask();
             try {
-                QuartzManager.addJob(jobTask,schedule);
-            } catch (SchedulerException e) {
-                throw BINonValueUtils.beyondControl(e);
-            } catch (ParseException e) {
-                throw BINonValueUtils.beyondControl(e);
-            } catch (java.text.ParseException e) {
-                throw BINonValueUtils.beyondControl(e);
+                QuartzManager.addJob(jobTask, schedule);
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
         }
     }
-    
+
     @Override
     public void removeAllTimeTasks(long userId, List<TimerTaskSchedule> scheduleList) {
-            try {
-                QuartzManager.removeAllJobs();
-            } catch (SchedulerException e) {
-                throw BINonValueUtils.beyondControl();
-            }
+        try {
+            QuartzManager.removeAllJobs();
+        } catch (SchedulerException e) {
+            throw BINonValueUtils.beyondControl(e);
         }
+    }
 
 
 }

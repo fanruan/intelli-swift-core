@@ -3,6 +3,7 @@ package com.fr.bi.conf.report.widget.field.dimension;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.stable.operation.group.IGroup;
@@ -52,4 +53,6 @@ public interface BIDimension extends BITargetAndDimension {
     Object getValueByType(Object data);
 
     BITableRelationPath getSelfToSelfRelationPath();
+
+    ChartSetting getChartSetting();
 }

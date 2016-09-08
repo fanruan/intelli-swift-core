@@ -3,8 +3,7 @@ package com.finebi.datasource.sql.criteria.internal.render.str;
 import com.finebi.datasource.sql.criteria.internal.Renderable;
 import com.finebi.datasource.sql.criteria.internal.compile.RenderingContext;
 import com.finebi.datasource.sql.criteria.internal.expression.BinaryArithmeticOperation;
-import com.finebi.datasource.sql.criteria.internal.expression.function.BasicFunctionExpression;
-import com.taobao.api.request.TradesSoldIncrementGetRequest;
+
 
 /**
  * This class created on 2016/7/6.

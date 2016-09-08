@@ -34,6 +34,7 @@ import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.mobile.Service4BIMobile;
 import com.fr.bi.web.dezi.web.Service4BIDezi;
 import com.fr.bi.web.report.Service4BIReport;
+import com.fr.bi.web.report.services.finecube.Service4FineCube;
 import com.fr.cluster.rpc.RPC;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -340,7 +341,7 @@ public class BICoreModule extends AbstractModule {
             BILogger.getLogger().info("Table " + tableName + " has been deleted successfully");
             cn.commit();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            //BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             DBUtils.closeStatement(ps);
             DBUtils.closeConnection(cn);
@@ -349,6 +350,7 @@ public class BICoreModule extends AbstractModule {
 
     private void registerResources() {
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_THIRD_JS, ResourceHelper.getThirdJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MAP_JS, ResourceHelper.getMapJS(), ResourceHelper.MapTransmitter);
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, ResourceHelper.getBaseJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, ResourceHelper.getThirdCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, ResourceHelper.getBaseCss());
@@ -404,7 +406,9 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIReport(),
                 new Service4BIDezi(),
                 new Service4BIMobile(),
-                new Service4BIBase()
+                new Service4BIBase(),
+
+                new Service4FineCube()
         };
     }
 

@@ -94,7 +94,7 @@ public class CustomGroup extends AbstractGroup {
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             Object key = entry.getKey();
-            if (key == null){
+            if (key == null) {
                 continue;
             }
             GroupValueIndex gvi = (GroupValueIndex) entry.getValue();
@@ -131,7 +131,7 @@ public class CustomGroup extends AbstractGroup {
      */
     @Override
     public boolean isNullGroup() {
-        return groups == null || groups.length == 0;
+        return groups == null || (groups.length == 0 && !ungroup2Other());
     }
 
     /**

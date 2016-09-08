@@ -33,7 +33,8 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var formatterArray = [];
         BI.backEach(items, function (idx, item) {
             if (BI.has(item, "settings")) {
-                formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL));
+                formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL,
+                    item.settings.unit || "", item.settings.num_separators || c.NUM_SEPARATORS));
             }
         });
         config.plotOptions.tooltip.formatter = function () {
@@ -49,6 +50,15 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         };
 
         config.geo = this.config.geo;
+        if (this.config.show_background_layer === true && BI.isNotNull(this.config.background_layer_info)) {
+            if (this.config.background_layer_info.type === BICst.WMS_SERVER) {
+                config.geo.tileLayer = false;
+                config.geo.wmsUrl = this.config.background_layer_info.url;
+                config.geo.wmsLayer = this.config.background_layer_info.wmsLayer
+            } else {
+                config.geo.tileLayer = this.config.background_layer_info.url;
+            }
+        }
         if (this.config.initDrillPath.length > 1) {
             config.initDrillPath = this.config.initDrillPath;
         }
@@ -93,6 +103,11 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             config.rangeLegend.formatter = function () {
                 var to = this.to;
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
+
+                    if(items[0].settings.num_separators){
+                        to = BI.contentFormat(to, "#,##0")
+                    }
+
                     switch (items[0].settings.num_level || c.NORMAL) {
                         case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
                             to += '';
@@ -115,7 +130,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             };
         }
 
-        function formatToolTipAndDataLabel(format, numberLevel) {
+        function formatToolTipAndDataLabel(format, numberLevel, unit, num_separators) {
             var formatter = '#.##';
             switch (format) {
                 case self.constants.NORMAL:
@@ -130,6 +145,10 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 case self.constants.TWO2POINT:
                     formatter = '#0.00';
                     break;
+            }
+
+            if (num_separators) {
+                formatter = '#,##0'
             }
 
             switch (numberLevel) {
@@ -154,7 +173,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     break;
             }
 
-            return formatter;
+            return formatter + unit;
         }
 
         function getRangeStyle(styles, change, defaultColor) {
@@ -242,13 +261,13 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
     _formatDrillItems: function (items) {
         var self = this;
-        BI.each(items.series, function(idx, da){
-            BI.each(da.data, function(idx, data){
+        BI.each(items.series, function (idx, da) {
+            BI.each(da.data, function (idx, data) {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
                 if (BI.has(da, "settings")) {
                     data.y = self._formatNumberLevel(da.settings.num_level || self.constants.NORMAL, data.y);
                 }
-                if(BI.has(da, "type") && da.type == "bubble"){
+                if (BI.has(da, "type") && da.type == "bubble") {
                     data.name = data.x;
                     data.size = data.y;
                 } else {
@@ -266,14 +285,14 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this;
         this.max = null;
         this.min = null;
-        BI.each(items, function(idx, item){
-            BI.each(item, function(id, it){
-                BI.each(it.data, function(i, da){
+        BI.each(items, function (idx, item) {
+            BI.each(item, function (id, it) {
+                BI.each(it.data, function (i, da) {
                     da.y = self.formatXYDataWithMagnify(da.y, 1);
                     if (BI.has(it, "settings")) {
                         da.y = self._formatNumberLevel(it.settings.num_level || self.constants.NORMAL, da.y);
                     }
-                    if((BI.isNull(self.max) || BI.parseFloat(da.y) > BI.parseFloat(self.max)) && id === 0){
+                    if ((BI.isNull(self.max) || BI.parseFloat(da.y) > BI.parseFloat(self.max)) && id === 0) {
 
                         self.max = da.y;
                     }
@@ -308,12 +327,14 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
+            geo: options.geo,
             initDrillPath: options.initDrillPath || [],
             tooltip: options.tooltip || "",
             theme_color: options.theme_color || "#65bce7",
             map_styles: options.map_styles || [],
-            auto_custom: options.auto_custom || c.AUTO_CUSTOM
+            auto_custom: options.auto_custom || c.AUTO_CUSTOM,
+            show_background_layer: options.show_background_layer || false,
+            background_layer_info: options.background_layer_info
         };
         this.options.items = items;
 

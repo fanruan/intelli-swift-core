@@ -65,9 +65,11 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
             try {
                 if (schemaName != null) {
                     jo.put("schema", schemaName);
-                    TableProcedure[] sqlTables = DataCoreUtils.getTables(dbc, TableProcedure.TABLE, schemaName, true);
-                    tps = ArrayUtils.addAll(tps, sqlTables);
-                    views = ArrayUtils.addAll(views, FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, schemaName));
+                    if(StringUtils.isNotEmpty(schemaName)) {
+                        TableProcedure[] sqlTables = DataCoreUtils.getTables(dbc, TableProcedure.TABLE, schemaName, true);
+                        tps = ArrayUtils.addAll(tps, sqlTables);
+                        views = ArrayUtils.addAll(views, FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, schemaName));
+                    }
                 } else {
                     tps = FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.TABLE, null);
                     views = FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, null);

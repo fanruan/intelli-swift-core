@@ -2,6 +2,7 @@ package com.fr.bi.data;
 
 import com.fr.base.FRContext;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -35,7 +36,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
                                   Traversal<BIDataValue> traversal,
                                   boolean needCharSetConvert,
                                   String originalCharSetName,
-                                  String newCharSetName, int row) throws SQLException {
+                                  String newCharSetName, int row, String sql) throws SQLException {
         @SuppressWarnings("rawtypes")
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, columns);
         int ilen = dealers.length;
@@ -45,6 +46,10 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 traversal.actionPerformed(new BIDataValue(row, i, value));
             }
             row++;
+            if (CubeConstant.LOG_SEPERATOR_ROW != 0 && row % CubeConstant.LOG_SEPERATOR_ROW == 0) {
+                BILogger.getLogger().info("sql: " + sql + "is executing…… "+" transported rows：" + row);
+            }
+
         }
         return row;
     }
@@ -142,8 +147,8 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 rs = stmt.executeQuery(query);
                 BILogger.getLogger().error("sql: " + sql.toString() + " execute failed!");
             }
+            row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row, sql.toString());
             BILogger.getLogger().info("sql: " + sql.toString() + " execute cost:" + DateUtils.timeCostFrom(t));
-            row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row);
         } catch (Throwable e) {
             BILogger.getLogger().error("sql: " + sql.toString() + " execute failed!");
             throw new RuntimeException(e);

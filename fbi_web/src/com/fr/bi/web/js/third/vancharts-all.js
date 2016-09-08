@@ -10340,30 +10340,11 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                 });
             }
 
-            if(!this.imageString && !cfg.wmsUrl){
-                var url = cfg.tileLayer || this.vanchart.restoreOption.geo.tileLayer;
-                var attribution = cfg.attribution || this.vanchart.restoreOption.geo.attribution;
+            var url = cfg.tileLayer || this.vanchart.restoreOption.geo.tileLayer;
+            var attribution = cfg.attribution || this.vanchart.restoreOption.geo.attribution;
 
-                if(attribution){
-                    this._attribution = L.control.attribution({position:'bottomright'}).addAttribution(attribution);
-                }
-
-                if(url){
-                    // gis层级
-                    this._tileLayer = _loadedLayerMap[vanchartsID][url] || L.tileLayer(url);
-                    _loadedLayerMap[vanchartsID][cfg.tileLayer] = this._tileLayer;
-                }
-            }
-
-            if(!this.imageString && !cfg.tileLayer){
-                var url = cfg.wmsUrl || this.vanchart.restoreOption.geo.wmsUrl;
-                var wmsLayer = cfg.wmsLayer || this.vanchart.restoreOption.geo.wmsLayer;
-
-                if(url){
-                    this._tileLayer = _loadedLayerMap[vanchartsID][url] || L.tileLayer.wms(url, {layers: wmsLayer.join(',')});
-                    _loadedLayerMap[vanchartsID][url] = this._tileLayer;
-                }
-            }
+            var wmsUrl = cfg.wmsUrl || this.vanchart.restoreOption.geo.wmsUrl;
+            var wmsLayer = cfg.wmsLayer || this.vanchart.restoreOption.geo.wmsLayer;
 
             if(this.imageString){
                 var chartWidth = this.vanchart.chartWidth();
@@ -10381,6 +10362,61 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                 var bounds = [[0,0], [showHeight, showWidth]];
                 var url = "data:image/"+this.imageSuffix+";base64," + this.imageString;
                 this._imageBackgroundLayer = L.imageOverlay(url, bounds).addTo(leaflet);
+                
+                this._attribution && this._attribution.remove();
+                this._attribution = null;
+
+                this._tileLayer && this._tileLayer.remove();
+                this._tileLayer = null;
+
+                this._wmsLayer && this._wmsLayer.remove();
+                this._wmsLayer = null;
+
+            }else if(url){
+
+                if(attribution){
+                    this._attribution = L.control.attribution({position:'bottomright'}).addAttribution(attribution);
+                }else {
+                    this._attribution && this._attribution.remove();
+                    this._attribution = null;
+                }
+
+                this._tileLayer = _loadedLayerMap[vanchartsID][url] || L.tileLayer(url);
+                _loadedLayerMap[vanchartsID][url] = this._tileLayer;
+
+                this._wmsLayer && this._wmsLayer.remove();
+                this._wmsLayer = null;
+
+                this._imageBackgroundLayer && leaflet.removeLayer(this._imageBackgroundLayer)
+                this._imageBackgroundLayer = null;
+
+            }else if(wmsUrl){
+
+                this._wmsLayer = _loadedLayerMap[vanchartsID][wmsUrl] || L.tileLayer.wms(wmsUrl, {layers: wmsLayer.join(',')});
+                _loadedLayerMap[vanchartsID][wmsUrl] = this._wmsLayer;
+
+                this._attribution && this._attribution.remove();
+                this._attribution = null;
+
+                this._tileLayer && this._tileLayer.remove();
+                this._tileLayer = null;
+
+                this._imageBackgroundLayer && leaflet.removeLayer(this._imageBackgroundLayer)
+                this._imageBackgroundLayer = null;
+
+            }else{
+
+                this._attribution && this._attribution.remove();
+                this._attribution = null;
+
+                this._tileLayer && this._tileLayer.remove();
+                this._tileLayer = null;
+
+                this._wmsLayer && this._wmsLayer.remove();
+                this._wmsLayer = null;
+
+                this._imageBackgroundLayer && leaflet.removeLayer(this._imageBackgroundLayer)
+                this._imageBackgroundLayer = null;
             }
         },
 
@@ -23886,28 +23922,30 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
 
             var lastTileLayer, lastImageLayer;
             if(lastGeo){
-                lastTileLayer = lastGeo._tileLayer;
+                lastTileLayer = lastGeo._tileLayer || lastGeo._wmsLayer;
                 lastImageLayer = lastGeo._imageBackgroundLayer;
-
                 lastGeo._attribution && lastGeo._attribution.remove();
             }
 
             if(geo){
                 geo.loadGeo();
+                var currentImageLayer = geo._imageBackgroundLayer;
+                var currentTileLayer = geo._tileLayer || geo._wmsLayer;
+                
                 var leaflet = this.vanchart._leaflet;
-                if(geo._imageBackgroundLayer){
+                if(currentImageLayer){
                     lastTileLayer && lastTileLayer.remove();
                     L.setOptions(leaflet, {crs:L.CRS.Simple});
-                    if(lastImageLayer != geo._imageBackgroundLayer){
+                    if(lastImageLayer != currentImageLayer){
                         lastImageLayer && leaflet.removeLayer(lastImageLayer);
-                        geo._imageBackgroundLayer.addTo(leaflet);
+                        currentImageLayer.addTo(leaflet);
                     }
-                }else{
+                }else if(currentTileLayer){
                     lastImageLayer && leaflet.removeLayer(lastImageLayer);
                     L.setOptions(leaflet, {crs:L.CRS.EPSG3857});
-                    if(lastTileLayer != geo._tileLayer){
+                    if(lastTileLayer != currentTileLayer){
                         lastTileLayer && lastTileLayer.remove();
-                        geo._tileLayer && geo._tileLayer.addTo(leaflet);
+                        currentTileLayer.addTo(leaflet);
                     }
                 }
 
@@ -30158,7 +30196,17 @@ define('render/DrillToolsSvgRender',['require','./BaseRender','../utils/BaseUtil
             var iconS = this._bodyG.selectAll('g').data(this.component.getIconData(), function(d){return d.layerIndex});
 
             //update状态的标签注意改文字颜色
-            iconS.select('text').style('fill', function(d){return dTools.textColor(d);});
+            iconS.select('text')
+                .text(function(d){return  d.geo.geoName})
+                .style('fill', function(d){return dTools.textColor(d);});
+
+            iconS.select('path').attr('d', function (d) {
+                return dTools.getBookMarkPath(d);
+            });
+            
+            iconS.attr('transform', function(d){
+                return BaseUtils.makeTranslate([d.aniEnd, 0]);
+            });
 
             var exitData = [];
             var exit = iconS.exit().each(function(d){exitData.push(d)});
