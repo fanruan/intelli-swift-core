@@ -220,7 +220,7 @@ let Text = React.createClass({
     if (typeof lineHeight === 'number') {
       lineHeight += 'px';
     }
-    style.lineHeight = lineHeight;
+    //style.lineHeight = lineHeight;
 
     if (style.textDecorationLine) {
       style.textDecoration = style.textDecorationLine;

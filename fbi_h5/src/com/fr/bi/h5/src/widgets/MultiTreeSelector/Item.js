@@ -15,7 +15,7 @@ import React, {
     Fetch,
     TouchableHighlight,
     TouchableWithoutFeedback
-} from 'lib'
+    } from 'lib'
 
 import {Colors} from 'data'
 
@@ -25,8 +25,8 @@ import {Icon, Table, AutoSizer} from 'base'
 class Item extends Component {
     constructor(props, context) {
         super(props, context);
-        const {text, value, selected} = props;
-        this.state = {text, value, selected};
+        const {text, value, selected, expanded} = props;
+        this.state = {text, value, selected, expanded};
     }
 
     static propTypes = {};
@@ -83,20 +83,24 @@ class Item extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <TouchableHighlight onPress={this._onExpand.bind(this)} underlayColor={Colors.PRESS}>
-            <View style={[styles.row]}>
-                <View className={cn({
+        let row;
+        if (!props.isLeaf) {
+            row = <View className={cn({
                     'right-font': !state.expanded,
                     'down-font': state.expanded,
                     'react-view': true
-                })} style={[styles.icon, {
-                    width: 30,
-                    marginLeft: props.layer * 23 + 20
-                }]}>
-                    <Icon width={16} height={16}/>
-                </View>
+                    })} style={[styles.icon, {
+                            width: 30,
+                            marginLeft: props.layer * 23
+                    }]}>
+                <Icon width={16} height={16}/>
+            </View>
+        }
+        return <TouchableHighlight onPress={this._onExpand.bind(this)} underlayColor={Colors.PRESS}>
+            <View style={[styles.row]}>
+                {row}
                 <View style={[styles.text, {
-                    marginLeft: 4
+                    marginLeft: isNil(row)?(props.layer*23+34):4
                 }]}>
                     <Text>
                         {isNil(state.value) ? state.text : state.value}

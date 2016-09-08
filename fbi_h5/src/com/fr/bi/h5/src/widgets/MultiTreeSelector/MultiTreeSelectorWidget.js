@@ -11,7 +11,7 @@ import React, {
     ListView,
     View,
     Fetch
-} from 'lib'
+    } from 'lib'
 
 import {VirtualScroll, AutoSizer} from 'base'
 
@@ -23,7 +23,7 @@ import MultiTreeSelectorWidgetAsyncHelper from './MultiTreeSelectorWidgetAsyncHe
 class MultiTreeSelectorWidget extends Component {
     constructor(props, context) {
         super(props, context);
-        if(props.itemsCreator) {
+        if (props.itemsCreator) {
             this._helper = new MultiTreeSelectorWidgetAsyncHelper(props);
         } else {
             this._helper = new MultiTreeSelectorWidgetHelper(props);
@@ -50,7 +50,7 @@ class MultiTreeSelectorWidget extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.itemsCreator) {
+        if (nextProps.itemsCreator) {
             this._helper = new MultiTreeSelectorWidgetAsyncHelper(nextProps);
         } else {
             this._helper = new MultiTreeSelectorWidgetHelper(nextProps);
@@ -73,7 +73,7 @@ class MultiTreeSelectorWidget extends Component {
             rowHeight={35}
             rowRenderer={this._rowRenderer.bind(this)}
             //scrollToIndex={scrollToIndex}
-        />
+            />
     }
 
     _rowRenderer({index, isScrolling}) {
@@ -91,6 +91,7 @@ class MultiTreeSelectorWidget extends Component {
         } else {
             this._helper.collapseOneValue(rowData.value);
         }
+        this.forceUpdate();
         // this.setState({
         //     value: this._helper.getSelectedValue()
         // });
