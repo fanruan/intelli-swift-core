@@ -1480,6 +1480,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.leftright.canvasbutton.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.usercustombutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.js",
 
                 //联动
                 "com/fr/bi/web/js/modules/linkage/model.linkage.js",
@@ -2126,6 +2127,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/controller/router.floatbox.js",
                 "com/fr/bi/web/js/base/controller/controller.bubbles.js",
                 "com/fr/bi/web/js/base/controller/controller.tooltips.js",
+                "com/fr/bi/web/js/base/loader/loader.style.js",
                 "com/fr/bi/web/js/base/event/event.list.js",
                 "com/fr/bi/web/js/base/event/off.list.js",
                 "com/fr/bi/web/js/base/event/listener.list.js",

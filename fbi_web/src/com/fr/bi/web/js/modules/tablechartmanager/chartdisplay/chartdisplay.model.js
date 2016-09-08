@@ -680,7 +680,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var dataLabels = {
             enabled: true,
             align: "outside",
-            style: {color: "#808080"},
+            style: {
+                "fontFamily": "inherit",
+                "color": "#808080",
+                "fontSize": "12px"
+            },
             formatter: formatter
         };
         switch (label.style_setting.type) {
@@ -690,6 +694,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dataLabels.style.fontSize += "px";
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
+                dataLabels.useHtml = true;
                 dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + label.style_setting.imgStyle.src + "\">';}";
                 break;
         }

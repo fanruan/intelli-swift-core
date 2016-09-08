@@ -177,7 +177,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Background_Colour") + ":",
                 textAlign: "left",
                 height: 30,
-                width: 105
+                width:95
             }, self.mainBackground],
             vgap: 10
         });
@@ -319,7 +319,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 text: name + ":",
                 textAlign: "left",
                 height: 30,
-                width: 105
+                width: 95
             }, widget],
             vgap: 10
         }
