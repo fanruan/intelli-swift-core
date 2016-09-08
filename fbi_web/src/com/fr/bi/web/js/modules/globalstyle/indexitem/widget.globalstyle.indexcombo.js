@@ -46,18 +46,14 @@ BI.GlobalStyleIndexBackground = BI.inherit(BI.Widget, {
                         return colorChooser;
                     case BICst.BACKGROUND_TYPE.IMAGE:
                         var uploadImage = BI.createWidget({
-                            type: "bi.multifile_editor",
-                            accept: "*.jpg;*.png;*.gif;*.bmp;*.jpeg;",
-                            maxSize: 1024 * 1024 * 100
+                            type: "bi.upload_image_preview"
                         });
                         uploadImage.on(BI.MultifileEditor.EVENT_CHANGE, function() {
 
                         });
                         return uploadImage;
                 }
-            },
-            width: 30,
-            height: 30
+            }
         });
         BI.createWidget({
             type: "bi.left",
