@@ -2,12 +2,19 @@
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import configureStore from './stores';
 import App from './containers/App';
 import StyleSheet from './lib/StyleSheet/StyleSheet.web';
 import View from './lib/View/View.web';
 import Portal from './lib/Portal/Portal';
+
+import 'reset.css';
+import 'css/utils/common.css';
+import 'css/utils/font.css';
+import 'css/utils/icon.css';
+import 'css/utils/background.css';
+import 'css/utils/base.css';
 
 class AppContainer extends Component {
 

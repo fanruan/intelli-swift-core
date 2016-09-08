@@ -20,7 +20,6 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Template} from 'data';
 import * as TodoActions from '../actions/todos';
-require('styles/App.css');
 
 import Main from '../components/Main.js'
 //import Test from '../components/Test.js'

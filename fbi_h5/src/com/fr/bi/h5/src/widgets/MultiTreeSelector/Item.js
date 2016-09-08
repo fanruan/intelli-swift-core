@@ -7,16 +7,17 @@ import React, {
     Component,
     StyleSheet,
     Text,
+    Image,
     Dimensions,
     ListView,
     View,
     Fetch,
     TouchableHighlight
-    } from 'lib'
+} from 'lib'
 
 import {Colors} from 'data'
 
-import {Table, AutoSizer} from 'base'
+import {Icon, Table, AutoSizer} from 'base'
 
 
 class Item extends Component {
@@ -63,10 +64,15 @@ class Item extends Component {
                 this.props.onSelected(this.state.selected);
             })
         }} underlayColor={Colors.PRESS}>
-            <View style={[styles.row, sc([styles.selected, state.selected])]}>
-                <Text>
-                    {state.value == null ? state.text : state.value}
-                </Text>
+            <View style={[styles.row]}>
+                <View style={styles.text}>
+                    <Text>
+                        {state.value == null ? state.text : state.value}
+                    </Text>
+                </View>
+                <View className={'check-box-icon react-view'} style={[styles.icon, {width: 30}]}>
+                    <Icon width={16} height={16}></Icon>
+                </View>
             </View>
         </TouchableHighlight>
     }
@@ -75,8 +81,18 @@ class Item extends Component {
 mixin.onClass(Item, PureRenderMixin);
 const styles = StyleSheet.create({
     row: {
-        justifyContent: 'center',
+        flexDirection: 'row',
         height: 30
+    },
+
+    text: {
+        justifyContent: 'center',
+        flexGrow: 1,
+    },
+
+    icon: {
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 
     selected: {

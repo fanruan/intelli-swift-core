@@ -2,7 +2,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {requestAnimationFrame, emptyFunction} from 'core'
+import {cn, sc, requestAnimationFrame, emptyFunction} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -11,9 +11,9 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
-import {Table, AutoSizer} from 'base'
+import {VirtualScroll, AutoSizer} from 'base'
 
 import Item from './Item'
 import MultiTreeSelectorWidgetHelper from './MultiTreeSelectorWidgetHelper'
@@ -22,11 +22,11 @@ import MultiTreeSelectorWidgetHelper from './MultiTreeSelectorWidgetHelper'
 class MultiTreeSelectorWidget extends Component {
     constructor(props, context) {
         super(props, context);
-        this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.value !== r2.value});
         this._helper = new MultiTreeSelectorWidgetHelper(props);
         this.state = {
-            dataSource: this.ds.cloneWithRows(this._helper.getItems())
-        };
+            value: props.value,
+            type: props.type
+        }
     }
 
     static propTypes = {};
@@ -47,7 +47,7 @@ class MultiTreeSelectorWidget extends Component {
 
     componentWillReceiveProps(nextProps) {
         this._helper = new MultiTreeSelectorWidgetHelper(nextProps);
-        this.setState({dataSource: this.ds.cloneWithRows(this._helper.getItems())});
+        this.setState({value: nextProps.value, type: nextProps.type});
     }
 
     componentWillUpdate() {
@@ -56,16 +56,20 @@ class MultiTreeSelectorWidget extends Component {
 
     render() {
         const {...props} = this.props;
-        return <ListView
-            {...props}
-            dataSource={this.state.dataSource}
-            initialListSize={100}
-            renderRow={this._renderRow.bind(this)}
-            >
-        </ListView>
+        return <VirtualScroll
+            width={props.width}
+            height={props.height}
+            overscanRowCount={0}
+            //noRowsRenderer={this._noRowsRenderer.bind(this)}
+            rowCount={this.props.items.length}
+            rowHeight={30}
+            rowRenderer={this._rowRenderer.bind(this)}
+            //scrollToIndex={scrollToIndex}
+        />
     }
 
-    _renderRow(rowData, sectionID, rowID) {
+    _rowRenderer({ index, isScrolling }) {
+        const rowData = this._helper.getSortedItems()[index];
         return <Item key={rowData.value} onSelected={(sel)=> {
             if (sel) {
                 this._helper.selectOneValue(rowData.value);
@@ -73,7 +77,7 @@ class MultiTreeSelectorWidget extends Component {
                 this._helper.disSelectOneValue(rowData.value);
             }
             this.setState({
-                dataSource: this.ds.cloneWithRows(this._helper.getItems())
+                value: this._helper.getSelectedValue()
             });
         }} {...rowData}/>;
     }

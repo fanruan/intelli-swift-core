@@ -1,6 +1,9 @@
 //export Wheeler from './Wheeler/Wheeler'
 //export ScrollableWheeler from './Wheeler/ScrollableWheeler'
 //export Swiper from './Swiper'
+
+export Icon from './Icon'
+
 export Sortable from './Sortable'
 
 export GiftedListView from './GiftedListView'

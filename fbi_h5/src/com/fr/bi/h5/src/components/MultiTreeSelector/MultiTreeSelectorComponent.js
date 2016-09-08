@@ -57,10 +57,8 @@ class MultiTreeSelectorComponent extends Component {
         }
         return <MultiTreeSelectorWidget
             items={items}
-            style={{
-                width: props.width,
-                height: props.height
-            }}
+            width={props.width}
+            height={props.height}
             >
         </MultiTreeSelectorWidget>
     }

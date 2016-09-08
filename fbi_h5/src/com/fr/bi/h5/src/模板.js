@@ -11,11 +11,11 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
 import {Colors, Template} from 'data'
 
-import {Table, AutoSizer} from 'base'
+import {Icon, Table, AutoSizer} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
