@@ -1,0 +1,263 @@
+.fixedDataTableCellGroupLayout-cellGroup {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+}
+
+.fixedDataTableCellGroupLayout-cellGroup > .public-fixedDataTableCell-main {
+    display: inline-block;
+    vertical-align: top;
+    white-space: normal;
+}
+
+.fixedDataTableCellGroupLayout-cellGroupWrapper {
+    position: absolute;
+    top: 0;
+}
+
+.fixedDataTableCellLayout-main {
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-width: 0 1px 0 0;
+    box-sizing: border-box;
+    display: block;
+    overflow: hidden;
+    position: absolute;
+    white-space: normal;
+}
+
+.fixedDataTableCellLayout-lastChild {
+    border-width: 0 1px 1px 0;
+}
+
+.fixedDataTableCellLayout-alignRight {
+    text-align: right;
+}
+
+.fixedDataTableCellLayout-alignCenter {
+    text-align: center;
+}
+
+.fixedDataTableCellLayout-wrap1 {
+    display: table;
+}
+
+.fixedDataTableCellLayout-wrap2 {
+    display: table-row;
+}
+
+.fixedDataTableCellLayout-wrap3 {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.fixedDataTableCellLayout-columnResizerContainer {
+    position: absolute;
+    right: 0px;
+    width: 6px;
+    z-index: 1;
+}
+
+.fixedDataTableCellLayout-columnResizerContainer:hover {
+    cursor: ew-resize;
+}
+
+.fixedDataTableCellLayout-columnResizerContainer:hover .fixedDataTableCellLayout-columnResizerKnob {
+    visibility: visible;
+}
+
+.fixedDataTableCellLayout-columnResizerKnob {
+    position: absolute;
+    right: 0px;
+    visibility: hidden;
+    width: 4px;
+}
+
+.fixedDataTableColumnResizerLineLayout-mouseArea {
+    cursor: ew-resize;
+    position: absolute;
+    right: -5px;
+    width: 12px;
+}
+
+.fixedDataTableColumnResizerLineLayout-main {
+    border-right-style: solid;
+    border-right-width: 1px;
+    box-sizing: border-box;
+    position: absolute;
+    z-index: 10;
+}
+
+body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
+    /* the resizer line is in the wrong position in RTL with no easy fix.
+     * Disabling is more useful than displaying it.
+     * #167 (github) should look into this and come up with a permanent fix.
+     */
+    display: none !important;
+}
+
+.fixedDataTableColumnResizerLineLayout-hiddenElem {
+    display: none !important;
+}
+
+.fixedDataTableLayout-main {
+    border-style: solid;
+    border-width: 1px;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+}
+
+.fixedDataTableLayout-header,
+.fixedDataTableLayout-hasBottomBorder {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+.fixedDataTableLayout-footer .public-fixedDataTableCell-main {
+    border-top-style: solid;
+    border-top-width: 1px;
+}
+
+.fixedDataTableLayout-topShadow,
+.fixedDataTableLayout-bottomShadow {
+    height: 4px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    z-index: 1;
+}
+
+.fixedDataTableLayout-bottomShadow {
+    margin-top: -4px;
+}
+
+.fixedDataTableLayout-rowsContainer {
+    overflow: hidden;
+    position: relative;
+}
+
+.fixedDataTableLayout-horizontalScrollbar {
+    bottom: 0;
+    position: absolute;
+}
+
+.fixedDataTableRowLayout-main {
+    box-sizing: border-box;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+}
+
+.fixedDataTableRowLayout-body {
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+
+.fixedDataTableRowLayout-fixedColumnsDivider {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-left-style: solid;
+    border-left-width: 1px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 0;
+}
+
+.fixedDataTableRowLayout-columnsShadow {
+    width: 4px;
+}
+
+.fixedDataTableRowLayout-rowWrapper {
+    position: absolute;
+    top: 0;
+}
+
+/**
+ * Table.
+ */
+.public-fixedDataTable-main {
+    border-color: #d3d3d3;
+}
+
+.public-fixedDataTable-header,
+.public-fixedDataTable-hasBottomBorder {
+    border-color: #d3d3d3;
+}
+
+.public-fixedDataTable-header .public-fixedDataTableCell-main {
+    font-weight: bold;
+}
+
+.public-fixedDataTable-header,
+.public-fixedDataTable-header .public-fixedDataTableCell-main {
+    background-color: #f6f7f8;
+    background-image: -webkit-linear-gradient(#fff, #efefef);
+    background-image: linear-gradient(#fff, #efefef);
+}
+
+.public-fixedDataTable-footer .public-fixedDataTableCell-main {
+    background-color: #f6f7f8;
+    border-color: #d3d3d3;
+}
+
+.public-fixedDataTable-topShadow {
+    background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAF0lEQVR4AWPUkNeSBhHCjJoK2twgFisAFagCCp3pJlAAAAAASUVORK5CYII=) repeat-x;
+}
+
+.public-fixedDataTable-bottomShadow {
+    background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAHElEQVQI12MwNjZmZdAT1+Nm0JDWEGZQk1GTBgAWkwIeAEp52AAAAABJRU5ErkJggg==) repeat-x;
+}
+
+/**
+ * Table cell.
+ */
+.public-fixedDataTableCell-main {
+    background-color: #fff;
+    border-color: #d3d3d3;
+}
+
+.public-fixedDataTableCell-highlighted {
+    background-color: #f4f4f4;
+}
+
+.public-fixedDataTableCell-cellContent {
+    padding: 8px;
+}
+
+.public-fixedDataTableCell-columnResizerKnob {
+    background-color: #0284ff;
+}
+
+/**
+ * Column resizer line.
+ */
+.public-fixedDataTableColumnResizerLine-main {
+    border-color: #0284ff;
+}
+
+/**
+ * Table row.
+ */
+.public-fixedDataTableRow-main {
+    background-color: #fff;
+}
+
+.public-fixedDataTableRow-highlighted,
+.public-fixedDataTableRow-highlighted .public-fixedDataTableCell-main {
+    background-color: #f6f7f8;
+}
+
+.public-fixedDataTableRow-fixedColumnsDivider {
+    border-color: #d3d3d3;
+}
+
+.public-fixedDataTableRow-columnsShadow {
+    background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) repeat-y;
+}

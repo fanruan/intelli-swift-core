@@ -56,7 +56,6 @@ class DatePickerIOS extends Component {
     }
 
     componentDidMount() {
-
     }
 
     render() {

@@ -189,7 +189,7 @@ class Grid extends Component {
   };
 
   static defaultProps = {
-    'aria-label': 'grid',
+    //'aria-label': 'grid',
     cellStyle: {},
     cellRangeRenderer: defaultCellRangeRenderer,
     estimatedColumnSize: 100,
@@ -529,10 +529,10 @@ class Grid extends Component {
         ref={(ref) => {
           this._scrollingContainer = ReactDOM.findDOMNode(ref)
         }}
-        aria-label={this.props['aria-label']}
+        //aria-label={this.props['aria-label']}
         className={cn('Grid', className)}
         onScroll={this._onScroll}
-        role='grid'
+        //role='grid'
         style={{
           position: 'relative',
           overflow: 'auto',
@@ -542,7 +542,7 @@ class Grid extends Component {
           ...gridStyle,
           ...style
         }}
-        tabIndex={tabIndex}
+        //tabIndex={tabIndex}
       >
         {childrenToDisplay.length > 0 &&
           <View
