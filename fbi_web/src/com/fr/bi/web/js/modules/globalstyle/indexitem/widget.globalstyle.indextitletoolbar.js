@@ -7,6 +7,7 @@ BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
             baseCls: "bi-global-style-title-toolbar"
         })
     },
+
     _init: function () {
         BI.GlobalStyleIndexTitleToolBar.superclass._init.apply(this, arguments);
 
@@ -18,7 +19,7 @@ BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-bold-font"
         });
-        this.bold.on(BI.IconButton.EVENT_CHANGE, function() {
+        this.bold.on(BI.IconButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE);
         });
 
@@ -29,7 +30,7 @@ BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-italic-font"
         });
-        this.italic.on(BI.IconButton.EVENT_CHANGE, function() {
+        this.italic.on(BI.IconButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE);
         });
 
@@ -46,7 +47,7 @@ BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
                 cls: "text-toolbar-button"
             }
         });
-        this.colorchooser.on(BI.ColorChooser.EVENT_CHANGE, function() {
+        this.colorchooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE);
         });
 
@@ -58,6 +59,7 @@ BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
             vgap: 3
         })
     },
+
     getValue: function () {
         return {
             "font-weight": this.bold.isSelected() ? "bold" : "normal",
@@ -66,6 +68,7 @@ BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
             "color": this.colorchooser.getValue()
         }
     },
+
     setValue: function (v) {
         v || (v = {});
         this.bold.setSelected(v["font-weight"] === "bold");
