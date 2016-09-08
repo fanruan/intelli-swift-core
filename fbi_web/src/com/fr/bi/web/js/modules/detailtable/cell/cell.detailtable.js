@@ -93,16 +93,16 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 break;
             case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
                 if(separators){
-                    num = BI.contentFormat(num, '#,###.#')
+                    num = BI.contentFormat(num, '#,###.0')
                 } else {
-                    num = BI.contentFormat(num, '#.#')
+                    num = BI.contentFormat(num, '#.0')
                 }
                 return num;
             case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
                 if(separators){
-                    num = BI.contentFormat(num, '#,###.##')
+                    num = BI.contentFormat(num, '#,###.00')
                 } else {
-                    num = BI.contentFormat(num, '#.##')
+                    num = BI.contentFormat(num, '#.00')
                 }
                 return num;
         }
