@@ -281,7 +281,7 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         }
         this.populate();
     },
-    
+
     populate: function () {
         if (this.allUserCustomStyle.length < 4) {
             this.totalPage = 1;

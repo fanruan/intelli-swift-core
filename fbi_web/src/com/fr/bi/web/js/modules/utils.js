@@ -717,7 +717,6 @@
 
         getWSChartColorByID: function (wid) {
             var self = this;
-
             function getDefaultColor() {
                 var defaultChartConfig = self.getDefaultChartConfig();
                 var type = defaultChartConfig.defaultColor;
@@ -733,9 +732,10 @@
                     return defaultChartConfig.styleList[0].colors;
                 }
             }
-
+            var gs=this.getGlobalStyle();
             var ws = this.getWidgetSettingsByID(wid);
             return ws.chart_color
+                || gs.chartColor
                 || getDefaultColor()
                 || BICst.DEFAULT_CHART_SETTING.chart_color;
         },
@@ -752,6 +752,10 @@
             var chartStyle;
             if (BI.isNotNull(ws.chart_style)) {
                 return ws.chart_style;
+            }
+            var gs=this.getGlobalStyle();
+            if(BI.isNotNull(gs.chartStyle)){
+                return gs.chartStyle
             }
             if (BI.isNotNull(chartStyle = getChartStyle())) {
                 return chartStyle;
