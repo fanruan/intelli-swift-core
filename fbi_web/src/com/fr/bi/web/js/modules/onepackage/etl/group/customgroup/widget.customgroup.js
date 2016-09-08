@@ -1,11 +1,9 @@
 /**
  * Created by roy on 15/11/2.
  */
-BI.CustomGroup = BI.inherit(BI.Widget, {
+BI.CustomGroup = BI.inherit(BI.Pane, {
     _constant: {
         OTHER_GROUP_EN: "other"
-
-
     },
     _defaultConfig: function () {
         return BI.extend(BI.CustomGroup.superclass._defaultConfig.apply(this, arguments), {
@@ -469,8 +467,10 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var groupedItems = configs.details, ungroup2Other = configs.ungroup2Other, ungroup2OtherName = configs.ungroup2OtherName;
         var fieldName = o.fieldName;
+        this.loading();
         self.bottom.populate(ungroup2Other, ungroup2OtherName);
-        o.model.getValuesForCustomGroup(o.dId, function(unGroupedFields){
+        o.model.getValuesForCustomGroup(o.dId, function (unGroupedFields) {
+            self.loaded();
             if (BI.size(unGroupedFields) > 1000) {
                 if (!BI.Maskers.has(self.getName())) {
                     self._tooManyFieldsPane = BI.createWidget({
