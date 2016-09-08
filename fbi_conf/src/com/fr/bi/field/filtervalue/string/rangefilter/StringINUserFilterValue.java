@@ -74,9 +74,11 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
         BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId));
         if (field != null && BIConfigureManagerCenter.getCubeConfManager().getLoginField() != null) {
             try {
-                Object fieldValue = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(field, user.getUserId());
-                if (fieldValue != null) {
-                    valueSet.getValues().add(fieldValue.toString());
+                Object[] values = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(field, user.getUserId());
+                if (values != null) {
+                    for(int i = 0; i < values.length; i++) {
+                        valueSet.getValues().add(values[i].toString());
+                    }
                 }
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
