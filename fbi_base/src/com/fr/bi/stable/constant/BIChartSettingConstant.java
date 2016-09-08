@@ -35,6 +35,11 @@ public class BIChartSettingConstant {
     public final static int PERCENT_SCALE_SLOT = 11;
     public final static String GIS_MAP_PATH = "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}";
     public final static String KNOWLEDGE_RIGHT = "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>";
+    public static final class FONT_STYLE {
+        public static final String FONTFAMILY = "inherit";
+        public static final String COLOR = "#808080";
+        public static final String FONTSIZE = "12px";
+    }
 
     public static final class CHART_STYLE {
         public static final int STYLE_NORMAL = 1;
@@ -141,8 +146,10 @@ public class BIChartSettingConstant {
         public static final int GRADIENT = 3;
     }
 
-    public static final class DASHBOARD_STYLE_CONDITIONS {
-
+    public static final class DEFAULT_FORMAT_FUNCTIONS {
+        public static final String CONTENTFORMAT = "function(){return BH.contentFormat(arguments[0], '')}";
+        public static final String CONTENTFORMAT2DECIMAL = "function () {return BH.contentFormat(arguments[0], '#.##')}";
+        public static final String CONTENTFORMATPERCENTAGE = "function(){return BH.contentFormat(arguments[0], '#.##%')}";
     }
     
     public static final int[] MINIMALIST_WIDGET = new int[]{
