@@ -150,7 +150,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                         self.refreshImg();
                         self.fireEvent(BI.DataLabelImageSet.IMAGE_CHANGE, arguments);
                     });
-                    self.imageGroup.unShiftItems([button]);
+                    self.imageGroup.prependItems([button]);
                     self.refreshImg();
                     self.fireEvent(BI.DataLabelImageSet.IMAGE_CHANGE, arguments);
                 }
@@ -200,7 +200,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
 
     _createImgs: function () {
         this.imageGroup = BI.createWidget({
-            type: "bi.data_label_image_button_group",
+            type: "bi.button_group",
             cls: "image-group",
             items: this.convert2Images(this._img),
             width: 380,

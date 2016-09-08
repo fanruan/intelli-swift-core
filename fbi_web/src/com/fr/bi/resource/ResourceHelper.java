@@ -1115,7 +1115,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalabel/tab/styleset.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/chart.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/tab/button.image.datalabel.js",
-                "com/fr/bi/web/js/modules/datalabel/tab/group.button.image.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/item.filter.datalabel.abstract.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/group.condition.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/item.numberfield.js",
