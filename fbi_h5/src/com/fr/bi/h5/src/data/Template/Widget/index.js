@@ -1,6 +1,6 @@
 import Dimension from './Dimension'
 import Target from './Target'
-import {forEachObject, invariant} from 'core';
+import {each, invariant} from 'core';
 class Widget {
     constructor(widget, id) {
         this.widget = widget;
@@ -33,7 +33,7 @@ class Widget {
             return this._dimensionIds;
         }
         let result = [];
-        forEachObject(this.widget.view, (dId, key)=> {
+        each(this.widget.view, (dId, key)=> {
             if (parseInt(key) < BICst.REGION.TARGET1) {
                 result = result.concat(dId);
             }
@@ -47,7 +47,7 @@ class Widget {
             return this._targetIds;
         }
         let result = [];
-        forEachObject(this.widget.view, (dId, key)=> {
+        each(this.widget.view, (dId, key)=> {
             if (parseInt(key) >= BICst.REGION.TARGET1) {
                 result = result.concat(dId);
             }

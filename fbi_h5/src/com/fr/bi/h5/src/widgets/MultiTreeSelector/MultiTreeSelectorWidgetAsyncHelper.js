@@ -1,6 +1,6 @@
 export default class MultiTreeSelectorWidgetHelper {
     constructor(props) {
-        this.items = props.items;
+        this.itemsCreator = props.itemsCreator;
         this.sorted = this.items;
         this.value = Array.from(props.value || []);
     }

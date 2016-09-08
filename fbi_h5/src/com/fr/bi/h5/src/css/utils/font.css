@@ -3474,3 +3474,39 @@
   content: "\e600";
   color: #f07d0a;
 }
+.up-font .b-font:before {
+  content: "\e630";
+  color: #808080;
+}
+.up-font.native .b-font:before,
+.up-font.disabled .b-font:before {
+  content: "\e630";
+  color: #808080;
+}
+.down-font .b-font:before {
+  content: "\e62d";
+  color: #808080;
+}
+.down-font.native .b-font:before,
+.down-font.disabled .b-font:before {
+  content: "\e62d";
+  color: #808080;
+}
+.left-font .b-font:before {
+  content: "\e62e";
+  color: #808080;
+}
+.left-font.native .b-font:before,
+.left-font.disabled .b-font:before {
+  content: "\e62e";
+  color: #808080;
+}
+.right-font .b-font:before {
+  content: "\e62f";
+  color: #808080;
+}
+.right-font.native .b-font:before,
+.right-font.disabled .b-font:before {
+  content: "\e62f";
+  color: #808080;
+}
