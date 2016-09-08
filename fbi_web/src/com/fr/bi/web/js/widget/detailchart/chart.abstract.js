@@ -168,28 +168,31 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         switch (type) {
             case this.constants.NORMAL:
                 formatter = '#.##';
+                if(separators){
+                    formatter = '#,###.##'
+                }
                 break;
             case this.constants.ZERO2POINT:
                 formatter = '#0';
+                if(separators){
+                    formatter = '#,###';
+                }
                 break;
             case this.constants.ONE2POINT:
                 formatter = '#0.0';
+                if(separators){
+                    formatter = '#,###.0';
+                }
                 break;
             case this.constants.TWO2POINT:
                 formatter = '#0.00';
+                if(separators){
+                    formatter = '#,###.00';
+                }
                 break;
         }
-        if (separators) {
-            formatter = '#,##0'
-        }
         if (number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-            if (separators) {
-                formatter = '#,##0%'
-            } else if (type === this.constants.NORMAL) {
-                formatter = '#0.##%';
-            } else {
-                formatter += '%';
-            }
+            formatter += '%';
         }
         formatter += ";-" + formatter;
         return function () {

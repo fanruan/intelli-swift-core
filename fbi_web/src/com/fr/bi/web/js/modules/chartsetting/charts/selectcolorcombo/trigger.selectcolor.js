@@ -9,7 +9,7 @@ BI.ChartSettingSelectColorTrigger = BI.inherit(BI.Trigger, {
         var conf = BI.ChartSettingSelectColorTrigger.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
             baseCls: (conf.baseCls || "") + " bi-chart-setting-select-color-trigger",
-            height: 30,
+            height: 28,
             items: []
         })
     },
@@ -33,13 +33,21 @@ BI.ChartSettingSelectColorTrigger = BI.inherit(BI.Trigger, {
             height: 10
         });
 
+        this.down.setVisible(false);
+
+        this.element.hover(function () {
+            self.down.setVisible(true);
+        }, function () {
+            self.down.setVisible(false);
+        });
+
         this.colorContainer = BI.createWidget({
             type: "bi.button_group",
             items: colorBlocks,
             layouts: [{
                 type: "bi.center",
-                hgap: 1,
-                vgap: 3
+                hgap: 0.5,
+                vgap: 2
             }]
         });
 
@@ -48,7 +56,7 @@ BI.ChartSettingSelectColorTrigger = BI.inherit(BI.Trigger, {
             element: this.element,
             items: [{
                 el: this.colorContainer,
-                left: 2,
+                left: 1,
                 right: 2,
                 top: 0,
                 bottom: 0
