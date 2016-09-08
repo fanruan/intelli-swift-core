@@ -13,7 +13,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         var conf = BI.DataLabelTextToolBar.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            baseCls: "bi-data-tab-text-toolbar bi-text-toolbar"
+            baseCls: "bi-text-toolbar data-label-text-toolbar"
         });
     },
 
@@ -80,7 +80,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
     setValue: function (v) {
         v || (v = {});
         this.family.setValue(v["fontFamily"] || "");
-        this.size.setValue(v["fontSize"] || 12);
+        this.size.setValue(v["fontSize"] || 14);
         this.bold.setSelected(v["fontWeight"] === "bold");
         this.italic.setSelected(v["fontStyle"] === "italic");
         this.colorchooser.setValue(v["color"] || "#808080");

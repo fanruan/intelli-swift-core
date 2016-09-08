@@ -42,7 +42,8 @@ BI.DataImageStyleSet = BI.inherit(BI.Widget, {
         });
         this.stylePane = BI.createWidget({
             type: "bi.data_image_pane",
-            chartType: o.chartType
+            chartType: o.chartType,
+            height: 146
         });
         this.stylePane.on(BI.DataImagePane.IMG_CHANGE, function () {
             self.stylePane.populate(self.stylePane.getValue().src);

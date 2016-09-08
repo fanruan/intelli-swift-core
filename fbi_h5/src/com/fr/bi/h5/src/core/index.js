@@ -3,9 +3,11 @@ export IntegerBufferSet from './structure/IntegerBufferSet'
 export PrefixIntervalTree from './structure/PrefixIntervalTree'
 
 
+export cn from 'classnames'
+export sc from './dom/StyleConcat'
 export normalizeWheel from './events/normalizeWheel'
 export WheelHandler from './events/WheelHandler'
-export DOMMouseMoveTracker from './events/MouseMoveTracker'
+export MouseMoveTracker from './events/MouseMoveTracker'
 
 
 export UserAgent from './UserAgent'
@@ -57,11 +59,9 @@ export BrowserSupportCore from './dom/BrowserSupportCore'
 export getVendorPrefixedName from './dom/getVendorPrefixedName'
 export translateDOMPositionXY from './dom/translateDOMPositionXY'
 
-
 //export {
 //    isFunction, isArray, isInteger, isNil, isNumber, isObject, isPlainObject, isString
 //} from 'lodash'
 //
-//export {each, size, keys} from 'lodash'
 //
 //export {clamp, debounce, throttle, nth, now} from 'lodash'
