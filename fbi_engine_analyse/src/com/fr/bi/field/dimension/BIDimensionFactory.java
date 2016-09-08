@@ -17,7 +17,9 @@ public class BIDimensionFactory {
             int type = jo.getInt("type");
             int subtype = 0;
             try {
-                subtype = jo.getInt("subtype");
+                if(jo.has("subtype")){
+                    subtype = jo.optInt("subtype");
+                }
             } catch (Exception ex) {
 
             }
