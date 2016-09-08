@@ -18,7 +18,6 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var format = styleSettings.format, numLevel = styleSettings.num_level, num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
         text = this._parseFloatByDot(text, format, num_separators);
-        // text = this._numSeparator(text, num_separators);
         var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
@@ -110,20 +109,6 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         }
         return text;
     },
-
-    // _numSeparator: function (text, num_separators){
-    //     if (text === Infinity || text !== text) {
-    //         return text;
-    //     }
-    //     if (!BI.isNumeric(text)) {
-    //         return text;
-    //     }
-    //     if(num_separators){
-    //         return BI.contentFormat(BI.parseFloat(text), "#,##0")
-    //     } else {
-    //         return text
-    //     }
-    // },
 
     _getIconByStyleAndMark: function (text, style, mark) {
         var num = BI.parseFloat(text), nMark = BI.parseFloat(mark);
