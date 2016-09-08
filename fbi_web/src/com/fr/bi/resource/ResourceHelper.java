@@ -748,6 +748,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indextitletoolbar.css",
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexalignchooser.css",
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexpredictionstyle.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.usercustombutton.css",
 
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
@@ -1478,6 +1479,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcharttoolbar.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.leftright.canvasbutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.usercustombutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.js",
 
                 //联动
                 "com/fr/bi/web/js/modules/linkage/model.linkage.js",

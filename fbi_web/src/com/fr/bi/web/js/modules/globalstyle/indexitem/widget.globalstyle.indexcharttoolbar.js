@@ -7,34 +7,41 @@ BI.GlobalStyleIndexChartToolBar = BI.inherit(BI.Widget, {
             baseCls: "bi-global-style-title-toolbar"
         })
     },
+
     _init: function () {
         BI.GlobalStyleIndexChartToolBar.superclass._init.apply(this, arguments);
         var self = this;
         this.bold = BI.createWidget({
             type: "bi.icon_button",
-            title:BI.i18nText("BI-Bold"),
+            title: BI.i18nText("BI-Bold"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-bold-font"
         });
-
+        this.bold.on(BI.IconButton.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GlobalStyleIndexChartToolBar.EVENT_CHANGE)
+        });
         this.italic = BI.createWidget({
             type: "bi.icon_button",
-            title:BI.i18nText("BI-Italic"),
+            title: BI.i18nText("BI-Italic"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-italic-font"
         });
-
+        this.italic.on(BI.IconButton.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GlobalStyleIndexChartToolBar.EVENT_CHANGE)
+        });
         this.colorchooser = BI.createWidget({
             type: "bi.color_chooser",
             el: {
                 type: "bi.text_toolbar_color_chooser_trigger",
-                title:BI.i18nText("BI-Font_Colour"),
+                title: BI.i18nText("BI-Font_Colour"),
                 cls: "text-toolbar-button"
             }
         });
-
+        this.colorchooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GlobalStyleIndexChartToolBar.EVENT_CHANGE)
+        });
         BI.createWidget({
             type: "bi.left",
             element: this.element,
@@ -43,6 +50,7 @@ BI.GlobalStyleIndexChartToolBar = BI.inherit(BI.Widget, {
             vgap: 3
         })
     },
+
     getValue: function () {
         return {
             "font-weight": this.bold.isSelected() ? "bold" : "normal",
@@ -50,6 +58,7 @@ BI.GlobalStyleIndexChartToolBar = BI.inherit(BI.Widget, {
             "color": this.colorchooser.getValue()
         }
     },
+
     setValue: function (v) {
         v || (v = {});
         this.bold.setSelected(v["font-weight"] === "bold");
@@ -57,4 +66,5 @@ BI.GlobalStyleIndexChartToolBar = BI.inherit(BI.Widget, {
         this.colorchooser.setValue(v["color"] || "#000000");
     }
 });
+BI.GlobalStyleIndexChartToolBar.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.global_style_index_chart_tool_bar", BI.GlobalStyleIndexChartToolBar);
