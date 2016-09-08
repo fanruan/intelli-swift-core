@@ -609,7 +609,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     @Override
     public void buildStructure()  {
         try {
-            initialRemovedListReader();
             initialRemovedListWriter();
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
