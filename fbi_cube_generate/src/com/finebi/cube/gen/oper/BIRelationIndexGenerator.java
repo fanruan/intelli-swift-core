@@ -55,11 +55,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         try {
             buildRelationIndex();
             long costTime = System.currentTimeMillis() - t;
-            try {
-                biLogManager.infoRelation(relationColumnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
+            biLogManager.infoRelation(relationColumnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
             return null;
         } catch (Exception e) {
             try {

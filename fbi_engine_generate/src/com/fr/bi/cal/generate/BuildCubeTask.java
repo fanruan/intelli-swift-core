@@ -90,7 +90,6 @@ public class BuildCubeTask implements CubeTask {
         Future<String> result = finishObserver.getOperationResult();
         try {
             BILogger.getLogger().info("start persist datas!");
-            BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
             if (!cubeBuild.isSingleTable()) {
                 BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
                 BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
@@ -105,6 +104,7 @@ public class BuildCubeTask implements CubeTask {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             try {
+                BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
                 cube.addVersion(System.currentTimeMillis());
                 BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
                 replaceOldCubes();
