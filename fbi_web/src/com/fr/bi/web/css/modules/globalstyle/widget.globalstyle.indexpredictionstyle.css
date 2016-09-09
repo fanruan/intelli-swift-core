@@ -4,14 +4,6 @@
 .bi-global-style-index-prediction-style {
   background: #f3f3f3;
 }
-.bi-global-style-index-prediction-style .layout-bg1 {
-  color: #ffffff;
-  background-color: #0088cc;
-}
-.bi-global-style-index-prediction-style .layout-bg2 {
-  color: #ffffff;
-  background-color: #008B8B;
-}
 .bi-global-style-index-prediction-style .button-shadow.active {
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);

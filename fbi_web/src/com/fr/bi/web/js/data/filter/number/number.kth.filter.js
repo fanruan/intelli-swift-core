@@ -8,7 +8,7 @@
 
         getNumberKth: function(array, k){
             if(k > array.length){
-                k = array.length;
+                return;
             }
             var low = 0;
             var high = array.length - 1;

@@ -40,7 +40,7 @@ BI.GlobalStyleIndexBackground = BI.inherit(BI.Widget, {
                             height: 30,
                             width: 30
                         });
-                        colorChooser.on(BI.ColorChooser.EVENT_CHANGE, function() {
+                        colorChooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
                             self.fireEvent(BI.GlobalStyleIndexBackground.EVENT_CHANGE);
                         });
                         return colorChooser;
@@ -48,7 +48,7 @@ BI.GlobalStyleIndexBackground = BI.inherit(BI.Widget, {
                         var uploadImage = BI.createWidget({
                             type: "bi.upload_image_preview"
                         });
-                        uploadImage.on(BI.MultifileEditor.EVENT_CHANGE, function() {
+                        uploadImage.on(BI.MultifileEditor.EVENT_CHANGE, function () {
 
                         });
                         return uploadImage;

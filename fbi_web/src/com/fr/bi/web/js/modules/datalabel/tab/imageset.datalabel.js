@@ -150,7 +150,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                         self.refreshImg();
                         self.fireEvent(BI.DataLabelImageSet.IMAGE_CHANGE, arguments);
                     });
-                    self.imageGroup.addItems([button]);
+                    self.imageGroup.prependItems([button]);
                     self.refreshImg();
                     self.fireEvent(BI.DataLabelImageSet.IMAGE_CHANGE, arguments);
                 }

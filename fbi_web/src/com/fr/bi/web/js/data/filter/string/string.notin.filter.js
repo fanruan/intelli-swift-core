@@ -10,7 +10,7 @@
 
         isStringNotIn: function(value){
             if(BI.isNull(this.valueSet) || BI.isEmptyArray(this.valueSet)){
-                return true;
+                return false;
             }
             return !BI.contains(this.valueSet, value);
         },
@@ -22,7 +22,7 @@
         getFilterResult: function(array) {
             var self = this;
             return BI.filter(array, function(idx, val){
-                return self.isAllSelect() ? !self.isStringNotIn(val) : self.isStringNotIn(val);
+                return self.isStringNotIn(val);
             });
         }
     }
