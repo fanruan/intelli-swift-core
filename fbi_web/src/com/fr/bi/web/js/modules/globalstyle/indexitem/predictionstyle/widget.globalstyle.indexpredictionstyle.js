@@ -132,7 +132,7 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
     },
 
     _createAdministratorStyle: function () {
-        return this._createButton(BICst.GLOBALPREDICTIONSTYLE.DEFAULT, BI.i18nText("BI-Administrator_Set_Style"))
+        return this._createButton(BI.Utils.getGlobalStyle(), BI.i18nText("BI-Administrator_Set_Style"))
     },
 
     _createPredictionStyleOne: function () {
