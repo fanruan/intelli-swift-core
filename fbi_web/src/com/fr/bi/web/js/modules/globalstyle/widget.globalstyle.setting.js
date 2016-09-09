@@ -3,39 +3,7 @@
  */
 BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
     _const: {
-
-        DEFAULTSTYLE: {
-            "mainBackground": {"type": 1, "value": "#f3f3f3"},
-            "widgetBackground": {"type": 1, "value": "#ffffff"},
-            "titleBackground": {"type": 1, "value": "#ffffff"},
-            "titleFont": {"font-weight": "normal", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
-            "chartStyle": 1,
-            "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
-            "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
-            "controlTheme": "#f3f3f3"
-        },
-
-        PREDICTIONSTYLEONE: {
-            "mainBackground": {"type": 1, "value": "#212338"},
-            "widgetBackground": {"type": 1, "value": "#2b2d4a"},
-            "titleBackground": {"type": 1, "value": "#2b2d3a"},
-            "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
-            "chartStyle": 1,
-            "chartColor": ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
-            "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
-            "controlTheme": "#25cdea"
-        },
-
-        PREDICTIONSTYLETWO: {
-            "mainBackground": {"type": 1, "value": "#dae0e0"},
-            "widgetBackground": {"type": 1, "value": "#f7f7f7"},
-            "titleBackground": {"type": 1, "value": "#5e6472"},
-            "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
-            "chartStyle": 1,
-            "chartColor": ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
-            "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
-            "controlTheme": "#af7e7e"
-        }
+        HEIGHT: 30
     },
 
     _defaultConfig: function () {
@@ -52,7 +20,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             type: "bi.button",
             level: "ignore",
             text: BI.i18nText("BI-Cancel"),
-            height: 30,
+            height: this._const.HEIGHT,
             width: 90
         });
         cancel.on(BI.Button.EVENT_CHANGE, function () {
@@ -62,7 +30,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         var save = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Sure"),
-            height: 30,
+            height: this._const.HEIGHT,
             width: 90
         });
         save.on(BI.Button.EVENT_CHANGE, function () {
@@ -75,15 +43,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         });
         this.predictionStyle.on(BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE, function () {
             var value = this.getValue();
-            if (value["currentStyle"] == 0) {
-                self._setCenterValue(self._const.DEFAULTSTYLE)
-            }
-            if (value["currentStyle"] == 1) {
-                self._setCenterValue(self._const.PREDICTIONSTYLEONE)
-            }
-            if (value["currentStyle"] == 2) {
-                self._setCenterValue(self._const.PREDICTIONSTYLETWO)
-            }
+            self._setCenterValue(value["currentStyle"]);
             self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
         this.predictionStyle.on(BI.GlobalStyleIndexPredictionStyle.PAGE_CHANGE, function (direction) {
@@ -142,10 +102,9 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         //保存
         this.textButton = BI.createWidget({
             type: "bi.text_button",
-            //cls:"item-save",
             text: BI.i18nText("BI-Save_As_Prediction_Style"),
             textAlign: "right",
-            height: 30,
+            height: this._const.HEIGHT,
             width: 100
         });
         this.textButton.on(BI.TextButton.EVENT_CHANGE, function () {
@@ -157,7 +116,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             items: [
                 this.textButton, {
                     type: "bi.label",
-                    height: 30
+                    height: this._const.HEIGHT
                 }]
         });
 
@@ -176,8 +135,8 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 cls: "item-label",
                 text: BI.i18nText("BI-Background_Colour") + ":",
                 textAlign: "left",
-                height: 30,
-                width:95
+                height: this._const.HEIGHT,
+                width: 95
             }, self.mainBackground],
             vgap: 10
         });
@@ -223,7 +182,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             }),
             layouts: [{
                 type: "bi.vertical_adapt",
-                height: 30
+                height: this._const.HEIGHT
             }]
         });
         this.chartStyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
@@ -235,7 +194,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         this.chartColour = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
             cls: "border",
-            height: 30
+            height: this._const.HEIGHT
         });
         this.chartColour.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
@@ -259,7 +218,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 cls: "item-label",
                 text: BI.i18nText("BI-Chart_Word_Style") + ":",
                 textAlign: "left",
-                height: 30,
+                height: this._const.HEIGHT,
                 width: 110
             }, this.chartWordStyle],
             vgap: 10
@@ -267,7 +226,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         //控件主题
         this.controlTheme = BI.createWidget({
             type: "bi.color_chooser",
-            height: 30,
+            height: this._const.HEIGHT,
             width: 160
         });
         this.controlTheme.on(BI.ColorChooser.EVENT_CHANGE, function () {
@@ -281,7 +240,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 cls: "item-label",
                 text: BI.i18nText("BI-Control_Theme") + ":",
                 textAlign: "left",
-                height: 30,
+                height: this._const.HEIGHT,
                 width: 110
             }, this.controlTheme],
             vgap: 10
@@ -303,6 +262,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             hgap: 20
         });
     },
+
     _saveButton: function () {
         this.predictionStyle.addUserCustomButton(this._getCenterValue());
         if (this.predictionStyle.getCustomNumber() == 5) {
@@ -318,7 +278,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 cls: "item-label",
                 text: name + ":",
                 textAlign: "left",
-                height: 30,
+                height: this._const.HEIGHT,
                 width: 95
             }, widget],
             vgap: 10
@@ -333,7 +293,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 cls: "item-label",
                 text: name + ":",
                 textAlign: "left",
-                height: 30,
+                height: this._const.HEIGHT,
                 width: 110
             }, widget],
             vgap: 10
@@ -375,19 +335,16 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         this._setCenterValue(v);
     },
 
-    getDefaultStyle:function () {
-        return this._const.DEFAULTSTYLE
-    },
     populate: function () {
-       var v = BI.Utils.getGlobalStyle();
-       if (BI.isNotNull(v.predictionValue) && BI.isNotNull(v.chartColor) && BI.isNotNull(v.controlTheme)) {
+        var v = BI.Utils.getGlobalStyle();
+        if (BI.isNotNull(v.predictionValue) && BI.isNotNull(v.chartColor) && BI.isNotNull(v.controlTheme)) {
             this.setValue(BI.Utils.getGlobalStyle());
-       } else {
-           this._setCenterValue(this._const.DEFAULTSTYLE);
-           this.predictionStyle.setValue({
-               "currentStyle": 0
-           });
-       }
+        } else {
+            this._setCenterValue(BICst.GLOBALPREDICTIONSTYLE.DEFAULT);
+            this.predictionStyle.setValue({
+                "currentStyle": BICst.GLOBALPREDICTIONSTYLE.DEFAULT
+            });
+        }
     }
 });
 BI.GlobalStyleSetting.EVENT_CHANGE = "EVENT_CHANGE";
