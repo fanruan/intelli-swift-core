@@ -14,11 +14,11 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
     _init: function () {
         BI.GlobalStyleIndexPredictionStyle.superclass._init.apply(this, arguments);
 
-        var o = this.options;
+        var o = this.options, self = this;
         this.totalPage = o.initTotalPage;
         this.currentPage = o.initCurrentPage;
         this.allUserCustomStyle = o.allUserCustomStyle;
-        var self = this;
+
         this.leftButton = BI.createWidget({
             type: "bi.global_style_canvas_button",
             direction: "left",
@@ -100,16 +100,12 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         })
     },
 
-    _createButton: function (value, title, cls) {
+    _createButton: function (value, title) {
         return BI.createWidget({
-            type: "bi.icon_button",
-            cls: cls + " button-shadow",
-            title: title,
-            value: value,
-            height: 70,
-            width: 110,
-            iconWidth: 110,
-            iconHeight: 70
+            type:"bi.global_style_user_custom_button",
+            cls:"button-shadow",
+            text:title,
+            value: value
         })
     },
 
@@ -136,15 +132,15 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
     },
 
     _createAdministratorStyle: function () {
-        return this._createButton(0, BI.i18nText("BI-Administrator_Set_Style"), "global-prediction-style-default")
+        return this._createButton(BICst.GLOBALPREDICTIONSTYLE.DEFAULT, BI.i18nText("BI-Administrator_Set_Style"))
     },
 
     _createPredictionStyleOne: function () {
-        return this._createButton(1, BI.i18nText("BI-Prediction_Style_One"), "global-prediction-style-one")
+        return this._createButton(BICst.GLOBALPREDICTIONSTYLE.ONE, BI.i18nText("BI-Prediction_Style_One"))
     },
 
     _createPredictionStyleTwo: function () {
-        return this._createButton(2, BI.i18nText("BI-Prediction_Style_Two"), "global-prediction-style-two")
+        return this._createButton(BICst.GLOBALPREDICTIONSTYLE.TWO, BI.i18nText("BI-Prediction_Style_Two"))
     },
 
     _createPredictionStyleThree: function () {
