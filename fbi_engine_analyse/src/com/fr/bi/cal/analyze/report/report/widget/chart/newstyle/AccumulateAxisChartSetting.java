@@ -19,7 +19,7 @@ public class AccumulateAxisChartSetting extends BIAbstractChartSetting {
     public AccumulateAxisChartSetting() throws JSONException{
         this.xAxis = new JSONArray();
         this.yAxis = new JSONArray();
-        config = new JSONObject();
+        this.config = new JSONObject();
         this.xAxis.put(new JSONObject()
                 .put("type", "category")
                 .put("title", new JSONObject()
@@ -43,6 +43,7 @@ public class AccumulateAxisChartSetting extends BIAbstractChartSetting {
 
     @Override
     public JSONObject formatConfig(JSONObject options, JSONArray data) throws JSONException{
+        this.config.put("color", options.getJSONArray("chart_color"));
         return null;
     }
 

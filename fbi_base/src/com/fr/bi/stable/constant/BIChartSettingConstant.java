@@ -1,5 +1,7 @@
 package com.fr.bi.stable.constant;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by User on 2016/8/31.
  */
@@ -26,6 +28,7 @@ public class BIChartSettingConstant {
     public final static int LEGEND_BOTTOM = 4;
     public final static int STYLE_NORMAL = 21;
     public final static int LEGEND_HEIGHT = 80;
+    public final static String LEGEND_WIDTH = "30.0%";
     public final static int HALF_DASHBOARD = 9;
     public final static int VERTICAL_TUBE = 12;
     public final static int DASHBOARD_AXIS = 4;
@@ -40,6 +43,8 @@ public class BIChartSettingConstant {
         public static final String COLOR = "#808080";
         public static final String FONTSIZE = "12px";
     }
+
+    public static final DecimalFormat FOURFIEXEDFORMAT = new DecimalFormat("##.####");
 
     public static final class CHART_STYLE {
         public static final int STYLE_NORMAL = 1;
