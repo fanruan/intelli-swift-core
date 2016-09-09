@@ -5,8 +5,8 @@
         range = range || {};
         this.range.min = range.min || BI.MIN;
         this.range.max = range.max || BI.MAX;
-        this.range.closemin = range.closemin || true;
-        this.range.closemax = range.closemax || true;
+        this.range.closemin = BI.isNotNull(range.closemin) ? range.closemin : true;
+        this.range.closemax = BI.isNotNull(range.closemax) ? range.closemax : true;
     };
     BI.NumberNotInRangeFilterValue.prototype = {
         constructor: BI.NumberNotInRangeFilterValue,

@@ -64,12 +64,11 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
 
     _itemsCreator: function (options, callback) {
         var o = this.options, self = this;
-
-        BI.Utils.getWidgetDataByWidgetInfo({
-            "1234567": self.dimension
-        }, {
-            "10000": ["1234567"]
-        }, function (data) {
+        var op = {},
+            ob = {};
+        op[o.dId] = self.dimension;
+        ob[BICst.REGION.DIMENSION1] = [o.dId];
+        BI.Utils.getWidgetDataByWidgetInfo(op, ob, function (data) {
             if (options.type == BI.MultiSelectCombo.REQ_GET_ALL_DATA) {
                 callback({
                     items: self._createItemsByData(data.value)

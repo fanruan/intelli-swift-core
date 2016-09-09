@@ -1118,6 +1118,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalabel/tab/button.image.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/item.filter.datalabel.abstract.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/group.condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/selectdata4datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/item.numberfield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/item.stringfield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/factory.filteritem.datalabel.js",
@@ -2775,6 +2776,9 @@ public class ResourceHelper {
 
                 //树选值
                 "com/fr/bi/web/js/components/treevaluechooser/combo.treevaluechooser.js",
+
+                //树标签
+                //"com/fr/bi/web/js/components/treevaluechooser/panel.treevaluechooser.js",
 
                 //带样式表格
                 "com/fr/bi/web/js/components/styletable/styletable.js",

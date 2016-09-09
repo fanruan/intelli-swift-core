@@ -120,7 +120,7 @@ BI.ScatterLabelStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem
     _createStringBelongCombo: function (initData) {
         var o = this.options;
         this.filterWidget = BI.createWidget({
-            type: "bi.select_dimension_data_combo",
+            type: "bi.select_data_label_data_combo",
             dId: o.dId,
             width: 230,
             height: this._constant.BUTTON_HEIGHT

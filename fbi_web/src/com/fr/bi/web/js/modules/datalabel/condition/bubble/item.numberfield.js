@@ -157,8 +157,10 @@ BI.BubbleNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
                 break;
             case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
             case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
-            case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
                 addItem = this._createNumberInput(initData);
+                break;
+            case BICst.DIMENSION_FILTER_NUMBER.TOP_N:
+                addItem = this._createTopInput(initData);
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE:
             case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE:
@@ -197,7 +199,7 @@ BI.BubbleNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
     _createStringBelongCombo: function (initData) {
         var o = this.options;
         this.filterWidget = BI.createWidget({
-            type: "bi.select_dimension_data_combo",
+            type: "bi.select_data_label_data_combo",
             dId: o.dId,
             width: this._constant.INPUT_WIDTH,
             height: this._constant.BUTTON_HEIGHT
@@ -226,6 +228,32 @@ BI.BubbleNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
                 }
             },
             errorText: BI.i18nText("BI-Numerical_Interval_Input_Data"),
+            allowBlank: true,
+            height: this._constant.BUTTON_HEIGHT,
+            width: this._constant.INPUT_WIDTH - this._constant.LABEL_WIDTH
+        });
+        BI.isNotNull(initData) && this.filterWidget.setValue(initData);
+        return BI.createWidget({
+            type: "bi.inline",
+            items: [{
+                type: "bi.label",
+                height: this._constant.BUTTON_HEIGHT,
+                text: "N = ",
+                width: this._constant.LABEL_WIDTH
+            }, this.filterWidget]
+        });
+    },
+
+    _createTopInput: function (initData) {
+        var self = this;
+        this.filterWidget = BI.createWidget({
+            type: "bi.text_editor",
+            validationChecker: function () {
+                if (!BI.isNumeric(self.filterWidget.getValue()) || self.filterWidget.getValue() <= 0) {
+                    return false;
+                }
+            },
+            errorText: BI.i18nText("BI-Please_Input_Integer"),
             allowBlank: true,
             height: this._constant.BUTTON_HEIGHT,
             width: this._constant.INPUT_WIDTH - this._constant.LABEL_WIDTH
