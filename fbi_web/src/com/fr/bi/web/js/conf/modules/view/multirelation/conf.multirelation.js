@@ -168,7 +168,7 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
                     items: [
                         {
                             el: {
-                                type: "bi.vertical_adapt",
+                                type: "bi.left",
                                 items: [{
                                     el: {
                                         type: "bi.label",
@@ -178,12 +178,13 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
                                 }, {
                                     el: self.cubeLabel
                                 }],
-                                height: 30,
-                                hgap: 20
+                                // height: 30,
+                                hgap: 20,
+                                vgap: 5
                             },
-                            top: 0,
-                            left: 0,
-                            right: 0
+                            top: 10,
+                            left: 10,
+                            right: 10
                         }, {
                             el: this.multiRelation,
                             top: 30,
