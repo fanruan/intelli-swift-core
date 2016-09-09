@@ -28,7 +28,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             element: vessel,
             items: [{
                 el: north,
-                height: BICst.CONFIG.SHOW_DASHBOARD_TITLE ? this._const.toolbarHeight : 0
+                height: Data.SharingPool.get("hideTop") ? 0 : this._const.toolbarHeight
             }, {
                 el: BI.createWidget(),
                 height: 1
@@ -219,16 +219,16 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             width: 90
         });
         globalStyleButton.setVisible(false);
-        globalStyleButton.on(BI.Button.EVENT_CHANGE, function() {
-            if(BI.isNull(self.globalStyle)) {
+        globalStyleButton.on(BI.Button.EVENT_CHANGE, function () {
+            if (BI.isNull(self.globalStyle)) {
                 self.globalStyle = BI.createWidget({
                     type: "bi.global_style"
                 });
-                self.globalStyle.on(BI.GlobalStyle.EVENT_PREVIEW, function() {
-                    
+                self.globalStyle.on(BI.GlobalStyle.EVENT_PREVIEW, function () {
+
                 });
-                self.globalStyle.on(BI.GlobalStyle.EVENT_SAVE, function() {
-                    
+                self.globalStyle.on(BI.GlobalStyle.EVENT_SAVE, function () {
+
                 });
             } else {
                 self.globalStyle.populate();
@@ -236,7 +236,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.absolute",
-            invisible: !BICst.CONFIG.SHOW_DASHBOARD_TITLE,
+            invisible: !!Data.SharingPool.get("hideTop"),
             cls: "dashboard-toolbar",
             items: [{
                 el: this.undoButton,

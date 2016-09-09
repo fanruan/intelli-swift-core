@@ -30,9 +30,6 @@ BICst.FULL_QUARTER_NAMES = [BI.i18nText("BI-Quarter_1"),
     BI.i18nText("BI-Quarter_3"),
     BI.i18nText("BI-Quarter_4")];
 
-BICst.CONFIG = {
-    SHOW_DASHBOARD_TITLE: true
-};
 
 //布局方式
 BICst.DASHBOARD_LAYOUT_ARRAY = [{
