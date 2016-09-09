@@ -93,7 +93,7 @@ BI.Plugin.DATA_STYLE_TAB_ITEM = BI.Plugin.DATA_STYLE_TAB_ITEM || [];
                 handler:function () {
                     BI.createWidget({
                         type : "bi.analysis_etl_main",
-                        model : _createMainModel(el.wId),
+                        model : _createMainModel(obj.options.wId),
                         element:BI.Layers.create(ETLCst.ANALYSIS_LAYER, "body")
                     })
                 }
