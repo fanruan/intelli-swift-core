@@ -4,8 +4,6 @@
 BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     _defaultImg: [],
 
-    _img: [],
-
     _imageSelect: "",
 
     _defaultConfig: function () {
@@ -19,6 +17,8 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     _init: function () {
         BI.DataLabelImageSet.superclass._init.apply(this, arguments);
         var o = this.options;
+        this.wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        this._img = BI.Utils.getImagesByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
         this._createTab();
         this.tabs.setSelect(o.defaultSelect);
     },
@@ -133,7 +133,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             BI.requestAsync("fr_bi_dezi", "save_upload_image", {
                 attach_id: attachId
             }, function () {
-                if (self._img.length < 14) {
+                if (self._img && self._img.length < 14) {
                     var button = BI.createWidget({
                         type: "bi.data_label_image_button",
                         src: src,
@@ -148,11 +148,11 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                     });
                     button.on(BI.DataLabelImageButton.DELETE_IMAGE, function () {
                         self.refreshImg();
-                        self.fireEvent(BI.DataLabelImageSet.IMAGE_CHANGE, arguments);
+                        BI.Broadcasts.send(BICst.BROADCAST.IMAGE_CHANGE_PREFIX + self.wId, self._img);
                     });
                     self.imageGroup.prependItems([button]);
                     self.refreshImg();
-                    self.fireEvent(BI.DataLabelImageSet.IMAGE_CHANGE, arguments);
+                    BI.Broadcasts.send(BICst.BROADCAST.IMAGE_CHANGE_PREFIX + self.wId, self._img);
                 }
             });
         });
@@ -202,7 +202,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         this.imageGroup = BI.createWidget({
             type: "bi.button_group",
             cls: "image-group",
-            items: this.convert2Images(this._img),
+            items: this.convert2Images(BI.Utils.getImagesByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId))),
             width: 380,
             layouts: [{
                 type: "bi.inline",
@@ -214,7 +214,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     },
 
     convert2Images: function (items) {
-        var self = this, result = [];
+        var self = this, o = this.options, result = [];
         BI.each(items, function (i, item) {
             var button = BI.createWidget({
                 type: "bi.data_label_image_button",
@@ -230,7 +230,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             });
             button.on(BI.DataLabelImageButton.DELETE_IMAGE, function () {
                 self.refreshImg();
-                self.fireEvent(BI.DataLabelImageSet.IMAGE_CHANGE, arguments);
+                BI.Broadcasts.send(BICst.BROADCAST.IMAGE_CHANGE_PREFIX + self.wId, self._img);
             });
             result.push(button)
         });
@@ -245,16 +245,22 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         });
     },
 
+    populate: function () {
+        var img = BI.Utils.getImagesByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
+        if(!BI.isEqual(this._img, img)) {
+            this._img = img;
+            this.imageGroup && this.imageGroup.populate(this.convert2Images(this._img));
+        }
+    },
+
     setValue: function (v) {
         v || (v = {});
         this._img = v.urls || [];
-        this._imageSelect = v.src || "";
     },
 
     getValue: function () {
         return {
-            src: this._imageSelect,
-            urls: this._img
+            src: this._imageSelect
         };
     }
 });

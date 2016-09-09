@@ -151,7 +151,8 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
     _createImageLabel: function () {
         var self = this, o = this.options;
         this.imageSet = BI.createWidget({
-            type: "bi.data_label_image_set"
+            type: "bi.data_label_image_set",
+            dId: o.dId
         });
         this.imageSet.setValue(this._style.imgStyle);
         this.imageSet.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
@@ -184,6 +185,10 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 tgap: 40
             }
         );
+    },
+
+    populate: function () {
+        this.imageSet && this.imageSet.populate();
     },
 
     setValue: function (v) {

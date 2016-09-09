@@ -1426,23 +1426,26 @@
 
         getDatalabelByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                var dataLabels = Data.SharingPool.get("dimensions", did, "data_label") || {};
-                return dataLabels.filterValues;
+                return Data.SharingPool.get("dimensions", did, "data_label") || {};
             }
             return {};
         },
 
         getDataimageByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                var dataImages = Data.SharingPool.get("dimensions", did, "data_image") || {};
-                return dataImages.filterValues;
+                return Data.SharingPool.get("dimensions", did, "data_image") || {};
             }
             return {};
         },
 
+        getImagesByID: function (wid) {
+            var settings = this.getWidgetSettingsByID(wid);
+            return settings.images;
+        },
+
         getDatalabelByWidgetID: function (wid) {
             var settings = this.getWidgetSettingsByID(wid);
-            return settings.data_label.filterValues || {};
+            return settings.data_label || {};
         },
 
         isDimensionByDimensionID: function (dId) {

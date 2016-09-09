@@ -120,7 +120,8 @@ BI.BubbleNoTypeFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.typeSelectedItem = BI.createWidget(filterItem, {
             element: this.element,
             dId: v,
-            chartType: o.chartType
+            chartType: o.chartType,
+            sdId: o.sdId
         });
         this.typeSelectedItem.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);

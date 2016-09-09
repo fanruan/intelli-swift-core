@@ -29,7 +29,8 @@ BI.DataImagePane = BI.inherit(BI.Widget, {
     _createImage: function () {
         var self = this, o = this.options;
         this.imageSet = BI.createWidget({
-            type: "bi.data_label_image_set"
+            type: "bi.data_label_image_set",
+            dId: o.dId
         });
         this.imageSet.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
             self.chart.populate(self.imageSet.getValue().src);
@@ -52,6 +53,7 @@ BI.DataImagePane = BI.inherit(BI.Widget, {
 
     populate: function (src) {
         this.chart.populate(src);
+        this.imageSet.populate();
     }
 });
 BI.DataImagePane.IMG_CHANGE = "BI.DataImageTab.IMG_CHANGE";

@@ -66,10 +66,7 @@ BI.DataImageConditionGroup = BI.inherit(BI.Widget, {
                 result.push(value);
             }
         });
-        return {
-            filterValues: result,
-            images: this.images
-        };
+        return result;
     }
 });
 BI.DataImageConditionGroup.EVENT_CHANGE = "BI.DataImageConditionGroup.EVENT_CHANGE";
