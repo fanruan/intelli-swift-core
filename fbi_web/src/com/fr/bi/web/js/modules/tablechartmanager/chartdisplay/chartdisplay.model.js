@@ -480,12 +480,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         //系列
                         if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2) {
                             var filterArray = filter.getFilterResult(allSeries);
-                            if (BI.contains(filterArray, series.name)) {
-                                BI.each(series.data, function (id, da) {
-                                    self._createDataLabel(da, dataLabel);
-                                });
-                                return true;
-                            }
+                            BI.each(data, function (index, dt) {
+                                if (BI.contains(filterArray, dt.name)) {
+                                    BI.each(dt.data, function (id, da) {
+                                        self._createDataLabel(da, dataLabel);
+                                    });
+                                    return true;
+                                }
+                            });
                         }
                         //自身
                         if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1) {
@@ -583,12 +585,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         //系列
                         if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION2) {
                             var filterArray = filter.getFilterResult(allSeries);
-                            if (BI.contains(filterArray, series.name)) {
-                                BI.each(series.data, function (id, da) {
-                                    self._createDataImage(da, dataImage);
-                                });
-                                return true;
-                            }
+                            BI.each(data, function (index, dt) {
+                                if (BI.contains(filterArray, dt.name)) {
+                                    BI.each(dt.data, function (id, da) {
+                                        self._createDataImage(da, dataImage);
+                                    });
+                                    return true;
+                                }
+                            });
                         }
                         //自身
                         if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) >= BICst.REGION.TARGET1) {
