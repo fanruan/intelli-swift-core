@@ -4,7 +4,6 @@ import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
-import com.fr.bi.cal.generate.timerTask.adapter.TimerScheduleAdapter;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.third.org.quartz.Job;
 import com.fr.third.org.quartz.JobDataMap;
@@ -27,9 +26,9 @@ public class JobTask implements Job {
         JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();
         long userId = Long.valueOf(data.get("userId").toString());
         String jobName = data.getString("jobName");
-        String sourceName = data.getString("sourceName");
+//        String sourceName = data.getString("sourceName");
 
-        boolean tableExisted = null != TimerScheduleAdapter.tableCheck(userId, sourceName);
+//        boolean tableExisted = null != TimerScheduleAdapter.tableCheck(userId, sourceName);
         /*删除表时会删除该表更新信息，不需要在这边再做检查*/
 //        if (!tableExisted && !DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE.equals(sourceName)) {
 //            return;

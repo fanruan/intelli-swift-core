@@ -35,7 +35,7 @@ public class BIByteNIOReader extends BIBasicNIOReader implements ICubeByteReader
             int pageIndex = getPage(filePosition);
             return byteBufferArray[pageIndex].get(getIndex(filePosition));
         } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException("the expect page value is:", e);
+            throw new RuntimeException("the expect position value is: " + getIndex(filePosition) + " and the current capacity  value is: " + byteBufferArray[getPage(filePosition)].capacity() + " and the pageIndex is :" + getPage(filePosition) + e, e);
         } finally {
         }
     }
@@ -59,7 +59,7 @@ public class BIByteNIOReader extends BIBasicNIOReader implements ICubeByteReader
 //        } catch (Exception e) {
 //            BILogger.getLogger().error(e.getMessage(), e);
 //        }
- }finally {
+        } finally {
             readWriteLock.writeLock().unlock();
         }
     }

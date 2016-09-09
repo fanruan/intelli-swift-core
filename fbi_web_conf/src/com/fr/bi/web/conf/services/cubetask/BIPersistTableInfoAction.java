@@ -6,7 +6,9 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -50,6 +52,14 @@ public class BIPersistTableInfoAction extends AbstractBIConfigureAction {
             }
             if (source instanceof DBTableSource) {
                 sourceInfo.put(source.toString(), source.getSourceID());
+            }
+            if (source.getType()== BIBaseConstant.TABLETYPE.ETL){
+                StringBuffer EtlInfo=new StringBuffer();
+                EtlInfo.append("ETL,parents as listed：");
+                for (CubeTableSource tableSource : ((ETLTableSource) source).getParents()) {
+                    EtlInfo.append(tableSource.getSourceID()+tableSource.getTableName());
+                }
+                sourceInfo.put(EtlInfo.toString(),source.getSourceID());
             }
         }
         Map<String, String> relationMap = new HashMap<String, String>();
