@@ -39,8 +39,7 @@ BI.HourTimeSetting = BI.inherit(BI.Widget, {
         });
         increase.on(BI.Button.EVENT_CHANGE, function(){
             var hour = BI.parseInt(self.hour.getValue());
-            hour === 23 && (hour = 0);
-            hour !== 23 && hour++;
+            hour === 23 ? (hour = 0) : (hour ++);
             self.hour.setValue(hour);
             self.fireEvent(BI.HourTimeSetting.EVENT_CHANGE);
         });
