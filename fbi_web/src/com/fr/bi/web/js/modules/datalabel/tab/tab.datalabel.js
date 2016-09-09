@@ -161,9 +161,6 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
             self.chart.populate(self.imageSet.getValue().src);
             self.fireEvent(BI.DataLabelTab.IMG_CHANGE, arguments);
         });
-        this.imageSet.on(BI.DataLabelImageSet.IMAGE_CHANGE, function () {
-            self._style.imgStyle = self.imageSet.getValue();
-        });
         this.chart = BI.createWidget({
             type: "bi.data_label_chart",
             chartType: o.chartType

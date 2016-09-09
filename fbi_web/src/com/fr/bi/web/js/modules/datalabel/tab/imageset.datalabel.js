@@ -18,7 +18,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         BI.DataLabelImageSet.superclass._init.apply(this, arguments);
         var o = this.options;
         this.wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
-        this._img = BI.Utils.getImagesByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        this._img = BI.Utils.getImagesByID(this.wId);
         this._createTab();
         this.tabs.setSelect(o.defaultSelect);
     },
@@ -202,7 +202,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         this.imageGroup = BI.createWidget({
             type: "bi.button_group",
             cls: "image-group",
-            items: this.convert2Images(BI.Utils.getImagesByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId))),
+            items: this.convert2Images(BI.Utils.getImagesByID(this.wId)),
             width: 380,
             layouts: [{
                 type: "bi.inline",
@@ -246,7 +246,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-        var img = BI.Utils.getImagesByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
+        var img = BI.Utils.getImagesByID(this.wId);
         if(!BI.isEqual(this._img, img)) {
             this._img = img;
             this.imageGroup && this.imageGroup.populate(this.convert2Images(this._img));
@@ -265,5 +265,4 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
     }
 });
 BI.DataLabelImageSet.EVENT_CHANGE = "BI.DataLabelImageSet.EVENT_CHANGE";
-BI.DataLabelImageSet.IMAGE_CHANGE = "BI.DataLabelImageSet.IMAGE_CHANGE";
 $.shortcut("bi.data_label_image_set", BI.DataLabelImageSet);
