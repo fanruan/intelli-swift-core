@@ -12,9 +12,9 @@ BI.SelectDataLabelDataCombo = BI.inherit(BI.SelectDimensionDataCombo, {
             element: this.element,
             itemsCreator: BI.bind(this._itemsCreator, this),
             valueFormatter: function (v) {
-                var items = v.split("-");
                 var group = BI.Utils.getDimensionGroupByID(o.dId);
                 if (BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+                    var items = v.split("-");
                     BI.each(items, function (idx, item) {
                         items[idx] = BI.parseInt(item)
                     });
