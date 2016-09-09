@@ -2123,6 +2123,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/vector.js",
                 "com/fr/bi/web/js/base/utils/set.js",
                 "com/fr/bi/web/js/base/utils/lru.js",
+                "com/fr/bi/web/js/base/utils/prefixIntervalTree.js",
+                "com/fr/bi/web/js/base/utils/helper.scroll.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
 
                 "com/fr/bi/web/js/base/parsers/expression.js",
@@ -2223,6 +2225,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/table/table.footer.js",
                 "com/fr/bi/web/js/base/module/table/table.js",
                 "com/fr/bi/web/js/base/module/table/table.tree.js",
+
+                "com/fr/bi/web/js/base/module/fixtable/table.fix.js",
 
                 "com/fr/bi/web/js/base/module/layer/layer.floatbox.js",
                 "com/fr/bi/web/js/base/module/layer/layer.popup.js",
