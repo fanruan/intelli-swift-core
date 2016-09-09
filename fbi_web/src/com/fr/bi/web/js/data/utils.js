@@ -1662,7 +1662,7 @@ Data.Utils = {
                             "align": "outside",
                             enabled: true,
                             formatter: {
-                                identifier: "${X}${Y}${SIZE}",
+                                identifier: "${X}${Y}",
                                 "XFormat": function () {
                                     return BI.contentFormat(arguments[0], '#.##')
                                 },

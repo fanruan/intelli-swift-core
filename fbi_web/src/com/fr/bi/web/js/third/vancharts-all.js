@@ -6133,6 +6133,8 @@ define('HammerHandler',['require','./utils/BaseUtils','./Constants','./dom/DomEv
             if(!this.selectRect && this._supportCoordinateZoom() && BaseUtils.containsPoint(plotBounds, mousePos)){
                 this.selectRect = renderer.rect().style({'fill':'rgb(69,114,167)', 'fill-opacity':0.25}).add();
                 this.downPos = mousePos;
+
+                vanchart.hoverPoint && vanchart.hoverPoint.fire('mouseout');
             }
 
         },
@@ -6216,8 +6218,9 @@ define('HammerHandler',['require','./utils/BaseUtils','./Constants','./dom/DomEv
         },
 
         _supportCoordinateZoom:function(){
+            var isForceBubble = this.vanchart.hoverPoint && this.vanchart.vanChartType == 'vanChartForceBubble';
             var option = this.vanchart.getOptions();
-            return BaseUtils.isSupportSVG() && option.zoom && option.zoom.zoomType;
+            return BaseUtils.isSupportSVG() && option.zoom && option.zoom.zoomType && !isForceBubble;
         },
 
         destroy: function () {
@@ -6936,7 +6939,7 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
                     }
 
                     if (newStyles['transform']) {
-                        var trans = transformParser(newStyles['transform']);
+                        var trans = transformParser(newStyles['transform'].replace(/px/gi, ''));
                         if (trans.translate) {
                             newStyles[BaseUtils.transPrefix + 'transform'] = 'translate(' + trans.translate[0] + 'px,' + trans.translate[1] + 'px)';
                         }
@@ -6964,7 +6967,7 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
         },
 
         vRotate: function (domWrapper, deg) {
-            var trans, transform, dom = domWrapper.node();
+            var trans, transform, rotateStr,dom = domWrapper.node();
             if (domWrapper.type === 'div') {
                 transform = domWrapper.styles[BaseUtils.transPrefix + 'transform'] || '';
                 if (transform) {
@@ -6974,7 +6977,8 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
                         transform = 'translate(' + trans.translate[0] + 'px,' + trans.translate[1] + 'px) ';
                     }
                 }
-                transform += 'rotate(' + deg + 'deg)';
+                rotateStr = 'rotate(' + deg + 'deg)';
+                transform += rotateStr;
                 domWrapper.styles[BaseUtils.transPrefix + 'transform'] = transform;
                 dom.style.transform = transform;
             } else {
@@ -6992,9 +6996,11 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
                         transform = 'translate(' + trans.translate[0] + ' ' + trans.translate[1] + ') ';
                     }
                 }
-                transform += 'rotate(' + deg + ' ' + centerX + ' ' + centerY + ')';
+                rotateStr = 'rotate(' + deg + ' ' + centerX + ' ' + centerY + ')';
+                transform += rotateStr;
                 domWrapper.attr('transform', transform);
             }
+            domWrapper.rotateStr = rotateStr;
         }
     });
 
@@ -7743,7 +7749,7 @@ define('vector/VmlRenderer',['require','./Renderer','../utils/PathUtils','../uti
                 if (domWrapper.type === 'div') {
 
                     if (newStyles['transform']) {
-                        var trans = transformParser(newStyles['transform']);
+                        var trans = transformParser(newStyles['transform'].replace(/px/gi, ''));
                         newStyles['transform'] = '';
                         newStyles['x'] = trans.translate[0];
                         newStyles['y'] = trans.translate[1];
@@ -7814,7 +7820,7 @@ define('vector/VmlRenderer',['require','./Renderer','../utils/PathUtils','../uti
         // then combine the offset and the rotate adjustment to margin.
         vRotate: function (domWrapper, deg) {
             var dom = domWrapper.node();
-            // dom.styles[] = '';
+            BaseUtils.domRotate(dom, 0);
             var ow = dom.offsetWidth, oh = dom.offsetHeight;
             BaseUtils.domRotate(dom, deg);
             var rw = dom.offsetWidth, rh = dom.offsetHeight;
@@ -11225,6 +11231,7 @@ define('VanChartForceBubble',['require','./VanChart','./utils/BaseUtils','./Comp
                     d3.select(point.graphic.node()).transition()
                         .duration(BUBBLE_UPDATE_TIME).ease('back-out')
                         .attr('transform', BaseUtils.makeTranslate(node))
+                        .attr('r', attrs.r);
                 }else{
                     point.graphic.attr(attrs);
                 }
@@ -12954,7 +12961,10 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
         },
 
         calculateTooltipContent:function(point){
+            return this._calculateTooltipContent(point);
+        },
 
+        _calculateTooltipContent:function(point){
             var tooltip = point.tooltip, series = this, points = point.points;
             if(!tooltip || !tooltip.enabled){
                 return;
@@ -13063,7 +13073,6 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
 
         //提示的第二行：气泡的X、Y、SIZE
         _createBubbleTooltipXYSizeLine:function(data, label, style, formatter){
-
             var content = '';
             if(label.indexOf(X) != -1 || label.indexOf(Y) != -1 || label.indexOf(SIZE) != -1) {
                 var text = this._getXYSizeString(data, formatter, label);
@@ -14500,7 +14509,8 @@ define('chart/Bar',['require','../utils/BaseUtils','../utils/ColorUtils','../Con
 
         _calculateAlignLabelPos:function(point, align){
 
-            var labelDim = point.labelDim, rect = point.rect;
+            var labelDim = point.labelDim, rect = point.rect, plotBounds = this.vanchart.getPlotBounds();
+            var plotWidth = plotBounds.width, plotHeight = plotBounds.height;
 
             var isVertical = point.location == Constants.TOP_TO_BOTTOM || point.location == Constants.BOTTOM_TO_TOP;
             var isPositive = point.location == Constants.BOTTOM_TO_TOP || point.location == Constants.LEFT_TO_RIGHT;
@@ -15296,7 +15306,10 @@ define('chart/Pie',['require','../Constants','../utils/BaseUtils','../utils/Colo
         _getPointTextLabelGroup:function(){
 
             if(!this.textLabelGroup){
-                this.textLabelGroup = this.vanchart.renderer.group().addTo(this.group);
+                this.textLabelGroup = this.vanchart.renderer.vgroup().add();
+                this.group.append(this.textLabelGroup.renderG);
+
+                this.textLabelGroup.divG.attr('transform', BaseUtils.makeTranslate(this._getTranslate()));
             }
 
             return this.textLabelGroup;
@@ -16488,12 +16501,21 @@ define('chart/Bubble',['require','./Series','../utils/BaseUtils','../Constants',
             this.pushBubbleNormalLabelContent(point, formatter, dataLabels, useHtml, content, Constants.INSIDE);
         },
 
-        _createCategoryLine:function(data, label, style, formatter){
-            return this._createBubbleTooltipSeriesLine(data, label, style, formatter);
-        },
+        calculateTooltipContent:function(point){
+            var tooltip = point.tooltip, series = this;
+            if(!tooltip || !tooltip.enabled){
+                return;
+            }
+            var formatter = tooltip.formatter, content = '';
+            if(typeof formatter == 'object'){
+                var style = tooltip.style, label = formatter.identifier;
+                content += series._createBubbleTooltipSeriesLine(point, label, style, formatter);
+                content += series._createBubbleTooltipXYSizeLine(point, label, style, formatter);
+            }else{
+                content = BaseUtils.getFormatterFunction(formatter).call(point);
+            }
 
-        _createSeriesLine:function(data, label, style, formatter){
-            return this._createBubbleTooltipXYSizeLine(data, label, style, formatter);
+            return content;
         },
 
         //计算位置的时候 顺道儿就给了
@@ -16755,6 +16777,10 @@ define('chart/ForceBubble',['require','./Bubble','../Constants','../utils/BaseUt
             return [x, y];
         },
 
+        calculateTooltipContent:function(point){
+            return this._calculateTooltipContent(point);
+        },
+        
         _getAxisTypes:function(){
             return [];
         },
@@ -17939,7 +17965,10 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./TreeSe
             if (point.depth && pathNode.y1+pathNode.dy1 === INNER_RING_RADIUS) {
                 attr = {'opacity': isChosen ? 1 : 0};
             } else {
-                style = {'fill': isChosen ? point.mouseOverColor : point.color};
+                style = {
+                    'fill-opacity': isChosen ? 1 : point.opacity,
+                    'fill': isChosen ? point.mouseOverColor : point.color
+                };
             }
 
             if(animation){
@@ -18395,14 +18424,12 @@ define('chart/PointerGauge',['require','../Constants','../utils/BaseUtils','../u
             if(!this.backgruondPath){
                 this.backgruondPath = renderer.path().addTo(group);
                 this.hingePath = renderer.path().addTo(group);
+
+                this.labelGroup = this.getLabelGroup();
+
                 this.axisGroup = renderer.group().addTo(group);
                 this.needleGroup = renderer.group().addTo(group);
                 this.pointerHingePath = renderer.path().addTo(group);
-
-                this.labelGroup = renderer.vgroup();
-                group.append(this.labelGroup.renderG);
-                vanchart.seriesTextDivGroup.append(this.labelGroup.divG);
-                this.labelGroup.divG.attr('transform', BaseUtils.makeTranslate(this._getTranslate()));
             }
 
             if(!this.dropFilter){
@@ -18696,7 +18723,7 @@ define('chart/SlotGauge',['require','../Constants','../utils/Formatter','../util
                 this.backgruondPath = renderer.path().addTo(group);
                 this.slotBackground = renderer.path().addTo(group);
                 this.needlePath = renderer.circle().addTo(group);
-                this.labelGroup = renderer.group().addTo(group);
+                this.labelGroup = this.getLabelGroup();
             }
 
             if(!this.innderShadow){
@@ -18846,7 +18873,7 @@ define('chart/RingGauge',['require','../Constants','../utils/ColorUtils','../uti
                 this.innerBackgroundPath = renderer.path().addTo(group);
                 this.innerStroke = renderer.path().addTo(group);
                 this.outerStroke = renderer.path().addTo(group);
-                this.labelGroup = renderer.group().addTo(group);
+                this.labelGroup = this.getLabelGroup();
             }
 
             if(!this.colorGradient){
@@ -19355,7 +19382,7 @@ define('chart/ThermometerGauge',['require','../Constants','../utils/ColorUtils',
                 this.thermometerLine = renderer.line().addTo(group);
                 this.needlePath = renderer.circle().addTo(group);
                 this.axisGroup = renderer.group().addTo(group);
-                this.labelGroup = renderer.group().addTo(group);
+                this.labelGroup = this.getLabelGroup();
 
                 var endColor = color;
                 var startColor = ColorUtils.mixColorWithHSB(endColor, 0, -0.1, 0.1);
@@ -19629,6 +19656,8 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
 
             if(this.gaugeType && this.gaugeType != gaugeType){
                 this.remove();
+                this.backgruondPath = null;
+                this.backgruondLine = null;
             }
 
             this.gaugeType = gaugeType;
@@ -19865,6 +19894,16 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
 
         _isSeriesInteractive:function(){
             return true;
+        },
+
+        // add vgroup as normal group. then,
+        // 1. move renderG to real group,
+        // 2. offset divG to the position the same as renderG
+        getLabelGroup: function () {
+            var labelGroup = this.vanchart.renderer.vgroup().add();
+            this.group.append(labelGroup.renderG);
+            labelGroup.divG.attr('transform', BaseUtils.makeTranslate(this._getTranslate()));
+            return labelGroup;
         },
 
         _drawGaugeLabels: function (labelG) {
@@ -21783,7 +21822,21 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             var title = this.options.title;
             var usedSize = 0;
             if(title){
-                var dim = BaseUtils.getTextDimensionWithRotation(title.text, title.style, title.useHtml, title.rotation);
+                var rectDim, dim;
+                this.titleRotation = title.rotation;
+                if (Math.abs(title.rotation) === 90) {
+                    this.titleRotation = 360;
+                    BaseUtils.extend(title.style, {'writing-mode': 'tb-rl'});
+                }
+
+                rectDim = title.useHtml ? BaseUtils.getTextDimension(title.text, title.style) :
+                    BaseUtils.getSvgTextDim(title.text, title.style);
+
+                dim = BaseUtils.getTextDimRotated(rectDim, this.titleRotation);
+
+                this.titleRectDim = rectDim;
+                this.titleDim = dim;
+
                 usedSize = this.isHorizontal() ? dim.height : dim.width;
             }
             return usedSize;
@@ -21842,7 +21895,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
             this._calculateTickData();
         },
-        
+
         _getRange:function(){
             var plotBounds = this.vanchart.getPlotBounds();
 
@@ -22084,7 +22137,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 // label rotated [15-90) can as long as it can
                 // otherwise check the dim
                 var labelRotation = Math.abs(Math.abs(this.labelRotation) - (isHorizontal ? 0 : 90)),
-                    isRotated = (labelRotation >= 15 || this.labelRotation === 360),
+                    isRotated = (labelRotation >= 15 && this.labelRotation !== 360),
                     labelRadian;
                 labelRadian = BaseUtils.toRadian(labelRotation);
                 var lastTickPos, lastH = -1, gap, l, h,
@@ -22412,7 +22465,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 to = Math.min(isHorizontal ? width : height, to);
 
                 rect = isHorizontal ? {x:from, y:y, width:to - from, height:height}
-                                                        :{x:x, y:from, width:width, height:to - from};
+                    :{x:x, y:from, width:width, height:to - from};
 
                 this.plotBands[i] = this.plotBands[i] || renderer.rect(rect).addTo(this.plotBandsGroup);
 
@@ -22573,8 +22626,8 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             });
 
             this.tickLines[MINOR_TICKS] = _drawTickLine(this.tickLines[MINOR_TICKS], minorTickData, {
-                 det:detMinor, tickWidth:minorTickWidth, tickLength:minorTickLength, tickColor:minorTickColor
-             });
+                det:detMinor, tickWidth:minorTickWidth, tickLength:minorTickLength, tickColor:minorTickColor
+            });
         },
 
         _drawPlotLines:function(){
@@ -22600,18 +22653,18 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                     var align = d.label.align;
                     var textDim = BaseUtils.getTextDimension(text, style, d.label.useHtml);
                     switch (align){
-                         case Constants.TOP:
-                             textX = x1 - textDim.width; textY = y1;
-                             break;
-                         case Constants.BOTTOM:
-                             textX = x1 - textDim.width; textY = y2 - textDim.height;
-                             break;
-                         case Constants.LEFT:
-                             textX = x1; textY = y1 - textDim.height - LABEL_LINE_GAP;
-                             break;
-                         case Constants.RIGHT:
-                             textX = x2 - textDim.width; textY = y2 - textDim.height - LABEL_LINE_GAP;
-                             break;
+                        case Constants.TOP:
+                            textX = x1 - textDim.width; textY = y1;
+                            break;
+                        case Constants.BOTTOM:
+                            textX = x1 - textDim.width; textY = y2 - textDim.height;
+                            break;
+                        case Constants.LEFT:
+                            textX = x1; textY = y1 - textDim.height - LABEL_LINE_GAP;
+                            break;
+                        case Constants.RIGHT:
+                            textX = x2 - textDim.width; textY = y2 - textDim.height - LABEL_LINE_GAP;
+                            break;
                     }
                 }
 
@@ -22706,8 +22759,8 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 var d = selection.enter[i];
                 var tickLabel = this.tickLabelsGroup.append(
                     renderer.vtext(useHtml)
-                    .attr(this._getLabelTransform(lastScale, d))
-                    .style({'opacity':0})
+                        .attr(this._getLabelTransform(lastScale, d))
+                        .style({'opacity':0})
                 )
                 tickLabel.datum(d);
                 currentTickLabels.push(tickLabel);
@@ -22718,14 +22771,26 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             for(i = 0, len = currentTickLabels.length; i < len; i++){
                 var tickLabel = currentTickLabels[i], d = tickLabel.datum();
                 tickLabel.textContent(d.tickContent).style(labelStyle);
-                if(animation){
-                    d3.select(tickLabel.rawElement).transition().duration(TIME).ease(EASE)
-                        .attr(this._getLabelTransform(lastScale, d)).style({'opacity':1});
+
+                var transform = this._getLabelTransform(scale, d);
+
+                // html animation is err...
+                if(animation && !useHtml){
+                    var rotateStr = (this.labelRotation % 90) ?
+                        tickLabel.vRotate(this.labelRotation).rotateStr : '';
+                    transform.transform += rotateStr;
+                    var prop;
+                    if (tickLabel.type === 'div') {
+                        prop = 'style';
+                    } else {
+                        prop = 'attr';
+                    }
+                    d3.select(tickLabel.node()).transition().duration(TIME).ease(EASE)
+                        [prop](transform).style({'opacity':1});
                 }else{
-                    tickLabel.attr(this._getLabelTransform(scale, d)).style({'opacity':1});
+                    tickLabel.attr(transform).style({'opacity':1});
+                    tickLabel.vRotate(this.labelRotation);
                 }
-                // rotate
-                tickLabel.vRotate(this.labelRotation);
             }
 
             this.tickLabels = currentTickLabels;
@@ -22761,7 +22826,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                     labelRotation > 0 ? 1 : -1;
 
                 textY += sign * (labelDim.height - rectDim.height) / 2;
-                textX += sign * direction * (labelDim.width - rectDim.height * Math.sin(rotationRadian)) / 2;
+                textX += sign * direction * (labelDim.width - Math.abs(rectDim.height * Math.sin(rotationRadian))) / 2;
 
                 if (position === Constants.TOP) {
                     textY -= rectDim.height;
@@ -22790,7 +22855,8 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 textY += origin.y + tickLabelPos - rectDim.height / 2;
             }
 
-            var transform = BaseUtils.makeTranslate([textX, textY]);
+            var px = useHtml ? 'px' : '';
+            var transform = 'translate(' + textX + px + ' ' + textY + px + ')';
 
             return {
                 transform : transform,
@@ -22799,24 +22865,17 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             }
         },
 
-        _drawAxisTitle:function(titleBounds){
-            this.isHorizontal() ? this._drawHorizontalTitle(titleBounds)
-                : this._drawVerticalTitle(titleBounds);
-        },
-
-        _drawHorizontalTitle: function () {
+        _drawAxisTitle: function () {
             var cfg = this.options, title = cfg.title;
-            if (!title || !title.text) {
+            if (!title) {
                 return;
             }
             var R = this.vanchart.renderer, axisGroup = this.axisGroup;
             var useHtml = title.useHtml, rotation = title.rotation, align = this.getTitleAlign(),
                 text = title.text, style = title.style;
 
-            var textDim = BaseUtils.getTextDimension(text, style, useHtml);
+            var textDim = this.titleDim, rectDim = this.titleRectDim;
             var titleBounds = this.getAxisTitleBounds();
-
-            // var gap = this.getTitleLabelGap();
 
             if (!this.titleGroup) {
                 this.titleGroup = R.vgroup().add();
@@ -22829,8 +22888,14 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 titleGroup.text = titleGroup.append(R.vtext(useHtml));
             }
 
-            var x;
+            var x = 0, y = 0, dx = 0, dy = rectDim.height * 0.85;
             switch (align) {
+                case Constants.TOP:
+                    y = 0;
+                    break;
+                case Constants.BOTTOM:
+                    y = titleBounds.height - textDim.height;
+                    break;
                 case Constants.LEFT:
                     x = 0;
                     break;
@@ -22839,68 +22904,30 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                     break;
                 case Constants.CENTER:
                 default:
-                    x = (titleBounds.width - textDim.width)/2;
+                    if (this.isHorizontal()) {
+                        x = (titleBounds.width - textDim.width)/2;
+                    } else {
+                        y = (titleBounds.height - textDim.height) / 2;
+                    }
+            }
+
+            if (this.titleRotation === 360) {
+                dx = (useHtml || BaseUtils.isMS) ? 0 : rectDim.width * 0.85 / 2;
+                dy = 0;
+            } else {
+                x += (textDim.width - rectDim.width) / 2;
             }
 
             titleGroup.text
                 .textContent(text)
                 .attr({
                     x: x,
-                    y: 0,
-                    dy: textDim.height * 0.85
-                }).style(style);
-
-            titleGroup.text.vRotate(rotation);
-
-        },
-
-        _drawVerticalTitle: function () {
-            var cfg = this.options, title = cfg.title;
-            if (!title || !title.text) {
-                return;
-            }
-            var R = this.vanchart.renderer, axisGroup = this.axisGroup;
-            var useHtml = title.useHtml, rotation = title.rotation, align = this.getTitleAlign(),
-                text = title.text, style = title.style;
-
-            var textDim = BaseUtils.getTextDimension(text, style, useHtml);
-            var titleBounds = this.getAxisTitleBounds();
-
-            // var gap = this.getTitleLabelGap();
-
-            if (!this.titleGroup) {
-                this.titleGroup = R.vgroup().add();
-                axisGroup.append(this.titleGroup.renderG);
-                this.titleGroup.attr({'transform': BaseUtils.makeTranslate(titleBounds)});
-            }
-            var titleGroup = this.titleGroup;
-
-            if (!titleGroup.text) {
-                titleGroup.text = titleGroup.append(R.vtext(useHtml));
-            }
-
-            var y;
-            switch (align) {
-                case Constants.TOP:
-                    y = 0;
-                    break;
-                case Constants.BOTTOM:
-                    y = titleBounds.height - textDim.height;
-                    break;
-                case Constants.CENTER:
-                default:
-                    y = (titleBounds.height - textDim.height)/2;
-            }
-
-            titleGroup.text
-                .textContent(text)
-                .attr({
-                    x: 0,
                     y: y,
-                    dy: textDim.height * 0.85
+                    dy: dy,
+                    dx: dx
                 }).style(style);
 
-            titleGroup.text.vRotate(rotation);
+            (rotation % 90) && titleGroup.text.vRotate(rotation);
         },
 
         remove:function(){
@@ -27197,7 +27224,7 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
         },
 
         drawHighlightBackground: function (category) {
-            var scale = this.scale, rangeBand = scale.rangeBand ? scale.rangeBand() : 0;
+            var scale = this.scale, columnType = this.series[0] && this.series[0].columnType || false;
             var R = this.vanchart.renderer;
 
             var domain = scale.domain();
@@ -27205,7 +27232,7 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
             var r = this.polar.radius;
             var radian = scale(category) / domain.length * 2 * Math.PI;
 
-            if (rangeBand) {
+            if (columnType) {
                 var halfSize = 1 / domain.length * 2 * Math.PI * 0.5;
                 var startRadian = radian - halfSize;
                 var endRadian = radian + halfSize;
