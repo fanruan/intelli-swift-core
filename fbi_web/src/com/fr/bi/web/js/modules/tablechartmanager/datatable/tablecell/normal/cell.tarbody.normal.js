@@ -94,16 +94,16 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 break;
             case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
                 if(separators){
-                    num = BI.contentFormat(num, '#,###.#')
+                    num = BI.contentFormat(num, '#,###.0')
                 } else {
-                    num = BI.contentFormat(num, '#.#')
+                    num = BI.contentFormat(num, '#.0')
                 }
                 return num;
             case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
                 if(separators){
-                    num = BI.contentFormat(num, '#,###.##')
+                    num = BI.contentFormat(num, '#,###.00')
                 } else {
-                    num = BI.contentFormat(num, '#.##')
+                    num = BI.contentFormat(num, '#.00')
                 }
                 return num;
         }
@@ -213,7 +213,7 @@ BI.extend(BI.TargetBodyNormalCell, {
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 return BI.contentFormat(text * 100, "#.##");
             default:
-                return BI.parseFloat(BI.contentFormat(text, "#.##"));
+                return BI.parseFloat(BI.contentFormat(text.toFixed(2), "#.##"));
         }
     }
 });
