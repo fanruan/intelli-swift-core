@@ -50,9 +50,9 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
         })
     },
 
-    getDefaultStyle:function () {
-        return this.globalStyleSetting.getDefaultStyle();
-    },
+    // getDefaultStyle:function () {
+    //     return this.globalStyleSetting.getDefaultStyle();
+    // },
 
     getValue: function () {
         return this.globalStyleSetting.getValue();

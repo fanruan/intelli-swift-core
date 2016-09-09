@@ -1450,12 +1450,48 @@ BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
 }]];
 
 BICst.Font_Family_COMBO = [];
-
+//全局样式start
 BICst.BACKGROUND_TYPE = {
     COLOR: 1,
     IMAGE: 2
 };
 
+BICst.GLOBALPREDICTIONSTYLE={
+
+    DEFAULT: {
+        "mainBackground": {"type": 1, "value": "#f3f3f3"},
+        "widgetBackground": {"type": 1, "value": "#ffffff"},
+        "titleBackground": {"type": 1, "value": "#ffffff"},
+        "titleFont": {"font-weight": "normal", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        "controlTheme": "#f3f3f3"
+    },
+
+    ONE: {
+        "mainBackground": {"type": 1, "value": "#212338"},
+        "widgetBackground": {"type": 1, "value": "#2b2d4a"},
+        "titleBackground": {"type": 1, "value": "#2b2d3a"},
+        "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        "controlTheme": "#25cdea"
+    },
+
+    TWO: {
+        "mainBackground": {"type": 1, "value": "#dae0e0"},
+        "widgetBackground": {"type": 1, "value": "#f7f7f7"},
+        "titleBackground": {"type": 1, "value": "#5e6472"},
+        "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
+        "controlTheme": "#af7e7e"
+    }
+};
+//全局样式stop
 BICst.FONT_FAMILY_COMBO = [{
     text: "微软雅黑",
     value: "Microsoft YaHei"

@@ -1480,6 +1480,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.leftright.canvasbutton.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.usercustombutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.stylebutton.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.js",
 
                 //联动

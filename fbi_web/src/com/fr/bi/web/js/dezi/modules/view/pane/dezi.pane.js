@@ -297,8 +297,8 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     },
 
     _initGlobalStyle:function () {
-        var gs=this.globalStyle.getDefaultStyle();
-        this.model.set("globalStyle", gs);
+        //var gs=;
+        this.model.set("globalStyle", BICst.GLOBALPREDICTIONSTYLE.DEFAULT);
     },
 
     _refreshGlobalStyle: function (gs) {

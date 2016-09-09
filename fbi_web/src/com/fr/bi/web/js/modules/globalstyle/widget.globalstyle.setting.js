@@ -3,39 +3,39 @@
  */
 BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
     _const: {
-
-        DEFAULTSTYLE: {
-            "mainBackground": {"type": 1, "value": "#f3f3f3"},
-            "widgetBackground": {"type": 1, "value": "#ffffff"},
-            "titleBackground": {"type": 1, "value": "#ffffff"},
-            "titleFont": {"font-weight": "normal", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
-            "chartStyle": 1,
-            "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
-            "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
-            "controlTheme": "#f3f3f3"
-        },
-
-        PREDICTIONSTYLEONE: {
-            "mainBackground": {"type": 1, "value": "#212338"},
-            "widgetBackground": {"type": 1, "value": "#2b2d4a"},
-            "titleBackground": {"type": 1, "value": "#2b2d3a"},
-            "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
-            "chartStyle": 1,
-            "chartColor": ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
-            "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
-            "controlTheme": "#25cdea"
-        },
-
-        PREDICTIONSTYLETWO: {
-            "mainBackground": {"type": 1, "value": "#dae0e0"},
-            "widgetBackground": {"type": 1, "value": "#f7f7f7"},
-            "titleBackground": {"type": 1, "value": "#5e6472"},
-            "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
-            "chartStyle": 1,
-            "chartColor": ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
-            "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
-            "controlTheme": "#af7e7e"
-        }
+        //
+        // DEFAULTSTYLE: {
+        //     "mainBackground": {"type": 1, "value": "#f3f3f3"},
+        //     "widgetBackground": {"type": 1, "value": "#ffffff"},
+        //     "titleBackground": {"type": 1, "value": "#ffffff"},
+        //     "titleFont": {"font-weight": "normal", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
+        //     "chartStyle": 1,
+        //     "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+        //     "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        //     "controlTheme": "#f3f3f3"
+        // },
+        //
+        // PREDICTIONSTYLEONE: {
+        //     "mainBackground": {"type": 1, "value": "#212338"},
+        //     "widgetBackground": {"type": 1, "value": "#2b2d4a"},
+        //     "titleBackground": {"type": 1, "value": "#2b2d3a"},
+        //     "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
+        //     "chartStyle": 1,
+        //     "chartColor": ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
+        //     "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        //     "controlTheme": "#25cdea"
+        // },
+        //
+        // PREDICTIONSTYLETWO: {
+        //     "mainBackground": {"type": 1, "value": "#dae0e0"},
+        //     "widgetBackground": {"type": 1, "value": "#f7f7f7"},
+        //     "titleBackground": {"type": 1, "value": "#5e6472"},
+        //     "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
+        //     "chartStyle": 1,
+        //     "chartColor": ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
+        //     "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
+        //     "controlTheme": "#af7e7e"
+        // }
     },
 
     _defaultConfig: function () {
@@ -76,13 +76,13 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         this.predictionStyle.on(BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE, function () {
             var value = this.getValue();
             if (value["currentStyle"] == 0) {
-                self._setCenterValue(self._const.DEFAULTSTYLE)
+                self._setCenterValue(BICst.GLOBALPREDICTIONSTYLE.DEFAULT)
             }
             if (value["currentStyle"] == 1) {
-                self._setCenterValue(self._const.PREDICTIONSTYLEONE)
+                self._setCenterValue(BICst.GLOBALPREDICTIONSTYLE.ONE)
             }
             if (value["currentStyle"] == 2) {
-                self._setCenterValue(self._const.PREDICTIONSTYLETWO)
+                self._setCenterValue(BICst.GLOBALPREDICTIONSTYLE.TWO)
             }
             self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
@@ -375,15 +375,15 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         this._setCenterValue(v);
     },
 
-    getDefaultStyle:function () {
-        return this._const.DEFAULTSTYLE
-    },
+    // getDefaultStyle:function () {
+    //     return BICst.GLOBALPREDICTIONSTYLE.DEFAULT
+    // },
     populate: function () {
        var v = BI.Utils.getGlobalStyle();
        if (BI.isNotNull(v.predictionValue) && BI.isNotNull(v.chartColor) && BI.isNotNull(v.controlTheme)) {
             this.setValue(BI.Utils.getGlobalStyle());
        } else {
-           this._setCenterValue(this._const.DEFAULTSTYLE);
+           this._setCenterValue(BICst.GLOBALPREDICTIONSTYLE.DEFAULT);
            this.predictionStyle.setValue({
                "currentStyle": 0
            });

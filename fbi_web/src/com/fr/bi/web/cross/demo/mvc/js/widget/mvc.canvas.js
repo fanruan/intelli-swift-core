@@ -17,7 +17,9 @@ CanvasView = BI.inherit(BI.View, {
             height: 600
         });
         canvas.rect(0, 0, 80, 100, "#7dbd2f");
-
+        canvas.rect(5,5,70,90,"red");
+        canvas.rect(10,10,60,20,"blue");
+        canvas.rect(10,20,60,40,"pink");
         canvas.line(80, 0, 100, 100, 200, 100, 300, 0, {
             strokeStyle: "red",
             lineWidth: 2
