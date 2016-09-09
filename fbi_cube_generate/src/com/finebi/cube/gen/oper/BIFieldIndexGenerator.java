@@ -19,6 +19,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
@@ -183,7 +184,8 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         return group2rowNumber;
     }
     private IntArrayListExternalMap<T> createExternalMap(IntArray nullRowNumbers) {
-        String dataFloder = FRContext.getCurrentEnv().getPath() + BASEPATH + File.separator +((DBTableSource)tableSource).getDbName() + File.separator + tableSource.getTableName() + File.separator + targetColumnKey.getColumnName();
+        String tableSourceID = tableSource.getSourceID();
+        String dataFloder = FRContext.getCurrentEnv().getPath() + BASEPATH + File.separator + tableSourceID + File.separator + BIMD5Utils.getMD5String(new String[]{tableSourceID,targetColumnKey.getKey()});
         IntArrayListExternalMap<T> group2rowNumber = ExternalIntArrayMapFactory.getIntListExternalMap(columnEntityService.getClassType(),columnEntityService.getGroupComparator(),dataFloder);
         constructMap(group2rowNumber,nullRowNumbers);
         return group2rowNumber;

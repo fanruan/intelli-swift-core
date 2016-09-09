@@ -65,15 +65,15 @@ BI.ParamTimeInterval = BI.inherit(BI.Single, {
         var combo = BI.createWidget({
             type: 'bi.multidate_param_combo'
         });
-        combo.on(BI.MultiDateCombo.EVENT_ERROR, function () {
+        combo.on(BI.MultiDateParamCombo.EVENT_ERROR, function () {
             self._clearTitle();
             self.element.removeClass(self.constants.timeErrorCls);
         });
-        combo.on(BI.MultiDateCombo.EVENT_BEFORE_POPUPVIEW, function () {
+        combo.on(BI.MultiDateParamCombo.EVENT_BEFORE_POPUPVIEW, function () {
             self.left.hidePopupView();
             self.right.hidePopupView();
         });
-        combo.on(BI.MultiDateCombo.EVENT_CHANGE, function () {
+        combo.on(BI.MultiDateParamCombo.EVENT_CHANGE, function () {
             BI.Bubbles.hide("error");
             var smallDate = self.left.getKey(), bigDate = self.right.getKey();
             if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
@@ -82,24 +82,24 @@ BI.ParamTimeInterval = BI.inherit(BI.Single, {
                 BI.Bubbles.show("error", BI.i18nText("BI-Time_Interval_Error_Text"), self, {
                     offsetStyle: "center"
                 });
-                self.fireEvent(BI.TimeInterval.EVENT_ERROR);
+                self.fireEvent(BI.ParamTimeInterval.EVENT_ERROR);
             } else {
                 self._clearTitle();
                 self.element.removeClass(self.constants.timeErrorCls);
             }
         });
 
-        combo.on(BI.MultiDateCombo.EVENT_CONFIRM, function(){
+        combo.on(BI.MultiDateParamCombo.EVENT_CONFIRM, function(){
             BI.Bubbles.hide("error");
             var smallDate = self.left.getKey(), bigDate = self.right.getKey();
             if (self._check(smallDate, bigDate) && self._compare(smallDate, bigDate)) {
                 self._setTitle(BI.i18nText("BI-Time_Interval_Error_Text"));
                 self.element.addClass(self.constants.timeErrorCls);
-                self.fireEvent(BI.TimeInterval.EVENT_ERROR);
+                self.fireEvent(BI.ParamTimeInterval.EVENT_ERROR);
             }else{
                 self._clearTitle();
                 self.element.removeClass(self.constants.timeErrorCls);
-                self.fireEvent(BI.TimeInterval.EVENT_CHANGE);
+                self.fireEvent(BI.ParamTimeInterval.EVENT_CHANGE);
             }
         });
         return combo;

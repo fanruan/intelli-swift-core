@@ -161,7 +161,7 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: this._constant.INPUT_WIDTH,
             height: this._constant.TIME_INTERVAL_HEIGHT
         });
-        this.filterWidget.on(BI.CustomTimeInterval.EVENT_CHANGE, function () {
+        this.filterWidget.on(BI.CustomParamTimeInterval.EVENT_CHANGE, function () {
             self._setNodeData({
                 filter_value: this.getValue()
             });
