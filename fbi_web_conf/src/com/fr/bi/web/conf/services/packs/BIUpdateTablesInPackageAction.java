@@ -169,9 +169,8 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 reConstructedRelationJo.put("foreignKey", reConstructedForeignKeyJo);
                 BITableRelation tableRelation = BITableRelationHelper.getRelation(reConstructedRelationJo);
                 relationsSet.add(tableRelation);
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
-                continue;
             }
         }
         BICubeConfigureCenter.getTableRelationManager().registerTableRelationSet(userId, relationsSet);
