@@ -45,10 +45,10 @@ BI.SingleTableTimeSettingItem = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Ev_Sunday"),
                 value: BICst.UPDATE_FREQUENCY.EVER_SUNDAY
             }],
-            width: 160,
+            width: 90,
             height: 30
         });
-        this.frequency.on(BI.TextValueCheckCombo.EVENT_CHANGE, function (v) {
+        this.frequency.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
             var v = this.getValue()[0];
             self.day.setVisible(v === BICst.UPDATE_FREQUENCY.EVER_MONTH);
             self.hour.setVisible(v !== BICst.UPDATE_FREQUENCY.EVER_MONTH);
@@ -91,7 +91,8 @@ BI.SingleTableTimeSettingItem = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Incremental_Update"),
                 value: BICst.SINGLE_TABLE_UPDATE_TYPE.PART
             }],
-            height: 30
+            height: 30,
+            width: 90
         });
         this.updateType.setValue(o.updateType || BICst.SINGLE_TABLE_UPDATE_TYPE.ALL);
         this.updateType.on(BI.SmallTextValueCombo.EVENT_CHANGE, function () {

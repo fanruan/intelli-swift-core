@@ -290,8 +290,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             self.model.setUpdateSettings(this.getValue());
             var info = {};
             info.tableInfo = tableInfo;
-            info.updateSettings = BI.deepClone(this.model.table.update_settings);
-            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, info)
+            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, info, self.model.getValue());
         });
         BI.Popovers.create(this.model.getId(), updateSet).open(this.model.getId());
     },
