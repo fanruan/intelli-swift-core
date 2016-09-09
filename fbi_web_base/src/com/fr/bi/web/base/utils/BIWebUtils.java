@@ -201,9 +201,11 @@ public class BIWebUtils {
         String isDebug = WebUtils.getHTTPRequestParameter(req, ParameterConsts.__ISDEBUG__);
         String edit = WebUtils.getHTTPRequestParameter(req, "edit");
         String show = WebUtils.getHTTPRequestParameter(req, "show");
+        String hideTop = WebUtils.getHTTPRequestParameter(req, "hideTop");
         map.put("userId", userId);
         map.put("edit", edit == null ? "null" : edit);
         map.put("show", show == null ? "null" : show);
+        map.put("hideTop", hideTop == null ? "null" : hideTop);
         map.put("createBy", node.getUserId());
         map.put("reportName", reportName);
         map.put("reg", VT4FBI.toJSONObject());

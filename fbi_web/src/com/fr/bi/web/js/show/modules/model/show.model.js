@@ -21,6 +21,7 @@ BIShow.Model = BI.inherit(BI.Model, {
         Data.SharingPool.put("sessionID", this.get('sessionID'));
         Data.SharingPool.put("show", this.get('show') === '_bi_show_');
         Data.SharingPool.put("lockedBy", this.get('lockedBy'));
+        Data.SharingPool.put("hideTop", this.get('hideTop'));
         
         this._initSessionBeater();
     },
