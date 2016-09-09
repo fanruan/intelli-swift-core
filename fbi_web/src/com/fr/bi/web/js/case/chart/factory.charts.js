@@ -66,6 +66,8 @@ BI.ChartCombineFormatItemFactory = {
 
     combineConfig: function () {
         return {
+            "title": "",
+            chartType: "column",
             "plotOptions": {
                 "rotatable": false,
                 "startAngle": 0,

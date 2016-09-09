@@ -101,9 +101,9 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
                     }
                 })
             });
-            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+            // if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 config.plotOptions.tooltip.formatter.valueFormat = formatter;
-            }
+            // }
         }
 
         function getXYAxisUnit(numberLevelType, position){

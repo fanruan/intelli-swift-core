@@ -2507,7 +2507,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -2949,7 +2949,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -3204,7 +3204,7 @@ Data.Utils = {
             if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (configs.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -3469,7 +3469,7 @@ Data.Utils = {
             if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -3964,7 +3964,7 @@ Data.Utils = {
             if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (configs.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -4269,7 +4269,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -4618,7 +4618,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -4888,7 +4888,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -5214,7 +5214,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -5896,7 +5896,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -6217,7 +6217,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -6498,7 +6498,7 @@ Data.Utils = {
             });
             var config = combineConfig();
             config.plotOptions.click = function () {
-                options.click(this.pointOption);
+                options.click(this.options);
             };
             return [result, config];
 
