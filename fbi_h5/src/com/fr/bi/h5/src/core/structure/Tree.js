@@ -60,7 +60,7 @@ class Tree {
                 var n = new Node(child);
                 n.set("data", child);
                 queue.push(n);
-                self.addNode(parent, n);
+                this.addNode(parent, n);
             });
         }
     }
@@ -75,13 +75,13 @@ class Tree {
         if (children.length > 0) {
             return {
                 id: node.id,
-                ...node.getData(),
+                ...node.get('data'),
                 children: children
             }
         }
         return {
             id: node.id,
-            ...node.getData()
+            ...node.get('data')
         }
     }
 
@@ -125,7 +125,7 @@ class Tree {
 
     search(root, target, param) {
         if (!(root instanceof Node)) {
-            return arguments.callee.apply(this, [this.root, root, target]);
+            return this.search(this.root, root, target);
         }
         var next = null;
 
@@ -274,7 +274,7 @@ class Tree {
                 node = node.getLeft();
             }
 
-            node = BI.last(stack);
+            node = last(stack);
 
             if (node.getRight() == null || node.getRight() == preNode) {
                 callback && callback(node);
@@ -348,9 +348,10 @@ class Node {
     constructor(id) {
         if (isObject(id)) {
             extend(this, id);
-            return;
+        } else {
+            this.id = id;
         }
-        this.id = id;
+        this.clear();
     }
 
     set(key, value) {
@@ -378,11 +379,11 @@ class Node {
     }
 
     getFirstChild() {
-        return BI.first(this.children);
+        return first(this.children);
     }
 
     getLastChild() {
-        return BI.last(this.children);
+        return last(this.children);
     }
 
     setLeft(left) {

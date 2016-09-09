@@ -76,7 +76,7 @@ class Item extends Component {
         this.setState({
             selected: selected
         }, ()=> {
-            this.props.onSelected(this.state.selected);
+            this.props.onSelected(selected);
         });
         e.stopPropagation();
     }
@@ -100,7 +100,7 @@ class Item extends Component {
             <View style={[styles.row]}>
                 {row}
                 <View style={[styles.text, {
-                    marginLeft: isNil(row)?(props.layer*23+34):4
+                    marginLeft: isNil(row)?(props.layer*23+24):4
                 }]}>
                     <Text>
                         {isNil(state.value) ? state.text : state.value}

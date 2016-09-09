@@ -69,7 +69,7 @@ class MultiTreeSelectorWidget extends Component {
             height={props.height}
             overscanRowCount={0}
             //noRowsRenderer={this._noRowsRenderer.bind(this)}
-            rowCount={this.props.items.length}
+            rowCount={this._helper.getSortedItems().length}
             rowHeight={35}
             rowRenderer={this._rowRenderer.bind(this)}
             //scrollToIndex={scrollToIndex}
