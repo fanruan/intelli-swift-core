@@ -67,7 +67,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public Object getLoginFieldValue(BusinessField field, long userId) {
+    public Object[] getLoginFieldValue(BusinessField field, long userId) {
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getFieldValue(field, userId);
         } catch (BIKeyAbsentException e) {

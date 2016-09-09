@@ -18,7 +18,7 @@ public interface BICubeConfManagerProvider {
 
     void saveLoginField(String loginField);
 
-    Object getLoginFieldValue(BusinessField field, long userId);
+    Object[] getLoginFieldValue(BusinessField field, long userId);
 
     void updatePackageLastModify();
 

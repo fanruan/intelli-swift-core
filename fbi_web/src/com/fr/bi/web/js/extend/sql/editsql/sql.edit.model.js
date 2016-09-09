@@ -24,8 +24,9 @@ BI.EditSQLModel = BI.inherit(FR.OB, {
             });
             BI.isEmptyString(self.dataLinkName) && (self.dataLinkName = names[0]);
             callback();
+        }, function() {
             mask.destroy();
-        })
+        });
     },
 
     getSQL: function(){

@@ -1,13 +1,13 @@
 package com.fr.bi.conf.base.cube;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
-import com.fr.bi.base.FinalInt;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
@@ -16,8 +16,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
-import com.fr.bi.stable.io.newio.NIOConstant;
+import com.fr.bi.stable.gvi.traversal.TraversalAction;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
@@ -80,7 +79,7 @@ public class BICubeConfManager {
         return jo;
     }
 
-    public Object getFieldValue(BusinessField ck, long userId) {
+    public Object[] getFieldValue(BusinessField ck, long userId) {
         try {
             ICubeDataLoader loader = BICubeManager.getInstance().fetchCubeLoader(userId);
             String userName = UserControl.getInstance().getUser(userId).getUsername();
@@ -95,19 +94,28 @@ public class BICubeConfManager {
                 final ConnectionRowGetter getter = DirectTableConnectionFactory.createConnectionRow(BIConfUtils.convert2TableSourceRelation(relations), loader);
                 ICubeTableService ti = loader.getTableIndex(field.getTableBelongTo().getTableSource());
                 GroupValueIndex gvi = ti.getIndexes(userNameIndex, new String[]{userName})[0];
-                final FinalInt o = new FinalInt();
+                final ArrayList<Integer> o = new ArrayList<Integer>();
                 if (gvi != null) {
                     //只取一个值
-                    gvi.BrokenableTraversal(new BrokenTraversalAction() {
+                    gvi.Traversal(new TraversalAction() {
                         @Override
-                        public boolean actionPerformed(int rowIndex) {
-                            o.value = getter.getConnectedRow(rowIndex);
-                            return true;
+                        public void actionPerformed(int[] rowIndices) {
+                            for (int i = 0; i < rowIndices.length; i ++){
+                                o.add(getter.getConnectedRow(rowIndices[i]));
+                            }
                         }
                     });
-                    if (o.value != NIOConstant.INTEGER.NULL_VALUE) {
-                        ICubeTableService cti = loader.getTableIndex(ck.getTableBelongTo().getTableSource());
-                        return cti.getColumnDetailReader(cti.getColumnIndex(ck.getFieldName())).getValue(o.value);
+                    if(!o.isEmpty()){
+
+                        int[] rows = new int[o.size()];
+                        Object [] values = new Object[rows.length];
+                        ICubeTableService cubeTableService = loader.getTableIndex(ck.getTableBelongTo().getTableSource());
+                        ICubeColumnDetailGetter detailGetter = cubeTableService.getColumnDetailReader(cubeTableService.getColumnIndex(ck.getFieldName()));
+                        for (int i = 0; i < rows.length; i ++){
+                            rows[i] = o.get(i);
+                            values[i] = detailGetter.getValue(o.get(i));
+                        }
+                        return values;
                     }
                 }
             }
