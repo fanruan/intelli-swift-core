@@ -87,7 +87,7 @@ BI.extend(BI.Utils, {
         var groupMap = Data.SharingPool.get("groups"), packages = Data.SharingPool.get("packages");
         var packStructure = [], groupedPacks = [];
         //排个序
-        var groups = BI.sortBy(groupMap, function(id, item) {
+        var groups = BI.sortBy(groupMap, function (id, item) {
             return item.init_time;
         });
         BI.each(groups, function (i, group) {
@@ -332,10 +332,10 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
-    getTablesByConnectionName: function (connectionName, callback) {
+    getTablesByConnectionName: function (connectionName, callback, complete) {
         BIReq.reqTablesByConnectionName(connectionName, function (res) {
             callback(res);
-        });
+        }, complete);
     },
 
     getTablesByPackId: function (packId, callback, complete) {
@@ -479,7 +479,7 @@ BI.extend(BI.Utils, {
             callback(res);
         }, complete);
     },
-    
+
     getPrimaryTablesByTable4Conf: function (table, callback, complete) {
         Data.Req.reqPrimaryTablesByTable(table, function (res) {
             callback(res);
