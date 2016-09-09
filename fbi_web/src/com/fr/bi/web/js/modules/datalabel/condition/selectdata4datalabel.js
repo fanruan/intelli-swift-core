@@ -13,10 +13,13 @@ BI.SelectDataLabelDataCombo = BI.inherit(BI.SelectDimensionDataCombo, {
             itemsCreator: BI.bind(this._itemsCreator, this),
             valueFormatter: function (v) {
                 var items = v.split("-");
-                BI.each(items, function (idx, item) {
-                    items[idx] = BI.parseInt(item)
-                });
-                return items.join("/");
+                var group = BI.Utils.getDimensionGroupByID(o.dId);
+                if (BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+                    BI.each(items, function (idx, item) {
+                        items[idx] = BI.parseInt(item)
+                    });
+                    return items.join("/");
+                }
             },
             width: o.width,
             height: o.height
@@ -101,16 +104,9 @@ BI.SelectDataLabelDataCombo = BI.inherit(BI.SelectDimensionDataCombo, {
                     title: text
                 })
             } else {
-                if (month.length < 2) {
-                    month = '0' + month;
-                }
-                if (day.length < 2) {
-                    day = '0' + day;
-                }
-                var dateValue =  [year, month, day].join('-');
                 result.push({
                     text: value,
-                    value: dateValue,
+                    value: value,
                     title: value
                 })
             }
