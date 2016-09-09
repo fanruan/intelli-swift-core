@@ -7,8 +7,7 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         GRAY: "#cccccc",
         PAGE_ONE: 1,
         PAGE_TWO: 2,
-        ALREADY_EXISTS_STYLE_NUMBER: 3,
-        FIRST_PAGE_CUSTOM_STYLE_NUMBER: 6 - this._const.ALREADY_EXISTS_STYLE_NUMBER,
+        FIRST_PAGE_CUSTOM_STYLE_NUMBER: 3,
         ALL_PREDICTION_STYLE_NUMBER: 5
     },
     _defaultConfig: function () {
@@ -256,7 +255,7 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
                 this.allUserCustomStyle = v.allUserCustomStyle;
             }
             if (BI.isNotNull(v.currentStyle.currentStyle)) {
-                if (v.currentStyle.currentStyle >= 8) {
+                if (v.currentStyle.currentStyle >= 8) {// 8 = 3 + 5( FIRST_PAGE_CUSTOM_STYLE_NUMBER + ALL_PREDICTION_STYLE_NUMBER )
                     this.currentPage = this._const.PAGE_TWO;
                 }
             }
