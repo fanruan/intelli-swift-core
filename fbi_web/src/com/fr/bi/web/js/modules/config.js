@@ -1206,14 +1206,14 @@ BICst.CHART_COLORS = [{
     header: BI.i18nText("BI-Elegant"),
     text: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"],
     value: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"]
-},{
+}, {
     header: BI.i18nText("BI-Prediction_Style_One"),
-    text: ["#79d2f4","#55b5e5","#25cdea","#1ba8ed","#537af4"],
-    value: ["#79d2f4","#55b5e5","#25cdea","#1ba8ed","#537af4"]
-},{
+    text: ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
+    value: ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"]
+}, {
     header: BI.i18nText("BI-Prediction_Style_Two"),
-    text: ["#f4ab98","#f1c15f","#e18169","#af7e7e","#6f6870"],
-    value: ["#f4ab98","#f1c15f","#e18169","#af7e7e","#6f6870"]
+    text: ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
+    value: ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"]
 }];
 
 //图值轴格式
@@ -1362,7 +1362,7 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
 }];
 
 //数据标签过滤
-BICst.DATA_LABEL_FILTER_NUMBER_COMBO =[[{
+BICst.DATA_LABEL_FILTER_NUMBER_COMBO = [[{
     text: BI.i18nText("BI-In"),
     value: BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE,
     cls: "dot-e-font"
@@ -1386,7 +1386,7 @@ BICst.DATA_LABEL_FILTER_NUMBER_COMBO =[[{
     text: BI.i18nText("BI-Not_Null"),
     value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL,
     cls: "dot-e-font"
-}],[{
+}], [{
     text: BI.i18nText("BI-Place"),
     value: BICst.DIMENSION_FILTER_NUMBER.TOP_N,
     cls: "dot-e-font"
@@ -1450,58 +1450,94 @@ BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
 }]];
 
 BICst.Font_Family_COMBO = [];
-
+//全局样式start
 BICst.BACKGROUND_TYPE = {
     COLOR: 1,
     IMAGE: 2
 };
 
+BICst.GLOBALPREDICTIONSTYLE = {
+
+    DEFAULT: {
+        "mainBackground": {"type": 1, "value": "#f3f3f3"},
+        "widgetBackground": {"type": 1, "value": "#ffffff"},
+        "titleBackground": {"type": 1, "value": "#ffffff"},
+        "titleFont": {"font-weight": "normal", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        "controlTheme": "#f3f3f3"
+    },
+
+    ONE: {
+        "mainBackground": {"type": 1, "value": "#212338"},
+        "widgetBackground": {"type": 1, "value": "#2b2d4a"},
+        "titleBackground": {"type": 1, "value": "#2b2d3a"},
+        "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        "controlTheme": "#25cdea"
+    },
+
+    TWO: {
+        "mainBackground": {"type": 1, "value": "#dae0e0"},
+        "widgetBackground": {"type": 1, "value": "#f7f7f7"},
+        "titleBackground": {"type": 1, "value": "#5e6472"},
+        "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
+        "controlTheme": "#af7e7e"
+    }
+};
+//全局样式stop
 BICst.FONT_FAMILY_COMBO = [{
     text: "微软雅黑",
     value: "Microsoft YaHei"
-},{
+}, {
     text: "黑体",
     value: "SimHei"
-},{
+}, {
     text: "幼圆",
     value: "YouYuan"
-},{
+}, {
     text: "宋体",
     value: "SimSun"
-},{
+}, {
     text: "楷体",
     value: "KaiTi"
-},{
+}, {
     text: "华文细黑",
     value: "STXihei"
-},{
+}, {
     text: "华文黑体",
     value: "STHeiti"
-},{
+}, {
     text: "华文楷体",
     value: "STKaiti"
-},{
+}, {
     text: "华文宋体",
     value: "STSong"
-},{
+}, {
     text: "冬青黑体简体中文",
     value: "Hiragino Sans GB W3"
-},{
+}, {
     text: "Arial",
     value: "Arial"
-},{
+}, {
     text: "Microsoft Tai Le",
     value: "Microsoft Tai Le"
-},{
+}, {
     text: "Tahoma",
     value: "Tahoma"
-},{
+}, {
     text: "Helvetica",
     value: "Helvetica"
-},{
+}, {
     text: "Verdana",
     value: "Verdana"
-},{
+}, {
     text: "Times New Roman",
     value: "Times New Roman"
 }];

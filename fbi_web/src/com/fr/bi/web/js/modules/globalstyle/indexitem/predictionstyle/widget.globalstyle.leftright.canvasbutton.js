@@ -6,7 +6,7 @@ BI.GlobalStyleCanvasButton = BI.inherit(BI.BasicButton, {
         var conf = BI.IconButton.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
             tagName: "a",
-            baseCls: (conf.baseCls || "") + " bi-icon-button horizon-center display-block",
+            baseCls: (conf.baseCls || ""),
             direction: "left",
             initState: true
         })

@@ -16,24 +16,25 @@ BI.GlobalStyleUserCustomButton = BI.inherit(BI.BasicButton, {
         var o = this.options;
         var self = this;
         this.button = BI.createWidget({
-            type: "bi.button",
-            level: "ignore",
-            text: o.text,
-            value: o.value,
-            height: 70,
-            width: 108
+            type: "bi.global_style_style_button",
+            title: o.text,
+            value: o.value
         });
         this.deleteButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "close-red-font",
-            height: 20,
-            width: 20
+            cls: "close-red-font"
         });
-        this.button.on(BI.Button.EVENT_CHANGE, function () {
+        this.button.on(BI.GlobalStyleStyleButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.GlobalStyleUserCustomButton.EVENT_SELECT)
         });
         this.deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.GlobalStyleUserCustomButton.EVENT_DELETE)
+        });
+        this.deleteLayout = BI.createWidget({
+            type: "bi.center_adapt",
+            items: [this.deleteButton],
+            height: 15,
+            width: 15
         });
         this.widget = BI.createWidget({
             type: "bi.absolute",
@@ -41,7 +42,7 @@ BI.GlobalStyleUserCustomButton = BI.inherit(BI.BasicButton, {
             items: [{
                 el: this.button
             }, {
-                el: this.deleteButton
+                el: this.deleteLayout
             }],
             height: 70,
             width: 110,
@@ -49,7 +50,7 @@ BI.GlobalStyleUserCustomButton = BI.inherit(BI.BasicButton, {
             tgap: 0
         });
         this.deleteButton.setVisible(false);
-        this.widget.element.hover(function () {
+        this.deleteLayout.element.hover(function () {
             self.deleteButton.setVisible(true);
         }, function () {
             self.deleteButton.setVisible(false);
@@ -61,7 +62,7 @@ BI.GlobalStyleUserCustomButton = BI.inherit(BI.BasicButton, {
     },
 
     setValue: function (v) {
-        this.button.setValue(v)
+        this.button.setValue(v);
     }
 });
 BI.GlobalStyleUserCustomButton.EVENT_SELECT = "BI.GlobalStyleUserCustomButton.EVENT_SELECT";

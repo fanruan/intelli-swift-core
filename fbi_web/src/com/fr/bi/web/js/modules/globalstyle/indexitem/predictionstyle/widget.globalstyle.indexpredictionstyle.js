@@ -2,6 +2,14 @@
  * Created by zcf on 2016/8/30.
  */
 BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
+    _const: {
+        WHITE: "#ffffff",
+        GRAY: "#cccccc",
+        PAGE_ONE: 1,
+        PAGE_TWO: 2,
+        FIRST_PAGE_CUSTOM_STYLE_NUMBER: 3,
+        ALL_PREDICTION_STYLE_NUMBER: 5
+    },
     _defaultConfig: function () {
         return BI.extend(BI.GlobalStyleIndexPredictionStyle.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-global-style-index-prediction-style",
@@ -14,11 +22,11 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
     _init: function () {
         BI.GlobalStyleIndexPredictionStyle.superclass._init.apply(this, arguments);
 
-        var o = this.options;
+        var o = this.options, self = this;
         this.totalPage = o.initTotalPage;
         this.currentPage = o.initCurrentPage;
         this.allUserCustomStyle = o.allUserCustomStyle;
-        var self = this;
+
         this.leftButton = BI.createWidget({
             type: "bi.global_style_canvas_button",
             direction: "left",
@@ -82,7 +90,7 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
             }],
             height: 40
         });
-        this.populate();
+        this._populate();
         BI.createWidget({
             type: "bi.vtape",
             element: this.element,
@@ -100,24 +108,20 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         })
     },
 
-    _createButton: function (value, title, cls) {
+    _createButton: function (value, title) {
         return BI.createWidget({
-            type: "bi.icon_button",
-            cls: cls + " button-shadow",
-            title: title,
-            value: value,
-            height: 70,
-            width: 110,
-            iconWidth: 110,
-            iconHeight: 70
+            type: "bi.global_style_user_custom_button",
+            cls: "button-shadow",
+            text: title,
+            value: value
         })
     },
 
     _getCanvasColour: function (isSelected) {
         if (isSelected) {
-            return "#ffffff"
+            return this._const.WHITE
         } else {
-            return "#cccccc"
+            return this._const.GRAY
         }
     },
 
@@ -136,24 +140,24 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
     },
 
     _createAdministratorStyle: function () {
-        return this._createButton(0, BI.i18nText("BI-Administrator_Set_Style"), "global-prediction-style-default")
+        return this._createButton(BICst.GLOBALPREDICTIONSTYLE.DEFAULT, BI.i18nText("BI-Administrator_Set_Style"))
     },
 
     _createPredictionStyleOne: function () {
-        return this._createButton(1, BI.i18nText("BI-Prediction_Style_One"), "global-prediction-style-one")
+        return this._createButton(BICst.GLOBALPREDICTIONSTYLE.ONE, BI.i18nText("BI-Prediction_Style_One"))
     },
 
     _createPredictionStyleTwo: function () {
-        return this._createButton(2, BI.i18nText("BI-Prediction_Style_Two"), "global-prediction-style-two")
+        return this._createButton(BICst.GLOBALPREDICTIONSTYLE.TWO, BI.i18nText("BI-Prediction_Style_Two"))
     },
 
-    _createPredictionStyleThree: function () {
-        return this._createButton(3, BI.i18nText("BI-Prediction_Style_Three"), "")
-    },
-
-    _createPredictionStyleFour: function () {
-        return this._createButton(4, BI.i18nText("BI-Prediction_Style_Four"), "")
-    },
+    // _createPredictionStyleThree: function () {
+    //     return this._createButton(3, BI.i18nText("BI-Prediction_Style_Three"), "")
+    // },
+    //
+    // _createPredictionStyleFour: function () {
+    //     return this._createButton(4, BI.i18nText("BI-Prediction_Style_Four"), "")
+    // },
 
     _createUserCustomButton: function (name, value) {
         var self = this;
@@ -173,16 +177,16 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
     },
 
     _setAllButton: function () {
-        if (this.totalPage == this.currentPage == 1) {
+        if (this.totalPage == this.currentPage == this._const.PAGE_ONE) {
             this.leftButton.setState(false);
             this.rightButton.setState(false);
         }
-        if (this.totalPage == 2) {
-            if (this.currentPage == 1) {
+        if (this.totalPage == this._const.PAGE_TWO) {
+            if (this.currentPage == this._const.PAGE_ONE) {
                 this.leftButton.setState(false);
                 this.rightButton.setState(true);
             }
-            if (this.currentPage == 2) {
+            if (this.currentPage == this._const.PAGE_TWO) {
                 this.leftButton.setState(true);
                 this.rightButton.setState(false);
             }
@@ -194,8 +198,8 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         var self = this;
         var style = [this._createAdministratorStyle(), this._createPredictionStyleOne(), this._createPredictionStyleTwo()];
         BI.each(self.allUserCustomStyle, function (i, value) {
-            if (i < 3) {
-                value.currentStyle = i + 5;
+            if (i < this._const.FIRST_PAGE_CUSTOM_STYLE_NUMBER) {
+                value.currentStyle = i + this._const.ALL_PREDICTION_STYLE_NUMBER;
                 style.push(self._createUserCustomButton(BI.i18nText("BI-Custom_Style_" + (i + 1)), value))
             }
         });
@@ -206,8 +210,8 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         var self = this;
         var style = [];
         BI.each(self.allUserCustomStyle, function (i, value) {
-            if (i >= 3) {
-                value.currentStyle = i + 5;
+            if (i >= this._const.FIRST_PAGE_CUSTOM_STYLE_NUMBER) {
+                value.currentStyle = i + this._const.ALL_PREDICTION_STYLE_NUMBER;
                 style.push(self._createUserCustomButton(BI.i18nText("BI-Custom_Style_" + (i + 1)), value))
             }
         });
@@ -216,21 +220,21 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
 
     deleteCustomButton: function (button) {
         var value = button.getValue();
-        var index = value.currentStyle - 5;
+        var index = (value.currentStyle - this._const.ALL_PREDICTION_STYLE_NUMBER);
         this.allUserCustomStyle.splice(index, 1);
-        if (this.getCustomNumber() <= 3) {
-            this.currentPage = 1
+        if (this.getCustomNumber() <= this._const.FIRST_PAGE_CUSTOM_STYLE_NUMBER) {
+            this.currentPage = this._const.PAGE_ONE
         }
-        this.populate();
+        this._populate();
     },
 
     addUserCustomButton: function (value) {
-        value.currentStyle = (this.allUserCustomStyle.length + 5);
+        value.currentStyle = (this.allUserCustomStyle.length + this._const.ALL_PREDICTION_STYLE_NUMBER);
         this.allUserCustomStyle.push(value);
-        if (this.getCustomNumber() > 3) {
-            this.currentPage = 2;
+        if (this.getCustomNumber() > this._const.FIRST_PAGE_CUSTOM_STYLE_NUMBER) {
+            this.currentPage = this._const.PAGE_TWO;
         }
-        this.populate();
+        this._populate();
         this.centerButtonGroup.setValue(value);
     },
 
@@ -251,25 +255,17 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
                 this.allUserCustomStyle = v.allUserCustomStyle;
             }
             if (BI.isNotNull(v.currentStyle.currentStyle)) {
-                if (v.currentStyle.currentStyle > 7) {
-                    this.currentPage = 2;
+                if (v.currentStyle.currentStyle >= 8) {// 8 = 3 + 5( FIRST_PAGE_CUSTOM_STYLE_NUMBER + ALL_PREDICTION_STYLE_NUMBER )
+                    this.currentPage = this._const.PAGE_TWO;
                 }
             }
-            this.populate();
+            this._populate();
             if (BI.isNotNull(v) && BI.isNotNull(v.currentStyle)) {
                 this.centerButtonGroup.setValue(v.currentStyle);
             }
         } else {
-            this.populate();
+            this._populate();
         }
-        // this.allUserCustomStyle=v.allUserCustomStyle;
-        // if(v.currentStyle.currentStyle>7){
-        //     this.currentPage=2;
-        // }
-        // this.populate();
-        // if (BI.isNotNull(v) && BI.isNotNull(v.currentStyle)){
-        //     this.centerButtonGroup.setValue(v.currentStyle);
-        // }
     },
 
     pageChange: function (direction) {
@@ -279,22 +275,27 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         if (direction === "right") {
             this.currentPage++;
         }
-        this.populate();
+        this._populate();
     },
 
-    populate: function () {
-        if (this.allUserCustomStyle.length < 4) {
-            this.totalPage = 1;
-            this.currentPage = 1;
+    populate: function (currentPage) {
+        this.currentPage = currentPage;
+        this._populate();
+    },
+
+    _populate: function () {
+        if (this.allUserCustomStyle.length <= this._const.FIRST_PAGE_CUSTOM_STYLE_NUMBER) {
+            this.totalPage = this._const.PAGE_ONE;
+            this.currentPage = this._const.PAGE_ONE;
             this._setAllButton();
             this._populatePageOne();
         } else {
-            this.totalPage = 2;
+            this.totalPage = this._const.PAGE_TWO;
             this._setAllButton();
-            if (this.currentPage == 1) {
+            if (this.currentPage == this._const.PAGE_ONE) {
                 this._populatePageOne();
             }
-            if (this.currentPage == 2) {
+            if (this.currentPage == this._const.PAGE_TWO) {
                 this._populatePageTwo();
             }
         }
