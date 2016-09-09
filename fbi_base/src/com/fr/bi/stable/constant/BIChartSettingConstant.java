@@ -1,5 +1,7 @@
 package com.fr.bi.stable.constant;
 
+import com.fr.base.CoreDecimalFormat;
+
 import java.text.DecimalFormat;
 
 /**
@@ -44,7 +46,7 @@ public class BIChartSettingConstant {
         public static final String FONTSIZE = "12px";
     }
 
-    public static final DecimalFormat FOURFIEXEDFORMAT = new DecimalFormat("##.####");
+    public static final DecimalFormat FOURFIEXEDFORMAT = new CoreDecimalFormat(new DecimalFormat("##.####"), "");
 
     public static final class CHART_STYLE {
         public static final int STYLE_NORMAL = 1;
