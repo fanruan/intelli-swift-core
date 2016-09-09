@@ -1206,14 +1206,14 @@ BICst.CHART_COLORS = [{
     header: BI.i18nText("BI-Elegant"),
     text: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"],
     value: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"]
-},{
+}, {
     header: BI.i18nText("BI-Prediction_Style_One"),
-    text: ["#79d2f4","#55b5e5","#25cdea","#1ba8ed","#537af4"],
-    value: ["#79d2f4","#55b5e5","#25cdea","#1ba8ed","#537af4"]
-},{
+    text: ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
+    value: ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"]
+}, {
     header: BI.i18nText("BI-Prediction_Style_Two"),
-    text: ["#f4ab98","#f1c15f","#e18169","#af7e7e","#6f6870"],
-    value: ["#f4ab98","#f1c15f","#e18169","#af7e7e","#6f6870"]
+    text: ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
+    value: ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"]
 }];
 
 //图值轴格式
@@ -1362,7 +1362,7 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
 }];
 
 //数据标签过滤
-BICst.DATA_LABEL_FILTER_NUMBER_COMBO =[[{
+BICst.DATA_LABEL_FILTER_NUMBER_COMBO = [[{
     text: BI.i18nText("BI-In"),
     value: BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE,
     cls: "dot-e-font"
@@ -1386,7 +1386,7 @@ BICst.DATA_LABEL_FILTER_NUMBER_COMBO =[[{
     text: BI.i18nText("BI-Not_Null"),
     value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL,
     cls: "dot-e-font"
-}],[{
+}], [{
     text: BI.i18nText("BI-Place"),
     value: BICst.DIMENSION_FILTER_NUMBER.TOP_N,
     cls: "dot-e-font"
@@ -1456,7 +1456,7 @@ BICst.BACKGROUND_TYPE = {
     IMAGE: 2
 };
 
-BICst.GLOBALPREDICTIONSTYLE={
+BICst.GLOBALPREDICTIONSTYLE = {
 
     DEFAULT: {
         "mainBackground": {"type": 1, "value": "#f3f3f3"},
@@ -1495,49 +1495,49 @@ BICst.GLOBALPREDICTIONSTYLE={
 BICst.FONT_FAMILY_COMBO = [{
     text: "微软雅黑",
     value: "Microsoft YaHei"
-},{
+}, {
     text: "黑体",
     value: "SimHei"
-},{
+}, {
     text: "幼圆",
     value: "YouYuan"
-},{
+}, {
     text: "宋体",
     value: "SimSun"
-},{
+}, {
     text: "楷体",
     value: "KaiTi"
-},{
+}, {
     text: "华文细黑",
     value: "STXihei"
-},{
+}, {
     text: "华文黑体",
     value: "STHeiti"
-},{
+}, {
     text: "华文楷体",
     value: "STKaiti"
-},{
+}, {
     text: "华文宋体",
     value: "STSong"
-},{
+}, {
     text: "冬青黑体简体中文",
     value: "Hiragino Sans GB W3"
-},{
+}, {
     text: "Arial",
     value: "Arial"
-},{
+}, {
     text: "Microsoft Tai Le",
     value: "Microsoft Tai Le"
-},{
+}, {
     text: "Tahoma",
     value: "Tahoma"
-},{
+}, {
     text: "Helvetica",
     value: "Helvetica"
-},{
+}, {
     text: "Verdana",
     value: "Verdana"
-},{
+}, {
     text: "Times New Roman",
     value: "Times New Roman"
 }];

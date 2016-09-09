@@ -17,7 +17,7 @@ BI.GlobalStyleUserCustomButton = BI.inherit(BI.BasicButton, {
         var self = this;
         this.button = BI.createWidget({
             type: "bi.global_style_style_button",
-            title:o.text,
+            title: o.text,
             value: o.value
         });
         this.deleteButton = BI.createWidget({

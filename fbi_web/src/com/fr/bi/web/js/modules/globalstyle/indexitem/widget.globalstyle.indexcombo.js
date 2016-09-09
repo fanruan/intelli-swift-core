@@ -49,21 +49,7 @@ BI.GlobalStyleIndexBackground = BI.inherit(BI.Widget, {
                             type: "bi.upload_image_preview"
                         });
                         uploadImage.on(BI.MultifileEditor.EVENT_CHANGE, function () {
-                            this.upload();
-                        });
-                        uploadImage.on(BI.MultifileEditor.EVENT_UPLOADED,function () {
-                            var files = this.getValue();
-                            var file = files[files.length - 1];
-                            var attachId = file.attach_id, fileName = file.filename;
-                            var src = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + attachId + "_" + fileName;
-                            BI.requestAsync("fr_bi_dezi", "save_upload_image", {
-                                attach_id: attachId
-                            }, function () {
-                                // self.img.setSrc(src);
-                                // self._check();
-                                // self._setSize("auto", "auto");
-                                // self.fireEvent(BI.UploadImage.EVENT_CHANGE, src);
-                            })
+
                         });
                         return uploadImage;
                 }

@@ -3,6 +3,7 @@
  */
 BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
     _const: {
+        HEIGHT: 30
     },
 
     _defaultConfig: function () {
@@ -19,7 +20,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             type: "bi.button",
             level: "ignore",
             text: BI.i18nText("BI-Cancel"),
-            height: 30,
+            height: this._const.HEIGHT,
             width: 90
         });
         cancel.on(BI.Button.EVENT_CHANGE, function () {
@@ -29,7 +30,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         var save = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Sure"),
-            height: 30,
+            height: this._const.HEIGHT,
             width: 90
         });
         save.on(BI.Button.EVENT_CHANGE, function () {
@@ -103,7 +104,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             type: "bi.text_button",
             text: BI.i18nText("BI-Save_As_Prediction_Style"),
             textAlign: "right",
-            height: 30,
+            height: this._const.HEIGHT,
             width: 100
         });
         this.textButton.on(BI.TextButton.EVENT_CHANGE, function () {
@@ -115,7 +116,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             items: [
                 this.textButton, {
                     type: "bi.label",
-                    height: 30
+                    height: this._const.HEIGHT
                 }]
         });
 
@@ -134,8 +135,8 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 cls: "item-label",
                 text: BI.i18nText("BI-Background_Colour") + ":",
                 textAlign: "left",
-                height: 30,
-                width:95
+                height: this._const.HEIGHT,
+                width: 95
             }, self.mainBackground],
             vgap: 10
         });
@@ -181,7 +182,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             }),
             layouts: [{
                 type: "bi.vertical_adapt",
-                height: 30
+                height: this._const.HEIGHT
             }]
         });
         this.chartStyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
@@ -193,7 +194,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         this.chartColour = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
             cls: "border",
-            height: 30
+            height: this._const.HEIGHT
         });
         this.chartColour.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
@@ -217,7 +218,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 cls: "item-label",
                 text: BI.i18nText("BI-Chart_Word_Style") + ":",
                 textAlign: "left",
-                height: 30,
+                height: this._const.HEIGHT,
                 width: 110
             }, this.chartWordStyle],
             vgap: 10
@@ -225,7 +226,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         //控件主题
         this.controlTheme = BI.createWidget({
             type: "bi.color_chooser",
-            height: 30,
+            height: this._const.HEIGHT,
             width: 160
         });
         this.controlTheme.on(BI.ColorChooser.EVENT_CHANGE, function () {
@@ -239,7 +240,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 cls: "item-label",
                 text: BI.i18nText("BI-Control_Theme") + ":",
                 textAlign: "left",
-                height: 30,
+                height: this._const.HEIGHT,
                 width: 110
             }, this.controlTheme],
             vgap: 10
@@ -261,6 +262,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             hgap: 20
         });
     },
+
     _saveButton: function () {
         this.predictionStyle.addUserCustomButton(this._getCenterValue());
         if (this.predictionStyle.getCustomNumber() == 5) {
@@ -276,7 +278,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 cls: "item-label",
                 text: name + ":",
                 textAlign: "left",
-                height: 30,
+                height: this._const.HEIGHT,
                 width: 95
             }, widget],
             vgap: 10
@@ -291,7 +293,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 cls: "item-label",
                 text: name + ":",
                 textAlign: "left",
-                height: 30,
+                height: this._const.HEIGHT,
                 width: 110
             }, widget],
             vgap: 10
@@ -334,15 +336,15 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-       var v = BI.Utils.getGlobalStyle();
-       if (BI.isNotNull(v.predictionValue) && BI.isNotNull(v.chartColor) && BI.isNotNull(v.controlTheme)) {
+        var v = BI.Utils.getGlobalStyle();
+        if (BI.isNotNull(v.predictionValue) && BI.isNotNull(v.chartColor) && BI.isNotNull(v.controlTheme)) {
             this.setValue(BI.Utils.getGlobalStyle());
-       } else {
-           this._setCenterValue(BICst.GLOBALPREDICTIONSTYLE.DEFAULT);
-           this.predictionStyle.setValue({
-               "currentStyle": BICst.GLOBALPREDICTIONSTYLE.DEFAULT
-           });
-       }
+        } else {
+            this._setCenterValue(BICst.GLOBALPREDICTIONSTYLE.DEFAULT);
+            this.predictionStyle.setValue({
+                "currentStyle": BICst.GLOBALPREDICTIONSTYLE.DEFAULT
+            });
+        }
     }
 });
 BI.GlobalStyleSetting.EVENT_CHANGE = "EVENT_CHANGE";
