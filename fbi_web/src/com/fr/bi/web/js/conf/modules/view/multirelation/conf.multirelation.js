@@ -178,7 +178,6 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
                                 }, {
                                     el: self.cubeLabel
                                 }],
-                                // height: 30,
                                 hgap: 20,
                                 vgap: 5
                             },
