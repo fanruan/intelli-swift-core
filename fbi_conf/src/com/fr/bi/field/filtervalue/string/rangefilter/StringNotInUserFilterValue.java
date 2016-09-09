@@ -68,9 +68,11 @@ public class StringNotInUserFilterValue extends StringRangeFilterValue {
     protected void addLogUserInfo() {
         if (this.column != null && BIConfigureManagerCenter.getCubeConfManager().getLoginField() != null) {
             try {
-                Object fieldValue = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(column, user.getUserId());
-                if (fieldValue != null) {
-                    valueSet.getValues().add(fieldValue.toString());
+                Object[] values = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(column, user.getUserId());
+                if (values != null) {
+                    for(int i = 0; i < values.length; i++) {
+                        valueSet.getValues().add(values[i].toString());
+                    }
                 }
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);

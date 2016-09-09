@@ -50,6 +50,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
         this.loading();
         BI.Utils.getTablesByConnectionName(connName, function (res) {
             self.populate(connName, res);
+        }, function() {
             self.loaded();
         });
     },
@@ -360,6 +361,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
         this.loading();
         BI.Utils.getTablesByConnectionName(this.connectionName, function (res) {
             self.populate(self.connectionName, res);
+        }, function() {
             self.loaded();
         });
     },
