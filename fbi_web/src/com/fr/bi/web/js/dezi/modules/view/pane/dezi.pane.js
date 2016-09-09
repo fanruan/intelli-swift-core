@@ -221,6 +221,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         //globalStyleButton.setVisible(false);
 
         globalStyleButton.on(BI.Button.EVENT_CHANGE, function () {
+            var cacheGS={};
             if (BI.isNull(self.globalStyle)) {
                 self.globalStyle = BI.createWidget({
                     type: "bi.global_style"
@@ -229,19 +230,23 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                 if(BI.isNull(v.predictionValue)){
                   self._initGlobalStyle();
                 }
+                cacheGS=self.model.get("globalStyle");
                 self.globalStyle.on(BI.GlobalStyle.EVENT_PREVIEW, function () {
                     var gs = this.getValue();
+                    self.model.set("globalStyle", gs);
                     self._refreshGlobalStyle(gs);
                     BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, gs);
                 });
                 self.globalStyle.on(BI.GlobalStyle.EVENT_SAVE, function () {
                     var gs = this.getValue();
+                    cacheGS=gs;
                     self.model.set("globalStyle", gs);
                     self._refreshGlobalStyle(gs);
                 });
                 self.globalStyle.on(BI.GlobalStyle.EVENT_CANCEL, function() {
-                    self._refreshGlobalStyle();
-                    BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, self.model.get("globalStyle"));
+                    self.model.set("globalStyle", cacheGS);
+                    self._refreshGlobalStyle(cacheGS);
+                    BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, cacheGS);
                 });
             } else {
                 self.globalStyle.populate();
@@ -297,7 +302,6 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     },
 
     _initGlobalStyle:function () {
-        //var gs=;
         this.model.set("globalStyle", BICst.GLOBALPREDICTIONSTYLE.DEFAULT);
     },
 
@@ -307,9 +311,8 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         if (BI.isNotNull(globalStyle.mainBackground)) {
             this.dashboard.element.find(".fit-dashboard").css("background", globalStyle.mainBackground.value);
         }
-        this._refreshButtons();
-        this.dashboard.populate();
-        this._refreshWidgets();
+
+        this._refreshWidgets(true);
     },
 
     _createDashBoard: function () {
