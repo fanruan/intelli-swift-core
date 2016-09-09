@@ -748,6 +748,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indextitletoolbar.css",
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexalignchooser.css",
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexpredictionstyle.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.usercustombutton.css",
 
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
@@ -1117,6 +1118,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalabel/tab/button.image.datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/item.filter.datalabel.abstract.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/group.condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/selectdata4datalabel.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/item.numberfield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/item.stringfield.js",
                 "com/fr/bi/web/js/modules/datalabel/condition/common/factory.filteritem.datalabel.js",
@@ -1477,6 +1479,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcharttoolbar.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.leftright.canvasbutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.usercustombutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.stylebutton.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.js",
 
                 //联动
@@ -2772,6 +2777,9 @@ public class ResourceHelper {
 
                 //树选值
                 "com/fr/bi/web/js/components/treevaluechooser/combo.treevaluechooser.js",
+
+                //树标签
+                //"com/fr/bi/web/js/components/treevaluechooser/panel.treevaluechooser.js",
 
                 //带样式表格
                 "com/fr/bi/web/js/components/styletable/styletable.js",

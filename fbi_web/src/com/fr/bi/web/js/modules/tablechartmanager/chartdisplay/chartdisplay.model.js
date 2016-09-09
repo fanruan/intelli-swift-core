@@ -417,17 +417,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var allSeries = BI.pluck(data, "name");
         BI.each(BI.Utils.getDatalabelByWidgetID(o.wId), function (id, dataLabel) {
             var filter = null;
+            var filterArray = [];
             if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1) {
                 if(!BI.Utils.isDimensionUsable(dataLabel.target_id)) {
                     return;
                 }
-                var filterArray = [];
                 filter = BI.FilterFactory.parseFilter(dataLabel);
-                if (filter.filterValue.type === BI.Selection.All) {
-                    filterArray = allSeries;
-                } else {
-                    filterArray = filter.getFilterResult(allSeries);
-                }
+                filterArray = filter.getFilterResult(allSeries);
                 BI.any(data, function (idx, series) {
                     if (BI.contains(filterArray, series.name)) {
                         BI.each(series.data, function (id, da) {
@@ -437,7 +433,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             } else {
                 filter = BI.FilterObjectFactory.parseFilter(dataLabel);
-                var filterArray = filter.getFilterResult(BI.flatten(BI.pluck(data, "data")));
+                filterArray = filter.getFilterResult(BI.flatten(BI.pluck(data, "data")));
                 BI.any(data, function (idx, series) {
                     BI.each(series.data, function (id, da) {
                         if (BI.deepContains(filterArray, da)) {
@@ -483,12 +479,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         }
                         //系列
                         if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2) {
-                            var filterArray = [];
-                            if (filter.filterValue.type === BI.Selection.All) {
-                                filterArray = allSeries;
-                            } else {
-                                filterArray = filter.getFilterResult(allSeries);
-                            }
+                            var filterArray = filter.getFilterResult(allSeries);
                             if (BI.contains(filterArray, series.name)) {
                                 BI.each(series.data, function (id, da) {
                                     self._createDataLabel(da, dataLabel);
@@ -537,15 +528,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         });
 
         function formatDataLabelForClassify(series, filter, array, labelStyle) {
-            var filterArray = [];
             if(!BI.Utils.isDimensionUsable(labelStyle.target_id)) {
                 return;
             }
-            if(filter.filterValue.type === BI.Selection.All) {
-                filterArray = array;
-            } else {
-                filterArray = filter.getFilterResult(array);
-            }
+            var filterArray = filter.getFilterResult(array);
             BI.each(series.data, function (id, data) {
                 if (BI.contains(filterArray, data.x)) {
                     self._createDataLabel(data, labelStyle);
@@ -554,12 +540,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
 
         function formatDataLabelForSelf(series, filter, array, labelStyle) {
-            var filterArray = [];
-            if(filter.filterValue.type === BI.Selection.All) {
-                filterArray = array;
-            } else {
-                filterArray = filter.getFilterResult(array);
-            }
+            var filterArray = filter.getFilterResult(array);
             BI.each(series.data, function (id, data) {
                 if (BI.contains(filterArray, data.y)) {
                     self._createDataLabel(data, labelStyle);
@@ -601,12 +582,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         }
                         //系列
                         if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION2) {
-                            var filterArray = [];
-                            if (filter.filterValue.type === BI.Selection.All) {
-                                filterArray = allSeries;
-                            } else {
-                                filterArray = filter.getFilterResult(allSeries);
-                            }
+                            var filterArray = filter.getFilterResult(allSeries);
                             if (BI.contains(filterArray, series.name)) {
                                 BI.each(series.data, function (id, da) {
                                     self._createDataImage(da, dataImage);
@@ -641,15 +617,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         });
 
         function formatDataImageForClassify(series, filter, array, labelStyle) {
-            var filterArray = [];
             if(!BI.Utils.isDimensionUsable(labelStyle.target_id)) {
                 return;
             }
-            if(filter.filterValue.type === BI.Selection.All) {
-                filterArray = array;
-            } else {
-                filterArray = filter.getFilterResult(array);
-            }
+            var filterArray = filter.getFilterResult(array);
             BI.each(series.data, function (id, data) {
                 if (BI.contains(filterArray, data.x)) {
                     self._createDataImage(data, labelStyle);
