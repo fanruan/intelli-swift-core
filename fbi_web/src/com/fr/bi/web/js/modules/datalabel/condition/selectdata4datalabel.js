@@ -52,14 +52,17 @@ BI.SelectDataLabelDataCombo = BI.inherit(BI.SelectDimensionDataCombo, {
     _itemsCreator: function (options, callback) {
         var o = this.options, self = this;
         var optionsResult = BI.deepClone(options);
-        BI.each(optionsResult.selected_values, function (idx, value) {
-            optionsResult.selected_values[idx] = new Date(value.split("-").join("/")).getTime();
-        });
-        BI.Utils.getWidgetDataByWidgetInfo({
-            "1234567": self.dimension
-        }, {
-            "10000": ["1234567"]
-        }, function (data) {
+        var group = BI.Utils.getDimensionGroupByID(o.dId);
+        if (BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+            BI.each(optionsResult.selected_values, function (idx, value) {
+                optionsResult.selected_values[idx] = new Date(value.split("-").join("/")).getTime();
+            });
+        }
+        var op = {},
+            ob = {};
+        op[o.dId] = self.dimension;
+        ob[BICst.REGION.DIMENSION1] = [o.dId];
+        BI.Utils.getWidgetDataByWidgetInfo(op, ob, function (data) {
             if (optionsResult.type == BI.MultiSelectCombo.REQ_GET_ALL_DATA) {
                 callback({
                     items: self._createItemsByData(data.value)
@@ -85,11 +88,11 @@ BI.SelectDataLabelDataCombo = BI.inherit(BI.SelectDimensionDataCombo, {
         var self = this, result = [];
         BI.each(values, function (idx, value) {
             var group = BI.Utils.getDimensionGroupByID(self.options.dId);
-            var date = new Date(BI.parseInt(value));
-            var year = date.getFullYear(),
-                month = '' + (date.getMonth() + 1),
-                day = '' + date.getDate();
             if (BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+                var date = new Date(BI.parseInt(value));
+                var year = date.getFullYear(),
+                    month = '' + (date.getMonth() + 1),
+                    day = '' + date.getDate();
                 var text = [year, month, day].join('/');
                 if (month.length < 2) {
                     month = '0' + month;
