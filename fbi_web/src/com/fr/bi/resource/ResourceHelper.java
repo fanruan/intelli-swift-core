@@ -2123,8 +2123,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/vector.js",
                 "com/fr/bi/web/js/base/utils/set.js",
                 "com/fr/bi/web/js/base/utils/lru.js",
+                "com/fr/bi/web/js/base/utils/heap.js",
+                "com/fr/bi/web/js/base/utils/integerBufferSet.js",
                 "com/fr/bi/web/js/base/utils/prefixIntervalTree.js",
                 "com/fr/bi/web/js/base/utils/helper.scroll.js",
+                "com/fr/bi/web/js/base/utils/tableRowBuffer.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
 
                 "com/fr/bi/web/js/base/parsers/expression.js",
