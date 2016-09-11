@@ -6581,6 +6581,8 @@ Data.Utils = {
 
             function combineConfig() {
                 return {
+                    "title": "",
+                    "chartType": "column",
                     "plotOptions": {
                         "rotatable": false,
                         "startAngle": 0,
@@ -6777,7 +6779,7 @@ Data.Utils = {
                         },
                         "enabled": false
                     },
-                    "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
+                    "zoom": {"zoomType": "", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
                     "plotBorderColor": "rgba(255,255,255,0)",
                     "tools": {
                         "hidden": true,
