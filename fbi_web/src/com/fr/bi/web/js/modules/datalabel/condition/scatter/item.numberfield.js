@@ -274,7 +274,8 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         var o = this.options;
         this.style = BI.createWidget({
             type: "bi.data_label_style_set",
-            chartType: o.chartType
+            chartType: o.chartType,
+            sdId: o.sdId
         });
         BI.isNotNull(initData) && this.style.setValue(initData);
         return this.style;

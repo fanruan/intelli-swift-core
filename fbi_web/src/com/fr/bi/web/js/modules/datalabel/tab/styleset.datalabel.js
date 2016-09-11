@@ -31,7 +31,8 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
         });
         this.styleTab = BI.createWidget({
             type: "bi.data_label_tab",
-            chartType: o.chartType
+            chartType: o.chartType,
+            dId: o.sdId
         });
         this.styleTab.on(BI.DataLabelTab.IMG_CHANGE, function () {
             self.style.hideView();
@@ -70,6 +71,9 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             direction: "bottom,left",
             offsetStyle: "right",
             height: "100%"
+        });
+        this.style.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function () {
+            self.styleTab.populate();
         });
         this.style.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {
             var style = self.styleTab.getValue();

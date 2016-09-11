@@ -221,9 +221,9 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function(idx, item){
             BI.each(item.data, function(i, t){
                 if(t.y < 0){
-                    tables.push([t.x, t.y, sum + t.y, t.targetIds]);
+                    tables.push([t.x, t.y, sum + t.y, t.targetIds, t.dataLabels, t.image, t.imageWidth, t.imageHeight]);
                 }else{
-                    tables.push([t.x, t.y, sum, t.targetIds]);
+                    tables.push([t.x, t.y, sum, t.targetIds, t.dataLabels, t.image, t.imageWidth, t.imageHeight]);
                 }
                 sum += t.y;
             });
@@ -232,13 +232,18 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         return [BI.map(BI.makeArray(2, null), function(idx, item){
             return {
                 "data": BI.map(tables, function(id, cell){
-                    var axis = BI.extend({targetIds: cell[3]}, {
-                        x: cell[0],
-                        y: Math.abs(cell[2 - idx])
-                    });
+                    var axis = {};
                     if(idx === 1){
+                        axis = BI.extend({targetIds: cell[3], dataLabels: cell[4], image: cell[5], imageWidth: cell[6], imageHeight: cell[7]}, {
+                            x: cell[0],
+                            y: Math.abs(cell[2 - idx])
+                        });
                         axis.color = cell[2 - idx] < 0 ? colors[1] : colors[0];
                     }else{
+                        axis = BI.extend({targetIds: cell[3]}, {
+                            x: cell[0],
+                            y: Math.abs(cell[2 - idx])
+                        });
                         axis.color = "rgba(0,0,0,0)";
                         axis.borderColor = "rgba(0,0,0,0)";
                         axis.borderWidth = 0;
