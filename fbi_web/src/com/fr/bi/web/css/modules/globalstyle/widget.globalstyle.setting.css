@@ -10,6 +10,7 @@
 .bi-global-style-setting .global-style-title {
   font-size: 14px;
   color: #1a1a1a;
+  cursor: move;
 }
 .bi-global-style-setting .bi-wrapper-bottom {
   border-bottom: 1px solid #eaeaea;

@@ -47,7 +47,7 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
                 left: 140,
                 bottom: 10
             }]
-        })
+        });
     },
 
     getValue: function () {
