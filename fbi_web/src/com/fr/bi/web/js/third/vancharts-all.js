@@ -3679,11 +3679,11 @@ define('utils/ColorUtils',[],function(){
         colorToHex:colorToHex,
         colorToHexAlpha:colorToHexAlpha,
         getClickColor:getClickColor,
-        getStandardColorAndOpacity:getStandardColorAndOpacity,
+        getStandardColorAndOpacity:getStandardColorAndOpacity
     };
 
     window.ColorUtils = ColorUtils;
-    
+
     return ColorUtils;
 });
 /**
@@ -5271,8 +5271,14 @@ define('ComponentLibrary',[],function(){
  * Created by eason on 15/5/4.
  * 注册了的图表的工厂,所有加载的图表模块都在这里注册
  */
-define('ChartLibrary',[],function(){
+define('ChartLibrary',['require','./Constants'],function(require){
     var _registeredCharts = {};
+    var Constants = require('./Constants');
+
+    var RenderOrder = [Constants.BAR_CHART, Constants.COLUMN_CHART, Constants.LINE_CHART, Constants.AREA_CHART,
+        Constants.PIE_CHART, Constants.MULTIPIE_CHART, Constants.TREEMAP_CHART,
+        Constants.RADAR_CHART, Constants.GAUGE_CHART, Constants.SCATTER_CHART, Constants.BUBBLE_CHART,
+        Constants.FORCE_BUBBLE_CHART, Constants.POINT_MAP, Constants.AREA_MAP];
 
     /**
      * 根据名字获得某种图表类型的function
@@ -5296,6 +5302,7 @@ define('ChartLibrary',[],function(){
     }
 
     return {
+        RenderOrder:RenderOrder,
         getRegisteredCharts:getRegisteredCharts,
         get:get,
         register:register
@@ -6011,7 +6018,7 @@ define('HammerHandler',['require','./utils/BaseUtils','./Constants','./dom/DomEv
                     while (src) {
 
                         //todo 这里可以写的更通用一点,用范围来判断target
-                        if(isPan && legend && BaseUtils.containsPoint(legend.bounds, ev.containerPoint)){
+                        if(isPan && legend && legend.visible && BaseUtils.containsPoint(legend.bounds, ev.containerPoint)){
                             target = legend;
                         }else{
                             target = vanchart.renderer.findInteractiveTarget(src);
@@ -6102,7 +6109,7 @@ define('HammerHandler',['require','./utils/BaseUtils','./Constants','./dom/DomEv
 
                     var len = Math.sqrt(detX * detX + detY * detY);
 
-                    var radius = point.radius || point.marker.radius || 4.5;
+                    var radius = point.radius || (point.marker && point.marker.radius) || 4.5;
 
                     if(len <= radius){
                         return point;
@@ -6359,12 +6366,11 @@ define('vector/ElementWrapper',['require','../utils/Class'],function(require){
  * 这个js做成类似接口的东西吧
  */
 
-define('vector/Renderer',['require','../utils/Class','../utils/BaseUtils','./ElementWrapper','../Constants'],function(require){
+define('vector/Renderer',['require','../utils/Class','../utils/BaseUtils','./ElementWrapper'],function(require){
 
     var Class = require('../utils/Class');
     var BaseUtils = require('../utils/BaseUtils');
     var ElementWrapper = require('./ElementWrapper');
-    var Constants = require('../Constants');
 
     var Renderer = Class.extend({
         /**
@@ -6390,8 +6396,8 @@ define('vector/Renderer',['require','../utils/Class','../utils/BaseUtils','./Ele
         },
 
         div: function () {
-            return new ElementWrapper(document.createElement('div'), this)
-                .style({position:'absolute',left:0,top:0}).type('div');
+            return new ElementWrapper(document.createElement('div'), this).type('div')
+                .style({position:'absolute',left:0,top:0})
         },
 
         vgroup: function () {
@@ -6400,6 +6406,7 @@ define('vector/Renderer',['require','../utils/Class','../utils/BaseUtils','./Ele
             return {
                 divG: divG,
                 renderG: renderG,
+                type: 'vgroup',
                 attr: function () {
                     this.divG.attr.apply(this.divG, arguments);
                     this.renderG.attr.apply(this.renderG, arguments);
@@ -6408,9 +6415,12 @@ define('vector/Renderer',['require','../utils/Class','../utils/BaseUtils','./Ele
                 append: function (ele) {
                     if (ele.type === 'div') {
                         divG.append(ele);
-                        return ele;
+                    } else if (ele.type === 'vgroup') {
+                        divG.append(ele.divG);
+                        renderG.append(ele.renderG);
+                    } else {
+                        renderG.append(ele);
                     }
-                    renderG.append(ele);
                     return ele;
                 },
                 add: function () {
@@ -6927,7 +6937,7 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
                     var map = {
                         'x': 'left',
                         'y': 'top',
-                        'dx': 'margin-left',
+                        'dx': 'margin-left'
                         // 'dy': 'margin-top'
                     };
 
@@ -7532,8 +7542,8 @@ define('vector/VmlRenderer',['require','./Renderer','../utils/PathUtils','../uti
     var Vml = Renderer.extend({
 
         _initContainerDom: function (dom){
-            var root = new ElementWrapper(this.create('group'), this);
-            dom.appendChild(root.rawElement);
+            var root = this.div();
+            dom.appendChild(root.node());
             return root;
         },
 
@@ -7614,13 +7624,19 @@ define('vector/VmlRenderer',['require','./Renderer','../utils/PathUtils','../uti
 
         },
 
-        createClip: function (attrs) {
+        createClip: function (attrs, type) {
+            if(type != 'rect'){
+                return;
+            }
+
             var top = 0, left = 0, right = left + attrs.width, bottom = top + attrs.height;
             return 'rect(' + top + 'px '+ right +'px '+ bottom +'px ' + left + 'px)';
         },
 
         clip:function(elementWrapper, clipWrapper){
-            elementWrapper.node().style.clip = clipWrapper;
+            if(clipWrapper){
+                // elementWrapper.node().style.clip = clipWrapper;
+            }
         },
 
         imagePattern:function(p, attrs){
@@ -7659,9 +7675,14 @@ define('vector/VmlRenderer',['require','./Renderer','../utils/PathUtils','../uti
             //transform属性先屏蔽掉,暂时只更新矩形
             if(attrs.transform){
                 var transform = transformParser(attrs.transform);
-                if(transform.translate){
-                    elem.style.left = transform.translate[0] + 'px';
-                    elem.style.top = transform.translate[1] + 'px';
+                try {
+                    if (transform.translate) {
+                        elem.style.left = transform.translate[0] + 'px';
+                        elem.style.top = transform.translate[1] + 'px';
+                    }
+                } catch (e) {
+                    // ie 8, don't know what's wrong
+                    console.log(e);
                 }
 
                 if(transform.rotate){
@@ -7683,50 +7704,7 @@ define('vector/VmlRenderer',['require','./Renderer','../utils/PathUtils','../uti
                 elem.path = pathStr;
             }
         },
-
-        _setTextAttrsAndStyle:function(domWrapper){
-
-            var attrs = {};
-            BaseUtils.extend(attrs, domWrapper.styles, domWrapper.attrs);
-
-            var textPath = domWrapper.textPath;
-
-            textPath.string = attrs.text;
-            textPath.on = true;
-
-            if (domWrapper.textPath) {
-                var textPathStyle = domWrapper.textPath.style;
-                attrs["fontFamily"] && (textPathStyle.fontFamily = '"' + attrs["fontFamily"].split(",")[0].replace(/^['"]+|['"]+$/g, '') + '"');
-                attrs["fontSize"] && (textPathStyle.fontSize = attrs["fontSize"]);
-                attrs["font-weight"] && (textPathStyle.fontWeight = attrs["font-weight"]);
-                attrs["fontWeight"] && (textPathStyle.fontStyle = attrs["fontWeight"]);
-                attrs["color"] && (textPathStyle.color = '#cccccc');
-
-                // text-anchor emulation
-                switch (attrs["text-anchor"]) {
-                    case "start":
-                        textPathStyle["v-text-align"] = "left";
-                        break;
-                    case "end":
-                        textPathStyle["v-text-align"] = "right";
-                        break;
-                    default:
-                        textPathStyle["v-text-align"] = "center";
-                        break;
-                }
-                textPathStyle["v-text-kern"] = true;
-
-                domWrapper.node().strokecolor = '#cccccc';
-                domWrapper.node().strokeweight = '2px';
-                domWrapper.node().fillColor = '#cccccc';
-            }
-
-            if("x" in attrs || "y" in attrs){
-                var x = attrs.x, y = attrs.y;
-                domWrapper.path.v = 'm100,100l101,100'
-            }
-        },
-
+        
         style:function(domWrapper, styles){
             var oldStyles = domWrapper.styles,
                 newStyles = {},
@@ -8065,12 +8043,7 @@ define('theme/options',['require','../Constants','../utils/QueryUtils','../utils
             "align": "outside"
         },
 
-        tooltip:nameSeriesValueSizeTooltip,
-
-        icon:{
-            iconUrl:'../../doc/example/marker-icon.png',
-            iconSize: [25, 41]
-        }
+        tooltip:nameSeriesValueSizeTooltip
     };
 
     var multiPiePlotOptions = {
@@ -8260,7 +8233,7 @@ define('theme/config',['require','../Constants','../utils/QueryUtils','./options
     var xyZoom = {
         zoomType:'xy',
         zoomTool:{
-            visible:false,
+            enabled:false,
             resize:true
         }
     };
@@ -8736,6 +8709,11 @@ define('theme/config',['require','../Constants','../utils/QueryUtils','./options
 
         legend:disabledLegend,
 
+        icon:{
+            iconUrl:'../../doc/example/marker-icon.png',
+            iconSize: [25, 41]
+        },
+
         plotOptions:Options[Constants.POINT_MAP].plotOptions.pointMap
     };
 
@@ -9018,6 +8996,12 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 this.components[ComponentLibrary.Y_AXIS_COMPONENT].refreshRestore()
             }
 
+            //仪表盘恢复
+            var gaugeSeries = this.series[Constants.GAUGE_CHART] || [];
+            gaugeSeries.sort(function(a, b){
+                return a.index - b.index;
+            });
+
             //饼图的排序恢复
             var pieSeries = this.series[Constants.PIE_CHART] || [];
             pieSeries.forEach(function(sery){
@@ -9055,7 +9039,16 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             }
 
             var increaseOrder = this.orderType == Constants.ASCENDING;
+            var para = increaseOrder ? 1 : -1;
+
             //仪表盘的排序
+            var gaugeSeries = this.series[Constants.GAUGE_CHART] || [];
+
+            gaugeSeries.sort(function(seryA, seryB){
+                var totalA = seryA.getSeryTotalValue();
+                var totalB = seryB.getSeryTotalValue();
+                return (totalA - totalB) * para;
+            });
 
 
             //饼图的排序
@@ -9207,14 +9200,11 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             }
 
             //构建图表的类型,然后根据组件,修改属性
-            var Charts = ChartLibrary.getRegisteredCharts();
-            for(name in Charts){
-
-                var oldSeries = this.series[name] || [];
-
-                Class = Charts[name];
-
+            ChartLibrary.RenderOrder.forEach(function(name){
+                var oldSeries = vanchart.series[name] || [];
+                Class = ChartLibrary.get(name);
                 var newSeries = [];
+                
                 seriesData.forEach(function(seriesData, index){
                     if((seriesData.type || chartType) == name){
 
@@ -9241,8 +9231,8 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                     }
                 }
 
-                this.series[name] = newSeries;
-            }
+                vanchart.series[name] = newSeries;
+            });
 
             this._resize();
         },
@@ -9717,11 +9707,13 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                         var points = sery.data;
                         for(var pIndex = points.length - 1; pIndex >= 0; pIndex--){
                             var point = points[pIndex];
-                            if(validArea[point.name] || !point.value){
-                                continue;
+                            if(point){
+                                if(validArea[point.name] || !point.value){
+                                    continue;
+                                }
+                                validArea[point.name] = true;
+                                accountPoints.push(point);
                             }
-                            validArea[point.name] = true;
-                            accountPoints.push(point);
                         }
                     }else{
                         sery.data.forEach(function(point){
@@ -9934,15 +9926,19 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             if(!this.plotClip){
                 this.plotClip = renderer.createClip(clipBounds);
             }else{
-                this.plotClip.rect.attr(clipBounds);
+                this.plotClip.rect && this.plotClip.rect.attr(clipBounds);
             }
 
             this._renderBackground();
 
             this.renderComponents(ComponentLibrary.ComponentsOrder, function (comp) {return !comp.isFloat;});
 
+            if(!vanchart.clipSeriesGroup){
+                renderer.clip(vanchart.clipSeriesGroup = renderer.group().add(), vanchart.plotClip);
+            }
+
             if(!vanchart.seriesGroup){
-                renderer.clip(vanchart.seriesGroup = renderer.group().add(), vanchart.plotClip);
+                vanchart.seriesGroup = renderer.group().add();
             }
 
             if(!vanchart.seriesTextRenderGroup){
@@ -9969,7 +9965,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             this._renderTrendLine();
 
             // phantomjs test
-            console.log('done');
+            window.console && console.log('done');
         },
 
         renderComponents: function (compArray, filterFunc) {
@@ -10146,7 +10142,9 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             this.renderer.remove();
             this.renderer = this.plotClip
                 = this.chartBackgroundGroup
-                = this.trendLineGroup = this.seriesGroup
+                = this.trendLineGroup
+                = this.seriesGroup
+                = this.clipSeriesGroup
                 = this.seriesTextGroup = null;
             this.handler.destroy();
         },
@@ -11013,15 +11011,26 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./ComponentLib
                     var areaLayers = renderer._bubbleLayer.getLayers();
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
-                            d3.select(areaLayers[i]._path)
-                                .style({
-                                    'stroke':feature.mouseOverColor,
-                                    'stroke-width':0,
-                                    'stroke-opacity':0.35,
-                                    'fill':feature.mouseOverColor
-                                })
-                                .interrupt(Constants.SELECT_ANIMATION).transition(Constants.SELECT_ANIMATION)
-                                .duration(200).ease('back-out').style('stroke-width', 6)
+                            if(BaseUtils.isSupportSVG()){
+                                d3.select(areaLayers[i]._path)
+                                    .style({
+                                        'stroke':feature.mouseOverColor,
+                                        'stroke-width':0,
+                                        'stroke-opacity':0.35,
+                                        'fill':feature.mouseOverColor
+                                    })
+                                    .interrupt(Constants.SELECT_ANIMATION).transition(Constants.SELECT_ANIMATION)
+                                    .duration(200).ease('back-out').style('stroke-width', 6)
+                            }else{
+                                areaLayers[i].setStyle({
+                                    fillColor:feature.mouseOverColor,
+                                    opacity:0.35,
+                                    stroke:feature.mouseOverColor,
+                                    weight:6,
+                                    stroke:true
+                                });
+                            }
+
                         }
                     }
                 },
@@ -11033,13 +11042,21 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./ComponentLib
                     var feature = layer._data;
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
-                            d3.select(areaLayers[i]._path)
-                                .style('fill', feature.color)
-                                .style('fill-opacity', feature.opacity)
-                                .interrupt(Constants.SELECT_ANIMATION)
-                                .transition(Constants.SELECT_ANIMATION);
-                            d3.select(areaLayers[i]._path)
-                                .style('stroke-width', 0);
+                            if(BaseUtils.isSupportSVG()){
+                                d3.select(areaLayers[i]._path)
+                                    .style('fill', feature.color)
+                                    .style('fill-opacity', feature.opacity)
+                                    .interrupt(Constants.SELECT_ANIMATION)
+                                    .transition(Constants.SELECT_ANIMATION);
+                                d3.select(areaLayers[i]._path)
+                                    .style('stroke-width', 0);
+                            }else{
+                                areaLayers[i].setStyle({
+                                    fillColor:feature.color,
+                                    fillOpacity:feature.fillColorOpacity,
+                                    weight:0
+                                });
+                            }
                         }
                     }
                 },
@@ -11072,12 +11089,14 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./ComponentLib
                     var areaLayers = renderer._scatterLayer.getLayers();
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
-                            d3.select(areaLayers[i]._path)
-                                .style(isHollow ? 'stroke':'fill', markerHighlightColor)
-                                .interrupt(Constants.SELECT_ANIMATION)
-                                .transition(Constants.SELECT_ANIMATION)
-                                .ease('ease-out-expo')
-                                .attr('d', feature.series._getMarkerPath(markerType, radius + 2))
+                            if(BaseUtils.isSupportSVG()){
+                                d3.select(areaLayers[i]._path)
+                                    .style(isHollow ? 'stroke':'fill', markerHighlightColor)
+                                    .interrupt(Constants.SELECT_ANIMATION)
+                                    .transition(Constants.SELECT_ANIMATION)
+                                    .ease('ease-out-expo')
+                                    .attr('d', feature.series._getMarkerPath(markerType, radius + 2))
+                            }
                         }
                     }
 
@@ -11093,10 +11112,12 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./ComponentLib
                     var isHollow = feature.series._isHollowMarker(feature.marker.symbol);
                     for(var i = 0, len = areaLayers.length; i < len; i++){
                         if(areaLayers[i]._data.name == layer._data.name){
-                            d3.select(areaLayers[i]._path)
-                                .interrupt(Constants.SELECT_ANIMATION)
-                                .style(isHollow ? 'stroke':'fill', feature.marker.fillColor)
-                                .attr('d', feature.series._getMarkerPath(markerType, radius));
+                            if(BaseUtils.isSupportSVG()){
+                                d3.select(areaLayers[i]._path)
+                                    .interrupt(Constants.SELECT_ANIMATION)
+                                    .style(isHollow ? 'stroke':'fill', feature.marker.fillColor)
+                                    .attr('d', feature.series._getMarkerPath(markerType, radius));
+                            }
                         }
                     }
                 },
@@ -11246,7 +11267,7 @@ define('VanChartForceBubble',['require','./VanChart','./utils/BaseUtils','./Comp
             var cX = plotBounds.width/2, cY = plotBounds.height/2;
 
             if(!this.group){
-                this.group = renderer.group().addTo(vanchart.seriesGroup);
+                this.group = renderer.group().addTo(vanchart.clipSeriesGroup);
             }
             this.group.attr('transform', BaseUtils.makeTranslate(plotBounds));
             var nodes = [], visibleNodes = [], maxRadius = 0;
@@ -11603,7 +11624,7 @@ define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart','./
         constructor:VanCharts,
 
         setOptions:function(options){
-             console.log(JSON.stringify(options));
+            window.console && console.log(JSON.stringify(options));
             if(!BaseUtils.isArray(options)){
                 options = [options];
             }
@@ -11869,12 +11890,11 @@ define('chart/Point',['require','../utils/QueryUtils','../utils/BaseUtils','../u
 
             this.series = series;
 
-            this.refresh(options);
+            this.refresh(options || {});
         },
 
         refresh:function(options){
             this.options = options;
-
             var queryList = this._getQueryList(), series = this.series, vanchart = series.vanchart;
             var category = this.series.type == Constants.BAR_CHART ? options.y : options.x;
             var seriesName = this.series.name;
@@ -11882,7 +11902,7 @@ define('chart/Point',['require','../utils/QueryUtils','../utils/BaseUtils','../u
 
             var borderColor = QueryUtils.queryList(queryList, 'borderColor');
             var borderOpacity = QueryUtils.queryList(queryList, 'borderOpacity');
-            if(BaseUtils.hasDefined(borderColor)) {
+            if(borderColor) {
                 var hexAlpha = ColorUtils.getStandardColorAndOpacity(borderColor, borderOpacity);
                 borderColor = hexAlpha.hex;
                 borderOpacity = hexAlpha.alpha;
@@ -11932,10 +11952,11 @@ define('chart/Point',['require','../utils/QueryUtils','../utils/BaseUtils','../u
             });
 
             if(series.isNullValue){
-                this.isNull = series.isNullValue();
+                this.isNull = series.isNullValue(this);
             } else {
                 //只有'-'才表示空
-                this.isNull = this[series.getTargetKey()] == '-';
+                var targetValue = this[series.getTargetKey()];
+                this.isNull = (targetValue == '-' || BaseUtils.hasNotDefined(targetValue));
             }
 
             // color problems
@@ -12081,9 +12102,9 @@ define('chart/Point',['require','../utils/QueryUtils','../utils/BaseUtils','../u
             }
 
             if (point.tooltip && point.tooltip.shared && point.points && point.points.length) {
-                var sharedFilter = point._hasEvents || function (p) { return p.tooltip && p.tooltip.shared };
                 var max = point.points
-                    .filter(sharedFilter)
+                    .filter(point._hasEvents)
+                    .filter(function (p) { return p.tooltip && p.tooltip.shared })
                     .reduce(function (prev, curr) {
                         curr.series.onPointMouseOver.call(curr, ev);
                         if (!prev) {
@@ -12369,6 +12390,9 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
     var CIRCLE = 2 * Math.PI;
     var STEP = Math.PI / 180;
 
+    var ANIMATION_TIME = 600;
+    var EASE_TYPE = 'quad-out';
+
     var Series = Evented.extend({
 
         initialize:function(options, vanchart, index){
@@ -12423,6 +12447,8 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
 
                 name:name,
 
+                index:index,
+
                 className:'vancharts-series-' + index,
 
                 visible:visible,
@@ -12468,7 +12494,9 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
 
                 var refresh = false;
                 this.points.forEach(function(point){
-                    if(series._getPointKey(point) == series._getPointKey(data[i])){
+                    var pointkey = series._getPointKey(point);
+
+                    if(BaseUtils.hasDefined(pointkey) && (pointkey == series._getPointKey(data[i]))){
                         point.refresh(data[i]);
                         refresh = true;
                         newPoints.push(point);
@@ -12877,7 +12905,7 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
             var shadowOpacity = position === Constants.OUTSIDE ? 0.1 : 0.15;
 
             return {
-                color:position == Constants.OUTSIDE ? (point.marker && point.marker.fillColor || point.color) : '#ffffff',
+                color:(position == Constants.OUTSIDE || Constants.TOP || Constants.BOTTOM) ? (point.marker && point.marker.fillColor || point.color) : '#ffffff',
                 fontSize:'12px',
                 fontFamily:'Verdana',
                 textShadow:'1px 1px 1px rgba(0,0,0,' + shadowOpacity + ')',
@@ -12900,7 +12928,7 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
                 fontSize:'12px',
                 fontFamily:'Verdana',
                 textShadow:'1px 1px 1px rgba(0,0,0,0.15)',
-                color:position == Constants.OUTSIDE ? (point.marker && point.marker.fillColor || point.color) : '#ffffff'
+                color:(position == Constants.OUTSIDE || Constants.TOP || Constants.BOTTOM) ? (point.marker && point.marker.fillColor || point.color) : '#ffffff'
             };
         },
 
@@ -13190,17 +13218,36 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
             (this.large && (this.type == Constants.BUBBLE_CHART || this.type == Constants.SCATTER_CHART)) ? this._canvasRender() : this._svgRender();
         },
 
+        _createGroup: function (renderer, vanchart) {
+            return renderer.group().addTo(vanchart.clipSeriesGroup);
+        },
+
+        getSeryTotalValue:function(){
+            var total = 0;
+
+            this.points.forEach(function(point){
+                total += point.getTargetValue();
+            });
+
+            return total;
+        },
+
         _svgRender:function(){
             var vanchart = this.vanchart, renderer = vanchart.renderer, plotBounds = vanchart.getPlotBounds();
 
             if(!this.group){
-                this.group = renderer.group().addTo(vanchart.seriesGroup);
+                this.group = this._createGroup(renderer, vanchart).attr('transform', BaseUtils.makeTranslate(this._getTranslate()));
                 this.additionalClip && this.additionalClip(this.group);
                 this.initialAnimationMoving = true;
             }
 
             //对于可以自定义位置的如雷达图,仪表盘这边的translate不是绘图取
-            this.group.attr('transform', BaseUtils.makeTranslate(this._getTranslate()));
+            if(this.animation){
+                d3.select(this.group.node()).transition().duration(ANIMATION_TIME).ease(EASE_TYPE)
+                    .attr('transform', BaseUtils.makeTranslate(this._getTranslate()));
+            }else{
+                this.group.attr('transform', BaseUtils.makeTranslate(this._getTranslate()));
+            }
 
             if(this._isSeriesInteractive()){
                 renderer.registerInteractiveTarget(this, this.group);
@@ -14827,6 +14874,10 @@ define('chart/Pie',['require','../Constants','../utils/BaseUtils','../utils/Colo
             });
         },
 
+        _getAxisTypes:function(){
+            return [];
+        },
+
         doLayout:function(){
 
             //计算整个圆的位置和大小
@@ -15122,6 +15173,10 @@ define('chart/Pie',['require','../Constants','../utils/BaseUtils','../utils/Colo
             }
 
             return graphicCount == visiblePoint ? 0 : 1;
+        },
+
+        _createGroup: function (renderer, vanchart) {
+            return renderer.group().addTo(vanchart.seriesGroup);
         },
 
         updateAnimation:function(dom, point, delay){
@@ -15602,6 +15657,8 @@ define('chart/Line',['require','../Constants','../utils/BaseUtils','../utils/Que
             this.dataBandsGraphic.forEach(function(band){
                 band._onSeriesMouseOver();
             });
+
+            BaseUtils.toFront(this.group.node());
         },
 
         _onSeriesUnChosen:function(ev){
@@ -15663,52 +15720,54 @@ define('chart/Line',['require','../Constants','../utils/BaseUtils','../utils/Que
             var options = this.options, series = this.series, animation = series.animation;
             var group = series.group, vanchart = series.vanchart, renderer = vanchart.renderer;
 
-            var lineStyle = {'display': series.visible ? 'inline' : 'none',
-                'fill':'none','stroke':options.color, 'stroke-width':series.lineWidth};
-            if(!this.linePath){
-                this.linePath = renderer.path().attr('d', series.linePath).style(lineStyle).addTo(group);
-            }else{
-                this.linePath.style(lineStyle);
-                if(animation){
-                    d3.select(this.linePath.node()).transition().ease(UPDATE_EASE)
-                        .duration(LINE_UPDATE_TIME).attr('d', series.linePath);
-                }else{
-                    this.linePath.attr('d', series.linePath);
-                }
+            var lineStyle = {'fill':'none','stroke':options.color, 'stroke-width':series.lineWidth};
+            var style = {'fill':options.fillColor, 'fill-opacity':options.fillColorOpacity};
+
+            var isInit = series.visible && !this.linePath;
+            var isArea = series.type == Constants.AREA_CHART;
+            var clipBounds = options.clipBounds;
+            if(!this.clipRect){
+                this.clipRect = renderer.createClip({x:clipBounds.x, y:clipBounds.y,width:clipBounds.width, height:clipBounds.height});
             }
 
-            if(series.type == Constants.AREA_CHART){
+            if(series.visible){
 
-                var style = {'display': series.visible ? 'inline' : 'none',
-                    'fill':options.fillColor, 'fill-opacity':options.fillColorOpacity};
+                if(isInit){
+                    this.linePath = renderer.path().attr('d', series.linePath).style(lineStyle).addTo(group);
+                    renderer.clip(this.linePath, this.clipRect);
 
-                if(!this.areaPath){
-                    this.areaPath = renderer.path().attr('d', series.areaPath).style(style).addTo(group);
-                }else{
-                    this.areaPath.style(style);
+                    if(isArea){
+                        this.areaPath = renderer.path().attr('d', series.areaPath).style(style).addTo(group);
+                        renderer.clip(this.areaPath, this.clipRect);
+                    }
+
                     if(animation){
-                        d3.select(this.areaPath.node()).transition().ease(UPDATE_EASE)
-                                                .duration(LINE_UPDATE_TIME).attr('d', series.areaPath);
+                        d3.select(this.clipRect.rect.rawElement).attr('width', 0)
+                            .transition().ease(INIT_EASE).duration(LINE_SHOW_TIME)
+                            .attr('x', clipBounds.x).attr('y', clipBounds.y)
+                            .attr('width', clipBounds.width).attr('height', clipBounds.height);
+                    }
+
+                }else{
+                    this.linePath.attr('d', series.linePath).style(lineStyle);
+                    this.areaPath && this.areaPath.attr('d', series.areaPath).style(style);
+
+                    if(animation){
+                        d3.select(this.clipRect.rect.rawElement).transition().ease(UPDATE_EASE).duration(LINE_UPDATE_TIME)
+                            .attr('x', clipBounds.x).attr('y', clipBounds.y).attr('width', clipBounds.width).attr('height', clipBounds.height);
                     }else{
-                        this.areaPath.attr('d', series.areaPath);
+                        this.clipRect.rect.attr(clipBounds);
                     }
                 }
-            }
 
-            var clipBounds = options.clipBounds, ease = UPDATE_EASE, time = LINE_UPDATE_TIME;
-            if(!this.clipRect){
-                this.clipRect = renderer.createClip({x:clipBounds.x, y:clipBounds.y,width:0, height:clipBounds.height});
-                ease = INIT_EASE; time = LINE_SHOW_TIME;
-                this.linePath && renderer.clip(this.linePath, this.clipRect);
-                this.areaPath && renderer.clip(this.areaPath, this.clipRect);
-            }
-
-            if(animation){
-                d3.select(this.clipRect.rect.rawElement).transition().ease(ease).duration(time)
-                    .attr('x', clipBounds.x).attr('y', clipBounds.y).attr('width', clipBounds.width).attr('height', clipBounds.height);
             }else{
-                this.clipRect.rect.attr(clipBounds);
+                this.linePath && this.linePath.remove();
+                this.linePath = null;
+
+                this.areaPath && this.areaPath.remove();
+                this.areaPath = null;
             }
+
         },
 
         _onSeriesMouseOver:function(){
@@ -15720,7 +15779,7 @@ define('chart/Line',['require','../Constants','../utils/BaseUtils','../utils/Que
             if(this.series.type == Constants.AREA_CHART){
                 this.areaPath.style({
                     'fill':ColorUtils.getHighLightColor(this.options.fillColor),
-                    'fill-opacity':CHOSEN_AREA_ALPHA
+                    'fill-opacity': this.options.fillColorOpacity == 0 ? 0 : CHOSEN_AREA_ALPHA
                 });
             }
         },
@@ -15807,7 +15866,7 @@ define('chart/TreeSeries',['require','./Series','../utils/BaseUtils','../utils/Q
 
                 state:visible ? Constants.STATE_SHOW : Constants.STATE_DROPPED,
 
-                animation:QueryUtils.queryList(queryList, 'animation') || vanchart.currentOption.animation,
+                animation:QueryUtils.queryList(queryList, 'animation') || vanchart.currentOption.animation
 
             });
 
@@ -16482,6 +16541,10 @@ define('chart/Bubble',['require','./Series','../utils/BaseUtils','../Constants',
             return 'size';
         },
 
+        isNullValue: function (point) {
+            return point.x == '-' || point.y == '-' || point.size == '-' || BaseUtils.hasNotDefined(point.size);
+        },
+
         _getPointKey: function (point) {
             return '' + point.x + point.y;
         },
@@ -16881,8 +16944,8 @@ define('chart/Scatter',['require','./Series','../utils/BaseUtils','../Constants'
             return 'size';
         },
 
-        isNullValue: function () {
-            return false;
+        isNullValue: function (point) {
+            return point.x == '-' || point.y == '-' || BaseUtils.hasNotDefined(point.y);
         },
 
         pushNormalLabelContent: function (point, formatter, dataLabels, useHtml, content) {
@@ -17741,7 +17804,7 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./TreeSe
                         .endAngle(Math.PI * 2)
                         .innerRadius(INNER_RING_RADIUS)
                         .outerRadius(INNER_RING_RADIUS + INNER_RING_STROKE_WIDTH)(),
-                    'display': 'none',
+                    'display': 'none'
                 })
                 .style({
                     'fill': 'rgba(0,0,0,0.1)',
@@ -19389,8 +19452,8 @@ define('chart/ThermometerGauge',['require','../Constants','../utils/ColorUtils',
 
                 var  x2 = '0%', y2 = '0%';
                 isVertical ? y2 = '100%': x2 = '100%';
-                var stop1 = {'offset':'0%', 'stop-color':endColor};
-                var stop2 = {'offset':'100%', 'stop-color':startColor};
+                var stop1 = {'offset': '0%', 'stop-color': isVertical ? endColor : startColor};
+                var stop2 = {'offset':'100%', 'stop-color': isVertical ? startColor : endColor};
                 this.colorGradient = renderer.colorGradient({'x1':'0%', 'y1':'0%', 'x2':x2, 'y2':y2}, [stop1, stop2]);
             }
 
@@ -19524,13 +19587,12 @@ define('chart/ThermometerGauge',['require','../Constants','../utils/ColorUtils',
 
         _getFixedPos:function(datum, divDim) {
             var gauge = datum.series, thermometerLayout = gauge.thermometerLayout;
-            var plotBounds = gauge.vanchart.getPlotBounds();
 
             var x, y;
 
             if(thermometerLayout == Constants.HORIZONTAL_LAYOUT){
-                x = plotBounds.x + gauge.centerX - divDim.width/2;
-                var baseY = plotBounds.y + gauge.centerY;
+                x = gauge.centerX - divDim.width/2;
+                var baseY = gauge.centerY;
                 y = baseY + THERMOMETER_R + 10;
 
                 if(gauge.percentageLabelContent && gauge.percentageLabel.align == Constants.BOTTOM){
@@ -19544,11 +19606,11 @@ define('chart/ThermometerGauge',['require','../Constants','../utils/ColorUtils',
 
             }else{
 
-                y = plotBounds.y + gauge.centerY - divDim.height/2;
+                y = gauge.centerY - divDim.height/2;
 
                 var tickWidth = gauge.gaugeAxis.getMaxTickWidth();
 
-                var baseX = plotBounds.x + gauge.centerX;
+                var baseX = gauge.centerX;
                 x = baseX + THERMOMETER_R + TICK_LABEL_GAP + TICK_SIZE + TICK_LABEL_GAP + tickWidth + 10;
 
                 if(gauge.percentageLabelContent && gauge.percentageLabel.align == Constants.RIGHT){
@@ -19697,6 +19759,10 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
             this._fixCenterAndRadius();
         },
 
+        _createGroup: function (renderer, vanchart) {
+            return renderer.group().addTo(vanchart.seriesGroup);
+        },
+
         _getAxisTypes:function(){
             return ['gaugeAxis'];
         },
@@ -19770,6 +19836,9 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
                 var valueLabelContent = [];
                 for(var i = 0, len = series.points.length; i < len; i++){
                     var point = series.points[i];
+                    if(point.isNull){
+                        continue;
+                    }
                     var labelContent = this._calculateSingleLineLabelContent(formatter, point);
                     var labelDim = BaseUtils.getTextDimension(labelContent, style, useHtml);
                     valueLabelContent.push({
@@ -19875,6 +19944,7 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
             return{x:0,y:0,width:0,height:0};
         },
 
+        //试管的重写了
         _getFixedPos:function(datum, divDim){
             var gauge = datum.series, style = gauge.style;
             var x, y;
@@ -20252,11 +20322,10 @@ define('chart/ColumnRadar',['require'],function(require){
 
         _getFixedPos:function(datum, divDim){
 
-            var radius = datum.y, centerAngle = datum.radian, center = this.getCenter();
+            var centerAngle = datum.radian, center = this.getCenter();
 
-            var x, y;
-            x = radius * Math.sin(centerAngle) + center[0];
-            y = radius * Math.cos(centerAngle + Math.PI) + center[1];
+            var x = datum.posX + center[0];
+            var y = datum.posY + center[1];
 
             if(centerAngle < Math.PI / 2){
                 y -= divDim.height;
@@ -20759,6 +20828,10 @@ define('chart/Map',['require','../Constants','../utils/BaseUtils','../utils/Quer
 
         getTargetKey:function(){
             return 'value';
+        },
+
+        _getPointKey:function(point){
+            return point.name;
         },
 
         _getFixedPos:function(point){
@@ -22096,6 +22169,19 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                     this.minorTickData.push(isDate ? BaseUtils.int2date(value) : value);
                 }
             }
+
+            var startValue = this.tickData[0].tickValue;
+            var minValue = this.scale.domain()[0];
+
+            isDate = (startValue instanceof Date) && (minValue instanceof Date);
+            startValue = isDate ? BaseUtils.date2int(startValue) : startValue;
+            minValue = isDate ? BaseUtils.date2int(minValue) : minValue;
+
+            if(startValue > minValue){
+                for(value = startValue - minorInterval; value >= minValue; value -= minorInterval){
+                    this.minorTickData.push(isDate ? BaseUtils.int2date(value) : value);
+                }
+            }
         },
 
         // check showLabel
@@ -23270,7 +23356,7 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
             var domain = this.scale.domain(), range = this.scale.rangeExtent();
             range = this._getRangeWithMinMax(range[0], range[1]);
             var tmpScale = d3.scale.quantize().domain(range).range(domain);
-            var category = tmpScale(containerPoint[0] - plotBounds.x);
+            var category = tmpScale(this.isHorizontal() ? containerPoint[0] - plotBounds.x : containerPoint[1] - plotBounds.y);
             return this.vanchart.cateMap[category];
         },
 
@@ -23555,7 +23641,9 @@ define('component/ValueAxis',['require','./Base','./BaseAxis','../utils/BaseUtil
                 dataMap[seriesName] = dataMap[seriesName] || [];
 
                 sery.points.forEach(function(point){
-                    dataMap[seriesName].push(point[key]);
+                    if(!point.isNull && point.visible) {
+                        dataMap[seriesName].push(point[key]);
+                    }
                 });
 
             }else{
@@ -23565,20 +23653,23 @@ define('component/ValueAxis',['require','./Base','./BaseAxis','../utils/BaseUtil
                 dataMap[NK] = dataMap[NK] || [];
 
                 sery.points.forEach(function(point, i){
-                    var value = parseInt(point[key]);
-                    if(value > 0){
-                        if(dataMap[PK][i] != null && dataMap[PK][i] != undefined){
-                            dataMap[PK][i] += value;
+                    if(!point.isNull && point.visible){
+                        var value = parseInt(point[key]);
+                        if(value > 0){
+                            if(dataMap[PK][i] != null && dataMap[PK][i] != undefined){
+                                dataMap[PK][i] += value;
+                            }else{
+                                dataMap[PK][i] = value;
+                            }
                         }else{
-                            dataMap[PK][i] = value;
-                        }
-                    }else{
-                        if(dataMap[NK][i] != null && dataMap[NK][i] != undefined){
-                            dataMap[NK][i] += value;
-                        }else{
-                            dataMap[NK][i] = value;
+                            if(dataMap[NK][i] != null && dataMap[NK][i] != undefined){
+                                dataMap[NK][i] += value;
+                            }else{
+                                dataMap[NK][i] = value;
+                            }
                         }
                     }
+
                 });
             }
         },
@@ -23851,13 +23942,13 @@ define('component/DateAxis',['require','./Base','./BaseAxis','../utils/BaseUtils
         },
 
         //min, max是毫秒数
-        _updateDomain:function(min, max, zoomFix){
+        _updateDomain:function(min, max){
 
-            var domain = this._calculateValueNiceDomain(min, max, min, max, zoomFix);
+            var domain = this._calculateValueNiceDomain(min, max, min, max);
 
-            var minValue = BaseUtils.int2date(domain.minValue);
+            var minValue = BaseUtils.int2date(domain[0]);
 
-            var maxValue = BaseUtils.int2date(domain.maxValue);
+            var maxValue = BaseUtils.int2date(domain[1]);
 
             this.scale = this.scale ?
                 this.scale.domain([minValue, maxValue]) : d3.time.scale().domain([minValue, maxValue]);
@@ -23873,12 +23964,12 @@ define('component/DateAxis',['require','./Base','./BaseAxis','../utils/BaseUtils
 
             maxValue = BaseUtils.date2int(maxValue);
 
-            this.componentOption.min = minValue;
-            this.componentOption.max = maxValue;
+            this.options.min = minValue;
+            this.options.max = maxValue;
 
-            this._updateDomain(minValue, maxValue, zoomFix);
+            this._updateDomain(minValue, maxValue);
         }
-        // ,
+
         // _initZoomStatus:function(){
         //     var zoom = this.vanchart.getComponent(ZOOM_COMPONENT.ZOOM_COMPONENT);
         //     if(zoom && zoom.zoomToolEnabled() && BaseUtils.isSupportSVG() && this.isBaseAxis){
@@ -24197,10 +24288,11 @@ define('component/LegendItem',['require','../dom/Evented','../Constants','../uti
                     .attr('width', 12).attr('height', 12);
             }
 
-            g.text = g.text || renderer.text().addTo(g);
+            g.text = g.text || g.append(renderer.vtext());
             g.text.textContent(d.itemName)
-                .attr('dy', '.32em').attr('text-anchor', 'middle')
-                .attr('x', iconSize.width + GAP + labelDim.width/2).attr('y', 0)
+                .attr('margin-top', '-0.22em') // only apply to div
+                .attr('dy', '.32em')
+                .attr('x', iconSize.width + GAP).attr('y', 0)
                 .style(BaseUtils.extend(textStyle, {fill:d.visible ? textStyle.color : d.hiddenColor}));
         },
 
@@ -24397,11 +24489,18 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../Constants
 
             }else{
 
+                //考虑不和工具栏重叠
+                var toolbarHeight = 0;
+                if(position == Constants.RIGHT || position == Constants.RIGHT_TOP){
+                    var tools = this.vanchart.getComponent(ComponentLibrary.TOOLBAR_COMPONENT);
+                    tools && (toolbarHeight = 37);
+                }
+
                 var dim = this._layoutVerticalLegendItemBounds();
 
                 var legendSize = dim.width + PADDING * 2, maxWidth = this._maxWidth();
 
-                var height = this.vanchart.getPlotBounds().height - PADDING * 2;//可用的高度
+                var height = this.vanchart.getPlotBounds().height - PADDING * 2 - toolbarHeight;//可用的高度
 
                 this.hasPages = dim.height > height;
 
@@ -24438,10 +24537,12 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../Constants
                 this._setComponentBounds(position, legendSize);
 
                 var x = this.bounds.x + PADDING, y = this.bounds.y + PADDING;
-                var width = this.bounds.width - PADDING * 2, height = this.bounds.height - PADDING * 2;
+                var width = this.bounds.width - PADDING * 2, height = this.bounds.height - PADDING * 2 - toolbarHeight;
 
                 //居中
                 var usedHeight = Math.min(dim.height, height);
+
+                y = Math.max(toolbarHeight, y);
 
                 if (!this.isFloat && position != Constants.RIGHT_TOP) {
                     y += Math.round((height - usedHeight) / 2);
@@ -24829,7 +24930,7 @@ define('component/ZoomBar',['require','./Base','../utils/BaseUtils','../Constant
         getStartX:function(revisedDomain){
             var startX = 0, scale = this.xScale;
             if(revisedDomain.from){
-                startX = scale(revisedDomain.from)
+                startX = scale(revisedDomain.from) || startX;
             }
             return startX;
         },
@@ -24837,7 +24938,7 @@ define('component/ZoomBar',['require','./Base','../utils/BaseUtils','../Constant
         getEndX:function(revisedDomain){
             var endX = this.bounds.width, scale = this.xScale;
             if(revisedDomain.to){
-                endX = scale(revisedDomain.to) + (scale.rangeBand ? scale.rangeBand() : 0);
+                endX = scale(revisedDomain.to) + (scale.rangeBand ? scale.rangeBand() : 0) || endX;
             }
             return endX;
         },
@@ -24895,7 +24996,7 @@ define('component/ZoomBar',['require','./Base','../utils/BaseUtils','../Constant
             var lineSvg = d3.svg.line().interpolate("linear")
                 .defined(function (d) {return !d.isNull && !isNaN(xScale(d.x));})
                 .x(function (d) { return xScale(d.x) + det; })
-                .y(function (d) { return yScale(d.y); });
+                .y(function (d) { return yScale(d.y + (d.y0 || 0)); });
 
 
             this._lineG = this._lineG || [];
@@ -24980,9 +25081,28 @@ define('component/ZoomBar',['require','./Base','../utils/BaseUtils','../Constant
         _findDraggingTarget:function(ev){
             var event = ev.srcEvent, src = event.target || event.srcElement;
 
+            var posX = ev.containerPoint[0] - this.bounds.x;
+
             var target;
             while (src) {
 
+                //by position
+                var leftDet = this.leftButton.posX - posX;
+                var rightDet = posX - (this.rightButton.posX + WIDTH);
+
+                if(leftDet > 0 && leftDet < 10){
+                    target = this.leftButton;
+                }
+
+                if(rightDet > 0 && rightDet < 10){
+                    target = this.rightButton;
+                }
+
+                if(target){
+                    break;
+                }
+
+                //by dom
                 if(src == this.leftButton.node()){
                     target = this.leftButton;
                 }else if(src == this.rightButton.node()){
@@ -25345,11 +25465,10 @@ define('component/ToolbarIcon',['require','./Base','../utils/BaseUtils','../Cons
 
             if(arguments.length){
                 this._iconAnimation(arguments[0], arguments[1]);
-            }else{
+            }else{//refresh icon
                 this.iconG.style({'display':''});
             }
 
-            this.currentPos.x = this.pos.x;
         },
 
         hideIcon:function(){
@@ -25358,11 +25477,12 @@ define('component/ToolbarIcon',['require','./Base','../utils/BaseUtils','../Cons
 
             if(arguments.length){
                 this._iconAnimation(arguments[0], arguments[1]);
-            }else{
+            }else{//refresh icon
                 this.iconG.style({'display':'none'});
+                //每次刷新之后，刷新按钮隐藏并且回到初始位置
+                this.iconG.attr('transform', 'translate('+ this.pos.x +','+ this.pos.y +')');
+                this.currentPos.x = this.pos.x;
             }
-
-            this.currentPos.x = this.pos.x;
         },
 
         _iconAnimation:function(moveIndex, delay){
@@ -25391,6 +25511,7 @@ define('component/ToolbarIcon',['require','./Base','../utils/BaseUtils','../Cons
 
                 iconG.rect.style({'fill':visible ? OPEN_NOMAL : CLOSED_NORMAL})
             }
+            this.currentPos.x = this.pos.x;
         },
 
         onMouseOver:function(){
@@ -26577,9 +26698,9 @@ define ('component/RangeLegend',['require','./Base','../utils/BaseUtils','../Con
                 }
 
                 if(position == Constants.RIGHT || position == Constants.RIGHT_TOP){
-                    var toolBarCom = this.vanchart.getComponent(ComponentLibrary.TOOLBAR_COMPONENT);
-                    if(toolBarCom && toolBarCom.visible){
-                        this.bounds.y += toolBarCom.bounds.height;
+                    var tools = this.vanchart.getComponent(ComponentLibrary.TOOLBAR_COMPONENT);
+                    if(tools){
+                        this.bounds.y += 37;
                     }
                 }
 
@@ -26747,7 +26868,7 @@ define('component/Polar',['require','../Constants','../utils/BaseUtils','./Base'
             if (!this.clip) {
                 this.clip = R.createClip(clipPath, 'path');
             }else{
-                this.clip.path.attr(clipPath);
+                this.clip.path && this.clip.path.attr(clipPath);
             }
 
             this.radiusAxis.render();
@@ -27458,8 +27579,8 @@ define('component/RadiusAxis',['require','./Base','./ValueAxis','../utils/BaseUt
             var vanchart = this.vanchart, renderer = vanchart.renderer;
 
             if(!this.axisGroup){
-                this.axisGroup = renderer.group().add();
-                renderer.clip(this.axisGroup, this.polar.clip);
+                this.axisGroup = renderer.vgroup().add();
+                renderer.clip(this.axisGroup.renderG, this.polar.clip);
             }
 
             this.axisGroup.attr('transform', BaseUtils.makeTranslate(this.polar.center));
@@ -27555,19 +27676,24 @@ define('component/RadiusAxis',['require','./Base','./ValueAxis','../utils/BaseUt
             var plotLines = this.getPlotLines();
 
             if(!this.plotLinesGroup){
-                this.plotLinesGroup = axisGroup.append(R.group());
+                this.plotLinesGroup = axisGroup.append(R.vgroup());
                 this.plotLines = [];
             }
             var plotLinesGroup = this.plotLinesGroup;
 
             var selection = this._bindData(this.plotLines, plotLines);
 
-            selection.exit.map(function (d) {
-                d.remove();
+            selection.exit.map(function (layer) {
+                layer.text && layer.text.remove();
+                layer.remove();
             });
 
             var enter = selection.enter.map(function (d) {
-                return plotLinesGroup.append(R.path()).datum(d);
+                var path = plotLinesGroup.append(R.path().datum(d));
+                if (d.text) {
+                    path.text = plotLinesGroup.append(R.vtext(true));
+                }
+                return path;
             });
 
             this.plotLines = enter.concat(selection.update).map(function (ele) {
@@ -27592,6 +27718,10 @@ define('component/RadiusAxis',['require','./Base','./ValueAxis','../utils/BaseUt
                             'stroke-dasharray': d.dataArray
                         })
                 }
+
+                ele.text.textContent(d.text).style(d.style)
+                    .attr({y: d.baseY});
+
                 return ele;
             }, this);
 
@@ -28230,11 +28360,11 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
 
             }else if(url){
 
+                this._attribution && this._attribution.remove();
+                this._attribution = null;
+                
                 if(attribution){
                     this._attribution = L.control.attribution({position:'bottomright'}).addAttribution(attribution);
-                }else {
-                    this._attribution && this._attribution.remove();
-                    this._attribution = null;
                 }
 
                 this._tileLayer = _loadedLayerMap[vanchartsID][url] || L.tileLayer(url);
