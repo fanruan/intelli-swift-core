@@ -979,7 +979,7 @@ var Table = React.createClass({
     _didScrollStop() {
         if (this.isMounted() && this._isScrolling) {
             this._isScrolling = false;
-            this.setState({redraw: true});
+            this.setState({redraw: !this.state.redraw});
             if (this.props.onScrollEnd) {
                 this.props.onScrollEnd(this.state.scrollX, this.state.scrollY);
             }
