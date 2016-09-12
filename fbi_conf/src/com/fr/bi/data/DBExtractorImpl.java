@@ -9,6 +9,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.dbdealer.*;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
@@ -47,7 +48,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
             }
             row++;
             if (CubeConstant.LOG_SEPERATOR_ROW != 0 && row % CubeConstant.LOG_SEPERATOR_ROW == 0) {
-                BILogger.getLogger().info("sql: " + sql + "is executing…… "+" transported rows：" + row);
+                BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" sql: " + sql + "is executing…… "+" transported rows：" + row);
             }
 
         }
@@ -145,7 +146,6 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 query = dealWithSqlCharSet(sql.toString(), connection);
                 stmt = createStatement(conn, dialect);
                 rs = stmt.executeQuery(query);
-                BILogger.getLogger().error("sql: " + sql.toString() + " execute failed!");
             }
             row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row, sql.toString());
             BILogger.getLogger().info("sql: " + sql.toString() + " execute cost:" + DateUtils.timeCostFrom(t));

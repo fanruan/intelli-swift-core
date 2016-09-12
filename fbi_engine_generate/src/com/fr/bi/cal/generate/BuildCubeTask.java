@@ -137,7 +137,9 @@ public class BuildCubeTask implements CubeTask {
         try {
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
             if (!cubeBuild.replaceOldCubes()) {
-                BILogger.getLogger().error("replace cube files failed");
+                if (!retryReplace(5)){
+                BILogger.getLogger().error(" cube replace files failed");
+                }
             }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
@@ -145,6 +147,16 @@ public class BuildCubeTask implements CubeTask {
             BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
             CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         }
+    }
+
+    private boolean retryReplace(int tryTimes) {
+        for (int j = 0; j < tryTimes; j++) {
+            boolean isSuccess = cubeBuild.replaceOldCubes();
+            if (isSuccess) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

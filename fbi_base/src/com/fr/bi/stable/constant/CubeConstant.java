@@ -74,5 +74,5 @@ public class CubeConstant {
     public static final String CUBE_PROPERTY = "property";
 
     /*每隔多少行输出一次信息*/
-    public static final long LOG_SEPERATOR_ROW = 1l<<12;
+    public static final long LOG_SEPERATOR_ROW = 1l<<8;
 }
