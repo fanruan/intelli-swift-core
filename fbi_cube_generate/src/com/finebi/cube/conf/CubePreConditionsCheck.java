@@ -1,6 +1,10 @@
 package com.finebi.cube.conf;
 
+import com.fr.bi.stable.data.source.CubeTableSource;
+
 import java.io.File;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by kary on 2016/6/20.
@@ -11,5 +15,6 @@ public interface CubePreConditionsCheck {
     boolean HDSpaceCheck(File file);
 
     /*连接是否可用*/
-    boolean ConnectionCheck();
+    Map<CubeTableSource, Boolean> ConnectionCheck(Set<CubeTableSource> cubeTableSourceSet, long userId);
+
 }

@@ -48,11 +48,12 @@ public class CubeTaskHelper {
 //            BILogger.getLogger().info("Cube part update start");
 //            cubeBuild = new CubeBuildByPart(userId, BICubeGenerateUtils.getTables4CubeGenerate(userId), BICubeGenerateUtils.getRelations4CubeGenerate(userId));
 //        } else {
-        BILogger.getLogger().info("Cube all update start");
         cubeBuild = new CubeBuildStaff(new BIUser(userId));
+        BILogger.getLogger().info("preCondition checking");
 //        }
         if (preConditionsCheck(userId, cubeBuild)) {
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
+            BILogger.getLogger().info("Cube all update start");
             taskAddResult = cubeManager.addTask(task, userId);
         }
         return taskAddResult;

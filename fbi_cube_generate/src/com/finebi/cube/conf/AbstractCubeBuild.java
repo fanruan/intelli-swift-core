@@ -1,7 +1,6 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CalculateDependManager;
@@ -16,8 +15,8 @@ import com.fr.bi.conf.data.source.ServerTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -93,33 +92,17 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
         ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
         boolean spaceCheck = check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
-        boolean connectionCheck = check.ConnectionCheck();
-        Map tableSourceSqlValidMap = new HashMap();
-        for (CubeTableSource source : getAllSingleSources()) {
-            if (source.getType() == BIBaseConstant.TABLETYPE.DB) {
-                boolean isSqlValid=true;
-                try {
-                    source.createPreviewJSON(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
-                } catch (Exception e) {
-                    isSqlValid = false;
-                    BILogger.getLogger().error(e.getMessage(), e);
-                }
-                tableSourceSqlValidMap.put(source, isSqlValid);
-            }
-            boolean isSqlTableSource=source.getType()==BIBaseConstant.TABLETYPE.SQL;
-            if (isSqlTableSource){
-                boolean isSqlValid;
-                try {
-                    isSqlValid = source.createPreviewJSON(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId), userId) != null;
-                } catch (Exception e) {
-                    isSqlValid = false;
-                    BILogger.getLogger().error(e.getMessage(), e);
-                }
-                tableSourceSqlValidMap.put(source, isSqlValid);
-
+        Map<CubeTableSource, Boolean> map = check.ConnectionCheck(getAllSingleSources(), userId);
+        boolean connectionValid = true;
+        for (CubeTableSource source : map.keySet()) {
+            if (!map.get(source)) {
+                String errorMessage = source.getTableName() + ": Connection test failed:";
+                connectionValid = false;
+                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
             }
         }
-        return spaceCheck && connectionCheck;
+
+        return spaceCheck && connectionValid;
     }
 
     @Override
