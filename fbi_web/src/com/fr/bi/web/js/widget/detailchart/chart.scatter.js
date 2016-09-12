@@ -90,7 +90,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                         "align": "outside",
                         enabled: true,
                         formatter: {
-                            identifier: "${X}${Y}${SIZE}",
+                            identifier: "${X}${Y}",
                             "XFormat": function(){return BI.contentFormat(arguments[0], '#.##')},
                             "YFormat": function(){return BI.contentFormat(arguments[0], '#.##')}
                         }

@@ -161,6 +161,10 @@ BI.ConvertModel = BI.inherit(BI.Widget, {
         return this.isGenerated;
     },
 
+    getFieldNameToTransName: function(){
+        return this.fieldInfo;
+    },
+
     populate: function (info) {
         var etlValue = info.tableInfo.etl_value;
         this.id = info.id;
@@ -173,5 +177,6 @@ BI.ConvertModel = BI.inherit(BI.Widget, {
         this.translations = info.translations;
         this.old_tables = BI.extend(info.tableInfo, {id: BI.UUID()});
         this.isGenerated = info.isGenerated;
+        this.fieldInfo = info.fieldInfo
     }
 });
