@@ -94,17 +94,11 @@ if (!window.BI) {
             }
             if (item && (item.type || options.type)) {
                 el = BI.extend({}, options, item);
-                if (el.element) {
-                    el.renderEl = el.renderEl || el.element.element || el.element;
-                }
-                return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el)));
+                return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el), true));
             }
             if (item && item.el && (item.el.type || options.type)) {
                 el = BI.extend({}, options, item.el);
-                if (el.element) {
-                    el.renderEl = el.renderEl || el.element.element || el.element;
-                }
-                return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el)));
+                return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el), true));
             }
             if (item && BI.isWidget(item.el)) {
                 return item.el;
