@@ -707,7 +707,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                     reopen: true,
                     isGenerated: status.isGenerated,
                     tableInfo: table,
-                    translations: self.model.getTranslations()
+                    translations: self.model.getTranslations(),
+                    fieldInfo: self.model.constructFieldNameAndTranslationFieldNameRelation()
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1154,6 +1155,7 @@ BI.ETL = BI.inherit(BI.Widget, {
     _convertRowAndColumn: function (tId) {
         var self = this;
         BI.Layers.remove(self.constants.ETL_OPERATOR_LAYER);
+
         var convert = BI.createWidget({
             type: "bi.convert",
             element: BI.Layers.create(self.constants.ETL_OPERATOR_LAYER),
@@ -1162,7 +1164,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 reopen: false,
                 isGenerated: false,
                 tableInfo: self.model.getTableById(tId),
-                translations: self.model.getTranslations()
+                translations: self.model.getTranslations(),
+                fieldInfo: self.model.constructFieldNameAndTranslationFieldNameRelation()
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);

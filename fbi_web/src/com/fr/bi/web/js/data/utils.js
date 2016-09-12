@@ -1662,7 +1662,7 @@ Data.Utils = {
                             "align": "outside",
                             enabled: true,
                             formatter: {
-                                identifier: "${X}${Y}${SIZE}",
+                                identifier: "${X}${Y}",
                                 "XFormat": function () {
                                     return BI.contentFormat(arguments[0], '#.##')
                                 },
@@ -2507,7 +2507,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -2949,7 +2949,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -3204,7 +3204,7 @@ Data.Utils = {
             if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (configs.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -3469,7 +3469,7 @@ Data.Utils = {
             if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -3964,7 +3964,7 @@ Data.Utils = {
             if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (configs.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -4269,7 +4269,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -4618,7 +4618,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -4888,7 +4888,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -5214,7 +5214,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -5896,7 +5896,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -6217,7 +6217,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -6498,7 +6498,7 @@ Data.Utils = {
             });
             var config = combineConfig();
             config.plotOptions.click = function () {
-                options.click(this.pointOption);
+                options.click(this.options);
             };
             return [result, config];
 
@@ -6581,6 +6581,8 @@ Data.Utils = {
 
             function combineConfig() {
                 return {
+                    "title": "",
+                    "chartType": "column",
                     "plotOptions": {
                         "rotatable": false,
                         "startAngle": 0,
@@ -6591,6 +6593,7 @@ Data.Utils = {
                         "layout": "horizontal",
                         "hinge": "rgb(101,107,109)",
                         "dataLabels": {
+                            "autoAdjust": true,
                             "style": "{fontFamily:'inherit', color: #808080, fontSize: 12pt}",
                             "formatter": {
                                 "identifier": "${VALUE}",
@@ -6777,7 +6780,7 @@ Data.Utils = {
                         },
                         "enabled": false
                     },
-                    "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
+                    "zoom": {"zoomType": "", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
                     "plotBorderColor": "rgba(255,255,255,0)",
                     "tools": {
                         "hidden": true,

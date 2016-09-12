@@ -1115,13 +1115,13 @@
 }
 .trigger-triangle-font .b-font:before {
   content: "\e66a";
-  color: #ffffff;
+  color: #808080;
 }
 .trigger-triangle-font:hover .b-font:before,
 .trigger-triangle-font:focus .b-font:before,
 .trigger-triangle-font.hover .b-font:before {
   content: "\e66a";
-  color: #ffffff;
+  color: #808080;
 }
 .trigger-triangle-font:active .b-font:before,
 .trigger-triangle-font.active .b-font:before {
@@ -1131,7 +1131,7 @@
 .trigger-triangle-font.native .b-font:before,
 .trigger-triangle-font.disabled .b-font:before {
   content: "\e66a";
-  color: #ffffff;
+  color: #808080;
 }
 .widget-date-next-h-font .b-font:before {
   content: "\e62f";
