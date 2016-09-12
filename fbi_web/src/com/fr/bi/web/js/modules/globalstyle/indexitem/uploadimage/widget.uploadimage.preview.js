@@ -12,7 +12,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
         BI.UploadImagePreview.superclass._init.apply(this, arguments);
         var self = this;
 
-        var tab = BI.createWidget({
+        this.tab = BI.createWidget({
             type: "bi.tab",
             element: this.element,
             cardCreator: function(v) {
@@ -25,29 +25,24 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                             width: 30,
                             height: 30
                         });
-                        fileUpload.on(BI.MultifileEditor.EVENT_CHANGE, function() {
-                            tab.setSelect(BI.UploadImagePreview.UPLOADED);
-                        });
-                        fileUpload.on(BI.MultifileEditor.EVENT_UPLOADED, function() {
-                            tab.setSelect(BI.UploadImagePreview.UPLOADED);
-                        });
+                        self._bindUploadEvents(fileUpload);
                         return BI.createWidget({
                             type: "bi.absolute",
                             items: [{
                                 el: {
                                     type: "bi.icon_button",
-                                    cls: "img-upload-font",
+                                    cls: "upload-image-button img-upload-font",
                                     width: 30,
                                     height: 30
                                 }
                             }, {
                                 el: fileUpload,
-                                top: -10
+                                top: 0
                             }, {
                                 el: {
                                     type: "bi.label",
-                                    text: ".jpg/.png/.gif/.bmp/.jpeg",
-                                    cls: "",
+                                    text: ".jpg/.png/.gif/.bmp",
+                                    cls: "support-files",
                                     height: 25
                                 },
                                 top: 15,
@@ -59,6 +54,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                     case BI.UploadImagePreview.UPLOADED:
                         self.previewArea = BI.createWidget({
                             type: "bi.layout",
+                            cls: "preview-area",
                             width: 30,
                             height: 30
                         });
@@ -69,25 +65,30 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                             width: 30,
                             height: 30
                         });
+                        self._bindUploadEvents(modifyFile);
+
                         var removeFile = BI.createWidget({
                             type: "bi.text_button",
                             text: BI.i18nText("BI-Delete"),
-                            cls: "",
+                            cls: "remove-button",
                             height: 25
+                        });
+                        removeFile.on(BI.TextButton.EVENT_CHANGE, function(){
+                            self._removeFile();
                         });
 
                         return BI.createWidget({
                             type: "bi.absolute",
                             items: [{
                                 el: self.previewArea,
-                                top: -10,
+                                top: 0,
                                 left: 0
                             }, {
                                 el: {
                                     type: "bi.label",
                                     text: BI.i18nText("BI-Modify"),
                                     height: 25,
-                                    cls: ""
+                                    cls: "modify-button"
                                 },
                                 top: -10,
                                 left: 40
@@ -98,12 +99,12 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                             }, {
                                 el: removeFile,
                                 top: -10,
-                                left: 100
+                                left: 120
                             }, {
                                 el: {
                                     type: "bi.label",
                                     text: ".jpg/.png/.gif/.bmp",
-                                    cls: "",
+                                    cls: "support-files",
                                     height: 25
                                 },
                                 top: 15,
@@ -113,15 +114,42 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                 }
             }
         });
-        tab.setSelect(BI.UploadImagePreview.TO_UPLOAD);
+        this.tab.setSelect(BI.UploadImagePreview.TO_UPLOAD);
+    },
+
+    _bindUploadEvents(widget) {
+        var self = this;
+        widget.on(BI.MultifileEditor.EVENT_CHANGE, function () {
+            this.upload();
+        });
+        widget.on(BI.MultifileEditor.EVENT_UPLOADED, function() {
+            var files = this.getValue();
+            var file = files[files.length - 1];
+            self.attachId = file.attach_id;
+            var fileName = file.filename;
+            BI.requestAsync("fr_bi_dezi", "save_upload_image", {
+                attach_id: self.attachId
+            }, function () {
+                self.tab.setSelect(BI.UploadImagePreview.UPLOADED);
+                self.previewArea.element.css({
+                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + self.attachId + "_" + fileName + ")",
+                    backgroundSize: "100%"
+                });
+            });
+        });
+    },
+    
+    _removeFile: function() {
+        delete this.imageId;
+        this.tab.setSelect(BI.UploadImagePreview.TO_UPLOAD);
     },
     
     getValue: function() {
-        
+        return this.imageId;
     },
     
-    setValue: function() {
-        
+    setValue: function(imageId) {
+        this.imageId = imageId;
     }
 });
 BI.extend(BI.UploadImagePreview, {
