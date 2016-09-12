@@ -1,6 +1,7 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CalculateDependManager;
@@ -15,6 +16,7 @@ import com.fr.bi.conf.data.source.ServerTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
@@ -84,7 +86,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
     /**
      * edit by kary 2016-09-12
-    * 新增数据连接有效性检查和SQL语句检查
+     * 新增数据连接有效性检查和SQL语句检查
      */
     @Override
     public boolean preConditionsCheck() {
@@ -92,6 +94,31 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
         boolean spaceCheck = check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
         boolean connectionCheck = check.ConnectionCheck();
+        Map tableSourceSqlValidMap = new HashMap();
+        for (CubeTableSource source : getAllSingleSources()) {
+            if (source.getType() == BIBaseConstant.TABLETYPE.DB) {
+                boolean isSqlValid=true;
+                try {
+                    source.createPreviewJSON(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
+                } catch (Exception e) {
+                    isSqlValid = false;
+                    BILogger.getLogger().error(e.getMessage(), e);
+                }
+                tableSourceSqlValidMap.put(source, isSqlValid);
+            }
+            boolean isSqlTableSource=source.getType()==BIBaseConstant.TABLETYPE.SQL;
+            if (isSqlTableSource){
+                boolean isSqlValid;
+                try {
+                    isSqlValid = source.createPreviewJSON(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId), userId) != null;
+                } catch (Exception e) {
+                    isSqlValid = false;
+                    BILogger.getLogger().error(e.getMessage(), e);
+                }
+                tableSourceSqlValidMap.put(source, isSqlValid);
+
+            }
+        }
         return spaceCheck && connectionCheck;
     }
 
@@ -160,7 +187,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     @Override
     public Map<CubeTableSource, Connection> getConnections() {
         Map<CubeTableSource, Connection> connectionMap = new HashMap<CubeTableSource, Connection>();
-        for (CubeTableSource tableSource : sources) {
+        for (CubeTableSource tableSource : getAllSingleSources()) {
             com.fr.data.impl.Connection connection = null;
             DatasourceManager.getInstance().getNameConnectionMap();
             if (tableSource instanceof DBTableSource) {

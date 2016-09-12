@@ -21,6 +21,7 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
 
     @Override
     public boolean ConnectionCheck() {
+
         return true;
     }
 

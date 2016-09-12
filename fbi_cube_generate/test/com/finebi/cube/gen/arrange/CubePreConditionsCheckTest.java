@@ -28,7 +28,6 @@ public class CubePreConditionsCheckTest extends TestCase {
     }
 
     public void testConnection() {
-
     }
 
 }
