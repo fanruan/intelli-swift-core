@@ -19,13 +19,13 @@ import java.util.*;
  */
 public class FormulaCalculator extends CalCalculator {
     private static final long serialVersionUID = 3296274167185012491L;
-    private static Calculator c = Calculator.createCalculator();
+    private Calculator c = Calculator.createCalculator();
     private String expression = StringUtils.EMPTY;
 
     public FormulaCalculator() {
     }
 
-    public FormulaCalculator(BICalculateTarget target,String expression) {
+    public FormulaCalculator(BICalculateTarget target, String expression) {
         super(target);
         this.expression = expression;
     }
@@ -39,7 +39,7 @@ public class FormulaCalculator extends CalCalculator {
     @Override
     public boolean isAllFieldsReady(Set<TargetGettingKey> targetSet) {
         Iterator<String> it = BIFormularUtils.createColumnIndexMap(expression).values().iterator();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             Object key = targetMap.get(it.next());
             if (key == null) {
                 return false;
@@ -65,7 +65,7 @@ public class FormulaCalculator extends CalCalculator {
             Object value = BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetMap, node.getSummaryValueMap()));
             //抛错就是没有值啦
             //pony 这边都存double吧，汇总在汇总要写cube，类型要统一
-            node.setSummaryValue(createTargetGettingKey(), ((Number)value).doubleValue());
+            node.setSummaryValue(createTargetGettingKey(), ((Number) value).doubleValue());
         } catch (Throwable e) {
         }
         for (int i = 0, len = node.getChildLength(); i < len; i++) {
@@ -106,7 +106,7 @@ public class FormulaCalculator extends CalCalculator {
         Object value = null;
         String formular = "=" + expression;
         Iterator<Map.Entry<String, String>> it = BIFormularUtils.createColumnIndexMap(expression).entrySet().iterator();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             Map.Entry<String, String> entry = it.next();
             TargetCalculator cal = (TargetCalculator) targetMap.get(entry.getValue());
             Double v = new Double(0);
@@ -151,7 +151,7 @@ public class FormulaCalculator extends CalCalculator {
         Object value = null;
         String formular = "=" + expression;
         Iterator<Map.Entry<String, String>> it = BIFormularUtils.createColumnIndexMap(expression).entrySet().iterator();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             Map.Entry<String, String> entry = it.next();
             TargetCalculator cal = (TargetCalculator) targetMap.get(entry.getValue());
             Double v = new Double(0);
