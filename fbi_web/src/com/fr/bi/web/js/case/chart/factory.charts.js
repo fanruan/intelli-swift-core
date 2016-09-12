@@ -66,6 +66,8 @@ BI.ChartCombineFormatItemFactory = {
 
     combineConfig: function () {
         return {
+            "title": "",
+            "chartType": "column",
             "plotOptions": {
                 "rotatable": false,
                 "startAngle": 0,
@@ -76,6 +78,7 @@ BI.ChartCombineFormatItemFactory = {
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
                 "dataLabels": {
+                    "autoAdjust": true,
                     "style": {fontFamily: "inherit", color: "#808080", fontSize: "12px"},
                     "formatter": {
                         "identifier": "${VALUE}",
