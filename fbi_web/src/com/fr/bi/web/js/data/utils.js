@@ -6593,6 +6593,7 @@ Data.Utils = {
                         "layout": "horizontal",
                         "hinge": "rgb(101,107,109)",
                         "dataLabels": {
+                            "autoAdjust": true,
                             "style": "{fontFamily:'inherit', color: #808080, fontSize: 12pt}",
                             "formatter": {
                                 "identifier": "${VALUE}",
