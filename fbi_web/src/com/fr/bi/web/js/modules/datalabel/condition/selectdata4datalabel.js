@@ -115,6 +115,25 @@ BI.SelectDataLabelDataCombo = BI.inherit(BI.SelectDimensionDataCombo, {
             }
         });
         return result;
-    }
+    },
+
+    setValue: function (v) {
+        v = this._assertValue(v);
+        var group = BI.Utils.getDimensionGroupByID(this.options.dId);
+        if (BI.isNotNull(group) && group.type !== v.group_type) {
+            v.value = [];
+        }
+        this.combo.setValue(v);
+    },
+
+    getValue: function () {
+        var val = this.combo.getValue() || {};
+        var group = BI.Utils.getDimensionGroupByID(this.options.dId);
+        return {
+            type: val.type,
+            value: val.value,
+            group_type: group.type
+        }
+    },
 });
 $.shortcut('bi.select_data_label_data_combo', BI.SelectDataLabelDataCombo);
