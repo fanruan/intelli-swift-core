@@ -7,19 +7,20 @@ import com.fr.json.JSONObject;
 /**
  * Created by User on 2016/8/31.
  */
-public class LineChartSetting extends BIAbstractChartSetting {
+public class LineChartSetting extends BIAbstractAxisChartSetting {
+
+    public LineChartSetting() throws JSONException {
+    }
+
     @Override
-    public JSONObject formatItems(JSONArray data, JSONArray types) throws JSONException {
-        return super.formatItems(data, types);
+    public String getChartTypeString() {
+        return "line";
     }
 
     @Override
     public JSONObject getConvertedDataAndSettings(JSONArray data, JSONArray types, JSONObject options) throws JSONException {
-        return null;
-    }
-
-    @Override
-    public JSONObject formatConfig(JSONObject options, JSONArray data) throws JSONException {
-        return null;
+        JSONObject DataAndSetting = super.getConvertedDataAndSettings(data, types, options);
+        formatChartLineStyle(DataAndSetting.getJSONObject("config"), options.getInt("chart_line_type"));
+        return DataAndSetting;
     }
 }

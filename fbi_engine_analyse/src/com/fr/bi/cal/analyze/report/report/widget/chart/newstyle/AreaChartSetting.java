@@ -5,21 +5,22 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
- * Created by User on 2016/8/31.
+ * Created by windy on 2016/8/31.
  */
-public class AreaChartSetting extends BIAbstractChartSetting {
-    @Override
-    public JSONObject formatItems(JSONArray data, JSONArray types) throws JSONException {
-        return super.formatItems(data, types);
+public class AreaChartSetting extends BIAbstractAxisChartSetting {
+
+    public AreaChartSetting() throws JSONException {
     }
 
     @Override
-    public JSONObject formatConfig(JSONObject options, JSONArray data) throws JSONException {
-        return null;
+    public String getChartTypeString() {
+        return "area";
     }
 
     @Override
     public JSONObject getConvertedDataAndSettings(JSONArray data, JSONArray types, JSONObject options) throws JSONException {
-        return null;
+        JSONObject DataAndSetting = super.getConvertedDataAndSettings(data, types, options);
+        formatChartLineStyle(DataAndSetting.getJSONObject("config"), options.getInt("chart_line_type"));
+        return DataAndSetting;
     }
 }

@@ -7,18 +7,12 @@ import com.fr.json.JSONObject;
 import java.util.UUID;
 
 /**
- * Created by User on 2016/8/31.
+ * Created by windy on 2016/9/9.
  */
-public class PercentAccumulateAreaChartSetting extends AccumulateAreaChartSetting {
+public abstract class BIAbstractAccumulateChartSetting extends BIAbstractAxisChartSetting {
 
-    public PercentAccumulateAreaChartSetting() throws JSONException {
-    }
-
-    @Override
-    public JSONObject formatConfig(JSONObject options, JSONArray data) throws JSONException {
-        JSONObject config = super.formatConfig(options, data);
-        config.optJSONObject("plotOptions").optJSONObject("tooltip").optJSONObject("formatter").put("identifier", "${CATEGORY}${SERIES}${PERCENT}");
-        return config;
+    public BIAbstractAccumulateChartSetting() throws JSONException {
+        super();
     }
 
     @Override
@@ -29,8 +23,7 @@ public class PercentAccumulateAreaChartSetting extends AccumulateAreaChartSettin
             JSONArray item = data.getJSONArray(i);
             for(int j = 0; j < items.length(); ){
                 JSONObject it = item.getJSONObject(j);
-                item.put(it.put("stack", uuid))
-                    .put(it.put("stackByPercent", true));
+                item.put(it.put("stack", uuid));
             }
             items.put(item);
         }
