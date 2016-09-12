@@ -65,23 +65,24 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 int rsColumn = i + 1;
                 switch (field.getFieldType()) {
                     case DBConstant.COLUMN.DATE: {
-                        switch (field.getClassType()) {
-                           case DBConstant.CLASS.DATE : {
-                               object = new DateDealer(rsColumn);
-                               break;
-                           }
-                            case DBConstant.CLASS.TIME : {
-                                object = new TimeDealer(rsColumn);
-                                break;
-                            }
-                            case DBConstant.CLASS.TIMESTAMP : {
-                                object = new TimestampDealer(rsColumn);
-                                break;
-                            }
-                            default: {
-                                object = new TimestampDealer(rsColumn);
-                            }
-                        }
+//                        switch (field.getClassType()) {
+//                           case DBConstant.CLASS.DATE : {
+//                               object = new DateDealer(rsColumn);
+//                               break;
+//                           }
+//                            case DBConstant.CLASS.TIME : {
+//                                object = new TimeDealer(rsColumn);
+//                                break;
+//                            }
+//                            case DBConstant.CLASS.TIMESTAMP : {
+//                                object = new TimestampDealer(rsColumn);
+//                                break;
+//                            }
+//                            default: {
+//                                object = new TimestampDealer(rsColumn);
+//                            }
+//                        }
+                        object = new TimestampDealer(rsColumn);
                         break;
                     }
                     case DBConstant.COLUMN.NUMBER: {
