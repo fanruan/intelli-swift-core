@@ -137,7 +137,9 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                     background: "url(" + self.imageURL + ")",
                     backgroundSize: "100%"
                 });
+                self.fireEvent(BI.UploadImagePreview.EVENT_CHANGE);
             });
+
         });
     },
 
@@ -168,4 +170,5 @@ BI.extend(BI.UploadImagePreview, {
     TO_UPLOAD: 1,
     UPLOADED: 2
 });
+BI.UploadImagePreview.EVENT_CHANGE="BI.UploadImagePreview.EVENT_CHANGE";
 $.shortcut("bi.upload_image_preview", BI.UploadImagePreview);
