@@ -10,7 +10,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.FixTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-fix-table",
+            baseCls: "bi-table",
             logic: { //冻结的页面布局逻辑
                 dynamic: false
             },
@@ -36,7 +36,9 @@ BI.FixTable = BI.inherit(BI.Widget, {
 
             header: [],
             footer: false,
-            items: [] //二维数组
+            items: [], //二维数组
+
+            afterScroll: BI.emptyFn
         })
     },
 
@@ -66,7 +68,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
         this.topLeftBodyItems = {};
         var table = this._table();
         var colgroup = this._createColGroup(this.columnLeft, this.topLeftColGroupTds);
-        var body = this._body();
+        var body = this.topLeftBody = this._body();
         body.element.append(this._createHeaderCells(this.topLeftItems, this.columnLeft, this.mergeLeft, this.topLeftBodyTds, this.topLeftBodyItems));
         BI.createWidget({
             type: "bi.adaptive",
@@ -98,7 +100,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
         this.topRightBodyItems = {};
         var table = this._table();
         var colgroup = this._createColGroup(this.columnRight, this.topRightColGroupTds);
-        var body = this._body();
+        var body = this.topRightBody = this._body();
         body.element.append(this._createHeaderCells(this.topRightItems, this.columnRight, this.mergeRight, this.topRightBodyTds, this.topRightBodyItems, this.columnLeft.length));
         BI.createWidget({
             type: "bi.adaptive",
@@ -130,8 +132,8 @@ BI.FixTable = BI.inherit(BI.Widget, {
         this.bottomLeftBodyItems = {};
         var table = this._table();
         var colgroup = this._createColGroup(this.columnLeft, this.bottomLeftColGroupTds);
-        var body = this._body();
-        body.element.append(this._createCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems));
+        var body = this.bottomLeftBody = this._body();
+        body.element.append(this._createBodyCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems));
         BI.createWidget({
             type: "bi.adaptive",
             element: table,
@@ -162,8 +164,8 @@ BI.FixTable = BI.inherit(BI.Widget, {
         this.bottomRightBodyItems = {};
         var table = this._table();
         var colgroup = this._createColGroup(this.columnRight, this.bottomRightColGroupTds);
-        var body = this._body();
-        body.element.append(this._createCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length));
+        var body = this.bottomRightBody = this._body();
+        body.element.append(this._createBodyCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length));
         BI.createWidget({
             type: "bi.adaptive",
             element: table,
@@ -443,9 +445,13 @@ BI.FixTable = BI.inherit(BI.Widget, {
                         },
                         onUpdate: function (top) {
                             otherElement[0].scrollTop = top;
+                            // self._scroll(top);
                             self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, top);
                         },
                         onComplete: function () {
+                            BI.delay(function () {
+                                self._scroll(scrollElement[0].scrollTop);
+                            }, 100);
                             self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrolling);
                             scrolling = null;
                         }
@@ -721,8 +727,22 @@ BI.FixTable = BI.inherit(BI.Widget, {
         };
     },
 
+    _scroll: function (scrollTop) {
+        var self = this, o = this.options;
+        var pos = this._helper.scrollTo(scrollTop);
+        this._rowBuffer.getRows(pos.index || 0, pos.offset || 0)
+        if (o.isNeedFreeze) {
+            this.bottomLeftBody.element.html(this._createBodyCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems, 0, null, pos.index, pos.offset));
+            this.bottomRightBody.element.html(this._createBodyCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length, null, pos.index, pos.offset));
+        } else {
+            this.body.element.html(this._createBodyCells(o.items, null, null, this.bodyTds, this.bodyItems, 0, null, pos.index, pos.offset));
+        }
+        o.afterScroll();
+    },
+
     resize: function () {
-        this._resize();
+        this._initScroller();
+        this._resize && this._resize();
     },
 
     _createCells: function (items, columnSize, mergeCols, TDs, Ws, start, rowSize) {
@@ -836,6 +856,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
                     .addClass(c === rows.length - 1 ? "last-col" : "");
                 var w = BI.createWidget(map[r][c], {
                     type: "bi.table_cell",
+                    textAlign: "left",
                     width: BI.isNumeric(width) ? width : "",
                     height: BI.isNumeric(height) ? height : "",
                     _row: r,
@@ -856,6 +877,83 @@ BI.FixTable = BI.inherit(BI.Widget, {
 
             frag.appendChild(tr[0]);
         });
+        return frag;
+    },
+
+    _createBodyCells: function (items, columnSize, mergeCols, TDs, Ws, start, rowSize, firstIndex, firstOffset) {
+        var self = this, o = this.options, preCol = {}, preRow = {}, preRW = {}, preCW = {}, map = {};
+        columnSize = columnSize || o.columnSize;
+        mergeCols = mergeCols || o.mergeCols;
+        TDs = TDs || {};
+        Ws = Ws || {};
+        start = start || 0;
+        rowSize || (rowSize = o.rowSize);
+        var frag = document.createDocumentFragment();
+        var rows = BI.sortBy(this._rowBuffer.getRowsWithUpdatedBuffer(firstIndex || 0, firstOffset || 0));
+        if (rows[0] > 0) {
+            frag.appendChild($("<tr>").height((o.rowSize + 1) * rows[0])[0]);
+        }
+        BI.each(rows, function (pos, i) {
+            var tr = $("<tr>").addClass((i & 1) === 0 ? "odd" : "even");
+            BI.each(items[i], function (j, row) {
+                if (!map[i]) {
+                    map[i] = {};
+                }
+                if (!TDs[i]) {
+                    TDs[i] = {};
+                }
+                if (!Ws[i]) {
+                    Ws[i] = {};
+                }
+                map[i][j] = row;
+
+                createOneEl(i, j);
+            });
+
+            function createOneEl(r, c) {
+                var width = self._calculateWidth(columnSize[c]);
+                if (width > 1.05 && c === columnSize.length - 1) {
+                    width--;
+                }
+                var height = self._calculateHeight(rowSize);
+                if (!TDs[r][c]) {
+                    var td = $("<td>").attr("height", height)
+                        .attr("width", width).css({"width": width, "height": height, "position": "relative"})
+                        .addClass((c & 1) === 0 ? "odd-col" : "even-col")
+                        .addClass(r === 0 ? "first-row" : "")
+                        .addClass(c === 0 ? "first-col" : "")
+                        .addClass(c === rows.length - 1 ? "last-col" : "");
+                    var w = BI.createWidget(map[r][c], {
+                        type: "bi.table_cell",
+                        textAlign: "left",
+                        width: BI.isNumeric(width) ? width : "",
+                        height: BI.isNumeric(height) ? height : "",
+                        _row: r,
+                        _col: c + start
+                    });
+                    w.element.css("position", "relative");
+                    td.append(w.element);
+                } else {
+                    var td = TDs[r][c];
+                    var w = Ws[r][c];
+                }
+                tr.append(td);
+                preCol[c] = td;
+                preCol[c].__mergeRows = [r];
+                preCW[c] = w;
+                preRow[r] = td;
+                preRow[r].__mergeCols = [c];
+                preRW[r] = w;
+                TDs[r][c] = td;
+                Ws[r][c] = w;
+            }
+
+            frag.appendChild(tr[0]);
+        });
+
+        if (rows[rows.length - 1] < items.length - 1) {
+            frag.appendChild($("<tr>").height((o.rowSize + 1) * (items.length - rows[rows.length - 1] - 1))[0]);
+        }
         return frag;
     },
 
@@ -981,7 +1079,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
     _createBody: function (columnSize, mergeCols, store, widgets) {
         var self = this, o = this.options;
         this.body = this._body();
-        this.body.element.append(this._createCells(o.items, columnSize, mergeCols, store, widgets));
+        this.body.element.append(this._createBodyCells(o.items, columnSize, mergeCols, store, widgets));
         return this.body;
     },
 
@@ -1026,7 +1124,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
             items: [this.tableContainer]
         });
 
-        BI.createWidget({
+        this.bottomRight = BI.createWidget({
             type: "bi.adaptive",
             cls: "bottom-right",
             element: this.element,
@@ -1057,6 +1155,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
                         self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, top);
                     },
                     onComplete: function () {
+                        self._scroll(scrolling);
                         self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrolling);
                         scrolling = null;
                     }
@@ -1973,6 +2072,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             if (this.scrollBottomRight.element[0].scrollTop !== scrollTop) {
                 this.scrollBottomRight.element[0].scrollTop = scrollTop;
+                this._scroll(scrollTop);
             }
             if (this.scrollBottomLeft.element[0].scrollTop !== scrollTop) {
                 this.scrollBottomLeft.element[0].scrollTop = scrollTop;
@@ -1980,6 +2080,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
         } else {
             if (this.scrollContainer.element[0].scrollTop !== scrollTop) {
                 this.scrollContainer.element[0].scrollTop = scrollTop;
+                this._scroll(scrollTop);
             }
         }
     },
@@ -2058,14 +2159,27 @@ BI.FixTable = BI.inherit(BI.Widget, {
         }
     },
 
+    _initScroller: function () {
+        var o = this.options;
+        var viewHeight = this.bottomRight && this.bottomRight.element.height();
+        this._helper = new BI.TableScrollHelper(o.items.length, o.rowSize + 1, viewHeight || 0);
+        this._helper.scrollTo(0);
+        this._rowBuffer = new BI.TableRowBuffer(o.items.length, o.rowSize + 1, viewHeight || 0, BI.bind(this._helper.getRowPosition, this._helper));
+    },
+
     populate: function (items, header) {
+        var self = this, o = this.options;
         this.options.items = items || [];
         if (header) {
             this.options.header = header;
         }
         this.empty();
+        this._initScroller();
         if (this.options.isNeedFreeze) {
             this._createFreezeFixTable();
+            BI.delay(function(){
+                self._scroll(0);
+            }, 100);
         } else {
             this._createNormalFixTable();
         }

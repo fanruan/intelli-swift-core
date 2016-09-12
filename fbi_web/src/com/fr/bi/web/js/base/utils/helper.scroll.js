@@ -35,14 +35,6 @@
             return defaultRowHeight
         };
         this._viewportHeight = viewportHeight;
-        this.scrollRowIntoView = BI.bind(this.scrollRowIntoView, this);
-        this.setViewportHeight = BI.bind(this.setViewportHeight, this);
-        this.scrollBy = BI.bind(this.scrollBy, this);
-        this.scrollTo = BI.bind(this.scrollTo, this);
-        this.scrollToRow = BI.bind(this.scrollToRow, this);
-        this.setRowHeightGetter = BI.bind(this.setRowHeightGetter, this);
-        this.getContentHeight = BI.bind(this.getContentHeight, this);
-        this.getRowPosition = BI.bind(this.getRowPosition, this);
 
         this._updateHeightsInViewport(0, 0);
     };
