@@ -98,6 +98,20 @@ BI.ETLModel = BI.inherit(FR.OB, {
         }
     },
 
+    /**
+     * 行列转化用的，原始字段名和转义名的一一对应
+     */
+    constructFieldNameAndTranslationFieldNameRelation: function () {
+        var fieldsIdName = [];
+        var translations = this.getTranslations();
+        BI.each(this.getFields(), function(idx, arr){
+            BI.each(arr, function(id, field){
+                fieldsIdName[field.field_name] = translations[field.id];
+            });
+        })
+        return fieldsIdName;
+    },
+
 
     _getCurrentFieldIdByFieldInfo: function (fieldInfo) {
         var self = this;
