@@ -20,6 +20,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                     case BI.UploadImagePreview.TO_UPLOAD:
                         var fileUpload = BI.createWidget({
                             type: "bi.multifile_editor",
+                            title:BI.i18nText("BI-Upload_Image"),
                             accept: "*.jpg;*.png;*.gif;*.bmp;*.jpeg;",
                             maxSize: 1024 * 1024 * 100,
                             width: 30,
