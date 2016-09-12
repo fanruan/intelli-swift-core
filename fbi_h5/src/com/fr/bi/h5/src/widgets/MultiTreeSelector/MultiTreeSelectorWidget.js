@@ -67,7 +67,7 @@ class MultiTreeSelectorWidget extends Component {
         return <VirtualScroll
             width={props.width}
             height={props.height}
-            overscanRowCount={0}
+            overscanRowCount={10}
             //noRowsRenderer={this._noRowsRenderer.bind(this)}
             rowCount={this._helper.getSortedItems().length}
             rowHeight={35}
