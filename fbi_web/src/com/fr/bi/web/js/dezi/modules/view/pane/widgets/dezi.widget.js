@@ -343,10 +343,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         var titleFont = BI.isNotNull(globalStyle) ?
             globalStyle.titleFont : BI.Utils.getGSTitleFont();
         if (BI.isNotNull(widgetBackground) && BI.isNotNull(widgetBackground.type)) {
-            if(widgetBackground.type==1){
+            if (widgetBackground.type == 1) {
                 this.element.css("background", widgetBackground.value);
             }
-            if(widgetBackground.type==2){
+            if (widgetBackground.type == 2) {
                 this.element.css({
                     background: "url(" + widgetBackground.value + ")"
                     //backgroundSize: "100%"
@@ -354,17 +354,17 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             }
         }
         if (BI.isNotNull(titleBackground) && BI.isNotNull(titleBackground.type)) {
-            if(titleBackground.type==1){
+            if (titleBackground.type == 1) {
                 this.title.element.css("background", titleBackground.value);
             }
-            if(titleBackground.type==2){
+            if (titleBackground.type == 2) {
                 this.title.element.css({
                     background: "url(" + titleBackground.value + ")"
-                   // backgroundSize: "100%"
+                    // backgroundSize: "100%"
                 })
             }
         }
-        if(BI.isNotNull(titleFont)) {
+        if (BI.isNotNull(titleFont)) {
             this.title.element.find(".shelter-editor-text .bi-text").css(titleFont);
         }
     },

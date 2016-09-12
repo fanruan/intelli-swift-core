@@ -309,15 +309,15 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         var globalStyle = gs || this.model.get("globalStyle");
 
         if (BI.isNotNull(globalStyle.mainBackground)) {
-            if(globalStyle.mainBackground.type==1){
+            if (globalStyle.mainBackground.type == 1) {
                 this.dashboard.element.find(".fit-dashboard").css("background", globalStyle.mainBackground.value);
             }
-           if(globalStyle.mainBackground.type==2){
-               this.dashboard.element.find(".fit-dashboard").css({
-                   background: "url(" + globalStyle.mainBackground.value + ")"
-                   //backgroundSize: "100%"
-               });
-           }
+            if (globalStyle.mainBackground.type == 2) {
+                this.dashboard.element.find(".fit-dashboard").css({
+                    background: "url(" + globalStyle.mainBackground.value + ")"
+                    //backgroundSize: "100%"
+                });
+            }
         }
 
         this._refreshWidgets(true);
