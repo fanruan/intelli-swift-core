@@ -10,10 +10,11 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
 import ChartComponent from './Chart/ChartComponent.js'
 import TableComponent from './Table/TableComponent.js'
+import DetailTableComponent from './DetailTable/DetailTableComponent.js'
 import MultiSelectorComponent from './MultiSelector/MultiSelectorComponent.js'
 import MultiTreeSelectorComponent from './MultiTreeSelector/MultiTreeSelectorComponent.js'
 
@@ -37,7 +38,7 @@ class Main extends Component {
             initialListSize={2}
             dataSource={this.state.dataSource}
             renderRow={this._renderRow.bind(this)}
-            />
+        />
     }
 
     _renderRow(rowData, sectionID, rowID) {
@@ -52,11 +53,12 @@ class Main extends Component {
         };
         switch (type) {
             case BICst.WIDGET.TABLE:
-                return <TableComponent {...props}></TableComponent>;
+                return <TableComponent {...props} />;
             //case BICst.WIDGET.CROSS_TABLE:
             //case BICst.WIDGET.COMPLEX_TABLE:
             //
-            //case BICst.WIDGET.DETAIL:
+            case BICst.WIDGET.DETAIL:
+                return <DetailTableComponent {...props} />;
 
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
@@ -96,11 +98,11 @@ class Main extends Component {
                 //case BICst.WIDGET.CONTENT:
                 //case BICst.WIDGET.IMAGE:
                 //case BICst.WIDGET.WEB:
-                return <ChartComponent {...props}></ChartComponent>;
+                return <ChartComponent {...props} />;
             case BICst.WIDGET.STRING:
-                return <MultiSelectorComponent {...props}></MultiSelectorComponent>;
+                return <MultiSelectorComponent {...props} />;
             case BICst.WIDGET.TREE:
-                return <MultiTreeSelectorComponent {...props}></MultiTreeSelectorComponent>;
+                return <MultiTreeSelectorComponent {...props} />;
             default:
                 return null;
         }
