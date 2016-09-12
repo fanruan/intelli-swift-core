@@ -82,10 +82,13 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         return result;
     }
 
+    /**
+     * edit by kary 2016-09-12
+    * 新增数据连接有效性检查和SQL语句检查
+     */
     @Override
     public boolean preConditionsCheck() {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
-//        File cubeFile = new File(BIPathUtils.createBasePath());
         ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
         boolean spaceCheck = check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
         boolean connectionCheck = check.ConnectionCheck();
@@ -128,11 +131,12 @@ public abstract class AbstractCubeBuild implements CubeBuild {
             for (String fileName : copyFailedFiles) {
                 BILogger.getLogger().error("failed file:" + fileName);
             }
+            return false;
         }
         try {
             return BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILogger.getLogger().error(e.getMessage(), e);
             return false;
         }
     }

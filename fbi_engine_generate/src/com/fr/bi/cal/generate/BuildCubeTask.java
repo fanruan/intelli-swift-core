@@ -23,6 +23,7 @@ import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
+import com.fr.bi.cluster.retry.RetryLoop;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.engine.CubeTask;
@@ -55,6 +56,7 @@ public class BuildCubeTask implements CubeTask {
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
     private String uuid;
+    private RetryLoop retryLoop = new RetryLoop();
 
 
     public BuildCubeTask(BIUser biUser, CubeBuild cubeBuild) {
@@ -138,7 +140,7 @@ public class BuildCubeTask implements CubeTask {
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
             if (!cubeBuild.replaceOldCubes()) {
                 if (!retryReplace(5)){
-                BILogger.getLogger().error(" cube replace files failed");
+                BILogger.getLogger().error("cube replace failed after 5 times try");
                 }
             }
         } catch (Exception e) {
