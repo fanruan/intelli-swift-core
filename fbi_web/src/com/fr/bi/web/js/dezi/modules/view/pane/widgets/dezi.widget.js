@@ -232,6 +232,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     settings.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
                     self.model.set("settings", settings);
                     self._refreshLayout();
+                    self.tableChartResize();
                     break;
                 case BICst.DASHBOARD_WIDGET_RENAME:
                     self.title.focus();
@@ -324,7 +325,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             this.widget.attr("items")[2].top = 50;
         }
         this.widget.resize();
-        this.tableChartResize();
+
     },
 
     _refreshTitlePosition: function () {
@@ -430,8 +431,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     refresh: function () {
         this._buildWidgetTitle();
         this._refreshMagnifyButton();
-        this._refreshTableAndFilter();
         this._refreshLayout();
+        this._refreshTableAndFilter();
         this._refreshTitlePosition();
 
         this._refreshGlobalStyle();

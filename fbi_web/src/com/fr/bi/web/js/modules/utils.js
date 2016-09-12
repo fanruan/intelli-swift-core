@@ -1438,6 +1438,11 @@
             return {};
         },
 
+        getImagesByID: function (wid) {
+            var settings = this.getWidgetSettingsByID(wid);
+            return settings.images || [];
+        },
+
         getDatalabelByWidgetID: function (wid) {
             var settings = this.getWidgetSettingsByID(wid);
             return settings.data_label || {};

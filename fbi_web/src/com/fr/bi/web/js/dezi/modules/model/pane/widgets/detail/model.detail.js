@@ -21,7 +21,12 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             self.set("settings", BI.extend(self.get("settings"),{
                 data_label: v
             }));
-        })
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.IMAGE_CHANGE_PREFIX+this.get("id"), function (v) {
+            self.set("settings", BI.extend(self.get("settings"),{
+                images: v
+            }));
+        });
     },
 
     similar: function (ob, key) {

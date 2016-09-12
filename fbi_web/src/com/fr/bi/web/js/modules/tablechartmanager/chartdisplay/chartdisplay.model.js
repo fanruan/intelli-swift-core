@@ -484,7 +484,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                 BI.each(series.data, function (id, da) {
                                     self._createDataLabel(da, dataLabel);
                                 });
-                                return true;
                             }
                         }
                         //自身
@@ -587,7 +586,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                 BI.each(series.data, function (id, da) {
                                     self._createDataImage(da, dataImage);
                                 });
-                                return true;
                             }
                         }
                         //自身

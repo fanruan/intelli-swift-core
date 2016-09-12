@@ -749,7 +749,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexalignchooser.css",
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexpredictionstyle.css",
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.usercustombutton.css",
-
+                "com/fr/bi/web/css/modules/globalstyle/uploadimage/widget.uploadimage.preview.css",
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
 

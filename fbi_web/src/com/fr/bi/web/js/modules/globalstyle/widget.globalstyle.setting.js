@@ -60,19 +60,21 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         });
         this._initCenter();
 
+        var header = BI.createWidget({
+            type: "bi.label",
+            text: BI.i18nText("BI-Global_Style"),
+            height: 40,
+            lgap: 20,
+            textAlign: "left",
+            cls: "global-style-title"
+        });
+
         BI.createWidget({
             type: "bi.vtape",
             element: this.element,
             width: 420,
             items: [{
-                el: {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Global_Style"),
-                    height: 40,
-                    lgap: 20,
-                    textAlign: "left",
-                    cls: "global-style-title"
-                },
+                el: header,
                 height: 40
             }, {
                 el: this.predictionStyle,
@@ -93,6 +95,11 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 height: 60
             }]
         });
+        this.element.draggable({
+            handle: header.element,
+            axis: "x"
+        });
+
         this.populate();
     },
 
