@@ -1440,7 +1440,7 @@
 
         getImagesByID: function (wid) {
             var settings = this.getWidgetSettingsByID(wid);
-            return settings.images;
+            return settings.images || [];
         },
 
         getDatalabelByWidgetID: function (wid) {
