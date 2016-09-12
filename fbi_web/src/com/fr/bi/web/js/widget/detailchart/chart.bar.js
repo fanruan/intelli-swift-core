@@ -53,7 +53,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.zoom.zoomTool.visible = this.config.show_zoom;
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
         if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;

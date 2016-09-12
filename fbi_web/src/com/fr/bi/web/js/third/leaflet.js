@@ -6795,7 +6795,9 @@
 
             if (L.Browser.any3d) {
                 L.DomUtil.setTransform(this._container, topLeftOffset, scale);
-            } else {
+            } else if(L.Browser.svg){
+                L.DomUtil.setPosition(this._container, topLeftOffset);
+            }else {
                 this._container.style.left = 0 + 'px';
                 this._container.style.top = 0 + 'px';
             }
@@ -7382,7 +7384,7 @@
         _getMarkerPath:function(){
             var markerType = this.options.markerType;
             var r = this.options.radius;
-            return this.renderer._getMarkerPath(markerType, r);
+            return this._data.series._getMarkerPath(markerType, r);
         },
 
         _project: function () {
@@ -9757,7 +9759,7 @@
             var vanchart = this.map.vanchart;
             if(vanchart && vanchart.components.rangeLegend){
                 var rangeLegend = vanchart.components.rangeLegend;
-                if(rangeLegend.componentOption.visible){
+                if(rangeLegend.options.visible){
                     if(VanUtils.containsPoint(rangeLegend.bounds, [first.clientX, first.clientY])){
                         return;
                     }
