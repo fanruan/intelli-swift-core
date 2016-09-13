@@ -9,8 +9,8 @@
         }
         return value;
     };
-    var MIN_BUFFER_ROWS = 3;
-    var MAX_BUFFER_ROWS = 6;
+    var MIN_BUFFER_ROWS = 8;
+    var MAX_BUFFER_ROWS = 16;
 
     BI.TableRowBuffer = function (rowsCount,
                                   defaultRowHeight,
@@ -21,12 +21,12 @@
         this._viewportRowsBegin = 0;
         this._viewportRowsEnd = 0;
         this._maxVisibleRowCount = Math.ceil(viewportHeight / defaultRowHeight) + 1;
-        this._bufferRowsCount = this._maxVisibleRowCount;
-        // this._bufferRowsCount = clamp(
-        //     Math.floor(this._maxVisibleRowCount / 2),
-        //     MIN_BUFFER_ROWS,
-        //     MAX_BUFFER_ROWS
-        // );
+        // this._bufferRowsCount = Math.floor(this._maxVisibleRowCount / 2);
+        this._bufferRowsCount = clamp(
+            Math.floor(this._maxVisibleRowCount / 2),
+            MIN_BUFFER_ROWS,
+            MAX_BUFFER_ROWS
+        );
         this._rowsCount = rowsCount;
         this._rowHeightGetter = rowHeightGetter;
         this._rows = [];
