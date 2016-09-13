@@ -213,8 +213,9 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         });
 
         var globalStyleButton = BI.createWidget({
-            type: "bi.button",
-            height: 24,
+            type: "bi.icon_text_item",
+            cls: "toolbar-global-style-font",
+            height: 30,
             text: BI.i18nText("BI-Global_Style"),
             width: 90
         });
@@ -270,8 +271,8 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                 left: 270
             }, {
                 el: globalStyleButton,
-                top: 3,
-                left: 360
+                top: 0,
+                left: 370
             }]
         })
     },
@@ -314,7 +315,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             }
             if (globalStyle.mainBackground.type == 2) {
                 this.dashboard.element.find(".fit-dashboard").css({
-                    background: "url(" + globalStyle.mainBackground.value + ")"
+                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + globalStyle.mainBackground.value + ")"
                     //backgroundSize: "100%"
                 });
             }

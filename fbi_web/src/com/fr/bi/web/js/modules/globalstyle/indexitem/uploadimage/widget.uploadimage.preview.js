@@ -32,7 +32,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                             items: [{
                                 el: {
                                     type: "bi.icon_button",
-                                    cls: "upload-image-button img-upload-font",
+                                    cls: "upload-image-button img-global-style-upload-font",
                                     width: 30,
                                     height: 30
                                 }
@@ -132,9 +132,11 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                 attach_id: self.attachId
             }, function () {
                 self.tab.setSelect(BI.UploadImagePreview.UPLOADED);
-                self.imageURL = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + self.attachId + "_" + fileName;
+                //self.imageURL = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + self.attachId + "_" + fileName;
+                self.imageId = self.attachId + "_" + fileName;
                 self.previewArea.element.css({
-                    background: "url(" + self.imageURL + ")",
+                    //background: "url(" + self.imageURL + ")",
+                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + self.imageId + ")",
                     backgroundSize: "100%"
                 });
                 self.fireEvent(BI.UploadImagePreview.EVENT_CHANGE);
@@ -145,20 +147,20 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
 
     _removeFile: function () {
         //delete this.imageId;
-        this.imageURL = "";
+        this.imageId = "";
         this.tab.setSelect(BI.UploadImagePreview.TO_UPLOAD);
     },
 
     getValue: function () {
-        return this.imageURL;
+        return this.imageId;
     },
 
-    setValue: function (imageURL) {
-        this.imageURL = imageURL;
-        if (BI.isNotNull(imageURL) && (imageURL != "")) {
+    setValue: function (imageID) {
+        this.imageId = imageID;
+        if (BI.isNotNull(imageID) && (imageID != "")) {
             this.tab.setSelect(BI.UploadImagePreview.UPLOADED);
             this.previewArea.element.css({
-                background: "url(" + imageURL + ")",
+                background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + imageID + ")",
                 backgroundSize: "100%"
             });
         } else {

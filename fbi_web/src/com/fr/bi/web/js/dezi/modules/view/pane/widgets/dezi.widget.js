@@ -349,7 +349,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             }
             if (widgetBackground.type == 2) {
                 this.element.css({
-                    background: "url(" + widgetBackground.value + ")"
+                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + widgetBackground.value + ")"
                     //backgroundSize: "100%"
                 })
             }
@@ -360,7 +360,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             }
             if (titleBackground.type == 2) {
                 this.title.element.css({
-                    background: "url(" + titleBackground.value + ")"
+                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + titleBackground.value + ")"
                     // backgroundSize: "100%"
                 })
             }
