@@ -591,7 +591,7 @@
 
         getGSNamePos: function () {
             var gs = this.getGlobalStyle();
-            if(BI.isNotNull(gs)&&(gs==={})){
+            if (BI.isNotNull(gs) && (gs === {})) {
                 if (gs["titleFont"]["text-align"] === "left") {
                     return BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
                 }
