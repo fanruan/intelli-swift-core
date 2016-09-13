@@ -195,10 +195,10 @@ var Table = React.createClass({
                     this._lockX = true;
                     this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
                 } else {
-                    if (!this._lockX) {
-                        this._lockA = true;
-                        this.offset.setValue(this.state.offsetX - offsetX);
-                    }
+                    // if (!this._lockX) {
+                    //     this._lockA = true;
+                    //     this.offset.setValue(this.state.offsetX - offsetX);
+                    // }
                 }
             }
         }
@@ -979,7 +979,7 @@ var Table = React.createClass({
     _didScrollStop() {
         if (this.isMounted() && this._isScrolling) {
             this._isScrolling = false;
-            this.setState({redraw: !this.state.redraw});
+            this.setState({redraw: true});
             if (this.props.onScrollEnd) {
                 this.props.onScrollEnd(this.state.scrollX, this.state.scrollY);
             }

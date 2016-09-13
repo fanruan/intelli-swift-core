@@ -74260,10 +74260,10 @@
 	                    this._lockX = true;
 	                    this.trans.setValue({ x: this.state.scrollX - scrollX, y: 0 });
 	                } else {
-	                    if (!this._lockX) {
-	                        this._lockA = true;
-	                        this.offset.setValue(this.state.offsetX - offsetX);
-	                    }
+	                    // if (!this._lockX) {
+	                    //     this._lockA = true;
+	                    //     this.offset.setValue(this.state.offsetX - offsetX);
+	                    // }
 	                }
 	            }
 	        }
@@ -74921,7 +74921,7 @@
 	    _didScrollStop: function _didScrollStop() {
 	        if (this.isMounted() && this._isScrolling) {
 	            this._isScrolling = false;
-	            this.setState({ redraw: !this.state.redraw });
+	            this.setState({ redraw: true });
 	            if (this.props.onScrollEnd) {
 	                this.props.onScrollEnd(this.state.scrollX, this.state.scrollY);
 	            }
@@ -75135,12 +75135,8 @@
 	        this._viewportRowsBegin = 0;
 	        this._viewportRowsEnd = 0;
 	        this._maxVisibleRowCount = Math.ceil(viewportHeight / defaultRowHeight) + 1;
-	        this._bufferRowsCount = this._maxVisibleRowCount;
-	        //this._bufferRowsCount = clamp(
-	        //    Math.floor(this._maxVisibleRowCount / 2),
-	        //    MIN_BUFFER_ROWS,
-	        //    MAX_BUFFER_ROWS
-	        //);
+	        // this._bufferRowsCount = this._maxVisibleRowCount;
+	        this._bufferRowsCount = clamp(Math.floor(this._maxVisibleRowCount / 2), MIN_BUFFER_ROWS, MAX_BUFFER_ROWS);
 	        this._rowsCount = rowsCount;
 	        this._rowHeightGetter = rowHeightGetter;
 	        this._rows = [];
