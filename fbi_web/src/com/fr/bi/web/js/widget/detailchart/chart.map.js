@@ -263,7 +263,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this;
         BI.each(items.series, function (idx, da) {
             BI.each(da.data, function (idx, data) {
-                da.y = self.formatXYDataWithMagnify(da.y, 1);
+                data.y = self.formatXYDataWithMagnify(data.y, 1);
                 if (BI.has(da, "settings")) {
                     data.y = self._formatNumberLevel(da.settings.num_level || self.constants.NORMAL, data.y);
                 }
@@ -296,7 +296,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
                         self.max = da.y;
                     }
-                    if ((BI.isNull(self.min) || BI.parseFloat(da.y) > BI.parseFloat(self.min)) && id === 0) {
+                    if ((BI.isNull(self.min) || BI.parseFloat(da.y) < BI.parseFloat(self.min)) && id === 0) {
                         self.min = da.y;
                     }
                     if (BI.has(it, "type") && it.type == "bubble") {

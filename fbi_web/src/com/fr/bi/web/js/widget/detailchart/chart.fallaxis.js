@@ -168,10 +168,8 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                         da.y = self.formatXYDataWithMagnify(da.y, magnify);
                     }
                 })
-            })
-            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = formatter;
-            }
+            });
+            config.plotOptions.tooltip.formatter.valueFormat = formatter;
         }
 
         function getXYAxisUnit(numberLevelType, position){

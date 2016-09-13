@@ -150,7 +150,7 @@ BI.ChartCombineFormatItemFactory = {
                 "tooltip": {
                     "formatter": {
                         "identifier": "${SERIES}${X}${Y}${SIZE}{CATEGORY}${SERIES}${VALUE}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];}",
+                        "valueFormat": this._contentFormat2Decimal,
                         "seriesFormat": this._contentFormat,
                         "percentFormat": this._contentFormatPercentage,
                         "categoryFormat": this._contentFormat,

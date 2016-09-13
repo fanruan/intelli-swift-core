@@ -39,11 +39,15 @@ public class BIChartDataConvertFactory {
             JSONObject drill = widget.getWidgetDrill();
             if(categoryDimension != null && drill.length() != 0){
                 BIDimension drillcataDimension = widget.getDrillDimension(widget.getWidgetDrill().getJSONArray(categoryDimension.getValue()));
-                categoryGroup = drillcataDimension.getGroup();
+                if(drillcataDimension != null){
+                    categoryGroup = drillcataDimension.getGroup();
+                }
             }
             if(seriesDimension != null && drill.length() != 0){
                 BIDimension drillseriDimension = widget.getDrillDimension(widget.getWidgetDrill().getJSONArray(seriesDimension.getValue()));
-                seriesGroup = drillseriDimension.getGroup();
+                if(drillseriDimension != null){
+                    seriesGroup = drillseriDimension.getGroup();
+                }
             }
             BISummaryTarget[] showTargets = widget.getViewTargets();
             JSONArray convertedData = parseSNDataToXYZData(widget, data, seriesGroup, categoryGroup, showTargets);
@@ -125,6 +129,12 @@ public class BIChartDataConvertFactory {
                 options.put("geo", new JSONObject().put("tileLayer", BIChartSettingConstant.GIS_MAP_PATH).put("attribution", BIChartSettingConstant.KNOWLEDGE_RIGHT));
             }
             options.put("cordon", getCordon(widget, widget.getDimensions(), showTargets)).put("tooltip", getToolTip(type, showTargets));
+            JSONObject lnglat = widget.getViewDimensions()[0].getChartSetting().getPosition();
+            if(!lnglat.isNull("type")){
+                options.put("lnglat", lnglat.getInt("type"));
+            }else{
+                options.put("lnglat", BIChartSettingConstant.LNG_FIRST);
+            }
             return new JSONObject().put("types", types).put("data", convertedData).put("options", options);
         } catch (JSONException e) {
             BILogger.getLogger().error(e.getMessage());
@@ -536,7 +546,7 @@ public class BIChartDataConvertFactory {
                     "color: " + cor.getString("cordon_color") + "}"
                 ));
             }
-            String regionType = (i > dimensions.length ? widget.getRegionTypeByTarget(targets[i - dimensions.length]).toString() : widget.getRegionTypeByDimension(dimensions[i]).toString());
+            String regionType = (i >= dimensions.length ? widget.getRegionTypeByTarget(targets[i - dimensions.length]).toString() : widget.getRegionTypeByDimension(dimensions[i]).toString());
             if(items.length() > 0){
                 if(!cordon.has(regionType)){
                     cordon.put(regionType, new JSONArray());
@@ -568,10 +578,10 @@ public class BIChartDataConvertFactory {
             result.put(cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1));
             return result;
         }
-        result.put(cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1));
-        result.put(cordon.getJSONArray(BIReportConstant.REGION.TARGET1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET1));
-        result.put(cordon.getJSONArray(BIReportConstant.REGION.TARGET2) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET2));
-        result.put(cordon.getJSONArray(BIReportConstant.REGION.TARGET3) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET3));
+        result.put(cordon.optJSONArray(BIReportConstant.REGION.DIMENSION1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.DIMENSION1));
+        result.put(cordon.optJSONArray(BIReportConstant.REGION.TARGET1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET1));
+        result.put(cordon.optJSONArray(BIReportConstant.REGION.TARGET2) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET2));
+        result.put(cordon.optJSONArray(BIReportConstant.REGION.TARGET3) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET3));
         return result;
     }
 }
