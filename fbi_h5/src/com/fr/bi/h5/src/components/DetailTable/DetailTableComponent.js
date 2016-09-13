@@ -15,6 +15,7 @@ import React, {
 import {TableWidget} from 'widgets';
 
 import DetailTableComponentHelper from './DetailTableComponentHelper';
+import TableComponentWidthHelper from '../Table/TableComponentWidthHelper'
 
 import {Table} from 'base'
 
@@ -26,6 +27,7 @@ class DetailTableComponent extends Component {
     constructor(props, context) {
         super(props, context);
         this._tableHelper = new DetailTableComponentHelper(props.widget);
+        this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width-20);
     }
 
     state = {
@@ -55,6 +57,8 @@ class DetailTableComponent extends Component {
 
     render() {
         const {width, height} = this.props;
+        const items = this._tableHelper.getItems();
+        this._widthHelper.setItems(items);
         return <View
             style={{width: width, height: height}}
         >
@@ -65,9 +69,9 @@ class DetailTableComponent extends Component {
                     width={width - 20}
                     height={height - 20}
                     freezeCols={this._tableHelper.isFreeze()?[0]:[]}
-                    columnSize={[300, 300]}
+                    columnSize={this._widthHelper.getWidth()}
                     header={this._tableHelper.getHeader()}
-                    items={this._tableHelper.getItems()}
+                    items={items}
                     headerCellRenderer={(colIndex, cell)=> {
                         return <Cell>{cell.text}</Cell>
                     }}
