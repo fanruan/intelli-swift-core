@@ -206,7 +206,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function(idx, item){
             BI.each(item, function(id, it){
                 BI.each(it.data, function(i, da){
-                    da.size = da.z;
+                    var data = da.z;
+                    da.size = data.toFixed(2)
                 })
             })
         });

@@ -42,11 +42,6 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
         function formatChartDashboardStyle() {
             var bands = getBandsStyles(self.config.bands_styles, self.config.auto_custom_style);
-            // var valueLabel = {
-            //     formatter: config.plotOptions.valueLabel.formatter
-            // };
-            // valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
-            // valueLabel.style = config.plotOptions.valueLabel.style;
             var percentageLabel = BI.extend(config.plotOptions.percentageLabel, {
                 enabled: self.config.show_percentage === BICst.PERCENTAGE.SHOW
             });
@@ -110,12 +105,9 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             changeMaxMinScale();
             formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
             if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                config.plotOptions.valueLabel.formatter.valueFormat = function () {
-                    return BI.contentFormat(arguments[0], '#0.00%');
-                };
                 config.gaugeAxis[0].formatter = function () {
                     var scaleValue = this;
-                    if(self.config.num_separators){
+                    if (self.config.num_separators) {
                         scaleValue = BI.contentFormat(scaleValue, '#,##0%')
                     } else {
                         scaleValue = BI.contentFormat(scaleValue, '#0.00%')
@@ -125,7 +117,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             } else {
                 config.gaugeAxis[0].formatter = function () {
                     var value = this;
-                    if(self.config.num_separators){
+                    if (self.config.num_separators) {
                         value = BI.contentFormat(value, "#,###")
                     }
                     return value + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
@@ -157,26 +149,26 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 })
             });
 
-            config.plotOptions.tooltip.formatter.valueFormat = function () {
-                return BI.contentFormat(this, "#.##;-#.##") + getXYAxisUnit(type, position)
-            };
-
-            if (self.config.num_separators) {
-                config.plotOptions.tooltip.formatter.valueFormat = function () {
-                    return BI.contentFormat(arguments[0], '#,###.##')
-                };
-            }
-
-            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                config.plotOptions.tooltip.formatter.valueFormat = function () {
-                    return BI.contentFormat(arguments[0], '#0.00%')
-                };
-                if (self.config.num_separators) {
-                    config.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#,##0%')
-                    };
-                }
-            }
+            // config.plotOptions.tooltip.formatter.valueFormat = function () {
+            //     return BI.contentFormat(this, '#.##;-#.##') + getXYAxisUnit(type, position)
+            // };
+            //
+            // if (self.config.num_separators) {
+            //     config.plotOptions.tooltip.formatter.valueFormat = function () {
+            //         return BI.contentFormat(arguments[0], '#,###.##')
+            //     };
+            // }
+            //
+            // if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+            //     config.plotOptions.tooltip.formatter.valueFormat = function () {
+            //         return BI.contentFormat(arguments[0], '#0.00%')
+            //     };
+            //     if (self.config.num_separators) {
+            //         config.plotOptions.tooltip.formatter.valueFormat = function () {
+            //             return BI.contentFormat(arguments[0], '#,##0%')
+            //         };
+            //     }
+            // }
         }
 
         function getXYAxisUnit(numberLevelType, position) {
