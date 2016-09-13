@@ -729,15 +729,18 @@ BI.FixTable = BI.inherit(BI.Widget, {
 
     _scroll: function (scrollTop) {
         var self = this, o = this.options;
-        var pos = this._helper.scrollTo(scrollTop);
-        this._rowBuffer.getRows(pos.index || 0, pos.offset || 0)
-        if (o.isNeedFreeze) {
-            this.bottomLeftBody.element.html(this._createBodyCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems, 0, null, pos.index, pos.offset));
-            this.bottomRightBody.element.html(this._createBodyCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length, null, pos.index, pos.offset));
-        } else {
-            this.body.element.html(this._createBodyCells(o.items, null, null, this.bodyTds, this.bodyItems, 0, null, pos.index, pos.offset));
+        if (scrollTop !== this._lastScrollTop) {
+            var pos = this._helper.scrollTo(scrollTop);
+            this._rowBuffer.getRows(pos.index || 0, pos.offset || 0)
+            if (o.isNeedFreeze) {
+                this.bottomLeftBody.element.html(this._createBodyCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems, 0, null, pos.index, pos.offset));
+                this.bottomRightBody.element.html(this._createBodyCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length, null, pos.index, pos.offset));
+            } else {
+                this.body.element.html(this._createBodyCells(o.items, null, null, this.bodyTds, this.bodyItems, 0, null, pos.index, pos.offset));
+            }
+            o.afterScroll();
         }
-        o.afterScroll();
+        this._lastScrollTop = scrollTop;
     },
 
     resize: function () {
@@ -2072,16 +2075,21 @@ BI.FixTable = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             if (this.scrollBottomRight.element[0].scrollTop !== scrollTop) {
                 this.scrollBottomRight.element[0].scrollTop = scrollTop;
-                this._scroll(scrollTop);
+                if (!this._scrollBounce) {
+                    this._scrollBounce = BI.debounce(BI.bind(this._scroll, this), 300);
+                }
+                this._scrollBounce(scrollTop);
             }
             if (this.scrollBottomLeft.element[0].scrollTop !== scrollTop) {
                 this.scrollBottomLeft.element[0].scrollTop = scrollTop;
-                this._scroll(scrollTop);
+                if (!this._scrollBounce) {
+                    this._scrollBounce = BI.bounce(BI.bind(this._scroll, this), 300);
+                }
+                this._scrollBounce(scrollTop);
             }
         } else {
             if (this.scrollContainer.element[0].scrollTop !== scrollTop) {
                 this.scrollContainer.element[0].scrollTop = scrollTop;
-                this._scroll(scrollTop);
             }
         }
     },
@@ -2178,7 +2186,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
         this._initScroller();
         if (this.options.isNeedFreeze) {
             this._createFreezeFixTable();
-            BI.delay(function(){
+            BI.delay(function () {
                 self._scroll(0);
             }, 100);
         } else {

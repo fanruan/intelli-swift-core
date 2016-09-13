@@ -1,6 +1,6 @@
 ;
 (function () {
-    var clamp = function (min, value, max) {
+    var clamp = function (value, min, max) {
         if (value < min) {
             return min;
         }
@@ -9,8 +9,8 @@
         }
         return value;
     };
-    var MIN_BUFFER_ROWS = 8;
-    var MAX_BUFFER_ROWS = 16;
+    var MIN_BUFFER_ROWS = 3;
+    var MAX_BUFFER_ROWS = 4;
 
     BI.TableRowBuffer = function (rowsCount,
                                   defaultRowHeight,
