@@ -6,7 +6,8 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
         TITLE_ICON_HEIGHT: 20,
         TITLE_ICON_WIDTH: 20,
         REGION_HEIGHT_NORMAL: 25,
-        REGION_DIMENSION_GAP: 5
+        REGION_DIMENSION_GAP: 5,
+        REGION_DIMENSION_LEFT_GAP: 15
     },
 
     _defaultConfig: function () {
@@ -27,7 +28,8 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
             element: this.element,
             cls: "dimensions-container",
             scrolly: true,
-            hgap: this.constants.REGION_DIMENSION_GAP,
+            lgap: this.constants.REGION_DIMENSION_LEFT_GAP,
+            rgap: this.constants.REGION_DIMENSION_GAP,
             vgap: this.constants.REGION_DIMENSION_GAP
         });
         this.sinlgeRegion.element.droppable({
@@ -70,6 +72,22 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
 
             }
         });
+
+        var dragTool = BI.createWidget({
+            type: "bi.layout",
+            cls: "complex-region-left-drag-background drag-tool",
+            width: 10
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: dragTool,
+                left: 0,
+                top: 0,
+                bottom: 0
+            }]
+        })
     },
 
     addDimension: function (dId, options) {
@@ -116,7 +134,7 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
 
     getValue: function () {
         var result = [];
-        var dimensions = $(".dimension-container", this.center.element);
+        var dimensions = $(".dimension-container", this.sinlgeRegion.element);
         BI.each(dimensions, function (i, dom) {
             result.push($(dom).data("dId"));
         });
@@ -126,7 +144,6 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
     populate: function (dimensions) {
         var self = this, o = this.options;
         BI.DOM.hang(this.store);
-        var store = this.store;
         this.store = {};
         BI.each(dimensions, function (i, did) {
             self.store[did] = self._createDimension(did);

@@ -354,6 +354,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             BI.Utils.getTablesDetailInfoByTables([BI.extend(allTables[0][0], {id: this.model.getId()})], function (data) {
                 self.model.setFields(data[0].fields);
                 self.model.setRelationsByETLValue(data[0]);
+                self.model.setTranslationsByETLValue(data[0]);
                 self._populate();
             }, function () {
                 mask.destroy();
