@@ -87,6 +87,7 @@ BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
     _createItemsByFields: function(fields){
         return BI.map(fields, function(idx, field){
             return {
+                text: field["trans_name"],
                 value : field["field_name"]
             }
         });

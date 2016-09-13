@@ -191,7 +191,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
 
     setViews: function (view) {
         this.viewMap[this.type] = view;
-        this.dimensionsMap[this.type] = BI.deepClone(BI.Utils.getWidgetDimensionsByID(this.options.wId));
+        this.dimensionsMap[this.type] = BI.Utils.getWidgetDimensionsByID(this.options.wId);
     },
 
     getViews: function () {

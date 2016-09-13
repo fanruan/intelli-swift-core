@@ -161,9 +161,7 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
                     }
                 })
             });
-            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                config.plotOptions.tooltip.formatter.valueFormat = formatter;
-            }
+            config.plotOptions.tooltip.formatter.valueFormat = formatter;
         }
 
         function getXYAxisUnit(numberLevelType, position) {

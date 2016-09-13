@@ -66,6 +66,8 @@ BI.ChartCombineFormatItemFactory = {
 
     combineConfig: function () {
         return {
+            "title": "",
+            "chartType": "column",
             "plotOptions": {
                 "rotatable": false,
                 "startAngle": 0,
@@ -76,6 +78,7 @@ BI.ChartCombineFormatItemFactory = {
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
                 "dataLabels": {
+                    "autoAdjust": true,
                     "style": {fontFamily: "inherit", color: "#808080", fontSize: "12px"},
                     "formatter": {
                         "identifier": "${VALUE}",
@@ -147,7 +150,7 @@ BI.ChartCombineFormatItemFactory = {
                 "tooltip": {
                     "formatter": {
                         "identifier": "${SERIES}${X}${Y}${SIZE}{CATEGORY}${SERIES}${VALUE}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];}",
+                        "valueFormat": this._contentFormat2Decimal,
                         "seriesFormat": this._contentFormat,
                         "percentFormat": this._contentFormatPercentage,
                         "categoryFormat": this._contentFormat,

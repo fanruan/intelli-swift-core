@@ -668,6 +668,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/combo/combo.tabletype.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/charttype.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.dimension.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regions/complex/region.dimension.complex.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regions/complex/region.wrapper.complex.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.target.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/dimensionsmanager.css",
@@ -1002,6 +1004,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.target.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.detail.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.tree.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/complex/region.dimension.complex.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/complex/region.wrapper.complex.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/model.dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
@@ -2123,6 +2127,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/vector.js",
                 "com/fr/bi/web/js/base/utils/set.js",
                 "com/fr/bi/web/js/base/utils/lru.js",
+                "com/fr/bi/web/js/base/utils/heap.js",
+                "com/fr/bi/web/js/base/utils/integerBufferSet.js",
+                "com/fr/bi/web/js/base/utils/prefixIntervalTree.js",
+                "com/fr/bi/web/js/base/utils/helper.scroll.js",
+                "com/fr/bi/web/js/base/utils/tableRowBuffer.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
 
                 "com/fr/bi/web/js/base/parsers/expression.js",
@@ -2223,6 +2232,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/table/table.footer.js",
                 "com/fr/bi/web/js/base/module/table/table.js",
                 "com/fr/bi/web/js/base/module/table/table.tree.js",
+
+                "com/fr/bi/web/js/base/module/table/table.fix.js",
 
                 "com/fr/bi/web/js/base/module/layer/layer.floatbox.js",
                 "com/fr/bi/web/js/base/module/layer/layer.popup.js",

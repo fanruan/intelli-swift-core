@@ -55,7 +55,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         if(config.dataSheet.enabled === true){
             config.xAxis[0].showLabel = false;
         }
-        config.zoom.zoomTool.visible = this.config.show_zoom;
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
         if(this.config.show_zoom === true){
             delete config.dataSheet;
             delete config.zoom.zoomType;
@@ -168,10 +168,8 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                         da.y = self.formatXYDataWithMagnify(da.y, magnify);
                     }
                 })
-            })
-            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = formatter;
-            }
+            });
+            config.plotOptions.tooltip.formatter.valueFormat = formatter;
         }
 
         function getXYAxisUnit(numberLevelType, position){
