@@ -99,11 +99,10 @@ public abstract class AbstractCubeBuild implements CubeBuild {
             boolean connectionCheck = check.ConnectionCheck(source, userId);
             if (!connectionCheck) {
                 connectionValid = false;
-                String errorMessage = source.getTableName() + ": Connection test failed";
+                String errorMessage ="error:"+source.getTableName() + ": Connection test failed";
                 BILogger.getLogger().error(errorMessage);
                 BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
             }
-
         }
 //        return spaceCheck && connectionValid;
         return spaceCheck;

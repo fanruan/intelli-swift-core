@@ -23,7 +23,6 @@ import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
-import com.fr.bi.cluster.retry.RetryLoop;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.engine.CubeTask;
@@ -58,7 +57,6 @@ public class BuildCubeTask implements CubeTask {
     protected BICube cube;
     private BICubeFinishObserver<Future<String>> finishObserver;
     private String uuid;
-    private RetryLoop retryLoop = new RetryLoop();
 
 
     public BuildCubeTask(BIUser biUser, CubeBuild cubeBuild) {
@@ -130,8 +128,8 @@ public class BuildCubeTask implements CubeTask {
                 return;
             } else {
                 try {
-                    Thread.sleep(10000);
-                    BILogger.getLogger().info("Cube thread is busy currently.Monitor will check it again after 100ms ");
+                    Thread.sleep(5000);
+                    BILogger.getLogger().info("Cube thread is busy currently.Monitor will check it again after 5s ");
                 } catch (InterruptedException e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 }
