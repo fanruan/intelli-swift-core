@@ -38,6 +38,5 @@ public class BICubeTestBase extends TestCase {
     }
 
     public void testVoid() {
-
     }
 }
