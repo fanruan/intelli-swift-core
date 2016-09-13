@@ -445,13 +445,10 @@ BI.FixTable = BI.inherit(BI.Widget, {
                         },
                         onUpdate: function (top) {
                             otherElement[0].scrollTop = top;
-                            // self._scroll(top);
                             self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, top);
                         },
                         onComplete: function () {
-                            BI.delay(function () {
-                                self._scroll(scrollElement[0].scrollTop);
-                            }, 100);
+                            self._scrollBounce(otherElement[0].scrollTop);
                             self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrolling);
                             scrolling = null;
                         }
@@ -525,7 +522,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
                         change = true;
                     }
                 }
-                self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL);
+                // self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL);
                 if (change === true) {
                     e.stopPropagation();
                     //return false;
@@ -728,24 +725,24 @@ BI.FixTable = BI.inherit(BI.Widget, {
     },
 
     _scroll: function (scrollTop) {
-        var self = this, o = this.options;
-        var pos = this._helper.scrollTo(scrollTop);
-        this._rowBuffer.getRows(pos.index || 0, pos.offset || 0);
-        if (o.isNeedFreeze) {
+        if (this._isNeedFix) {
+            var self = this, o = this.options;
+            var pos = this._helper.scrollTo(scrollTop);
+            this._rowBuffer.getRows(pos.index || 0, pos.offset || 0);
             this.bottomLeftBody.element.html(this._createBodyCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems, 0, null, pos.index, pos.offset));
             this.bottomRightBody.element.html(this._createBodyCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length, null, pos.index, pos.offset));
-        } else {
-            this.body.element.html(this._createBodyCells(o.items, null, null, this.bodyTds, this.bodyItems, 0, null, pos.index, pos.offset));
+            o.afterScroll();
         }
-        o.afterScroll();
     },
 
     _scrollBounce: function (top) {
-        var self = this, o = this.options;
-        if (!this.__scrollBounce) {
-            this.__scrollBounce = BI.debounce(BI.bind(this._scroll, this), 300);
+        if (this._isNeedFix) {
+            var self = this, o = this.options;
+            if (!this.__scrollBounce) {
+                this.__scrollBounce = BI.debounce(BI.bind(this._scroll, this), 100);
+            }
+            this.__scrollBounce(top);
         }
-        this.__scrollBounce(top);
     },
 
     resize: function () {
@@ -889,6 +886,9 @@ BI.FixTable = BI.inherit(BI.Widget, {
     },
 
     _createBodyCells: function (items, columnSize, mergeCols, TDs, Ws, start, rowSize) {
+        if (!this._isNeedFix) {
+            return this._createCells.apply(this, arguments);
+        }
         var self = this, o = this.options, preCol = {}, preRow = {}, preRW = {}, preCW = {}, map = {};
         columnSize = columnSize || o.columnSize;
         mergeCols = mergeCols || o.mergeCols;
@@ -2168,10 +2168,12 @@ BI.FixTable = BI.inherit(BI.Widget, {
     },
 
     _initScroller: function () {
-        var o = this.options;
-        var viewHeight = this.bottomRight && this.bottomRight.element.height();
-        this._helper = new BI.TableScrollHelper(o.items.length, o.rowSize + 1, viewHeight || 0);
-        this._rowBuffer = new BI.TableRowBuffer(o.items.length, o.rowSize + 1, viewHeight || 0, BI.bind(this._helper.getRowPosition, this._helper));
+        if (this._isNeedFix) {
+            var o = this.options;
+            var viewHeight = this.bottomRight && this.bottomRight.element.height();
+            this._helper = new BI.TableScrollHelper(o.items.length, o.rowSize + 1, viewHeight || 0);
+            this._rowBuffer = new BI.TableRowBuffer(o.items.length, o.rowSize + 1, viewHeight || 0, BI.bind(this._helper.getRowPosition, this._helper));
+        }
     },
 
     populate: function (items, header) {
@@ -2181,6 +2183,11 @@ BI.FixTable = BI.inherit(BI.Widget, {
             this.options.header = header;
         }
         this.empty();
+        if (o.items[0] && o.items[0].length * o.items.length > 1000) {
+            this._isNeedFix = true;
+        } else {
+            this._isNeedFix = false;
+        }
         this._initScroller();
         if (this.options.isNeedFreeze) {
             this._createFreezeFixTable();
