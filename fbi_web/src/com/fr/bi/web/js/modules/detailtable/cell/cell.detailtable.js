@@ -1,7 +1,6 @@
 /**
  * Created by roy on 16/5/23.
  */
-BI.i=0;
 BI.DetailTableCell = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTableCell.superclass._defaultConfig.apply(this, arguments), {
@@ -13,7 +12,6 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DetailTableCell.superclass._init.apply(this, arguments);
-        BI.i++;
         this._createItem();
     },
 
