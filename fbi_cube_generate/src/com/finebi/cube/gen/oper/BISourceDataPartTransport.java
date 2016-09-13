@@ -136,7 +136,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 if (null == modifySql) {
                     BILogger.getLogger().error("current table: " + tableSource.getTableName() + " modifySql error: " + tableUpdateSetting.getPartModifySQL());
                 }else {
-                    rowCount = dealWidthAdd(cubeFieldSources, modifySql, rowCount);
+                    rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
                 }
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
@@ -180,7 +180,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         }
         if (f == null) {
             BILogger.getLogger().error("can not find field " + columnName);
-            return null;
+            return sortRemovedList;
         }
         BIKey key = new IndexKey(columnName);
         ICubeTableService oldTi = loader.getTableIndex(tableSource);

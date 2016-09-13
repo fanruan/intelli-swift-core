@@ -72,7 +72,6 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
                     reader.setReleaseHelper(releaseRecorder);
                     readerCache.makeAvailable(resourceLocation, reader);
                     return reader;
-
                 }
             }
         } catch (Exception e) {

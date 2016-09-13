@@ -730,7 +730,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
     _scroll: function (scrollTop) {
         var self = this, o = this.options;
         var pos = this._helper.scrollTo(scrollTop);
-        this._rowBuffer.getRows(pos.index || 0, pos.offset || 0)
+        this._rowBuffer.getRows(pos.index || 0, pos.offset || 0);
         if (o.isNeedFreeze) {
             this.bottomLeftBody.element.html(this._createBodyCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems, 0, null, pos.index, pos.offset));
             this.bottomRightBody.element.html(this._createBodyCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length, null, pos.index, pos.offset));
@@ -738,6 +738,14 @@ BI.FixTable = BI.inherit(BI.Widget, {
             this.body.element.html(this._createBodyCells(o.items, null, null, this.bodyTds, this.bodyItems, 0, null, pos.index, pos.offset));
         }
         o.afterScroll();
+    },
+
+    _scrollBounce: function (top) {
+        var self = this, o = this.options;
+        if (!this.__scrollBounce) {
+            this.__scrollBounce = BI.debounce(BI.bind(this._scroll, this), 300);
+        }
+        this.__scrollBounce(top);
     },
 
     resize: function () {
@@ -2072,16 +2080,15 @@ BI.FixTable = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             if (this.scrollBottomRight.element[0].scrollTop !== scrollTop) {
                 this.scrollBottomRight.element[0].scrollTop = scrollTop;
-                this._scroll(scrollTop);
+                this._scrollBounce(scrollTop);
             }
             if (this.scrollBottomLeft.element[0].scrollTop !== scrollTop) {
                 this.scrollBottomLeft.element[0].scrollTop = scrollTop;
-                this._scroll(scrollTop);
+                this._scrollBounce(scrollTop);
             }
         } else {
             if (this.scrollContainer.element[0].scrollTop !== scrollTop) {
                 this.scrollContainer.element[0].scrollTop = scrollTop;
-                this._scroll(scrollTop);
             }
         }
     },
@@ -2164,7 +2171,6 @@ BI.FixTable = BI.inherit(BI.Widget, {
         var o = this.options;
         var viewHeight = this.bottomRight && this.bottomRight.element.height();
         this._helper = new BI.TableScrollHelper(o.items.length, o.rowSize + 1, viewHeight || 0);
-        this._helper.scrollTo(0);
         this._rowBuffer = new BI.TableRowBuffer(o.items.length, o.rowSize + 1, viewHeight || 0, BI.bind(this._helper.getRowPosition, this._helper));
     },
 
@@ -2178,9 +2184,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
         this._initScroller();
         if (this.options.isNeedFreeze) {
             this._createFreezeFixTable();
-            BI.delay(function(){
-                self._scroll(0);
-            }, 100);
+            this._scrollBounce(0);
         } else {
             this._createNormalFixTable();
         }

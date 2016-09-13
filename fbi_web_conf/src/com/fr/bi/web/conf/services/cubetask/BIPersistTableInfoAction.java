@@ -72,6 +72,9 @@ public class BIPersistTableInfoAction extends AbstractBIConfigureAction {
         String cubeRelationPath = new File(advancedConf.getRootURI().getPath()).getParent() + File.separatorChar + "relationInfo";
         BIFileUtils.writeFile(cubeTablePath, sourceInfo.toString());
         BIFileUtils.writeFile(cubeRelationPath, relationMap.toString());
-        return sourceInfo;
+        Map<String, String> info=new HashMap();
+        info.put("tableInfo",sourceInfo.toString());
+        info.put("relationInfo",relationMap.toString());
+        return info;
     }
 }
