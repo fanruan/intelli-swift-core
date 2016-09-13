@@ -591,11 +591,13 @@
 
         getGSNamePos: function () {
             var gs = this.getGlobalStyle();
-            if (gs["titleFont"]["text-align"] === "left") {
-                return BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
-            }
-            if (gs["titleFont"]["text-align"] === "center") {
-                return BICst.DASHBOARD_WIDGET_NAME_POS_CENTER
+            if(BI.isNotNull(gs)&&(gs==={})){
+                if (gs["titleFont"]["text-align"] === "left") {
+                    return BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
+                }
+                if (gs["titleFont"]["text-align"] === "center") {
+                    return BICst.DASHBOARD_WIDGET_NAME_POS_CENTER
+                }
             }
         },
 

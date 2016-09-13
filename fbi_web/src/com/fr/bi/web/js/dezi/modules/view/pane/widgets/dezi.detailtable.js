@@ -42,6 +42,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
         });
+
+        //全局样式的修改
+        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
+            self._refreshGlobalStyle(globalStyle);
+        });
     },
 
 
@@ -232,6 +237,41 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this.filterPane.setVisible(!this.filterPane.isVisible());
     },
 
+    _refreshGlobalStyle: function (globalStyle) {
+        var widgetBackground = BI.isNotNull(globalStyle) ?
+            globalStyle.widgetBackground : BI.Utils.getGSWidgetBackground();
+        var titleBackground = BI.isNotNull(globalStyle) ?
+            globalStyle.titleBackground : BI.Utils.getGSTitleBackground();
+        var titleFont = BI.isNotNull(globalStyle) ?
+            globalStyle.titleFont : BI.Utils.getGSTitleFont();
+        if (BI.isNotNull(widgetBackground) && BI.isNotNull(widgetBackground.type)) {
+            if (widgetBackground.type == 1) {
+                this.element.css("background", widgetBackground.value);
+            }
+            if (widgetBackground.type == 2) {
+                this.element.css({
+                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + widgetBackground.value + ")"
+                    //backgroundSize: "100%"
+                })
+            }
+        }
+        if (BI.isNotNull(titleBackground) && BI.isNotNull(titleBackground.type)) {
+            if (titleBackground.type == 1) {
+                this.title.element.css("background", titleBackground.value);
+            }
+            if (titleBackground.type == 2) {
+                this.title.element.css({
+                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + titleBackground.value + ")"
+                    // backgroundSize: "100%"
+                })
+            }
+        }
+        if (BI.isNotNull(titleFont)) {
+            this.title.element.find(".shelter-editor-text .bi-text").css(titleFont);
+            this._refreshTitlePosition();
+        }
+    },
+
     _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tablePopulate();
@@ -306,5 +346,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this.tablePopulate();
         this._refreshLayout();
         this._refreshTitlePosition();
+
+        this._refreshGlobalStyle();
     }
 });
