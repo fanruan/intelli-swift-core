@@ -79,6 +79,8 @@ public class BICubeTableEntity implements CubeTableEntityService {
          */
         flushProperty();
         tableProperty.recordTableStructure(fields);
+        tableProperty.forceReleaseWriter();
+        columnManager.forceReleaseWriter();
         columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
     }
 
@@ -86,6 +88,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
     @Override
     public void recordRowCount(long rowCount) {
         tableProperty.recordRowCount(rowCount);
+        tableProperty.forceReleaseWriter();
     }
 
     @Override

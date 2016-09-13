@@ -68,7 +68,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
                     return readerCache.getResource(resourceLocation);
                 } else {
                     ICubePrimitiveReader reader = readerManager.buildCubeReader(resourceLocation);
-                    releaseRecorder.record(reader);
+//                    releaseRecorder.record(reader);
                     reader.setReleaseHelper(releaseRecorder);
                     readerCache.makeAvailable(resourceLocation, reader);
                     return reader;
