@@ -11,7 +11,6 @@ import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ICubeTablePropertyService;
-import com.finebi.cube.structure.ICubeVersion;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.property.BICubeProperty;
 import com.finebi.cube.structure.property.BICubeVersion;
@@ -49,7 +48,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private ICubeStringReader fieldInfoReader;
     private ICubeStringWriter parentsWriter;
     private ICubeStringReader parentsReader;
-    private ICubeVersion version;
+    private BICubeVersion version;
 
     private ICubeLongWriterWrapper rowCountWriter;
     private ICubeLongReaderWrapper rowCountReader;
@@ -565,8 +564,12 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         resetTimeStampReader();
         resetParentReader();
         resetParentWriter();
-        parentFieldProperty.clear();
-        version.clear();
+        if (parentFieldProperty != null) {
+            parentFieldProperty.clear();
+        }
+        if (version != null) {
+            version.clear();
+        }
     }
 
     public void forceRelease() {
@@ -598,6 +601,34 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         parentFieldProperty.forceRelease();
         ((BICubeProperty) version).forceRelease();
         clear();
+    }
+
+    @Override
+    public void forceReleaseWriter() {
+        if (isFieldWriterAvailable()) {
+            fieldInfoWriter.forceRelease();
+            fieldInfoWriter = null;
+        }
+        if (isRowCountWriterAvailable()) {
+            rowCountWriter.forceRelease();
+            rowCountWriter = null;
+        }
+        if (isTimeStampWriterAvailable()) {
+            timeStampWriter.forceRelease();
+            timeStampWriter = null;
+        }
+        if (isParentWriterAvailable()) {
+            parentsWriter.forceRelease();
+            parentsWriter = null;
+        }
+        if (parentFieldProperty != null) {
+            parentFieldProperty.forceReleaseWriter();
+            parentFieldProperty = null;
+        }
+        if (version != null) {
+            (version).forceReleaseWriter();
+            version = null;
+        }
     }
 
     @Override

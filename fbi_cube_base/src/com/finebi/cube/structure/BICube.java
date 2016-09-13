@@ -11,7 +11,6 @@ import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.structure.table.CompoundCubeTableReader;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.Map;
@@ -47,15 +46,16 @@ public class BICube implements Cube {
 
     @Override
     public CubeTableEntityGetterService getCubeTable(ITableKey tableKey) {
-        synchronized (this) {
-            if (cacheTableReader.containsKey(tableKey.getSourceID())) {
-                return cacheTableReader.get(tableKey.getSourceID());
-            } else {
-                BILogger.getLogger().info("add table reader:" + tableKey.getSourceID());
-                cacheTableReader.put(tableKey.getSourceID(), new CompoundCubeTableReader(tableKey, resourceRetrievalService, discovery));
-                return cacheTableReader.get(tableKey.getSourceID());
-            }
-        }
+//        synchronized (this) {
+//            if (cacheTableReader.containsKey(tableKey.getSourceID())) {
+//                return cacheTableReader.get(tableKey.getSourceID());
+//            } else {
+//                BILogger.getLogger().info("add table reader:" + tableKey.getSourceID());
+//                cacheTableReader.put(tableKey.getSourceID(), new CompoundCubeTableReader(tableKey, resourceRetrievalService, discovery));
+//                return cacheTableReader.get(tableKey.getSourceID());
+//            }
+//        }
+        return new CompoundCubeTableReader(tableKey, resourceRetrievalService, discovery);
     }
 
     @Override

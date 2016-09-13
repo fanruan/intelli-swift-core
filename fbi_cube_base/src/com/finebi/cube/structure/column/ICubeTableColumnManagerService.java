@@ -29,4 +29,6 @@ public interface ICubeTableColumnManagerService extends Release {
 
     void buildStructure();
 
+    void forceReleaseWriter();
+
 }

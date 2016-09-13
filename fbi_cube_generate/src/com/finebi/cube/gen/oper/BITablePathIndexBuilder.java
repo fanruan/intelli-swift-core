@@ -104,6 +104,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                     frontRelationPathReader.clear();
                 }
                 if (targetPathEntity != null) {
+                    targetPathEntity.forceReleaseWriter();
                     targetPathEntity.clear();
                 }
             }

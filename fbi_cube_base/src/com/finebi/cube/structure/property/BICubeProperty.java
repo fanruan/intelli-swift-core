@@ -102,9 +102,14 @@ public abstract class BICubeProperty<R extends ICubeReader, W extends ICubeWrite
         if (isWriterAvailable()) {
             writer.forceRelease();
         }
-        if (isReaderAvailable()) {
-            reader.forceRelease();
+        forceReleaseWriter();
+        resetReader();
+    }
+
+    public void forceReleaseWriter() {
+        if (isWriterAvailable()) {
+            writer.forceRelease();
+            writer = null;
         }
-        clear();
     }
 }

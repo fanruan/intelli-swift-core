@@ -17,9 +17,12 @@ public interface ICubeRelationEntityService extends CubeRelationEntityGetterServ
 
     /**
      * 加反向关联
-     * @param row 子表行号
+     *
+     * @param row      子表行号
      * @param position 主表行号
      */
     void addReverseIndex(int row, Integer position);
+
+    void forceReleaseWriter();
 
 }
