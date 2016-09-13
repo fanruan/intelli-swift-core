@@ -34,7 +34,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
@@ -44,16 +44,16 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
-        config.zoom.zoomTool.visible = this.config.show_zoom;
-        if(this.config.show_zoom === true){
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
+        if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
 
         config.yAxis = this.yAxis;
-        BI.each(config.yAxis, function(idx, axis){
+        BI.each(config.yAxis, function (idx, axis) {
             var title = "";
-            switch (axis.axisIndex){
+            switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
                     title = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
@@ -99,22 +99,22 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "area";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if(config.plotOptions.dataLabels.enabled === true){
-            BI.each(items, function(idx, item){
+        if (config.plotOptions.dataLabels.enabled === true) {
+            BI.each(items, function (idx, item) {
                 var isNeedFormatDataLabel = false;
                 switch (config.yAxis[item.yAxis].axisIndex) {
                     case self.constants.LEFT_AXIS:
-                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators){
+                        if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
                             isNeedFormatDataLabel = true;
                         }
                         break;
                     case self.constants.RIGHT_AXIS:
-                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators){
+                        if (self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators) {
                             isNeedFormatDataLabel = true;
                         }
                         break;
                 }
-                if(isNeedFormatDataLabel === true){
+                if (isNeedFormatDataLabel === true) {
                     item.dataLabels = {
                         "style": self.constants.FONT_STYLE,
                         "align": "outside",
@@ -130,7 +130,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
 
         return [items, config];
 
-        function formatChartStyle(){
+        function formatChartStyle() {
             switch (self.config.chart_style) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
@@ -140,11 +140,11 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function formatCordon(){
-            BI.each(self.config.cordon, function(idx, cor){
-                if(idx === 0 && self.xAxis.length > 0){
+        function formatCordon() {
+            BI.each(self.config.cordon, function (idx, cor) {
+                if (idx === 0 && self.xAxis.length > 0) {
                     var magnify = self.calcMagnify(self.config.x_axis_number_level);
-                    self.xAxis[0].plotLines = BI.map(cor, function(i, t){
+                    self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
@@ -156,7 +156,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
                         });
                     });
                 }
-                if(idx > 0 && self.yAxis.length >= idx){
+                if (idx > 0 && self.yAxis.length >= idx) {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
@@ -169,7 +169,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
                             magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
                             break;
                     }
-                    self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                    self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
@@ -184,7 +184,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
             })
         }
 
-        function formatChartLineStyle(){
+        function formatChartLineStyle() {
             switch (self.config.chart_line_type) {
                 case BICst.CHART_SHAPE.RIGHT_ANGLE:
                     config.plotOptions.curve = false;
@@ -202,7 +202,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function getXYAxisUnit(numberLevelType, position){
+        function getXYAxisUnit(numberLevelType, position) {
             var unit = "";
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -218,13 +218,13 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
                     unit = BI.i18nText("BI-Yi");
                     break;
             }
-            if(position === self.constants.X_AXIS){
+            if (position === self.constants.X_AXIS) {
                 self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
-            if(position === self.constants.LEFT_AXIS){
+            if (position === self.constants.LEFT_AXIS) {
                 self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
-            if(position === self.constants.RIGHT_AXIS){
+            if (position === self.constants.RIGHT_AXIS) {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
@@ -252,7 +252,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
             right_y_axis_reversed: options.right_y_axis_reversed || false,
             right_y_axis_second_reversed: options.right_y_axis_second_reversed || false,
             left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
-            right_y_axis_number_level:  options.right_y_axis_number_level || c.NORMAL,
+            right_y_axis_number_level: options.right_y_axis_number_level || c.NORMAL,
             right_y_axis_second_number_level: options.right_y_axis_second_number_level || c.NORMAL,
             x_axis_unit: options.x_axis_unit || "",
             left_y_axis_unit: options.left_y_axis_unit || "",
@@ -276,17 +276,17 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
         this.options.items = items;
 
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.AREA);
             });
             types.push(type);
         });
 
         this.yAxis = [];
-        BI.each(types, function(idx, type){
-            if(BI.isEmptyArray(type)){
+        BI.each(types, function (idx, type) {
+            if (BI.isEmptyArray(type)) {
                 return;
             }
             var newYAxis = {
@@ -310,7 +310,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

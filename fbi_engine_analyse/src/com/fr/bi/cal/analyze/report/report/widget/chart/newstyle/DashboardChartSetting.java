@@ -8,18 +8,14 @@ import com.fr.json.JSONObject;
  * Created by User on 2016/8/31.
  */
 public class DashboardChartSetting extends BIAbstractChartSetting {
-    @Override
-    public JSONObject formatItems(JSONArray data, JSONArray types) throws JSONException {
-        return super.formatItems(data, types);
-    }
 
     @Override
-    public JSONObject getConvertedDataAndSettings(JSONArray data, JSONArray types, JSONObject options) throws JSONException {
+    public JSONObject formatConfig(JSONObject options, JSONArray data) throws JSONException {
         return null;
     }
 
     @Override
-    public JSONObject formatConfig(JSONObject options, JSONArray data) throws JSONException {
+    public JSONObject getConvertedDataAndSettings(JSONArray data, JSONArray types, JSONObject options) throws JSONException {
         return null;
     }
 }

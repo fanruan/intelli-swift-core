@@ -7,19 +7,23 @@ import com.fr.json.JSONObject;
 /**
  * Created by User on 2016/8/31.
  */
-public class ScatterChartSetting extends BIAbstractChartSetting {
+public class ScatterChartSetting extends BIAbstractBubbleAndScatterSetting {
+
+    public ScatterChartSetting() throws JSONException {
+        super(false);
+    }
+
     @Override
-    public JSONObject formatItems(JSONArray data, JSONArray types) throws JSONException {
-        return super.formatItems(data, types);
+    public String getChartTypeString() {
+        return "scatter";
     }
 
     @Override
     public JSONObject formatConfig(JSONObject options, JSONArray data) throws JSONException {
-        return null;
-    }
-
-    @Override
-    public JSONObject getConvertedDataAndSettings(JSONArray data, JSONArray types, JSONObject options) throws JSONException {
-        return null;
+        JSONObject config = super.formatConfig(options, data);
+        JSONObject plotOptions = config.getJSONObject("plotOptions");
+        config.getJSONObject("plotOptions").put("marker", new JSONObject().put("symbol", "circle").put("radius", 4.5).put("enabled", true));
+        plotOptions.getJSONObject("dataLabels").getJSONObject("formatter").put("identifier", "${X}${Y}");
+        return config;
     }
 }

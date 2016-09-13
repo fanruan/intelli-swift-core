@@ -12,7 +12,9 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             xAxis: [{type: "category"}],
             yAxis: [{type: "value"}],
             types: [[], []],
-            formatConfig: function(config){return config;}
+            formatConfig: function (config) {
+                return config;
+            }
         })
     },
 
@@ -52,7 +54,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         });
         var config = BI.ChartCombineFormatItemFactory.combineConfig();
         config.plotOptions.click = function () {
-            self.fireEvent(BI.CombineChart.EVENT_CHANGE, this.pointOption);
+            self.fireEvent(BI.CombineChart.EVENT_CHANGE, this.options);
         };
         return [result, config];
     },
@@ -79,7 +81,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.CombineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.CombineChart.magnify();
     }
 });

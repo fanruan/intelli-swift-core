@@ -81,6 +81,23 @@ BI.ConvertMultiSelectItem = BI.inherit(BI.Widget, {
         });
     },
 
+    setNotSelectedValue: function(v){
+        var self = this;
+        BI.any(v, function(idx, vobj){
+            var newValue = vobj.value[self.constants.newValuePos], initialValue = vobj.value[self.constants.initialValuePos];
+            if(initialValue + "" === self.options.value + ""){
+                self.checkbox.setSelected(false);
+                self.stateEditor.setValue({
+                    value: newValue,
+                    text: initialValue
+                });
+                return true;
+            }else{
+                self.checkbox.setSelected(false);
+            }
+        });
+    },
+
     getValue: function(){
         var value = this.stateEditor.getValue();
         var arr = [];

@@ -50,14 +50,18 @@ FS.BIUSERMGR = {
         this.editUserAuthLimit = 0;
         this.viewUserAuthLimit = 0;
         this.mobileUserAuthLimit = 0;
-        var userAuthJo = BI.requestSync("fr_bi", "get_bi_limit_user", {
-            type: 'POST',
+        FR.ajax({
+            type: "POST",
+            url:  FR.servletURL + '?op=' + "fr_bi" + '&cmd=' + "get_bi_limit_user" + "&_=" + Math.random(),
             async: false,
-            math:Math.random()
+            complete: function (userAuthJo, status) {
+                if (status === 'success') {
+                    self.editUserAuthLimit = BI.parseInt( userAuthJo['edit'] ) || 0;
+                    self.viewUserAuthLimit = BI.parseInt( userAuthJo['view'] ) || 0;
+                    self.mobileUserAuthLimit = BI.parseInt( userAuthJo['mobile'] ) || 0;
+                }
+            }
         });
-        self.editUserAuthLimit = BI.parseInt( userAuthJo['edit'] ) || 0;
-        self.viewUserAuthLimit = BI.parseInt( userAuthJo['view'] ) || 0;
-        self.mobileUserAuthLimit = BI.parseInt( userAuthJo['mobile'] ) || 0;
     },
 
     getAuthLimitByMode: function( mode ){
