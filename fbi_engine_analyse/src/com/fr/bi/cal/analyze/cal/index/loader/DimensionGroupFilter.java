@@ -106,10 +106,11 @@ public class DimensionGroupFilter {
         return retIndexes;
     }
 
-    private GroupValueIndex[] createAllEmptyIndex(int size) {
+    private GroupValueIndex[] createAllEmptyIndex(int size, GroupValueIndex groupValueIndex) {
         GroupValueIndex[] retIndexes = new GroupValueIndex[size];
         for (int i = 0; i < retIndexes.length; i++) {
-            retIndexes[i] = GVIFactory.createAllEmptyIndexGVI();
+            List<DimensionFilter> filterList = getDimensionTraverseResultFilters(i);
+            retIndexes[i] = (filterList == null || filterList.isEmpty()) ? groupValueIndex : GVIFactory.createAllEmptyIndexGVI();
         }
         return retIndexes;
     }
@@ -312,8 +313,7 @@ public class DimensionGroupFilter {
         if (shouldNotTraverse()) {
             return createAllShowIndex(mergerInfoList.size());
         }
-        GroupValueIndex[] groupValueIndexes = new GroupValueIndex[mergerInfoList.size()];
-        groupValueIndexes = createAllShowIndex(mergerInfoList.size());
+        GroupValueIndex[] groupValueIndexes = createAllShowIndex(mergerInfoList.size());
         GroupValueIndex[][] groupValueIndexe2D = createAllEmptyIndex2D();
         GroupConnectionValue[] roots = next();
         GroupConnectionValue[] lastRoots = null;
@@ -335,6 +335,7 @@ public class DimensionGroupFilter {
         if (shouldBuildTree) {
             if (MultiThreadManagerImpl.getInstance().isMultiCall()) {
                 BIMultiThreadExecutor.execute(list);
+                list = null;
             }
             buildTree(groupValueIndexe2D, counter, nodeBuilder);
         }
@@ -379,7 +380,9 @@ public class DimensionGroupFilter {
                 mergeNode.setComparator(getComparator(deep));
                 mergeNode.setCk(groupConnectionValueChildren[j].getCk());
                 groupValueIndexArray[j] = currentValue.getRoot().getGroupValueIndex();
-                gviMap.put(mergerInfoList.get(j).getTargetGettingKey(), currentValue.getRoot().getGroupValueIndex());
+                if (shouldSetIndex()){
+                    gviMap.put(mergerInfoList.get(j).getTargetGettingKey(), currentValue.getRoot().getGroupValueIndex());
+                }
                 if (MultiThreadManagerImpl.getInstance().isMultiCall() && shouldBuildTree) {
                     list.add(new MergeSummaryCall(mergeNode, currentValue, mergerInfoList.get(j)));
                 } else {
@@ -390,12 +393,12 @@ public class DimensionGroupFilter {
                 }
             }
         }
-        Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap = new HashMap<TargetGettingKey, GroupValueIndex>();
-        for (int i = 0; i < groupValueIndexArray.length; i++) {
-            targetIndexValueMap.put(mergerInfoList.get(i).getTargetGettingKey(), groupValueIndexArray[i]);
-        }
         mergeNode.setGroupValueIndexArray(groupValueIndexArray);
         if (shouldSetIndex()) {
+            Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap = new HashMap<TargetGettingKey, GroupValueIndex>();
+            for (int i = 0; i < groupValueIndexArray.length; i++) {
+                targetIndexValueMap.put(mergerInfoList.get(i).getTargetGettingKey(), groupValueIndexArray[i]);
+            }
             mergeNode.setTargetIndexValueMap(targetIndexValueMap);
             mergeNode.setGroupValueIndexMap(gviMap);
         }
@@ -408,7 +411,7 @@ public class DimensionGroupFilter {
     }
 
     private boolean shouldSetIndex() {
-        return true;
+        return shouldRecalculateIndex;
     }
 
     private void setRootIndexMap(TreeBuilder nodeBuilder) {
@@ -530,18 +533,22 @@ public class DimensionGroupFilter {
     }
 
     private void filterTree(TreeBuilder filterBuilder, GroupValueIndex[][] groupValueIndexe2D, RowCounter counter, int deep, IMergerNode mergeNode) {
-        if (allShowNode(getDimensionTraverseResultFilters(deep), mergeNode, targetsMap, deep)) {
+        List<DimensionFilter> filterList = getDimensionTraverseResultFilters(deep);
+        if (allShowNode(filterList, mergeNode, targetsMap, deep)) {
             counter.count(deep);
             if (!counter.isFilteredCurrent(deep)) {
                 filterBuilder.addLastNode(deep, copyValue(mergeNode));
             }
             GroupValueIndex[] groupValueIndexArray = mergeNode.getGroupValueIndexArray();
-            for (int j = 0; j < groupValueIndexArray.length; j++) {
-                if (groupValueIndexArray[j] != null) {
-                    GroupValueIndex index = mergeNode.getGroupValueIndexArray()[j];
-                    groupValueIndexe2D[j][deep].or(index);
+            if (filterList != null && !filterList.isEmpty()){
+                for (int j = 0; j < groupValueIndexArray.length; j++) {
+                    if (groupValueIndexArray[j] != null) {
+                        GroupValueIndex index = mergeNode.getGroupValueIndexArray()[j];
+                        groupValueIndexe2D[j][deep].or(index);
+                    }
                 }
             }
+            mergeNode.setGroupValueIndexArray(null);
         } else {
             counter.markFiltered(deep);
         }
@@ -650,7 +657,7 @@ public class DimensionGroupFilter {
     private GroupValueIndex[][] createAllEmptyIndex2D() {
         GroupValueIndex[][] groupValueIndex2D = new GroupValueIndex[mergerInfoList.size()][rowDimension.length];
         for (int i = 0; i < groupValueIndex2D.length; i++) {
-            groupValueIndex2D[i] = createAllEmptyIndex(rowDimension.length);
+            groupValueIndex2D[i] = createAllEmptyIndex(rowDimension.length, mergerInfoList.get(i).getGroupValueIndex());
         }
         return groupValueIndex2D;
     }

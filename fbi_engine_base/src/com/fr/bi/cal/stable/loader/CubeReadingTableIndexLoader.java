@@ -35,6 +35,8 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
     private static Map<Long, ICubeDataLoader> userMap = new ConcurrentHashMap<Long, ICubeDataLoader>();
     private Map<String, ICubeDataLoader> childLoaderMap = new ConcurrentHashMap<String, ICubeDataLoader>();
     private BIUser user;
+    private ThreadLocal<CubeTableSource> lastSource = new ThreadLocal<CubeTableSource>();
+    private ThreadLocal<ICubeTableService> lastService = new ThreadLocal<ICubeTableService>();
 
     public CubeReadingTableIndexLoader(long userId) {
         user = new BIUser(userId);
@@ -80,7 +82,13 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
-        return BIModuleUtils.getTableIndex(tableSource, childLoaderMap);
+        if (lastSource.get() == tableSource){
+            return lastService.get();
+        }
+        ICubeTableService service =  BIModuleUtils.getTableIndex(tableSource, childLoaderMap);
+        lastSource.set(tableSource);
+        lastService.set(service);
+        return service;
     }
 
     @Override
@@ -112,6 +120,8 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 
     @Override
     public void releaseCurrentThread() {
+        lastService.remove();
+        lastSource.remove();
         for (ICubeDataLoader loader : childLoaderMap.values()) {
             loader.releaseCurrentThread();
         }
@@ -149,6 +159,8 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
                     loader.clear();
                 }
             }
+            lastSource = new ThreadLocal<CubeTableSource>();
+            lastService = new ThreadLocal<ICubeTableService>();
         }
     }
 
