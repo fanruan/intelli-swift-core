@@ -8,6 +8,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by GUY on 2015/4/9.
@@ -20,32 +21,22 @@ public abstract class BIAbstractTableSetting implements BITableSetting {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         JSONObject view = jo.getJSONObject("view");
-        if (view.has(BIReportConstant.REGION.DIMENSION1)) {
-            addDimTar(BIReportConstant.REGION.DIMENSION1, view);
-        }
-        if (view.has(BIReportConstant.REGION.DIMENSION2)) {
-            addDimTar(BIReportConstant.REGION.DIMENSION2, view);
-        }
-        if (view.has(BIReportConstant.REGION.TARGET1)) {
-            addDimTar(BIReportConstant.REGION.TARGET1, view);
-        }
-        if (view.has(BIReportConstant.REGION.TARGET2)) {
-            addDimTar(BIReportConstant.REGION.TARGET2, view);
-        }
-        if (view.has(BIReportConstant.REGION.TARGET3)) {
-            addDimTar(BIReportConstant.REGION.TARGET3, view);
+        Iterator<String> it = view.keys();
+        while (it.hasNext()) {
+            addDimTar(it.next(), view);
         }
     }
 
-    private void addDimTar(String type, JSONObject view) throws Exception{
+    private void addDimTar(String type, JSONObject view) throws Exception {
         JSONArray ja = view.getJSONArray(type);
-        if(Integer.parseInt(type) >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1)
-                && Integer.parseInt(type) < Integer.parseInt(BIReportConstant.REGION.TARGET1)){
+        if (Integer.parseInt(type) >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1)
+                && Integer.parseInt(type) < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
             groups_of_dimensions.put(type, BIJsonUtils.jsonArray2StringArray(ja));
             return;
         }
         groups_of_targets.put(type, BIJsonUtils.jsonArray2StringArray(ja));
     }
+
     @Override
     public BICore fetchObjectCore() {
         return new BICoreGenerator(this).fetchObjectCore();

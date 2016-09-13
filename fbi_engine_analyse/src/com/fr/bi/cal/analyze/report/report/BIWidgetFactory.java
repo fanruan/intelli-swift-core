@@ -58,6 +58,7 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.DONUT:
             case BIReportConstant.WIDGET.TABLE:
             case BIReportConstant.WIDGET.CROSS_TABLE:
+            case BIReportConstant.WIDGET.COMPLEX_TABLE:
                 return new TableWidget();
             case BIReportConstant.WIDGET.DETAIL:
                 return new BIDetailWidget();
