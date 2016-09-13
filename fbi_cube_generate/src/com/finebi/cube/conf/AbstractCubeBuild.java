@@ -16,6 +16,7 @@ import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
@@ -92,17 +93,18 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
         ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
         boolean spaceCheck = check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
-//        boolean connectionValid = true;
-//        for (CubeTableSource source : getAllSingleSources()) {
-//            boolean connectionCheck = check.ConnectionCheck(source, userId);
-//            if (!connectionCheck) {
-//                connectionValid = false;
-//                String errorMessage = source.getTableName() + ": Connection test failed";
-//                BILogger.getLogger().error(errorMessage);
-//                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
-//            }
-//
-//        }
+        boolean connectionValid = true;
+        /*暂时不对所有表做检测，有一张表连接失败即为失败*/
+        for (CubeTableSource source : getAllSingleSources()) {
+            boolean connectionCheck = check.ConnectionCheck(source, userId);
+            if (!connectionCheck) {
+                connectionValid = false;
+                String errorMessage = source.getTableName() + ": Connection test failed";
+                BILogger.getLogger().error(errorMessage);
+                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
+            }
+
+        }
 //        return spaceCheck && connectionValid;
         return spaceCheck;
     }
