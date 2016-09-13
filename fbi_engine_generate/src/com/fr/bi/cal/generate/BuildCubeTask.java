@@ -29,7 +29,9 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
@@ -82,14 +84,16 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
+        BILogger.getLogger().info("start copy files from old cubes!");
         cubeBuild.copyFileFromOldCubes();
     }
 
     @Override
     public void end() {
         Future<String> result = finishObserver.getOperationResult();
+        long start = System.currentTimeMillis();
         try {
-            BILogger.getLogger().info("start persist datas!");
+            BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" start persist configure data!");
             if (!cubeBuild.isSingleTable()) {
                 BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
                 BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
@@ -105,8 +109,9 @@ public class BuildCubeTask implements CubeTask {
         } finally {
             try {
                 BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
+                BILogger.getLogger().info("Persist Configure data finished,time cost: "+ DateUtils.timeCostFrom(start));
                 cube.addVersion(System.currentTimeMillis());
-                BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
+                BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" Start Replacing Old Cubes, Stop All Analysis");
                 replaceOldCubes();
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
@@ -123,8 +128,8 @@ public class BuildCubeTask implements CubeTask {
                 return;
             } else {
                 try {
-                    Thread.sleep(100);
-                    BILogger.getLogger().info("Cube thread is busy currently.Monitor will check it again after 100ms ");
+                    Thread.sleep(5000);
+                    BILogger.getLogger().info("Cube thread is busy currently.Monitor will check it again after 5s ");
                 } catch (InterruptedException e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 }
@@ -136,8 +141,10 @@ public class BuildCubeTask implements CubeTask {
     private void replaceOldCubes() {
         try {
             BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            if (!cubeBuild.replaceOldCubes()) {
-                BILogger.getLogger().error("replace cube files failed");
+            int times=0;
+            while (!cubeBuild.replaceOldCubes()){
+                BILogger.getLogger().error("cube replace failed after "+times+++" times try!It will try again in 5s");
+                Thread.sleep(5000);
             }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());

@@ -180,7 +180,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         }
         if (f == null) {
             BILogger.getLogger().error("can not find field " + columnName);
-            return null;
+            return sortRemovedList;
         }
         BIKey key = new IndexKey(columnName);
         ICubeTableService oldTi = loader.getTableIndex(tableSource);
