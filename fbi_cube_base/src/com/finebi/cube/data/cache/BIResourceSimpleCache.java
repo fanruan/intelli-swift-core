@@ -35,6 +35,6 @@ public class BIResourceSimpleCache<R extends CubeResourceRelease> implements IRe
         for (CubeResourceRelease resourceRelease : contents.values()) {
             resourceRelease.forceRelease();
         }
-//        contents.clear();
+        contents.clear();
     }
 }
