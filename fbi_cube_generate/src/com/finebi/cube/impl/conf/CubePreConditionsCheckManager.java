@@ -8,9 +8,6 @@ import com.fr.bi.stable.utils.code.BILogger;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by kary on 2016/6/20.
@@ -28,21 +25,17 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
     }
 
     @Override
-    public Map<CubeTableSource, Boolean> ConnectionCheck(Set<CubeTableSource> cubeTableSourceSet, long userId) {
-        Map tableSourceSqlValidMap = new HashMap<CubeTableSource,Boolean>();
-        for (CubeTableSource source : cubeTableSourceSet) {
+    public boolean ConnectionCheck(CubeTableSource source, long userId) {
+        boolean isSqlValid = true;
             if (source.getType() == BIBaseConstant.TABLETYPE.DB || source.getType() == BIBaseConstant.TABLETYPE.SQL) {
-                boolean isSqlValid = true;
                 try {
                     source.createPreviewJSON(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
                 } catch (Exception e) {
                     isSqlValid = false;
                     BILogger.getLogger().error(e.getMessage(), e);
                 }
-                tableSourceSqlValidMap.put(source, isSqlValid);
             }
-        }
-        return  tableSourceSqlValidMap;
+        return isSqlValid;
     }
 
     private double getDirSize(File file) {
