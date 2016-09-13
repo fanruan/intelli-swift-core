@@ -22,7 +22,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             type: "bi.drill_push_button"
         });
         this.pushButton.on(BI.DrillPushButton.EVENT_CHANGE, function () {
-            self._onClickPush();
+            self._onClickPush(!self.wrapper.isVisible());
         });
         this.pushButton.element.css("z-index", 1);
         this.outerWrapper = BI.createWidget({
@@ -35,7 +35,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 el: this.pushButton,
                 top: 0
             }]
-        })
+        });
     },
 
     _initShowChartDrill: function () {
@@ -89,9 +89,9 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
     populate: function (obj) {
         var self = this;
         this._initShowChartDrill();
-        this.outerWrapper.setVisible(this.showDrill && BI.isNotNull(obj));
+        this.outerWrapper.setVisible(this.showDrill);
+        this._onClickPush(this.showDrill);
         if (this.showDrill === false || BI.isNull(obj)) {
-            this.pushButton.setPushDown();
             return;
         }
         this.pushButton.setPushUp();
@@ -173,7 +173,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 this.buttonTop = 70;
             } else if (w >= 400) {
                 hgap = Math.ceil((w - 400) / 2);
-            } else if(w <= 200) {
+            } else if (w <= 200) {
                 this.buttonTop = 70;
             }
         }
@@ -185,8 +185,42 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this.outerWrapper.resize();
     },
 
-    _onClickPush: function () {
-        var isVisible = !this.wrapper.isVisible();
+    hidePushButton: function () {
+        if (this._checkUPDrillEmpty()) {
+            this._onClickPush(false)
+        }
+    },
+
+    setPushButtonVisible: function (v) {
+        if (this._checkUPDrillEmpty()) {
+            this.outerWrapper.setVisible(v)
+        }
+    },
+
+    _checkUPDrillEmpty: function () {
+        var wId = this.options.wId;
+        var drillMap = BI.Utils.getDrillByID(wId);
+        var upDrillID = null, dId = null;
+        BI.each(drillMap, function (drId, ds) {
+            var rType = BI.Utils.getRegionTypeByDimensionID(drId);
+            if (rType === BICst.REGION.DIMENSION1 && ds.length > 0) {
+                dId = ds[ds.length - 1].dId;
+            }
+            if (rType === BICst.REGION.DIMENSION2 && ds.length > 0) {
+                dId = ds[ds.length - 1].dId;
+            }
+            if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {
+                if (ds.length > 1) {
+                    upDrillID = ds[ds.length - 2].dId
+                } else {
+                    upDrillID = drId;
+                }
+            }
+        });
+        return BI.isNull(upDrillID)
+    },
+
+    _onClickPush: function (isVisible) {
         this.wrapper.setVisible(isVisible);
         this.outerWrapper.attr("items")[1].top = isVisible ? this.buttonTop : 0;
         this.outerWrapper.resize();
@@ -220,6 +254,11 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         }
         drillMap[rootId] = drillOperators;
         this.fireEvent(BI.ChartDrill.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
+        if (BI.isNotNull(drillId)) {
+            this._onClickPush(false)
+        } else if (this._checkUPDrillEmpty()) {
+            this.outerWrapper.setVisible(false)
+        }
     }
 });
 BI.ChartDrill.EVENT_CHANGE = "EVENT_CHANGE";

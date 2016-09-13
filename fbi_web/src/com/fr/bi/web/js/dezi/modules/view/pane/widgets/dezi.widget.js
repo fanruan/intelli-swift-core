@@ -60,6 +60,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             wId: self.model.get("id"),
             status: BICst.WIDGET_STATUS.EDIT
         });
+        this.hidePushButton = BI.debounce(BI.bind(this.chartDrill.hidePushButton, this.chartDrill), 3000);
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
         this.tableChartResize = BI.debounce(BI.bind(this.tableChart.resize, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
@@ -109,6 +110,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
+                self.chartDrill.setPushButtonVisible(false)
             }
         });
     },
@@ -162,6 +164,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         } else {
             this.chartDrill.populate(obj);
         }
+        this.hidePushButton()
     },
 
     _createTools: function () {
@@ -344,12 +347,28 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         var titleFont = BI.isNotNull(globalStyle) ?
             globalStyle.titleFont : BI.Utils.getGSTitleFont();
         if (BI.isNotNull(widgetBackground) && BI.isNotNull(widgetBackground.type)) {
-            this.element.css("background", widgetBackground.value);
+            if (widgetBackground.type == 1) {
+                this.element.css("background", widgetBackground.value);
+            }
+            if (widgetBackground.type == 2) {
+                this.element.css({
+                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + widgetBackground.value + ")"
+                    //backgroundSize: "100%"
+                })
+            }
         }
         if (BI.isNotNull(titleBackground) && BI.isNotNull(titleBackground.type)) {
-            this.title.element.css("background", titleBackground.value);
+            if (titleBackground.type == 1) {
+                this.title.element.css("background", titleBackground.value);
+            }
+            if (titleBackground.type == 2) {
+                this.title.element.css({
+                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + titleBackground.value + ")"
+                    // backgroundSize: "100%"
+                })
+            }
         }
-        if(BI.isNotNull(titleFont)) {
+        if (BI.isNotNull(titleFont)) {
             this.title.element.find(".shelter-editor-text .bi-text").css(titleFont);
         }
     },

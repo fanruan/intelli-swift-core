@@ -878,51 +878,6 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/no_data.png');
   _background: none;
 }
-.global-prediction-style-default .x-icon,
-.global-prediction-style-default:hover .x-icon,
-.global-prediction-style-default:active .x-icon {
-  display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_default.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_default.png');
-  _background: none;
-}
-.global-prediction-style-default.native .x-icon,
-.global-prediction-style-default.disabled .x-icon {
-  display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_default.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_default.png');
-  _background: none;
-}
-.global-prediction-style-one .x-icon,
-.global-prediction-style-one:hover .x-icon,
-.global-prediction-style-one:active .x-icon {
-  display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_one.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_one.png');
-  _background: none;
-}
-.global-prediction-style-one.native .x-icon,
-.global-prediction-style-one.disabled .x-icon {
-  display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_one.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_one.png');
-  _background: none;
-}
-.global-prediction-style-two .x-icon,
-.global-prediction-style-two:hover .x-icon,
-.global-prediction-style-two:active .x-icon {
-  display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_two.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_two.png');
-  _background: none;
-}
-.global-prediction-style-two.native .x-icon,
-.global-prediction-style-two.disabled .x-icon {
-  display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_two.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/globalstyle/prediction_style_two.png');
-  _background: none;
-}
 .drag-group-icon .x-icon,
 .drag-group-icon:hover .x-icon,
 .drag-group-icon:active .x-icon {
