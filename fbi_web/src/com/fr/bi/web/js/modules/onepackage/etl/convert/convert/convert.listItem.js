@@ -83,7 +83,6 @@ BI.ConvertMultiSelectItem = BI.inherit(BI.Widget, {
 
     setNotSelectedValue: function(v){
         var self = this;
-        console.log("123");
         BI.any(v, function(idx, vobj){
             var newValue = vobj.value[self.constants.newValuePos], initialValue = vobj.value[self.constants.initialValuePos];
             if(initialValue + "" === self.options.value + ""){
