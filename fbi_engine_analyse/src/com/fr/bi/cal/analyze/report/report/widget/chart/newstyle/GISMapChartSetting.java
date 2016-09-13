@@ -24,13 +24,13 @@ public class GISMapChartSetting extends BIAbstractChartSetting {
         JSONObject plotOptions = new JSONObject();
         plotOptions.getJSONObject("dataLabels").put("enabled", options.getBoolean("show_data_label"))
                 .put("useHtml", true).put("formatter", "function () { " +
-                "var name = (BI.isArray(this.name) ? '' : this.name + ',') + BI.contentFormat(this.value, '#.##') ;" +
+                "var name = (BI.isArray(this.name) ? '' : this.name + ',') + (window.BH ? BH.contentFormat(this.value, '#.##') : this.value);" +
                 "var style = \"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;\";" +
                 "var a = '<div style = ' + style + '>' + name + '</div>';" +
                 "return a");
         plotOptions.getJSONObject("tooltip").put("shared", true).put("formatter", "function () {" +
                 "var tip = BI.isArray(this.name) ? '' : this.name;" +
-                "for(int i = 0; i < this.points.length; i++){tip += ('<div>' + this.points[i].seriesName + ':' + BH.contentFormat((this.points[i].size || this.points[i].y), '#.##') + '</div>');}" +
+                "for(int i = 0; i < this.points.length; i++){tip += ('<div>' + this.points[i].seriesName + ':' + (window.BH ? BH.contentFormat((this.points[i].size || this.points[i].y), '#.##') : (this.points[i].size || this.points[i].y)) + '</div>');}" +
                 "return tip;}");
         config.put("geo", new JSONObject("{" +
                 "\"tileLayer\": \"http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}\"," +

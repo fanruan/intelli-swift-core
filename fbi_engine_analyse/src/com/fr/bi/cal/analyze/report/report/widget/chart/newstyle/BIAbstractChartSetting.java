@@ -198,7 +198,7 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
             }
         }
         formatter += ";-" + formatter;
-        return "function () {return arguments[0]}"; //"function () { return BH.contentFormat(arguments[0], \"" + formatter + "\")}";
+        return "function () { return window.BH ? BH.contentFormat(arguments[0], \"" + formatter + "\") : arguments[0]}";
     }
 
     public int calcMagnify(int type){
@@ -294,15 +294,7 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
                 unit = Inter.getLocText("BI-Yi");
                 break;
         }
-        if(position == BIChartSettingConstant.X_AXIS){
-            unit = unit + units;
-        }
-        if(position == BIChartSettingConstant.LEFT_AXIS){
-            unit = unit + units;
-        }
-        if(position == BIChartSettingConstant.RIGHT_AXIS){
-            unit = unit + units;
-        }
+        unit = unit + units;
         unit = StringUtils.isEmpty(unit) ? unit : "(" + unit + ")";
 
         return show ? title + unit : unit;

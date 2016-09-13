@@ -109,8 +109,8 @@ public abstract class BIAbstractBubbleAndScatterSetting extends BIAbstractChartS
                         .put("style", this.getFontStyle())
                         .put("align", "outside")
                         .put("enable", true)
-                        .put("formatter", new JSONObject("{identifier:\""+ identifier +"\", XFormat: function(){return BI.contentFormat(arguments[0], '#.##')}," +
-                                "YFormat: function(){return BI.contentFormat(arguments[0], '#.##')}, sizeFormat: function(){return BI.contentFormat(arguments[0], '#.##')}"
+                        .put("formatter", new JSONObject("{identifier:\""+ identifier +"\", XFormat: "+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL + "," +
+                                "YFormat: "+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL + ", sizeFormat: "+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL
                         )));
             }
             if(isNeedFormatDataLabelX){
