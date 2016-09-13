@@ -71,10 +71,6 @@ BI.CustomScaleFormulaPane = BI.inherit(BI.Widget, {
         })
     },
 
-    setOldValue: function (v) {
-          this.oldValue = v
-    },
-
     getOldValue: function () {
         return this.oldValue
     },

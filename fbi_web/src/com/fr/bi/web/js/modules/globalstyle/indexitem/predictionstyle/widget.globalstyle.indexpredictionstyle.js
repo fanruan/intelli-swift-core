@@ -6,9 +6,9 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         WHITE: "#ffffff",
         GRAY: "#cccccc",
         PAGE_ONE: 1,
-        PAGE_TWO: 2,
-        FIRST_PAGE_CUSTOM_STYLE_NUMBER: 3,
-        ALL_PREDICTION_STYLE_NUMBER: 5
+        PAGE_TWO: 2
+        // FIRST_PAGE_CUSTOM_STYLE_NUMBER: 3,
+        // ALL_PREDICTION_STYLE_NUMBER: 5
     },
     _defaultConfig: function () {
         return BI.extend(BI.GlobalStyleIndexPredictionStyle.superclass._defaultConfig.apply(this, arguments), {
@@ -198,8 +198,8 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         var self = this;
         var style = [this._createAdministratorStyle(), this._createPredictionStyleOne(), this._createPredictionStyleTwo()];
         BI.each(self.allUserCustomStyle, function (i, value) {
-            if (i < this._const.FIRST_PAGE_CUSTOM_STYLE_NUMBER) {
-                value.currentStyle = i + this._const.ALL_PREDICTION_STYLE_NUMBER;
+            if (i < 3) {
+                value.currentStyle = i + 5;
                 style.push(self._createUserCustomButton(BI.i18nText("BI-Custom_Style_" + (i + 1)), value))
             }
         });
@@ -210,8 +210,8 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         var self = this;
         var style = [];
         BI.each(self.allUserCustomStyle, function (i, value) {
-            if (i >= this._const.FIRST_PAGE_CUSTOM_STYLE_NUMBER) {
-                value.currentStyle = i + this._const.ALL_PREDICTION_STYLE_NUMBER;
+            if (i >= 3) {
+                value.currentStyle = i + 5;
                 style.push(self._createUserCustomButton(BI.i18nText("BI-Custom_Style_" + (i + 1)), value))
             }
         });
@@ -220,18 +220,18 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
 
     deleteCustomButton: function (button) {
         var value = button.getValue();
-        var index = (value.currentStyle - this._const.ALL_PREDICTION_STYLE_NUMBER);
+        var index = (value.currentStyle - 5);
         this.allUserCustomStyle.splice(index, 1);
-        if (this.getCustomNumber() <= this._const.FIRST_PAGE_CUSTOM_STYLE_NUMBER) {
+        if (this.getCustomNumber() <= 3) {
             this.currentPage = this._const.PAGE_ONE
         }
         this._populate();
     },
 
     addUserCustomButton: function (value) {
-        value.currentStyle = (this.allUserCustomStyle.length + this._const.ALL_PREDICTION_STYLE_NUMBER);
+        value.currentStyle = (this.allUserCustomStyle.length + 5);
         this.allUserCustomStyle.push(value);
-        if (this.getCustomNumber() > this._const.FIRST_PAGE_CUSTOM_STYLE_NUMBER) {
+        if (this.getCustomNumber() > 3) {
             this.currentPage = this._const.PAGE_TWO;
         }
         this._populate();
@@ -255,7 +255,7 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
                 this.allUserCustomStyle = v.allUserCustomStyle;
             }
             if (BI.isNotNull(v.currentStyle.currentStyle)) {
-                if (v.currentStyle.currentStyle >= 8) {// 8 = 3 + 5( FIRST_PAGE_CUSTOM_STYLE_NUMBER + ALL_PREDICTION_STYLE_NUMBER )
+                if (v.currentStyle.currentStyle >= 8) {// 8 = 3 + 5
                     this.currentPage = this._const.PAGE_TWO;
                 }
             }
@@ -284,7 +284,7 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
     },
 
     _populate: function () {
-        if (this.allUserCustomStyle.length <= this._const.FIRST_PAGE_CUSTOM_STYLE_NUMBER) {
+        if (this.allUserCustomStyle.length <= 3) {
             this.totalPage = this._const.PAGE_ONE;
             this.currentPage = this._const.PAGE_ONE;
             this._setAllButton();
