@@ -115,10 +115,6 @@ BI.CustomScrollTableScrollBar = BI.inherit(BI.Widget, {
     },
 
     setScrollTop: function (scrollTop) {
-        if (scrollTop > 860 && scrollTop < 861) {
-            debugger;
-        }
-        console.log(scrollTop);
         try {
             this.element.mCustomScrollbar('scrollTo', scrollTop);
         } catch (e) {
