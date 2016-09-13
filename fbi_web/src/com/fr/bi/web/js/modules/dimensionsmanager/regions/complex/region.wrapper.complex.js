@@ -14,7 +14,7 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
         return BI.extend(BI.ComplexRegionWrapper.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-complex-region-wrapper",
             titleName: ""
-        })
+        });
     },
 
     _init: function () {
@@ -30,7 +30,11 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
             hgap: this.constants.REGION_DIMENSION_GAP,
             vgap: this.constants.REGION_DIMENSION_GAP
         });
-
+        this.center.element.sortable({
+            
+        });
+        
+        this._appendEmptyRegion();
         BI.createWidget({
             type: "bi.vtape",
             element: this.element,
@@ -59,22 +63,70 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
         });
     },
 
-    refreshRegion: function(type, dimensions) {
+    _appendEmptyRegion: function () {
+        var self = this;
+        if (BI.isNotNull(this.emptyRegion)) {
+            this.emptyRegion.destroy();
+        }
+        this.emptyRegion = BI.createWidget({
+            type: "bi.complex_empty_region"
+        });
+        this.emptyRegion.on(BI.ComplexEmptyRegion.EVENT_CHANGE, function (data) {
+            self._addRegionAndDimension(data);
+        });
+        this.center.addItem(this.emptyRegion);
+    },
+
+    _addRegionAndDimension: function (data) {
+        var self = this, o = this.options;
+        var wrapperType = o.wrapperType;
+        var regionTypes = BI.keys(this.regions);
+        var newRegionType;
+        if (regionTypes.length === 0) {
+            if (wrapperType === BI.RegionsManager.COMPLEX_REGION_CATEGORY) {
+                newRegionType = BICst.REGION.DIMENSION1;
+            } else {
+                newRegionType = BICst.REGION.DIMENSION2;
+            }
+        } else {
+            //找到最大的 +1
+            newRegionType = BI.parseInt(BI.sortBy(regionTypes)[regionTypes.length - 1]) + 1;
+        }
+        this.regions[newRegionType] = BI.createWidget({
+            type: "bi.complex_dimension_region",
+            dimensionCreator: o.dimensionCreator,
+            wId: o.wId,
+            regionType: newRegionType
+        });
+        this.center.addItem(this.regions[newRegionType]);
+        BI.each(data, function (i, dimension) {
+            self.regions[newRegionType].addDimension(dimension.dId || BI.UUID(), dimension);
+        });
+        this._appendEmptyRegion();
+    },
+
+    refreshRegion: function (type, dimensions) {
         var o = this.options;
         if (BI.isNull(this.regions[type])) {
             this.regions[type] = BI.createWidget({
                 type: "bi.complex_dimension_region",
                 dimensionCreator: o.dimensionCreator,
                 wId: o.wId,
-                regionType: o.regionType
+                regionType: type
             });
             this.center.addItem(this.regions[type]);
+            this._appendEmptyRegion();
         }
-        this.regions[type].populate(dimensions);
+        if (dimensions.length > 0) {
+            this.regions[type].populate(dimensions);
+        } else {
+            this.regions[type].destroy();
+            delete this.regions[type];
+        }
     },
-    
-    getRegions: function() {
-        return this.regions;  
+
+    getRegions: function () {
+        return this.regions;
     },
 
     populate: function () {
