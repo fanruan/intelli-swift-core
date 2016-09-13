@@ -1,5 +1,7 @@
 package com.finebi.cube.conf;
 
+import com.fr.bi.stable.data.source.CubeTableSource;
+
 import java.io.File;
 
 /**
@@ -11,5 +13,6 @@ public interface CubePreConditionsCheck {
     boolean HDSpaceCheck(File file);
 
     /*连接是否可用*/
-    boolean ConnectionCheck();
+    boolean ConnectionCheck(CubeTableSource cubeTableSourceSet, long userId);
+
 }

@@ -880,7 +880,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
         return frag;
     },
 
-    _createBodyCells: function (items, columnSize, mergeCols, TDs, Ws, start, rowSize, firstIndex, firstOffset) {
+    _createBodyCells: function (items, columnSize, mergeCols, TDs, Ws, start, rowSize) {
         var self = this, o = this.options, preCol = {}, preRow = {}, preRW = {}, preCW = {}, map = {};
         columnSize = columnSize || o.columnSize;
         mergeCols = mergeCols || o.mergeCols;
@@ -889,7 +889,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
         start = start || 0;
         rowSize || (rowSize = o.rowSize);
         var frag = document.createDocumentFragment();
-        var rows = BI.sortBy(this._rowBuffer.getRowsWithUpdatedBuffer(firstIndex || 0, firstOffset || 0));
+        var rows = BI.sortBy(this._rowBuffer.getRowsWithUpdatedBuffer());
         if (rows[0] > 0) {
             frag.appendChild($("<tr>").height((o.rowSize + 1) * rows[0])[0]);
         }
@@ -2076,6 +2076,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
             }
             if (this.scrollBottomLeft.element[0].scrollTop !== scrollTop) {
                 this.scrollBottomLeft.element[0].scrollTop = scrollTop;
+                this._scroll(scrollTop);
             }
         } else {
             if (this.scrollContainer.element[0].scrollTop !== scrollTop) {
