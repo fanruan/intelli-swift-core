@@ -278,6 +278,12 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
+    refreshFieldsOfOneTable: function (tableId, callback, complete) {
+        Data.Req.reqFieldsOfOneTable(tableId, function (res) {
+            callback(res);
+        }, complete)
+    },
+
     updateTablesOfOnePackage: function (data, callback, complete) {
         Data.Req.reqUpdateTablesOfOnePackage(data, function (res) {
             callback(res);
