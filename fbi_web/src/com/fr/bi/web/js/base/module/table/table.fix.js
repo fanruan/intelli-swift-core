@@ -448,7 +448,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
                             self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, top);
                         },
                         onComplete: function () {
-                            self.__scrollBounce(scrollElement[0].scrollTop);
+                            self._scrollBounce(scrollElement[0].scrollTop);
                             self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrolling);
                             scrolling = null;
                         }
