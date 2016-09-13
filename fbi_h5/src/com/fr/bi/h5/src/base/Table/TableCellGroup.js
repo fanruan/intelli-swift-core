@@ -181,14 +181,14 @@ var TableCellGroup = React.createClass({
         var onColumnResize = props.onColumnResize ? this._onColumnResize : null;
 
         return (
-            <div
+            <View
                 style={style}
                 className={'fixedDataTableCellGroupLayout-cellGroupWrapper'}>
                 <TableCellGroupImpl
                     {...props}
                     onColumnResize={onColumnResize}
                 />
-            </div>
+            </View>
         );
     },
 

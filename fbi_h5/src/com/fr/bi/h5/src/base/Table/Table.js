@@ -143,7 +143,7 @@ var Table = React.createClass({
     },
 
     _handleStartShouldSetPanResponder(e) {
-        return e.nativeEvent.target === ReactDOM.findDOMNode(this.refs['fixedDataTable'])
+        return e.nativeEvent.target === this._table;
     },
 
     _handlePanResponderGrant(e, gestureState) {
@@ -151,11 +151,31 @@ var Table = React.createClass({
         this.offset.setValue(0);
         this.trans.setOffset({x: this.trans.x.__getAnimatedValue(), y: this.trans.y.__getAnimatedValue()});
         this.trans.setValue({x: 0, y: 0});
+        if (Math.abs(gestureState.vy) > Math.abs(gestureState.vx)) {
+            if (this.state.scrollY === 0 && gestureState.vy > 0
+                || this.state.scrollY === this.state.maxScrollY && gestureState.vy < 0
+            ) {
+                this._catchGestrure = false;
+                return;
+            }
+        } else {
+            if (this.state.scrollX === 0 && gestureState.vx > 0
+                || this.state.scrollX === this.state.maxScrollX && gestureState.vx < 0
+            ) {
+                this._catchGestrure = false;
+                return;
+            }
+        }
+
+        this._catchGestrure = true;
         e.stopPropagation();
         e.preventDefault();
     },
 
     _handlePanResponderMove(e, gestureState) {
+        if (!this._catchGestrure) {
+            return;
+        }
         var scrollX = this.state.scrollX, scrollY = this.state.scrollY, offsetX = this.state.offsetX;
         var maxScrollX = this.state.maxScrollX, maxScrollY = this.state.maxScrollY, maxOffsetScroll = this.state.offsetWidth - this.state.width;
         var dx = gestureState.dx, dy = gestureState.dy;
@@ -210,6 +230,9 @@ var Table = React.createClass({
     },
 
     _handlePanResponderEnd(e, gestureState) {
+        if (!this._catchGestrure) {
+            return;
+        }
         var dx = gestureState.dx, dy = gestureState.dy, vx = gestureState.vx, vy = gestureState.vy;
         if (!this._lockX && !this._lockY && this._lockA) {
             this.offset.flattenOffset();
@@ -465,7 +488,9 @@ var Table = React.createClass({
 
         return (
             <View
-                ref={'fixedDataTable'}
+                ref={(obj)=>{
+                    this._table = ReactDOM.findDOMNode(obj)
+                }}
                 className={cn(
                     'fixedDataTableLayout-main',
                     'public-fixedDataTable-main'
