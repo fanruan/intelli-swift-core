@@ -370,6 +370,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }
         if (BI.isNotNull(titleFont)) {
             this.title.element.find(".shelter-editor-text .bi-text").css(titleFont);
+            this._refreshTitlePosition();
         }
     },
 
