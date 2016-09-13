@@ -448,7 +448,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
                             self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, top);
                         },
                         onComplete: function () {
-                            self._scrollBounce(scrollElement[0].scrollTop);
+                            self._scrollBounce(otherElement[0].scrollTop);
                             self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrolling);
                             scrolling = null;
                         }
@@ -522,7 +522,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
                         change = true;
                     }
                 }
-                self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL);
+                // self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL);
                 if (change === true) {
                     e.stopPropagation();
                     //return false;
@@ -729,12 +729,8 @@ BI.FixTable = BI.inherit(BI.Widget, {
             var self = this, o = this.options;
             var pos = this._helper.scrollTo(scrollTop);
             this._rowBuffer.getRows(pos.index || 0, pos.offset || 0);
-            if (o.isNeedFreeze) {
-                this.bottomLeftBody.element.html(this._createBodyCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems, 0, null, pos.index, pos.offset));
-                this.bottomRightBody.element.html(this._createBodyCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length, null, pos.index, pos.offset));
-            } else {
-                this.body.element.html(this._createBodyCells(o.items, null, null, this.bodyTds, this.bodyItems, 0, null, pos.index, pos.offset));
-            }
+            this.bottomLeftBody.element.html(this._createBodyCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems, 0, null, pos.index, pos.offset));
+            this.bottomRightBody.element.html(this._createBodyCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length, null, pos.index, pos.offset));
             o.afterScroll();
         }
     },
