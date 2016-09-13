@@ -124,6 +124,10 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
             delete this.regions[type];
         }
     },
+    
+    getCenterArea: function() {
+        return this.center;  
+    },
 
     getRegions: function () {
         return this.regions;
