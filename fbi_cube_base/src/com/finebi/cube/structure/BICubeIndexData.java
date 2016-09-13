@@ -216,6 +216,18 @@ public class BICubeIndexData implements ICubeIndexDataService {
     }
 
     @Override
+    public void forceReleaseWriter() {
+        if (isIndexWriterAvailable()) {
+            indexWriter.forceRelease();
+            indexWriter = null;
+        }
+        if (isNullWriterAvailable()) {
+            nullWriter.forceRelease();
+            nullReader = null;
+        }
+    }
+
+    @Override
     public boolean isEmpty() {
         return !getIndexReader().canRead();
     }

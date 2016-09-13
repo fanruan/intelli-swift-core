@@ -1,8 +1,8 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.map.map2.ExternalIntArrayMapFactory;
 import com.finebi.cube.map.map2.IntArrayListExternalMap;
-import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
@@ -10,7 +10,6 @@ import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.base.FRContext;
-import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.manager.PerformancePlugManager;
@@ -102,6 +101,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     @Override
     public void release() {
+        columnEntityService.forceReleaseWriter();
         columnEntityService.clear();
     }
 

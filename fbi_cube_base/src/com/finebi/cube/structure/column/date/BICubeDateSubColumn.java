@@ -135,6 +135,11 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
         selfColumnEntity.clear();
     }
 
+    @Override
+    public void forceReleaseWriter() {
+        selfColumnEntity.forceReleaseWriter();
+    }
+
     /**
      * 根据行号获得对应的原始值。
      *
