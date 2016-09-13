@@ -43,6 +43,7 @@ public class Service4BIConfigure extends NoSessionIDService {
 
             new BIGetTablesOfOnePackageAction(),
             new BIGetBriefTablesOfOnePackageAction(),
+            new BIGetFieldsOfOneTableAction(),
 
             new BIGetAllTranslatedTablesByConnectionAction(),
             new BIUpdateTablesInPackageAction(),

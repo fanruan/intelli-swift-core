@@ -297,12 +297,11 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
             regionType: o.regionType,
             wrapperType: wrapperType
         });
-        regionWrapper.element.sortable({
-            containment: this.element,
-            connectWith: ".dimensions-container",
+        var sortArea = regionWrapper.getCenterArea();
+        sortArea.element.sortable({
+            containment: sortArea.element,
             tolerance: "move",
             handle: ".drag-tool",
-            cancel: ".bi-complex-empty-region",
             placeholder: {
                 element: function ($currentItem) {
                     var holder = BI.createWidget({
@@ -318,6 +317,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 }
             },
             items: ".bi-complex-dimension-region",
+            cancel: ".bi-complex-empty-region",
             update: function (event, ui) {
                 self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
             },
@@ -395,13 +395,14 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 var subRegions = region.getRegions();
                 BI.each(subRegions, function (stype, sregion) {
                     sregion.on(BI.ComplexDimensionRegion.EVENT_CHANGE, function() {
-                        self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
+                        // self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
                     });
-                    region.element.sortable({
+                    sregion.element.sortable({
                         containment: self.element,
-                        connectWith: ".dimensions-container",
+                        connectWith: ".bi-complex-dimension-region",
                         tolerance: "pointer",
                         //helper: "clone",
+                        scroll: false,
                         placeholder: {
                             element: function ($currentItem) {
                                 var holder = BI.createWidget({
@@ -409,7 +410,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                                     cls: "ui-sortable-place-holder",
                                     height: $currentItem.height() - 2
                                 });
-                                holder.element.css({"margin": "5px"});
+                                holder.element.css({"margin": "5px 5px 5px 15px"});
                                 return holder.element;
                             },
                             update: function () {
