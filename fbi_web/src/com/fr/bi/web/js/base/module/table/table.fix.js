@@ -445,13 +445,10 @@ BI.FixTable = BI.inherit(BI.Widget, {
                         },
                         onUpdate: function (top) {
                             otherElement[0].scrollTop = top;
-                            // self._scroll(top);
                             self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, top);
                         },
                         onComplete: function () {
-                            BI.delay(function () {
-                                self._scroll(scrollElement[0].scrollTop);
-                            }, 100);
+                            self.__scrollBounce(scrollElement[0].scrollTop);
                             self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrolling);
                             scrolling = null;
                         }
@@ -746,7 +743,7 @@ BI.FixTable = BI.inherit(BI.Widget, {
         if (this._isNeedFix) {
             var self = this, o = this.options;
             if (!this.__scrollBounce) {
-                this.__scrollBounce = BI.debounce(BI.bind(this._scroll, this), 300);
+                this.__scrollBounce = BI.debounce(BI.bind(this._scroll, this), 100);
             }
             this.__scrollBounce(top);
         }
