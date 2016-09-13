@@ -3,11 +3,11 @@
  */
 BI.DetailTableCell = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return {
+        return BI.extend(BI.DetailTableCell.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detail-table-cell",
             dId: "",
             text: ""
-        }
+        })
     },
 
     _init: function () {
