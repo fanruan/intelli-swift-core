@@ -180,6 +180,14 @@ Data.Req = BIReq = {
         }, complete)
     },
 
+    reqFieldsOfOneTable: function (tableId, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_fields_of_one_table", {
+            id: tableId
+        }, function (res) {
+            callback(res);
+        }, complete)
+    },
+
     reqUpdateTablesOfOnePackage: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "update_tables_in_package", data, function (res) {
             callback(res);

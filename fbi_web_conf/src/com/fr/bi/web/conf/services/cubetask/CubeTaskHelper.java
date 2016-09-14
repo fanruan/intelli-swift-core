@@ -21,6 +21,7 @@ import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.bi.web.conf.services.utils.BICubeGenerateUtils;
 
 import java.util.Set;
@@ -33,7 +34,7 @@ public class CubeTaskHelper {
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
     public static boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
-        BILogger.getLogger().info("Cube single table update start");
+        BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" Cube single table update start");
         CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(hostTableId), childTableSourceId, userId, updateType);
         boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
@@ -48,11 +49,12 @@ public class CubeTaskHelper {
 //            BILogger.getLogger().info("Cube part update start");
 //            cubeBuild = new CubeBuildByPart(userId, BICubeGenerateUtils.getTables4CubeGenerate(userId), BICubeGenerateUtils.getRelations4CubeGenerate(userId));
 //        } else {
-        BILogger.getLogger().info("Cube all update start");
         cubeBuild = new CubeBuildStaff(new BIUser(userId));
+        BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" preCondition checking");
 //        }
         if (preConditionsCheck(userId, cubeBuild)) {
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
+            BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" Cube all update start");
             taskAddResult = cubeManager.addTask(task, userId);
         }
         return taskAddResult;

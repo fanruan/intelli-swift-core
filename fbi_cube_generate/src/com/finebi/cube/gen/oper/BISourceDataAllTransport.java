@@ -44,9 +44,9 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
                 tableEntityService.recordRowCount(count);
             }
             tableEntityService.addVersion(version);
-            tableEntityService.clear();
+            tableEntityService.forceReleaseWriter();
             long tableCostTime = System.currentTimeMillis() - t;
-            System.out.println("tableName: "+tableSource.getTableName()+" tableSourceId: "+tableSource.getSourceID()+" table usage:" + DateUtils.timeCostFrom(t) );
+            System.out.println("tableName: " + tableSource.getTableName() + " tableSourceId: " + tableSource.getSourceID() + " table usage:" + DateUtils.timeCostFrom(t));
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
@@ -57,7 +57,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILogger.getLogger().error(e1.getMessage(), e1);
             }
             BILogger.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);

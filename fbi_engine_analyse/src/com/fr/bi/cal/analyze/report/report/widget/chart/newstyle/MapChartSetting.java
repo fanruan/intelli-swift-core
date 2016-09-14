@@ -42,11 +42,11 @@ public class MapChartSetting extends BIAbstractChartSetting {
             "var tip = this.name;" +
             "for(int i = 0; i < this.points.length; i++){" +
                 "var value = point.size || point.y;" +
-                "tip += ('<div>' + point.seriesName + ':' + BH.contentFormat(value, formatterArray[idx]) + '</div>');" +
+                "tip += ('<div>' + point.seriesName + ':' + (window.BH ? BH.contentFormat(value, formatterArray[idx]) : value) + '</div>');" +
             "}"+
             "return tip;}");
         plotOptions.getJSONObject("dataLabels").getJSONObject("formatter").put("valueFormat", "function () {" +
-            "return BH.contentFormat(arguments[0], "+ formatterArray.getString(0) + ");" +
+            "return (window.BH ? BH.contentFormat(arguments[0], "+ formatterArray.getString(0) + ") : arguments[0]);" +
         "};");
 
         config.put("geo", options.getJSONObject("geo"));
@@ -210,7 +210,7 @@ public class MapChartSetting extends BIAbstractChartSetting {
             needAddUnitOnLegend = true;
             numberLevel = items.getJSONObject(0).getJSONObject("settings").getInt("num_level");
             if(items.getJSONObject(0).getJSONObject("settings").getBoolean("num_separators")){
-                initTo = "BH.contentFormat(to, \"#,##0\")";
+                initTo = "(window.BH ? BH.contentFormat(to, \"#,##0\") : to)";
             }
         }
         rangeLegend.put("formatter", "function () {" +
@@ -233,7 +233,7 @@ public class MapChartSetting extends BIAbstractChartSetting {
                         "to +=" + Inter.getLocText("BI-Yi") + ";" +
                         "break;" +
                     "case " + BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.PERCENT + ":" +
-                        "to = BH.contentFormat(BI.parseFloat(to), \"#0%\");" +
+                        "to = (window.BH ? BH.contentFormat(to, \"#0%\") : to);" +
                         "break;"+
                 "}" +
             "}" +

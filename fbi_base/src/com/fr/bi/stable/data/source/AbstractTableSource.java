@@ -138,7 +138,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
             fieldValues.put(values);
             int count = Math.min(tableIndex.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
             for (int i = 0; i < count; i++) {
-                if (tableIndex.getRemovedList().indexOf(i)<0) {
+                if (tableIndex.getRemovedList().indexOf(i) < 0) {
                     values.put(tableIndex.getColumnDetailReader(new IndexKey(column.getFieldName())).getValue(i));
                 }
             }
@@ -177,7 +177,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
 
     @Override
     public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
-        if(helper.contains(this)){
+        if (helper.contains(this)) {
             return set;
         }
         helper.add(this);
@@ -236,6 +236,14 @@ public abstract class AbstractTableSource implements CubeTableSource {
             BILogger.getLogger().error(e.getMessage(), e);
         }
         return this.fields;
+    }
+
+    public Map<String, ICubeFieldSource> getRecordedFields() {
+        if (fields != null && !fields.isEmpty()) {
+            return this.fields;
+        } else {
+            return this.getFields();
+        }
     }
 
     /**
@@ -331,7 +339,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         List<JSONObject> stringList = new ArrayList<JSONObject>();
         List<JSONObject> numberList = new ArrayList<JSONObject>();
         List<JSONObject> dateList = new ArrayList<JSONObject>();
-        Map<String, ICubeFieldSource> fields = getFields();
+        Map<String, ICubeFieldSource> fields = getRecordedFields();
         for (Map.Entry<String, ICubeFieldSource> entry : fields.entrySet()) {
             ICubeFieldSource field = entry.getValue();
             stringList.add(field.createJSON());
@@ -378,6 +386,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
         return 0;
     }
+
     @Override
     public SourceFile getSourceFile() {
         return new SourceFile(fetchObjectCore().getID().getIdentityValue());

@@ -29,4 +29,7 @@ public class BICubeColumnPositionOfGroupService extends BICubeIntegerProperty im
     protected String getPropertyName() {
         return GROUP_POSITION;
     }
+
+
+
 }

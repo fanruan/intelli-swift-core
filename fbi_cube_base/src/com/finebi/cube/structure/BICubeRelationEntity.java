@@ -20,7 +20,7 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     private ICubeIndexDataService indexDataService;
     private ICubeResourceDiscovery discovery;
     private ICubeReverseRelationService reverseRelationService;
-    private ICubeVersion version;
+    private BICubeVersion version;
 
     public BICubeRelationEntity(ICubeResourceDiscovery discovery, ICubeResourceLocation cubeResourceLocation) {
         this.discovery = discovery;
@@ -73,6 +73,13 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     }
 
     @Override
+    public void forceReleaseWriter() {
+        indexDataService.forceReleaseWriter();
+        reverseRelationService.forceReleaseWriter();
+        version.forceReleaseWriter();
+    }
+
+    @Override
     public boolean isEmpty() {
         return indexDataService.isEmpty();
     }
@@ -84,6 +91,7 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     @Override
     public void addVersion(long version) {
         this.version.addVersion(version);
+        this.version.forceRelease();
     }
 
     @Override

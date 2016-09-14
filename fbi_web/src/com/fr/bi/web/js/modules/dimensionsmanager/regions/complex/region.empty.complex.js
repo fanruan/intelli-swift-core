@@ -2,18 +2,25 @@
  * Created by Young's on 2016/9/12.
  */
 BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
-    _defaultConfig: function() {
+    _defaultConfig: function () {
         return BI.extend(BI.ComplexEmptyRegion.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-complex-empty-region"
         });
     },
 
-    _init: function() {
+    _init: function () {
         BI.ComplexEmptyRegion.superclass._init.apply(this, arguments);
         var self = this;
         var emptyRegion = BI.createWidget({
             type: "bi.vertical",
-            element: this.element
+            element: this.element,
+            height: 40,
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Drag_Left_Field"),
+                cls: "drag-comment",
+                height: 40
+            }]
         });
         emptyRegion.element.droppable({
             accept: ".select-data-level0-item-button, .select-date-level1-item-button",
@@ -41,17 +48,14 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
                         return dimension.type === BICst.TARGET_TYPE.STRING || dimension.type === BICst.TARGET_TYPE.DATE || dimension.type === BICst.TARGET_TYPE.NUMBER;
                     });
                 }
-                BI.each(data, function (i, dimension) {
-                    self.addDimension(dimension.dId || BI.UUID(), dimension)
-                });
                 if (data.length > 0) {
-                    self.fireEvent(BI.ComplexEmptyRegion.EVENT_CHANGE);
+                    self.fireEvent(BI.ComplexEmptyRegion.EVENT_CHANGE, data);
                 }
             },
-            over: function (event, ui) {
+            over: function() {
 
             },
-            out: function (event, ui) {
+            out: function() {
 
             }
         });

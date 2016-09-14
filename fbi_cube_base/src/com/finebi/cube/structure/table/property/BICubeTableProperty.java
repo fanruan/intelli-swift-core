@@ -11,7 +11,6 @@ import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ICubeTablePropertyService;
-import com.finebi.cube.structure.ICubeVersion;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.property.BICubeProperty;
 import com.finebi.cube.structure.property.BICubeVersion;
@@ -49,7 +48,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private ICubeStringReader fieldInfoReader;
     private ICubeStringWriter parentsWriter;
     private ICubeStringReader parentsReader;
-    private ICubeVersion version;
+    private BICubeVersion version;
 
     private ICubeLongWriterWrapper rowCountWriter;
     private ICubeLongReaderWrapper rowCountReader;
@@ -295,22 +294,26 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     private void initialField() {
         if (!isFieldInit()) {
-            if (getFieldInfoReader().canRead()) {
-                tableFields = new ArrayList<ICubeFieldSource>();
-                try {
-                    int columnSize = Integer.parseInt(getFieldInfoReader().getSpecificValue(0));
-                    for (int pos = 1; pos <= columnSize; pos++) {
-                        JSONObject jo = new JSONObject(getFieldInfoReader().getSpecificValue(pos));
-                        BICubeFieldSource field = new BICubeFieldSource(null, null, 0, 0);
-                        field.parseJSON(jo);
-                        tableFields.add(field);
+            synchronized (this) {
+                if (!isFieldInit()) {
+                    if (getFieldInfoReader().canRead()) {
+                        tableFields = new ArrayList<ICubeFieldSource>();
+                        try {
+                            int columnSize = Integer.parseInt(getFieldInfoReader().getSpecificValue(0));
+                            for (int pos = 1; pos <= columnSize; pos++) {
+                                JSONObject jo = new JSONObject(getFieldInfoReader().getSpecificValue(pos));
+                                BICubeFieldSource field = new BICubeFieldSource(null, null, 0, 0);
+                                field.parseJSON(jo);
+                                tableFields.add(field);
+                            }
+                        } catch (BIResourceInvalidException e) {
+                            BILogger.getLogger().error(e.getMessage(), e);
+                            BINonValueUtils.beyondControl(e.getMessage(), e);
+                        } catch (Exception e) {
+                            BILogger.getLogger().error(e.getMessage(), e);
+                            BINonValueUtils.beyondControl(e.getMessage(), e);
+                        }
                     }
-                } catch (BIResourceInvalidException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
-                    BINonValueUtils.beyondControl(e.getMessage(), e);
-                } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
-                    BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
             }
         }
@@ -378,6 +381,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
                 BINonValueUtils.beyondControl("the field:" + field.toString() + " createJson method has problem.");
             }
         }
+        getFieldInfoWriter().forceRelease();
     }
 
 
@@ -561,8 +565,12 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         resetTimeStampReader();
         resetParentReader();
         resetParentWriter();
-        parentFieldProperty.clear();
-        version.clear();
+        if (parentFieldProperty != null) {
+            parentFieldProperty.clear();
+        }
+        if (version != null) {
+            version.clear();
+        }
     }
 
     public void forceRelease() {
@@ -597,6 +605,34 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     @Override
+    public void forceReleaseWriter() {
+        if (isFieldWriterAvailable()) {
+            fieldInfoWriter.forceRelease();
+            fieldInfoWriter = null;
+        }
+        if (isRowCountWriterAvailable()) {
+            rowCountWriter.forceRelease();
+            rowCountWriter = null;
+        }
+        if (isTimeStampWriterAvailable()) {
+            timeStampWriter.forceRelease();
+            timeStampWriter = null;
+        }
+        if (isParentWriterAvailable()) {
+            parentsWriter.forceRelease();
+            parentsWriter = null;
+        }
+        if (parentFieldProperty != null) {
+            parentFieldProperty.forceReleaseWriter();
+            parentFieldProperty = null;
+        }
+        if (version != null) {
+            (version).forceReleaseWriter();
+            version = null;
+        }
+    }
+
+    @Override
     public boolean isRemovedListAvailable() {
         return getRemovedListReader().canRead();
     }
@@ -607,7 +643,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     @Override
-    public void buildStructure()  {
+    public void buildStructure() {
         try {
             initialRemovedListWriter();
         } catch (Exception e) {

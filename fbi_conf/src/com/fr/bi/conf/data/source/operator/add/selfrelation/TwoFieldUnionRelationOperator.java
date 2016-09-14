@@ -2,17 +2,18 @@ package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.FRContext;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
@@ -76,15 +77,18 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
         IPersistentTable persistentTable = getBITable();
         Iterator<Map.Entry<String, Integer>> it;
         for (int i = 0; i < tables.length; i++) {
-            IPersistentTable ptalbe = tables[i];
-            int size = ptalbe.getField(idFieldName).getColumnSize();
+            IPersistentTable ptable = tables[i];
+            int size = ptable.getField(idFieldName).getColumnSize();
 //            int columnType = ptalbe.getField(idFieldName).getBIType();
+            for (PersistentField field : ptable.getFieldList()) {
+                persistentTable.addColumn(field);
+            }
             for (String s : showFields) {
                 it = fields.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry<String, Integer> entry = it.next();
 //                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
-                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), ptalbe.getField(idFieldName).getSqlType(), size, ptalbe.getField(idFieldName).getScale()));
+                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), ptable.getField(idFieldName).getSqlType(), size, ptable.getField(idFieldName).getScale()));
                 }
             }
         }
@@ -92,8 +96,20 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
     }
 
     @Override
-    protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
+        CubeTableSource source = getSingleParentMD5(parents);
+        return write(travel, loader.getTableIndex(source), source);
+    }
+
+    @Override
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+        CubeTableSource source = getSingleParentMD5(parents);
+        return write(travel, loader.getTableIndex(source), source);
+    }
+
+    protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, CubeTableSource source) {
         int rowCount = ti.getRowCount();
+        int row = 0;
         ICubeColumnIndexReader idmap = ti.loadGroup(new IndexKey(idFieldName), new ArrayList<BITableSourceRelation>());
         ICubeFieldSource idColumn = ti.getColumns().get(new IndexKey(idFieldName));
         ICubeFieldSource pidColumn = ti.getColumns().get(new IndexKey(parentIdFieldName));
@@ -101,6 +117,8 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
         if (idColumn != null && pidColumn != null && idColumn.getFieldType() == pidColumn.getFieldType()) {
             ICubeColumnDetailGetter getter = ti.getColumnDetailReader(new IndexKey(idFieldName));
             Map<Object, Integer> valueIndexMap = new HashMap<Object, Integer>();
+            Set<Object> isParent = new HashSet<Object>();
+            Set<Integer> mustDelete = new HashSet<Integer>();
             for (int i = 0; i < rowCount; i++) {
                 Object ob = getter.getValue(i);
                 if (ob == null) {
@@ -108,44 +126,76 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                 }
                 valueIndexMap.put(ob, i);
             }
+
             for (int i = 0; i < rowCount; i++) {
                 try {
                     ArrayList<Number> list = new ArrayList<Number>();
-                    Object[] res = idmap.createKey(columnLength);
                     dealWithID(columnLength, i, list, idmap, ti, new IndexKey(idFieldName), new IndexKey(parentIdFieldName));
-                    for (int k = list.size(), index = 0; k > 0 && index < list.size(); k--, index++) {
-                        res[index] = list.get(k - 1);
-                    }
-                    Object[] vals = idmap.createKey(columnLength * showFields.size());
-                    int cnt = 0;
-                    for (String s : showFields) {
-                        ICubeColumnDetailGetter showGetter = ti.getColumnDetailReader(new IndexKey(s));
-                        for (int j = 0; j < columnLength; j++) {
-                            if (res[j] != null) {
-                                int r = valueIndexMap.get(res[j]);
-                                if (r >= 0) {
-                                    Object showOb = showGetter.getValue(r);
-                                    if (showOb != null) {
-                                        vals[cnt] = showOb.toString();
-                                    }
-                                }
+                    for (int j = 1; j < list.size(); j++) {
+                        Object n = list.get(j);
+                        if (n != null) {
+                            int r = valueIndexMap.get(n);
+                            if (r >= 0) {
+                                isParent.add(n);
                             }
-                            cnt++;
-                        }
-                    }
-                    cnt = 0;
-                    int start = startCol;
-                    for (String s : showFields) {
-                        for (int j = 0; j < columnLength; j++) {
-                            travel.actionPerformed(new BIDataValue(i, start++,  vals[cnt++]));
                         }
                     }
                 } catch (StackOverflowError e) {
                     FRContext.getLogger().error("dead circle at row:" + i, e);
                 }
             }
+            for (Map.Entry<Object, Integer> entry : valueIndexMap.entrySet()) {
+                if (isParent.contains(entry.getKey())) {
+                    mustDelete.add(entry.getValue());
+                }
+            }
+            List<ICubeColumnDetailGetter> gts = new ArrayList<ICubeColumnDetailGetter>();
+            List<PersistentField> fields = source.getPersistentTable().getFieldList();
+            for (PersistentField field : fields) {
+                gts.add(ti.getColumnDetailReader(new IndexKey(field.getFieldName())));
+            }
+
+            for (int i = 0; i < rowCount; i++) {
+                if (mustDelete.contains(i)) {
+                    continue;
+                }
+                int index = 0;
+                Object[] res = idmap.createKey(fields.size() + columnLength * showFields.size());
+
+                for (ICubeColumnDetailGetter gt : gts) {
+                    res[index++] = gt.getValue(i);
+                }
+
+
+                ArrayList<Number> list = new ArrayList<Number>();
+                Object[] tags = idmap.createKey(columnLength);
+                dealWithID(columnLength, i, list, idmap, ti, new IndexKey(idFieldName), new IndexKey(parentIdFieldName));
+                for (int k = list.size(), cnt = 0; k > 0 && cnt < list.size(); k--, cnt++) {
+                    tags[cnt] = list.get(k - 1);
+                }
+
+                for (String s : showFields) {
+                    ICubeColumnDetailGetter showGetter = ti.getColumnDetailReader(new IndexKey(s));
+                    for (int j = 0; j < columnLength; j++) {
+                        if (tags[j] != null) {
+                            int r = valueIndexMap.get(tags[j]);
+                            if (r >= 0) {
+                                Object showOb = showGetter.getValue(r);
+                                if (showOb != null) {
+                                    res[index] = showOb.toString();
+                                }
+                            }
+                        }
+                        index++;
+                    }
+                }
+                for (int j = 0; j < index; j++) {
+                    travel.actionPerformed(new BIDataValue(row, j, res[j]));
+                }
+                row++;
+            }
         }
-        return rowCount;
+        return row;
     }
 
     private void dealWithID(final int cl, int i, final List list,

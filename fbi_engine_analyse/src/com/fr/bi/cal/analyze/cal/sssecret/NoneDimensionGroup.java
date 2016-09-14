@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.cal.Executor.ExecutorPartner;
+import com.fr.bi.cal.analyze.cal.result.MemNode;
 import com.fr.bi.cal.analyze.cal.result.NewRootNodeChild;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
@@ -35,7 +36,6 @@ import java.util.List;
 public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implements Release {
 
     public final static NoneDimensionGroup NULL = new NoneDimensionGroup();
-
     protected volatile Node node;
 
     //当前计算的那个表的指标
@@ -46,6 +46,8 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     protected volatile boolean isPageFinished = false;
 
     private boolean needAllCalculate = false;
+
+    private  MemNode tempNode;
 
 
     protected NoneDimensionGroup() {
@@ -61,6 +63,13 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
         initRoot(gvi);
     }
 
+    protected NoneDimensionGroup(BusinessTable tableKey, MemNode node, ICubeDataLoader loader) {
+        this.loader = loader;
+        this.tableKey = tableKey;
+        this.tempNode = node;
+        initRoot(node.getGroupValueIndex());
+    }
+
     protected NoneDimensionGroup(BusinessTable tableKey, GroupValueIndex gvi, ICubeDataLoader loader, boolean needAllCalculate) {
         this.tableKey = tableKey;
         this.loader = loader;
@@ -72,6 +81,12 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
 
 
         return new NoneDimensionGroup(tableKey, gvi, loader);
+    }
+
+    public static NoneDimensionGroup createDimensionGroup(final BusinessTable tableKey, MemNode node, final ICubeDataLoader loader) {
+
+
+        return new NoneDimensionGroup(tableKey, node, loader);
     }
 
     public static NoneDimensionGroup createDimensionGroup(final BusinessTable tableKey, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean needAllCalculate) {
@@ -211,5 +226,12 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
             }
         }
         return true;
+    }
+
+    public void releaseMemNode(){
+        if (this.tempNode != null){
+            tempNode.release();
+            tempNode = null;
+        }
     }
 }

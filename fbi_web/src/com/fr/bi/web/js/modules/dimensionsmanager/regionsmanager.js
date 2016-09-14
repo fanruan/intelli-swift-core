@@ -43,8 +43,8 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.COMPLEX_TABLE:
                 //动态创建region 先创建分类和列表头的wrapper
-                this.regions[BI.RegionsManager.COMPLEX_REGION_CATEGORY] = this._createComplexRegionWrapper(BI.i18nText("BI-Category"));
-                this.regions[BI.RegionsManager.COMPLEX_REGION_COLUMN] = this._createComplexRegionWrapper(BI.i18nText("BI-Column_Header"));
+                this.regions[BI.RegionsManager.COMPLEX_REGION_CATEGORY] = this._createComplexRegionWrapper(BI.i18nText("BI-Category"), BI.RegionsManager.COMPLEX_REGION_CATEGORY);
+                this.regions[BI.RegionsManager.COMPLEX_REGION_COLUMN] = this._createComplexRegionWrapper(BI.i18nText("BI-Column_Header"), BI.RegionsManager.COMPLEX_REGION_COLUMN);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.DATE:
@@ -287,15 +287,50 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         return region;
     },
 
-    _createComplexRegionWrapper: function (titleName) {
+    _createComplexRegionWrapper: function (titleName, wrapperType) {
         var self = this, o = this.options;
-        return BI.createWidget({
+        var regionWrapper = BI.createWidget({
             type: "bi.complex_region_wrapper",
             titleName: titleName,
             dimensionCreator: o.dimensionCreator,
             wId: o.wId,
-            regionType: o.regionType
+            regionType: o.regionType,
+            wrapperType: wrapperType
         });
+        var sortArea = regionWrapper.getCenterArea();
+        sortArea.element.sortable({
+            containment: sortArea.element,
+            tolerance: "move",
+            handle: ".drag-tool",
+            placeholder: {
+                element: function ($currentItem) {
+                    var holder = BI.createWidget({
+                        type: "bi.label",
+                        cls: "ui-sortable-place-holder",
+                        height: $currentItem.height() - 2
+                    });
+                    holder.element.css({"margin": "5px"});
+                    return holder.element;
+                },
+                update: function () {
+
+                }
+            },
+            items: ".bi-complex-dimension-region",
+            cancel: ".bi-complex-empty-region",
+            update: function (event, ui) {
+                self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
+            },
+            start: function (event, ui) {
+            },
+            stop: function (event, ui) {
+            },
+            over: function (event, ui) {
+
+            }
+        });
+
+        return regionWrapper;
     },
 
     _createTargetRegion: function (titleName, regionType) {
@@ -359,10 +394,41 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
             if (o.regionType === BICst.WIDGET.COMPLEX_TABLE && type !== BICst.REGION.TARGET1) {
                 var subRegions = region.getRegions();
                 BI.each(subRegions, function (stype, sregion) {
-                    views[stype] = sregion.getValue();
-                    views[type].on(BI.ComplexDimensionRegion.EVENT_CHANGE, function() {
-                        self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
+                    sregion.on(BI.ComplexDimensionRegion.EVENT_CHANGE, function() {
+                        // self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
                     });
+                    sregion.element.sortable({
+                        containment: self.element,
+                        connectWith: ".bi-complex-dimension-region",
+                        tolerance: "pointer",
+                        //helper: "clone",
+                        scroll: false,
+                        placeholder: {
+                            element: function ($currentItem) {
+                                var holder = BI.createWidget({
+                                    type: "bi.label",
+                                    cls: "ui-sortable-place-holder",
+                                    height: $currentItem.height() - 2
+                                });
+                                holder.element.css({"margin": "5px 5px 5px 15px"});
+                                return holder.element;
+                            },
+                            update: function () {
+
+                            }
+                        },
+                        items: ".dimension-container",
+                        update: function (event, ui) {
+                            self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
+                        },
+                        start: function (event, ui) {
+                        },
+                        stop: function (event, ui) {
+                        },
+                        over: function (event, ui) {
+
+                        }
+                    })
                 });
             }
         });
