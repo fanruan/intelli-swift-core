@@ -68,6 +68,11 @@ BI.TextLabelItemGroup = BI.inherit(BI.ButtonGroup, {
                 btn.unHighLight();
             }
         });
+    },
+
+    setValue: function (v) {
+        BI.TextLabelItemGroup.superclass.setValue.apply(this, arguments);
+        this._checkBtnStyle();
     }
 });
 

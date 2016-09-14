@@ -33,10 +33,6 @@ BI.TextLabel = BI.inherit(BI.Widget, {
 
             }]
         });
-        console.log(self.container.getValue());
-        this.container.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            console.log(self.container.getValue());
-        });
 
         BI.createWidget({
             type: "bi.horizontal",
@@ -45,12 +41,12 @@ BI.TextLabel = BI.inherit(BI.Widget, {
         })
     },
     
-    setValue: function () {
-        
+    setValue: function (v) {
+        this.container.setValue(v);
     },
     
     getValue: function () {
-
+        return this.container.getValue();
     }
 });
 
