@@ -26,6 +26,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             self.packs = packs;
             //选中当前业务包
             self.selectDataPane.setPackage(BI.Utils.getCurrentPackageId4Conf());
+        }, function() {
             mask.destroy();
         });
 

@@ -47,6 +47,7 @@ public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
         //加密处理过
         if (StringUtils.isNotEmpty(query)) {
             query = DecryptBi.decrypt(query, "sh");
+            BILogger.getLogger().info("preview sql:"+query);
         }
 //        query = java.net.URLDecoder.decode(query , "utf-8");
         Connection conn = null;

@@ -31,21 +31,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         config.style = formatChartStyle();
         formatChartPieStyle();
 
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
 
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
@@ -92,6 +78,33 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
 
     },
 
+    //目前饼图不会有多个系列，如果有多个就要把它们合并在一起
+    _isNeedConvert: function(items){
+        var result = BI.find(items, function(idx, item){
+            return item.length > 1;
+        });
+        return BI.isNotNull(result);
+    },
+
+    _formatItems: function(items){
+        if(this._isNeedConvert(items)){
+            //把每个坐标轴所有的多个系列合并成一个系列
+            return BI.map(items, function(idx, item){
+                var seriesItem = [];
+                var obj = {data: [], name: ""};
+                seriesItem.push(obj);
+                BI.each(item, function(id, series){
+                    BI.each(series.data, function(i, da){
+                        obj.data.push(BI.extend({}, da, {x: series.name}));
+                    });
+                });
+                return seriesItem;
+            })
+        }else{
+            return items;
+        }
+    },
+
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
@@ -115,7 +128,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
             types.push(type);
         });
 
-        this.combineChart.populate(items, types);
+        this.combineChart.populate(this._formatItems(items), types);
     },
 
     resize: function () {

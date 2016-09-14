@@ -174,6 +174,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                 };
             });
             this.selectCombineTableCombo.populate(items);
+            this.selectCombineTableCombo.setValue();
             combineCombo.height = 35;
             this.tab.setSelect(this.constants.Multi_Match_Multi);
         }else{

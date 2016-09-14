@@ -107,15 +107,13 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _rebuildItems: function(){
         var o = this.options;
-        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var tableId = BI.Utils.getTableIDByDimensionID(o.dId);
         var fieldIds = BI.Utils.getStringFieldIDsOfTableID(tableId).concat(BI.Utils.getNumberFieldIDsOfTableID(tableId));
         var children = [];
-        var minimalist = BI.Utils.getWSMinimalistByID(wId);
-        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
+        var minimalist = BI.Utils.getWSMinimalistByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
         children.push({
             text: BI.i18nText("BI-Total_Row_Count"),
-            value: BI.Utils.getCountFieldIDsOfTableID(tableId),
+            value: BI.Utils.getCountFieldIDsOfTableID(tableId)[0],
             cls: "dot-e-font"
         });
         BI.each(fieldIds, function(idx, fieldId){
@@ -213,9 +211,6 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                if(bigDataMode) {
-                    items[this.constants.CordonPos][0].disabled = true;
-                }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.GIS_MAP:

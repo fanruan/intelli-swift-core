@@ -45,13 +45,28 @@ public class BIRelationIndexGenerator extends BIProcessor {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         biLogManager.logRelationStart(UserControl.getInstance().getSuperManagerID());
         long t = System.currentTimeMillis();
+        RelationColumnKey relationColumnKeyInfo = null;
+        try {
+            relationColumnKeyInfo = getRelationColumnKeyInfo();
+        } catch (Exception e) {
+            BILogger.getLogger().error("get relationColumnKey failed! relation information used as listed:" + relation.getPrimaryTable().getSourceID() + "." + relation.getPrimaryField().getColumnName() + " to " + relation.getForeignTable().getSourceID() + "." + relation.getForeignField().getColumnName());
+            BILogger.getLogger().error(e.getMessage());
+        }
         try {
             buildRelationIndex();
             long costTime = System.currentTimeMillis() - t;
-            biLogManager.infoRelation(getRelationColumnKeyInfo(), costTime, UserControl.getInstance().getSuperManagerID());
+            try {
+                biLogManager.infoRelation(relationColumnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
             return null;
         } catch (Exception e) {
-            biLogManager.errorRelation(getRelationColumnKeyInfo(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            try {
+                biLogManager.errorRelation(relationColumnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e1.getMessage(), e1);
+            }
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             return null;
@@ -77,8 +92,8 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 primaryTable = cubeTableSource;
                 Set<CubeTableSource> primarySources = new HashSet<CubeTableSource>();
                 primarySources.add(cubeTableSource);
-                for (ICubeFieldSource iCubeFieldSource : primaryTable.getFieldsArray(primarySources)) {
-                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(),relation.getPrimaryField().getColumnName())) {
+                for (ICubeFieldSource iCubeFieldSource : primaryTable.getFacetFields(primarySources)) {
+                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getPrimaryField().getColumnName())) {
                         primaryField = iCubeFieldSource;
                     }
                 }
@@ -90,7 +105,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 foreignTable = cubeTableSource;
                 Set<CubeTableSource> foreignSource = new HashSet<CubeTableSource>();
                 foreignSource.add(cubeTableSource);
-                for (ICubeFieldSource iCubeFieldSource : foreignTable.getFieldsArray(foreignSource)) {
+                for (ICubeFieldSource iCubeFieldSource : foreignTable.getFacetFields(foreignSource)) {
                     if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getForeignField().getColumnName())) {
                         foreignField = iCubeFieldSource;
                     }
@@ -98,8 +113,8 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 break;
             }
         }
-        BITableSourceRelation biTableSourceRelation=new BITableSourceRelation(primaryField,foreignField,primaryTable,foreignTable);
-        return  biTableSourceRelation;
+        BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(primaryField, foreignField, primaryTable, foreignTable);
+        return biTableSourceRelation;
     }
 
     private Set<CubeTableSource> getAllTableSource() {
@@ -161,7 +176,12 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 /**
                  * value值在子字段中的索引位置
                  */
-                int position = foreignColumn.getPositionOfGroupByGroupValue(primaryColumnValue);
+
+                int position = -1;
+                if (foreignColumn.sizeOfGroup() > 0) {
+                    position = foreignColumn.getPositionOfGroupByGroupValue(primaryColumnValue);
+                }
+
                 /**
                  * 依据索引位置，取出索引
                  */
@@ -175,8 +195,8 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 tableRelation.addRelationIndex(row, foreignGroupValueIndex);
                 initReverseIndex(reverse, row, foreignGroupValueIndex);
             }
-            GroupValueIndex nullIndex =  appearPrimaryValue.NOT(foreignTable.getRowCount());
-            buildReverseIndex(tableRelation,reverse);
+            GroupValueIndex nullIndex = appearPrimaryValue.NOT(foreignTable.getRowCount());
+            buildReverseIndex(tableRelation, reverse);
             tableRelation.addRelationNULLIndex(0, nullIndex);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -211,7 +231,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
     }
 
     private void buildReverseIndex(ICubeRelationEntityService tableRelation, Integer[] index) {
-        for (int i = 0; i < index.length; i ++){
+        for (int i = 0; i < index.length; i++) {
             tableRelation.addReverseIndex(i, index[i]);
         }
     }

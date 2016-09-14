@@ -125,7 +125,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 },
                 stop: function (e, ui) {
                     self._stopDrag(id, ui.position, widget);
-                },
+                }
                 //helper: function (e) {
                 //    var helper = self.arrangement.getHelper();
                 //    return helper.element;

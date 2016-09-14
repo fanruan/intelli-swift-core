@@ -219,7 +219,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             text: BI.i18nText("BI-Global_Style"),
             width: 90
         });
-        //globalStyleButton.setVisible(false);
+        globalStyleButton.setVisible(false);
 
         globalStyleButton.on(BI.Button.EVENT_CHANGE, function () {
             var cacheGS = {};
@@ -271,8 +271,8 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                 left: 270
             }, {
                 el: globalStyleButton,
-                top: 0,
-                left: 370
+                top: 3,
+                left: 360
             }]
         })
     },

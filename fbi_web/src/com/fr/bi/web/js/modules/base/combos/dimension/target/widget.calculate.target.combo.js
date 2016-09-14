@@ -94,7 +94,6 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
         var minimalist = BI.Utils.getWSMinimalistByID(wId);
-        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
         var e = BI.Utils.getExpressionByDimensionID(o.dId);
         var ids = e.ids;
         BI.each(ids , function (idx , id){
@@ -182,9 +181,6 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         value: BICst.TARGET_COMBO.CORDON
                     }]
                 };
-                if(bigDataMode){
-                    item[this.constants.CordonPos][0].disabled = true;
-                }
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.GIS_MAP:

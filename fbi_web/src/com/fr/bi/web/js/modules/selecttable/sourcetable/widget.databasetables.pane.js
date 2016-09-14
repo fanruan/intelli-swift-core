@@ -22,33 +22,54 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
         //用于保存所有已选择的表，为了搜索
         this.selectedTables = [];
         this.wrapper = BI.createWidget({
-            type: "bi.default",
-            element: this.element
+            type: "bi.default"
+        });
+        this.schemaName = BI.createWidget({
+            type: "bi.label",
+            height: 60
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.wrapper,
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
+            }, {
+                el: this.schemaName,
+                top: -60,
+                left: 10
+            }]
         })
     },
 
     populateTab: function (connName) {
         var self = this;
         this.loading();
-        Data.BufferPool.getTablesByConnectionName(connName, function (res) {
+        BI.Utils.getTablesByConnectionName(connName, function (res) {
             self.populate(connName, res);
             self.loaded();
         });
     },
 
-    populate: function (connName, items) {
+    populate: function (connName, result) {
         this.connectionName = connName;
-        this.dataLinkTables = items;
+        this.dataLinkTables = result.items;
         this.wrapper.empty();
+        if(BI.isNotEmptyString(result.schema)) {
+            this.schemaName.setText(BI.i18nText("BI-Mode") + ": " + result.schema);
+        }
 
         //对于连接失败的
-        if (BI.isNotNull(items["__ERROR_MESSAGE__"])) {
-            this._createLinkFailPane(items["__ERROR_MESSAGE__"]);
+        if (BI.isNotNull(result.error)) {
+            this._createLinkFailPane(result.error);
             return;
         }
 
         //没有表的
-        if (BI.isEmptyArray(items)) {
+        if (BI.isEmptyArray(this.dataLinkTables)) {
             if (connName === BI.i18nText("BI-Server_Data_Set")) {
                 this.wrapper.addItem({
                     el: {
@@ -62,11 +83,16 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
                     right: 0
                 });
             } else {
+                var text = BI.i18nText("BI-No_Usable_Table");
+                //未设置模式
+                if(BI.isEmptyString(result.schema)) {
+                    text = BI.i18nText("BI-Schema_Not_Set");
+                }
                 this.wrapper.addItem({
                     el: {
                         type: "bi.label",
                         height: 50,
-                        text: BI.i18nText("BI-No_Usable_Table"),
+                        text: text,
                         cls: "no-usable-table-comment"
                     }
                 });
@@ -75,10 +101,10 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
         }
 
         //两种 是否含有schema
-        if (BI.isNotNull(items[0].schema)) {
+        if (BI.isNotNull(this.dataLinkTables[0].schema)) {
             //两个tab，一个使用combo控制，一个使用pager控制
             var comboItems = [];
-            BI.each(items, function (i, item) {
+            BI.each(this.dataLinkTables, function (i, item) {
                 comboItems.push({
                     text: item.schema,
                     value: item.schema
@@ -117,7 +143,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
                 cardCreator: BI.bind(this._createSchemaCard, this)
             });
         } else {
-            this.allTables = items[0].tables;
+            this.allTables = this.dataLinkTables[0].tables;
             var pager = BI.createWidget({
                 type: "bi.database_tables_pager",
                 pages: this.allTables.length,
@@ -332,7 +358,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
     _reConnectionLink: function () {
         var self = this;
         this.loading();
-        Data.BufferPool.getTablesByConnectionName(this.connectionName, function (res) {
+        BI.Utils.getTablesByConnectionName(this.connectionName, function (res) {
             self.populate(self.connectionName, res);
             self.loaded();
         });

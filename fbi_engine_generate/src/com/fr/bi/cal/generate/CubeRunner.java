@@ -163,12 +163,10 @@ public class CubeRunner {
 
     private void start() {
         BackUpUtils.backup();
-//        copyOldCubesToTempCubes();
     }
 
     private void finish() {
         setStatue(Status.REPLACING);
-        CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         long start = System.currentTimeMillis();

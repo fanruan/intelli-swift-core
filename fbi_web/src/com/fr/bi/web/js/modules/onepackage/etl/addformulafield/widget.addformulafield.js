@@ -398,7 +398,6 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
                     text: BI.i18nText("BI-Loading")
                 });
                 BI.Utils.getPreviewDataByTableAndFields(table, [], function (data) {
-                    mask.destroy();
                     var item = self._createTableItems(data);
                     var tableView = BI.createWidget({
                         type: "bi.preview_table",
@@ -421,6 +420,8 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
                         hgap: self.constants.ADD_FIELD_GAP_TEN
                     });
                     self.previewPane.addItem(wrapper);
+                }, function() {
+                    mask.destroy();
                 })
             });
             self.previewPane.addItem(previewButton);

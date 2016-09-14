@@ -179,12 +179,13 @@ public class BITableDataDAOManager extends XMLFileManager {
     public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds, boolean isReset) throws Exception {
         synchronized (BITableDataDAOManager.class) {
             long[] userIdsNeedToAddIntoMapLeft = userIds;
+            User tdUser = TableDataSyncDB.getInstance().findUserByUserId(createBy);
             Iterator iter = getTdBISharedReport_idEntrySet().iterator();
             while (iter.hasNext()) {
                 Map.Entry entry = (Map.Entry) iter.next();
                 BISharedReportNode node = (BISharedReportNode) entry.getValue();
-                if (node.getReportId() == reportId && node.getCreateBy() == createBy) {
-                    long userId = node.getShareTo();
+                if (node.getReportId() == reportId && ComparatorUtils.equals(tdUser.getUsername(), node.getShareToName())) {
+                    long userId = tdUser.getId();
                     int existIndex = ArrayUtils.indexOf(userIdsNeedToAddIntoMapLeft, userId);
                     if (existIndex >= 0) {
                         userIdsNeedToAddIntoMapLeft = ArrayUtils.remove(userIdsNeedToAddIntoMapLeft, existIndex);
@@ -196,8 +197,8 @@ public class BITableDataDAOManager extends XMLFileManager {
             for (long userId : userIdsNeedToAddIntoMapLeft) {
                 BISharedReportNode newNode = new BISharedReportNode(BIDAOUtils.generateID(tdBISharedReport_idMap));
                 newNode.setReportId(reportId);
-                newNode.setCreateBy(createBy);
-                newNode.setShareTo(userId);
+                newNode.setCreateByName(tdUser.getUsername());
+                newNode.setShareToName(TableDataSyncDB.getInstance().findUserByUserId(userId).getUsername());
                 tdBISharedReport_idMap.put(newNode.getId(), newNode);
             }
             writeTableDataBISharedReportMap(getTdBISharedReport_idEntrySet());
@@ -220,6 +221,8 @@ public class BITableDataDAOManager extends XMLFileManager {
                 rowList.add(String.valueOf(tdNode.getReportId()));
                 rowList.add(String.valueOf(tdNode.getCreateBy()));
                 rowList.add(String.valueOf(tdNode.getShareTo()));
+                rowList.add(String.valueOf(tdNode.getCreateByName()));
+                rowList.add(String.valueOf(tdNode.getShareToName()));
                 this.biSharedReportTableData.addRow(rowList);
             }
         }
@@ -227,12 +230,13 @@ public class BITableDataDAOManager extends XMLFileManager {
 
     public List<User> findUsersAccessibleOfTemplateId(long reportId, long createBy) {
         synchronized (this) {
+            User tdUser = TableDataSyncDB.getInstance().findUserByUserId(createBy);
             List<User> users = new ArrayList<User>();
             for (Map.Entry<Long, BISharedReportNode> entry : getTdBISharedReport_idEntrySet()) {
                 BISharedReportNode node = entry.getValue();
-                if (node.getReportId() == reportId && node.getCreateBy() == createBy) {
+                if (tdUser != null && node.getReportId() == reportId && ComparatorUtils.equals(node.getCreateBy(), tdUser.getUsername())) {
                     try {
-                        User user = UserControl.getInstance().getUser(node.getShareTo());
+                        User user = UserControl.getInstance().getByUserName(tdUser.getUsername());
                         if(user != null) {
                             users.add(user);
                         }
@@ -247,9 +251,10 @@ public class BITableDataDAOManager extends XMLFileManager {
 
     public List<BISharedReportNode> findReportsByShare2User(long userId) {
         List<BISharedReportNode> nodes = new ArrayList<BISharedReportNode>();
+        User tdUser = TableDataSyncDB.getInstance().findUserByUserId(userId);
         for (Map.Entry<Long, BISharedReportNode> entry : getTdBISharedReport_idEntrySet()) {
             BISharedReportNode node = entry.getValue();
-            if (node.getShareTo() == userId) {
+            if (tdUser != null && ComparatorUtils.equals(tdUser.getUsername(), node.getShareToName())) {
                 nodes.add(node);
             }
         }
@@ -258,10 +263,11 @@ public class BITableDataDAOManager extends XMLFileManager {
 
     public void removeSharedByReport(long reportId, long createBy) {
         Iterator iter = getTdBISharedReport_idEntrySet().iterator();
+        User tdUser = TableDataSyncDB.getInstance().findUserByUserId(createBy);
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             BISharedReportNode node = (BISharedReportNode) entry.getValue();
-            if (node.getReportId() == reportId && node.getCreateBy() == createBy) {
+            if (node.getReportId() == reportId && ComparatorUtils.equals(tdUser.getUsername(), node.getShareToName())) {
                 tdBISharedReport_idMap.remove(node.getId());
             }
             try {
@@ -348,8 +354,8 @@ public class BITableDataDAOManager extends XMLFileManager {
                             Long id = new Long(tableData.getValueAt(i, 0).toString());
                             BISharedReportNode tdNode = new BISharedReportNode(id);
                             tdNode.setReportId(new Long(tableData.getValueAt(i, 1).toString()));
-                            tdNode.setCreateBy(new Long(tableData.getValueAt(i, 2).toString()));
-                            tdNode.setShareTo(new Long(tableData.getValueAt(i, 3).toString()));
+                            tdNode.setCreateByName(tableData.getValueAt(i, 4).toString());
+                            tdNode.setShareToName(tableData.getValueAt(i, 5).toString());
                             tdBISharedReport_idMap.put(id, tdNode);
                         } catch (Exception e) {
                             FRContext.getLogger().error(e.getMessage(), e);

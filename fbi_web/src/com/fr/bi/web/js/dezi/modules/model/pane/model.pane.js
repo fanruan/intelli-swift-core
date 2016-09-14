@@ -39,6 +39,8 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
             Data.SharingPool.put("records", records);
             self.operatorIndex = records.size() - 1;
         }, 100);
+
+        this.isIniting = true;
     },
 
     _generateWidgetName: function (widgetName) {
@@ -169,6 +171,14 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("layoutType", this.get("layoutType"));
         Data.SharingPool.put("layoutRatio", this.get("layoutRatio"));
         Data.SharingPool.put("globalStyle", this.get("globalStyle"));
+
+        if (this.isIniting) {
+            this.isIniting = false;
+            //初始放一个control_filters（如果有查询按钮）
+            if (BI.Utils.isQueryControlExist()) {
+                Data.SharingPool.put("control_filters", BI.Utils.getControlCalculations());
+            }
+        }
 
         //用于undo redo
         this.saveDebounce(widgets, dims, this.get("layoutType"), this.get("globalStyle"));

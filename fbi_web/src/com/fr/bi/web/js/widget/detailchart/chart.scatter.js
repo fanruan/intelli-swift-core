@@ -43,31 +43,16 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
+
+
     _formatConfig: function(config, items){
-        var self = this, c = this.constants;
-        var yTitle = getXYAxisUnit(this.config.left_y_axis_number_level, c.LEFT_AXIS);
-        var xTitle = getXYAxisUnit(this.config.x_axis_number_level, c.X_AXIS);
+        var self = this;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
-        config.plotOptions.large = this.config.big_data_mode;
         config.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};
         config.plotOptions.tooltip.formatter = this.config.tooltip;
         formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
         config.plotOptions.lineWidth = this.config.line_width;
@@ -76,10 +61,10 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis = this.xAxis;
 
         config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, c.LEFT_AXIS);
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + yTitle : yTitle;
+        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
+        config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
+        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
-        config.yAxis[0].title.rotation = c.ROTATION;
         config.yAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
         config.yAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
         config.yAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
@@ -87,10 +72,12 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].showLabel = this.config.show_label;
         config.yAxis[0].enableTick = this.config.enable_tick;
         config.yAxis[0].enableMinorTick = this.config.enable_minor_tick;
+        config.yAxis[0].title.rotation = this.constants.ROTATION;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
-        formatNumberLevelInXaxis(this.config.x_axis_number_level, c.X_AXIS);
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + xTitle : xTitle;
+        formatNumberLevelInXaxis(this.config.x_axis_number_level, this.constants.X_AXIS);
+        config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
+        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.xAxis[0].min = this.config.custom_x_scale.minScale.scale || null;
@@ -119,8 +106,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                         enabled: true,
                         formatter: {
                             identifier: "${X}${Y}${SIZE}",
-                            "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
+                            "XFormat": function(){return BI.contentFormat(arguments[0], '#.##')},
+                            "YFormat": function(){return BI.contentFormat(arguments[0], '#.##')}
                         }
                     };
                     if(isNeedFormatDataLabelX === true){
@@ -207,7 +194,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                 })
             });
             if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
+                config.plotOptions.tooltip.formatter.valueFormat = function(){return BI.contentFormat(arguments[0], '#0%')};
             }
         }
 
@@ -242,7 +229,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
 
     populate: function (items, options) {
         options || (options = {});
-        var c = this.constants;
+        var self = this, c = this.constants;
         this.config = {
             left_y_axis_title: options.left_y_axis_title || "",
             chart_color: options.chart_color || [],

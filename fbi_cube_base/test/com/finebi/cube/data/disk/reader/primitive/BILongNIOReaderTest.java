@@ -49,6 +49,22 @@ public class BILongNIOReaderTest extends TestCase {
             BILogger.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
+    }   public void testLarge() {
+        try {
+            BILongNIOWriter writer = new BILongNIOWriter(BIByteNIOReaderTest.NIO_PATH_TEST);
+            BILongNIOReader reader = new BILongNIOReader(new File(BIByteNIOReaderTest.NIO_PATH_TEST));
+
+            writer.recordSpecificPositionValue(0, Long.valueOf(1));
+            writer.recordSpecificPositionValue(2, Long.valueOf(1));
+            writer.recordSpecificPositionValue(2000000000, Long.valueOf(1));
+            assertEquals(reader.getSpecificValue(0l), 1);
+            assertEquals(reader.getSpecificValue(2l), 1);
+            assertEquals(reader.getSpecificValue(2000000000), 1);
+
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
     }
 
     public void testWriteNegativeValue() {

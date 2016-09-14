@@ -85,7 +85,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     el: {
-                        type: "bi.vertical_adapt",
+                        type: "bi.center_adapt",
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -96,7 +96,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     el: {
-                        type: "bi.vertical_adapt",
+                        type: "bi.center_adapt",
                         items: [this.chartStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -107,7 +107,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP2
                 }, {
                     el: {
-                        type: "bi.vertical_adapt",
+                        type: "bi.center_adapt",
                         items: [this.chartTypeGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -421,19 +421,19 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.showDataLabel]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.showDataTable]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.gridLine]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.showZoom]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -462,7 +462,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Text_Direction"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.text_direction]
                 }, {
                     type: "bi.label",
@@ -470,10 +470,10 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     textHeight: 30,
                     height: constant.SINGLE_LINE_HEIGHT
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.isShowTitleX]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.editTitleX]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -502,7 +502,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.lYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -510,7 +510,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.numberLevellY]
                 }, {
                     type: "bi.label",
@@ -518,10 +518,10 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.LYUnit]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
@@ -555,7 +555,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.rYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -563,7 +563,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.numberLevelrY]
                 }, {
                     type: "bi.label",
@@ -571,10 +571,10 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.RYUnit]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.isShowTitleRY, this.editTitleRY]
                 }, {
                     type: "bi.vertical_adapt",
