@@ -138,6 +138,17 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //轴刻度自定义
+        //千分符
+        this.separators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
+        });
+
         this.showCustomScale = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Scale_Customize"),
@@ -190,6 +201,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.numberLevellY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separators]
                 }, {
                     type: "bi.center_adapt",
                     items: [this.showCustomScale]
@@ -334,7 +348,8 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
             show_y_custom_scale: this.showCustomScale.isSelected(),
-            custom_y_scale: this.customScale.getValue()
+            custom_y_scale: this.customScale.getValue(),
+            num_separators: this.separators.isSelected()
         }
     },
 
@@ -350,6 +365,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(v.show_grid_line);
         this.showCustomScale.setSelected(v.show_y_custom_scale);
         this.customScale.setValue(v.custom_y_scale)
+        this.separators.setSelected(v.num_separators);
     }
 });
 BI.AccumulateRadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

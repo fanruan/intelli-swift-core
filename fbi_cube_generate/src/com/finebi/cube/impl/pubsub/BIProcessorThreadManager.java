@@ -2,6 +2,7 @@ package com.finebi.cube.impl.pubsub;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * This class created on 2016/4/13.
@@ -31,5 +32,9 @@ public class BIProcessorThreadManager {
 
     public ExecutorService getExecutorService() {
         return executorService;
+    }
+
+    public boolean isLeisure() {
+        return ((ThreadPoolExecutor) executorService).getActiveCount() == 0;
     }
 }

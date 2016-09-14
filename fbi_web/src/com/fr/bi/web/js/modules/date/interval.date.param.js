@@ -18,7 +18,7 @@ BI.CustomParamTimeInterval = BI.inherit(BI.Widget, {
             element: this.element,
             width: 230
         });
-        this.timeInterval.on(BI.TimeInterval.EVENT_CHANGE, function(){
+        this.timeInterval.on(BI.ParamTimeInterval.EVENT_CHANGE, function(){
             self.fireEvent(BI.CustomParamTimeInterval.EVENT_CHANGE);
         });
     },

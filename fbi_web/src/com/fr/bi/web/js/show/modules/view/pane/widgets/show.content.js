@@ -22,7 +22,7 @@ BIShow.ContentWidgetView = BI.inherit(BI.View, {
             type: "bi.textarea_editor",
             invalid: true
         });
-        this.textarea.content.element.attr("disabled", "disabled");
+        this.textarea.content.element.attr("readonly", "");
 
         BI.createWidget({
             type: "bi.absolute",

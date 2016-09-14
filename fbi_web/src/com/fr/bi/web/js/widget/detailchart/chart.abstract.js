@@ -42,6 +42,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         BUBBLE_MIN_SIZE: 15,
         BUBBLE_MAX_SIZE: 80,
         RULE_DISPLAY: 1,
+        NUM_SEPARATORS: false,
         FONT_STYLE: {
             "fontFamily": "inherit",
             "color": "#808080",
@@ -90,7 +91,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                     da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
                 }
             });
-            if (position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+            if (position === item.yAxis) {
                 item.tooltip = BI.deepClone(config.plotOptions.tooltip);
                 item.tooltip.formatter.valueFormat = formatter;
             }
@@ -176,28 +177,36 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : "(" + unit + axis_unit + ")";
     },
 
-    formatTickInXYaxis: function (type, number_level) {
+    formatTickInXYaxis: function (type, number_level, separators) {
         var formatter = '#.##';
         switch (type) {
             case this.constants.NORMAL:
                 formatter = '#.##';
+                if(separators){
+                    formatter = '#,###.##'
+                }
                 break;
             case this.constants.ZERO2POINT:
                 formatter = '#0';
+                if(separators){
+                    formatter = '#,###';
+                }
                 break;
             case this.constants.ONE2POINT:
                 formatter = '#0.0';
+                if(separators){
+                    formatter = '#,###.0';
+                }
                 break;
             case this.constants.TWO2POINT:
                 formatter = '#0.00';
+                if(separators){
+                    formatter = '#,###.00';
+                }
                 break;
         }
         if (number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-            if (type === this.constants.NORMAL) {
-                formatter = '#0.##%';
-            } else {
-                formatter += '%';
-            }
+            formatter += '%';
         }
         formatter += ";-" + formatter;
         return function () {

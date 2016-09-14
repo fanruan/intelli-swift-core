@@ -177,7 +177,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
 
     setType: function (type) {
         var t = type;
-        if(type >= BICst.MAP_TYPE.WORLD){
+        if((type + "").indexOf(BICst.DI_TU) !== -1){
             this.sub_type = t;
             t = BICst.WIDGET.MAP;
         }
@@ -191,7 +191,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
 
     setViews: function (view) {
         this.viewMap[this.type] = view;
-        this.dimensionsMap[this.type] = BI.deepClone(BI.Utils.getWidgetDimensionsByID(this.options.wId));
+        this.dimensionsMap[this.type] = BI.Utils.getWidgetDimensionsByID(this.options.wId);
     },
 
     getViews: function () {

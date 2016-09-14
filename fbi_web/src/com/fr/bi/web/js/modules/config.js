@@ -30,9 +30,6 @@ BICst.FULL_QUARTER_NAMES = [BI.i18nText("BI-Quarter_1"),
     BI.i18nText("BI-Quarter_3"),
     BI.i18nText("BI-Quarter_4")];
 
-BICst.CONFIG = {
-    SHOW_DASHBOARD_TITLE: true
-};
 
 //布局方式
 BICst.DASHBOARD_LAYOUT_ARRAY = [{
@@ -338,183 +335,6 @@ BICst.DASHBOARD_WIDGETS = [[{
     value: BICst.WIDGET.RESET,
     cls: "drag-reset-icon"
 }]];
-
-BICst.SVG_MAP_TYPE = [{
-    text: BI.i18nText("BI-China"),
-    title: BI.i18nText("BI-China"),
-    value: BICst.MAP_TYPE.CHINA,
-    cls: "drag-map-china-icon"
-}, {
-    text: BI.i18nText("BI-JIANGSUSHENG"),
-    title: BI.i18nText("BI-JIANGSUSHENG"),
-    value: BICst.MAP_TYPE.JIANGSUSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-SHANDONGSHENG"),
-    title: BI.i18nText("BI-SHANDONGSHENG"),
-    value: BICst.MAP_TYPE.SHANDONGSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-TAIWANSHENG"),
-    title: BI.i18nText("BI-TAIWANSHENG"),
-    value: BICst.MAP_TYPE.TAIWANSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-YUNNANSHENG"),
-    title: BI.i18nText("BI-YUNNANSHENG"),
-    value: BICst.MAP_TYPE.YUNNANSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-JILINSHENG"),
-    title: BI.i18nText("BI-JILINSHENG"),
-    value: BICst.MAP_TYPE.JILINSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-SICHUANSHENG"),
-    title: BI.i18nText("BI-SICHUANSHENG"),
-    value: BICst.MAP_TYPE.SICHUANSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-ANHUISHENG"),
-    title: BI.i18nText("BI-ANHUISHENG"),
-    value: BICst.MAP_TYPE.ANHUISHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-SHANXISHENG"),
-    title: BI.i18nText("BI-SHANXISHENG"),
-    value: BICst.MAP_TYPE.SHANXISHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-GUANGDONGSHENG"),
-    title: BI.i18nText("BI-GUANGDONGSHENG"),
-    value: BICst.MAP_TYPE.GUANGDONGSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-JIANGXISHENG"),
-    title: BI.i18nText("BI-JIANGXISHENG"),
-    value: BICst.MAP_TYPE.JIANGXISHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-HEBEISHENG"),
-    title: BI.i18nText("BI-HEBEISHENG"),
-    value: BICst.MAP_TYPE.HEBEISHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-HENANSHENG"),
-    title: BI.i18nText("BI-HENANSHENG"),
-    value: BICst.MAP_TYPE.HENANSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-ZHEJIANGSHENG"),
-    title: BI.i18nText("BI-ZHEJIANGSHENG"),
-    value: BICst.MAP_TYPE.ZHEJIANGSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-HAINANSHENG"),
-    title: BI.i18nText("BI-HAINANSHENG"),
-    value: BICst.MAP_TYPE.HAINANSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-HUBEISHENG"),
-    title: BI.i18nText("BI-HUBEISHENG"),
-    value: BICst.MAP_TYPE.HUBEISHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-HUNANSHENG"),
-    title: BI.i18nText("BI-HUNANSHENG"),
-    value: BICst.MAP_TYPE.HUNANSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-GANSUSHENG"),
-    title: BI.i18nText("BI-GANSUSHENG"),
-    value: BICst.MAP_TYPE.GANSUSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-FUJIANSHENG"),
-    title: BI.i18nText("BI-FUJIANSHENG"),
-    value: BICst.MAP_TYPE.FUJIANSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-GUIZHOUSHENG"),
-    title: BI.i18nText("BI-GUIZHOUSHENG"),
-    value: BICst.MAP_TYPE.GUIZHOUSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-LIAONINGSHENG"),
-    title: BI.i18nText("BI-LIAONINGSHENG"),
-    value: BICst.MAP_TYPE.LIAONINGSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-SHANXISHENG1"),
-    title: BI.i18nText("BI-SHANXISHENG1"),
-    value: BICst.MAP_TYPE.SHANXISHENG1,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-QINGHAISHENG"),
-    title: BI.i18nText("BI-QINGHAISHENG"),
-    value: BICst.MAP_TYPE.QINGHAISHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-HEILONGJIANGSHENG"),
-    title: BI.i18nText("BI-HEILONGJIANGSHENG"),
-    value: BICst.MAP_TYPE.HEILONGJIANGSHENG,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-BEIJINGSHI"),
-    title: BI.i18nText("BI-BEIJINGSHI"),
-    value: BICst.MAP_TYPE.BEIJINGSHI,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-TIANJINSHI"),
-    title: BI.i18nText("BI-TIANJINSHI"),
-    value: BICst.MAP_TYPE.TIANJINSHI,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-CHONGQINGSHI"),
-    title: BI.i18nText("BI-CHONGQINGSHI"),
-    value: BICst.MAP_TYPE.CHONGQINGSHI,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-SHANGHAISHI"),
-    title: BI.i18nText("BI-SHANGHAISHI"),
-    value: BICst.MAP_TYPE.SHANGHAISHI,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-NEIMENGGUZIZHIQU"),
-    title: BI.i18nText("BI-NEIMENGGUZIZHIQU"),
-    value: BICst.MAP_TYPE.NEIMENGGUZIZHIQU,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-GUANGXIZHUANGZUZIZHIQU"),
-    title: BI.i18nText("BI-GUANGXIZHUANGZUZIZHIQU"),
-    value: BICst.MAP_TYPE.GUANGXIZHUANGZUZIZHIQU,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-XICANGZIZHIQU"),
-    title: BI.i18nText("BI-XICANGZIZHIQU"),
-    value: BICst.MAP_TYPE.XICANGZIZHIQU,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-NINGXIAHUIZUZIZHIQU"),
-    title: BI.i18nText("BI-NINGXIAHUIZUZIZHIQU"),
-    value: BICst.MAP_TYPE.NINGXIAHUIZUZIZHIQU,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-XIANGGANGTEBIEXINGZHENGQU"),
-    title: BI.i18nText("BI-XIANGGANGTEBIEXINGZHENGQU"),
-    value: BICst.MAP_TYPE.XIANGGANGTEBIEXINGZHENGQU,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-XINJIANGWEIWUERZIZHIQU"),
-    title: BI.i18nText("BI-XINJIANGWEIWUERZIZHIQU"),
-    value: BICst.MAP_TYPE.XINJIANGWEIWUERZIZHIQU,
-    cls: "drag-map-svg-icon"
-}, {
-    text: BI.i18nText("BI-AOMENTEBIEXINGZHENGQU"),
-    title: BI.i18nText("BI-AOMENTEBIEXINGZHENGQU"),
-    value: BICst.MAP_TYPE.AOMENTEBIEXINGZHENGQU,
-    cls: "drag-map-svg-icon"
-}];
 
 //地图使用区域悬浮可选择的图表类型
 BICst.SUSPENSION_MAP_TYPE = [{
@@ -1601,6 +1421,8 @@ BICst.DEFAULT_CHART_SETTING = {
     mini_show_data_label: true,
     show_data_table: false,
     show_grid_line: true,
+    num_separators: false,
+    right_num_separators: false,
     mini_show_grid_line: false,
     minimalist_model: false,
     line_width: BICst.LINE_WIDTH.ONE,
@@ -1631,7 +1453,9 @@ BICst.DEFAULT_CHART_SETTING = {
         interval: {
             scale: null
         }
-    }
+    },
+    show_background_layer: true,
+    background_layer_info: BI.i18nText("BI-GAO_DE_MAP")
 };
 
 BICst.DASHBOARD_STYLE_CONDITIONS = [{

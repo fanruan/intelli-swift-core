@@ -73,6 +73,10 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
                 currentIndex = -1L;
                 file_index = -1L;
                 isReleased = true;
+                if (useReleaseManager()) {
+                    releaseManager.release(this);
+                }
+
             } finally {
                 readWriteLock.writeLock().unlock();
             }

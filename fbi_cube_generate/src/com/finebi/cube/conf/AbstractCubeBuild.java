@@ -18,7 +18,6 @@ import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -52,10 +51,8 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         calculateDependTool = new CalculateDependManager();
         try {
             allRelationPathSet = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
-        } catch (BITableRelationConfusionException e) {
-            BILogger.getLogger().error(e.getMessage());
-        } catch (BITablePathConfusionException e) {
-            BILogger.getLogger().error(e.getMessage());
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -85,14 +82,29 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         return result;
     }
 
+    /**
+     * edit by kary 2016-09-12
+     * 新增数据连接有效性检查和SQL语句检查
+     * 连接检查现在直接调用预览模块，该模块现在在使用Hive时存在bug，等清掉那个bug再放开该检查
+     */
     @Override
     public boolean preConditionsCheck() {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
-//        File cubeFile = new File(BIPathUtils.createBasePath());
         ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
         boolean spaceCheck = check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
-        boolean connectionCheck = check.ConnectionCheck();
-        return spaceCheck && connectionCheck;
+        boolean connectionValid = true;
+        /*暂时不对所有表做检测，有一张表连接失败即为失败*/
+//        for (CubeTableSource source : getAllSingleSources()) {
+//            boolean connectionCheck = check.ConnectionCheck(source, userId);
+//            if (!connectionCheck) {
+//                connectionValid = false;
+//                String errorMessage ="error:"+source.getTableName() + ": Connection test failed";
+//                BILogger.getLogger().error(errorMessage);
+//                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
+//                break;
+//            }
+//        }
+        return spaceCheck && connectionValid;
     }
 
     @Override
@@ -131,11 +143,12 @@ public abstract class AbstractCubeBuild implements CubeBuild {
             for (String fileName : copyFailedFiles) {
                 BILogger.getLogger().error("failed file:" + fileName);
             }
+            return false;
         }
         try {
             return BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILogger.getLogger().error(e.getMessage(), e);
             return false;
         }
     }
@@ -159,14 +172,14 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     @Override
     public Map<CubeTableSource, Connection> getConnections() {
         Map<CubeTableSource, Connection> connectionMap = new HashMap<CubeTableSource, Connection>();
-        for (CubeTableSource tableSource : sources) {
+        for (CubeTableSource tableSource : getAllSingleSources()) {
             com.fr.data.impl.Connection connection = null;
             DatasourceManager.getInstance().getNameConnectionMap();
             if (tableSource instanceof DBTableSource) {
                 connection = DatasourceManager.getInstance().getConnection(((DBTableSource) tableSource).getDbName());
                 ((DBTableSource) tableSource).setConnection(connection);
             }
-            if (tableSource instanceof ServerTableSource) {
+            if (tableSource instanceof SQLTableSource) {
                 connection = DatasourceManager.getInstance().getConnection(((SQLTableSource) tableSource).getSqlConnection());
                 ((ServerTableSource) tableSource).setConnection(connection);
             }
@@ -204,7 +217,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
         if (!isTableRelationValid(relation) || !isSourceRelationValid) {
-            BILogger.getLogger().error("tableSourceRelation invalid:"+relation.toString());
+            BILogger.getLogger().error("tableSourceRelation invalid:" + relation.toString());
             return null;
         }
         BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(

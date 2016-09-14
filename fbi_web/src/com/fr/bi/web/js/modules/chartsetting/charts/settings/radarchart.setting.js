@@ -194,6 +194,16 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.customScale.on(BI.CustomScale.EVENT_CHANGE, function () {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE)
         });
+        //千分符
+        this.separators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
+        });
 
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
@@ -265,6 +275,9 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -318,6 +331,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.customScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+        this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
     },
 
     getValue: function(){
@@ -332,7 +346,8 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
             show_y_custom_scale: this.showCustomScale.isSelected(),
-            custom_y_scale: this.customScale.getValue()
+            custom_y_scale: this.customScale.getValue(),
+            num_separators: this.separators.isSelected()
         }
     },
 
@@ -347,7 +362,8 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
         this.showCustomScale.setSelected(v.show_y_custom_scale);
-        this.customScale.setValue(v.custom_y_scale)
+        this.customScale.setValue(v.custom_y_scale);
+        this.separators.setSelected(v.num_separators);
     }
 });
 BI.RadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

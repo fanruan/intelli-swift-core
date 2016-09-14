@@ -55,11 +55,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         try {
             buildRelationIndex();
             long costTime = System.currentTimeMillis() - t;
-            try {
-                biLogManager.infoRelation(relationColumnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
+            biLogManager.infoRelation(relationColumnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
             return null;
         } catch (Exception e) {
             try {
@@ -68,8 +64,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 BILogger.getLogger().error(e1.getMessage(), e1);
             }
             BILogger.getLogger().error(e.getMessage(), e);
-        } finally {
-            return null;
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
@@ -167,7 +162,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
              * 主表的行数
              */
             int primaryRowCount = primaryTable.getRowCount();
-            Integer[] reverse = new Integer[foreignTable.getRowCount()];
+            int[] reverse = new int[foreignTable.getRowCount()];
             for (int row = 0; row < primaryRowCount; row++) {
                 /**
                  * 关联主字段的value值
@@ -202,18 +197,24 @@ public class BIRelationIndexGenerator extends BIProcessor {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
             if (primaryTable != null) {
+                ((CubeTableEntityService) primaryTable).forceReleaseWriter();
                 primaryTable.clear();
             }
             if (foreignTable != null) {
+                ((CubeTableEntityService) foreignTable).forceReleaseWriter();
+
                 foreignTable.clear();
             }
             if (primaryColumn != null) {
+                primaryColumn.forceReleaseWriter();
                 primaryColumn.clear();
             }
             if (foreignColumn != null) {
+                foreignColumn.forceReleaseWriter();
                 foreignColumn.clear();
             }
             if (tableRelation != null) {
+                tableRelation.forceReleaseWriter();
                 tableRelation.clear();
             }
 
@@ -221,7 +222,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
     }
 
-    private void initReverseIndex(final Integer[] index, final Integer row, GroupValueIndex gvi) {
+    private void initReverseIndex(final int[] index, final int row, GroupValueIndex gvi) {
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndex) {
@@ -230,7 +231,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         });
     }
 
-    private void buildReverseIndex(ICubeRelationEntityService tableRelation, Integer[] index) {
+    private void buildReverseIndex(ICubeRelationEntityService tableRelation, int[] index) {
         for (int i = 0; i < index.length; i++) {
             tableRelation.addReverseIndex(i, index[i]);
         }

@@ -122,6 +122,14 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
     }
 
     @Override
+    public GroupValueIndex getGroupValueIndex(int groupValuePosition) {
+        if (groupValuePosition == sizeOfGroup() - 1){
+            return nullIndex;
+        }
+        return getter.getGroupValueIndex(groupValuePosition);
+    }
+
+    @Override
     public Object getOriginalValue(int rowNumber) {
         return null;
     }

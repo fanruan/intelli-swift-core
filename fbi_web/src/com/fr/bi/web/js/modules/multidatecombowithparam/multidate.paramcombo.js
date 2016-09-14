@@ -105,7 +105,7 @@ BI.MultiDateParamCombo = BI.inherit(BI.Single, {
         this.popup.on(BI.MultiDateParamPopup.BUTTON_CLEAR_EVENT_CHANGE, function () {
             self.setValue();
             self.combo.hideView();
-            self.fireEvent(BI.MultiDateParamCombo.EVENT_CHANGE);
+            self.fireEvent(BI.MultiDateParamCombo.EVENT_CONFIRM);
         });
         this.popup.on(BI.MultiDateParamPopup.BUTTON_lABEL_EVENT_CHANGE, function () {
             var date = new Date();
@@ -115,22 +115,17 @@ BI.MultiDateParamCombo = BI.inherit(BI.Single, {
                 day: date.getDate()
             });
             self.combo.hideView();
-            self.fireEvent(BI.MultiDateParamCombo.EVENT_CHANGE);
+            self.fireEvent(BI.MultiDateParamCombo.EVENT_CONFIRM);
         });
         this.popup.on(BI.MultiDateParamPopup.BUTTON_OK_EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
             self.combo.hideView();
-            self.fireEvent(BI.MultiDateParamCombo.EVENT_CHANGE);
+            self.fireEvent(BI.MultiDateParamCombo.EVENT_CONFIRM);
         });
         this.popup.on(BI.MultiDateParamPopup.CALENDAR_EVENT_CHANGE, function () {
             self.setValue(self.popup.getValue());
             self.combo.hideView();
-            self.fireEvent(BI.MultiDateParamCombo.EVENT_CHANGE);
-        });
-        this.popup.on(BI.MultiDateParamPopup.EVENT_PARAM_CHANGE, function () {
-            self.setValue(self.popup.getValue());
-            self.combo.hideView();
-            self.fireEvent(BI.MultiDateParamCombo.EVENT_CHANGE);
+            self.fireEvent(BI.MultiDateParamCombo.EVENT_CONFIRM);
         });
         this.combo = BI.createWidget({
             element: this.element,

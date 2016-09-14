@@ -20,7 +20,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         BI.RegionsManager.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.regions = {};
-        if(o.regionType >= BICst.MAP_TYPE.WORLD){
+        if ((o.regionType + "").indexOf(BICst.DI_TU) !== -1) {
             this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Region_Name"), BICst.REGION.DIMENSION1);
             this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
             this.regions[BICst.REGION.TARGET2] = this._createTargetRegion(BI.i18nText("BI-Region_Suspension_Target"), BICst.REGION.TARGET2)
@@ -39,6 +39,12 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.CROSS_TABLE:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Row_Header"), BICst.REGION.DIMENSION1);
                 this.regions[BICst.REGION.DIMENSION2] = this._createDimensionRegion(BI.i18nText("BI-Column_Header"), BICst.REGION.DIMENSION2);
+                this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
+                break;
+            case BICst.WIDGET.COMPLEX_TABLE:
+                //动态创建region 先创建分类和列表头的wrapper
+                this.regions[BI.RegionsManager.COMPLEX_REGION_CATEGORY] = this._createComplexRegionWrapper(BI.i18nText("BI-Category"), BI.RegionsManager.COMPLEX_REGION_CATEGORY);
+                this.regions[BI.RegionsManager.COMPLEX_REGION_COLUMN] = this._createComplexRegionWrapper(BI.i18nText("BI-Column_Header"), BI.RegionsManager.COMPLEX_REGION_COLUMN);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.DATE:
@@ -281,6 +287,52 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         return region;
     },
 
+    _createComplexRegionWrapper: function (titleName, wrapperType) {
+        var self = this, o = this.options;
+        var regionWrapper = BI.createWidget({
+            type: "bi.complex_region_wrapper",
+            titleName: titleName,
+            dimensionCreator: o.dimensionCreator,
+            wId: o.wId,
+            regionType: o.regionType,
+            wrapperType: wrapperType
+        });
+        var sortArea = regionWrapper.getCenterArea();
+        sortArea.element.sortable({
+            containment: sortArea.element,
+            tolerance: "move",
+            handle: ".drag-tool",
+            placeholder: {
+                element: function ($currentItem) {
+                    var holder = BI.createWidget({
+                        type: "bi.label",
+                        cls: "ui-sortable-place-holder",
+                        height: $currentItem.height() - 2
+                    });
+                    holder.element.css({"margin": "5px"});
+                    return holder.element;
+                },
+                update: function () {
+
+                }
+            },
+            items: ".bi-complex-dimension-region",
+            cancel: ".bi-complex-empty-region",
+            update: function (event, ui) {
+                self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
+            },
+            start: function (event, ui) {
+            },
+            stop: function (event, ui) {
+            },
+            over: function (event, ui) {
+
+            }
+        });
+
+        return regionWrapper;
+    },
+
     _createTargetRegion: function (titleName, regionType) {
         var self = this, o = this.options;
         var region = BI.createWidget({
@@ -327,20 +379,98 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         return region;
     },
 
-    getValue: function () {
-        var views = {};
+    _isComplexCategoryByType: function (type) {
+        return BI.parseInt(type) < BI.parseInt(BICst.REGION.DIMENSION2);
+    },
+
+    _isComplexColumnByType: function (type) {
+        return BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(type) &&
+            BI.parseInt(type) < BI.parseInt(BICst.REGION.TARGET1);
+    },
+    
+    _bindComplexRegionEvent: function() {
+        var self = this, o = this.options;
         BI.each(this.regions, function (type, region) {
-            views[type] = region.getValue();
+            if (o.regionType === BICst.WIDGET.COMPLEX_TABLE && type !== BICst.REGION.TARGET1) {
+                var subRegions = region.getRegions();
+                BI.each(subRegions, function (stype, sregion) {
+                    sregion.on(BI.ComplexDimensionRegion.EVENT_CHANGE, function() {
+                        // self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
+                    });
+                    sregion.element.sortable({
+                        containment: self.element,
+                        connectWith: ".bi-complex-dimension-region",
+                        tolerance: "pointer",
+                        //helper: "clone",
+                        scroll: false,
+                        placeholder: {
+                            element: function ($currentItem) {
+                                var holder = BI.createWidget({
+                                    type: "bi.label",
+                                    cls: "ui-sortable-place-holder",
+                                    height: $currentItem.height() - 2
+                                });
+                                holder.element.css({"margin": "5px 5px 5px 15px"});
+                                return holder.element;
+                            },
+                            update: function () {
+
+                            }
+                        },
+                        items: ".dimension-container",
+                        update: function (event, ui) {
+                            self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
+                        },
+                        start: function (event, ui) {
+                        },
+                        stop: function (event, ui) {
+                        },
+                        over: function (event, ui) {
+
+                        }
+                    })
+                });
+            }
+        });
+    },
+
+    getValue: function () {
+        var views = {}, o = this.options;
+        BI.each(this.regions, function (type, region) {
+            if (o.regionType === BICst.WIDGET.COMPLEX_TABLE && type !== BICst.REGION.TARGET1) {
+                var subRegions = region.getRegions();
+                BI.each(subRegions, function (stype, sregion) {
+                    views[stype] = sregion.getValue();
+                });
+            } else {
+                views[type] = region.getValue();
+            }
         });
         return views;
     },
 
     populate: function (views) {
-        var self = this;
+        var self = this, o = this.options;
         BI.each(views, function (type, dimensions) {
-            self.regions[type].populate(dimensions);
+            if (o.regionType === BICst.WIDGET.COMPLEX_TABLE && type !== BICst.REGION.TARGET1) {
+                //复杂表的region添加到wrapper中
+                if (self._isComplexCategoryByType(type)) {
+                    self.regions[BI.RegionsManager.COMPLEX_REGION_CATEGORY].refreshRegion(type, dimensions);
+                } else if (self._isComplexColumnByType((type))) {
+                    self.regions[BI.RegionsManager.COMPLEX_REGION_COLUMN].refreshRegion(type, dimensions);
+                }
+            } else {
+                self.regions[type].populate(dimensions);
+            }
         });
+        if (o.regionType === BICst.WIDGET.COMPLEX_TABLE) {
+            this._bindComplexRegionEvent();
+        }
     }
+});
+BI.extend(BI.RegionsManager, {
+    COMPLEX_REGION_CATEGORY: 100,
+    COMPLEX_REGION_COLUMN: 101
 });
 BI.RegionsManager.EVENT_CHANGE = "RegionsManager.EVENT_CHANGE";
 $.shortcut('bi.regions_manager', BI.RegionsManager);

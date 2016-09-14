@@ -2,6 +2,7 @@ package com.fr.bi.stable.gvi;
 
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.stable.collections.array.IntArray;
 
 /**
  * Created by GUY on 2015/3/11.
@@ -39,7 +40,17 @@ public class GVIFactory {
         }
     	return RoaringGroupValueIndex.createGroupValueIndex(list.toArray());
     }
-
+    /**
+     * 根据简单索引创建分组值索引
+     *
+     * @param rowCount 行数
+     */
+    public static GroupValueIndex createGroupValueIndexBySimpleIndex(IntArray list) {
+        if(list.size == 0){
+            return RoaringGroupValueIndex.createAllEmptyGroupValueIndex();
+        }
+        return RoaringGroupValueIndex.createGroupValueIndex(list.toArray());
+    }
     private static GroupValueIndex[] createSmallGroupGroupValueIndexBySimpleIndex(int size, IntList intMpp, long rowCount) {
         GroupValueIndex[] group_indexs = createByValues(size);
         for (int i = 0; i < rowCount; i++) {

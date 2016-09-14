@@ -131,12 +131,13 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         }
     }
 
-    public void buildStructure(){
+    public void buildStructure() {
         initialGroupLengthReader();
         initialGroupLengthWriter();
         initialGroupReader();
         initialGroupWriter();
     }
+
     protected boolean isGroupReaderAvailable() {
         return groupReader != null;
     }
@@ -231,6 +232,17 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         resetLengthWriter();
     }
 
+    @Override
+    public void forceReleaseWriter() {
+        if (isGroupWriterAvailable()) {
+            groupWriter.forceRelease();
+            groupWriter = null;
+        }
+        if (isLengthWriterAvailable()) {
+            groupLengthWriter.forceRelease();
+            groupLengthWriter = null;
+        }
+    }
 
     public class GroupValueSearchAssistance implements ArrayLookupHelper.Lookup<T> {
         @Override
@@ -240,7 +252,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
 
         @Override
         public int maxIndex() {
-            return sizeOfGroup();
+            return sizeOfGroup() - 1;
         }
 
         @Override

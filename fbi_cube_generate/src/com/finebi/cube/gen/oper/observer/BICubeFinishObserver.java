@@ -16,8 +16,11 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  * @since 4.0
  */
 public class BICubeFinishObserver<R> extends BIOperation<R> {
-    public BICubeFinishObserver(IOperationID operationID) {
-        super(operationID, new FinishObserverProcessor());
+    private FinishObserverProcessor processor;
+
+    public BICubeFinishObserver(IOperationID operationID, FinishObserverProcessor processor) {
+        super(operationID, processor);
+        this.processor = processor;
         ITopicTag topicTag = BICubeBuildTopicTag.FINISH_BUILD_CUBE;
         IFragmentTag fragmentTag = BICubeBuildFragmentTag.getCubeOccupiedFragment(topicTag);
         try {
@@ -25,5 +28,14 @@ public class BICubeFinishObserver<R> extends BIOperation<R> {
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
+    }
+
+    public BICubeFinishObserver(IOperationID operationID) {
+        this(operationID, new FinishObserverProcessor());
+
+    }
+
+    public boolean success() {
+        return processor.success();
     }
 }

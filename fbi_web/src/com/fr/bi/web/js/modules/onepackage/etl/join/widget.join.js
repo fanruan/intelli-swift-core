@@ -232,12 +232,13 @@ BI.Join = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Loading")
             });
             BI.Utils.getTablesDetailInfoByTables([data], function (sourceTables) {
-                mask.destroy();
                 var table = sourceTables[0];
                 if(BI.isNotNull(table)) {
                     data.fields = table.fields;
                 }
                 self.fireEvent(BI.Join.EVENT_SAVE, data);
+            }, function() {
+                mask.destroy();
             });
         });
 

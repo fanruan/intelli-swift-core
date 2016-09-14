@@ -18,6 +18,9 @@ public class UpdateSettingSource implements JSONTransform {
     private String partDeleteSQL;
     private String partModifySQL;
 
+    public UpdateSettingSource() {
+    }
+
     private int togetherOrNever = DBConstant.SINGLE_TABLE_UPDATE.TOGETHER;
 
     private List<TimeFrequency> timeList = new ArrayList<TimeFrequency>();

@@ -20,7 +20,9 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
                 style: this.constants.FONT_STYLE
             },
             labelStyle: this.constants.FONT_STYLE,
-            formatter: function(){ return this > 0 ? this : (-1) * this },
+            formatter: function () {
+                return this > 0 ? this : (-1) * this
+            },
             gridLineWidth: 0,
             position: "bottom"
         }];
@@ -35,16 +37,16 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
-    _formatItems: function(items){
-        return BI.map(items, function(idx, item){
+    _formatItems: function (items) {
+        return BI.map(items, function (idx, item) {
             var i = BI.UUID();
-            return BI.map(item, function(id, it){
+            return BI.map(item, function (id, it) {
                 return BI.extend({}, it, {stack: i});
             });
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this;
         var title = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.colors = this.config.chart_color;
@@ -54,7 +56,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
 
         config.radiusAxis = this.radiusAxis;
-        config.radiusAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
+        config.radiusAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.radiusAxis[0].formatter);
         config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + title : title;
         config.radiusAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
@@ -67,9 +69,9 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         delete config.xAxis;
         delete config.yAxis;
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if(config.plotOptions.dataLabels.enabled === true){
-            BI.each(items, function(idx, item){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+        if (config.plotOptions.dataLabels.enabled === true) {
+            BI.each(items, function (idx, item) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
                     item.dataLabels = {
                         "style": self.constants.FONT_STYLE,
                         "align": "outside",
@@ -84,7 +86,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         }
         return [items, config];
 
-        function formatChartStyle(){
+        function formatChartStyle() {
             switch (self.config.chart_style) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
@@ -94,7 +96,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function formatChartRadarStyle(){
+        function formatChartRadarStyle() {
             switch (self.config.chart_radar_type) {
                 case BICst.CHART_SHAPE.POLYGON:
                     config.plotOptions.shape = "polygon";
@@ -105,7 +107,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function formatNumberLevelInYaxis(type, position, formatter){
+        function formatNumberLevelInYaxis(type, position, formatter) {
             var magnify = self.calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -114,12 +116,10 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
                     }
                 })
             });
-            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = formatter;
-            }
+            config.plotOptions.tooltip.formatter.valueFormat = formatter;
         }
 
-        function getXYAxisUnit(numberLevelType, position){
+        function getXYAxisUnit(numberLevelType, position) {
             var unit = "";
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -135,13 +135,13 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
                     unit = BI.i18nText("BI-Yi");
                     break;
             }
-            if(position === self.constants.X_AXIS){
+            if (position === self.constants.X_AXIS) {
                 self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
-            if(position === self.constants.LEFT_AXIS){
+            if (position === self.constants.LEFT_AXIS) {
                 self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
-            if(position === self.constants.RIGHT_AXIS){
+            if (position === self.constants.RIGHT_AXIS) {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
@@ -161,13 +161,14 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
-            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            num_separators: options.num_separators || false
         };
         this.options.items = items;
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.RADAR);
             });
             types.push(type);
@@ -179,7 +180,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

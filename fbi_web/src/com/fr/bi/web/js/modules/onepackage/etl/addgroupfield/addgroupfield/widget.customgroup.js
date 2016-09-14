@@ -255,8 +255,6 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
         });
 
 
-
-
         this.removeFieldButton.on(BI.Button.EVENT_CHANGE, function () {
             var chosenMap = self.fieldPane.getGroupedSelectedFieldMap();
             var ungroupedFieldMap = self.fieldPane.getUngroupedFieldMap();
@@ -383,10 +381,12 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
     populate: function (table, fieldName, groupedItems, ungroup2Other, ungroup2OtherName) {
         var self = this, o = this.options;
         var did = o.dId;
+        this.fieldPane.loading();
         self.bottom.populate(ungroup2Other, ungroup2OtherName);
         BI.Utils.getConfDataByField(table, fieldName, {
             type: BICst.REQ_DATA_TYPE.REQ_GET_ALL_DATA
         }, function (unGroupedFields) {
+            self.fieldPane.loaded();
             if (BI.size(unGroupedFields) > 1000) {
                 if (!BI.Maskers.has(self.getName())) {
                     self._tooManyFieldsPane = BI.createWidget({

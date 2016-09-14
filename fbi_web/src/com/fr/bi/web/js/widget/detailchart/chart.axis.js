@@ -45,8 +45,8 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
-        config.xAxis[0].showLabel = this.config.chart_demo ? this.config.show_label : !config.dataSheet.enabled;
-        config.zoom.zoomTool.visible = this.config.show_zoom;
+        config.xAxis[0].showLabel = !config.dataSheet.enabled;
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
         if(this.config.show_zoom === true){
             delete config.dataSheet;
             delete config.zoom.zoomType;
@@ -54,9 +54,10 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
 
         config.yAxis = this.yAxis;
         BI.each(config.yAxis, function (idx, axis) {
+            var title;
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
-                    var title = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    title = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, {
@@ -70,12 +71,12 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                         min: self.config.custom_y_scale.minScale.scale || null,
                         tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
                             self.config.custom_y_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level)
+                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    var title = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    title = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, {
@@ -88,7 +89,8 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                         min: self.config.custom_x_scale.minScale.scale || null,
                         tickInterval: BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
                             self.config.custom_x_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level),
+                        enableMinorTIck: self.config.enable_minor_tick,
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators),
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
@@ -122,12 +124,12 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                 var isNeedFormatDataLabel = false;
                 switch (config.yAxis[item.yAxis].axisIndex) {
                     case self.constants.LEFT_AXIS:
-                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators){
                             isNeedFormatDataLabel = true;
                         }
                         break;
                     case self.constants.RIGHT_AXIS:
-                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators){
                             isNeedFormatDataLabel = true;
                         }
                         break;
@@ -262,7 +264,9 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
-            chart_demo: options.chart_demo || false
+            chart_demo: options.chart_demo || false,
+            num_separators: options.num_separators || false,
+            right_num_separators: options.right_num_separators || false
         };
         this.options.items = items;
 

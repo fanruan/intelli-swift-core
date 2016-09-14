@@ -18,6 +18,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
     _createItem: function () {
         var o = this.options;
         var dId = this.options.dId;
+        var type = BI.Utils.getDimensionTypeByID(dId);
         if (this._checkHyperLinkDimension()) {
             var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId);
             var item = BI.createWidget({
@@ -31,7 +32,20 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
 
             this._createItemWithStyle(item);
 
-        } else {
+        } else if(type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA ){
+            var item = BI.createWidget({
+                type: "bi.label",
+                cls: "detail-table-cell-text",
+                textAlign: "right",
+                whiteSpace: "nowrap",
+                height: this.options.height,
+                text: this.options.text,
+                value: this.options.value,
+                lgap: 5,
+                rgap: 5
+            });
+            this._createItemWithStyle(item);
+        } else{
             var item = BI.createWidget({
                 type: "bi.label",
                 cls: "detail-table-cell-text",
@@ -52,7 +66,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         return hyperlink.used || false
     },
 
-    _parseFloatByDot: function (text, dot) {
+    _parseFloatByDot: function (text, dot, separators) {
         if (text === Infinity || text !== text) {
             return text;
         }
@@ -62,29 +76,38 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var num = BI.parseFloat(text);
         switch (dot) {
             case BICst.TARGET_STYLE.FORMAT.NORMAL:
+                if(separators){
+                    num = BI.contentFormat(num, '#,###.##')
+                } else {
+                    num = BI.contentFormat(num, '#.##')
+                }
                 return num;
                 break;
             case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
-                return BI.parseInt(num);
+                if(separators){
+                    num = BI.contentFormat(num, '#,###')
+                } else {
+                    num = BI.parseInt(num)
+                }
+                return num;
                 break;
             case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
-                var mnum = Math.round(num * 10) / 10;
-                var snum = mnum.toString();
-                if (snum.indexOf(".") < 0) {
-                    snum = snum + ".0"
+                if(separators){
+                    num = BI.contentFormat(num, '#,###.0')
+                } else {
+                    num = BI.contentFormat(num, '#.0')
                 }
-                return snum;
+                return num;
             case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
-                var mnum = Math.round(num * 100) / 100;
-                var snum = mnum.toString();
-                if (snum.indexOf(".") < 0) {
-                    snum = snum + ".00"
+                if(separators){
+                    num = BI.contentFormat(num, '#,###.00')
+                } else {
+                    num = BI.contentFormat(num, '#.00')
                 }
-                return snum;
+                return num;
         }
         return text;
     },
-
 
     _getIconByStyleAndMark: function (text, style, mark) {
         var num = BI.parseFloat(text), nMark = BI.parseFloat(mark);
@@ -119,10 +142,10 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
 
         var format = styleSettings.format, numLevel = styleSettings.num_level,
-            iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
+            iconStyle = styleSettings.icon_style, mark = styleSettings.mark,
+            num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
-        text = this._parseFloatByDot(text, format);
-        
+        text = this._parseFloatByDot(text, format, num_separators);
         if (text === Infinity) {
             text = "N/0";
         } else if(BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {

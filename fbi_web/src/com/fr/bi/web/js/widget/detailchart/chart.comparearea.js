@@ -44,7 +44,7 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
-        config.zoom.zoomTool.visible = this.config.show_zoom;
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
         if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;
@@ -69,7 +69,7 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                         max: self.config.custom_y_scale.maxScale.scale || null,
                         tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
                             self.config.custom_y_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level)
+                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)
                     });
                     formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
@@ -88,7 +88,7 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                         max: self.config.custom_x_scale.maxScale.scale || null,
                         tickInterval: BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
                             self.config.custom_x_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.constants.right_y_axis_number_level)
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.constants.right_y_axis_number_level, self.config.right_num_separators)
                     });
                     formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
@@ -114,12 +114,12 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                 var isNeedFormatDataLabel = false;
                 switch (config.yAxis[item.yAxis].axisIndex) {
                     case self.constants.LEFT_AXIS:
-                        if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
                             isNeedFormatDataLabel = true;
                         }
                         break;
                     case self.constants.RIGHT_AXIS:
-                        if (self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                        if (self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators) {
                             isNeedFormatDataLabel = true;
                         }
                         break;
@@ -253,7 +253,7 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                         }
                     }
                 });
-                if (position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (position === item.yAxis) {
                     item.tooltip = BI.deepClone(config.plotOptions.tooltip);
                     item.tooltip.formatter.valueFormat = formatter;
                 }
@@ -341,7 +341,9 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE
+            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
+            num_separators: options.num_separators || false,
+            right_num_separators: options.right_num_separators || false
         };
         this.options.items = items;
 

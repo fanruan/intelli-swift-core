@@ -188,4 +188,9 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     public void buildStructure() {
 
     }
+
+    @Override
+    public void forceReleaseWriter() {
+
+    }
 }

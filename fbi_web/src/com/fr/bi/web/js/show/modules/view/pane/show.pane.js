@@ -28,7 +28,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
             element: vessel,
             items: [{
                 el: north,
-                height: BICst.CONFIG.SHOW_DASHBOARD_TITLE ? this._const.toolbarHeight : 0
+                height: Data.SharingPool.get("hideTop") ? 0 : this._const.toolbarHeight
             }, {
                 el: BI.createWidget(),
                 height: 1
@@ -99,6 +99,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
         var viewChange = BI.createWidget({
             type: "bi.icon_text_item",
             cls: "toolbar-edit-font",
+            invisible: !!Data.SharingPool.get("hideTop"),
             text: BI.i18nText("BI-Edit_Report"),
             height: 30,
             width: 80

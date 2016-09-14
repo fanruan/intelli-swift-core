@@ -3,7 +3,6 @@ package com.finebi.cube.conf;
 import com.finebi.cube.conf.relation.BISystemTableRelationManager;
 import com.finebi.cube.conf.relation.BISystemTableRelationManager4Test;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
-import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.impl.conf.CubeBuildTableSource;
 import com.fr.bi.base.BIUser;
@@ -28,7 +27,6 @@ public class CubeBuildStaffTest extends TestCase {
     }
 
     public void testSingleTable() {
-        CubeBuild cubeBuildManager = new CubeBuildSingleTable(null,-999);
     }
 
     public void testSingleTableSource() {

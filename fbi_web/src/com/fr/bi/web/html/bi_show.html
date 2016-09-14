@@ -26,6 +26,8 @@
             src="${servletURL}?op=emb&resource=data.js&version=${__version__}&__pre__=true"></script>
     <script type="text/javascript"
             src="${servletURL}?op=emb&resource=formula.js&__pre__=true"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=map.js&__pre__=true"></script>
 
     <script type="text/javascript" src="${servletURL}?op=emb&resource=third.js"></script>
     <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js"></script>
@@ -51,7 +53,8 @@
                 onlyViewAuth: ${onlyViewAuth},
                 reg: ${reg},
                 show: '${show}',
-                lockedBy: '${lockedBy}'
+                lockedBy: '${lockedBy}',
+                hideTop: ${hideTop}
             });
         });
     </script>

@@ -56,6 +56,7 @@ public class Service4BIReport implements Service {
             new BIGetAllHangoutReportsAction(),
             new BIReportHangout2PlateAction(),
             new BIGetUploadedImageAction(),
+            new BIGetMapJsonAction(),
 
             new BIGetAuthUserListAction(),
             new BIGetAllAuthUserListAction(),
@@ -64,7 +65,7 @@ public class Service4BIReport implements Service {
 
             new BIInitCreatedByMeAction(),
             new BIInitAllReportAction(),
-            new BIInitSharedToMeAction()
+            new BIInitSharedToMeAction(),
 
     };
 

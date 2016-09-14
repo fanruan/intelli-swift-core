@@ -279,9 +279,18 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
     }
 
-    public void buildStructure(){
-        for (ICubeColumnEntityService columnEntityService:columnKey2ColumnMap.values()){
+    public void buildStructure() {
+        for (ICubeColumnEntityService columnEntityService : columnKey2ColumnMap.values()) {
             columnEntityService.buildStructure();
         }
+    }
+
+    @Override
+    public void forceReleaseWriter() {
+        Iterator<ICubeColumnEntityService> it = columnKey2ColumnMap.values().iterator();
+        while (it.hasNext()) {
+            it.next().forceReleaseWriter();
+        }
+        columnKey2ColumnMap.clear();
     }
 }

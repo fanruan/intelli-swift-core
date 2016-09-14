@@ -19,6 +19,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
             showRelativeTables: true,
             showExcelView: true,
             showDateGroup: true,
+            showTime: true,
             tablesCreator: function (packageId, isRelation) {
                 if (isRelation === true) {
                     var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageId);

@@ -44,8 +44,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
     },
 
 
-
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
@@ -60,7 +59,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.yAxis = this.yAxis;
         config.xAxis = this.xAxis;
 
-        config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
+        config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
@@ -74,7 +73,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].enableMinorTick = this.config.enable_minor_tick;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
 
-        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
+        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level, this.config.right_num_separators);
         formatNumberLevelInXaxis(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
@@ -89,31 +88,35 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].enableMinorTick = this.config.enable_minor_tick;
         config.chartType = "scatter";
 
-        if(config.plotOptions.dataLabels.enabled === true){
-            BI.each(items, function(idx, item){
+        if (config.plotOptions.dataLabels.enabled === true) {
+            BI.each(items, function (idx, item) {
                 var isNeedFormatDataLabelX = false;
                 var isNeedFormatDataLabelY = false;
-                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators) {
                     isNeedFormatDataLabelX = true;
                 }
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
                     isNeedFormatDataLabelY = true;
                 }
-                if(isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true){
+                if (isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true) {
                     item.dataLabels = {
                         "style": self.constants.FONT_STYLE,
                         "align": "outside",
                         enabled: true,
                         formatter: {
-                            identifier: "${X}${Y}${SIZE}",
-                            "XFormat": function(){return BI.contentFormat(arguments[0], '#.##')},
-                            "YFormat": function(){return BI.contentFormat(arguments[0], '#.##')}
+                            identifier: "${X}${Y}",
+                            "XFormat": function () {
+                                return BI.contentFormat(arguments[0], '#.##')
+                            },
+                            "YFormat": function () {
+                                return BI.contentFormat(arguments[0], '#.##')
+                            }
                         }
                     };
-                    if(isNeedFormatDataLabelX === true){
+                    if (isNeedFormatDataLabelX === true) {
                         item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
                     }
-                    if(isNeedFormatDataLabelY === true){
+                    if (isNeedFormatDataLabelY === true) {
                         item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
                     }
                 }
@@ -121,7 +124,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         }
         return [items, config];
 
-        function formatChartStyle(){
+        function formatChartStyle() {
             switch (self.config.chart_style) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
@@ -131,11 +134,11 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function formatCordon(){
-            BI.each(self.config.cordon, function(idx, cor){
-                if(idx === 0 && self.xAxis.length > 0){
+        function formatCordon() {
+            BI.each(self.config.cordon, function (idx, cor) {
+                if (idx === 0 && self.xAxis.length > 0) {
                     var magnify = self.calcMagnify(self.config.x_axis_number_level);
-                    self.xAxis[0].plotLines = BI.map(cor, function(i, t){
+                    self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
@@ -147,7 +150,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                         });
                     });
                 }
-                if(idx > 0 && self.yAxis.length >= idx){
+                if (idx > 0 && self.yAxis.length >= idx) {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
@@ -160,7 +163,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                             magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
                             break;
                     }
-                    self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                    self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
@@ -175,7 +178,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             })
         }
 
-        function formatNumberLevelInXaxis(type){
+        function formatNumberLevelInXaxis(type) {
             var magnify = self.calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -184,7 +187,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             })
         }
 
-        function formatNumberLevelInYaxis(type, position){
+        function formatNumberLevelInYaxis(type, position) {
             var magnify = self.calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -193,12 +196,14 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                     }
                 })
             });
-            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
-                config.plotOptions.tooltip.formatter.valueFormat = function(){return BI.contentFormat(arguments[0], '#0%')};
+            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                config.plotOptions.tooltip.formatter.valueFormat = function () {
+                    return BI.contentFormat(arguments[0], '#0%')
+                };
             }
         }
 
-        function getXYAxisUnit(numberLevelType, position){
+        function getXYAxisUnit(numberLevelType, position) {
             var unit = "";
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -214,13 +219,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                     unit = BI.i18nText("BI-Yi");
                     break;
             }
-            if(position === self.constants.X_AXIS){
+            if (position === self.constants.X_AXIS) {
                 self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
-            if(position === self.constants.LEFT_AXIS){
+            if (position === self.constants.LEFT_AXIS) {
                 self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
-            if(position === self.constants.RIGHT_AXIS){
+            if (position === self.constants.RIGHT_AXIS) {
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
@@ -254,12 +259,14 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             line_width: options.line_width || 0,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            num_separators: options.num_separators || false,
+            right_num_separators: options.right_num_separators || false
         };
         this.options.items = items;
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.SCATTER);
             });
             types.push(type);
@@ -271,7 +278,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

@@ -290,8 +290,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             self.model.setUpdateSettings(this.getValue());
             var info = {};
             info.tableInfo = tableInfo;
-            info.updateSettings = BI.deepClone(this.model.table.update_settings);
-            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, info)
+            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, info, self.model.getValue());
         });
         BI.Popovers.create(this.model.getId(), updateSet).open(this.model.getId());
     },
@@ -355,6 +354,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             BI.Utils.getTablesDetailInfoByTables([BI.extend(allTables[0][0], {id: this.model.getId()})], function (data) {
                 self.model.setFields(data[0].fields);
                 self.model.setRelationsByETLValue(data[0]);
+                self.model.setTranslationsByETLValue(data[0]);
                 self._populate();
             }, function () {
                 mask.destroy();
@@ -708,7 +708,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                     reopen: true,
                     isGenerated: status.isGenerated,
                     tableInfo: table,
-                    translations: self.model.getTranslations()
+                    translations: self.model.getTranslations(),
+                    fieldInfo: self.model.constructFieldNameAndTranslationFieldNameRelation()
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1155,6 +1156,7 @@ BI.ETL = BI.inherit(BI.Widget, {
     _convertRowAndColumn: function (tId) {
         var self = this;
         BI.Layers.remove(self.constants.ETL_OPERATOR_LAYER);
+
         var convert = BI.createWidget({
             type: "bi.convert",
             element: BI.Layers.create(self.constants.ETL_OPERATOR_LAYER),
@@ -1163,7 +1165,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 reopen: false,
                 isGenerated: false,
                 tableInfo: self.model.getTableById(tId),
-                translations: self.model.getTranslations()
+                translations: self.model.getTranslations(),
+                fieldInfo: self.model.constructFieldNameAndTranslationFieldNameRelation()
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);

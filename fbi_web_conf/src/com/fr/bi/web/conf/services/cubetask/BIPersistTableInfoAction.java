@@ -6,7 +6,9 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -29,15 +31,14 @@ public class BIPersistTableInfoAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        WebUtils.printAsJSON(res, new JSONObject().put("tableInfo", saveTableInfos(userId)));
+        WebUtils.printAsJSON(res, new JSONObject().put("tableInfo", saveTableInfo(userId)));
     }
-
     @Override
     public String getCMD() {
         return "table_info_get";
     }
 
-    private static Map saveTableInfos(long userId) {
+    private static Map saveTableInfo(long userId) {
         Set<CubeTableSource> sources = new HashSet<CubeTableSource>();
         Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
         for (BusinessTable table : allTables) {
@@ -52,6 +53,14 @@ public class BIPersistTableInfoAction extends AbstractBIConfigureAction {
             if (source instanceof DBTableSource) {
                 sourceInfo.put(source.toString(), source.getSourceID());
             }
+            if (source.getType()== BIBaseConstant.TABLETYPE.ETL){
+                StringBuffer EtlInfo=new StringBuffer();
+                EtlInfo.append("ETL,parents as listed：");
+                for (CubeTableSource tableSource : ((ETLTableSource) source).getParents()) {
+                    EtlInfo.append(tableSource.getSourceID()+tableSource.getTableName());
+                }
+                sourceInfo.put(EtlInfo.toString(),source.getSourceID());
+            }
         }
         Map<String, String> relationMap = new HashMap<String, String>();
         Set<BITableRelation> tableRelations = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
@@ -63,6 +72,9 @@ public class BIPersistTableInfoAction extends AbstractBIConfigureAction {
         String cubeRelationPath = new File(advancedConf.getRootURI().getPath()).getParent() + File.separatorChar + "relationInfo";
         BIFileUtils.writeFile(cubeTablePath, sourceInfo.toString());
         BIFileUtils.writeFile(cubeRelationPath, relationMap.toString());
-        return sourceInfo;
+        Map<String, String> info=new HashMap();
+        info.put("tableInfo",sourceInfo.toString());
+        info.put("relationInfo",relationMap.toString());
+        return info;
     }
 }

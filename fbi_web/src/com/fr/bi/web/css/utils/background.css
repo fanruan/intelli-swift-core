@@ -521,3 +521,13 @@
   background-color: #ffffff;
   z-index: 2;
 }
+.login-logo-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/logo.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/logo.png');
+  _background: none;
+}
+.complex-region-left-drag-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/complex-region-left.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/complex-region-left.png');
+  _background: none;
+}

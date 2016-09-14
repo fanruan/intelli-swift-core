@@ -7,6 +7,7 @@ import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.net.URISyntaxException;
@@ -36,7 +37,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
             nullIndexLocation = currentLocation.buildChildLocation("fbi_null");
         } catch (URISyntaxException e) {
             BINonValueUtils.beyondControl(e);
-
+            BILogger.getLogger().error(e.getMessage());
         }
     }
 
@@ -124,12 +125,13 @@ public class BICubeIndexData implements ICubeIndexDataService {
         return nullReader;
     }
 
-    public void buildStructure(){
+    public void buildStructure() {
         initNullReader();
         initNullWriter();
         initIndexWriter();
         initIndexReader();
     }
+
     private void initNullReader() {
         if (!isNullReaderAvailable()) {
             buildNullReader();
@@ -211,6 +213,18 @@ public class BICubeIndexData implements ICubeIndexDataService {
         resetIndexWriter();
         resetNullReader();
         resetNullWriter();
+    }
+
+    @Override
+    public void forceReleaseWriter() {
+        if (isIndexWriterAvailable()) {
+            indexWriter.forceRelease();
+            indexWriter = null;
+        }
+        if (isNullWriterAvailable()) {
+            nullWriter.forceRelease();
+            nullReader = null;
+        }
     }
 
     @Override

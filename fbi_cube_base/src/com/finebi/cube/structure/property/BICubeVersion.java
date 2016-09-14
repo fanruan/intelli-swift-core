@@ -38,6 +38,7 @@ public class BICubeVersion extends BICubeLongProperty implements ICubeVersion {
     @Override
     public void addVersion(long version) {
         getWriter().recordSpecificValue(0, version);
+        forceReleaseWriter();
     }
 
     @Override

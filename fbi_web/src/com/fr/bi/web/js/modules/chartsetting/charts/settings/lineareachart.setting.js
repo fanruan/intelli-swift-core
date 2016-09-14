@@ -1,7 +1,7 @@
 /**
  * @class BI.LineAreaChartSetting
  * @extends BI.Widget
- * 折线面积图样式
+ * 折线、面积图样式
  */
 BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
@@ -257,6 +257,27 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.reversedRY.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        //千分符
+        this.separatorsLeft = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separatorsLeft.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        this.separatorsRight = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separatorsRight.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
@@ -550,6 +571,9 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customYScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separatorsLeft]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -607,6 +631,9 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customXScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separatorsRight]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -748,6 +775,8 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showXCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
         this.customXScale.setValue(BI.Utils.getWSCustomXScale(wId));
         this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
+        this.separatorsLeft.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
+        this.separatorsRight.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -784,7 +813,9 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_y_custom_scale: this.showYCustomScale.isSelected(),
             custom_y_scale: this.customYScale.getValue(),
             show_x_custom_scale: this.showXCustomScale.isSelected(),
-            custom_x_scale: this.customXScale.getValue()
+            custom_x_scale: this.customXScale.getValue(),
+            num_separators: this.separatorsLeft.isSelected(),
+            right_num_separators: this.separatorsRight.isSelected()
         }
     },
 
@@ -817,7 +848,9 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showYCustomScale.setSelected(v.show_y_custom_scale);
         this.customYScale.setValue(v.custom_y_scale);
         this.showXCustomScale.setSelected(v.show_x_custom_scale);
-        this.customXScale.setValue(v.custom_x_scale)
+        this.customXScale.setValue(v.custom_x_scale);
+        this.separatorsLeft.setSelected(v.num_separators);
+        this.separatorsRight.setSelected(v.right_num_separators)
     }
 });
 BI.LineAreaChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

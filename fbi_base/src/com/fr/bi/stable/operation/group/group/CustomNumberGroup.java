@@ -48,15 +48,19 @@ public class CustomNumberGroup extends AbstractGroup {
 
             boolean find = false;
             for (int i = 0; i < groups.length; i++) {
-                if (groups[i].contains(key) || groups[i].isOtherGroup()) {
+                if (groups[i].contains(key) && !groups[i].isOtherGroup()) {
                     find = true;
-                    if (groups[i].isOtherGroup()) {
+                    newMapArray[i] = GVIUtils.OR(newMapArray[i], gvi);
+                }else{
+                    if(groups[i].isOtherGroup() && !find){
+                        find = true;
                         if(groupNames.contains(groups[i].getValue())){
                             int index = groupNames.indexOf(groups[i].getValue());
                             newMapArray[index] = GVIUtils.OR(newMapArray[index], gvi);
-                        }else{otherGroup.put(groups[i].getValue(), GVIUtils.OR(otherGroup.get(groups[i].getValue()), gvi));}
-                    } else {newMapArray[i] = GVIUtils.OR(newMapArray[i], gvi);}
-                    break;
+                        }else{
+                            otherGroup.put(groups[i].getValue(), GVIUtils.OR(otherGroup.get(groups[i].getValue()), gvi));
+                        }
+                    }
                 }
             }
             if (!find) {

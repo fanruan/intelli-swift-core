@@ -146,6 +146,27 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
+        //显示背景图层
+        this.isShowBackgroundLayer = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-SHOW_BACKGROUND_LAYER"),
+            width: 110
+        });
+
+        this.isShowBackgroundLayer.on(BI.Controller.EVENT_CHANGE, function () {
+            this.isSelected() ? self.selectLayerCombo.setVisible(true) : self.selectLayerCombo.setVisible(false);
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
+        });
+
+        this.selectLayerCombo = BI.createWidget({
+            type: "bi.text_value_combo",
+            width: constant.COMBO_WIDTH,
+            height: constant.EDITOR_HEIGHT
+        });
+        this.selectLayerCombo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
+        });
+
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -166,11 +187,17 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.isShowBackgroundLayer]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.selectLayerCombo]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -258,7 +285,27 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this._setNumberLevel()
+        this.isShowBackgroundLayer.setSelected(BI.Utils.getWSShowBackgroundByID(wId));
+        this.isShowBackgroundLayer.isSelected() ? this.selectLayerCombo.setVisible(true) : this.selectLayerCombo.setVisible(false);
+        this._setNumberLevel();
+        var items = BI.map(MapConst.WMS_INFO, function (name, obj) {
+            if (obj.type === BICst.TILELAYER_SERVER) {
+                return {
+                    text: name,
+                    title: name,
+                    value: name
+                }
+            }
+            if (obj.type === BICst.WMS_SERVER) {
+                return {
+                    text: name,
+                    title: name,
+                    value: name
+                }
+            }
+        });
+        this.selectLayerCombo.populate(items);
+        this.selectLayerCombo.setValue(BI.Utils.getWSBackgroundLayerInfoByID(wId));
     },
 
     getValue: function () {
@@ -268,7 +315,9 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             map_styles: this.conditions.getValue(),
             transfer_filter: this.transferFilter.isSelected(),
             chart_legend: this.legend.getValue()[0],
-            show_data_label: this.showDataLabel.isSelected()
+            show_data_label: this.showDataLabel.isSelected(),
+            show_background_layer: this.isShowBackgroundLayer.isSelected(),
+            background_layer_info: this.selectLayerCombo.getValue()[0]
         }
     },
 
@@ -280,6 +329,8 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter.setSelected(v.transfer_filter);
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
+        this.isShowBackgroundLayer.setSelected(v.show_background_layer);
+        this.selectLayerCombo.setValue(v.background_layer_info);
         this._setNumberLevel()
     }
 });

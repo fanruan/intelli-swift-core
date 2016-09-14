@@ -1,0 +1,43 @@
+@import "../../../bibase";
+@import "../../../animate";
+
+.bi-history-tab {
+  background: @background-color-active;
+
+  & .bi-analysis-tab-operator {
+    background: @background-color-active;
+  }
+
+  & .bi-history-tab-button-group {
+    background: @background-color-default;
+    border : 1px solid @border-color-line;
+
+    & .bi-history-tab-title {
+      font-size: @font-size-14;
+      color:@font-color-gray;
+      border-bottom:1px solid @border-color-line;
+    }
+  }
+
+  & .bi-history-tab-fake-model {
+    //这里做的假的样式和逻辑无关
+    & .bi-history-tab-button {
+      font-size: @font-size-13;
+
+      &.active, &:active{
+        background: @background-color-default;
+        color: @font-color-normal;
+        
+        & .delete-field-font {
+          display: none!important;
+        }
+
+        & .select_tag {
+          background: @background-color-default;
+        }
+      }
+    }
+  }
+
+}
+

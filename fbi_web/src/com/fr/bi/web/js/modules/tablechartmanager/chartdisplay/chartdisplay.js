@@ -384,7 +384,12 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         gradient_colors: BI.Utils.getWSBubbleGradientsByID(o.wId),
                         fixed_colors: BI.Utils.getWSBubbleFixedColorsByID(o.wId),
                         custom_y_scale: BI.Utils.getWSCustomYScale(o.wId),
-                        custom_x_scale: BI.Utils.getWSCustomXScale(o.wId)
+                        custom_x_scale: BI.Utils.getWSCustomXScale(o.wId),
+                        show_background_layer: BI.Utils.getWSShowBackgroundByID(o.wId),
+                        num_separators: BI.Utils.getWSNumberSeparatorsByID(o.wId),
+                        right_num_separators: BI.Utils.getWSRightNumberSeparatorsByID(o.wId),
+                        right2_num_separators: BI.Utils.getWSRight2NumberSeparatorsByID(o.wId),
+                        background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
                     }, {
                         cordon: self.model.getCordon(),
                         tooltip: self.model.getToolTip(type),

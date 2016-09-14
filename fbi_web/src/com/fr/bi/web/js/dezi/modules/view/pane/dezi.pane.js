@@ -28,7 +28,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             element: vessel,
             items: [{
                 el: north,
-                height: BICst.CONFIG.SHOW_DASHBOARD_TITLE ? this._const.toolbarHeight : 0
+                height: Data.SharingPool.get("hideTop") ? 0 : this._const.toolbarHeight
             }, {
                 el: BI.createWidget(),
                 height: 1
@@ -255,7 +255,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.absolute",
-            invisible: !BICst.CONFIG.SHOW_DASHBOARD_TITLE,
+            invisible: !!Data.SharingPool.get("hideTop"),
             cls: "dashboard-toolbar",
             items: [{
                 el: this.undoButton,

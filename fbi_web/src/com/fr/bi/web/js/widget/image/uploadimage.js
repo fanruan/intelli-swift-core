@@ -23,7 +23,8 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         this.file = BI.createWidget({
             type: "bi.multifile_editor",
             accept: "*.jpg;*.png;*.gif;*.bmp;*.jpeg;",
-            maxSize: 1024 * 1024 * 100
+            maxSize: 1024 * 1024 * 100,
+            title: BI.i18nText("BI-Upload_Image")
         });
 
         this.img = BI.createWidget({
@@ -58,18 +59,28 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             })
         });
 
-        this.upload = BI.createWidget({
-            type: "bi.icon_button",
-            cls: "upload-image-icon-button img-upload-font",
-            title: BI.i18nText("BI-Upload_Image"),
-            height: 24,
-            width: 24
-        });
-
-        this.upload.on(BI.IconButton.EVENT_CHANGE, function () {
-            if (self.isValid()) {
-                self.file.select();
-            }
+        this.uploadWrapper = BI.createWidget({
+            type: "bi.absolute",
+            items: [{
+                el: {
+                    type: "bi.icon_button",
+                    cls: "upload-image-icon-button img-upload-font",
+                    width: 24,
+                    height: 24
+                },
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
+            }, {
+                el: this.file,
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
+            }],
+            width: 24,
+            height: 24
         });
 
         this.del = BI.createWidget({
@@ -146,7 +157,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
                 right: 68,
                 top: 8
             }, {
-                el: this.upload,
+                el: this.uploadWrapper,
                 right: 100,
                 top: 8
             }]
@@ -190,7 +201,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
     },
 
     setToolbarVisible: function (v) {
-        this.upload.setVisible(v);
+        this.uploadWrapper.setVisible(v);
         this.size.setVisible(v);
         this.href.setVisible(v);
         this.del.setVisible(v);

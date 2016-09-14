@@ -1,8 +1,11 @@
 package com.fr.bi.stable.io.sortlist;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.stable.StringUtils;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class ArrayLookupHelper {
 
@@ -63,6 +66,68 @@ public class ArrayLookupHelper {
         }
         return res;
     }
+    public static int getStartIndex4StartWith(ICubeColumnIndexReader reader, String kw, Comparator comparator) {
+        if (StringUtils.isEmpty(kw)){
+            return 0;
+        }
+        return getStartIndex4StartWith(reader, 0, reader.sizeOfGroup() - 1, kw, comparator);
+    }
+
+    public static int getEndIndex4StartWith(ICubeColumnIndexReader reader, String kw, Comparator comparator) {
+        if (StringUtils.isEmpty(kw)){
+            return reader.sizeOfGroup();
+        }
+        return getEndIndex4StartWith(reader, 0, reader.sizeOfGroup() - 1, kw, comparator);
+    }
+
+
+    private static String getString(ICubeColumnIndexReader reader, int index) {
+        Object ob = reader.getGroupValue(index);
+        return ob == null ? StringUtils.EMPTY : ob.toString();
+    }
+
+    private static int getStartIndex4StartWith(ICubeColumnIndexReader reader, int start, int end, String kw, Comparator<String> comparator){
+        int mid = ((start + end)>>1);
+        String v = getString(reader, mid);
+        int result = comparator.compare(v, kw);
+        if (result == 0){
+            return mid;
+        }
+        if (v.startsWith(kw)){
+            if (mid == start){
+                return mid;
+            }
+            if (getString(reader, mid - 1).startsWith(kw)){
+                return getStartIndex4StartWith(reader, start, mid, kw, comparator);
+            } else {
+                return mid;
+            }
+        } else  if (mid == start ){
+            return getString(reader, end).startsWith(kw) ? end : -1;
+        }
+        if (result > 0){
+            return getStartIndex4StartWith(reader, start, mid, kw, comparator);
+        } else {
+            return getStartIndex4StartWith(reader, mid, end, kw, comparator);
+        }
+    }
+
+    private static int getEndIndex4StartWith(ICubeColumnIndexReader reader, int start, int end, String kw, Comparator<String> comparator){
+        int mid = ((start + end)>>1);
+        String v = getString(reader, mid);
+        int result = comparator.compare(v, kw);
+        if (result == 0 || v.startsWith(kw)){
+            return mid == start ? (getString(reader, end).startsWith(kw)? end : mid) :getEndIndex4StartWith(reader, mid, end, kw, comparator);
+        } else if (mid == start){
+            return getString(reader, end).startsWith(kw)? end : -1;
+        }
+        if (result > 0){
+            return getEndIndex4StartWith(reader, start, mid, kw, comparator);
+        } else {
+            return getEndIndex4StartWith(reader, mid, end, kw, comparator);
+        }
+    }
+
 
     public static interface Lookup<T> {
         public int minIndex();

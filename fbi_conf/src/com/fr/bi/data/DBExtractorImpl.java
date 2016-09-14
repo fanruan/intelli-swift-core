@@ -2,12 +2,14 @@ package com.fr.bi.data;
 
 import com.fr.base.FRContext;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.dbdealer.*;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
@@ -35,7 +37,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
                                   Traversal<BIDataValue> traversal,
                                   boolean needCharSetConvert,
                                   String originalCharSetName,
-                                  String newCharSetName, int row) throws SQLException {
+                                  String newCharSetName, int row, String sql) throws SQLException {
         @SuppressWarnings("rawtypes")
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, columns);
         int ilen = dealers.length;
@@ -45,6 +47,10 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 traversal.actionPerformed(new BIDataValue(row, i, value));
             }
             row++;
+            if (CubeConstant.LOG_SEPERATOR_ROW != 0 && row % CubeConstant.LOG_SEPERATOR_ROW == 0) {
+                BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" sql: " + sql + "is executing…… "+" transported rows：" + row);
+            }
+
         }
         return row;
     }
@@ -60,7 +66,24 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 int rsColumn = i + 1;
                 switch (field.getFieldType()) {
                     case DBConstant.COLUMN.DATE: {
-                        object = new DateDealer(rsColumn);
+//                        switch (field.getClassType()) {
+//                           case DBConstant.CLASS.DATE : {
+//                               object = new DateDealer(rsColumn);
+//                               break;
+//                           }
+//                            case DBConstant.CLASS.TIME : {
+//                                object = new TimeDealer(rsColumn);
+//                                break;
+//                            }
+//                            case DBConstant.CLASS.TIMESTAMP : {
+//                                object = new TimestampDealer(rsColumn);
+//                                break;
+//                            }
+//                            default: {
+//                                object = new TimestampDealer(rsColumn);
+//                            }
+//                        }
+                        object = new TimestampDealer(rsColumn);
                         break;
                     }
                     case DBConstant.COLUMN.NUMBER: {
@@ -124,10 +147,9 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 query = dealWithSqlCharSet(sql.toString(), connection);
                 stmt = createStatement(conn, dialect);
                 rs = stmt.executeQuery(query);
-                BILogger.getLogger().error("sql: " + sql.toString() + " execute failed!");
             }
+            row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row, sql.toString());
             BILogger.getLogger().info("sql: " + sql.toString() + " execute cost:" + DateUtils.timeCostFrom(t));
-            row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row);
         } catch (Throwable e) {
             BILogger.getLogger().error("sql: " + sql.toString() + " execute failed!");
             throw new RuntimeException(e);

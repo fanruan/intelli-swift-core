@@ -67,15 +67,27 @@ Data.Utils = {
             });
         });
         if (type === BICst.WIDGET.MAP) {
-            var subType = widget.sub_type || BICst.MAP_TYPE.CHINA;
-            options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
+            var subType = widget.sub_type;
+            if(BI.isNull(subType)){
+                BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function(path, layer){
+                    if(layer === 0){
+                        subType = path;
+                        return true;
+                    }
+                });
+            }
+            var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
+            if(BI.isNull(name)){
+                name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
+            }
+            options.initDrillPath = [name];
             var drill = BI.values(getDrill())[0];
             BI.each(drill, function (idx, dri) {
                 options.initDrillPath.push(dri.values[0].value[0]);
             });
             options.geo = {
-                data: BICst.MAP_PATH[subType],
-                name: BICst.MAP_TYPE_NAME[subType] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                data: MapConst.INNER_MAP_INFO.MAP_PATH[subType] || MapConst.CUSTOM_MAP_INFO.MAP_PATH[subType],
+                name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
             }
         }
         if (type === BICst.WIDGET.GIS_MAP) {
@@ -482,7 +494,7 @@ Data.Utils = {
                             res.drilldown = {};
                             res.drilldown.series = formatDataForMap(item, currentLayer);
                             res.drilldown.geo = {
-                                data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]],
+                                data: MapConst.INNER_MAP_INFO.MAP_PATH[MapConst.INNER_MAP_INFO.MAP_NAME[res.x]],
                                 name: res.x
                             };
                         }
@@ -713,7 +725,7 @@ Data.Utils = {
             x_axis_style: options.x_axis_style || constants.NORMAL,
             x_axis_number_level: options.x_axis_number_level || constants.NORMAL,
             tooltip: options.tooltip || "",
-            geo: options.geo || {data: BICst.MAP_PATH[BICst.MAP_TYPE.CHINA], name: BI.i18nText("BI-China")},
+            geo: options.geo,
             theme_color: options.theme_color || "#65bce7",
             map_styles: options.map_styles || [],
             auto_custom: BI.isNull(options.map_styles) ? false : options.auto_custom,
@@ -1650,7 +1662,7 @@ Data.Utils = {
                             "align": "outside",
                             enabled: true,
                             formatter: {
-                                identifier: "${X}${Y}${SIZE}",
+                                identifier: "${X}${Y}",
                                 "XFormat": function () {
                                     return BI.contentFormat(arguments[0], '#.##')
                                 },
@@ -2241,8 +2253,8 @@ Data.Utils = {
             }
 
             function changeMaxMinScale() {
-                gaugeAxis[0].max = config.max_scale === "" ? gaugeAxis[0].max : config.max_scale;
-                gaugeAxis[0].min = config.min_scale === "" ? gaugeAxis[0].min : config.min_scale;
+                gaugeAxis[0].max = config.max_scale || null;
+                gaugeAxis[0].min = config.min_scale || null;
             }
 
             function formatNumberLevelInYaxis(type, position) {
@@ -2495,7 +2507,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -2911,7 +2923,7 @@ Data.Utils = {
                 position: "left"
             }];
 
-            var yTitle = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
+            var unit = getXYAxisUnit(config.x_axis_number_level, constants.LEFT_AXIS);
             var xTitle = getXYAxisUnit(config.left_y_axis_number_level, constants.X_AXIS);
 
             configs.yAxis = yAxis;
@@ -2937,12 +2949,12 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
             }
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + yTitle : yTitle;
+            configs.yAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + unit : unit;
             configs.yAxis[0].title.rotation = constants.ROTATION;
             BI.extend(configs.yAxis[0], {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
@@ -2954,7 +2966,7 @@ Data.Utils = {
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
             configs.xAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + xTitle : xTitle;
             configs.xAxis[0].title.align = "center";
-            BI.extend(config.xAxis[0], {
+            BI.extend(configs.xAxis[0], {
                 formatter: formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS),
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 showLabel: config.show_label,
@@ -3192,7 +3204,7 @@ Data.Utils = {
             if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (configs.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -3205,7 +3217,7 @@ Data.Utils = {
                 }
             };
 
-            configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.x_axis_title + yTitle : yTitle;
+            configs.yAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title + yTitle : yTitle;
             configs.yAxis[0].title.rotation = constants.ROTATION;
             BI.extend(configs.yAxis[0], {
                 lineWidth: config.line_width,
@@ -3457,7 +3469,7 @@ Data.Utils = {
             if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -3467,7 +3479,7 @@ Data.Utils = {
 
             configs.show_left_y_axis_title === true && (configs.yAxis[0].title.text = config.x_axis_title);
             configs.yAxis[0].title.rotation = constants.ROTATION;
-            BI.extend(config.yAxis[0], {
+            BI.extend(configs.yAxis[0], {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 labelRotation: config.text_direction,
                 enableTick: config.enable_tick,
@@ -3478,7 +3490,7 @@ Data.Utils = {
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.left_y_axis_title + xTitle : xTitle;
             configs.xAxis[0].title.align = "center";
-            BI.extend(config.xAxis[0], {
+            BI.extend(configs.xAxis[0], {
                 formatter: formatTickInXYaxis(config.left_y_axis_style, constants.X_AXIS),
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 enableTick: config.enable_tick,
@@ -3952,7 +3964,7 @@ Data.Utils = {
             if (configs.dataSheet.enabled === true) {
                 configs.xAxis[0].showLabel = false;
             }
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (configs.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -4257,7 +4269,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -4606,7 +4618,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -4615,7 +4627,7 @@ Data.Utils = {
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
             configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + yTitle : yTitle;
             configs.yAxis[0].title.rotation = constants.ROTATION;
-            BI.extend(config.yAxis[0], {
+            BI.extend(configs.yAxis[0], {
                 lineWidth: config.line_width,
                 showLabel: config.show_label,
                 enableTick: config.enable_tick,
@@ -4627,7 +4639,7 @@ Data.Utils = {
 
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
-            BI.extend(config.xAxis[0], {
+            BI.extend(configs.xAxis[0], {
                 lineWidth: config.line_width,
                 enableTick: config.enable_tick,
                 labelRotation: config.text_direction,
@@ -4876,7 +4888,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -4923,7 +4935,7 @@ Data.Utils = {
             BI.extend(configs.xAxis, {
                 lineWidth: config.line_width,
                 enableTick: config.enable_tick,
-                enableMinorTick: self.config.enable_minor_tick,
+                enableMinorTick: config.enable_minor_tick,
                 labelRotation: config.text_direction,
                 gridLineWidth: config.show_grid_line === true ? 1 : 0
             });
@@ -5220,7 +5232,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -5902,7 +5914,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -6223,7 +6235,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
-            configs.zoom.zoomTool.visible = config.show_zoom;
+            configs.zoom.zoomTool.enabled = config.show_zoom;
             if (config.show_zoom === true) {
                 delete configs.dataSheet;
                 delete configs.zoom.zoomType;
@@ -6504,7 +6516,7 @@ Data.Utils = {
             });
             var config = combineConfig();
             config.plotOptions.click = function () {
-                options.click(this.pointOption);
+                options.click(this.options);
             };
             return [result, config];
 
@@ -6587,6 +6599,8 @@ Data.Utils = {
 
             function combineConfig() {
                 return {
+                    "title": "",
+                    "chartType": "column",
                     "plotOptions": {
                         "rotatable": false,
                         "startAngle": 0,
@@ -6597,6 +6611,7 @@ Data.Utils = {
                         "layout": "horizontal",
                         "hinge": "rgb(101,107,109)",
                         "dataLabels": {
+                            "autoAdjust": true,
                             "style": "{fontFamily:'inherit', color: #808080, fontSize: 12pt}",
                             "formatter": {
                                 "identifier": "${VALUE}",
@@ -6783,7 +6798,7 @@ Data.Utils = {
                         },
                         "enabled": false
                     },
-                    "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
+                    "zoom": {"zoomType": "", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
                     "plotBorderColor": "rgba(255,255,255,0)",
                     "tools": {
                         "hidden": true,

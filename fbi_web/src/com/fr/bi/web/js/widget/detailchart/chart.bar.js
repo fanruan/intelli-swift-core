@@ -53,7 +53,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.zoom.zoomTool.visible = this.config.show_zoom;
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
         if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;
@@ -78,7 +78,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = getXAxisTitle(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.align = "center";
         BI.extend(config.xAxis[0], {
-            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level),
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators),
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             enableTick: this.config.enable_tick,
             showLabel: this.config.show_label,
@@ -94,7 +94,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
                     item.dataLabels = {
                         "style": self.constants.FONT_STYLE,
                         "align": "outside",
@@ -235,7 +235,8 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-            chart_demo : options.chart_demo || false
+            chart_demo : options.chart_demo || false,
+            num_separators: options.num_separators || false
         };
         this.options.items = items;
         var types = [];

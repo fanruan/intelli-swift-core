@@ -370,6 +370,27 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
+        //千分符
+        this.YSeparators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.YSeparators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.XSeparators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.XSeparators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
         var YAxis = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -419,6 +440,9 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.customYScale]
                 }], {
+                    type: "bi.vertical_adapt",
+                    items: [this.YSeparators]
+                }, {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_H_GAP
@@ -474,6 +498,9 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.customXScale]
                 }], {
+            type: "bi.vertical_adapt",
+                    items: [this.XSeparators]
+                }, {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_H_GAP
@@ -731,6 +758,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showXCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
         this.customXScale.setValue(BI.Utils.getWSCustomXScale(wId));
         this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
+        this.YSeparators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
+        this.XSeparators.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -761,7 +790,9 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_y_custom_scale: this.showYCustomScale.isSelected(),
             custom_y_scale: this.customYScale.getValue(),
             show_x_custom_scale: this.showXCustomScale.isSelected(),
-            custom_x_scale: this.customXScale.getValue()
+            custom_x_scale: this.customXScale.getValue(),
+            num_separators: this.YSeparators.isSelected(),
+            right_num_separators: this.XSeparators.isSelected()
         }
     },
 
@@ -789,7 +820,9 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showYCustomScale.setSelected(v.show_y_custom_scale);
         this.customYScale.setValue(v.custom_y_scale);
         this.showXCustomScale.setSelected(v.show_x_custom_scale);
-        this.customXScale.setValue(v.custom_x_scale)
+        this.customXScale.setValue(v.custom_x_scale);
+        this.YSeparators.setSelected(v.num_separators);
+        this.XSeparators.setSelected(v.right_num_separators)
     }
 });
 BI.BubbleChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

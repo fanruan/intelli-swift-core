@@ -133,6 +133,17 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
         });
 
+        //千分符
+        this.separators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+        });
+
         this.editTitleLY = BI.createWidget({
             type: "bi.sign_editor",
             width: constant.EDITOR_WIDTH,
@@ -392,6 +403,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customYScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -511,6 +525,7 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+        this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false)
@@ -536,7 +551,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_zoom: this.showZoom.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
             show_y_custom_scale: this.showYCustomScale.isSelected(),
-            custom_y_scale: this.customYScale.getValue()
+            custom_y_scale: this.customYScale.getValue(),
+            num_separators: this.separators.isSelected()
         }
     },
 
@@ -559,7 +575,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showZoom.setSelected(v.show_zoom);
         this.minimalistModel.setSelected(v.minimalist_model);
         this.showYCustomScale.setSelected(v.show_y_custom_scale);
-        this.customYScale.setValue(v.custom_y_scale)
+        this.customYScale.setValue(v.custom_y_scale);
+        this.separators.setSelected(v.num_separators);
     }
 });
 BI.PercentChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
