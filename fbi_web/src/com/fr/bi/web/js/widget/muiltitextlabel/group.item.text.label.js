@@ -28,8 +28,9 @@ BI.TextLabelItemGroup = BI.inherit(BI.ButtonGroup, {
                         case BI.ButtonGroup.CHOOSE_TYPE_MULTI:
                             if (BI.isEmptyString(btn.getValue())) {
                                 self.setValue([]);
+                            } else {
+                                self._checkBtnStyle();
                             }
-                            self._checkBtnStyle();
                             break;
                         case BI.ButtonGroup.CHOOSE_TYPE_SINGLE:
                             self.setValue(btn.getValue());
