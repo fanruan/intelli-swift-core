@@ -454,6 +454,7 @@ var _JS = [
 
     "detail/mvc.selectcolorcombo.js",
 
+    "detail/mvc.textlabel.js",
 ];
 
 
@@ -666,7 +667,8 @@ var _Routes = {
     "/bar_charts": "BarChartsView",
     "/area_charts": "AreaChartsView",
     "/other_charts": "OtherChartsView",
-    "/select_color_combo": "SelectColorComboView"
+    "/select_color_combo": "SelectColorComboView",
+    "/text_label": "TextLabelView"
 };
 
 var _Models = {};
@@ -1174,6 +1176,9 @@ _Models.detail = [{
 }, {
     id: 31,
     text: "详细图表"
+}, {
+    id: 33,
+    text: "树标签"
 },
 
 
@@ -1505,6 +1510,10 @@ _Models.detail = [{
         pId: 31,
         text: "其他",
         value: "other_charts"
+    }, {
+        pId: 33,
+        text: "文本标签",
+        value: "text_label"
     }];
 _Models.component = [];
 _Models.module = [];
