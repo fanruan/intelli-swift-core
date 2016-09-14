@@ -13,6 +13,9 @@ import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * This class created on 2016/3/14.
  *
@@ -24,11 +27,13 @@ public class BICube implements Cube {
     private ICubeResourceDiscovery discovery;
     private BICubeVersion cubeVersion;
     private static String CUBE_PROPERTY = CubeConstant.CUBE_PROPERTY;
+    private Map<String, CompoundCubeTableReader> cacheTableReader;
 
     public BICube(ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         this.resourceRetrievalService = resourceRetrievalService;
         this.discovery = discovery;
         cubeVersion = new BICubeVersion(getCubeLocation(), discovery);
+        cacheTableReader = new ConcurrentHashMap<String, CompoundCubeTableReader>();
     }
 
     private ICubeResourceLocation getCubeLocation() {
@@ -41,13 +46,21 @@ public class BICube implements Cube {
 
     @Override
     public CubeTableEntityGetterService getCubeTable(ITableKey tableKey) {
+//        synchronized (this) {
+//            if (cacheTableReader.containsKey(tableKey.getSourceID())) {
+//                return cacheTableReader.get(tableKey.getSourceID());
+//            } else {
+//                BILogger.getLogger().info("add table reader:" + tableKey.getSourceID());
+//                cacheTableReader.put(tableKey.getSourceID(), new CompoundCubeTableReader(tableKey, resourceRetrievalService, discovery));
+//                return cacheTableReader.get(tableKey.getSourceID());
+//            }
+//        }
         return new CompoundCubeTableReader(tableKey, resourceRetrievalService, discovery);
     }
 
     @Override
     public CubeTableEntityService getCubeTableWriter(ITableKey tableKey) {
         return new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
-
     }
 
     @Override
@@ -77,7 +90,7 @@ public class BICube implements Cube {
             ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey);
             if (isResourceExist(location)) {
                 CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
-               boolean result =  tableEntityGetterService.tableDataAvailable();
+                boolean result = tableEntityGetterService.tableDataAvailable();
                 tableEntityGetterService.clear();
                 return result;
             }
@@ -86,7 +99,7 @@ public class BICube implements Cube {
         } catch (BICubeResourceAbsentException e) {
             e.printStackTrace();
             return false;
-        }catch (BICubeTableAbsentException e){
+        } catch (BICubeTableAbsentException e) {
             return false;
         }
     }
@@ -108,6 +121,7 @@ public class BICube implements Cube {
     @Override
     public void clear() {
         cubeVersion.clear();
+        cacheTableReader.clear();
     }
 
     @Override

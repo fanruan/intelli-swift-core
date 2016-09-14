@@ -3,7 +3,7 @@ package com.fr.bi.web.conf.services.dbconnection;
 import com.fr.base.FRContext;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.web.base.JSONErrorHandler;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.TableProcedure;
@@ -54,6 +54,7 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
                                             HttpServletResponse res) throws Exception {
         String connectionName = WebUtils.getHTTPRequestParameter(req, "connectionName");
         JSONArray ja = new JSONArray();
+        JSONObject jo = new JSONObject();
         if (isServerTableData(connectionName)) {
             dealWithServerTableData(ja);
         } else {
@@ -61,18 +62,23 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
             TableProcedure[] tps = new TableProcedure[0];
             TableProcedure[] views = new TableProcedure[0];
             String schemaName = BIConnectionManager.getInstance().getSchema(connectionName);
-            if (schemaName != null) {
-                TableProcedure[] sqlTables = DataCoreUtils.getTables(dbc, TableProcedure.TABLE, schemaName, true);
-                tps = ArrayUtils.addAll(tps, sqlTables);
-                views = ArrayUtils.addAll(views, FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, schemaName));
-            } else {
-                try {
+            try {
+                if (schemaName != null) {
+                    jo.put("schema", schemaName);
+                    if(StringUtils.isNotEmpty(schemaName)) {
+                        TableProcedure[] sqlTables = DataCoreUtils.getTables(dbc, TableProcedure.TABLE, schemaName, true);
+                        tps = ArrayUtils.addAll(tps, sqlTables);
+                        views = ArrayUtils.addAll(views, FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, schemaName));
+                    }
+                } else {
                     tps = FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.TABLE, null);
                     views = FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, null);
-                } catch (Exception e) {
-                    new JSONErrorHandler().error(req, res, e.getMessage());
                 }
+            } catch (Exception e) {
+                jo.put("error", e.getMessage());
+                BILogger.getLogger().error(e.getMessage());
             }
+
             TableProcedure[] result = ArrayUtils.addAll(tps, views);
             Map<String, ArrayList<TableProcedure>> tpMap = splitTableProcedureBySchema(result);
             Set<String> set = tpMap.keySet();
@@ -80,7 +86,8 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
                 dealWithOneSchema(schema, tpMap, ja);
             }
         }
-        WebUtils.printAsJSON(res, ja);
+        jo.put("items", ja);
+        WebUtils.printAsJSON(res, jo);
     }
 
     private void dealWithOneSchema(String schema, Map<String, ArrayList<TableProcedure>> tpMap, JSONArray ja) {

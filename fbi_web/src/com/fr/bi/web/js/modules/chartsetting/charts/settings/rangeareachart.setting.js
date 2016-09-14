@@ -64,7 +64,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     el: {
-                        type: "bi.vertical_adapt",
+                        type: "bi.center_adapt",
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -75,7 +75,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     el: {
-                        type: "bi.vertical_adapt",
+                        type: "bi.center_adapt",
                         items: [this.chartStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -140,6 +140,17 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input"
         });
         this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
+        });
+
+        //千分符
+        this.separators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
@@ -241,10 +252,10 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 type: "bi.left",
                 cls: "detail-style",
                 items: BI.createItems([{
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.showDataLabel]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.gridLine]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -271,7 +282,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Text_Direction"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.text_direction]
                 }, {
                     type: "bi.label",
@@ -279,10 +290,10 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     textHeight: 30,
                     height: constant.SINGLE_LINE_HEIGHT
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.isShowTitleX]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.editTitleX]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -310,7 +321,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.lYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -318,7 +329,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.numberLevellY]
                 }, {
                     type: "bi.label",
@@ -326,10 +337,10 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.LYUnit]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
@@ -337,6 +348,9 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customYScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -454,6 +468,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
 
+        this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -481,7 +496,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_grid_line: this.gridLine.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
             show_y_custom_scale: this.showYCustomScale.isSelected(),
-            custom_y_scale: this.customYScale.getValue()
+            custom_y_scale: this.customYScale.getValue(),
+            num_separators: this.separators.isSelected()
         }
     },
 
@@ -501,7 +517,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(v.show_grid_line);
         this.minimalistModel.setSelected(v.minimalist_model);
         this.showYCustomScale.setSelected(v.show_y_custom_scale);
-        this.customYScale.setValue(v.custom_y_scale)
+        this.customYScale.setValue(v.custom_y_scale);
+        this.separators.setSelected(v.num_separators);
     }
 });
 BI.RangeAreaChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";

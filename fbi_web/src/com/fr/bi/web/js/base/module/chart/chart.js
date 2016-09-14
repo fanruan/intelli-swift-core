@@ -39,7 +39,7 @@ BI.Chart = BI.inherit(BI.Pane, {
     },
 
     _setData: function () {
-        this.vanCharts && this.vanCharts.setData(this.config);
+        this.vanCharts && this.vanCharts.setOptions(this.config);
     },
 
     resize: function () {

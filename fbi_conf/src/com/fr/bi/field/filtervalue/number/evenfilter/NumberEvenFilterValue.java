@@ -10,14 +10,11 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.operation.group.data.number.NumberGroupInfo;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -52,17 +49,6 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
      */
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
-        if (this.column != null && BIConfigureManagerCenter.getUserLoginInformationManager().getUserInfoManager(user.getUserId()).getAnylysisUserInfo() != null) {
-            try {
-                Object fieldValue = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(column, user.getUserId());
-                if (fieldValue != null) {
-                    V = (Double) fieldValue;
-                }
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
-        }
-        NumberGroupInfo gi = NumberGroupInfo.createGroupInfo(V, true, V, true);
         ICubeTableService ti = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource());
         if (dimension.getRelationList() == null) {
             return ti.getAllShowIndex();

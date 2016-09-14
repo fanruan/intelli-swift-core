@@ -52,7 +52,11 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
 
     void forceRelease();
 
+    void forceReleaseWriter();
+
     boolean isRemovedListAvailable();
 
     boolean isCubeLastUpdateTimeAvailable();
+
+    void buildStructure();
 }

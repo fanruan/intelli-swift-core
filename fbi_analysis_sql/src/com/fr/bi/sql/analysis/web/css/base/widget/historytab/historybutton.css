@@ -1,0 +1,46 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-history-tab-button {
+  font-size: 13px;
+}
+.bi-history-tab-button.active,
+.bi-history-tab-button:active {
+  background: #f4f4f4;
+  color: #009de3;
+}
+.bi-history-tab-button.active .select_tag,
+.bi-history-tab-button:active .select_tag {
+  background: #009de3;
+}
+.bi-history-tab-button-temp {
+  overflow: hidden;
+  background: #f4f4f4;
+  color: #009de3;
+}
+.bi-history-tab-button-temp .select_tag {
+  background: #009de3;
+}
+.bi-history-tab-button-temp {
+  -webkit-animation: color-flash-orage-normal 0.3s ease;
+  -moz-animation: color-flash-orage-normal 0.3s ease;
+  -o-animation: color-flash-orage-normal 0.3s ease;
+  animation: color-flash-orage-normal 0.3s ease;
+}
+@keyframes color-flash-orage-normal {
+  from  {height:0px} to {height:25px}  /**: ;
+}
+**/ } @-webkit-keyframes color-flash-orage-normal {
+  from  {height:0px} to {height:25px}  /**: ;
+}
+**/ } @-moz-keyframes color-flash-orage-normal {
+  from  {height:0px} to {height:25px}  /**: ;
+}
+**/ } @-o-keyframes color-flash-orage-normal {
+  from  {height:0px} to {height:25px}  /**: ;
+}
+**/ } .useless-css-name-abcdefg-123456-just-comment {
+  transition: all 0.5s;
+}

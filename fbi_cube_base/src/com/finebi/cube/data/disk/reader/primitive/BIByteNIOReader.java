@@ -32,9 +32,10 @@ public class BIByteNIOReader extends BIBasicNIOReader implements ICubeByteReader
 
     public byte getSpecificValue(long filePosition) throws BIResourceInvalidException {
         try {
-            return byteBufferArray[getPage(filePosition)].get(getIndex(filePosition));
+            int pageIndex = getPage(filePosition);
+            return byteBufferArray[pageIndex].get(getIndex(filePosition));
         } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException("the expect page value is:", e);
+            throw new RuntimeException("the expect position value is: " + getIndex(filePosition) + " and the current capacity  value is: " + byteBufferArray[getPage(filePosition)].capacity() + " and the pageIndex is :" + getPage(filePosition) + e, e);
         } finally {
         }
     }
@@ -55,6 +56,9 @@ public class BIByteNIOReader extends BIBasicNIOReader implements ICubeByteReader
                 iter.remove();
             }
             byteBufferArray = new ByteBuffer[1];
+//        } catch (Exception e) {
+//            BILogger.getLogger().error(e.getMessage(), e);
+//        }
         } finally {
             readWriteLock.writeLock().unlock();
         }
@@ -65,8 +69,8 @@ public class BIByteNIOReader extends BIBasicNIOReader implements ICubeByteReader
         readWriteLock.writeLock().lock();
         try {
             byteBuffers.put(index, buffer.asReadOnlyBuffer());
-            if (byteBufferArray.length < index){
-                ByteBuffer[] temp = new ByteBuffer[index];
+            if (byteBufferArray.length <= index) {
+                ByteBuffer[] temp = new ByteBuffer[index + 1];
                 System.arraycopy(byteBufferArray, 0, temp, 0, byteBufferArray.length);
                 byteBufferArray = temp;
             }

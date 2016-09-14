@@ -31,9 +31,7 @@ BI.Widget = BI.inherit(FR.Widget, {
         this._initOpts()
         BI.isWidget(o.element) && (o.element = o.element.element);
         BI.isString(o.element) && (o.element = $(o.element));
-        o.renderEl || (o.renderEl = o.element);
-        o.element || (o.element = o.renderEl);
-        o.element || (o.renderEl = o.element = $(document.createElement(o.tagName)));
+        o.element || (o.element = $(document.createElement(o.tagName)));
         this.widgetName = o.widgetName || (o.widgetName = BI.uniqueId("widget"));
         this._initRoot();
         this._initElementWidth();
@@ -50,8 +48,8 @@ BI.Widget = BI.inherit(FR.Widget, {
      * @private
      */
     _initRoot: function () {
-        if (this.options.renderEl != null) {
-            this.element = $(this.options.renderEl);
+        if (this.options.element != null) {
+            this.element = $(this.options.element);
         } else {
             this.element = this._defaultRoot();
         }

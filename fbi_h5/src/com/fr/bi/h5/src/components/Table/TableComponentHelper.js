@@ -1,4 +1,4 @@
-import {forEach} from 'core';
+import {each} from 'core';
 class TableComponentHelper {
     constructor(widget) {
         this.widget = widget;

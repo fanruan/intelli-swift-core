@@ -15,9 +15,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var text = o.text;
         var iconCls = "", color = "";
-        var format = styleSettings.format, numLevel = styleSettings.num_level;
+        var format = styleSettings.format, numLevel = styleSettings.num_level, num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
-        text = this._parseFloatByDot(text, format);
+        text = this._parseFloatByDot(text, format, num_separators);
         var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
@@ -67,7 +67,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         }
     },
 
-    _parseFloatByDot: function (text, dot) {
+    _parseFloatByDot: function (text, dot, separators) {
         if (text === Infinity || text !== text) {
             return text;
         }
@@ -77,25 +77,35 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var num = BI.parseFloat(text);
         switch (dot) {
             case BICst.TARGET_STYLE.FORMAT.NORMAL:
+                if(separators){
+                    num = BI.contentFormat(num, '#,###.##')
+                } else {
+                    num = BI.contentFormat(num, '#.##')
+                }
                 return num;
                 break;
             case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
-                return BI.parseInt(num);
+                if(separators){
+                    num = BI.contentFormat(num, '#,###')
+                } else {
+                    num = BI.parseInt(num)
+                }
+                return num;
                 break;
             case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
-                var mnum = Math.round(num * 10) / 10;
-                var snum = mnum.toString();
-                if (snum.indexOf(".") < 0) {
-                    snum = snum + ".0"
+                if(separators){
+                    num = BI.contentFormat(num, '#,###.0')
+                } else {
+                    num = BI.contentFormat(num, '#.0')
                 }
-                return snum;
+                return num;
             case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
-                var mnum = Math.round(num * 100) / 100;
-                var snum = mnum.toString();
-                if (snum.indexOf(".") < 0) {
-                    snum = snum + ".00"
+                if(separators){
+                    num = BI.contentFormat(num, '#,###.00')
+                } else {
+                    num = BI.contentFormat(num, '#.00')
                 }
-                return snum;
+                return num;
         }
         return text;
     },
@@ -143,7 +153,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
 
         if (text === Infinity) {
             text = "N/0";
-        } else if(BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+        } else if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNotNull(text)) {
             text += "%";
         }
 
@@ -154,8 +164,8 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 title: text,
                 height: 25,
                 cls: "target-cell-text",
-                textAlign: "left",
-                lgap: 5
+                textAlign: "right",
+                rgap: 5
             });
         } else {
             var textButton = BI.createWidget({
@@ -163,9 +173,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 height: 25,
-                textAlign: "left",
+                textAlign: "right",
                 cls: "target-linkage-label",
-                lgap: 5
+                rgap: 5
             });
             textButton.on(BI.TextButton.EVENT_CHANGE, function () {
                 //这个clicked应该放到子widget中保存起来
@@ -203,7 +213,7 @@ BI.extend(BI.TargetBodyNormalCell, {
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 return BI.contentFormat(text * 100, "#.##");
             default:
-                return BI.parseFloat(BI.contentFormat(text, "#.##"));
+                return BI.parseFloat(BI.contentFormat(text.toFixed(2), "#.##"));
         }
     }
 });

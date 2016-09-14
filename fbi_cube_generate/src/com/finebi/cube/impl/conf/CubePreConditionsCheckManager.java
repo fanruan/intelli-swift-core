@@ -1,8 +1,13 @@
 package com.finebi.cube.impl.conf;
 
+import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.CubePreConditionsCheck;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.code.BILogger;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by kary on 2016/6/20.
@@ -16,12 +21,21 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
         }
         double dirSize = getDirSize(file);
         double availableSpace = getAvailableSpace(file);
-        return (availableSpace > dirSize * 1.5);
+        return (availableSpace > dirSize * 2);
     }
 
     @Override
-    public boolean ConnectionCheck() {
-        return true;
+    public boolean ConnectionCheck(CubeTableSource source, long userId) {
+        boolean isSqlValid = true;
+            if (source.getType() == BIBaseConstant.TABLETYPE.DB || source.getType() == BIBaseConstant.TABLETYPE.SQL) {
+                try {
+                    source.createPreviewJSON(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
+                } catch (Exception e) {
+                    isSqlValid = false;
+                    BILogger.getLogger().error(e.getMessage(), e);
+                }
+            }
+        return isSqlValid;
     }
 
     private double getDirSize(File file) {

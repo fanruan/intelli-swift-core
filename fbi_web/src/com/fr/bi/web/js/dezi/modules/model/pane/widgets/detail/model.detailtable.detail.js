@@ -134,7 +134,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
             var dim = dimensions[dId];
             var dimension_map = {};
             dimension_map[targetTableId] = {};
-            dimension_map[targetTableId].target_relation = target_relation[dId];
+            dimension_map[targetTableId].target_relation = target_relation[dId] || [];
             dim.dimension_map = dimension_map;
             this.set("dimensions", dimensions);
             return true;
@@ -156,10 +156,14 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
         var tableId = BI.Utils.getTableIdByFieldID(dimension._src.field_id);
         var paths = BI.Utils.getPathsFromTableAToTableB(tableId, targetTableId);
         relationMap[targetTableId] = {};
-        if (BI.size(paths) >= 1) {
-            relationMap[targetTableId].target_relation = paths[0];
-        } else {
+        if (tableId === targetTableId) {
             relationMap[targetTableId].target_relation = [];
+        } else {
+            if (BI.size(paths) >= 1) {
+                relationMap[targetTableId].target_relation = paths[0];
+            } else {
+                relationMap[targetTableId].target_relation = [];
+            }
         }
         return relationMap;
     },

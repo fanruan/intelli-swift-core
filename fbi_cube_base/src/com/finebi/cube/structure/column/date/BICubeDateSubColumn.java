@@ -111,13 +111,13 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
 
     @Override
     public T getOriginalObjectValueByRow(int rowNumber) {
-        return (T)getOriginalValueByRow(rowNumber);
+        return (T) getOriginalValueByRow(rowNumber);
     }
 
 
     @Override
     public CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException {
-        return hostDataColumn.getRelationIndexGetter(path);
+        return selfColumnEntity.getRelationIndexGetter(path);
     }
 
     @Override
@@ -133,6 +133,11 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     @Override
     public void clear() {
         selfColumnEntity.clear();
+    }
+
+    @Override
+    public void forceReleaseWriter() {
+        selfColumnEntity.forceReleaseWriter();
     }
 
     /**

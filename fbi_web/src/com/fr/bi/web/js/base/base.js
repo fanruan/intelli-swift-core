@@ -94,16 +94,15 @@ if (!window.BI) {
             }
             if (item && (item.type || options.type)) {
                 el = BI.extend({}, options, item);
-                return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el)));
+                return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el), true));
             }
             if (item && item.el && (item.el.type || options.type)) {
                 el = BI.extend({}, options, item.el);
-                return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el)));
+                return BI.Plugin.getObject(el.type, FR.createWidget(BI.Plugin.getWidget(el.type, el), true));
             }
             if (item && BI.isWidget(item.el)) {
                 return item.el;
             }
-            throw new Error('无法根据item创建组件');
         },
 
         createWidgets: function (items, options) {
@@ -738,7 +737,7 @@ if (!window.BI) {
             try {
                 return parseInt(number, radix);
             } catch (e) {
-                throw new Error("转成int类型失败");
+                throw new Error(number + "转成int类型失败");
                 return NaN;
             }
         },
@@ -747,7 +746,7 @@ if (!window.BI) {
             try {
                 return parseFloat(number);
             } catch (e) {
-                throw new Error("转成float类型失败");
+                throw new Error(number + "转成float类型失败");
                 return NaN;
             }
         },
@@ -1037,15 +1036,94 @@ if (!window.BI) {
     //BI请求
     _.extend(BI, {
 
+        ajax: function (option) {
+            option || (option = {});
+            //encode
+            encodeBIParam(option.data);
+
+            if (BI.isNull(BI.REQUEST_LOADING)) {
+                BI.REQUEST_LOADING = BI.createWidget({
+                    type: "bi.request_loading"
+                });
+            }
+
+            var async = true;
+            if (BI.isNotNull(option.async)) {
+                async = option.async;
+            }
+
+            FR.ajax({
+                url: option.url,
+                type: "POST",
+                data: option.data,
+                async: async,
+                error: function () {
+                    //失败 取消、重新加载
+                    BI.REQUEST_LOADING.setCallback(function () {
+                        decodeBIParam(option.data);
+                        BI.ajax(option);
+                    });
+                    BI.REQUEST_LOADING.showError();
+                },
+                complete: function (res, status) {
+                    //登录超时
+                    if (BI.isNotNull(res.responseText) &&
+                        res.responseText.indexOf("fs-login-content") > -1 &&
+                        res.responseText.indexOf("fs-login-input-password-confirm") === -1) {
+                        if (BI.isNotNull(BI.Popovers.get(BI.LoginTimeOut.POPOVER_ID))) {
+                            BI.Popovers.remove(BI.LoginTimeOut.POPOVER_ID);
+                        }
+                        var loginTimeout = BI.createWidget({
+                            type: "bi.login_timeout"
+                        });
+                        loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
+                            decodeBIParam(option.data);
+                            BI.ajax(option);
+                            BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
+                        });
+                        BI.Popovers.create(BI.LoginTimeOut.POPOVER_ID, loginTimeout, {
+                            width: 600,
+                            height: 400
+                        }).open(BI.LoginTimeOut.POPOVER_ID);
+
+                    } else if (status === "success" && BI.isFunction(option.success)) {
+                        option.success(FR.jsonDecode(res.responseText));
+                    }
+                    if (BI.isFunction(option.complete)) {
+                        option.complete(FR.jsonDecode(res.responseText), status);
+                    }
+                }
+            });
+
+            function encodeBIParam(data) {
+                for (var key in data) {
+                    if (_.isObject(data[key])) {
+                        data[key] = window.encodeURIComponent(FR.jsonEncode(data[key]));
+                    } else {
+                        data[key] = window.encodeURIComponent(data[key]);
+                    }
+                }
+            }
+
+            function decodeBIParam(data) {
+                for (var key in data) {
+                    data[key] = window.decodeURIComponent(data[key]);
+                    if (_.isObject(data[key])) {
+                        data[key] = FR.jsonDecode(data[key]);
+                    }
+                }
+            }
+        },
+
         /**
          * 异步ajax请求
          * @param {String} op op参数
          * @param {String} cmd cmd参数
-         * @param {JSON} data ajax请求的参�?
+         * @param {JSON} data ajax请求的参数
          * @param {Function} callback 回调函数
-         * @param {JSON} callback.result 回调函数的参�?
+         * @param {Function} complete 回调
          */
-        requestAsync: function (op, cmd, data, callback) {
+        requestAsync: function (op, cmd, data, callback, complete) {
             data = data || {};
             if (!BI.isKey(op)) {
                 op = 'fr_bi_dezi';
@@ -1054,16 +1132,21 @@ if (!window.BI) {
                 data.sessionID = Data.SharingPool.get("sessionID");
             }
             var url = FR.servletURL + '?op=' + op + '&cmd=' + cmd + "&_=" + Math.random();
-            (BI.ajax || FR.ajax)({
+            (BI.ajax)({
                 url: url,
                 type: 'POST',
                 data: data,
                 error: function () {
-                    BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
+                    // BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
+                },
+                success: function (res) {
+                    if (BI.isFunction(callback)) {
+                        callback(res);
+                    }
                 },
                 complete: function (res, status) {
-                    if (BI.isFunction(callback) && status === 'success') {
-                        callback(FR.jsonDecode(res.responseText));
+                    if (BI.isFunction(complete)) {
+                        complete(res);
                     }
                 }
             });
@@ -1086,7 +1169,7 @@ if (!window.BI) {
             }
             var url = FR.servletURL + '?op=' + op + '&cmd=' + cmd + "&_=" + Math.random();
             var result = {};
-            (BI.ajax || FR.ajax)({
+            (BI.ajax)({
                 url: url,
                 type: 'POST',
                 async: false,
@@ -1096,7 +1179,7 @@ if (!window.BI) {
                 },
                 complete: function (res, status) {
                     if (status === 'success') {
-                        result = FR.jsonDecode(res.responseText);
+                        result = res;
                     }
                 }
             });

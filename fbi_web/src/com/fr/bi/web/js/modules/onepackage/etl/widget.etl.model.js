@@ -98,6 +98,20 @@ BI.ETLModel = BI.inherit(FR.OB, {
         }
     },
 
+    /**
+     * 行列转化用的，原始字段名和转义名的一一对应
+     */
+    constructFieldNameAndTranslationFieldNameRelation: function () {
+        var fieldsIdName = [];
+        var translations = this.getTranslations();
+        BI.each(this.getFields(), function(idx, arr){
+            BI.each(arr, function(id, field){
+                fieldsIdName[field.field_name] = translations[field.id];
+            });
+        })
+        return fieldsIdName;
+    },
+
 
     _getCurrentFieldIdByFieldInfo: function (fieldInfo) {
         var self = this;
@@ -183,6 +197,49 @@ BI.ETLModel = BI.inherit(FR.OB, {
         //    });
         //}
         this.setRelations(relations);
+
+        function getFieldIdByFieldName(field_name) {
+            var id = null;
+            BI.find(self.fields, function (idx, fieldArray) {
+                return BI.find(fieldArray, function (i, field) {
+                    if (field.field_name === field_name) {
+                        id = field.id;
+                        return true;
+                    }
+                    return false;
+                });
+            });
+            return id;
+        }
+    },
+
+    setTranslationsByETLValue: function (etl) {
+        var self = this;
+        var etlValue = etl.etl_value;
+        var translations = this.getTranslations();
+        var transText = [], text = [];
+        var assertArray = function (array) {
+            if (BI.isEmpty(array[1])) {
+                array[1] = array[0];
+            }
+            return array;
+        };
+
+        BI.each(etlValue.lc_values, function (idx, lc) {
+            lc = assertArray(lc);
+            BI.each(etlValue.columns, function (id, co) {
+                co = assertArray(co);
+                transText.push(lc[1] + "-" + co[1]);
+                text.push(lc[0] + "-" + co[0]);
+            });
+        });
+
+        BI.each(transText, function (idx, name) {
+            if (!BI.contains(text, name)) {
+                translations[getFieldIdByFieldName(text[idx])] = name;
+            }
+        });
+        this.setTranslations(translations);
 
         function getFieldIdByFieldName(field_name) {
             var id = null;

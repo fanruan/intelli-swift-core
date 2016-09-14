@@ -1,12 +1,12 @@
 BI.ChartCombineFormatItemFactory = {
-    combineItems: function(types, items){
+    combineItems: function (types, items) {
         var calItems = BI.values(items);
-        return BI.map(calItems, function(idx, item){
+        return BI.map(calItems, function (idx, item) {
             return BI.ChartCombineFormatItemFactory.formatItems(types[idx], item);
         });
     },
 
-    formatItems: function(type, items){
+    formatItems: function (type, items) {
         var item = {};
         switch (type) {
             case BICst.WIDGET.BAR:
@@ -64,8 +64,10 @@ BI.ChartCombineFormatItemFactory = {
         return item;
     },
 
-    combineConfig: function(){
+    combineConfig: function () {
         return {
+            "title": "",
+            "chartType": "column",
             "plotOptions": {
                 "rotatable": false,
                 "startAngle": 0,
@@ -75,17 +77,18 @@ BI.ChartCombineFormatItemFactory = {
 
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
-                "dataLabels":{
+                "dataLabels": {
+                    "autoAdjust": true,
                     "style": {fontFamily: "inherit", color: "#808080", fontSize: "12px"},
                     "formatter": {
                         "identifier": "${VALUE}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
+                        "valueFormat": this._contentFormat2Decimal,
+                        "seriesFormat": this._contentFormat,
+                        "percentFormat": this._contentFormatPercentage,
+                        "categoryFormat": this._contentFormat,
+                        "XFormat": this._contentFormat2Decimal,
+                        "YFormat": this._contentFormat2Decimal,
+                        "sizeFormat": this._contentFormat2Decimal
                     },
                     "align": "outside",
                     "enabled": false
@@ -93,13 +96,13 @@ BI.ChartCombineFormatItemFactory = {
                 "percentageLabel": {
                     "formatter": {
                         "identifier": "${PERCENT}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                        "valueFormat": this._contentFormat2Decimal,
+                        "seriesFormat": this._contentFormat,
+                        "percentFormat": this._contentFormatPercentage,
+                        "categoryFormat": this._contentFormat
                     },
                     "style": {
-                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                     },
                     "align": "bottom",
                     "enabled": true
@@ -107,14 +110,14 @@ BI.ChartCombineFormatItemFactory = {
                 "valueLabel": {
                     "formatter": {
                         "identifier": "${SERIES}${VALUE}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                        "valueFormat": this._contentFormat2Decimal,
+                        "seriesFormat": this._contentFormat,
+                        "percentFormat": this._contentFormatPercentage,
+                        "categoryFormat": this._contentFormat
                     },
                     "backgroundColor": "rgb(255,255,0)",
                     "style": {
-                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                     },
                     "align": "inside",
                     "enabled": true
@@ -123,13 +126,13 @@ BI.ChartCombineFormatItemFactory = {
                 "seriesLabel": {
                     "formatter": {
                         "identifier": "${CATEGORY}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}"
+                        "valueFormat": this._contentFormat2Decimal,
+                        "seriesFormat": this._contentFormat,
+                        "percentFormat": this._contentFormatPercentage,
+                        "categoryFormat": this._contentFormat
                     },
                     "style": {
-                        "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                     },
                     "align": "bottom",
                     "enabled": true
@@ -137,6 +140,8 @@ BI.ChartCombineFormatItemFactory = {
                 "style": "pointer",
                 "paneBackgroundColor": "rgb(252,252,252)",
                 "needle": "rgb(229,113,90)",
+
+
                 "large": false,
                 "connectNulls": false,
                 "shadow": true,
@@ -145,13 +150,13 @@ BI.ChartCombineFormatItemFactory = {
                 "tooltip": {
                     "formatter": {
                         "identifier": "${SERIES}${X}${Y}${SIZE}{CATEGORY}${SERIES}${VALUE}",
-                        "valueFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0];}",
-                        "seriesFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "percentFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##%') : arguments[0]}",
-                        "categoryFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '') : arguments[0]}",
-                        "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                        "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}"
+                        "valueFormat": this._contentFormat2Decimal,
+                        "seriesFormat": this._contentFormat,
+                        "percentFormat": this._contentFormatPercentage,
+                        "categoryFormat": this._contentFormat,
+                        "XFormat": this._contentFormat2Decimal,
+                        "sizeFormat": this._contentFormat2Decimal,
+                        "YFormat": this._contentFormat2Decimal
                     },
                     "shared": false,
                     "padding": 5,
@@ -163,10 +168,15 @@ BI.ChartCombineFormatItemFactory = {
                     "follow": false,
                     "enabled": true,
                     "animation": true,
-                    style: {"fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#c4c6c6","fontSize":"12px","fontWeight":""}
+                    style: {
+                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                        "color": "#c4c6c6",
+                        "fontSize": "12px",
+                        "fontWeight": ""
+                    }
                 },
                 "maxSize": 80,
-                "fillColorOpacity": 0.5,
+                "fillColorOpacity": 1.0,
                 "step": false,
                 "force": false,
                 "minSize": 15,
@@ -178,7 +188,7 @@ BI.ChartCombineFormatItemFactory = {
                 "animation": true,
                 "lineWidth": 2,
 
-                bubble:{
+                bubble: {
                     "large": false,
                     "connectNulls": false,
                     "shadow": true,
@@ -196,22 +206,22 @@ BI.ChartCombineFormatItemFactory = {
                     }
                 }
             },
-            dTools:{
-                enabled:'true',
-                style:{
+            dTools: {
+                enabled: false,
+                style: {
                     fontFamily: "Microsoft YaHei, Hiragino Sans GB W3",
                     color: "#1a1a1a",
                     fontSize: "12px"
                 },
-                backgroundColor:'white'
+                backgroundColor: 'white'
             },
             dataSheet: {
                 enabled: false,
                 "borderColor": "rgb(0,0,0)",
                 "borderWidth": 1,
-                "formatter": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                style:{
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#808080","fontSize":"12px"
+                "formatter": this._contentFormat2Decimal,
+                style: {
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 }
             },
             "borderColor": "rgb(238,238,238)",
@@ -223,10 +233,10 @@ BI.ChartCombineFormatItemFactory = {
                 "borderWidth": 0,
                 "visible": true,
                 "style": {
-                    "fontFamily":"Microsoft YaHei, Hiragino Sans GB W3","color":"#1a1a1a","fontSize":"12px"
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#1a1a1a", "fontSize": "12px"
                 },
                 "position": "right",
-                "enabled": true
+                "enabled": false
             },
             "rangeLegend": {
                 "range": {
@@ -266,5 +276,17 @@ BI.ChartCombineFormatItemFactory = {
             "plotShadow": false,
             "plotBorderRadius": 0
         };
+    },
+
+    _contentFormat: function () {
+        return BI.contentFormat(arguments[0], '')
+    },
+
+    _contentFormat2Decimal: function () {
+        return BI.contentFormat(arguments[0], '#.##')
+    },
+
+    _contentFormatPercentage: function () {
+        return BI.contentFormat(arguments[0], '#.##%')
     }
 };

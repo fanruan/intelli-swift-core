@@ -13,7 +13,6 @@ import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 
 import java.util.Comparator;
@@ -29,7 +28,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     protected ICubeDetailDataService<T> detailDataService;
     protected ICubeIndexDataService indexDataService;
     protected ICubeGroupDataService<T> groupDataService;
-    protected ICubeVersion cubeVersion;
+    protected BICubeVersion cubeVersion;
     protected ICubeColumnPositionOfGroupService cubeColumnPositionOfGroupService;
     protected ICubeRelationManagerService relationManagerService;
     protected ICubeResourceDiscovery discovery;
@@ -46,11 +45,12 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     protected abstract void initial();
 
 
-    public void buildStructure(){
+    public void buildStructure() {
         detailDataService.buildStructure();
         groupDataService.buildStructure();
         indexDataService.buildStructure();
     }
+
     @Override
     public void setRelationManagerService(ICubeRelationManagerService relationManagerService) {
         this.relationManagerService = relationManagerService;
@@ -98,7 +98,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     }
 
     private T convert(Object value) {
-        if (value == null){
+        if (value == null) {
             return null;
         }
         if (BITypeUtils.isAssignable(Long.class, value.getClass()) &&
@@ -167,6 +167,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     @Override
     public void addVersion(long version) {
         cubeVersion.addVersion(version);
+        cubeVersion.forceReleaseWriter();
     }
 
     @Override
@@ -191,7 +192,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         try {
             return !getRelationIndexGetter(path).isEmpty();
         } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
+            return false;
         }
     }
 
@@ -202,6 +203,21 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         groupDataService.clear();
         cubeVersion.clear();
         cubeColumnPositionOfGroupService.clear();
+    }
+
+    @Override
+    public void forceReleaseWriter() {
+        detailDataService.forceReleaseWriter();
+        indexDataService.forceReleaseWriter();
+        groupDataService.forceReleaseWriter();
+        cubeVersion.forceReleaseWriter();
+        cubeColumnPositionOfGroupService.forceReleaseWriter();
+        relationManagerService.forceReleaseWriter();
+    }
+
+    @Override
+    public T getOriginalObjectValueByRow(int rowNumber) {
+        return null;
     }
 
     @Override

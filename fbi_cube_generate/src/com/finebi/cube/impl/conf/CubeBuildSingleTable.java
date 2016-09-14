@@ -13,6 +13,9 @@ import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.*;
 import com.finebi.cube.structure.BITableKey;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
@@ -26,10 +29,7 @@ import com.fr.general.ComparatorUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by kary on 16/5/30.
@@ -49,23 +49,37 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     private Set<BICubeGenerateRelation> cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
     private Set<BITableRelation> inUseRelations = new HashSet<BITableRelation>();
     private Set<BITableRelationPath> inUsePaths = new HashSet<BITableRelationPath>();
+    private int updateType = DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
+    private CubeTableSource childTableSource;
 
-    public CubeBuildSingleTable(BusinessTable businessTable, long userId) {
+    public CubeBuildSingleTable(BusinessTable hostTable, String childTableSourceId, long userId, int updateType) {
         super(userId);
         this.biUser = new BIUser(userId);
-        init(businessTable);
+        this.updateType = updateType;
+        init(hostTable, childTableSourceId);
     }
 
-    public void init(BusinessTable businessTable) {
+    public void init(BusinessTable businessTable, String childTableSourceId) {
 
         try {
             setAllSources(businessTable);
             Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
+            setChildTableSource(childTableSourceId);
             calculateRelationsAndPaths(businessTable);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    private void setChildTableSource(String childTableSourceId) {
+        if (null != childTableSourceId) {
+            for (CubeTableSource source : this.getAllSingleSources()) {
+                if (ComparatorUtils.equals(source.getSourceID(), childTableSourceId)) {
+                    this.childTableSource = source;
+                }
+            }
         }
     }
 
@@ -102,7 +116,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
 
     public void setCubeGenerateRelationSet(Set<BITableRelation> inUseRelations, BusinessTable businessTable) {
         for (BITableRelation tableRelation : inUseRelations) {
-            if (istableRelationValid(tableRelation)) {
+            if (isTableRelationValid(tableRelation)) {
                 BITableRelation tempTableRelation = new BITableRelation(tableRelation.getPrimaryField(), tableRelation.getForeignField());
                 BITableSourceRelation convertRelation = convertRelation(tempTableRelation);
                 if (null != convertRelation) {
@@ -249,6 +263,28 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         this.dependTableResource = dependTableResource;
     }
 
+    @Override
+    public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
+        Map<CubeTableSource, UpdateSettingSource> map = new HashMap<CubeTableSource, UpdateSettingSource>();
+        if (null == childTableSource) {
+            return map;
+        }
+        for (CubeTableSource source : this.getAllSingleSources()) {
+            UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), biUser.getUserId());
+            if (null != updateSettingSource) {
+                if (ComparatorUtils.equals(source.getSourceID(), this.childTableSource.getSourceID())) {
+                    updateSettingSource.setUpdateType(updateType);
+                } else {
+                    updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
+                }
+            } else {
+                updateSettingSource = new UpdateSettingSource();
+                updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
+            }
+            map.put(source, updateSettingSource);
+        }
+        return map;
+    }
 
     /**
      * @return the tableSourceRelationSet
@@ -269,8 +305,14 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                 BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
             }
             new File(tempConf.getRootURI().getPath()).mkdirs();
+            Set<CubeTableSource> tableSet = new HashSet<CubeTableSource>();
             for (BICubeGenerateRelation relation : this.getCubeGenerateRelationSet()) {
-                copyFilesFromOldCubes(tempResourceRetrieval, advancedResourceRetrieval, relation);
+                tableSet.add(relation.getRelation().getPrimaryTable());
+                tableSet.add(relation.getRelation().getForeignTable());
+            }
+            tableSet = set2Set(calculateTableSource(tableSet));
+            for (CubeTableSource source : tableSet) {
+                copyFilesFromOldCubes(tempResourceRetrieval, advancedResourceRetrieval, source);
             }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
@@ -278,16 +320,9 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         return true;
     }
 
-    private void copyFilesFromOldCubes(ICubeResourceRetrievalService tempResourceRetrieval, ICubeResourceRetrievalService advancedResourceRetrieval, BICubeGenerateRelation relation) throws BICubeResourceAbsentException, BITablePathEmptyException, IOException {
-        BITableSourceRelationPath path = new BITableSourceRelationPath(relation.getRelation());
-//        ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()), BICubePathUtils.convert(path));
-//        ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()), BICubePathUtils.convert(path));
-//        BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
-        ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()));
-        ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getPrimaryTable()));
-        BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
-        from = advancedResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getForeignTable()));
-        to = tempResourceRetrieval.retrieveResource(new BITableKey(relation.getRelation().getForeignTable()));
+    private void copyFilesFromOldCubes(ICubeResourceRetrievalService tempResourceRetrieval, ICubeResourceRetrievalService advancedResourceRetrieval, CubeTableSource source) throws BICubeResourceAbsentException, BITablePathEmptyException, IOException {
+        ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(source));
+        ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(source));
         BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
     }
 
@@ -302,6 +337,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         }
         return true;
     }
+
 
     /**
      * TODO改变层级结构

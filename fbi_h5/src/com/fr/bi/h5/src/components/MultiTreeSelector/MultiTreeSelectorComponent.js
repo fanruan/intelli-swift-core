@@ -51,16 +51,24 @@ class MultiTreeSelectorComponent extends Component {
         const {...props} = this.props;
         const items = [];
         for (let i = 0; i < 1000; i++) {
+            for (let j = 0; j < 10; j++) {
+                items.push({
+                    id: i + '_' + j,
+                    pId: i,
+                    value: i + '_' + j
+                })
+            }
             items.push({
-                value: i
+                id: i,
+                value: i,
+                isParent: true,
+                expanded: true
             })
         }
         return <MultiTreeSelectorWidget
             items={items}
-            style={{
-                width: props.width,
-                height: props.height
-            }}
+            width={props.width}
+            height={props.height}
             >
         </MultiTreeSelectorWidget>
     }

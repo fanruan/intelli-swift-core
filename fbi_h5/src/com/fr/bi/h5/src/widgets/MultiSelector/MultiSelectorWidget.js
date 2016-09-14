@@ -61,8 +61,8 @@ class MultiSelectorWidget extends Component {
             height={props.height}
             overscanRowCount={0}
             //noRowsRenderer={this._noRowsRenderer.bind(this)}
-            rowCount={this.props.items.length}
-            rowHeight={30}
+            rowCount={this._helper.getSortedItems().length}
+            rowHeight={35}
             rowRenderer={this._rowRenderer.bind(this)}
             //scrollToIndex={scrollToIndex}
             />
@@ -76,9 +76,7 @@ class MultiSelectorWidget extends Component {
             } else {
                 this._helper.disSelectOneValue(rowData.value);
             }
-            this.setState({
-                value: this._helper.getSelectedValue()
-            });
+            this.forceUpdate();
         }} {...rowData}/>;
     }
 }

@@ -12,7 +12,9 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.general.DateUtils;
 import com.fr.stable.bridge.StableFactory;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
     public BISourceDataAllTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
         super(cube, tableSource, allSources, parentTableSource, version);
     }
+
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
@@ -39,23 +42,28 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
                 TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
                 tableEntityService.recordRemovedLine(sortRemovedList);
                 tableEntityService.recordRowCount(count);
-                tableEntityService.clear();
             }
             tableEntityService.addVersion(version);
+            tableEntityService.forceReleaseWriter();
             long tableCostTime = System.currentTimeMillis() - t;
-            if (null != tableSource.getPersistentTable()) {
-                System.out.println("table usage:" + tableCostTime);
+            System.out.println("tableName: " + tableSource.getTableName() + " tableSourceId: " + tableSource.getSourceID() + " table usage:" + DateUtils.timeCostFrom(t));
+            try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
             }
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-            if (null != tableSource.getPersistentTable()) {
-                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
-            }
-        } finally {
             return null;
+        } catch (Exception e) {
+            try {
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e1.getMessage(), e1);
+            }
+            BILogger.getLogger().error(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
+
     private long transport() {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
 

@@ -82,7 +82,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     el: {
-                        type: "bi.vertical_adapt",
+                        type: "bi.center_adapt",
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -93,7 +93,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     el: {
-                        type: "bi.vertical_adapt",
+                        type: "bi.center_adapt",
                         items: [this.chartStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -104,7 +104,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     el: {
-                        type: "bi.vertical_adapt",
+                        type: "bi.center_adapt",
                         items: [this.chartTypeGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -138,13 +138,24 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //轴刻度自定义
+        //千分符
+        this.separators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
+        });
+
         this.showCustomScale = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Scale_Customize"),
             width: 115
         });
 
-        this.showCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showCustomScale.on(BI.Controller.EVENT_CHANGE, function (v) {
             self.customScale.setVisible(this.isSelected());
             if(!this.isSelected()){
                 self.customScale.setValue({})
@@ -180,7 +191,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.lYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -188,8 +199,14 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.numberLevellY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separators]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.showCustomScale]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showCustomScale]
@@ -256,13 +273,13 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.showDataLabel]
                 }, {
-                    type: "bi.vertical_adapt",
+                    type: "bi.center_adapt",
                     items: [this.gridLine]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -278,7 +295,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({
@@ -331,7 +348,8 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
             show_y_custom_scale: this.showCustomScale.isSelected(),
-            custom_y_scale: this.customScale.getValue()
+            custom_y_scale: this.customScale.getValue(),
+            num_separators: this.separators.isSelected()
         }
     },
 
@@ -347,6 +365,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(v.show_grid_line);
         this.showCustomScale.setSelected(v.show_y_custom_scale);
         this.customScale.setValue(v.custom_y_scale)
+        this.separators.setSelected(v.num_separators);
     }
 });
 BI.AccumulateRadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

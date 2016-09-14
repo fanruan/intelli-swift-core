@@ -74,6 +74,8 @@ public class BIExcelExportAction extends AbstractBIDeziAction {
         } catch (Exception e) {
             FRContext.getLogger().error(e.getMessage(), e);
             ErrorHandlerHelper.getErrorHandler().error(req, res, e);
+        } catch (Throwable k) {
+            FRContext.getLogger().error(k.getMessage(), k);
         }
 
         try {

@@ -77,8 +77,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     if (BI.has(item, "c")) {
                         res.drilldown = {};
                         res.drilldown.series = self._formatDataForMap(item, currentLayer);
+                        var type = MapConst.INNER_MAP_INFO.MAP_NAME[res.x];
                         res.drilldown.geo = {
-                            data: BICst.MAP_PATH[BICst.MAP_NAME[res.x]],
+                            data: BI.isNull(type) ? MapConst.CUSTOM_MAP_INFO.MAP_PATH[MapConst.CUSTOM_MAP_INFO.MAP_NAME[res.x]] : MapConst.INNER_MAP_INFO.MAP_PATH[type],
                             name: res.x
                         };
                     }
@@ -954,16 +955,28 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
                 });
             });
-            if (type === BICst.WIDGET.MAP) {
-                var subType = BI.Utils.getWidgetSubTypeByID(o.wId) || BICst.MAP_TYPE.CHINA;
-                options.initDrillPath = [BICst.MAP_TYPE_NAME[subType]];
+            if(type === BICst.WIDGET.MAP){
+                var subType = BI.Utils.getWidgetSubTypeByID(o.wId);
+                if(BI.isNull(subType)){
+                    BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function(path, layer){
+                        if(layer === 0){
+                            subType = path;
+                            return true;
+                        }
+                    });
+                }
+                var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
+                if(BI.isNull(name)){
+                    name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
+                }
+                options.initDrillPath = [name];
                 var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];
                 BI.each(drill, function (idx, dri) {
                     options.initDrillPath.push(dri.values[0].value[0]);
                 });
                 options.geo = {
-                    data: BICst.MAP_PATH[subType],
-                    name: BICst.MAP_TYPE_NAME[subType] || BICst.MAP_TYPE_NAME[BICst.MAP_TYPE.CHINA]
+                    data: MapConst.INNER_MAP_INFO.MAP_PATH[subType] || MapConst.CUSTOM_MAP_INFO.MAP_PATH[subType],
+                    name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
                 }
             }
             if (type === BICst.WIDGET.GIS_MAP) {
@@ -1006,7 +1019,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
-            case BICst.WIDGET.DASHBOARD:
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,

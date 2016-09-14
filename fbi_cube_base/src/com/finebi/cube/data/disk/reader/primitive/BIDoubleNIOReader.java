@@ -30,9 +30,10 @@ public class BIDoubleNIOReader extends BIBasicNIOReader implements ICubeDoubleRe
 
     public double getSpecificValue(long filePosition) throws BIResourceInvalidException {
         try {
-            return doubleBufferArray[getPage(filePosition)].get(getIndex(filePosition));
+            int pageIndex = getPage(filePosition);
+            return doubleBufferArray[pageIndex].get(getIndex(filePosition));
         } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException("the expect page value is:", e);
+            throw new RuntimeException("the expect position value is: " + getIndex(filePosition) + " and the current capacity  value is: " + doubleBufferArray[getPage(filePosition)].capacity() + " and the pageIndex is :" + getPage(filePosition) + e, e);
         } finally {
         }
     }
@@ -69,8 +70,8 @@ public class BIDoubleNIOReader extends BIBasicNIOReader implements ICubeDoubleRe
         readWriteLock.writeLock().lock();
         try {
             doubleBuffers.put(index, buffer.asDoubleBuffer());
-            if (doubleBufferArray.length < index){
-                DoubleBuffer[] temp = new DoubleBuffer[index];
+            if (doubleBufferArray.length <= index) {
+                DoubleBuffer[] temp = new DoubleBuffer[index + 1];
                 System.arraycopy(doubleBufferArray, 0, temp, 0, doubleBufferArray.length);
                 doubleBufferArray = temp;
             }

@@ -2,11 +2,10 @@
 
     $.extend(FS, {
 
-        createByMe: function ($tab, $content, entry, isAdmin) {
-            entry.contentEl.empty();
+        createByMe: function (isAdmin) {
             var templateManage = BI.createWidget({
                 type: "bi.template_manager",
-                element: entry.contentEl,
+                element: $('body'),
                 isAdmin: isAdmin
             });
             templateManage.on(BI.TemplateManager.EVENT_FOLDER_RENAME, function (id, name, pId, type) {

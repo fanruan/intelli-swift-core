@@ -329,9 +329,22 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
                 etl_value: {
                     new_groups: new_groups
                 },
-                tables: self.model.getAllTables(),
+                tables: self.model.getAllTables()
             };
-            self.fireEvent(BI.AddGroupField.EVENT_SAVE, data);
+            var mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: self.element,
+                text: BI.i18nText("BI-Loading")
+            });
+            BI.Utils.getTablesDetailInfoByTables([data], function (sourceTables) {
+                var table = sourceTables[0];
+                if(BI.isNotNull(table)) {
+                    data.fields = table.fields;
+                }
+                self.fireEvent(BI.AddGroupField.EVENT_SAVE, data);
+            }, function() {
+                mask.destroy();
+            });
         });
 
         cancel.on(BI.Button.EVENT_CHANGE, function () {
@@ -405,7 +418,6 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
                 });
                 var table = self.model.getTableInfo();
                 BI.Utils.getPreviewDataByTableAndFields(table, [], function (data) {
-                    mask.destroy();
                     var item = self._createTableItems(data);
                     var tableView = BI.createWidget({
                         type: "bi.preview_table",
@@ -428,6 +440,8 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
                         hgap: self.constants.ADD_GROUP_FIELD_GAP_TEN
                     });
                     self.previewPane.addItem(wrapper);
+                }, function() {
+                    mask.destroy();
                 })
             });
             self.previewPane.addItem(previewButton);

@@ -22,9 +22,10 @@ public class BIIntegerNIOReader extends BIBasicNIOReader implements ICubeInteger
 
     public int getSpecificValue(long filePosition) throws BIResourceInvalidException {
         try {
-            return intBufferArray[getPage(filePosition)].get(getIndex(filePosition));
+            int pageIndex = getPage(filePosition);
+            return intBufferArray[pageIndex].get(getIndex(filePosition));
         } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException("the expect page value is:" + e);
+            throw new RuntimeException("the expect position value is: " + getIndex(filePosition) + " and the current capacity  value is: " + intBufferArray[getPage(filePosition)].capacity() + " and the pageIndex is :" + getPage(filePosition) + e, e);
         } finally {
         }
 
@@ -56,8 +57,8 @@ public class BIIntegerNIOReader extends BIBasicNIOReader implements ICubeInteger
         readWriteLock.writeLock().lock();
         try {
             intBuffers.put(index, buffer.asIntBuffer());
-            if (intBufferArray.length < index){
-                IntBuffer[] temp = new IntBuffer[index];
+            if (intBufferArray.length <= index) {
+                IntBuffer[] temp = new IntBuffer[index + 1];
                 System.arraycopy(intBufferArray, 0, temp, 0, intBufferArray.length);
                 intBufferArray = temp;
             }

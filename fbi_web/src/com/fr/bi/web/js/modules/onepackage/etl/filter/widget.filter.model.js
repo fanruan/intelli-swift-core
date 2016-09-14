@@ -154,7 +154,6 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
             var type = v.type, value = v.value;
             var date = new Date();
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
-            var tool = new BI.MultiDateParamTrigger();
             if (BI.isNull(type) && BI.isNotNull(v.year)) {
                 return new Date(v.year, v.month, v.day).getTime();
             }
@@ -168,21 +167,21 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
                 case BICst.MULTI_DATE_YEAR_END:
                     return new Date(currY, 11, 31).getTime();
                 case BICst.MULTI_DATE_MONTH_PREV:
-                    return tool._getBeforeMultiMonth(value).getTime();
+                    return BI.Utils.getBeforeMultiMonth(value).getTime();
                 case BICst.MULTI_DATE_MONTH_AFTER:
-                    return tool._getAfterMultiMonth(value).getTime();
+                    return BI.Utils.getAfterMultiMonth(value).getTime();
                 case BICst.MULTI_DATE_MONTH_BEGIN:
                     return new Date(currY, currM, 1).getTime();
                 case BICst.MULTI_DATE_MONTH_END:
                     return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
                 case BICst.MULTI_DATE_QUARTER_PREV:
-                    return tool._getBeforeMulQuarter(value).getTime();
+                    return BI.Utils.getBeforeMulQuarter(value).getTime();
                 case BICst.MULTI_DATE_QUARTER_AFTER:
-                    return tool._getAfterMulQuarter(value).getTime();
+                    return BI.Utils.getAfterMulQuarter(value).getTime();
                 case BICst.MULTI_DATE_QUARTER_BEGIN:
-                    return tool._getQuarterStartDate().getTime();
+                    return BI.Utils.getQuarterStartDate().getTime();
                 case BICst.MULTI_DATE_QUARTER_END:
-                    return tool._getQuarterEndDate().getTime();
+                    return BI.Utils.getQuarterEndDate().getTime();
                 case BICst.MULTI_DATE_WEEK_PREV:
                     return date.getOffsetDate(-7 * value).getTime();
                 case BICst.MULTI_DATE_WEEK_AFTER:

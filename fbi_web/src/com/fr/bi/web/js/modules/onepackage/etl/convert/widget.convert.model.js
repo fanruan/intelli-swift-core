@@ -113,34 +113,8 @@ BI.ConvertModel = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        var self = this;
-        var tId = this.id, translations = this.getTranslations();
-
-        var transText = [], text = [];
-        var assertArray = function (array) {
-            if (BI.isEmpty(array[1])) {
-                array[1] = array[0];
-            }
-            return array;
-        };
-
-        BI.each(this.getLCValue(), function (idx, lc) {
-            lc = assertArray(lc);
-            BI.each(self.getColumns(), function (id, co) {
-                co = assertArray(co);
-                transText.push(lc[1] + "-" + co[1]);
-                text.push(lc[0] + "-" + co[0]);
-            });
-        });
-
-        BI.each(transText, function (idx, name) {
-            if (!BI.contains(text, name)) {
-                translations[tId + text[idx]] = name;
-            }
-        });
-
         return {
-            translations: translations,
+            translations: this.translations,
             etl_type: "convert",
             etl_value: {
                 lc_values: this.lc_values,
@@ -154,11 +128,15 @@ BI.ConvertModel = BI.inherit(BI.Widget, {
     },
 
     getTranslations: function () {
-        return BI.deepClone(this.translations);
+        return this.translations;
     },
 
     isCubeGenerated: function () {
         return this.isGenerated;
+    },
+
+    getFieldNameToTransName: function(){
+        return this.fieldInfo;
     },
 
     populate: function (info) {
@@ -173,5 +151,6 @@ BI.ConvertModel = BI.inherit(BI.Widget, {
         this.translations = info.translations;
         this.old_tables = BI.extend(info.tableInfo, {id: BI.UUID()});
         this.isGenerated = info.isGenerated;
+        this.fieldInfo = info.fieldInfo
     }
 });

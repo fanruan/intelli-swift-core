@@ -26,6 +26,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             self.packs = packs;
             //选中当前业务包
             self.selectDataPane.setPackage(BI.Utils.getCurrentPackageId4Conf());
+        }, function() {
             mask.destroy();
         });
 
@@ -117,18 +118,17 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         //灰化：所有已与当前表建立过关联关系的表灰化
         //只需要遍历connectionSet
         var connectionSet = relations.connectionSet;
-        this.allRelationTables = [];
-        var tableId = this.model.getTableIdByFieldId(fieldId);
+        this.allRelationFields = [];
         BI.each(connectionSet, function (i, pf) {
             var primaryKey = pf.primaryKey, foreignKey = pf.foreignKey;
             //修改的就不用灰化了
             if(self.fieldId === primaryKey.field_id || self.fieldId === foreignKey.field_id) {
                 return;
             }
-            if (tableId === self.model.getTableIdByFieldId(primaryKey.field_id)) {
-                self.allRelationTables.push(self.model.getTableIdByFieldId(foreignKey.field_id));
-            } else if (tableId === self.model.getTableIdByFieldId(foreignKey.field_id)) {
-                self.allRelationTables.push(self.model.getTableIdByFieldId(primaryKey.field_id));
+            if (fieldId === primaryKey.field_id) {
+                self.allRelationFields.push(foreignKey.field_id);
+            } else if (fieldId === foreignKey.field_id) {
+                self.allRelationFields.push(primaryKey.field_id);
             }
         });
     },
@@ -136,7 +136,6 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
     _getTablesStructureByPackId: function (pId) {
         var self = this;
         var translations = this.model.getTranslations();
-        var tableId = this.model.getTableIdByFieldId(this.model.getFieldId());
         var tablesStructure = [];
         //当前编辑业务包从Sharing Pool取
         if (pId === BI.Utils.getCurrentPackageId4Conf()) {
@@ -149,9 +148,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                     value: id,
                     isParent: true,
                     open: false,
-                    disabled:self.allRelationTables.contains(id) || id === tableId,
-                    title: translations[id],
-                    warningTitle:  BI.i18nText("BI-Already_Relation_With_Current_Table")
+                    title: translations[id]
                 });
             });
         } else {
@@ -164,9 +161,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                     value: id,
                     isParent: true,
                     open: false,
-                    disabled: self.allRelationTables.contains(id) || id === tableId,
-                    title: translations[id],
-                    warningTitle:  BI.i18nText("BI-Already_Relation_With_Current_Table")
+                    title: translations[id]
                 });
             });
         }
@@ -174,6 +169,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
     },
 
     _getFieldsStructureByTableId: function (tableId) {
+        var self = this;
         var translations = this.model.getTranslations();
         var fieldStructure = [];
         var tables = BI.Utils.getCurrentPackageTables4Conf();
@@ -193,7 +189,9 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                     title: translations[field.id] || field.field_name,
                     value: {
                         field_id: field.id
-                    }
+                    },
+                    disabled: self.allRelationFields.contains(field.id),
+                    warningTitle: BI.i18nText("BI-Already_Relation_With_Current_Field")
                 })
             });
         } else {
@@ -211,7 +209,9 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                                     title: translations[field.id] || field.field_name,
                                     value: {
                                         field_id: field.id
-                                    }
+                                    },
+                                    disabled: self.allRelationFields.contains(field.id),
+                                    warningTitle: BI.i18nText("BI-Already_Relation_With_Current_Field")
                                 })
                             }
                         });

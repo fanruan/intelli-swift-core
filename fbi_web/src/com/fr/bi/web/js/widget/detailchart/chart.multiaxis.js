@@ -44,25 +44,11 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         config.colors = this.config.chart_color;
         config.style = this.formatChartStyle();
         this.formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
-        config.zoom.zoomTool.visible = this.config.show_zoom;
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
         if(this.config.show_zoom === true){
             delete config.dataSheet;
             delete config.zoom.zoomType;
@@ -88,7 +74,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         max: self.config.custom_y_scale.maxScale.scale || null,
                         tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
                             self.config.custom_y_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level)
+                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
@@ -108,7 +94,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         max: self.config.custom_x_scale.maxScale.scale || null,
                         tickInterval: BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
                             self.config.custom_x_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level)
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
@@ -128,7 +114,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         max: self.config.custom_z_scale.maxScale.scale || null,
                         tickInterval: BI.isNumber(self.config.custom_z_scale.interval.scale) && self.config.custom_z_scale.interval.scale > 0 ?
                             self.config.custom_z_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_second_style, self.config.right_y_axis_second_number_level)
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_second_style, self.config.right_y_axis_second_number_level, self.config.right2_num_separators)
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_second_number_level, idx, axis.formatter);
                     break;
@@ -163,17 +149,17 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                 var isNeedFormatDataLabel = false;
                 switch (config.yAxis[item.yAxis].axisIndex) {
                     case self.constants.LEFT_AXIS:
-                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators){
                             isNeedFormatDataLabel = true;
                         }
                         break;
                     case self.constants.RIGHT_AXIS:
-                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators){
                             isNeedFormatDataLabel = true;
                         }
                         break;
                     case self.constants.RIGHT_AXIS_SECOND:
-                        if(self.config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                        if(self.config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right2_num_separators){
                             isNeedFormatDataLabel = true;
                         }
                         break;
@@ -335,7 +321,10 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
-            custom_z_scale: options.custom_z_scale || c.CUSTOM_SCALE
+            custom_z_scale: options.custom_z_scale || c.CUSTOM_SCALE,
+            num_separators: options.num_separators || false,
+            right_num_separators: options.right_num_separators || false,
+            right2_num_separators: options.right2_num_separators || false
         };
         this.options.items = items;
 

@@ -2,7 +2,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {requestAnimationFrame, emptyFunction} from 'core'
+import {cn, sc, requestAnimationFrame, emptyFunction} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -13,20 +13,24 @@ import React, {
     Fetch
     } from 'lib'
 
-import {Table, AutoSizer} from 'base'
+import {VirtualScroll, AutoSizer} from 'base'
 
 import Item from './Item'
 import MultiTreeSelectorWidgetHelper from './MultiTreeSelectorWidgetHelper'
+import MultiTreeSelectorWidgetAsyncHelper from './MultiTreeSelectorWidgetAsyncHelper'
 
 
 class MultiTreeSelectorWidget extends Component {
     constructor(props, context) {
         super(props, context);
-        this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.value !== r2.value});
-        this._helper = new MultiTreeSelectorWidgetHelper(props);
+        if (props.itemsCreator) {
+            this._helper = new MultiTreeSelectorWidgetAsyncHelper(props);
+        } else {
+            this._helper = new MultiTreeSelectorWidgetHelper(props);
+        }
         this.state = {
-            dataSource: this.ds.cloneWithRows(this._helper.getItems())
-        };
+            value: props.value
+        }
     }
 
     static propTypes = {};
@@ -46,8 +50,12 @@ class MultiTreeSelectorWidget extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this._helper = new MultiTreeSelectorWidgetHelper(nextProps);
-        this.setState({dataSource: this.ds.cloneWithRows(this._helper.getItems())});
+        if (nextProps.itemsCreator) {
+            this._helper = new MultiTreeSelectorWidgetAsyncHelper(nextProps);
+        } else {
+            this._helper = new MultiTreeSelectorWidgetHelper(nextProps);
+        }
+        this.setState({value: nextProps.value});
     }
 
     componentWillUpdate() {
@@ -56,26 +64,48 @@ class MultiTreeSelectorWidget extends Component {
 
     render() {
         const {...props} = this.props;
-        return <ListView
-            {...props}
-            dataSource={this.state.dataSource}
-            initialListSize={100}
-            renderRow={this._renderRow.bind(this)}
-            >
-        </ListView>
+        return <VirtualScroll
+            width={props.width}
+            height={props.height}
+            overscanRowCount={10}
+            //noRowsRenderer={this._noRowsRenderer.bind(this)}
+            rowCount={this._helper.getSortedItems().length}
+            rowHeight={35}
+            rowRenderer={this._rowRenderer.bind(this)}
+            //scrollToIndex={scrollToIndex}
+            />
     }
 
-    _renderRow(rowData, sectionID, rowID) {
+    _rowRenderer({index, isScrolling}) {
+        const rowData = this._helper.getSortedItems()[index];
         return <Item key={rowData.value} onSelected={(sel)=> {
-            if (sel) {
-                this._helper.selectOneValue(rowData.value);
-            } else {
-                this._helper.disSelectOneValue(rowData.value);
-            }
-            this.setState({
-                dataSource: this.ds.cloneWithRows(this._helper.getItems())
-            });
+            this._onSelected(rowData, sel);
+        }} onExpand={(expanded)=> {
+            this._onExpand(rowData, expanded);
         }} {...rowData}/>;
+    }
+
+    _onExpand(rowData, expanded) {
+        if (expanded) {
+            this._helper.expandOneValue(rowData.value);
+        } else {
+            this._helper.collapseOneValue(rowData.value);
+        }
+        this.forceUpdate();
+        // this.setState({
+        //     value: this._helper.getSelectedValue()
+        // });
+    }
+
+    _onSelected(rowData, sel) {
+        if (sel) {
+            this._helper.selectOneValue(rowData.value);
+        } else {
+            this._helper.disSelectOneValue(rowData.value);
+        }
+        this.setState({
+            value: this._helper.getSelectedValue()
+        });
     }
 }
 mixin.onClass(MultiTreeSelectorWidget, PureRenderMixin);

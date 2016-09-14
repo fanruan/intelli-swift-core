@@ -1,5 +1,6 @@
 package com.fr.bi.conf.report.widget.field.target;
 
+import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -21,4 +22,6 @@ public interface BITarget extends BITargetAndDimension {
     TargetStyle getStyle();
 
     boolean calculateAllPage();
+
+    ChartSetting getChartSetting();
 }

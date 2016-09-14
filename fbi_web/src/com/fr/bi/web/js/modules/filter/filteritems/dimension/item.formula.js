@@ -97,6 +97,7 @@ BI.DimensionFormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
                     fieldType = BICst.COLUMN.DATE;
                     break;
                 case BICst.TARGET_TYPE.NUMBER:
+                case BICst.TARGET_TYPE.COUNTER:
                 case BICst.TARGET_TYPE.FORMULA:
                 case BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE:
                 case BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE:

@@ -299,7 +299,7 @@
                         });
                     }
                 };
-                form.setAttribute("action", handler.url + '&width=' + width + '&height=' + height);
+                form.setAttribute("action", handler.url);
                 form.setAttribute("target", iframe.id);
                 form.setAttribute("method", "post");
                 form.appendChild(handler.file);

@@ -542,7 +542,7 @@ BI.extend(jQuery, {
         extraWidth || (extraWidth = 0);
         extraHeight || (extraHeight = 0);
         var maxHeight = $("body").bounds().height - extraHeight;
-        maxHeight = Math.min(popup.attr("maxHeight") || maxHeight, maxHeight);
+        maxHeight = Math.min(popup.element.attr("maxHeight") || maxHeight, maxHeight);
         popup.resetHeight && popup.resetHeight(maxHeight);
         var position = $.getComboPositionByDirections(combo, popup, extraWidth, extraHeight, needAdaptHeight, directions || ['bottom', 'top', 'right', 'left'])
         switch (offsetStyle) {

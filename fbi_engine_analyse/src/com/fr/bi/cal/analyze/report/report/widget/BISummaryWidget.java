@@ -205,8 +205,10 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         JSONArray targetIds = new JSONArray();
         while (regions.hasNext()) {
             String region = regions.next();
-            if (ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
-                    ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)) {
+            int regionValue = Integer.parseInt(region);
+            if (regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) && regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
+//                if (ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
+//                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)) {
                 for (int i = 0; i < view.getJSONArray(region).length(); i++) {
                     dimensionIds.put(view.getJSONArray(region).getString(i));
                 }
@@ -245,10 +247,14 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
         GroupValueIndex gvi = super.createFilterGVI(row, targetKey, loader, userId);
         for (DimensionCalculator r : row) {
-            if (r.getDirectToDimensionRelationList().isEmpty() && !r.getRelationList().isEmpty()){
-                GroupValueIndex n = loader.getTableIndex(r.getField().getTableBelongTo().getTableSource()).ensureBasicIndex(r.getRelationList()).getNullIndex();
-                if (n.getRowsCountWithData() != 0) {
-                    gvi = GVIUtils.AND(gvi, n.NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
+            if (r.getDirectToDimensionRelationList().isEmpty() && !r.getRelationList().isEmpty()) {
+                try {
+                    GroupValueIndex n = loader.getTableIndex(r.getField().getTableBelongTo().getTableSource()).ensureBasicIndex(r.getRelationList()).getNullIndex();
+                    if (n.getRowsCountWithData() != 0) {
+                        gvi = GVIUtils.AND(gvi, n.NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
+                    }
+                } catch (Exception e) {
+                    BILogger.getLogger().error("relation " + r.getRelationList().toString() + " nullindex missed " + "direct relation is " + r.getDirectToDimensionRelationList(), e);
                 }
             }
         }
@@ -270,7 +276,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     private void parseSortFilter(JSONObject jo, long userId) throws Exception {
         if (jo.has("sort")) {
             JSONObject targetSort = (JSONObject) jo.get("sort");
-            if(targetSort.has("type") && targetSort.has("sort_target")) {
+            if (targetSort.has("type") && targetSort.has("sort_target")) {
                 int sortType = targetSort.getInt("type");
                 this.targetSort = new TargetSort(targetSort.getString("sort_target"), sortType);
                 if (sortType == BIReportConstant.SORT.NONE) {
@@ -302,7 +308,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                     JSONObject targetRelationJo = dimMap.getJSONObject(targetId);
                     if (targetRelationJo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
                         Map<String, BusinessField> dimensionMap = dimensionsMap.get(dimensionId);
-                        if(dimensionMap == null){
+                        if (dimensionMap == null) {
                             dimensionMap = new LinkedHashMap<String, BusinessField>();
                             dimensionsMap.put(dimensionId, dimensionMap);
                         }

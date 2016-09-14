@@ -55,6 +55,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     public void buildStructure() {
         columnManager.buildStructure();
+        tableProperty.buildStructure();
     }
 
     private void flushProperty() {
@@ -78,6 +79,9 @@ public class BICubeTableEntity implements CubeTableEntityService {
          */
         flushProperty();
         tableProperty.recordTableStructure(fields);
+        if (columnManager != null) {
+            columnManager.forceReleaseWriter();
+        }
         columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
     }
 
@@ -200,9 +204,19 @@ public class BICubeTableEntity implements CubeTableEntityService {
         if (columnManager != null) {
             columnManager.clear();
         }
+
         relationManager.clear();
         tableProperty.clear();
 //        tableProperty.forceRelease();
+    }
+
+    @Override
+    public void forceReleaseWriter() {
+        if (columnManager != null) {
+            columnManager.forceReleaseWriter();
+        }
+        relationManager.forceReleaseWriter();
+        tableProperty.forceReleaseWriter();
     }
 
     @Override
@@ -242,6 +256,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
     @Override
     public void addVersion(long version) {
         tableProperty.addVersion(version);
+
     }
 
     @Override

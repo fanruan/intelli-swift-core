@@ -18,10 +18,11 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         TWO2POINT: 4,
         MINLIMIT: 1e-5,
         LEGEND_HEIGHT: 80,
+        LEGEND_WIDTH: "30.0%",
         FIX_COUNT: 6,
         STYLE_NORMAL: 21,
         NO_PROJECT: 16,
-        DASHBOARD_AXIS:4,
+        DASHBOARD_AXIS: 4,
         ONE_POINTER: 1,
         MULTI_POINTER: 2,
         HALF_DASHBOARD: 9,
@@ -41,6 +42,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         BUBBLE_MIN_SIZE: 15,
         BUBBLE_MAX_SIZE: 80,
         RULE_DISPLAY: 1,
+        NUM_SEPARATORS: false,
         FONT_STYLE: {
             "fontFamily": "inherit",
             "color": "#808080",
@@ -89,18 +91,18 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                     da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
                 }
             });
-            if (position === item.yAxis && type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+            if (position === item.yAxis) {
                 item.tooltip = BI.deepClone(config.plotOptions.tooltip);
                 item.tooltip.formatter.valueFormat = formatter;
             }
         });
     },
 
-    formatNumberLevelInXaxis: function(items, type){
+    formatNumberLevelInXaxis: function (items, type) {
         var magnify = this.calcMagnify(type);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
-                if(!BI.isNumber(da.x)){
+                if (!BI.isNumber(da.x)) {
                     da.x = BI.parseFloat(da.x);
                 }
                 da.x = da.x || 0;
@@ -109,8 +111,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         })
     },
 
-    formatXYDataWithMagnify: function(number, magnify){
-        if(!BI.isNumber(number)){
+    formatXYDataWithMagnify: function (number, magnify) {
+        if (!BI.isNumber(number)) {
             number = BI.parseFloat(number);
         }
         number = number || 0;
@@ -137,7 +139,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return magnify;
     },
 
-    formatChartLegend: function(config, chart_legend){
+    formatChartLegend: function (config, chart_legend) {
         switch (chart_legend) {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
@@ -147,6 +149,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             case BICst.CHART_LEGENDS.RIGHT:
                 config.legend.enabled = true;
                 config.legend.position = "right";
+                config.legend.maxWidth = this.constants.LEGEND_WIDTH;
                 break;
             case BICst.CHART_LEGENDS.NOT_SHOW:
             default:
@@ -171,34 +174,44 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 unit = BI.i18nText("BI-Yi");
                 break;
         }
-        return unit === "" ? unit : "(" + unit + axis_unit + ")";
+        return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : "(" + unit + axis_unit + ")";
     },
 
-    formatTickInXYaxis: function (type, number_level) {
+    formatTickInXYaxis: function (type, number_level, separators) {
         var formatter = '#.##';
         switch (type) {
             case this.constants.NORMAL:
                 formatter = '#.##';
+                if(separators){
+                    formatter = '#,###.##'
+                }
                 break;
             case this.constants.ZERO2POINT:
                 formatter = '#0';
+                if(separators){
+                    formatter = '#,###';
+                }
                 break;
             case this.constants.ONE2POINT:
                 formatter = '#0.0';
+                if(separators){
+                    formatter = '#,###.0';
+                }
                 break;
             case this.constants.TWO2POINT:
                 formatter = '#0.00';
+                if(separators){
+                    formatter = '#,###.00';
+                }
                 break;
         }
         if (number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-            if (type === this.constants.NORMAL) {
-                formatter = '#0.##%';
-            } else {
-                formatter += '%';
-            }
+            formatter += '%';
         }
         formatter += ";-" + formatter;
-        return "function(){return window.FR ? FR.contentFormat(arguments[0], '" + formatter + "') : arguments[0];}"
+        return function () {
+            return BI.contentFormat(arguments[0], formatter)
+        }
     },
 
     _formatItems: function (items) {

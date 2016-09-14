@@ -25,6 +25,7 @@ public class QuartzManager {
         jobDetail.getJobDataMap().put("sourceName", schedule.getSourceName());
         jobDetail.getJobDataMap().put("CubeBuild", schedule.getCubeBuild());
         jobDetail.getJobDataMap().put("userId", schedule.getUserId());
+        jobDetail.getJobDataMap().put("updateType", schedule.getUpdateType());
         //触发器
         CronTrigger trigger =
                 new CronTrigger(schedule.getJobName(), TRIGGER_GROUP_NAME);//触发器名,触发器组
@@ -32,7 +33,7 @@ public class QuartzManager {
         sched.scheduleJob(jobDetail, trigger);
         //启动
         if (!sched.isShutdown()) {
-            System.out.println("Time Task scheduled!\n Tables for update：" + schedule.getSourceName() + "\n Time settings：" + schedule.getTimeSchedule() + "\n");
+            System.out.println("Time Task scheduled!\n Tables for update：" + schedule.getSourceName() + "\n Time settings：" + schedule.getTimeSchedule() + "\n"+"update type: "+schedule.getUpdateType());
             sched.start();
         }
     }

@@ -468,7 +468,7 @@ BI.View = BI.inherit(BI.V, {
         //    card.notify && card.notify();
         //});
         if (this._F.length > 0) {
-            throw new Error("");
+            throw new Error("流程错误");
         }
         if (options.force === true) {
             this.model.set(modelData, options).set({current: this.model.get("default")});

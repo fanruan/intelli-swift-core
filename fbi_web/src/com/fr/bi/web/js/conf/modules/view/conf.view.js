@@ -19,11 +19,12 @@ BIConf.View = BI.inherit(BI.View, {
             text: BI.i18nText("BI-Loading")
         });
         BI.Utils.getTranslationsRelationsFields(function (data) {
-            mask.destroy();
             Data.SharingPool.put("translations", data.translations);
             Data.SharingPool.put("relations", data.relations);
             Data.SharingPool.put("fields", data.fields);
             Data.SharingPool.put("update_settings", data.update_settings);
+        }, function() {
+            mask.destroy();
         });
         this.populate();
     },

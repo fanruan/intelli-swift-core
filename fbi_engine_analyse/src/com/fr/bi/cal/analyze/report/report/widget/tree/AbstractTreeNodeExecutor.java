@@ -12,6 +12,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -66,7 +67,8 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     Object[] groupValue = new Object[1];
                     groupValue[0] = e.getKey();
                     if (!filterGvi.AND((GroupValueIndex) e.getValue()).isAllEmpty()) {
-                        dataList.add(e.getKey().toString());
+                        String k = e.getKey().toString();
+                        dataList.add(k);
                     }
                 }
                 if (dimension.getSortType() == BIReportConstant.SORT.DESC) {
@@ -85,7 +87,8 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     if (!filterGvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
                         count++;
                         if (count > start) {
-                            dataList.add(dataReader.getGroupValue(i).toString());
+                            String k = dataReader.getGroupValue(i).toString();
+                            dataList.add(k);
                         }
                     }
                 }

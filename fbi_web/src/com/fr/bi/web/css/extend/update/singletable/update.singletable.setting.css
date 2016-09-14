@@ -1,9 +1,12 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.bi-update-single-table-setting .update-type .comment-label {
+.bi-update-single-table-setting .comment-label {
   font-size: 14px;
   color: #808080;
+}
+.bi-update-single-table-setting .time-setting {
+  min-height: 80px;
 }
 .bi-update-single-table-setting .part-update-setting .part-update-type-button {
   font-size: 14px;

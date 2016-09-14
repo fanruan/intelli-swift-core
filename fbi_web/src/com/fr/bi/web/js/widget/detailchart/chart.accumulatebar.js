@@ -20,7 +20,7 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
                 style: this.constants.FONT_STYLE
             },
             labelStyle: this.constants.FONT_STYLE,
-            formatter: "function(){if(this>0) return this; else return this*(-1); }",
+            formatter: function(){ return this > 0 ? this : (-1) * this },
             gridLineWidth: 0
         }];
         this.yAxis = [{
@@ -45,37 +45,23 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function(config, items){
         var self = this;
-        var yTitle = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
+        var unit = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
         var xTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
-        config.zoom.zoomTool.visible = this.config.show_zoom;
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
         if(this.config.show_zoom === true){
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
 
         config.yAxis = this.yAxis;
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
+        config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + unit : unit;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
         BI.extend(config.yAxis[0], {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
@@ -88,7 +74,7 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + xTitle : xTitle;
         config.xAxis[0].title.align = "center";
         BI.extend(config.xAxis[0], {
-            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, self.config.left_y_axis_number_level),
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators),
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             showLabel: this.config.show_label,
             enableTick: this.config.enable_tick,
@@ -103,7 +89,7 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if(config.plotOptions.dataLabels.enabled === true){
             BI.each(items, function(idx, item){
-                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
+                if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators){
                     item.dataLabels = {
                         "style": self.constants.FONT_STYLE,
                         "align": "outside",
@@ -247,7 +233,8 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            num_separators: options.num_separators || false
         };
         this.options.items = items;
         var types = [];

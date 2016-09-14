@@ -73,14 +73,15 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.tooltip.formatter = this.config.tooltip;
         config.plotOptions.bubble.minSize = this.config.bubble_min_size;
         config.plotOptions.bubble.maxSize = this.config.bubble_max_size;
-
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
+        config.plotOptions.shadow = this.config.bubble_style !== this.constants.NO_PROJECT;
         config.yAxis = this.yAxis;
 
-        config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level);
+        config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + yTitle : yTitle;
+        config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
+        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
         config.yAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
@@ -91,9 +92,10 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
             self.config.custom_y_scale.interval.scale : null;
 
-        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level);
+        config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level, this.config.right_num_separators);
         self.formatNumberLevelInXaxis(items, this.config.x_axis_number_level);
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + xTitle : xTitle;
+        config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
+        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.xAxis[0].min = this.config.custom_x_scale.minScale.scale || null;
@@ -106,32 +108,32 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "bubble";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if (config.plotOptions.dataLabels.enabled === true) {
-            BI.each(items, function (idx, item) {
+        if(config.plotOptions.dataLabels.enabled === true){
+            BI.each(items, function(idx, item){
                 var isNeedFormatDataLabelX = false;
                 var isNeedFormatDataLabelY = false;
-                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators) {
                     isNeedFormatDataLabelX = true;
                 }
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
                     isNeedFormatDataLabelY = true;
                 }
-                if (isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true) {
+                if(isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true){
                     item.dataLabels = {
                         "style": self.constants.FONT_STYLE,
                         "align": "outside",
                         enabled: true,
                         formatter: {
                             identifier: "${X}${Y}${SIZE}",
-                            "XFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "YFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
-                            "sizeFormat": "function(){return window.FR ? FR.contentFormat(arguments[0], '#.##') : arguments[0]}",
+                            "XFormat": function(){return BI.contentFormat(arguments[0], '#.##')},
+                            "YFormat": function(){return BI.contentFormat(arguments[0], '#.##')},
+                            "sizeFormat": function(){return BI.contentFormat(arguments[0], '#.##')}
                         }
                     };
-                    if (isNeedFormatDataLabelX === true) {
+                    if(isNeedFormatDataLabelX === true){
                         item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
                     }
-                    if (isNeedFormatDataLabelY === true) {
+                    if(isNeedFormatDataLabelY === true){
                         item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
                     }
                 }
@@ -140,7 +142,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
         return [items, config];
 
-        function formatChartStyle() {
+        function formatChartStyle(){
             switch (self.config.chart_style) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
@@ -321,7 +323,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             BI.each(self.config.cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
                     var magnify = self.calcMagnify(self.config.x_axis_number_level);
-                    self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
+                    self.xAxis[0].plotLines = BI.map(cor, function(i, t){
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
@@ -333,7 +335,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                         });
                     });
                 }
-                if (idx > 0 && self.yAxis.length >= idx) {
+                if(idx > 0 && self.yAxis.length >= idx){
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
@@ -346,7 +348,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
                             break;
                     }
-                    self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
+                    self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
@@ -361,7 +363,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             })
         }
 
-        function formatNumberLevelInYaxis(type, position) {
+        function formatNumberLevelInYaxis(type, position){
             var magnify = self.calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -370,12 +372,12 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                     }
                 })
             });
-            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+            if(type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT){
                 //config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
             }
         }
 
-        function getXYAxisUnit(numberLevelType, position) {
+        function getXYAxisUnit(numberLevelType, position){
             var unit = "";
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -391,24 +393,25 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                     unit = BI.i18nText("BI-Yi");
                     break;
             }
-            if (position === self.constants.X_AXIS) {
+            if(position === self.constants.X_AXIS){
                 self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
-            if (position === self.constants.LEFT_AXIS) {
+            if(position === self.constants.LEFT_AXIS){
                 self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
-            if (position === self.constants.RIGHT_AXIS) {
+            if(position === self.constants.RIGHT_AXIS){
                 self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
             }
             return unit === "" ? unit : "(" + unit + ")";
         }
     },
 
-    _formatItems: function (items) {
-        BI.each(items, function (idx, item) {
-            BI.each(item, function (id, it) {
-                BI.each(it.data, function (i, da) {
-                    da.size = da.z;
+    _formatItems: function(items){
+        BI.each(items, function(idx, item){
+            BI.each(item, function(id, it){
+                BI.each(it.data, function(i, da){
+                    var data = da.z;
+                    da.size = data.toFixed(2)
                 })
             })
         });
@@ -447,12 +450,14 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            num_separators: options.num_separators || false,
+            right_num_separators: options.right_num_separators || false
         };
         this.options.items = items;
         var types = [];
-        BI.each(items, function (idx, axisItems) {
+        BI.each(items, function(idx, axisItems){
             var type = [];
-            BI.each(axisItems, function (id, item) {
+            BI.each(axisItems, function(id, item){
                 type.push(BICst.WIDGET.BUBBLE);
             });
             types.push(type);
@@ -464,7 +469,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function () {
+    magnify: function(){
         this.combineChart.magnify();
     }
 });

@@ -64,7 +64,7 @@ public abstract class AbstractReadGroupMap<T> implements ICubeColumnIndexReader<
         return lmp.get(keyIndex);
     }
 
-    private GroupValueIndex getGroupValueIndex(int keyIndex) {
+    public GroupValueIndex getGroupValueIndex(int keyIndex) {
         return indexes.get(keyIndex);
     }
 

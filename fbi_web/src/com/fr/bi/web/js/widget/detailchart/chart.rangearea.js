@@ -50,21 +50,7 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
-        switch (this.config.chart_legend) {
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
 
         config.yAxis = this.yAxis;
@@ -81,7 +67,7 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
             max: self.config.custom_y_scale.maxScale.scale || null,
             tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
                 self.config.custom_y_scale.interval.scale : null,
-            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level)
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators)
         });
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
 
@@ -100,7 +86,7 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
                     item.dataLabels = {
                         "style": self.constants.FONT_STYLE,
                         "align": "outside",
@@ -179,9 +165,7 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
                     }
                 })
             });
-            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                config.plotOptions.tooltip.formatter.valueFormat = formatter;
-            }
+            config.plotOptions.tooltip.formatter.valueFormat = formatter;
         }
 
         function getXYAxisUnit(numberLevelType, position) {
@@ -279,7 +263,8 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            num_separators: options.num_separators || false
         };
         this.options.items = items;
 

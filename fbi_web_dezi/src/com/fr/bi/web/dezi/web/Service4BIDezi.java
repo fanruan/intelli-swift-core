@@ -2,13 +2,10 @@ package com.fr.bi.web.dezi.web;
 
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.web.base.utils.BIServiceUtil;
-import com.fr.bi.web.dezi.AbstractBIDeziAction;
-import com.fr.bi.web.dezi.BIGetFieldMinMaxValueAction;
-import com.fr.bi.web.dezi.BIReportSavingAction;
-import com.fr.bi.web.dezi.BIWidgetSettingAction;
+import com.fr.bi.web.dezi.*;
 import com.fr.bi.web.dezi.services.*;
 import com.fr.bi.web.dezi.services.image.BISaveUploadImageAction;
-import com.fr.bi.web.dezi.services.report.BIUpadateSessionAction;
+import com.fr.bi.web.dezi.services.report.BIUpdateSessionAction;
 import com.fr.bi.web.report.services.BIInitDeziPaneAction;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
@@ -37,13 +34,15 @@ public class Service4BIDezi implements Service {
         redirectSet.add(BIInitDeziPaneAction.CMD);
         redirectSet.add(BIExcelExportAction.CMD);
         redirectSet.add(BIWidgetSettingAction.CMD);
+        redirectSet.add(BIChartSettingAction.CMD);
     }
 
     private static AbstractBIDeziAction[] actions = {
-            new BIUpadateSessionAction(),
+            new BIUpdateSessionAction(),
             new BIRemoveWidgetAction(),
 
             new BIWidgetSettingAction(),
+            new BIChartSettingAction(),
             new BIReportSavingAction(),
             new BIGetFieldMinMaxValueAction(),
 

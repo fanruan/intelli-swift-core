@@ -13,7 +13,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.DonutChart.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this;
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             formatConfig: BI.bind(this._formatConfig, this),
@@ -25,26 +25,12 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
     },
 
     _formatConfig: function(config, items){
-        var self = this, o = this.options;
+        var self = this;
 
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
 
-        switch (this.config.chart_legend){
-            case BICst.CHART_LEGENDS.BOTTOM:
-                config.legend.enabled = true;
-                config.legend.position = "bottom";
-                config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                break;
-            case BICst.CHART_LEGENDS.RIGHT:
-                config.legend.enabled = true;
-                config.legend.position = "right";
-                break;
-            case BICst.CHART_LEGENDS.NOT_SHOW:
-            default:
-                config.legend.enabled = false;
-                break;
-        }
+        this.formatChartLegend(config, this.config.chart_legend);
 
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
 

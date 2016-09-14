@@ -22,7 +22,7 @@ var DEFAULT_PROPS = {
   activeOpacity: 0.8,
   underlayColor: 'black',
   style: {
-    cursor: 'pointer'
+    // cursor: 'pointer'
   }
 };
 

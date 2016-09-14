@@ -144,16 +144,16 @@ public class UserWidget {
         Paging paging = PagingFactory.createPaging(step);
         paging.setPageSize(step);
         int page = start / step;
-        paging.setCurrentPage(page);
-        DetailExecutor exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
+        paging.setCurrentPage(page + 1);
+        DetailExecutor exe = new DetailExecutor((BIDetailWidget)widget, paging, session);
         List<List> data =  exe.getData();
         int row = page*step;
         for (int i = 0; i < data.size(); i++){
             tempValue.put(i + row, data.get(i));
         }
         maxRow = (int) paging.getTotalSize();
-        paging.setCurrentPage(page + 1);
-        exe = new DetailExecutor((BIDetailWidget)widget, paging, new UserSession());
+        paging.setCurrentPage(page + 2);
+        exe = new DetailExecutor((BIDetailWidget)widget, paging, session);
         data =  exe.getData();
         row = (page + 1) * step;
         for (int i =0; i < data.size(); i++){

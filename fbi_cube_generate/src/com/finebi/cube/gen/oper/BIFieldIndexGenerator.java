@@ -1,25 +1,32 @@
 package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.map.map2.ExternalIntArrayMapFactory;
+import com.finebi.cube.map.map2.IntArrayListExternalMap;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
+import com.fr.base.FRContext;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.stable.bridge.StableFactory;
+import com.fr.stable.collections.array.IntArray;
+import com.fr.stable.project.ProjectConstants;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -41,7 +48,8 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     protected ICubeColumnEntityService<T> columnEntityService;
     protected Cube cube;
     protected long rowCount;
-
+    private final String CACHE ="caches";
+    private final String BASEPATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + CACHE;
     public BIFieldIndexGenerator(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         this.tableSource = tableSource;
         this.hostBICubeFieldSource = hostBICubeFieldSource;
@@ -63,53 +71,81 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        long t=System.currentTimeMillis();
+        long t = System.currentTimeMillis();
         biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
         try {
             initial();
-            buildTableIndex();
-            long costTime=System.currentTimeMillis()-t;
-            if (null!=tableSource.getPersistentTable()) {
-                biLogManager.infoColumn(tableSource.getPersistentTable(),hostBICubeFieldSource.getFieldName(),costTime,Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+            if (PerformancePlugManager.getInstance().isDiskSort()) {
+                buildTableIndexExternal();
             }
-        } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-            if (null!=tableSource.getPersistentTable()) {
-                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            else {
+                buildTableIndex();
             }
-        } finally {
+            long costTime = System.currentTimeMillis() - t;
+            try {
+                biLogManager.infoColumn(tableSource.getPersistentTable(), hostBICubeFieldSource.getFieldName(), costTime, Long.valueOf(UserControl.getInstance().getSuperManagerID()));
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
             return null;
+        } catch (Exception e) {
+            try {
+                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+            BILogger.getLogger().error(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
     @Override
     public void release() {
+        columnEntityService.forceReleaseWriter();
         columnEntityService.clear();
     }
 
     public void buildTableIndex() {
-        IntList nullRowNumbers = new IntList();
-        Map<T, IntList> group2rowNumber = createTreeMap(nullRowNumbers);
-        Iterator<Map.Entry<T, IntList>> group2rowNumberIt = group2rowNumber.entrySet().iterator();
+        IntArray nullRowNumbers = new IntArray();
+        Map<T, IntArray> group2rowNumber = createTreeMap(nullRowNumbers);
+        Iterator<Map.Entry<T, IntArray>> group2rowNumberIt = group2rowNumber.entrySet().iterator();
+        int[] positionOfGroup =  doBuildTableIndex(group2rowNumberIt);
+        group2rowNumber.clear();
+        GroupValueIndex nullIndex = buildGroupValueIndex(nullRowNumbers);
+        buildPositionOfGroup(positionOfGroup);
+        columnEntityService.addNULLIndex(0, nullIndex);
+//        group2rowNumber.clear();
+    }
+
+    public void buildTableIndexExternal() {
+        IntArray nullRowNumbers = new IntArray();
+        IntArrayListExternalMap group2rowNumber = createExternalMap(nullRowNumbers);
+        Iterator<Map.Entry<T, IntArray>> group2rowNumberIt=  group2rowNumber.getIterator();
+        int[] positionOfGroup = doBuildTableIndex(group2rowNumberIt);
+        group2rowNumber.clear();
+        GroupValueIndex nullIndex = buildGroupValueIndex(nullRowNumbers);
+        buildPositionOfGroup(positionOfGroup);
+        columnEntityService.addNULLIndex(0, nullIndex);
+//        group2rowNumber.release();
+    }
+    private int[] doBuildTableIndex(Iterator<Map.Entry<T, IntArray>> group2rowNumberIt){
         int groupPosition = 0;
-        columnEntityService.recordSizeOfGroup(group2rowNumber.size());
-        Integer[] positionOfGroup = new Integer[(int)rowCount];
+        int[] positionOfGroup = new int[(int)rowCount];
         while (group2rowNumberIt.hasNext()) {
-            Map.Entry<T, IntList> entry = group2rowNumberIt.next();
+            Map.Entry<T, IntArray> entry = group2rowNumberIt.next();
             T groupValue = entry.getKey();
-            IntList groupRowNumbers = entry.getValue();
+            IntArray groupRowNumbers = entry.getValue();
             columnEntityService.addGroupValue(groupPosition, groupValue);
             GroupValueIndex groupValueIndex = buildGroupValueIndex(groupRowNumbers);
             columnEntityService.addGroupIndex(groupPosition, groupValueIndex);
             initPositionOfGroup(positionOfGroup, groupPosition, groupValueIndex);
             groupPosition++;
         }
-        GroupValueIndex nullIndex = buildGroupValueIndex(nullRowNumbers);
-        buildPositionOfGroup(positionOfGroup);
-        columnEntityService.addNULLIndex(0, nullIndex);
+        columnEntityService.recordSizeOfGroup(groupPosition);
+        return positionOfGroup;
     }
 
-    private void initPositionOfGroup(final Integer[] position, final Integer groupPosition, GroupValueIndex groupValueIndex) {
+    private void initPositionOfGroup(final int[] position, final int groupPosition, GroupValueIndex groupValueIndex) {
         groupValueIndex.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
@@ -118,32 +154,40 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         });
     }
 
-    private void buildPositionOfGroup(Integer[] position) {
-        for (int i = 0; i < position.length; i ++){
+    private void buildPositionOfGroup(int[] position) {
+        for (int i = 0; i < position.length; i++) {
             columnEntityService.addPositionOfGroup(i, position[i]);
         }
     }
 
-    private GroupValueIndex buildGroupValueIndex(IntList groupRowNumbers) {
+    private GroupValueIndex buildGroupValueIndex(IntArray groupRowNumbers) {
         return GVIFactory.createGroupValueIndexBySimpleIndex(groupRowNumbers);
     }
-
-    private Map<T, IntList> createTreeMap(IntList nullRowNumbers) {
-        Map<T, IntList> group2rowNumber = new TreeMap<T, IntList>(columnEntityService.getGroupComparator());
+    private void constructMap(Map<T, IntArray> map,IntArray nullRowNumbers){
         for (int i = 0; i < rowCount; i++) {
             T originalValue = columnEntityService.getOriginalObjectValueByRow(i);
             if (originalValue != null) {
-                IntList list = group2rowNumber.get(originalValue);
+                IntArray list = map.get(originalValue);
                 if (list == null) {
-                    list = new IntList();
-                    group2rowNumber.put(originalValue, list);
+                    list = new IntArray();
+                    map.put(originalValue, list);
                 }
                 list.add(i);
             } else {
                 nullRowNumbers.add(i);
             }
         }
+    }
+    private Map<T, IntArray> createTreeMap(IntArray nullRowNumbers) {
+        Map<T, IntArray> group2rowNumber = new TreeMap<T, IntArray>(columnEntityService.getGroupComparator());
+        constructMap(group2rowNumber,nullRowNumbers);
         return group2rowNumber;
     }
-
+    private IntArrayListExternalMap<T> createExternalMap(IntArray nullRowNumbers) {
+        String tableSourceID = tableSource.getSourceID();
+        String dataFloder = FRContext.getCurrentEnv().getPath() + BASEPATH + File.separator + tableSourceID + File.separator + BIMD5Utils.getMD5String(new String[]{tableSourceID,targetColumnKey.getKey()});
+        IntArrayListExternalMap<T> group2rowNumber = ExternalIntArrayMapFactory.getIntListExternalMap(columnEntityService.getClassType(),columnEntityService.getGroupComparator(),dataFloder);
+        constructMap(group2rowNumber,nullRowNumbers);
+        return group2rowNumber;
+    }
 }

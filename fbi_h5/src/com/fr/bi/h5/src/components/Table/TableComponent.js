@@ -10,11 +10,12 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
 import {TableWidget} from 'widgets';
 
 import TableComponentHelper from './TableComponentHelper';
+import TableComponentWidthHelper from './TableComponentWidthHelper'
 
 import {Table} from 'base'
 
@@ -26,6 +27,8 @@ class TableComponent extends Component {
     constructor(props, context) {
         super(props, context);
         this._tableHelper = new TableComponentHelper(props.widget);
+        this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width-20);
+
     }
 
     state = {
@@ -68,19 +71,21 @@ class TableComponent extends Component {
 
     render() {
         const {width, height} = this.props;
+        const items = this._tableHelper.getItems();
+        this._widthHelper.setItems(items);
         return <View
             style={{width: width, height: height}}
-            >
+        >
             <View
                 style={{position: 'absolute', left: 10, right: 10, top: 10, bottom: 10}}
-                >
+            >
                 <TableWidget
                     width={width - 20}
                     height={height - 20}
-                    freezeCols={this._tableHelper.isFreeze()?[0]:[]}
-                    columnSize={[300, 300]}
+                    freezeCols={this._tableHelper.isFreeze() ? [0] : []}
+                    columnSize={this._widthHelper.getWidth()}
                     header={this._tableHelper.getHeader()}
-                    items={this._tableHelper.getItems()}
+                    items={items}
                     headerCellRenderer={(colIndex, cell)=> {
                         return <Cell>{cell.text}</Cell>
                     }}
@@ -89,7 +94,7 @@ class TableComponent extends Component {
                             {items[colIndex][rowIndex].text}
                         </Cell>
                     }}
-                    >
+                >
                 </TableWidget>
             </View>
         </View>

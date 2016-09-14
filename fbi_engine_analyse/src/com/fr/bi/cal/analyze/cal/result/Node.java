@@ -450,7 +450,7 @@ public class Node extends BIField implements BINode {
 
     @Override
     public Number getSummaryValue(Object key) {
-        if (getSummaryValue() == null) {
+        if (getSummaryValue() == null || getSummaryValue().isEmpty()) {
             return null;
         }
         return (Number) getSummaryValue().get(key);

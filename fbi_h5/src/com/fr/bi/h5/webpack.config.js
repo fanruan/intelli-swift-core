@@ -24,6 +24,7 @@ module.exports = {
             sources: `${srcPath}/sources/`,
             stores: `${srcPath}/stores/`,
             styles: `${srcPath}/styles/`,
+            css: `${srcPath}/css/`
         }
     },
     module: {

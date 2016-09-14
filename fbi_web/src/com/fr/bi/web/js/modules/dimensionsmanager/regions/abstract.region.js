@@ -31,7 +31,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
 
     _createRegion: function () {
         var self = this, o = this.options;
-        this.titleName = BI.createWidget({
+        var titleName = BI.createWidget({
             type: "bi.label",
             cls: "region-north-title",
             text: o.titleName,
@@ -42,7 +42,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
             type: "bi.border",
             items: {
                 west: {
-                    el: this.titleName,
+                    el: titleName,
                     height: this.constants.REGION_HEIGHT_NORMAL,
                     left: this.constants.REGION_DIMENSION_GAP
                 }

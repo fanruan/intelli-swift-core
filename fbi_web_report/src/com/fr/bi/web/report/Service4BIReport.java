@@ -7,6 +7,9 @@ import com.fr.bi.web.report.services.authuser.BIGetAllAuthUserListAction;
 import com.fr.bi.web.report.services.authuser.BIGetAuthUserListAction;
 import com.fr.bi.web.report.services.authuser.BIGetLimitBIUserCountAction;
 import com.fr.bi.web.report.services.authuser.BISetAuthUserAction;
+import com.fr.bi.web.report.services.fs.BIInitAllReportAction;
+import com.fr.bi.web.report.services.fs.BIInitCreatedByMeAction;
+import com.fr.bi.web.report.services.fs.BIInitSharedToMeAction;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
 import com.fr.fs.privilege.auth.FSAuthentication;
@@ -53,11 +56,16 @@ public class Service4BIReport implements Service {
             new BIGetAllHangoutReportsAction(),
             new BIReportHangout2PlateAction(),
             new BIGetUploadedImageAction(),
+            new BIGetMapJsonAction(),
 
             new BIGetAuthUserListAction(),
             new BIGetAllAuthUserListAction(),
             new BIGetLimitBIUserCountAction(),
-            new BISetAuthUserAction()
+            new BISetAuthUserAction(),
+
+            new BIInitCreatedByMeAction(),
+            new BIInitAllReportAction(),
+            new BIInitSharedToMeAction(),
 
     };
 

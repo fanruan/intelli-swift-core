@@ -163,16 +163,13 @@ public class CubeRunner {
 
     private void start() {
         BackUpUtils.backup();
-//        copyOldCubesToTempCubes();
     }
 
     private void finish() {
         setStatue(Status.REPLACING);
         CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
-        CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         long start = System.currentTimeMillis();
-        BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
         setStatue(Status.LOADED);
         BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/

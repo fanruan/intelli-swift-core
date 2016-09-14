@@ -1,4 +1,5 @@
 @import "var";
+
 .imagePath(none) {
   background: none;
   _filter: none;
@@ -138,7 +139,7 @@
       .imagePath(@disablePath, 0, 0);
     }
     &.native .x-icon,
-    &.disabled.active .x-icon{
+    &.disabled.active .x-icon {
       display: block;
       .imagePath(@activeDisablePath, 0, 0);
     }
@@ -167,11 +168,11 @@
 }
 
 //
-@color-bi-font-native : #808080;
+@color-bi-font-native: #808080;
 //active
-@color-bi-font-hover : #808080;
+@color-bi-font-hover: #808080;
 //hover
-@color-bi-font-active : #009de3;
+@color-bi-font-active: #009de3;
 
 .font(@class,@content, @color: @color-bi-font-native) {
   .@{class} {

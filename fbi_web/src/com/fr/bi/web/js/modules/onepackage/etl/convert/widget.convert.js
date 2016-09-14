@@ -296,7 +296,21 @@ BI.Convert = BI.inherit(BI.Widget, {
 
         this.save.on(BI.Button.EVENT_CHANGE, function () {
             self._checkMasker();
-            self.fireEvent(BI.Convert.EVENT_SAVE, self.model.getValue());
+            var data = self.model.getValue();
+            var mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: self.element,
+                text: BI.i18nText("BI-Loading")
+            });
+            BI.Utils.getTablesDetailInfoByTables([data], function (sourceTables) {
+                var table = sourceTables[0];
+                if(BI.isNotNull(table)) {
+                    data.fields = table.fields;
+                }
+                self.fireEvent(BI.Convert.EVENT_SAVE, data);
+            }, function() {
+                mask.destroy();
+            });
         });
 
         return BI.createWidget({
@@ -519,6 +533,7 @@ BI.Convert = BI.inherit(BI.Widget, {
             });
             var fieldsName = BI.map(fields, function (idx, field) {
                 return {
+                    text: self.model.getFieldNameToTransName()[field.field_name] || field.field_name,
                     value: field.field_name
                 }
             });
@@ -532,6 +547,9 @@ BI.Convert = BI.inherit(BI.Widget, {
             BI.Utils.getConfDataByField(tables, BI.isNull(field) ? "" : field.field_name, {
                 type: BICst.REQ_DATA_TYPE.REQ_GET_ALL_DATA
             }, function (data) {
+                BI.each(fields, function(idx, field){
+                    field["trans_name"] = self.model.getFieldNameToTransName()[field.field_name] || field.field_name
+                });
                 self.selectFieldsDataPane.populate({
                     table: tables,
                     fields: fields,
@@ -542,8 +560,14 @@ BI.Convert = BI.inherit(BI.Widget, {
                     lc_values: self.model.getLCValue()
                 });
                 self.initialPane.populate(fields);
-                self.initialPane.setValue(self.model.getColumns() || []);
-
+                var column = self.model.getColumns();
+                if(BI.isEmptyArray(column)){
+                    self.initialPane.setNotSelectedValue(BI.map(fields, function(idx, field){
+                        return [field.field_name, self.model.getFieldNameToTransName()[field.field_name] || field.field_name]
+                    }));
+                }else{
+                    self.initialPane.setValue(self.model.getColumns());
+                }
                 self.genFieldsPane.populate([self.initialPane.getValue(), self.selectFieldsDataPane.getValue()["lc_values"]]);
                 self.loadingMasker.destroy();
                 self.loadingMasker = null;

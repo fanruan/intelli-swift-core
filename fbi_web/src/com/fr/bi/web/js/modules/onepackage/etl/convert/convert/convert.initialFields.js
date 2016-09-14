@@ -75,6 +75,16 @@ BI.ConvertInitialFieldsPane = BI.inherit(BI.Widget, {
         this.button_tree.setValue(values);
     },
 
+    setNotSelectedValue: function(v){
+        var values = BI.map(v, function (idx, value) {
+            return {
+                value: value,
+                selected: false
+            }
+        });
+        this.button_tree.setNotSelectedValue(values);
+    },
+
     populate: function(items){
         this.button_tree.populate(this._rebuildItems(items));
     }

@@ -17,6 +17,9 @@ public class ResourceConstants {
     public static final String DEFAULT_MODULE_JS = "modules.js";
     public static final String DEFAULT_MODULE_CSS = "modules.css";
 
+    public static final String DEFAULT_THIRD_JS = "third.js";
+    public static final String DEFAULT_THIRD_CSS = "third.css";
+
     public static final String DEFAULT_BASE_JS = "base.js";
     public static final String DEFAULT_BASE_CSS = "base.css";
 
@@ -25,4 +28,5 @@ public class ResourceConstants {
 
     public static final String DEFAULT_MOBILE_JS = "mobile.js";
     public static final String DEFAULT_H5_JS = "h5.js";
+    public static final String DEFAULT_MAP_JS = "map.js";
 }

@@ -20,7 +20,7 @@ BIDezi.View = BI.inherit(BI.View, {
         var subvessel = BI.createWidget();
         var saveAs = BI.createWidget({
             type: "bi.icon_text_item",
-            invisible: !BICst.CONFIG.SHOW_DASHBOARD_TITLE,
+            invisible: !!this.model.get('hideTop'),
             cls: "toolbar-save-font save-as",
             text: BI.i18nText("BI-Save_As"),
             height: 30,
@@ -52,7 +52,7 @@ BIDezi.View = BI.inherit(BI.View, {
         var id = BI.UUID();
         var saveAs = BI.createWidget({
             type: "bi.report_save_as_float_box",
-            name: this.model.get("reportName")
+            name: this.model.get("reportName").name
         });
         saveAs.on(BI.ReportSaveAsFloatBox.EVENT_CHANGE, function (data) {
             BI.requestAsync("fr_bi", "report_save_as", {

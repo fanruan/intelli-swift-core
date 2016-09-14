@@ -7,16 +7,18 @@ import React, {
     Component,
     StyleSheet,
     Text,
+    Image,
     Dimensions,
     ListView,
     View,
+    PixelRatio,
     Fetch,
     TouchableHighlight
-    } from 'lib'
+} from 'lib'
 
 import {Colors} from 'data'
 
-import {Table, AutoSizer} from 'base'
+import {Icon, Table, AutoSizer} from 'base'
 
 
 class Item extends Component {
@@ -31,7 +33,7 @@ class Item extends Component {
     static defaultProps = {
         text: '',
         value: '',
-        selected: false,
+        selected: 0,
         onSelected: emptyFunction
     };
 
@@ -54,19 +56,28 @@ class Item extends Component {
 
     }
 
+    _onPress() {
+        this.setState({
+            selected: !this.state.selected
+        }, ()=> {
+            this.props.onSelected(this.state.selected);
+        })
+    }
+
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <TouchableHighlight onPress={() => {
-            this.setState({
-                selected: !this.state.selected
-            }, ()=> {
-                this.props.onSelected(this.state.selected);
-            })
-        }} underlayColor={Colors.PRESS}>
-            <View style={[styles.row, sc([styles.selected, state.selected])]}>
-                <Text>
-                    {state.value == null ? state.text : state.value}
-                </Text>
+        return <TouchableHighlight onPress={this._onPress.bind(this)} underlayColor={Colors.PRESS}>
+            <View style={[styles.row]}>
+                <View style={styles.text}>
+                    <Text>
+                        {state.value == null ? state.text : state.value}
+                    </Text>
+                </View>
+                <View className={cn('check-box-icon', 'react-view', cn({
+                    'active': this.state.selected
+                }))} style={[styles.icon, {width: 30}]}>
+                    <Icon width={16} height={16}></Icon>
+                </View>
             </View>
         </TouchableHighlight>
     }
@@ -75,8 +86,21 @@ class Item extends Component {
 mixin.onClass(Item, PureRenderMixin);
 const styles = StyleSheet.create({
     row: {
+        flexDirection: 'row',
+        height: 35,
+        borderBottomColor: Colors.BORDER,
+        borderBottomStyle: 'solid',
+        borderBottomWidth: 1 / PixelRatio.get(),
+    },
+
+    text: {
         justifyContent: 'center',
-        height: 30
+        flexGrow: 1,
+    },
+
+    icon: {
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 
     selected: {

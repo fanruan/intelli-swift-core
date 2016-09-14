@@ -1,0 +1,101 @@
+@import "var";
+
+.imagePath(none) {
+  background: none;
+  _filter: none;
+}
+
+.imagePath(@path, @top:center, @left:center, @repeat: no-repeat) when not (@path = none) {
+  background: url('@{imageUrl}@{path}') @repeat @left @top;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='@{imageUrl}@{path}');
+  _background: none;
+}
+
+.icon(@class, @iconPath, @top:0px, @left:0px) {
+  .@{class} {
+    & .x-icon {
+      display: block;
+      .imagePath(@iconPath, -@top, -@left);
+    }
+    &.disabled .x-icon {
+      display: block;
+      .imagePath(@iconPath, -@top, -@left);
+    }
+  }
+}
+
+.icon_active(@class, @iconPath, @activePath:none) {
+  .@{class} {
+    & .x-icon {
+      display: block;
+      .imagePath(@iconPath, 0, 0);
+    }
+    &.active .x-icon {
+      display: block;
+      .imagePath(@activePath, 0, 0);
+    }
+    &.disabled .x-icon {
+      display: block;
+      .imagePath(@iconPath, 0, 0);
+    }
+  }
+}
+
+.icon_custom(@class, @iconPath, @activePath:none, @disablePath:none, @activeDisablePath:none) {
+  .@{class} {
+    & .x-icon {
+      display: block;
+      .imagePath(@iconPath, 0, 0);
+    }
+
+    //&:active .x-icon,
+    &.active .x-icon {
+      display: block;
+      .imagePath(@activePath, 0, 0);
+    }
+    &.disabled .x-icon {
+      display: block;
+      .imagePath(@disablePath, 0, 0);
+    }
+    &.disabled.active .x-icon {
+      display: block;
+      .imagePath(@activeDisablePath, 0, 0);
+    }
+  }
+}
+
+//
+@color-bi-font-native: #808080;
+//active
+@color-bi-font-active: #009de3;
+
+.font(@class,@content, @color: @color-bi-font-native) {
+  .@{class} {
+    & .b-font:before {
+      content: @content;
+      color: @color;
+    }
+    &.disabled .b-font:before {
+      content: @content;
+      color: @color;
+    }
+  }
+}
+
+.font-active(@class,@content,@color-native: @color-bi-font-native, @color-active: @color-bi-font-active) {
+  .@{class} {
+    & .b-font:before {
+      content: @content;
+      color: @color-native;
+    }
+
+    &.active .b-font:before {
+      content: @content;
+      color: @color-active;
+    }
+    &.disabled .b-font:before {
+      content: @content;
+      color: @color-native;
+    }
+  }
+}

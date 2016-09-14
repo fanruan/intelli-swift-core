@@ -1,0 +1,34 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.up-font .b-font:before {
+  content: "\e630";
+  color: #808080;
+}
+.up-font.disabled .b-font:before {
+  content: "\e630";
+  color: #808080;
+}
+.down-font .b-font:before {
+  content: "\e62d";
+  color: #808080;
+}
+.down-font.disabled .b-font:before {
+  content: "\e62d";
+  color: #808080;
+}
+.left-font .b-font:before {
+  content: "\e62e";
+  color: #808080;
+}
+.left-font.disabled .b-font:before {
+  content: "\e62e";
+  color: #808080;
+}
+.right-font .b-font:before {
+  content: "\e62f";
+  color: #808080;
+}
+.right-font.disabled .b-font:before {
+  content: "\e62f";
+  color: #808080;
+}

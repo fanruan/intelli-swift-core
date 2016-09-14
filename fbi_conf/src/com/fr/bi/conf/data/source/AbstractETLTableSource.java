@@ -81,7 +81,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
                 ICubeTableService ti = loader.getTableIndex(p, start, end);
                 List<PersistentField> fields = p.getPersistentTable().getFieldList();
                 List<ICubeColumnDetailGetter> getters = new ArrayList<ICubeColumnDetailGetter>();
-                for (PersistentField f : fields){
+                for (PersistentField f : fields) {
                     getters.add(ti.getColumnDetailReader(new IndexKey(f.getFieldName())));
                 }
                 for (int i = 0; i < ti.getRowCount(); i++) {
@@ -218,6 +218,9 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
 
     @Override
     public ICubeFieldSource[] getFieldsArray(Set<CubeTableSource> sources) {
+        /**
+         * etl过滤后生成cube报错
+         */
         if (hasTableFilterOperator()) {
             return new BICubeFieldSource[0];
         } else {
@@ -338,16 +341,15 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
 
     /**
      * @return
-
      */
     @Override
     public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
-        if(helper.contains(this)){
+        if (helper.contains(this)) {
             return set;
         }
         helper.add(this);
         set.add(this);
-        for (CubeTableSource source : getParents()){
+        for (CubeTableSource source : getParents()) {
             source.getSourceUsedBaseSource(set, helper);
         }
         return set;
