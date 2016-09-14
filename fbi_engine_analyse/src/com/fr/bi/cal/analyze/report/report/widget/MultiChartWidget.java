@@ -29,7 +29,7 @@ public class MultiChartWidget extends TableWidget {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         if (jo.has("view")) {
             JSONObject vjo = jo.optJSONObject("view");
-            //parseView(vjo);
+            parseView(vjo);
             JSONArray ja = new JSONArray();
             Iterator it = vjo.keys();
             List<String> sorted = new ArrayList<String>();
@@ -51,26 +51,26 @@ public class MultiChartWidget extends TableWidget {
             vjo.remove(BIReportConstant.REGION.TARGET3);
             vjo.put(BIReportConstant.REGION.TARGET1, ja);
         }
-//        if(jo.has("type")){
-//            type = jo.getInt("type");
-//        }
-//        if(jo.has("sub_type")){
-//            subType = jo.getString("sub_type");
-//        }
-//        if(jo.has("clicked")){
-//            JSONObject c = jo.getJSONObject("clicked");
-//            Iterator it = c.keys();
-//            while (it.hasNext()){
-//                String key = it.next().toString();
-//                clicked.put(key, c.getJSONArray(key));
-//            }
-//        }
-//        if(jo.has("settings")){
-//            settings = new DetailChartSetting();
-//            settings.parseJSON(jo);
-//        }
+        if(jo.has("type")){
+            type = jo.getInt("type");
+        }
+        if(jo.has("sub_type")){
+            subType = jo.getString("sub_type");
+        }
+        if(jo.has("clicked")){
+            JSONObject c = jo.getJSONObject("clicked");
+            Iterator it = c.keys();
+            while (it.hasNext()){
+                String key = it.next().toString();
+                clicked.put(key, c.getJSONArray(key));
+            }
+        }
+        if(jo.has("settings")){
+            settings = new DetailChartSetting();
+            settings.parseJSON(jo);
+        }
         super.parseJSON(jo, userId);
-       // createDimensionAndTargetMap();
+        createDimensionAndTargetMap();
     }
 
     private void createDimensionAndTargetMap() {
@@ -123,8 +123,8 @@ public class MultiChartWidget extends TableWidget {
         if(dimensionIds == null){
             return null;
         }
-        for(BIDimension dimension : this.getViewDimensions()){
-            if(dimensionIds.contains(dimension.getValue())){
+        for(BIDimension dimension : this.getDimensions()){
+            if(dimensionIds.contains(dimension.getValue()) && dimension.isUsed()){
                 return dimension;
             }
         }
@@ -136,8 +136,8 @@ public class MultiChartWidget extends TableWidget {
         if(dimensionIds == null){
             return null;
         }
-        for(BIDimension dimension : this.getViewTopDimensions()){
-            if(dimensionIds.contains(dimension.getValue())){
+        for(BIDimension dimension : this.getDimensions()){
+            if(dimensionIds.contains(dimension.getValue()) && dimension.isUsed()){
                 return dimension;
             }
         }
