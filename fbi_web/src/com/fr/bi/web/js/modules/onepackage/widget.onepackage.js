@@ -305,19 +305,12 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         var self = this;
         var tableIds = this.model.getTables();
         var tablesData = this.model.getTablesData();
-        var disabledTableId = [];
-        BI.each(tableIds, function(idx, idObj){
-            if(BI.has(tablesData[idObj.id], "etl_type") && BI.isEqual(tablesData[idObj.id].etl_type, "circle")){
-                disabledTableId.push(tablesData[idObj.id].etl_value.addTableId);
-            }
-        });
         return BI.map(tableIds, function (i, table) {
             var id = table.id;
             return {
                 id: id,
                 text: self.model.getTableTranName(id),
-                connName: tablesData[id].connection_name,
-                disabled: BI.contains(disabledTableId, id)
+                connName: tablesData[id].connection_name
             };
         });
     },
@@ -490,6 +483,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         var self = this;
         BI.Layers.remove(this._constant.ETL_LAYER);
         var type = "bi.etl";
+
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: self.element,
@@ -508,7 +502,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self._constant.ETL_LAYER),
                 id: id,
                 table_data: self.model.getTablesData()[id],
-                tables_data: self.model.getTablesData(),
                 relations: self.model.getRelations(),
                 translations: self.model.getTranslations(),
                 all_fields: self.model.getAllFields(),
@@ -537,11 +530,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 BI.Layers.remove(self._constant.ETL_LAYER);
             });
             etl.on(BI.ETL.EVENT_REMOVE, function () {
-                //自循环的辅助表也要删掉
-                var table = self.model.getTablesData()[id];
-                if(BI.has(table, "etl_type") && BI.isEqual(table.etl_type, "circle")){
-                    self.model.removeTable(table.etl_value.addTableId);
-                }
                 self.model.removeTable(id);
                 self._refreshTablesInPackage();
                 BI.Layers.remove(self._constant.ETL_LAYER);

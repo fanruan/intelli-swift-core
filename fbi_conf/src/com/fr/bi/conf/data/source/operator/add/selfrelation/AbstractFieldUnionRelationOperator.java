@@ -25,8 +25,6 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
     protected String idFieldName;
     @BICoreField
     protected List<String> showFields = new ArrayList<String>();
-    @BICoreField
-    protected String addTableId;
 
     AbstractFieldUnionRelationOperator(long userId) {
         super(userId);
@@ -112,10 +110,12 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
             if (t.getField(idFieldName) != null) {
                 type = t.getField(idFieldName).getBIType();
             }
-            it = fields.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, Integer> entry = it.next();
-                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(type), entry.getValue()));
+            for (String s : showFields) {
+                it = fields.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<String, Integer> entry = it.next();
+                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), BIDBUtils.biTypeToSql(type), entry.getValue()));
+                }
             }
         }
         return persistentTable;

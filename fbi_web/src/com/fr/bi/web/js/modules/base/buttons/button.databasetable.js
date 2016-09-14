@@ -36,7 +36,6 @@ BI.DatabaseTable = BI.inherit(BI.BasicButton, {
         });
         BI.createWidget({
             type: "bi.center_adapt",
-            disabled: o.disabled,
             element: this.element,
             items: [this.iconButton, this.tableNameText],
             height: this.constants.BUTTON_HEIGHT,
