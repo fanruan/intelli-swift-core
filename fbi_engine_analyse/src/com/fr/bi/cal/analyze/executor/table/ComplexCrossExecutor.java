@@ -41,8 +41,8 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
                                 BISession session, ComplexExpander expander) {
 
         super(widget, page, session, expander);
-        rowData = new BIComplexExecutData(rowArray, null);
-        columnData = new BIComplexExecutData(columnArray, null);
+        rowData = new BIComplexExecutData(rowArray, widget.getDimensions());
+        columnData = new BIComplexExecutData(columnArray, widget.getDimensions());
     }
 
 
@@ -94,10 +94,10 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     public JSONObject createJSONObject() throws Exception {
         Iterator<Map.Entry<Integer, NewCrossRoot[]>> it = getCubeCrossNodes().entrySet().iterator();
         JSONObject jo = new JSONObject();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             Map.Entry<Integer, NewCrossRoot[]> entry = it.next();
             JSONArray ja = new JSONArray();
-            for (int i = 0; i < entry.getValue().length; i ++){
+            for (int i = 0; i < entry.getValue().length; i++) {
                 ja.put(entry.getValue()[i].toJSONObject(rowData.getDimensionArray(entry.getKey()), columnData.getDimensionArray(i), widget.getTargetsKey()));
             }
             jo.put(String.valueOf(entry.getKey()), ja);
@@ -416,7 +416,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
                                 BITableStyle.getInstance().getYTotalCellStyle(v, yTotal)
                                 :
                                 BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1)
-                            ) : BITableStyle.getInstance().getXTotalCellStyle(v, xTotal));
+                        ) : BITableStyle.getInstance().getXTotalCellStyle(v, xTotal));
                 List cellList = new ArrayList();
                 cellList.add(cell);
                 CBBoxElement cbox = new CBBoxElement(cellList);

@@ -35,7 +35,7 @@ public class ComplexGroupNoneExecutor extends AbstractComplexNodeExecutor {
                                     BISession session, ComplexExpander expander) {
 
         super(widget, page, session, expander);
-        rowData = new BIComplexExecutData(rowArray, null);
+        rowData = new BIComplexExecutData(rowArray, widget.getDimensions());
     }
 
     /**
@@ -180,7 +180,7 @@ public class ComplexGroupNoneExecutor extends AbstractComplexNodeExecutor {
         try {
             nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(false, widget, new BISummaryTarget[0], rowData, allDimensions, allSumTarget, new TargetGettingKey[0], paging.getOprator(), widget.useRealData(), session, complexExpander, true);
         } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+            BILogger.getLogger().error(e.getMessage(), e);
         }
 
 
