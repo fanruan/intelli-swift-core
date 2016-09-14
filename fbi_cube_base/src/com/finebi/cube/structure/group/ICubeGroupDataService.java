@@ -40,4 +40,6 @@ public interface ICubeGroupDataService<T> extends Release {
     void writeSizeOfGroup(int size);
 
     void buildStructure();
+
+    void forceReleaseWriter();
 }

@@ -136,7 +136,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 if (null == modifySql) {
                     BILogger.getLogger().error("current table: " + tableSource.getTableName() + " modifySql error: " + tableUpdateSetting.getPartModifySQL());
                 }else {
-                    rowCount = dealWidthAdd(cubeFieldSources, modifySql, rowCount);
+                    rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
                 }
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);

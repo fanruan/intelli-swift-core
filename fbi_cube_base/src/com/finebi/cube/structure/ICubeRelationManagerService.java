@@ -22,4 +22,6 @@ public interface ICubeRelationManagerService extends Release {
     ICubeRelationEntityService getRelationService(BICubeTablePath relationPath) throws BICubeRelationAbsentException, IllegalRelationPathException;
 
     void setOwner(ITableKey owner);
+
+    void forceReleaseWriter();
 }

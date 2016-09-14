@@ -59,10 +59,10 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
                 }
             }
         } else {
-            if (null==hostTable){
+            if (null == hostTable) {
                 BILogger.getLogger().error("hostTable null");
-            }else {
-                BILogger.getLogger().error("hostTable sourceId"+hostTable.tableKey.getSourceID());
+            } else {
+                BILogger.getLogger().error("hostTable sourceId" + hostTable.tableKey.getSourceID());
             }
             throw new BICubeTableAbsentException("Please generate Cube firstly");
         }
@@ -172,10 +172,10 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     public IntList getRemovedList() {
         if (hostTable.isRemovedListAvailable()) {
             return hostTable.getRemovedList();
-        } else if (null!=parentTable&&parentTable.isRemovedListAvailable()){
+        } else if (null != parentTable && parentTable.isRemovedListAvailable()) {
             return parentTable.getRemovedList();
-        }else {
-            return  new IntList();
+        } else {
+            return new IntList();
         }
 
     }
@@ -227,6 +227,14 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
         hostTable.clear();
         if (isParentAvailable()) {
             parentTable.clear();
+        }
+    }
+
+    @Override
+    public void forceReleaseWriter() {
+        hostTable.forceReleaseWriter();
+        if (isParentAvailable()) {
+            parentTable.forceReleaseWriter();
         }
     }
 

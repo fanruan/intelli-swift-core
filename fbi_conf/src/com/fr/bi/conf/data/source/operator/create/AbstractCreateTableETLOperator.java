@@ -11,11 +11,11 @@ public abstract class AbstractCreateTableETLOperator extends AbstractETLOperator
 
     private static final long serialVersionUID = -1595028901140161690L;
 
-    AbstractCreateTableETLOperator(long userId) {
+    protected AbstractCreateTableETLOperator(long userId) {
         super(userId);
     }
 
-    AbstractCreateTableETLOperator() {
+    protected AbstractCreateTableETLOperator() {
     }
 
     @Override

@@ -28,7 +28,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     protected ICubeDetailDataService<T> detailDataService;
     protected ICubeIndexDataService indexDataService;
     protected ICubeGroupDataService<T> groupDataService;
-    protected ICubeVersion cubeVersion;
+    protected BICubeVersion cubeVersion;
     protected ICubeColumnPositionOfGroupService cubeColumnPositionOfGroupService;
     protected ICubeRelationManagerService relationManagerService;
     protected ICubeResourceDiscovery discovery;
@@ -167,6 +167,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     @Override
     public void addVersion(long version) {
         cubeVersion.addVersion(version);
+        cubeVersion.forceReleaseWriter();
     }
 
     @Override
@@ -202,6 +203,21 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         groupDataService.clear();
         cubeVersion.clear();
         cubeColumnPositionOfGroupService.clear();
+    }
+
+    @Override
+    public void forceReleaseWriter() {
+        detailDataService.forceReleaseWriter();
+        indexDataService.forceReleaseWriter();
+        groupDataService.forceReleaseWriter();
+        cubeVersion.forceReleaseWriter();
+        cubeColumnPositionOfGroupService.forceReleaseWriter();
+        relationManagerService.forceReleaseWriter();
+    }
+
+    @Override
+    public T getOriginalObjectValueByRow(int rowNumber) {
+        return null;
     }
 
     @Override

@@ -5,6 +5,8 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 
 
 /**
@@ -41,10 +43,25 @@ public class BITableReportSetting extends BIAbstractTableSetting {
             summary = groups_of_targets.get(BIReportConstant.REGION.TARGET1);
         }
         if (groups_of_dimensions.size() > 0) {
-            row = groups_of_dimensions.get(BIReportConstant.REGION.DIMENSION1);
+            ArrayList<String> dimensionList = new ArrayList<String>();
+            for (Map.Entry<String, String[]> entry : groups_of_dimensions.entrySet()) {
+                int regionValue = Integer.parseInt(entry.getKey());
+                if (regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) && regionValue < Integer.parseInt(BIReportConstant.REGION.DIMENSION2)) {
+                    Collections.addAll(dimensionList, entry.getValue());
+                }
+            }
+            row = dimensionList.toArray(new String[dimensionList.size()]);
         }
         if (groups_of_dimensions.size() > 1) {
-            column = groups_of_dimensions.get(BIReportConstant.REGION.DIMENSION2);
+            ArrayList<String> dimensionList = new ArrayList<String>();
+            for (Map.Entry<String, String[]> entry : groups_of_dimensions.entrySet()) {
+                int regionValue = Integer.parseInt(entry.getKey());
+                if (regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION2) && regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
+                    Collections.addAll(dimensionList, entry.getValue());
+                }
+            }
+            column = dimensionList.toArray(new String[dimensionList.size()]);
+
         }
         if (jo.has("style")) {
             JSONObject jo1 = jo.optJSONObject("style");
@@ -114,21 +131,35 @@ public class BITableReportSetting extends BIAbstractTableSetting {
      * 获取复杂列表的行表头数据
      */
     public ArrayList<ArrayList<String>> getComplex_x_dimension() {
-        if (complex_x_dimension == null) {
-            complex_x_dimension = new ArrayList<ArrayList<String>>();
+        ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+        for (Map.Entry<String, String[]> entry : groups_of_dimensions.entrySet()) {
+            int regionType = Integer.parseInt(entry.getKey());
+            if (regionType >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) && regionType < Integer.parseInt(BIReportConstant.REGION.DIMENSION2)) {
+                if (entry.getValue().length > 0) {
+                    ArrayList<String> groupList = new ArrayList<String>();
+                    Collections.addAll(groupList, entry.getValue());
+                    list.add(groupList);
+                }
+            }
         }
-
-        return complex_x_dimension;
+        return list;
     }
 
     /**
      * 获取复杂列表的纵向表头
      */
     public ArrayList<ArrayList<String>> getComplex_y_dimension() {
-        if (complex_y_dimension == null) {
-            complex_y_dimension = new ArrayList<ArrayList<String>>();
+        ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+        for (Map.Entry<String, String[]> entry : groups_of_dimensions.entrySet()) {
+            int regionType = Integer.parseInt(entry.getKey());
+            if (regionType >= Integer.parseInt(BIReportConstant.REGION.DIMENSION2) && regionType < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
+                if (entry.getValue().length > 0) {
+                    ArrayList<String> groupList = new ArrayList<String>();
+                    Collections.addAll(groupList, entry.getValue());
+                    list.add(groupList);
+                }
+            }
         }
-
-        return complex_y_dimension;
+        return list;
     }
 }
