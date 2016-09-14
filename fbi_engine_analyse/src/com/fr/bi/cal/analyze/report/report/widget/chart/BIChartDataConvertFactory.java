@@ -117,9 +117,14 @@ public class BIChartDataConvertFactory {
                 options.put("geo", new JSONObject().put("tileLayer", BIChartSettingConstant.GIS_MAP_PATH).put("attribution", BIChartSettingConstant.KNOWLEDGE_RIGHT));
             }
             options.put("cordon", getCordon(widget, widget.getDimensions(), showTargets)).put("tooltip", getToolTip(type, showTargets));
-            JSONObject lnglat = widget.getViewDimensions()[0].getChartSetting().getPosition();
-            if(!lnglat.isNull("type")){
-                options.put("lnglat", lnglat.getInt("type"));
+            JSONObject lnglat;
+            if(categoryDimension != null){
+                lnglat = widget.getCategoryDimension().getChartSetting().getPosition();
+                if(!lnglat.isNull("type")){
+                    options.put("lnglat", lnglat.getInt("type"));
+                }else{
+                    options.put("lnglat", BIChartSettingConstant.LNG_FIRST);
+                }
             }else{
                 options.put("lnglat", BIChartSettingConstant.LNG_FIRST);
             }
