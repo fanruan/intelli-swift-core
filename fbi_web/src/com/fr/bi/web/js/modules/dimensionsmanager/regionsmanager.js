@@ -43,7 +43,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.COMPLEX_TABLE:
                 //动态创建region 先创建分类和列表头的wrapper
-                this.regions[BI.RegionsManager.COMPLEX_REGION_CATEGORY] = this._createComplexRegionWrapper(BI.i18nText("BI-Category"), BI.RegionsManager.COMPLEX_REGION_CATEGORY);
+                this.regions[BI.RegionsManager.COMPLEX_REGION_CATEGORY] = this._createComplexRegionWrapper(BI.i18nText("BI-Row_Header"), BI.RegionsManager.COMPLEX_REGION_CATEGORY);
                 this.regions[BI.RegionsManager.COMPLEX_REGION_COLUMN] = this._createComplexRegionWrapper(BI.i18nText("BI-Column_Header"), BI.RegionsManager.COMPLEX_REGION_COLUMN);
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
                 break;
@@ -294,7 +294,6 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
             titleName: titleName,
             dimensionCreator: o.dimensionCreator,
             wId: o.wId,
-            regionType: o.regionType,
             wrapperType: wrapperType
         });
         var sortArea = regionWrapper.getCenterArea();
@@ -319,6 +318,8 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
             items: ".bi-complex-dimension-region",
             cancel: ".bi-complex-empty-region",
             update: function (event, ui) {
+                var sortedRegion = sortArea.element.sortable("toArray");
+                regionWrapper.sortRegion();
                 self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
             },
             start: function (event, ui) {

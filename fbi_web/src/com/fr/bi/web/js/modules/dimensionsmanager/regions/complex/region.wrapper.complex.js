@@ -22,16 +22,16 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.regions = {};
         this.center = BI.createWidget({
-            type: "bi.vertical",
-            cls: "regions-container",
-            scrolly: true,
-            width: "100%",
-            height: "100%",
-            hgap: this.constants.REGION_DIMENSION_GAP,
-            vgap: this.constants.REGION_DIMENSION_GAP
-        });
-        this.center.element.sortable({
-            
+            type: "bi.button_group",
+            layouts: [{
+                type: "bi.vertical",
+                cls: "regions-container",
+                scrolly: true,
+                width: "100%",
+                height: "100%",
+                hgap: this.constants.REGION_DIMENSION_GAP,
+                vgap: this.constants.REGION_DIMENSION_GAP
+            }]
         });
         
         this._appendEmptyRegion();
@@ -65,16 +65,20 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
 
     _appendEmptyRegion: function () {
         var self = this;
-        if (BI.isNotNull(this.emptyRegion)) {
-            this.emptyRegion.destroy();
+        var emptyRegion = this.center.getNodeById(BI.ComplexEmptyRegion.ID);
+        if (BI.isNotNull(emptyRegion)) {
+            this.center.removeItems([emptyRegion]);
+            this.center.addItems([emptyRegion]);
+            return;
         }
-        this.emptyRegion = BI.createWidget({
-            type: "bi.complex_empty_region"
+        emptyRegion = BI.createWidget({
+            type: "bi.complex_empty_region",
+            id: BI.ComplexEmptyRegion.ID
         });
-        this.emptyRegion.on(BI.ComplexEmptyRegion.EVENT_CHANGE, function (data) {
+        emptyRegion.on(BI.ComplexEmptyRegion.EVENT_CHANGE, function (data) {
             self._addRegionAndDimension(data);
         });
-        this.center.addItem(this.emptyRegion);
+        this.center.addItems([emptyRegion]);
     },
 
     _addRegionAndDimension: function (data) {
@@ -98,11 +102,22 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
             wId: o.wId,
             regionType: newRegionType
         });
-        this.center.addItem(this.regions[newRegionType]);
+        this.center.addItems([this.regions[newRegionType]]);
         BI.each(data, function (i, dimension) {
             self.regions[newRegionType].addDimension(dimension.dId || BI.UUID(), dimension);
         });
         this._appendEmptyRegion();
+    },
+    
+    //排序 
+    sortRegion: function() {
+        var self = this;
+        var sortedRegions = this.center.element.sortable("toArray");
+        var originalRegionKeys = BI.keys(this.regions);
+        var originalRegions = BI.deepClone(this.regions);
+        BI.each(sortedRegions, function(i, regionType) {
+             self.regions[regionType] = originalRegions[originalRegionKeys[i]];
+        });
     },
 
     refreshRegion: function (type, dimensions) {
@@ -114,7 +129,7 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
                 wId: o.wId,
                 regionType: type
             });
-            this.center.addItem(this.regions[type]);
+            this.center.addItems([this.regions[type]]);
             this._appendEmptyRegion();
         }
         if (dimensions.length > 0) {
