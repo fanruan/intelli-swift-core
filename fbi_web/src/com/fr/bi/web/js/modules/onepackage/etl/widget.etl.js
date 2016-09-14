@@ -34,6 +34,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         this.model = new BI.ETLModel({
             id: o.id,
             table_data: o.table_data,
+            tables_data: o.tables_data,
             relations: o.relations,
             translations: o.translations,
             all_fields: o.all_fields,
@@ -353,6 +354,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             });
             BI.Utils.getTablesDetailInfoByTables([BI.extend(allTables[0][0], {id: this.model.getId()})], function (data) {
                 self.model.setFields(data[0].fields);
+                self.model.addNewTableToTableData(data[0]);
                 self.model.setRelationsByETLValue(data[0]);
                 self.model.setTranslationsByETLValue(data[0]);
                 self._populate();
@@ -854,7 +856,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                     isGenerated: status.isGenerated,
                     tableInfo: table,
                     fields: self.model.getFields(),
-                    relations: self.model.getRelations()
+                    relations: self.model.getRelations(),
+                    addTable: self.model.getAddTable()
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);

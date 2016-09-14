@@ -166,6 +166,15 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             this.tables.push({id: id});
         }
         this.tablesData[id] = data;
+        if(BI.has(data, "addTable") && BI.isNotNull(data.addTable)){
+            this.tablesData[data.addTable.id] = data.addTable;
+            var res = BI.find(this.tables, function(idx, obj){
+               return obj.id === data.addTable.id;
+            });
+            if(BI.isNull(res)){
+                this.tables.push({id: data.addTable.id});
+            }
+        }
         this._syncSharedPackages();
     },
 

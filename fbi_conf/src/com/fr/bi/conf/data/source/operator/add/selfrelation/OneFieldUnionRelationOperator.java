@@ -2,9 +2,7 @@ package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -15,7 +13,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -63,6 +60,7 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
             ja.put(floor);
         }
         jo.put("floors", ja);
+        jo.put("addTableId", addTableId);
         return jo;
     }
 
@@ -82,71 +80,27 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     k++;
                 }
                 ICubeColumnDetailGetter getter = ti.getColumnDetailReader(new IndexKey(idFieldName));
-//                for (int i = 0; i < rowCount; i++) {
-//                    Object ob = getter.getValue(i);
-//                    if (ob == null){
-//                        continue;
-//                    }
-//                    String v = ob.toString();
-//                    v = dealWithLayerValue(v, groupLength);
-//                    String[] res = new String[columnLength];
-//                    if (v != null) {
-//                        for (int j = 0; j < columnLength; j++) {
-//                            if (v.length() >= groupLength[j]) {
-//                                String result = v.substring(0, groupLength[j]);
-//                                res[j] = dealWithValue(result);
-//                            }
-//                        }
-//                    }
-//                    for (int j = 0; j < columnLength; j++) {
-//                        travel.actionPerformed(new BIDataValue(i, j + startCol, res[j]));
-//                    }
-//                }
-                Map<String, Integer> valueIndexMap = new HashMap<String, Integer>();
                 for (int i = 0; i < rowCount; i++) {
                     Object ob = getter.getValue(i);
-                    if (ob == null) {
+                    if (ob == null){
                         continue;
                     }
-                    String v = ob.toString();
-                    valueIndexMap.put(v, i);
-                }
-                for (int i = 0; i < rowCount; i++) {
-                    Object ob = getter.getValue(i);
-                    if (ob == null) {
-                        continue;
-                    }
-                    int index = 0;
                     String v = ob.toString();
                     v = dealWithLayerValue(v, groupLength);
-                    String[] res = new String[columnLength * showFields.size()];
+                    String[] res = new String[columnLength];
                     if (v != null) {
-                        for (String s : showFields) {
-                            ICubeColumnDetailGetter showGetter = ti.getColumnDetailReader(new IndexKey(s));
-                            for (int j = 0; j < columnLength; j++) {
-                                if (v.length() >= groupLength[j]) {
-                                    String result = v.substring(0, groupLength[j]);
-                                    String layer = dealWithValue(result);
-                                    int r = valueIndexMap.get(layer);
-                                    if (r >= 0) {
-                                        Object showOb = showGetter.getValue(r);
-                                        if (showOb != null) {
-                                            res[index] = showOb.toString();
-                                        }
-                                    }
-                                }
-                                index++;
+                        for (int j = 0; j < columnLength; j++) {
+                            if (v.length() >= groupLength[j]) {
+                                String result = v.substring(0, groupLength[j]);
+                                res[j] = dealWithValue(result);
                             }
                         }
                     }
-                    index = 0;
-                    int start = startCol;
-                    for (String s : showFields) {
-                        for (int j = 0; j < columnLength; j++) {
-                            travel.actionPerformed(new BIDataValue(i, start++, res[index++]));
-                        }
+                    for (int j = 0; j < columnLength; j++) {
+                        travel.actionPerformed(new BIDataValue(i, j + startCol, res[j]));
                     }
                 }
+
             }
         }
         return rowCount;
@@ -176,6 +130,7 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
             JSONObject floorJo = floor.getJSONObject(i);
             fields.put(floorJo.getString("name"), floorJo.getInt("length"));
         }
+        addTableId = jsonObject.getString("addTableId");
     }
 
     @Override
@@ -187,6 +142,7 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
         } else {
             if (ComparatorUtils.equals(tagName, XML_TAG)) {
                 this.idFieldName = reader.getAttrAsString("id_field_name", "");
+                this.addTableId = reader.getAttrAsString("add_table_id", "");
             }
         }
 
@@ -197,6 +153,7 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
         writer.startTAG(XML_TAG);
         super.writeXML(writer);
         writer.attr("id_field_name", this.idFieldName);
+        writer.attr("add_table_id", this.addTableId);
         writeFields(writer);
         writer.end();
     }

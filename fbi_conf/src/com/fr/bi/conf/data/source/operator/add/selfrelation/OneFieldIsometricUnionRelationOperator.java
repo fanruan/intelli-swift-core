@@ -112,6 +112,7 @@ public class OneFieldIsometricUnionRelationOperator extends OneFieldUnionRelatio
             if (ComparatorUtils.equals(tagName, XML_TAG)) {
                 this.idFieldName = reader.getAttrAsString("id_field_name", "");
                 this.fieldLength = reader.getAttrAsInt("field_length", 0);
+                this.addTableId = reader.getAttrAsString("add_table_id", "");
             }
         }
     }
@@ -121,7 +122,8 @@ public class OneFieldIsometricUnionRelationOperator extends OneFieldUnionRelatio
         writer.startTAG(XML_TAG);
         writer.attr("userId", user.getUserId());
         writer.attr("field_length", this.fieldLength)
-                .attr("id_field_name", this.idFieldName);
+                .attr("id_field_name", this.idFieldName)
+                .attr("add_table_id", this.addTableId);
         writeFields(writer);
 
         writer.end();

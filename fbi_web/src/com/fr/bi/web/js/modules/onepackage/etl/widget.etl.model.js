@@ -4,7 +4,7 @@
 BI.ETLModel = BI.inherit(FR.OB, {
     _init: function () {
         BI.ETLModel.superclass._init.apply(this, arguments);
-        var o = this.options;
+        var self = this, o = this.options;
         this.id = o.id;
         this.relations = o.relations;
         this.translations = o.translations;
@@ -28,6 +28,13 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this._addId2Tables(finalTable, this.tablesMap);
         this.allTableIds = this._getTablesId(finalTable, []);
         this.allTables = [finalTable];
+        this.tablesData = o.tables_data;
+        this.addTable = BI.find(this.tablesData, function(id, table){
+            return (BI.has(self.tableData, "etl_value") && self.tableData.etl_value.addTableId === id);
+        });
+        if(BI.isNotNull(this.addTable)){
+            this.addTable.id = this.tableData.etl_value.addTableId;
+        }
     },
 
     getId: function () {
@@ -132,6 +139,10 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return BI.deepClone(this.allTables);
     },
 
+    getAddTable: function(){
+        return this.addTable;
+    },
+
     getAllTableIds: function () {
         return BI.deepClone(this.allTableIds);
     },
@@ -152,6 +163,45 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.relations = relations;
     },
 
+    addNewTableToTableData: function(etl){
+        var self = this;
+        var tablesData = this.tables_data;
+        if(BI.has(etl, "etl_type") && BI.isEqual(etl.etl_type, "circle")){
+            if(BI.has(tablesData, etl.etl_value.addTableId)){
+                return;
+            }
+            var initTable = etl.tables[0];
+            var table = {
+                connection_name: initTable.connection_name,
+                id: etl.etl_value.addTableId,
+                table_name: initTable.table_name
+            };
+            table.fields = BI.map(initTable.fields, function(id, fieldArray){
+                return BI.map(fieldArray, function(i, field){
+                    var f = BI.extend({}, field, {
+                        field_name: field.field_name,
+                        id: BI.UUID(),
+                        table_id: table.id
+                    });
+                    self.allFields[f.id] = {
+                        id: f.id,
+                        table_id: table.id,
+                        table_name: table.table_name,
+                        field_name: f.field_name,
+                        field_type: f.field_type
+                    };
+                    return f;
+                })
+            });
+            self.translations[table.id] = table.table_name + "(Circle)";
+            this.addTable = table;
+        }
+    },
+
+    deleteAddTableFromCircle: function(){
+
+    },
+
     //根据etlValue为会改变关联的etl操作设置关联
     setRelationsByETLValue: function (etl) {
         var self = this;
@@ -159,56 +209,68 @@ BI.ETLModel = BI.inherit(FR.OB, {
         var relations = this.getRelations();
         var primKeyMap = relations["primKeyMap"], foreignKeyMap = relations["foreignKeyMap"];
         var connectionSet = relations["connectionSet"];
-        //if (etl.etl_type === "circle") {
-        //    //设置1:N的关联
-        //    BI.each(etlValue.floors, function (idx, floor) {
-        //        var primaryId = getFieldIdByFieldName(etlValue.id_field_name);
-        //        var foreignId = getFieldIdByFieldName(floor.name);
-        //        connectionSet.push({
-        //            primaryKey: {
-        //                field_id: primaryId
-        //            },
-        //            foreignKey: {
-        //                field_id: foreignId
-        //            }
-        //        });
-        //        if (!primKeyMap[primaryId]) {
-        //            primKeyMap[primaryId] = [];
-        //        }
-        //        primKeyMap[primaryId].push({
-        //            primaryKey: {
-        //                field_id: primaryId
-        //            },
-        //            foreignKey: {
-        //                field_id: foreignId
-        //            }
-        //        });
-        //        if (!foreignKeyMap[foreignId]) {
-        //            foreignKeyMap[foreignId] = [];
-        //        }
-        //        foreignKeyMap[foreignId].push({
-        //            primaryKey: {
-        //                field_id: primaryId
-        //            },
-        //            foreignKey: {
-        //                field_id: foreignId
-        //            }
-        //        });
-        //    });
-        //}
-        this.setRelations(relations);
-
-        function getFieldIdByFieldName(field_name) {
-            var id = null;
-            BI.find(self.fields, function (idx, fieldArray) {
-                return BI.find(fieldArray, function (i, field) {
-                    if (field.field_name === field_name) {
-                        id = field.id;
-                        return true;
+        if (etl.etl_type === "circle") {
+            //设置1:N的关联
+            BI.each(etlValue.floors, function (idx, floor) {
+                var primaryId = getFieldIdByFieldName(etlValue.id_field_name, true);
+                var foreignId = getFieldIdByFieldName(floor.name);
+                connectionSet.push({
+                    primaryKey: {
+                        field_id: primaryId
+                    },
+                    foreignKey: {
+                        field_id: foreignId
                     }
-                    return false;
+                });
+                if (!primKeyMap[primaryId]) {
+                    primKeyMap[primaryId] = [];
+                }
+                primKeyMap[primaryId].push({
+                    primaryKey: {
+                        field_id: primaryId
+                    },
+                    foreignKey: {
+                        field_id: foreignId
+                    }
+                });
+                if (!foreignKeyMap[foreignId]) {
+                    foreignKeyMap[foreignId] = [];
+                }
+                foreignKeyMap[foreignId].push({
+                    primaryKey: {
+                        field_id: primaryId
+                    },
+                    foreignKey: {
+                        field_id: foreignId
+                    }
                 });
             });
+        }
+        this.setRelations(relations);
+
+        function getFieldIdByFieldName(field_name, fromAddTable) {
+            var id = null;
+            if(fromAddTable === true){
+                BI.find(self.addTable.fields, function (idx, fieldArray) {
+                    return BI.find(fieldArray, function (i, field) {
+                        if (field.field_name === field_name) {
+                            id = field.id;
+                            return true;
+                        }
+                        return false;
+                    });
+                });
+            }else{
+                BI.find(self.fields, function (idx, fieldArray) {
+                    return BI.find(fieldArray, function (i, field) {
+                        if (field.field_name === field_name && field.table_id === self.getId()) {
+                            id = field.id;
+                            return true;
+                        }
+                        return false;
+                    });
+                });
+            }
             return id;
         }
     },
@@ -504,7 +566,8 @@ BI.ETLModel = BI.inherit(FR.OB, {
             all_fields: this.getAllFields(),
             fields: this.getFields(),
             excel_view: this.getExcelView(),
-            update_settings: this.getUpdateSettings()
+            update_settings: this.getUpdateSettings(),
+            addTable: this.addTable
         };
         if (BI.isNotNull(finalTable.etl_type)) {
             data.etl_type = finalTable.etl_type;

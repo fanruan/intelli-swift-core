@@ -36,19 +36,6 @@ public class BIChartDataConvertFactory {
         IGroup categoryGroup = categoryDimension != null ? categoryDimension.getGroup() : new NoGroup();
         IGroup seriesGroup = seriesDimension != null ? seriesDimension.getGroup() : new NoGroup();
         try {
-            JSONObject drill = widget.getWidgetDrill();
-            if(categoryDimension != null && drill.length() != 0){
-                BIDimension drillcataDimension = widget.getDrillDimension(widget.getWidgetDrill().getJSONArray(categoryDimension.getValue()));
-                if(drillcataDimension != null){
-                    categoryGroup = drillcataDimension.getGroup();
-                }
-            }
-            if(seriesDimension != null && drill.length() != 0){
-                BIDimension drillseriDimension = widget.getDrillDimension(widget.getWidgetDrill().getJSONArray(seriesDimension.getValue()));
-                if(drillseriDimension != null){
-                    seriesGroup = drillseriDimension.getGroup();
-                }
-            }
             BISummaryTarget[] showTargets = widget.getViewTargets();
             JSONArray convertedData = parseSNDataToXYZData(widget, data, seriesGroup, categoryGroup, showTargets);
 
@@ -108,6 +95,7 @@ public class BIChartDataConvertFactory {
                     name = manager.getCustomMapTypeName().get(subType);
                 }
                 options.put("initDrillPath", new JSONArray().put(name));
+                JSONObject drill = widget.getWidgetDrill();
                 if(drill.names() != null){
                     JSONArray drillValue = drill.getJSONArray(drill.names().getString(0));
                     for(int i = 0; i < drillValue.length(); i++){

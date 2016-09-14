@@ -38,7 +38,8 @@ BI.PackageTablesListPane = BI.inherit(BI.Widget, {
             var dbTable = BI.createWidget({
                 type: "bi.database_table",
                 text: item.text,
-                connName: item.connName
+                connName: item.connName,
+                disabled: item.disabled
             });
             dbTable.on(BI.Controller.EVENT_CHANGE, function(){
                 arguments[1] = item.id;

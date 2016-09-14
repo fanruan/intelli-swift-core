@@ -36,9 +36,7 @@ public class BIWidgetFactory {
 
     public static BIWidget newWidgetByType(int type, JSONArray viewTargets) throws Exception {
         switch (type) {
-            case BIReportConstant.WIDGET.BAR: {
-                return new TableWidget();
-            }
+            case BIReportConstant.WIDGET.BAR:
             case BIReportConstant.WIDGET.AXIS:
             case BIReportConstant.WIDGET.ACCUMULATE_AXIS:
             case BIReportConstant.WIDGET.COMPARE_BAR:
@@ -51,22 +49,19 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.COMBINE_CHART:
             case BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BIReportConstant.WIDGET.MAP:
-                return new MultiChartWidget();
             case BIReportConstant.WIDGET.ACCUMULATE_BAR:
             case BIReportConstant.WIDGET.PIE:
             case BIReportConstant.WIDGET.DASHBOARD:
             case BIReportConstant.WIDGET.DONUT:
+            case BIReportConstant.WIDGET.RADAR:
+            case BIReportConstant.WIDGET.SCATTER:
+            case BIReportConstant.WIDGET.BUBBLE:
+                return new MultiChartWidget();
             case BIReportConstant.WIDGET.TABLE:
             case BIReportConstant.WIDGET.CROSS_TABLE:
                 return new TableWidget();
             case BIReportConstant.WIDGET.DETAIL:
                 return new BIDetailWidget();
-            case BIReportConstant.WIDGET.BUBBLE:
-                return new MultiChartWidget();
-            case BIReportConstant.WIDGET.SCATTER:
-                return new MultiChartWidget();
-            case BIReportConstant.WIDGET.RADAR:
-                return new TableWidget();
             case BIReportConstant.WIDGET.STRING:
                 return new StringControlWidget();
             case BIReportConstant.WIDGET.TREE:

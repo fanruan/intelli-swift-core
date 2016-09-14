@@ -87,60 +87,72 @@ BI.CircleModel = BI.inherit(BI.Widget, {
         var primKeyMap = relations["primKeyMap"], foreignKeyMap = relations["foreignKeyMap"];
         var connectionSet = relations["connectionSet"];
         //先刪除上一次的关联
-        //if (this.isReopen() === true) {
-        //    var table = this.getPreTableStructure();
-        //    var oldFloorNames = BI.pluck(table.etl_value.floors, "name");
-        //    var oldIdFieldName = table.etl_value.id_field_name;
-        //    var tmpConnectionSet = [], tmpPrimKey = [], tmpForeKey = [];
-        //    var oldRelationForeignKeyIds = BI.map(oldFloorNames, function (idx, name) {
-        //        return getFieldIdByFieldName(name);
-        //    });
-        //    var oldRelationPrimaryKeyId = getFieldIdByFieldName(oldIdFieldName);
-        //    BI.each(connectionSet, function (j, c) {
-        //        if (BI.isNull(c)) {
-        //            return;
-        //        }
-        //        if (c["primaryKey"].field_id === oldRelationPrimaryKeyId && BI.contains(oldRelationForeignKeyIds, c["foreignKey"].field_id)) {
-        //            tmpConnectionSet.push(c);
-        //        }
-        //    });
-        //    BI.each(primKeyMap[oldRelationPrimaryKeyId], function (j, map) {
-        //        if (BI.isNull(map)) {
-        //            return;
-        //        }
-        //        if (map["primaryKey"].field_id === oldRelationPrimaryKeyId && BI.contains(oldRelationForeignKeyIds, map["foreignKey"].field_id)) {
-        //            tmpPrimKey.push(map);
-        //        }
-        //    });
-        //    BI.each(oldRelationForeignKeyIds, function (idx, id) {
-        //        BI.each(foreignKeyMap[id], function (j, map) {
-        //            if (BI.isNull(map)) {
-        //                return;
-        //            }
-        //            if (map["primaryKey"].field_id === oldRelationPrimaryKeyId && id === map["foreignKey"].field_id) {
-        //                tmpForeKey.push(map);
-        //            }
-        //        });
-        //    });
-        //    BI.remove(connectionSet, tmpConnectionSet);
-        //    BI.remove(primKeyMap[oldRelationPrimaryKeyId], tmpPrimKey);
-        //    BI.each(oldRelationForeignKeyIds, function (idx, id) {
-        //        BI.remove(foreignKeyMap[id], tmpForeKey);
-        //    });
-        //}
+        if (this.isReopen() === true) {
+            var table = this.getPreTableStructure();
+            var oldFloorNames = BI.pluck(table.etl_value.floors, "name");
+            var oldIdFieldName = table.etl_value.id_field_name;
+            var tmpConnectionSet = [], tmpPrimKey = [], tmpForeKey = [];
+            var oldRelationForeignKeyIds = BI.map(oldFloorNames, function (idx, name) {
+                return getFieldIdByFieldName(name);
+            });
+            var oldRelationPrimaryKeyId = getFieldIdByFieldName(oldIdFieldName, true);
+            BI.each(connectionSet, function (j, c) {
+                if (BI.isNull(c)) {
+                    return;
+                }
+                if (c["primaryKey"].field_id === oldRelationPrimaryKeyId && BI.contains(oldRelationForeignKeyIds, c["foreignKey"].field_id)) {
+                    tmpConnectionSet.push(c);
+                }
+            });
+            BI.each(primKeyMap[oldRelationPrimaryKeyId], function (j, map) {
+                if (BI.isNull(map)) {
+                    return;
+                }
+                if (map["primaryKey"].field_id === oldRelationPrimaryKeyId && BI.contains(oldRelationForeignKeyIds, map["foreignKey"].field_id)) {
+                    tmpPrimKey.push(map);
+                }
+            });
+            BI.each(oldRelationForeignKeyIds, function (idx, id) {
+                BI.each(foreignKeyMap[id], function (j, map) {
+                    if (BI.isNull(map)) {
+                        return;
+                    }
+                    if (map["primaryKey"].field_id === oldRelationPrimaryKeyId && id === map["foreignKey"].field_id) {
+                        tmpForeKey.push(map);
+                    }
+                });
+            });
+            BI.remove(connectionSet, tmpConnectionSet);
+            BI.remove(primKeyMap[oldRelationPrimaryKeyId], tmpPrimKey);
+            BI.each(oldRelationForeignKeyIds, function (idx, id) {
+                BI.remove(foreignKeyMap[id], tmpForeKey);
+            });
+        }
 
-        return {
+        var res = {
             relations: relations,
             etl_type: "circle",
             etl_value: this.getOperatorValue(),
             connection_name: BICst.CONNECTION.ETL_CONNECTION,
             tables: [this.getTableStructure()]
         };
+        if(this.reopen === true){
+            res.etl_value.addTableId = this.addTable.id;
+        }else{
+            res.etl_value.addTableId = BI.UUID();
+        }
+        return res;
 
-        function getFieldIdByFieldName(field_name) {
-            var res = BI.find(self.fields, function (idx, field) {
-                return field.field_name === field_name;
-            });
+        function getFieldIdByFieldName(field_name, fromAddTable) {
+            if(fromAddTable === true){
+                var res = BI.find(self.addTable.fields[0], function (idx, field) {
+                    return field.field_name === field_name;
+                });
+            }else{
+                var res = BI.find(self.fields, function (idx, field) {
+                    return field.field_name === field_name && field.table_id === self.id;
+                });
+            }
             return res.id;
         }
     },
@@ -177,5 +189,6 @@ BI.CircleModel = BI.inherit(BI.Widget, {
         this.fields = BI.concat(fields[0], BI.concat(fields[1], fields[2]));
         this.old_tables = BI.extend(info.tableInfo, {id: BI.UUID()});
         this.isGenerated = info.isGenerated;
+        this.addTable = info.addTable;
     }
 });
