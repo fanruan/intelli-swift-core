@@ -179,6 +179,12 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 case BICst.TARGET_COMBO.STYLE_SETTING:
                     if (s === BICst.TARGET_COMBO.CORDON) {
                         self._buildCordonPane();
+                    } else if (s === BICst.TARGET_COMBO.DATA_LABEL) {
+                        self._buildDataLabelPane();
+                    } else if(s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
+                        self._buildDataLabelPane4ScatterBubble();
+                    } else if(s === BICst.TARGET_COMBO.DATA_IMAGE) {
+                        self._buildDataImagePane();
                     } else {
                         self._buildStyleSettingPane();
                     }
@@ -208,6 +214,12 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 case BICst.CALCULATE_TARGET_COMBO.FORM_SETTING:
                     if (s === BICst.TARGET_COMBO.CORDON) {
                         self._buildCordonPane();
+                    } else if (s === BICst.TARGET_COMBO.DATA_LABEL) {
+                        self._buildDataLabelPane();
+                    } else if(s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
+                        self._buildDataLabelPane4ScatterBubble();
+                    } else if(s === BICst.TARGET_COMBO.DATA_IMAGE) {
+                        self._buildDataImagePane();
                     } else {
                         self._buildStyleSettingPane();
                     }

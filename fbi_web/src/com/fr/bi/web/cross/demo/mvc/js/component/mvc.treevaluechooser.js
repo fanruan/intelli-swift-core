@@ -28,7 +28,7 @@ TreeValueChooserView = BI.inherit(BI.View, {
             }
         }
         var widget = BI.createWidget({
-            type: "bi.tree_value_chooser_panel",
+            type: "bi.tree_value_chooser_combo",
             items: tree,
             itemsCreator: function (op, callback) {
                 callback(tree);
