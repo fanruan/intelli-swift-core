@@ -2627,6 +2627,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/copy2group/toolbar.copy2group.js",
                 "com/fr/bi/web/js/widget/copy2group/combo.copy2group.js",
 
+                //文本标签
+                "com/fr/bi/web/js/widget/muiltitextlabel/text.label.js",
+                "com/fr/bi/web/js/widget/muiltitextlabel/group.item.text.label.js",
+
                 //单选下拉树
                 "com/fr/bi/web/js/widget/singletree/singletree.combo.js",
                 "com/fr/bi/web/js/widget/singletree/singletree.popup.js",
