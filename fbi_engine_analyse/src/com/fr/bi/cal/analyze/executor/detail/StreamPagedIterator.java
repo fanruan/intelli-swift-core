@@ -1,7 +1,5 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
-import com.fr.report.cell.CellElement;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -9,16 +7,20 @@ import java.util.Queue;
 /**
  * Created by daniel on 2016/7/13.
  */
-public class StreamPagedIterator implements Iterator<CellElement> {
+public class StreamPagedIterator<T> implements Iterator<T> {
 
-    private final static int MAX_CELLS = 1 << 14;
-    private final static int MIN_CELLS = MAX_CELLS >> 1;
-    private volatile Queue<CellElement> queue = new LinkedList<CellElement>();
+    private int maxCount = 1 << 14;
+    private int halfCount = maxCount >> 1;
+    private volatile Queue<T> queue = new LinkedList<T>();
     private volatile boolean isEnd = false;
 
+    public void setMaxCount(int maxCount) {
+        this.maxCount = maxCount;
+        this.halfCount = maxCount >> 1;
+    }
 
     private void waitFor() {
-        if(queue.size() < MIN_CELLS) {
+        if(queue.size() == halfCount) {
             synchronized (this) {
                 this.notify();
             }
@@ -49,7 +51,7 @@ public class StreamPagedIterator implements Iterator<CellElement> {
     }
 
     @Override
-    public CellElement next() {
+    public T next() {
         synchronized (queue) {
             return queue.poll();
         }
@@ -62,10 +64,10 @@ public class StreamPagedIterator implements Iterator<CellElement> {
         }
     }
 
-    public void addCell(CellElement cellElement) {
-        if(queue.size() > MAX_CELLS) {
+    public void addCell(T cellElement) {
+        if(queue.size() > maxCount) {
             synchronized (this) {
-                if(queue.size() > MAX_CELLS) {
+                if(queue.size() > maxCount) {
                     try {
                         this.wait();
                     } catch (Exception e) {
@@ -77,7 +79,9 @@ public class StreamPagedIterator implements Iterator<CellElement> {
             queue.add(cellElement);
         }
         synchronized (this) {
-            this.notify();
+            if (queue.size() > (maxCount - 1)){
+                this.notify();
+            }
         }
     }
 
@@ -85,4 +89,5 @@ public class StreamPagedIterator implements Iterator<CellElement> {
     public void remove() {
         throw new UnsupportedOperationException();
     }
+
 }
