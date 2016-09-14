@@ -25,6 +25,9 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             self._onClickPush(!self.wrapper.isVisible());
         });
         this.pushButton.element.css("z-index", 1);
+
+        this.hideDrillButtons = BI.debounce(BI.bind(this.hideDrill, this), 3000);
+
         this.outerWrapper = BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -35,7 +38,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 el: this.pushButton,
                 top: 0
             }]
-        });
+        })
     },
 
     _initShowChartDrill: function () {
@@ -87,15 +90,50 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
     },
 
     populate: function (obj) {
-        var self = this;
+        var self = this, wId = this.options.wId;
         this._initShowChartDrill();
-        this.outerWrapper.setVisible(this.showDrill);
-        this._onClickPush(this.showDrill);
-        if (this.showDrill === false || BI.isNull(obj)) {
+        this.outerWrapper.setVisible(this.showDrill && (!this._checkUPDrillEmpty() || BI.isNotNull(obj)));
+
+        if (this.showDrill === false || (BI.isNull(obj) && this._checkUPDrillEmpty())) {
+            this.pushButton.setPushDown();
             return;
         }
+
         this.pushButton.setPushUp();
-        var wId = this.options.wId;
+
+        if (BI.isNull(obj) && !this._checkUPDrillEmpty()) {
+            this.wrapper.empty();
+            var drillDownMap = BI.Utils.getDrillByID(wId);
+            var drillUpID;
+
+            BI.each(drillDownMap, function (drId, drValue) {
+                drillUpID = drValue[drValue.length - 1].dId;
+            });
+
+            var drill = BI.createWidget({
+                type: "bi.chart_drill_cell",
+                dId: drillUpID,
+                value: BI.i18nText("BI-Unchosen"),
+                disableDownButton: true
+            });
+            drill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
+                self._onClickDrill(drillUpID);
+            });
+            this.wrapper.addItem(drill);
+            var upBounds = BI.Utils.getWidgetBoundsByID(wId);
+            var wi = upBounds.width;
+            var gap = Math.ceil((wi - 200) / 2);
+            this.buttonTop = 35;
+            this.wrapper.setVisible(true);
+            this.outerWrapper.attr("items")[0].left = gap;
+            this.outerWrapper.attr("items")[0].right = gap;
+            this.outerWrapper.attr("items")[1].left = Math.ceil((wi - 60) / 2);
+            this.outerWrapper.attr("items")[1].top = this.buttonTop;
+            this.outerWrapper.resize();
+            this._onClickPush(false);
+            return;
+        }
+
         var dims = BI.Utils.getAllUsableDimDimensionIDs(wId);
         var classification = null, series = null;
         BI.each(dims, function (i, dim) {
@@ -185,15 +223,15 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this.outerWrapper.resize();
     },
 
-    hidePushButton: function () {
-        if (this._checkUPDrillEmpty()) {
+    hideDrill: function () {
+        if(this._checkUPDrillEmpty()){
             this._onClickPush(false)
         }
     },
 
-    setPushButtonVisible: function (v) {
-        if (this._checkUPDrillEmpty()) {
-            this.outerWrapper.setVisible(v)
+    setDrillVisible: function () {
+        if(this._checkUPDrillEmpty()){
+            this.outerWrapper.setVisible(false)
         }
     },
 
@@ -225,6 +263,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this.outerWrapper.attr("items")[1].top = isVisible ? this.buttonTop : 0;
         this.outerWrapper.resize();
         isVisible ? this.pushButton.setPushUp() : this.pushButton.setPushDown();
+        this.hideDrillButtons()
     },
 
     _onClickDrill: function (dId, value, drillId) {
@@ -254,11 +293,6 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         }
         drillMap[rootId] = drillOperators;
         this.fireEvent(BI.ChartDrill.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
-        if (BI.isNotNull(drillId)) {
-            this._onClickPush(false)
-        } else if (this._checkUPDrillEmpty()) {
-            this.outerWrapper.setVisible(false)
-        }
     }
 });
 BI.ChartDrill.EVENT_CHANGE = "EVENT_CHANGE";
