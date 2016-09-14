@@ -326,12 +326,16 @@ public class DimensionGroupFilter {
         if (MultiThreadManagerImpl.getInstance().isMultiCall() && shouldBuildTree){
             executor = new BIMultiThreadExecutor();
         }
+        boolean hasFilter[] = new boolean[rowDimension.length];
+        for (int i = 0;i < rowDimension.length; i ++){
+            hasFilter[i] = !getDimensionTraverseResultFilters(i).isEmpty();
+        }
         while (!GroupUtils.isAllEmpty(roots)) {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
             clearLastIndex(lastRoots, firstChangeDeep);
             for (int deep = firstChangeDeep; deep < rowDimension.length; deep++) {
-                fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep, shouldBuildTree, executor);
+                fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep, shouldBuildTree, executor, hasFilter[deep]);
             }
             lastRoots = roots;
             roots = next();
@@ -388,7 +392,7 @@ public class DimensionGroupFilter {
         }
     }
 
-    private void fillValueIndex(GroupValueIndex[][] groupValueIndexe2D, GroupConnectionValue[] roots, RowCounter counter, TreeBuilder nodeBuilder, int deep, boolean shouldBuildTree, BIMultiThreadExecutor executor) {
+    private void fillValueIndex(GroupValueIndex[][] groupValueIndexe2D, GroupConnectionValue[] roots, RowCounter counter, TreeBuilder nodeBuilder, int deep, boolean shouldBuildTree, BIMultiThreadExecutor executor, boolean hasFilter) {
         GroupConnectionValue[] groupConnectionValueChildren = getDeepChildren(roots, deep + 1);
 
         IMergerNode mergeNode = new MergerNode();
@@ -400,7 +404,9 @@ public class DimensionGroupFilter {
                 mergeNode.setData(groupConnectionValueChildren[j].getData());
                 mergeNode.setComparator(getComparator(deep));
                 mergeNode.setCk(groupConnectionValueChildren[j].getCk());
-                groupValueIndexArray[j] = currentValue.getRoot().getGroupValueIndex();
+                if (hasFilter || shouldSetIndex()){
+                    groupValueIndexArray[j] = currentValue.getRoot().getGroupValueIndex();
+                }
                 if (shouldSetIndex()){
                     gviMap.put(mergerInfoList.get(j).getTargetGettingKey(), currentValue.getRoot().getGroupValueIndex());
                 }
