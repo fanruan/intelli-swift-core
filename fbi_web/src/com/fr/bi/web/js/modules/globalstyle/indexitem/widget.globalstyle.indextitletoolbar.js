@@ -39,6 +39,10 @@ BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
             cls: "text-toolbar-button"
         });
 
+        this.alignChooser.on(BI.GlobalStyleIndexAlignChooser.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE);
+        });
+
         this.colorchooser = BI.createWidget({
             type: "bi.color_chooser",
             el: {

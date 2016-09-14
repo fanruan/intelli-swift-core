@@ -48,8 +48,8 @@ BI.GlobalStyleIndexBackground = BI.inherit(BI.Widget, {
                         var uploadImage = BI.createWidget({
                             type: "bi.upload_image_preview"
                         });
-                        uploadImage.on(BI.MultifileEditor.EVENT_CHANGE, function () {
-
+                        uploadImage.on(BI.UploadImagePreview.EVENT_CHANGE, function () {
+                            self.fireEvent(BI.GlobalStyleIndexBackground.EVENT_CHANGE);
                         });
                         return uploadImage;
                 }
