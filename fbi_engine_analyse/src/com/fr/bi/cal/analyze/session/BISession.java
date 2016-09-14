@@ -114,6 +114,10 @@ public class BISession extends BIAbstractSession {
      */
     public void forceEdit() {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        if(lockDAO == null){
+            this.isEdit = true;
+            return;
+        }
         lockDAO.forceLock(sessionID, node.getUserId(), node.getId());
         this.isEdit = true;
     }
@@ -126,6 +130,10 @@ public class BISession extends BIAbstractSession {
      */
     public boolean setEdit(boolean isEdit) {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        if(lockDAO == null){
+            this.isEdit = isEdit;
+            return isEdit;
+        }
         if (isEdit) {
             isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId());
             if (!isEdit) {
@@ -157,6 +165,9 @@ public class BISession extends BIAbstractSession {
 
     private void releaseLock() {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        if(lockDAO == null){
+            return;
+        }
         BIReportNodeLock lock = lockDAO.getLock(this.sessionID, node.getUserId(), node.getId());
         if (lock != null) {
             lockDAO.release(lock);
