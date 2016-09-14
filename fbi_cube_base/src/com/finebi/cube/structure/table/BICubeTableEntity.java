@@ -79,6 +79,9 @@ public class BICubeTableEntity implements CubeTableEntityService {
          */
         flushProperty();
         tableProperty.recordTableStructure(fields);
+        if (columnManager != null) {
+            columnManager.forceReleaseWriter();
+        }
         columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
     }
 

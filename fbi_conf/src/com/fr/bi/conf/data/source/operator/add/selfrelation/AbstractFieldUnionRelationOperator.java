@@ -1,9 +1,10 @@
 package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
+import com.fr.bi.conf.data.source.operator.create.AbstractCreateTableETLOperator;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -17,7 +18,7 @@ import java.util.*;
 /**
  * Created by GUY on 2015/3/5.
  */
-public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColumnOperator {
+public abstract class AbstractFieldUnionRelationOperator extends AbstractCreateTableETLOperator {
     private static final long serialVersionUID = -4723723974508198197L;
     @BICoreField
     protected LinkedHashMap<String, Integer> fields = new LinkedHashMap<String, Integer>();
@@ -31,7 +32,9 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
     }
 
     AbstractFieldUnionRelationOperator() {
+        super();
     }
+
 
     protected void readFields(XMLableReader reader) {
         if (ComparatorUtils.equals(reader.getTagName(), "floor")) {
@@ -109,6 +112,9 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractAddColu
             int type = DBConstant.CLASS.INTEGER;
             if (t.getField(idFieldName) != null) {
                 type = t.getField(idFieldName).getBIType();
+            }
+            for (PersistentField field : t.getFieldList()) {
+                persistentTable.addColumn(field);
             }
             for (String s : showFields) {
                 it = fields.entrySet().iterator();

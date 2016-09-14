@@ -499,7 +499,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         if (isNull(node)) {
             return NULL;
         }
-        return createDimensionGroup(tableKey, node.getGroupValueIndex(), getLoader());
+        return createDimensionGroup(tableKey, node, getLoader());
     }
 
     private boolean isNull(MemNode node) {

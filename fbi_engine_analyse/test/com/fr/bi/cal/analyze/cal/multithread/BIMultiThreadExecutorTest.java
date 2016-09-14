@@ -27,12 +27,14 @@ public class BIMultiThreadExecutorTest extends TestCase{
             f.setBoolean(PerformancePlugManager.getInstance(), true);
         } catch (Exception e) {
         }
+
+        BIMultiThreadExecutor executor = new BIMultiThreadExecutor();
         int[] result = new int[size];
         final int[] cal = new int[size];
         List<BISingleThreadCal> list = new ArrayList<BISingleThreadCal>();
         for (int i = 0; i < size;i++){
             final int index = i;
-            list.add(new BISingleThreadCal() {
+            executor.add(new BISingleThreadCal() {
                 @Override
                 public void cal() {
                     cal[index] = index + 1;
@@ -40,7 +42,7 @@ public class BIMultiThreadExecutorTest extends TestCase{
             });
             result[i] = i + 1;
         }
-        BIMultiThreadExecutor.execute(list);
+        executor.awaitExecutor();
         for (int i = 0; i < size; i ++){
             assertEquals(result[i], cal[i]);
         }

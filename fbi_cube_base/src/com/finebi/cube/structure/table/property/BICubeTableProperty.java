@@ -381,6 +381,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
                 BINonValueUtils.beyondControl("the field:" + field.toString() + " createJson method has problem.");
             }
         }
+        getFieldInfoWriter().forceRelease();
     }
 
 

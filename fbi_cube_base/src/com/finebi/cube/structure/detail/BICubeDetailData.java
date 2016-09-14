@@ -75,8 +75,8 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     @Override
     public void forceReleaseWriter() {
         if (cubeWriter != null) {
-            cubeReader.forceRelease();
-            cubeReader = null;
+            cubeWriter.forceRelease();
+            cubeWriter = null;
         }
     }
 
