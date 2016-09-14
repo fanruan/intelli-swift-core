@@ -119,7 +119,7 @@ public class BIChartDataConvertFactory {
             options.put("cordon", getCordon(widget, widget.getDimensions(), showTargets)).put("tooltip", getToolTip(type, showTargets));
             JSONObject lnglat;
             if(categoryDimension != null){
-                lnglat = widget.getCategoryDimension().getChartSetting().getPosition();
+                lnglat = categoryDimension.getChartSetting().getPosition();
                 if(!lnglat.isNull("type")){
                     options.put("lnglat", lnglat.getInt("type"));
                 }else{
