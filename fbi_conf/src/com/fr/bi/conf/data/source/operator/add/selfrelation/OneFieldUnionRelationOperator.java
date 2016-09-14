@@ -1,13 +1,15 @@
 package com.fr.bi.conf.data.source.operator.add.selfrelation;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.common.constant.BIValueConstant;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -15,10 +17,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by GUY on 2015/3/5.
@@ -41,6 +40,18 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
     @Override
     public String xmlTag() {
         return XML_TAG;
+    }
+
+    @Override
+    public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
+        CubeTableSource source = getSingleParentMD5(parents);
+        return write(travel, loader.getTableIndex(source), source);
+    }
+
+    @Override
+    public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
+        CubeTableSource source = getSingleParentMD5(parents);
+        return write(travel, loader.getTableIndex(source), source);
     }
 
     /**
@@ -66,11 +77,10 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
         return jo;
     }
 
-
-    @Override
-    protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
+    protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, CubeTableSource source) {
         int rowCount = ti.getRowCount();
         int columnLength = fields.size();
+        int row = 0;
         ICubeFieldSource column = ti.getColumns().get(new IndexKey(idFieldName));
         if (column != null) {
             if (column.getFieldType() == DBConstant.COLUMN.STRING) {
@@ -103,6 +113,8 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
 //                    }
 //                }
                 Map<String, Integer> valueIndexMap = new HashMap<String, Integer>();
+                Set<String> isParent = new HashSet<String>();
+                Set<Integer> mustDelete = new HashSet<Integer>();
                 for (int i = 0; i < rowCount; i++) {
                     Object ob = getter.getValue(i);
                     if (ob == null) {
@@ -116,10 +128,50 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     if (ob == null) {
                         continue;
                     }
-                    int index = 0;
                     String v = ob.toString();
                     v = dealWithLayerValue(v, groupLength);
-                    String[] res = new String[columnLength * showFields.size()];
+                    if (v != null) {
+                        for (int j = 0; j < columnLength; j++) {
+                            if (v.length() >= groupLength[j]) {
+                                String result = v.substring(0, groupLength[j]);
+                                String layer = dealWithValue(result);
+                                int r = valueIndexMap.get(layer);
+                                if (r >= 0 && !ComparatorUtils.equals(v, result)) {
+                                    isParent.add(layer);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (Map.Entry<String, Integer> entry : valueIndexMap.entrySet()) {
+                    if (isParent.contains(entry.getKey())) {
+                        mustDelete.add(entry.getValue());
+                    }
+                }
+                List<ICubeColumnDetailGetter> gts = new ArrayList<ICubeColumnDetailGetter>();
+                List<PersistentField> fields = source.getPersistentTable().getFieldList();
+                for (PersistentField field : fields) {
+                    gts.add(ti.getColumnDetailReader(new IndexKey(field.getFieldName())));
+                }
+                for (int i = 0; i < rowCount; i++) {
+                    if (mustDelete.contains(i)) {
+                        continue;
+                    }
+                    int index = 0;
+                    Object[] res = new Object[fields.size() + columnLength * showFields.size()];
+
+                    for (ICubeColumnDetailGetter gt : gts) {
+                        res[index++] = gt.getValue(i);
+                    }
+
+                    Object ob = getter.getValue(i);
+                    if (ob == null) {
+                        continue;
+                    }
+                    String v = ob.toString();
+                    v = dealWithLayerValue(v, groupLength);
+
                     if (v != null) {
                         for (String s : showFields) {
                             ICubeColumnDetailGetter showGetter = ti.getColumnDetailReader(new IndexKey(s));
@@ -139,17 +191,14 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                             }
                         }
                     }
-                    index = 0;
-                    int start = startCol;
-                    for (String s : showFields) {
-                        for (int j = 0; j < columnLength; j++) {
-                            travel.actionPerformed(new BIDataValue(i, start++, res[index++]));
-                        }
+                    for (int j = 0; j < index; j++) {
+                        travel.actionPerformed(new BIDataValue(row, j, res[j]));
                     }
+                    row++;
                 }
             }
         }
-        return rowCount;
+        return row;
     }
 
     public String dealWithLayerValue(String v, int[] cz) {
