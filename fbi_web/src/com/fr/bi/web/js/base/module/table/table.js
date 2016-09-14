@@ -521,7 +521,7 @@ BI.Table = BI.inherit(BI.Widget, {
                         change = true;
                     }
                 }
-                self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
+                // self.fireEvent(BI.Table.EVENT_TABLE_SCROLL);
                 if (change === true) {
                     e.stopPropagation();
                     //return false;

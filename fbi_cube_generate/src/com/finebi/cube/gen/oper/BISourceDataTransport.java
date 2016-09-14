@@ -60,6 +60,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
 
     @Override
     public void release() {
+        tableEntityService.forceReleaseWriter();
         tableEntityService.clear();
     }
 

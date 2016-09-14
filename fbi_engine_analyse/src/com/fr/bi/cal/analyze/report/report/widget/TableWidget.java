@@ -9,13 +9,12 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
-import com.fr.bi.common.persistent.xml.BIIgnoreField;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
-import com.fr.bi.cal.analyze.report.report.widget.table.BITableSetting;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -42,6 +41,8 @@ public class TableWidget extends BISummaryWidget {
 
     private int operator = BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH;
 
+    private int table_type = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
+
     @Override
     public void setPageSpinner(int index, int value) {
         this.pageSpinner[index] = value;
@@ -50,11 +51,11 @@ public class TableWidget extends BISummaryWidget {
     @BIIgnoreField
     private transient BIDimension[] usedDimension;
     @BIIgnoreField
-    private transient  BISummaryTarget[] usedTargets;
+    private transient BISummaryTarget[] usedTargets;
 
     @Override
     public BIDimension[] getViewDimensions() {
-        if(usedDimension != null) {
+        if (usedDimension != null) {
             return usedDimension;
         }
         BIDimension[] dimensions = getDimensions();
@@ -67,7 +68,7 @@ public class TableWidget extends BISummaryWidget {
                     usedDimensions.add(dimension);
                 }
             }
-            dimensions =  usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
+            dimensions = usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
         }
         usedDimension = dimensions;
         return dimensions;
@@ -75,7 +76,7 @@ public class TableWidget extends BISummaryWidget {
 
     @Override
     public BISummaryTarget[] getViewTargets() {
-        if(usedTargets != null) {
+        if (usedTargets != null) {
             return usedTargets;
         }
         BISummaryTarget[] targets = getTargets();
@@ -88,7 +89,7 @@ public class TableWidget extends BISummaryWidget {
                     usedTargets.add(target);
                 }
             }
-            targets =  usedTargets.toArray(new BISummaryTarget[usedTargets.size()]);
+            targets = usedTargets.toArray(new BISummaryTarget[usedTargets.size()]);
         }
         usedTargets = targets;
         return targets;
@@ -129,8 +130,7 @@ public class TableWidget extends BISummaryWidget {
     public BIEngineExecutor getExecutor(BISession session) {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
-        if (this.data.getTableStyle() == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
-
+        if (this.table_type == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
             return createComplexExecutor(session, calculateTarget, complexExpander, expander);
         } else {
 
@@ -195,7 +195,7 @@ public class TableWidget extends BISummaryWidget {
         int summaryLen = getViewTargets().length;
         boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
         boolean b1 = usedColumn.length >= 0 && usedRows.length == 0 && summaryLen == 0;
-        boolean b2 = usedRows.length >= 0 && usedColumn.length == 0 ;
+        boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
         boolean b3 = usedRows.length >= 0 && usedColumn.length == 0 && summaryLen == 0;
         if (b0) {
             executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
@@ -241,6 +241,10 @@ public class TableWidget extends BISummaryWidget {
         super.parseJSON(jo, userId);
         if (jo.has("view")) {
             data.parseJSON(jo);
+        }
+
+        if (jo.has("type")) {
+            table_type = jo.optInt("type");
         }
 
         if (jo.has("page")) {

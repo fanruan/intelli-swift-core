@@ -59,6 +59,7 @@ public class BIWidgetFactory {
                 return new MultiChartWidget();
             case BIReportConstant.WIDGET.TABLE:
             case BIReportConstant.WIDGET.CROSS_TABLE:
+            case BIReportConstant.WIDGET.COMPLEX_TABLE:
                 return new TableWidget();
             case BIReportConstant.WIDGET.DETAIL:
                 return new BIDetailWidget();

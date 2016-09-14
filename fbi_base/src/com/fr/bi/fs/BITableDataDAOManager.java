@@ -147,7 +147,7 @@ public class BITableDataDAOManager extends XMLFileManager {
     }
 
     public List<BIReportNode> findByParentID(String pId) throws Exception {
-        List<BIReportNode> res = null;
+        List<BIReportNode> res = new ArrayList<BIReportNode>();
         for (Map.Entry<Long, BIReportNode> entry : getTdBIReport_idEntrySet()) {
             BIReportNode tdNode = entry.getValue();
             if (ComparatorUtils.equals(pId, tdNode.getParentid())) {
