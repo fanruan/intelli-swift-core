@@ -15,8 +15,10 @@ BI.ChartCombineFormatItemFactory = {
                 item = BI.extend({"type": "bar"}, items);
                 break;
             case BICst.WIDGET.BUBBLE:
-            case BICst.WIDGET.FORCE_BUBBLE:
                 item = BI.extend({"type": "bubble"}, items);
+                break;
+            case BICst.WIDGET.FORCE_BUBBLE:
+                item = BI.extend({"type": "forceBubble"}, items);
                 break;
             case BICst.WIDGET.SCATTER:
                 item = BI.extend({"type": "scatter"}, items);
