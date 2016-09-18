@@ -2409,6 +2409,7 @@ Data.Utils = {
 
         function formatConfigForForceBubble(configs, items) {
             configs.colors = config.chart_color;
+            configs.chartType = 'forceBubble';
             switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
