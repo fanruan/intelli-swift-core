@@ -22,12 +22,13 @@ public class BIStringNIOWriter implements ICubeStringWriter {
     @Override
     public void recordSpecificValue(int specificPosition, String v) {
         byte[] b = null;
-        //pony string不需要区分null，只要空
-        String value = v == null ? StringUtils.EMPTY : v;
-        try {
-            b = value.getBytes(CubeConstant.CODE);
-        } catch (UnsupportedEncodingException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+        if (v != null) {
+            String value = v;
+            try {
+                b = value.getBytes(CubeConstant.CODE);
+            } catch (UnsupportedEncodingException e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
         }
         byteWriteMappedList.recordSpecificValue(specificPosition, b);
     }
