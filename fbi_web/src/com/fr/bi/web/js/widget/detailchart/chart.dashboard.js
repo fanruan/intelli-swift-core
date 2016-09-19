@@ -149,26 +149,26 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 })
             });
 
-            // config.plotOptions.tooltip.formatter.valueFormat = function () {
-            //     return BI.contentFormat(this, '#.##;-#.##') + getXYAxisUnit(type, position)
-            // };
-            //
-            // if (self.config.num_separators) {
-            //     config.plotOptions.tooltip.formatter.valueFormat = function () {
-            //         return BI.contentFormat(arguments[0], '#,###.##')
-            //     };
-            // }
-            //
-            // if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-            //     config.plotOptions.tooltip.formatter.valueFormat = function () {
-            //         return BI.contentFormat(arguments[0], '#0.00%')
-            //     };
-            //     if (self.config.num_separators) {
-            //         config.plotOptions.tooltip.formatter.valueFormat = function () {
-            //             return BI.contentFormat(arguments[0], '#,##0%')
-            //         };
-            //     }
-            // }
+            config.plotOptions.tooltip.formatter.valueFormat = function () {
+                return BI.contentFormat(this, '#.##;-#.##') + getXYAxisUnit(type, position)
+            };
+
+            if (self.config.num_separators) {
+                config.plotOptions.tooltip.formatter.valueFormat = function () {
+                    return BI.contentFormat(arguments[0], '#,###.##')
+                };
+            }
+
+            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                config.plotOptions.tooltip.formatter.valueFormat = function () {
+                    return BI.contentFormat(arguments[0], '#0.00%')
+                };
+                if (self.config.num_separators) {
+                    config.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#,##0%')
+                    };
+                }
+            }
         }
 
         function getXYAxisUnit(numberLevelType, position) {
