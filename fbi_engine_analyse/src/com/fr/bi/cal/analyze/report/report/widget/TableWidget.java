@@ -149,22 +149,6 @@ public class TableWidget extends BISummaryWidget {
         int summaryLen = getViewTargets().length;
         ArrayList<ArrayList<String>> row = data.getComplex_x_dimension();
         ArrayList<ArrayList<String>> column = data.getComplex_y_dimension();
-        ArrayList<BIDimension> dimensionList = new ArrayList<BIDimension>();
-        for (int i = 0; i < row.size(); i++) {
-            ArrayList<String> oneRow = row.get(i);
-
-            for (int j = 0; j < oneRow.size(); j++) {
-                dimensionList.add(BITravalUtils.getTargetByName(oneRow.get(j), dimensions));
-            }
-        }
-        dimensionList = new ArrayList<BIDimension>();
-        for (int i = 0; i < column.size(); i++) {
-            ArrayList<String> oneColumn = column.get(i);
-
-            for (int j = 0; j < oneColumn.size(); j++) {
-                dimensionList.add(BITravalUtils.getTargetByName(oneColumn.get(j), dimensions));
-            }
-        }
         BIComplexExecutData rowData = new BIComplexExecutData(row, dimensions);
         BIComplexExecutData columnData = new BIComplexExecutData(column, dimensions);
 
