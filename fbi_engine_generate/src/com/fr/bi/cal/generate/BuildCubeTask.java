@@ -25,11 +25,11 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
@@ -84,38 +84,26 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
-        BILogger.getLogger().info("start copy files from old cubes!");
         cubeBuild.copyFileFromOldCubes();
     }
 
     @Override
     public void end() {
         Future<String> result = finishObserver.getOperationResult();
-        long start = System.currentTimeMillis();
         try {
-            BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" start persist configure data!");
-            if (!cubeBuild.isSingleTable()) {
-                BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
-                BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
-            }
-            String message = result.get();
-            if (!finishObserver.success()) {
+            boolean cubeBuildSucceed = finishObserver.success();
+            if (!cubeBuildSucceed) {
                 checkTaskFinish();
             }
-            BILogger.getLogger().info(message);
 
+            String message = result.get();
+            BILogger.getLogger().info(message);
+            replaceOldCubes(cubeBuildSucceed);
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
-            try {
-                BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-                BILogger.getLogger().info("Persist Configure data finished,time cost: "+ DateUtils.timeCostFrom(start));
-                cube.addVersion(System.currentTimeMillis());
-                BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" Start Replacing Old Cubes, Stop All Analysis");
-                replaceOldCubes();
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
+            BILogger.getLogger().info("start persist data!");
+            BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
         }
     }
 
@@ -138,17 +126,33 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
-    private void replaceOldCubes() {
+    private void replaceOldCubes(boolean cubeBuildSucceed) {
+        String message = "";
         try {
-            BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            int times=0;
-            while (!cubeBuild.replaceOldCubes()){
-                BILogger.getLogger().error("cube replace failed after "+times+++" times try!It will try again in 5s");
-                Thread.sleep(5000);
+            if (cubeBuildSucceed) {
+                cube.addVersion(System.currentTimeMillis());
+                BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+                long start = System.currentTimeMillis();
+                BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
+                int times=0;
+                while (!cubeBuild.replaceOldCubes()){
+                    BILogger.getLogger().error("cube replace failed after "+times+++" times try!It will try again in 5s");
+                    BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+                    CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
+                    Thread.sleep(5000);
+                }
+                BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
+            }else {
+                message="Cube build failed ,the Cube files will not be replaced ";
             }
+
+            BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
+            BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            message=" cube build failed ! caused by "+ e;
+            BILogger.getLogger().error(e.getMessage(),e);
         } finally {
+            BILogger.getLogger().error(message);
             BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
             CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         }

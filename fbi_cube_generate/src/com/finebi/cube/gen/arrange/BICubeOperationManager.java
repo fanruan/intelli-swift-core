@@ -385,8 +385,12 @@ public class BICubeOperationManager {
                             getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
-                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
+                    if (path.getDependRelationPathSet().size() != 0) {
+                        for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
+                            operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
+                        }
+                    } else {
+                        operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {
@@ -424,15 +428,16 @@ public class BICubeOperationManager {
     /*为tableSource指定connection*/
     private CubeTableSource addConnection(CubeTableSource tableSource) {
         Connection connection = getConnection(tableSource);
-            if (null!=connection&&(tableSource.getType()== BIBaseConstant.TABLETYPE.SQL||tableSource.getType()== BIBaseConstant.TABLETYPE.DB)){
-                for (CubeTableSource source : connectionMap.keySet()) {
-                        if (source.getSourceID().equals(tableSource.getSourceID())){
-                        return source;
-                    }
+        if (null != connection && (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL || tableSource.getType() == BIBaseConstant.TABLETYPE.DB)) {
+            for (CubeTableSource source : connectionMap.keySet()) {
+                if (source.getSourceID().equals(tableSource.getSourceID())) {
+                    return source;
                 }
             }
+        }
         return tableSource;
     }
+
     protected BIRelationIndexGenerator getRelationBuilder(Cube cube, BITableSourceRelation relation) {
         return new BIRelationIndexGenerator(cube, BICubeRelationUtils.convert(relation));
     }
@@ -468,10 +473,10 @@ public class BICubeOperationManager {
                     discovery = BICubeIncreaseDisDiscovery.getInstance();
                     resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
                     cube = new BICube(resourceRetrievalService, discovery);
-                        if (tableSource instanceof ExcelTableSource) {
-                            return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+                    if (tableSource instanceof ExcelTableSource) {
+                        return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
                     } else {
-                            return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version, tableUpdateSetting);
+                        return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version, tableUpdateSetting);
                     }
                 }
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
