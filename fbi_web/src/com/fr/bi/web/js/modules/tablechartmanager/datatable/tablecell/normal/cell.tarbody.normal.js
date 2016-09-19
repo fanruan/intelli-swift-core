@@ -78,7 +78,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         switch (dot) {
             case BICst.TARGET_STYLE.FORMAT.NORMAL:
                 if(separators){
-                    num = BI.contentFormat(num, '#,###.##')
+                    num = BI.contentFormat(num, '#,###.##;-#,###.##')
                 } else {
                     num = BI.contentFormat(num, '#.##')
                 }
@@ -86,7 +86,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 break;
             case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
                 if(separators){
-                    num = BI.contentFormat(num, '#,###')
+                    num = BI.contentFormat(num, '#,###;-#,###')
                 } else {
                     num = BI.parseInt(num)
                 }
@@ -94,14 +94,14 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 break;
             case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
                 if(separators){
-                    num = BI.contentFormat(num, '#,###.0')
+                    num = BI.contentFormat(num, '#,###.0;-#,###.0')
                 } else {
                     num = BI.contentFormat(num, '#.0')
                 }
                 return num;
             case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
                 if(separators){
-                    num = BI.contentFormat(num, '#,###.00')
+                    num = BI.contentFormat(num, '#,###.00;-#,###.00')
                 } else {
                     num = BI.contentFormat(num, '#.00')
                 }
