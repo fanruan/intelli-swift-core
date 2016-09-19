@@ -66,7 +66,9 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                             getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
                     }
                 },
-                style: config.plotOptions.valueLabel.style,
+                style: BI.extend(config.plotOptions.valueLabel.style, {
+                    color: '#000000'
+                }),
                 useHtml: true
             };
             switch (self.config.chart_dashboard_type) {
