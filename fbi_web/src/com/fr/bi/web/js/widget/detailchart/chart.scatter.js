@@ -49,7 +49,6 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         config.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};
-        config.plotOptions.tooltip.formatter = this.config.tooltip;
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
@@ -72,6 +71,15 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.chartType = "scatter";
+
+        if (BI.isNotEmptyArray(this.config.tooltip)) {
+            config.plotOptions.tooltip.formatter = function () {
+                var y = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)(this.y);
+                var x = self.formatTickInXYaxis(self.config.x_axis_style, self.config.x_axis_number_level, self.config.right_num_separators)(this.x);
+                return this.seriesName + '<div>(X)' + self.config.tooltip[0]
+                    + ':' + x + '</div><div>(Y)' + self.config.tooltip[1] + ':' + y + '</div>'
+            };
+        }
 
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
@@ -236,7 +244,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
-            tooltip: options.tooltip || "",
+            tooltip: options.tooltip || [],
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
         };

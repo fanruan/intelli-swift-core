@@ -45,7 +45,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
-        var tableStyle = BI.createWidget({
+        this.tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [100],
             cls: "single-line-settings",
@@ -381,12 +381,13 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, this.lYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
+            items: [this.tableStyle, this.lYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
             hgap: 10
         })
     },
 
     _invisible: function (v) {
+        this.tableStyle.setVisible(v);
         this.lYAxis.setVisible(v);
         this.xAxis.setVisible(v);
         this.showElement.setVisible(v);
