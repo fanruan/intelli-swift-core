@@ -87,7 +87,10 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
                 top: 0,
                 bottom: 0
             }]
-        })
+        });
+
+        //element上加Id
+        this.element.attr("id", o.regionType);
     },
 
     addDimension: function (dId, options) {

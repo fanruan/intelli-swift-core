@@ -61,5 +61,8 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
         });
     }
 });
+BI.extend(BI.ComplexEmptyRegion, {
+    ID: "__complex_empty_region__"
+});
 BI.ComplexEmptyRegion.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.complex_empty_region", BI.ComplexEmptyRegion);
