@@ -1,6 +1,7 @@
 package com.fr.bi.fs;
 
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
+import com.fr.data.dao.DatabaseAction;
 import com.fr.fs.base.entity.User;
 
 import java.util.List;
@@ -120,6 +121,8 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
     public void removeSharedByReport(long reportId, long createBy) {
         BITableDataDAOManager.getInstance().removeSharedByReport(reportId, createBy);
     }
-
+    public void transfer(BISharedReportDAO entry) throws Exception {
+//        createSession(DatabaseAction.TRANSFER).transfer(entry);
+    }
 
 }
