@@ -77,8 +77,12 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractCreateT
      */
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        fieldName = jo.getString("field_name");
-        columnType = jo.getInt("field_type");
+        if (jo.has("field_name")) {
+            fieldName = jo.getString("field_name");
+        }
+        if (jo.has("field_type")) {
+            columnType = jo.getInt("field_type");
+        }
         if (jo.has("showfields")) {
             JSONArray ja = jo.getJSONArray("showfields");
             for (int i = 0; i < ja.length(); i++) {
