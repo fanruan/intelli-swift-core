@@ -30,7 +30,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     boolean[] initIndex = new boolean[INIT_INDEX_LENGTH];
     protected volatile boolean isValid = true;
     private ICubeSourceReleaseManager releaseManager;
-    private File baseFile;
+    protected File baseFile;
     private String readerHandler;
 
     public BIBasicNIOReader(File cacheFile) {

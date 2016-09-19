@@ -26,6 +26,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
+        config.chartType = 'forceBubble';
         config.colors = this.config.chart_color;
         this.formatChartLegend(config, this.config.chart_legend);
 
@@ -34,7 +35,6 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = true;
         config.plotOptions.dataLabels.align = "inside";
         config.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
-        config.chartType = "bubble";
         delete config.xAxis;
         delete config.yAxis;
         BI.each(items, function (idx, item) {
