@@ -85,8 +85,6 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
 
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
 
-        config.chartType = "axis";
-
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {

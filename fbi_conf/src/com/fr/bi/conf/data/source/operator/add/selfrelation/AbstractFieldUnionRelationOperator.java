@@ -27,6 +27,11 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractCreateT
     @BICoreField
     protected List<String> showFields = new ArrayList<String>();
 
+    @BICoreField
+    protected int columnType;
+    @BICoreField
+    protected String fieldName;
+
     AbstractFieldUnionRelationOperator(long userId) {
         super(userId);
     }
@@ -72,6 +77,12 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractCreateT
      */
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
+        if (jo.has("field_name")) {
+            fieldName = jo.getString("field_name");
+        }
+        if (jo.has("field_type")) {
+            columnType = jo.getInt("field_type");
+        }
         if (jo.has("showfields")) {
             JSONArray ja = jo.getJSONArray("showfields");
             for (int i = 0; i < ja.length(); i++) {
@@ -88,6 +99,8 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractCreateT
         for (String s : showFields) {
             ja.put(s);
         }
+        jo.put("field_type", columnType);
+        jo.put("field_name", fieldName);
         return jo;
     }
 
@@ -125,5 +138,22 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractCreateT
             }
         }
         return persistentTable;
+    }
+
+    @Override
+    public void readXML(XMLableReader reader) {
+        super.readXML(reader);
+        if (reader.isAttr()) {
+            fieldName = reader.getAttrAsString("field_name", "");
+            this.columnType = reader.getAttrAsInt("column_type", 0);
+//            md5 = reader.getAttrAsString("md5", StringUtils.EMPTY);
+        }
+    }
+
+    @Override
+    public void writeXML(XMLPrintWriter writer) {
+        super.writeXML(writer);
+        writer.attr("field_name", fieldName);
+        writer.attr("column_type", columnType);
     }
 }

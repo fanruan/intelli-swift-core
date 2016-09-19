@@ -55,11 +55,13 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
 
     private void createGroupValueWithParentValues(final List<String> dataList, String[] parentValues, GroupValueIndex filterGvi, int floors, int times) {
         if (floors == parentValues.length) {
-            BIDimension dimension = widget.getViewDimensions()[floors];
+            BIDimension[] dimensions = widget.getViewDimensions();
+            BIDimension dimension = dimensions[floors];
             ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable().getTableSource());
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey().getTableSource());
             List<BITableSourceRelation> list = widget.getTableSourceRelationList(dimension, session.getUserId());
             ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), list);
+
             if (times == -1) {
                 Iterator<Map.Entry> it = dataReader.iterator();
                 while (it.hasNext()) {

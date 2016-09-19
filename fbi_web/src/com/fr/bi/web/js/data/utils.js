@@ -2409,6 +2409,7 @@ Data.Utils = {
 
         function formatConfigForForceBubble(configs, items) {
             configs.colors = config.chart_color;
+            configs.chartType = 'forceBubble';
             switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
@@ -6518,8 +6519,10 @@ Data.Utils = {
                         item = BI.extend({"type": "bar"}, items);
                         break;
                     case BICst.WIDGET.BUBBLE:
-                    case BICst.WIDGET.FORCE_BUBBLE:
                         item = BI.extend({"type": "bubble"}, items);
+                        break;
+                    case BICst.WIDGET.FORCE_BUBBLE:
+                        item = BI.extend({"type": "forceBubble"}, items);
                         break;
                     case BICst.WIDGET.SCATTER:
                         item = BI.extend({"type": "scatter"}, items);

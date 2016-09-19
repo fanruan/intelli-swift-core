@@ -19,20 +19,20 @@ public class BIComplexExecutData {
 
             ArrayList<String> arrayList = arrayLists.get(index);
             int dimensionLen = arrayList.size();
-
-            BIDimension[] dimensions1 = new BIDimension[dimensionLen];
+            ArrayList<BIDimension> dimensionList = new ArrayList<BIDimension>();
 
             for (int i = 0; i < dimensionLen; i++) {
                 String dimensionName = arrayList.get(i);
-
-                for (int j = 0; j < dimensions.length; j++) {
-                    if (ComparatorUtils.equals(dimensions[j].getValue(), dimensionName)) {
-                        dimensions1[i] = dimensions[j];
+                for (BIDimension dimension : dimensions) {
+                    if (ComparatorUtils.equals(dimension.getValue(), dimensionName) && dimension.isUsed()) {
+                        dimensionList.add(dimension);
                     }
                 }
             }
+            if (dimensionList.size() > 0) {
+                arrrayDimensions.add(dimensionList.toArray(new BIDimension[dimensionList.size()]));
+            }
 
-            arrrayDimensions.add(dimensions1);
         }
     }
 
