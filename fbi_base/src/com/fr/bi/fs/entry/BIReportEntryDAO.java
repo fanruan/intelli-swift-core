@@ -1,6 +1,7 @@
 package com.fr.bi.fs.entry;
 
 import com.fr.data.dao.DAOException;
+import com.fr.data.dao.DatabaseAction;
 import com.fr.fs.dao.EntryDAO;
 
 /**
@@ -53,5 +54,8 @@ public class BIReportEntryDAO extends EntryDAO<BIReportEntry> {
 
     protected int getEntryType() {
         return EntryConstants.BIREPORT;
+    }
+    public void transfer(BIReportEntry entry) throws Exception {
+        createSession(DatabaseAction.TRANSFER).transfer(entry);
     }
 }
