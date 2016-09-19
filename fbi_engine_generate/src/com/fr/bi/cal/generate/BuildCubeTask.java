@@ -145,14 +145,14 @@ public class BuildCubeTask implements CubeTask {
             }else {
                 message="Cube build failed ,the Cube files will not be replaced ";
             }
-
+            BILogger.getLogger().info(message);
             BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
             BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
         } catch (Exception e) {
-            message=" cube build failed ! caused by "+ e;
-            BILogger.getLogger().error(e.getMessage(),e);
+            message=" cube build failed ! caused by ";
+            BILogger.getLogger().error(message+e.getMessage(),e);
         } finally {
-            BILogger.getLogger().error(message);
+
             BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
             CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         }
