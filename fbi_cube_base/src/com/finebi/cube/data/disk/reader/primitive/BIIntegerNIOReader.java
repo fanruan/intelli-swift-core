@@ -25,7 +25,7 @@ public class BIIntegerNIOReader extends BIBasicNIOReader implements ICubeInteger
             int pageIndex = getPage(filePosition);
             return intBufferArray[pageIndex].get(getIndex(filePosition));
         } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException("the expect position value is: " + getIndex(filePosition) + " and the current capacity  value is: " + intBufferArray[getPage(filePosition)].capacity() + " and the pageIndex is :" + getPage(filePosition) + e, e);
+            throw new RuntimeException("the file is: "+baseFile +" the expect position value is: " + getIndex(filePosition) + " and the current capacity  value is: " + intBufferArray[getPage(filePosition)].capacity() + " and the pageIndex is :" + getPage(filePosition) + e, e);
         } finally {
         }
 
