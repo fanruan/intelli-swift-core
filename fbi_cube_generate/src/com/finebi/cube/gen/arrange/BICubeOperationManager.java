@@ -377,7 +377,7 @@ public class BICubeOperationManager {
     * */
     public void generateTableRelationPath(Set<BICubeGenerateRelationPath> relationPathSet) {
         for (BICubeGenerateRelationPath path : relationPathSet) {
-            if (null != path && null != path.getBiTableSourceRelationPath()) {
+            if (null != path && null != path.getBiTableSourceRelationPath() && path.getDependRelationPathSet().size() != 0) {
                 try {
                     String sourceID = path.getBiTableSourceRelationPath().getSourceID();
                     BIOperation<Object> operation = new BIOperation<Object>(
@@ -385,12 +385,8 @@ public class BICubeOperationManager {
                             getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    if (path.getDependRelationPathSet().size() != 0) {
-                        for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
-                            operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
-                        }
-                    } else {
-                        operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
+                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
+                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {
