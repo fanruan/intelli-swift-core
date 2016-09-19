@@ -38,7 +38,7 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
                                 BISession session, ComplexExpander expander) {
 
         super(widget, page, session, expander);
-        rowData = new BIComplexExecutData(rowArray, null);
+        rowData = new BIComplexExecutData(rowArray, widget.getDimensions());
     }
 
     /**
