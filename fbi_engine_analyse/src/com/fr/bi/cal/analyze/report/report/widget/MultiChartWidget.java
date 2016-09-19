@@ -20,8 +20,8 @@ public class MultiChartWidget extends TableWidget {
     private int type;
     private String subType;
     private Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
-    private Map<String, BIDimension> dimensions = new HashMap<String, BIDimension>();
-    private Map<String, BISummaryTarget> targets = new HashMap<String, BISummaryTarget>();
+    private Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
+    private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
     private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
     private DetailChartSetting settings = new DetailChartSetting();
 
@@ -80,7 +80,7 @@ public class MultiChartWidget extends TableWidget {
                 if(key <= Integer.parseInt(BIReportConstant.REGION.DIMENSION2)){
                     List<String> dIds = entry.getValue();
                     if(dIds.contains(dimension.getValue())){
-                        dimensions.put(dimension.getValue(), dimension);
+                        dimensionsIdMap.put(dimension.getValue(), dimension);
                         break;
                     }
                 }
@@ -92,7 +92,7 @@ public class MultiChartWidget extends TableWidget {
                 if(key >= Integer.parseInt(BIReportConstant.REGION.TARGET1)){
                     List<String> dIds = entry.getValue();
                     if(dIds.contains(target.getValue())){
-                        targets.put(target.getValue(), target);
+                        targetsIdMap.put(target.getValue(), target);
                         break;
                     }
                 }
@@ -178,7 +178,11 @@ public class MultiChartWidget extends TableWidget {
             return null;
         }
         String id = drill.getJSONObject(drill.length() - 1).getString("dId");
-        return dimensions.get(id);
+        return dimensionsIdMap.get(id);
+    }
+
+    public BISummaryTarget getSummaryTargetById(String targetId){
+        return targetsIdMap.get(targetId);
     }
 
     public BIDimension getDimensionById(String id){

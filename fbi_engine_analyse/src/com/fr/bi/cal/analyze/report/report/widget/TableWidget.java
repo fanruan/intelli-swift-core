@@ -131,7 +131,8 @@ public class TableWidget extends BISummaryWidget {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
         if (this.table_type == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
-            return createComplexExecutor(session, calculateTarget, complexExpander, expander);
+            boolean hasTarget = calculateTarget || getViewTargets().length > 0;
+            return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
 
             return createNormalExecutor(session, calculateTarget, getViewDimensions(), getViewTopDimensions(), expander);
