@@ -1254,6 +1254,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/widget.summarytable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/summarytable.model.js",
 
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/complextable/widget.complextable.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/complextable/complextable.model.js",
+
                 //明细表
                 "com/fr/bi/web/js/modules/detailtable/widget.detailtable.js",
                 "com/fr/bi/web/js/modules/detailtable/cell/header.detailtable.js",

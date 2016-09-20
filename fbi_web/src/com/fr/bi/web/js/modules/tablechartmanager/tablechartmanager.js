@@ -29,8 +29,9 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         switch (v) {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
-            case BICst.WIDGET.COMPLEX_TABLE:
                 return this._createTable();
+            case BICst.WIDGET.COMPLEX_TABLE:
+                return this._createComplexTable();
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -83,6 +84,19 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             status: o.status
         });
         this.table.on(BI.SummaryTable.EVENT_CHANGE, function (obs) {
+            self.fireEvent(BI.TableChartManager.EVENT_CHANGE, obs);
+        });
+        return this.table;
+    },
+    
+    _createComplexTable: function() {
+        var self = this, o = this.options;
+        this.table = BI.createWidget({
+            type: "bi.complex_table",
+            wId: o.wId,
+            status: o.status
+        });
+        this.table.on(BI.ComplexTable.EVENT_CHANGE, function (obs) {
             self.fireEvent(BI.TableChartManager.EVENT_CHANGE, obs);
         });
         return this.table;

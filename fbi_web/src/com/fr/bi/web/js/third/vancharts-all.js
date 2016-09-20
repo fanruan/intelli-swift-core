@@ -6004,7 +6004,7 @@ define('HammerHandler',['require','./utils/BaseUtils','./Constants','./dom/DomEv
 
             var hammer = this.hammer = new Hammer.Manager(container);
 
-            hammer.add(new Hammer.Pan({ threshold: 0, pointers: 0 }));
+            hammer.add(new Hammer.Pan());
 
             hammer.add(new Hammer.Tap());
 
@@ -6029,7 +6029,6 @@ define('HammerHandler',['require','./utils/BaseUtils','./Constants','./dom/DomEv
                 var isPan = type == 'panstart' || type == 'panmove' || type == 'panend';
 
                 var target;
-
                 if(isPan && rootHandler.panTarget){
                     target = rootHandler.panTarget;
                 }else{
@@ -6554,6 +6553,11 @@ define('vector/Renderer',['require','../utils/Class','../utils/BaseUtils','./Ele
             var data = this._targets[BaseUtils.stamp(elementWrapper)];
             data && data.getEvents && data.off(data.getEvents(), data);
             data = null;
+        },
+
+        //只有svg需要
+        resize:function(){
+
         }
     });
 
@@ -6797,6 +6801,11 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
             }
 
             return root;
+        },
+
+        resize:function(){
+            var width = this.vanchart.width, height = this.vanchart.height;
+            this._container.style({width:width + 'px', height:height + 'px'});
         },
 
         line:function(attrs){
@@ -10340,6 +10349,8 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             var toolbar = this.getComponent(ComponentLibrary.TOOLBAR_COMPONENT);
             toolbar && toolbar.remove();
 
+            this.renderer.resize();
+
             this._refreshOptions();
         }
     });
@@ -10653,8 +10664,6 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./ComponentLib
                 });
             });
 
-            geo.fitMapBounds();
-
             var drillTools = vanchart.getComponent(ComponentLibrary.DRILL_TOOLS);
 
             if(isDrillDown){
@@ -10672,6 +10681,8 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./ComponentLib
                     this.layerIndex--;
                 }
             }
+
+            geo.fitMapBounds();
 
             this._refreshComponents();
 
@@ -13314,7 +13325,7 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
             var content = '', type = point.series.type, hasMap = this.vanchart.vanChartType == 'vanChartMap';
 
             if(type == Constants.SCATTER_CHART && !hasMap){
-                return this._createBubbleTooltipSeriesLine(data, label, style, formatter);
+                return this._createBubbleTooltipSeriesLine(point, label, style, formatter);
             }
 
             if (type === Constants.MULTIPIE_CHART) {
@@ -13346,7 +13357,7 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
             var textString;
 
             if(type == Constants.SCATTER_CHART && !hasMap) {
-                return this._createBubbleTooltipXYSizeLine(data, label, style, formatter);
+                return this._createBubbleTooltipXYSizeLine(point, label, style, formatter);
             }
 
             if (type === Constants.MULTIPIE_CHART) {
@@ -23838,9 +23849,9 @@ define('component/CategoryAxis',['require','./Base','./BaseAxis','../utils/BaseU
                         categories.push(tickLabel);
                     }
                 }
-
-                if (sery.type !== Constants.AREA_CHART || sery.type !== Constants.LINE_CHART) {
-                    axis.isRangePoints = false;
+                
+                if (sery.type !== Constants.AREA_CHART) {
+                    this.isRangePoints = false;
                 }
 
             }, this);
