@@ -23,4 +23,14 @@ public class BITableRelationPath extends BIBasicRelationPath<BusinessTable, Busi
             addRelationAtTail(relations[i]);
         }
     }
+    public boolean containsRelation(BITableRelation relation){
+        if (null!=relation) {
+            for (BITableRelation tableRelation : container) {
+                if (tableRelation.hashCode() == relation.hashCode()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
