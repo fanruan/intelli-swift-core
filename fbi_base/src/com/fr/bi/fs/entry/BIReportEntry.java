@@ -10,7 +10,6 @@ import com.fr.data.dao.CommonFieldColumnMapper;
 import com.fr.data.dao.FieldColumnMapper;
 import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.dao.PrimaryKeyFCMapper;
-import com.fr.fs.anchor.impl.PrivilegeAnchor;
 import com.fr.fs.web.platform.entry.BaseEntry;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -31,12 +30,27 @@ public class BIReportEntry extends BaseEntry {
     private static final int COLUMNSIZE_ID = 10;
     private static final int COLUMNSIZE_STRING = 255;
     private static final int COLUMNSIZE_BOOLEAN = 1;
+    private static final int COLUMNSIZE_INTEGER = 5;
 
     private long reportId;
     private long createBy;
     private String reportName = null;
     private String mobileCoverId;
     private boolean systemReport = true;
+//    private int mobileDeviceConfig;
+//    private int parentDeviceConfig;
+
+    public BIReportEntry(long var1,long var2,String var3,String var4,boolean var5){
+        this.reportId=var1;
+        this.createBy=var2;
+        this.reportName=var3;
+        this.mobileCoverId=var4;
+        this.systemReport=var5;
+    }
+
+    public BIReportEntry(){
+
+    }
 
     public long getReportId() {
         return reportId;
@@ -65,19 +79,39 @@ public class BIReportEntry extends BaseEntry {
     public String getMobileCoverId() {
         return mobileCoverId;
     }
-
     @Override
     public void setMobileCoverId(String mobileCoverId) {
         this.mobileCoverId = mobileCoverId;
     }
 
+    public void setSystemReport(boolean systemReport){
+        this.systemReport=systemReport;
+    }
+
+    public boolean isSystemReport(){
+        return systemReport;
+    }
+
+//    public int getMobileDeviceConfig(){
+//        return mobileDeviceConfig;
+//    }
+//    public int getParentDeviceConfig(){
+//        return parentDeviceConfig;
+//    }
+//    private void setMobileDeviceConfig(int mobileDeviceConfig){
+//        this.mobileDeviceConfig=mobileDeviceConfig;
+//    }
+//    private void setParentDeviceConfig(int parentDeviceConfig){
+//        this.parentDeviceConfig=parentDeviceConfig;
+//    }
+
     public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(
             BIReportEntry.class, new Table(TABLE_NAME),
             new FieldColumnMapper[] {
                     new PrimaryKeyFCMapper("id", BaseEntry.IDTYPE, new ColumnSize(COLUMNSIZE_ID)),
-                    new CommonFieldColumnMapper("parentId", BaseEntry.PARENTIDTYPE,
+                    new CommonFieldColumnMapper("parent", BaseEntry.PARENTIDTYPE,
                             BaseEntry.PARENTID, new ColumnSize(COLUMNSIZE_ID), false),
-                    new CommonFieldColumnMapper("displayName", BaseEntry.DISPLAYNAMETYPE,
+                    new CommonFieldColumnMapper("name", BaseEntry.DISPLAYNAMETYPE,
                             BaseEntry.DISPLAYNAME, new ColumnSize(COLUMNSIZE_STRING), false),
                     new CommonFieldColumnMapper("reportName", Types.VARCHAR,
                             REPORTNAME, new ColumnSize(COLUMNSIZE_STRING), false),
@@ -89,6 +123,10 @@ public class BIReportEntry extends BaseEntry {
                             BaseEntry.DESCRIPTION, new ColumnSize(COLUMNSIZE_STRING), true),
                     new CommonFieldColumnMapper("sortindex", BaseEntry.SORTINDEXTYPE,
                             BaseEntry.SORTINDEX, new ColumnSize(10), true),
+//                    new CommonFieldColumnMapper("mobileDeviceConfig", BaseEntry.SORTINDEXTYPE,
+//                            "mobileDeviceConfig", new ColumnSize(10), true),
+//                    new CommonFieldColumnMapper("parentDeviceConfig", BaseEntry.SORTINDEXTYPE,
+//                             "parentDeviceConfig", new ColumnSize(10), true),
                     new CommonFieldColumnMapper("mobileCoverId", COVERIDTYPE,
                             COVERID, new ColumnSize(50), true),
                     new CommonFieldColumnMapper("createBy", Types.BIGINT,
