@@ -103,7 +103,9 @@ public class BuildCubeTask implements CubeTask {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
             BILogger.getLogger().info("start persist data!");
+            long t= System.currentTimeMillis();
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
+            BILogger.getLogger().info("persist data finished! time cost: "+ DateUtils.timeCostFrom(t));
         }
     }
 
@@ -141,18 +143,19 @@ public class BuildCubeTask implements CubeTask {
                     CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
                     Thread.sleep(5000);
                 }
-                BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
+                    BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
+                    BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
+                    BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
             }else {
                 message="Cube build failed ,the Cube files will not be replaced ";
             }
-
+            BILogger.getLogger().info(message);
             BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
             BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
         } catch (Exception e) {
-            message=" cube build failed ! caused by "+ e;
-            BILogger.getLogger().error(e.getMessage(),e);
+            message=" cube build failed ! caused by ";
+            BILogger.getLogger().error(message+e.getMessage(),e);
         } finally {
-            BILogger.getLogger().error(message);
             BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
             CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         }

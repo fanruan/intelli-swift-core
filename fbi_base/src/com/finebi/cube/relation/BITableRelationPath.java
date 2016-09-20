@@ -25,11 +25,7 @@ public class BITableRelationPath extends BIBasicRelationPath<BusinessTable, Busi
     }
     public boolean containsRelation(BITableRelation relation){
         if (null!=relation) {
-            for (BITableRelation tableRelation : container) {
-                if (tableRelation.hashCode() == relation.hashCode()){
-                    return true;
-                }
-            }
+            return container.contains(relation);
         }
         return false;
     }
