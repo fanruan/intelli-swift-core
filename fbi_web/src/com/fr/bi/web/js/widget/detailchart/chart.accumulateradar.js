@@ -7,7 +7,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.AccumulateRadarChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-accumulate-bar-chart"
+            baseCls: "bi-accumulate-radar-chart"
         })
     },
 
