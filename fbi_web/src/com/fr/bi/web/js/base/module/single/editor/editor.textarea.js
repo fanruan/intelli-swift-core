@@ -38,12 +38,16 @@ BI.TextAreaEditor = BI.inherit(BI.Single, {
         });
 
         this.content.element.focus(function () {
-            self.content.element.addClass("textarea-editor-focus");
-            self.fireEvent(BI.TextAreaEditor.EVENT_FOCUS);
+            if (self.isValid()) {
+                self.content.element.addClass("textarea-editor-focus");
+                self.fireEvent(BI.TextAreaEditor.EVENT_FOCUS);
+            }
         });
         this.content.element.blur(function () {
-            self.content.element.removeClass("textarea-editor-focus");
-            self.fireEvent(BI.TextAreaEditor.EVENT_BLUR);
+            if (self.isValid()) {
+                self.content.element.removeClass("textarea-editor-focus");
+                self.fireEvent(BI.TextAreaEditor.EVENT_BLUR);
+            }
         });
         if (BI.isKey(o.value)) {
             self.setValue(o.value);

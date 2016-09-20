@@ -840,6 +840,12 @@ public class ResourceHelper {
                 //全局样式
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.css",
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.setting.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexcombo.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indextitletoolbar.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexalignchooser.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexpredictionstyle.css",
+                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.usercustombutton.css",
+                "com/fr/bi/web/css/modules/globalstyle/uploadimage/widget.uploadimage.preview.css",
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
 
@@ -1254,6 +1260,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/widget.summarytable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/summarytable.model.js",
 
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/complextable/widget.complextable.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/complextable/complextable.model.js",
+
                 //明细表
                 "com/fr/bi/web/js/modules/detailtable/widget.detailtable.js",
                 "com/fr/bi/web/js/modules/detailtable/cell/header.detailtable.js",
@@ -1515,6 +1524,20 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/linkage/linkage.target.js",
                 "com/fr/bi/web/js/modules/linkage/linkage.targets.js",
                 "com/fr/bi/web/js/modules/linkage/linkage.js",
+
+                //全局样式
+                "com/fr/bi/web/js/modules/globalstyle/widget.globalstyle.js",
+                "com/fr/bi/web/js/modules/globalstyle/widget.globalstyle.setting.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcombo.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcharttoolbar.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.leftright.canvasbutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.usercustombutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.stylebutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.js",
+                "com/fr/bi/web/js/modules/globalstyle/stylemanager/stylesetmanager.js",
 
                 //onewidget
                 "com/fr/bi/web/js/modules/onewidget/onewidget.js",
@@ -2155,6 +2178,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/controller/router.floatbox.js",
                 "com/fr/bi/web/js/base/controller/controller.bubbles.js",
                 "com/fr/bi/web/js/base/controller/controller.tooltips.js",
+                "com/fr/bi/web/js/base/loader/loader.style.js",
                 "com/fr/bi/web/js/base/event/event.list.js",
                 "com/fr/bi/web/js/base/event/off.list.js",
                 "com/fr/bi/web/js/base/event/listener.list.js",
