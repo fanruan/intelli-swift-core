@@ -11,7 +11,7 @@ BIShow.YearWidgetView = BI.inherit(BI.View, {
     
     _defaultConfig: function () {
         return BI.extend(BIShow.YearWidgetView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-widget"
+            baseCls: "bi-dashboard-widget bi-control-widget"
         })
     },
 

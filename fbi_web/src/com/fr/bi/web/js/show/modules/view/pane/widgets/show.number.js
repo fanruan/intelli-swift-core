@@ -11,7 +11,7 @@ BIShow.NumberWidgetView = BI.inherit(BI.View, {
     
     _defaultConfig: function () {
         return BI.extend(BIShow.NumberWidgetView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-widget"
+            baseCls: "bi-dashboard-widget bi-control-widget"
         })
     },
 

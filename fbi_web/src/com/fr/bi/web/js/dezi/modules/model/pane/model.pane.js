@@ -3,7 +3,8 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.PaneModel.superclass._defaultConfig.apply(this), {
             layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
             layoutRatio: {},
-            widgets: {}
+            widgets: {},
+            globalStyle: {}
         });
     },
 
@@ -26,13 +27,14 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         BIDezi.PaneModel.superclass._init.apply(this, arguments);
         var self = this;
         this.operatorIndex = 0;
-        this.saveDebounce = BI.debounce(function (widgets, dims, layoutType) {
+        this.saveDebounce = BI.debounce(function (widgets, dims, layoutType, globalStyle) {
             var records = Data.SharingPool.cat("records") || new BI.Queue(30);
             records.splice(self.operatorIndex + 1);
             records.push({
                 dimensions: dims,
                 widgets: widgets,
-                layoutType: layoutType
+                layoutType: layoutType,
+                globalStyle: globalStyle
             });
             Data.SharingPool.put("records", records);
             self.operatorIndex = records.size() - 1;
@@ -104,6 +106,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("dimensions", ob.dimensions);
         Data.SharingPool.put("widgets", ob.widgets);
         Data.SharingPool.put("layoutType", ob.layoutType);
+        Data.SharingPool.put("globalStyle", ob.globalStyle);
         this.set(ob);
     },
 
@@ -152,6 +155,9 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                 BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX);
             }
         }
+        if(BI.has(changed, "globalStyle")) {
+            BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, changed.globalStyle);
+        }
     },
 
     refresh: function () {
@@ -164,6 +170,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("widgets", widgets);
         Data.SharingPool.put("layoutType", this.get("layoutType"));
         Data.SharingPool.put("layoutRatio", this.get("layoutRatio"));
+        Data.SharingPool.put("globalStyle", this.get("globalStyle"));
 
         if (this.isIniting) {
             this.isIniting = false;
@@ -174,6 +181,6 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         }
 
         //用于undo redo
-        this.saveDebounce(widgets, dims, this.get("layoutType"));
+        this.saveDebounce(widgets, dims, this.get("layoutType"), this.get("globalStyle"));
     }
 });
