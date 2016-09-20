@@ -16,6 +16,7 @@ import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,6 +83,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
     }
 
     protected void copyFromOldCubes() {
+        long t=System.currentTimeMillis();
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
         try {
@@ -93,7 +95,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
         } catch (URISyntaxException e) {
             BILogger.getLogger().error(e.getMessage());
         }
-
+BILogger.getLogger().info("table name: "+ tableSource.getTableName() +" update copy files cost time:" + DateUtils.timeCostFrom(t));
     }
 
     private Set<String> getParentFieldNames() {

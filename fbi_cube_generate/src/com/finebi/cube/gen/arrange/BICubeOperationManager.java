@@ -38,6 +38,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
+import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.impl.Connection;
 import com.fr.fs.control.UserControl;
@@ -357,6 +358,16 @@ public class BICubeOperationManager {
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {
+                    try {
+                        BILogger.getLogger().info("the relation info listed");
+                        BILogger.getLogger().info(relation.getRelation().toString());
+                        BILogger.getLogger().info("the tables this relation depends listed");
+                        for (CubeTableSource source : relation.getDependTableSourceSet()) {
+                            BILogger.getLogger().info(source.getTableName()+" "+source.getSourceID());
+                        }
+                    } catch (Exception e1) {
+                        BILogger.getLogger().error(e1.getMessage(), e1);
+                    }
                     throw BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
             }
@@ -390,6 +401,14 @@ public class BICubeOperationManager {
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {
+                    try {
+                        BILogger.getLogger().info("the relation this path contained listed");
+                        for (BITableSourceRelation relation : path.getBiTableSourceRelationPath().getAllRelations()) {
+                            BILogger.getLogger().info(relation.toString());
+                        }
+                    } catch (Exception e1) {
+                        BILogger.getLogger().error(e1.getMessage(), e1);
+                    }
                     throw BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
             }
