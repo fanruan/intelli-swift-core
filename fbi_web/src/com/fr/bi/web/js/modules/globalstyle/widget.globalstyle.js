@@ -11,7 +11,6 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.GlobalStyle.superclass._init.apply(this, arguments);
-        this.id = BI.UUID();
         var self = this;
         var globalStyleButton = BI.createWidget({
             type: "bi.icon_text_item",
@@ -23,7 +22,7 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
         });
         globalStyleButton.on(BI.Button.EVENT_CHANGE, function () {
             var cacheGS = {};
-            if (BI.isNull(self.globalStyle)) {
+            if (BI.isNull(self.globalStyleSetting)) {
                 var layer = BI.Layers.create(BICst.GLOBAL_STYLE_LAYER);
                 self.globalStyleSetting = BI.createWidget({
                     type: "bi.global_style_setting"
@@ -74,7 +73,7 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
                 });
             } else {
                 BI.Layers.show(BICst.GLOBAL_STYLE_LAYER);
-                this.globalStyleSetting.populate();
+                self.globalStyleSetting.populate();
             }
         });
     },
@@ -86,7 +85,7 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
     populate: function (gs) {
         var globalStyle = gs || BI.Utils.getGlobalStyle();
         var manager = new BI.StyleSetManager;
-        manager.setGlobalStyle(this.id, globalStyle);
+        manager.setGlobalStyle("globalstyle", globalStyle);
     }
 });
 BI.GlobalStyle.EVENT_SET = "EVENT_SET";

@@ -66,7 +66,7 @@ sourceSets{
 }
 //声明外部依赖
 dependencies{
-	compile fileTree(dir:"${BI_HOME}",include:'lib/**/*.jar')
+	compile fileTree(dir:"${BI_HOME}/${branchName}",include:'lib/**/*.jar')
 	testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
@@ -118,7 +118,7 @@ task compressJS(dependsOn:'copyFile'){
 //添加打包时间
 task addTime(dependsOn:'compressJS'){
 	def date = new Date()
-	def formattedDate = date.format('yyyy.MM.dd.hh.mm.ss.S')
+	def formattedDate = date.format('yyyy.MM.dd.HH.mm.ss.S')
 	File file =file(new File('build/classes/main/bibuild.txt'))
 	FileWriter fw=new FileWriter(file)
 	fw.write(formattedDate)
