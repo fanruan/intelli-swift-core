@@ -15,6 +15,8 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -153,6 +155,19 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
             } finally {
 
             }
+        }
+    }
+
+    public List<ICubeResourceLocation> getUnReleasedLocation(){
+        synchronized (this){
+            List<ICubeResourceLocation> locations=new ArrayList<ICubeResourceLocation>();
+            try {
+                locations = readerCache.getUnReleasedLocation();
+                locations.addAll(writerCache.getUnReleasedLocation());
+            } catch (Exception e) {
+                BILogger.getLogger().error(e.getMessage(), e);
+            }
+            return locations;
         }
     }
 }

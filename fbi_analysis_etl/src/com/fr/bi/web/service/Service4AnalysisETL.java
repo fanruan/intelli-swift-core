@@ -8,6 +8,7 @@ import com.fr.fs.privilege.auth.FSAuthenticationManager;
 import com.fr.fs.web.service.AbstractFSAuthService;
 import com.fr.privilege.base.PrivilegeVote;
 import com.fr.stable.fun.Service;
+import com.fr.stable.web.RequestCMDReceiver;
 import com.fr.web.core.ActionCMD;
 import com.fr.web.core.ErrorHandlerHelper;
 import com.fr.web.core.SessionDealWith;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Service4AnalysisETL implements Service {
 
-    private static ActionCMD[] actions = {
+    private static RequestCMDReceiver[] actions = {
         new BISaveAnalysisETLTableAction(),
         new BIAnalysisETLGetFieldValueAction(),
         new BIDeleteAnalysisETLTableAction(),
