@@ -5,6 +5,8 @@ import com.finebi.cube.data.cache.IResourceCacheItem;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.sun.javafx.collections.MappingChange;
 
+import java.util.List;
+
 /**
  * This class created on 2016/5/1.
  *
@@ -34,5 +36,10 @@ public class ResourceCache<R> implements IResourceCache<R> {
     @Override
     public void forceRelease() {
 
+    }
+
+    @Override
+    public List getUnReleasedLocation() {
+        return null;
     }
 }
