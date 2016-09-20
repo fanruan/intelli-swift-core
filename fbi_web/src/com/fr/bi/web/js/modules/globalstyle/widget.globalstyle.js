@@ -83,6 +83,7 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
     },
 
     populate: function (gs) {
+        $("body").remove("bi-default bi-dark bi-light").addClass("bi-light");
         var globalStyle = gs || BI.Utils.getGlobalStyle();
         var manager = new BI.StyleSetManager;
         manager.setGlobalStyle("globalstyle", globalStyle);
