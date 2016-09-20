@@ -591,6 +591,49 @@
             }
         },
 
+        //global style ---- start ----
+        getGlobalStyle: function () {
+            return Data.SharingPool.get("globalStyle") || {};
+        },
+
+        getGSMainBackground: function () {
+            var gs = this.getGlobalStyle();
+            return gs.mainBackground;
+        },
+
+        getGSWidgetBackground: function () {
+            var gs = this.getGlobalStyle();
+            return gs.widgetBackground;
+        },
+
+        getGSTitleBackground: function () {
+            var gs = this.getGlobalStyle();
+            return gs.titleBackground;
+        },
+
+        getGSTitleFont: function () {
+            var gs = this.getGlobalStyle();
+            return gs.titleFont;
+        },
+
+        getGSNamePos: function () {
+            var gs = this.getGlobalStyle();
+            if (BI.isNotNull(gs.titleFont)) {
+                if (gs["titleFont"]["text-align"] === "left") {
+                    return BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
+                }
+                if (gs["titleFont"]["text-align"] === "center") {
+                    return BICst.DASHBOARD_WIDGET_NAME_POS_CENTER
+                }
+            }
+        },
+
+        //global style ---- end ----
+
+        getCalculateValue: function (did) {
+            return Data.SharingPool.get("calculateValue", did) || []
+        },
+
         //settings  ---- start ----
         getWSTableFormByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
@@ -690,8 +733,10 @@
 
         getWSNamePosByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.name_pos) ? ws.name_pos :
-                BICst.DEFAULT_CHART_SETTING.name_pos;
+            var gsNamePos = this.getGSNamePos();
+            return ws.name_pos
+                || gsNamePos
+                || BICst.DEFAULT_CHART_SETTING.name_pos;
         },
 
         getWSColumnSizeByID: function (wid) {
@@ -718,8 +763,10 @@
                 }
             }
 
+            var gs = this.getGlobalStyle();
             var ws = this.getWidgetSettingsByID(wid);
             return ws.chart_color
+                || gs.chartColor
                 || getDefaultColor()
                 || BICst.DEFAULT_CHART_SETTING.chart_color;
         },
@@ -736,6 +783,10 @@
             var chartStyle;
             if (BI.isNotNull(ws.chart_style)) {
                 return ws.chart_style;
+            }
+            var gs = this.getGlobalStyle();
+            if (BI.isNotNull(gs.chartStyle)) {
+                return gs.chartStyle
             }
             if (BI.isNotNull(chartStyle = getChartStyle())) {
                 return chartStyle;
