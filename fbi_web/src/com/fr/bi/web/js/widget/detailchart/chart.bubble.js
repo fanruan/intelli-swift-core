@@ -7,7 +7,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.BubbleChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-scatter-chart"
+            baseCls: "bi-bubble-chart"
         })
     },
 
