@@ -355,6 +355,9 @@ public class DimensionGroupFilter {
     private void clearLastIndex(GroupConnectionValue[] roots, int firstChangeDeep) {
         if (roots != null){
             for (GroupConnectionValue root : roots){
+                if (root == null){
+                    continue;
+                }
                 GroupConnectionValue chain = root.getChild();
                 while (firstChangeDeep != 0){
                     if (chain == null){
