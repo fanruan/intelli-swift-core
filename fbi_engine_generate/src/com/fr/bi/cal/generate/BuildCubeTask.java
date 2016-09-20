@@ -100,7 +100,6 @@ public class BuildCubeTask implements CubeTask {
             if (!cubeBuildSucceed) {
                 checkTaskFinish();
             }
-
             String message = result.get();
             BILogger.getLogger().info(message);
             if (cubeBuildSucceed) {
@@ -182,13 +181,6 @@ public class BuildCubeTask implements CubeTask {
                 BILogger.getLogger().error(e1.getMessage(), e1);
             }
             return false;
-        } finally {
-            try {
-                BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
-                CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
         }
     }
 
