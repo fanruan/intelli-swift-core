@@ -6,6 +6,7 @@ import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.location.BICubeResourceRetrieval;
@@ -34,7 +35,7 @@ public class CubeTaskHelper {
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
     public static boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
-        BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" Cube single table update start");
+        BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
         CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(hostTableId), childTableSourceId, userId, updateType);
         boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
@@ -45,16 +46,30 @@ public class CubeTaskHelper {
         CubeBuild cubeBuild;
         /*若cube不存在,全局更新*/
 /*若有新增表或者新增关联，增量更新，否则进行全量*/
-//        if (isPart(userId)) {
-//            BILogger.getLogger().info("Cube part update start");
-//            cubeBuild = new CubeBuildByPart(userId, BICubeGenerateUtils.getTables4CubeGenerate(userId), BICubeGenerateUtils.getRelations4CubeGenerate(userId));
-//        } else {
-        cubeBuild = new CubeBuildStaff(new BIUser(userId));
-        BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" preCondition checking");
-//        }
+        StringBuffer msg = new StringBuffer();
+        if (isPart(userId)) {
+            Set<BIBusinessTable> businessTables = BICubeGenerateUtils.getTables4CubeGenerate(userId);
+            Set<BITableRelation> relations = BICubeGenerateUtils.getRelations4CubeGenerate(userId);
+            cubeBuild = new CubeBuildByPart(userId, businessTables, relations);
+            msg.append(" Cube part update start"+"\n");
+            for (BIBusinessTable table : businessTables) {
+                msg.append(table.getTableSource().getTableName()+"\n");
+            }
+            for (BITableRelation relation : relations) {
+                try {
+                    msg.append(relation.createJSON().toString()+"\n");
+                } catch (Exception e) {
+                    BILogger.getLogger().error(e.getMessage(), e);
+                }
+            }
+        } else {
+            msg.append(" Cube all update start");
+            cubeBuild = new CubeBuildStaff(new BIUser(userId));
+            BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " preCondition checking……");
+        }
         if (preConditionsCheck(userId, cubeBuild)) {
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
-            BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" Cube all update start");
+            BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + msg);
             taskAddResult = cubeManager.addTask(task, userId);
         }
         return taskAddResult;
