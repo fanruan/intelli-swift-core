@@ -29,6 +29,7 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
                 });
                 result += "} ";
             });
+            setLoad.removeStyle(id);
             setLoad.loadStyle(id, result);
         }
     },
