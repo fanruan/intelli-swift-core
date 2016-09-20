@@ -137,7 +137,7 @@ public class BuildCubeTask implements CubeTask {
                 long start = System.currentTimeMillis();
                 BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
                 int times=0;
-                while (!cubeBuild.replaceOldCubes()&&times<=5){
+                while (!cubeBuild.replaceOldCubes()){
                     BILogger.getLogger().error("cube replace failed after "+times+++" times try!It will try again in 5s");
                     BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
                     CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
