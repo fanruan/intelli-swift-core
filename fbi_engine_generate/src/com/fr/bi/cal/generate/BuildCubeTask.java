@@ -15,6 +15,7 @@ import com.finebi.cube.impl.message.BIMessageTopic;
 import com.finebi.cube.impl.operate.BIOperationID;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageTopic;
@@ -96,12 +97,13 @@ public class BuildCubeTask implements CubeTask {
     public void end() {
         Future<String> result = finishObserver.getOperationResult();
         try {
+            String message = result.get();
+            BILogger.getLogger().info(message);
             boolean cubeBuildSucceed = finishObserver.success();
             if (!cubeBuildSucceed) {
                 checkTaskFinish();
             }
-            String message = result.get();
-            BILogger.getLogger().info(message);
+
             if (cubeBuildSucceed) {
                 cube.addVersion(System.currentTimeMillis());
                 long start = System.currentTimeMillis();
@@ -161,6 +163,9 @@ public class BuildCubeTask implements CubeTask {
                     break;
                 }
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+                for (ICubeResourceLocation location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {
+                    BILogger.getLogger().error("error: the filePath is : "+location.getBaseLocation()+location.getChildLocation());
+                }
                 replaceSuccess = cubeBuild.replaceOldCubes();
                 BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
@@ -175,7 +180,7 @@ public class BuildCubeTask implements CubeTask {
         } catch (Exception e) {
             String message = " cube build failed ! caused by \n" + e.getMessage();
             BILogger.getLogger().error(message, e);
-            try {
+            try{
                 BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
             } catch (Exception e1) {
                 BILogger.getLogger().error(e1.getMessage(), e1);
