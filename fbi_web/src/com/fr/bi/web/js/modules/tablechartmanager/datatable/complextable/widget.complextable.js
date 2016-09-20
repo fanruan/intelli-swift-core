@@ -345,7 +345,7 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
     },
 
     _prepareData: function() {
-        this.model.createTableAttrs();
+        this.model.createTableAttrs(BI.bind(this._onClickHeaderOperator, this), BI.bind(this._populateNoDimsChange, this), BI.bind(this._onClickBodyCellOperator, this));
     },
 
     /**

@@ -168,7 +168,8 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         var sortedRegions = BI.sortBy(regionIds);
         //行表头、列表头都只需要第一个分组中使用中的维度
         BI.some(sortedRegions, function (i, sRegion) {
-            if (BI.parseInt(sRegion) < BI.parseInt(BICst.REGION.DIMENSION2)) {
+            if (BI.parseInt(sRegion) < BI.parseInt(BICst.REGION.DIMENSION2) &&
+                view[sRegion].length > 0) {
                 BI.each(view[sRegion], function (j, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
                 });
@@ -177,7 +178,8 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         });
         BI.some(sortedRegions, function (i, sRegion) {
             if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(sRegion) &&
-                BI.parseInt(sRegion) < BI.parseInt(BICst.REGION.TARGET1)) {
+                BI.parseInt(sRegion) < BI.parseInt(BICst.REGION.TARGET1) &&
+                view[sRegion].length > 0) {
                 BI.each(view[sRegion], function (j, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
                 });
@@ -189,6 +191,31 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         BI.each(view[BICst.REGION.TARGET1], function (i, dId) {
             BI.Utils.isDimensionUsable(dId) && (self.targetIds.push(dId));
         });
+    },
+
+    _getRowRegions: function () {
+        var rowRegions = {};
+        var view = BI.Utils.getWidgetViewByID(this.wId);
+        BI.each(view, function (regionId, dIds) {
+            if (BI.parseInt(regionId) < BI.parseInt(BICst.REGION.DIMENSION2) &&
+                dIds.length > 0) {
+                rowRegions[regionId] = dIds;
+            }
+        });
+        return rowRegions;
+    },
+
+    _getColRegions: function () {
+        var colRegions = {};
+        var view = BI.Utils.getWidgetViewByID(this.wId);
+        BI.each(view, function (regionId, dIds) {
+            if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(regionId) &&
+                BI.parseInt(regionId) < BI.parseInt(BICst.REGION.TARGET1) &&
+                dIds.length > 0) {
+                colRegions[regionId] = dIds;
+            }
+        });
+        return colRegions;
     },
 
     /**
@@ -287,19 +314,36 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
      */
     _createComplexTableItems: function () {
         var self = this;
-        var tempItems = [];
+        var tempItems = [], tempCrossItems = [];
+        // 如果行表头和列表头都只有一个region构造一个二维的数组
+        if (BI.isNotNull(this.data.l) && BI.isNotNull(this.data.t)) {
+            this.data = [[this.data]];
+        }
         BI.each(this.data, function (i, rowTables) {
             self.rowValues = {};
             BI.each(rowTables, function (j, tableData) {
                 //parse一个表结构
-                var singleTable = self._createSingleCrossTableItems(tableData);
+                var singleTable = self._createSingleCrossTableItems(tableData, self._getDimsByDataPos(i, j));
                 self._parseRowTableItems(singleTable.item);
                 if (j === 0) {
                     tempItems.push(singleTable.item);
                 }
+                tempCrossItems.push(singleTable.crossItem);
             });
         });
-        self._parseColTableItems(tempItems);
+        this._parseColTableItems(tempItems);
+        this._parseRowTableCrossItems(tempCrossItems);
+    },
+
+    _getDimsByDataPos: function (row, col) {
+        var rowRegions = this._getRowRegions();
+        var colRegions = this._getColRegions();
+        var sortedRowRIds = BI.sortBy(BI.keys(rowRegions));
+        var sortedColRIds = BI.sortBy(BI.keys(colRegions));
+        return {
+            dimIds: rowRegions[sortedRowRIds[row]],
+            crossDimIds: colRegions[sortedColRIds[col]]
+        };
     },
 
     //对于首层，可以以行号作为key，其他层以dId + text作为key
@@ -333,6 +377,17 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         }
     },
 
+    _parseRowTableCrossItems: function (tempCrossItems) {
+        this.crossItems = [];
+        var children = [];
+        BI.each(tempCrossItems, function (i, tCrossItem) {
+            children = children.concat(tCrossItem.children);
+        });
+        this.crossItems = [{
+            children: children
+        }];
+    },
+
     // 处理列 针对于children
     // 要将所有的最外层的values处理成children
     _parseColTableItems: function (tempItems) {
@@ -353,7 +408,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
     /**
      * 交叉表 items and crossItems
      */
-    _createSingleCrossTableItems: function (data) {
+    _createSingleCrossTableItems: function (data, dims) {
         var self = this;
         var top = data.t, left = data.l;
 
@@ -367,7 +422,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
 
         //交叉表items
         var crossItem = {
-            children: this._createCrossPartItems(top.c, 0)
+            children: this._createCrossPartItems(top.c, 0, null, dims)
         };
         if (this.showColTotal === true) {
             BI.each(this.targetIds, function (i, tId) {
@@ -440,7 +495,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         parseCrossItem2Array(crossItems, crossPV, []);
 
         var item = {
-            children: this._createTableItems(left.c, 0)
+            children: this._createTableItems(left.c, 0, null, dims)
         };
         if (this.showRowTotal === true) {
             //汇总值
@@ -514,7 +569,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
     /**
      * 表items
      */
-    _createTableItems: function (c, currentLayer, parent) {
+    _createTableItems: function (c, currentLayer, parent, dims) {
         var self = this, items = [];
         currentLayer++;
         BI.each(c, function (i, child) {
@@ -523,13 +578,13 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
             var cId = BI.isEmptyString(child.n) ? self.EMPTY_VALUE : child.n;
             var nodeId = BI.isNotNull(parent) ? parent.get("id") + cId : cId;
             var node = new BI.Node(nodeId);
-            var currDid = self.dimIds[currentLayer - 1], currValue = child.n;
+            var currDid = dims.dimIds[currentLayer - 1], currValue = child.n;
             node.set("name", currValue);
             self.tree.addNode(parent, node);
             var pValues = [];
             var tempLayer = currentLayer, tempNodeId = nodeId;
             while (tempLayer > 0) {
-                var pv = self.tree.search(tempNodeId).get("name"), dId = self.dimIds[tempLayer - 1];
+                var pv = self.tree.search(tempNodeId).get("name"), dId = dims.dimIds[tempLayer - 1];
                 pValues.push({
                     value: [self._parseClickedValue4Group(pv, dId)],
                     dId: dId
@@ -560,13 +615,13 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                 }
             };
             //展开情况——最后一层没有这个展开按钮
-            if (currentLayer < self.dimIds.length) {
+            if (currentLayer < dims.dimIds.length) {
                 item.needExpand = true;
                 item.isExpanded = false;
             }
             //有c->说明有children，构造children，并且需要在children中加入汇总情况（如果有并且需要）
             if (BI.isNotNull(child.c)) {
-                item.children = self._createTableItems(child.c, currentLayer, node) || [];
+                item.children = self._createTableItems(child.c, currentLayer, node, dims) || [];
                 //在tableForm为 行展开模式 的时候 如果不显示汇总行 只是最后一行不显示汇总
                 if (self.showRowTotal === true || self.getTableForm() === BICst.TABLE_FORM.OPEN_COL) {
                     var vs = [];
@@ -611,6 +666,33 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
             items.push(item);
         });
         return items;
+    },
+
+    _getOneRowSummary: function (sums) {
+        var self = this;
+        var summary = [];
+        //对于交叉表的汇总 s: {c: [{s: [200, 300]}, {s: [0, 0]}], s: [100, 500]}
+        if (BI.isArray(sums)) {
+            BI.each(sums, function (i, sum) {
+                if (BI.isObject(sum)) {
+                    summary = summary.concat(self._getOneRowSummary(sum));
+                    return;
+                }
+                summary.push(sum);
+            });
+        } else if (BI.isObject(sums)) {
+            var c = sums.c, s = sums.s;
+            //是否显示列汇总 并且有指标
+            if (BI.isNotNull(c) && BI.isNotNull(s)) {
+                summary = summary.concat(self._getOneRowSummary(c));
+                if (this.showColTotal === true && self.targetIds.length > 0) {
+                    summary = summary.concat(self._getOneRowSummary(s));
+                }
+            } else if (BI.isNotNull(s)) {
+                summary = summary.concat(self._getOneRowSummary(s));
+            }
+        }
+        return summary;
     },
 
     /**
@@ -681,15 +763,15 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
     /**
      * 交叉表——crossItems
      */
-    _createCrossPartItems: function (c, currentLayer, parent) {
+    _createCrossPartItems: function (c, currentLayer, parent, dims) {
         var self = this, crossHeaderItems = [];
         currentLayer++;
         BI.each(c, function (i, child) {
-            if (BI.isNull(child.c) && (self.targetIds.contains(child.n) || self.crossDimIds.contains(child.n))) {
+            if (BI.isNull(child.c) && (self.targetIds.contains(child.n) || dims.crossDimIds.contains(child.n))) {
                 return;
             }
             var cId = BI.isEmptyString(child.n) ? self.EMPTY_VALUE : child.n;
-            var currDid = self.crossDimIds[currentLayer - 1], currValue = child.n;
+            var currDid = dims.crossDimIds[currentLayer - 1], currValue = child.n;
             var nodeId = BI.isNotNull(parent) ? parent.get("id") + cId : cId;
             var node = new BI.Node(nodeId);
             node.set("name", child.n);
@@ -697,10 +779,10 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
             var pValues = [];
             var tempLayer = currentLayer, tempNodeId = nodeId;
             while (tempLayer > 0) {
-                var dId = self.crossDimIds[tempLayer - 1];
+                var dId = dims.crossDimIds[tempLayer - 1];
                 pValues.push({
                     value: [self._parseClickedValue4Group(self.crossTree.search(tempNodeId).get("name"), dId)],
-                    dId: self.crossDimIds[tempLayer - 1]
+                    dId: dims.crossDimIds[tempLayer - 1]
                 });
                 tempNodeId = self.crossTree.search(tempNodeId).getParent().get("id");
                 tempLayer--;
@@ -727,14 +809,14 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                     self.expanderCallback();
                 }
             };
-            if (currentLayer < self.crossDimIds.length) {
+            if (currentLayer < dims.crossDimIds.length) {
                 item.needExpand = true;
                 item.isExpanded = false;
             }
             if (BI.isNotNull(child.c)) {
-                var children = self._createCrossPartItems(child.c, currentLayer, node);
+                var children = self._createCrossPartItems(child.c, currentLayer, node, dims);
                 if (BI.isNotEmptyArray(children)) {
-                    item.children = self._createCrossPartItems(child.c, currentLayer, node);
+                    item.children = self._createCrossPartItems(child.c, currentLayer, node, dims);
                     item.isExpanded = true;
                 }
             }
