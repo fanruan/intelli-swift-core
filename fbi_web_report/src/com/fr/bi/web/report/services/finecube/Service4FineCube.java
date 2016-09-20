@@ -1,6 +1,7 @@
 package com.fr.bi.web.report.services.finecube;
 
 import com.fr.stable.fun.Service;
+import com.fr.stable.web.RequestCMDReceiver;
 import com.fr.web.core.ActionCMD;
 import com.fr.web.core.WebActionsDispatcher;
 
@@ -12,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Service4FineCube implements Service {
 
-    private static ActionCMD[] actions = {
+    private static RequestCMDReceiver[] actions = {
             new FCOpenSessionAction(),
             new FCUpdateSessionAction(),
             new FCCheckSessionAction(),

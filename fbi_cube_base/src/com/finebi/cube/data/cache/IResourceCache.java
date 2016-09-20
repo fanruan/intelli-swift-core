@@ -2,6 +2,8 @@ package com.finebi.cube.data.cache;
 
 import com.finebi.cube.location.ICubeResourceLocation;
 
+import java.util.List;
+
 /**
  * This class created on 2016/5/1.
  *
@@ -34,4 +36,7 @@ public interface IResourceCache<R> {
     boolean isAvailableResource(ICubeResourceLocation location);
 
     void forceRelease();
+
+    List getUnReleasedLocation();
+
 }
