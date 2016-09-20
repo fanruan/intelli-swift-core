@@ -141,6 +141,10 @@ public class BuildCubeTask implements CubeTask {
                     CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
                     Thread.sleep(5000);
                 }
+                if (!cubeBuild.isSingleTable()) {
+                    BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
+                    BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
+                }
                 BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
             }else {
                 message="Cube build failed ,the Cube files will not be replaced ";
@@ -152,7 +156,6 @@ public class BuildCubeTask implements CubeTask {
             message=" cube build failed ! caused by ";
             BILogger.getLogger().error(message+e.getMessage(),e);
         } finally {
-
             BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
             CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         }
