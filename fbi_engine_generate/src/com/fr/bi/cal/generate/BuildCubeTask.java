@@ -163,7 +163,7 @@ public class BuildCubeTask implements CubeTask {
                 }
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
                 replaceSuccess = cubeBuild.replaceOldCubes();
-                BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+                BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
                 if (!replaceSuccess) {
                     BILogger.getLogger().error("cube replace failed after " + i + " times try!It will try again in 5s");
