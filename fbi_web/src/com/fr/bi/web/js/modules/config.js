@@ -1031,6 +1031,14 @@ BICst.CHART_COLORS = [{
     header: BI.i18nText("BI-Elegant"),
     text: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"],
     value: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"]
+}, {
+    header: BI.i18nText("BI-Prediction_Style_One"),
+    text: ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
+    value: ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"]
+}, {
+    header: BI.i18nText("BI-Prediction_Style_Two"),
+    text: ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
+    value: ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"]
 }];
 
 //图值轴格式
@@ -1177,7 +1185,48 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
     cls: "bubble-with-projector",
     value: BICst.CHART_SHAPE.PROJECTOR
 }];
+//全局样式start
+BICst.BACKGROUND_TYPE = {
+    COLOR: 1,
+    IMAGE: 2
+};
 
+BICst.GLOBALPREDICTIONSTYLE = {
+
+    DEFAULT: {
+        "mainBackground": {"type": 1, "value": "#f3f3f3"},
+        "widgetBackground": {"type": 1, "value": "#ffffff"},
+        "titleBackground": {"type": 1, "value": "#ffffff"},
+        "titleFont": {"font-weight": "normal", "font-style": "normal", "text-align": "left", "color": "#000000"},
+        "chartStyle": 1,
+        "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        "controlTheme": "#d4dadd"
+    },
+
+    ONE: {
+        "mainBackground": {"type": 1, "value": "#212338"},
+        "widgetBackground": {"type": 1, "value": "#2b2d4a"},
+        "titleBackground": {"type": 1, "value": "#2b2d3a"},
+        "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        "controlTheme": "#25cdea"
+    },
+
+    TWO: {
+        "mainBackground": {"type": 1, "value": "#dae0e0"},
+        "widgetBackground": {"type": 1, "value": "#f7f7f7"},
+        "titleBackground": {"type": 1, "value": "#5e6472"},
+        "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
+        "controlTheme": "#af7e7e"
+    }
+};
+//全局样式stop
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
     table_form: BICst.TABLE_FORM.OPEN_ROW,

@@ -1341,6 +1341,21 @@
   content: "\e65f";
   color: #808080;
 }
+.toolbar-global-style-font .b-font:before {
+  content: "\e6ca";
+  color: #808080;
+}
+.toolbar-global-style-font:hover .b-font:before,
+.toolbar-global-style-font:focus .b-font:before,
+.toolbar-global-style-font.hover .b-font:before {
+  content: "\e6ca";
+  color: #808080;
+}
+.toolbar-global-style-font.native .b-font:before,
+.toolbar-global-style-font.disabled .b-font:before {
+  content: "\e6ca";
+  color: #808080;
+}
 .chart-table-font .b-font:before {
   content: "\e60e";
   color: #808080;
@@ -2374,6 +2389,15 @@
 .img-shutdown-font.disabled .b-font:before {
   content: "\e689";
   color: #009de3;
+}
+.img-global-style-upload-font .b-font:before {
+  content: "\e6cb";
+  color: #808080;
+}
+.img-global-style-upload-font.native .b-font:before,
+.img-global-style-upload-font.disabled .b-font:before {
+  content: "\e6cb";
+  color: #808080;
 }
 .move-font .b-font:before {
   content: "\e65e";

@@ -241,7 +241,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
         cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
         for (BITableSourceRelationPath biTableSourceRelationPath : this.getBiTableSourceRelationPathSet()) {
             BICubeGenerateRelationPath biCubeGenerateRelationPath = cal.calRelationPath(biTableSourceRelationPath, this.tableSourceRelationSet);
-            if (null != biCubeGenerateRelationPath) {
+            if (null != biCubeGenerateRelationPath && biCubeGenerateRelationPath.getDependRelationPathSet().size() != 0) {
                 cubeGenerateRelationPathSet.add(biCubeGenerateRelationPath);
             }
         }

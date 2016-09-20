@@ -3,7 +3,8 @@ BIShow.PaneModel = BI.inherit(BI.Model, {
         return BI.extend(BIShow.PaneModel.superclass._defaultConfig.apply(this), {
             layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
             layoutRatio: {},
-            widgets: {}
+            widgets: {},
+            globalStyle: {}
         });
     },
 
@@ -32,6 +33,7 @@ BIShow.PaneModel = BI.inherit(BI.Model, {
         Data.SharingPool.put("widgets", widgets);
         Data.SharingPool.put("layoutType", this.get("layoutType"));
         Data.SharingPool.put("layoutRatio", this.get("layoutRatio"));
+        Data.SharingPool.put("globalStyle", this.get("globalStyle"));
 
         if (this.isIniting) {
             this.isIniting = false;
